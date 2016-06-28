@@ -58,7 +58,6 @@ class CalibrateView extends Component {
     };
     this.setTimeout = TimerMixin.setTimeout.bind(this);
     this.calibrating = this.calibrating.bind(this);
-    this.convertTotalTime = this.convertTotalTime.bind(this);
   }
 
   componentDidMount() {
@@ -99,19 +98,6 @@ class CalibrateView extends Component {
       TimerMixin.clearInterval(this.state.calibrating);
       this.props.startPostureMonitoring();
     }
-  }
-
-  convertTotalTime(seconds) {
-    let timeString = '';
-
-    if (seconds > 60) {
-      timeString = `${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else if (seconds > 3600) {
-      timeString = `${(seconds - (seconds % 360)) / 360}h ${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else {
-      timeString = `0h 0m ${seconds}s`;
-    }
-    return timeString;
   }
 
   render() {
