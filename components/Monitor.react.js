@@ -87,12 +87,12 @@ class MonitorView extends Component {
           }
           size={300}
         />
-        <Image style={styles.circle} source={require('../images/circle.png')}/>
+        <Image style={styles.circle} source={require('../images/circle.png')} />
         <Text style={styles.slouchText}>
           SLOUCH
         </Text>
         <Text style={styles.slouches}>
-          { this.props.slouches }
+          {this.props.slouches}
         </Text>
       </View>
     );

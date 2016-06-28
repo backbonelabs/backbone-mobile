@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Posture from './Posture.react';
 import Activity from './Activity.react';
 import Connect from './Connect.react';
+import Posture from './Posture.react';
 
 import {
   View,
@@ -48,15 +48,11 @@ class Main extends Component {
     return (
       <View>
         <View style={styles.statusBar} />
-        { this.state.connected ?
-          <ScrollableTabView
-            locked
-            renderTabBar={this.renderCustomTab}
-            initialPage={this.state.tab}
-          >
+        {this.state.connected ?
+          <View>
             <Posture tabLabel="POSTURE" />
             <Activity tabLabel="ACTIVITY" />
-          </ScrollableTabView> :
+          </View> :
           <Connect connected={this.connected} />
         }
       </View>
