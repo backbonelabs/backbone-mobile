@@ -16,12 +16,9 @@ class backbone extends Component {
     return (
       <Navigator
         initialRoute={{ name: 'Initiate', component: Initiate }}
-        renderScene={(route, navigator) => {
-          if (route.component) {
-            return React.createElement(route.component, { navigator });
-          }
+        renderScene={(route, navigator) =>
+          React.createElement(route.component, { navigator })
         }
-      }
       />
     );
   }
