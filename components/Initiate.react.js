@@ -84,6 +84,7 @@ class Initiate extends Component {
         connected: true,
       }, () => {
         this.props.navigator.push({
+          name: 'Main',
           component: Main,
         });
       });
