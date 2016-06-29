@@ -32,11 +32,13 @@ class ConnectView extends Component {
     this.state = {
       fadeAnim: new Animated.Value(0),
     };
+
     this.initiateMetaWear = this.initiateMetaWear.bind(this);
   }
 
   componentDidMount() {
     this.initiateMetaWear();
+
     const context = this;
 
     (function cycleAnimation() {
@@ -50,8 +52,7 @@ class ConnectView extends Component {
         context.state.fadeAnim,
         { toValue: 0 }),
       ]).start(() => {
-        const count = context.state.connected ? 1 : 0;
-        if (!count) {
+        if (!context.props.connected) {
           cycleAnimation();
         }
       });
