@@ -5,9 +5,13 @@ import {
   View,
   Text,
   Image,
+  Animated,
   StyleSheet,
+  NativeModules,
   TouchableHighlight,
 } from 'react-native';
+
+const MetaWearAPI = NativeModules.MetaWearAPI;
 
 const styles = StyleSheet.create({
   statusBar: {
@@ -43,15 +47,44 @@ class Initiate extends Component {
   constructor() {
     super();
     this.state = {
-      isLoading: false,
+      connected: false,
+      fadeAnim: new Animated.Value(1),
     };
 
+    this.cycleAnimation = this.cycleAnimation.bind(this);
     this.initiateConnect = this.initiateConnect.bind(this);
   }
 
+  cycleAnimation() {
+    const context = this;
+
+    Animated.sequence([
+      Animated.delay(200),
+      Animated.timing(
+      context.state.fadeAnim,
+      { toValue: 0 }),
+      Animated.delay(200),
+      Animated.timing(
+      context.state.fadeAnim,
+      { toValue: 1 }),
+    ]).start(() => {
+      if (!context.state.connected) {
+        context.cycleAnimation();
+      }
+    });
+  }
+
   initiateConnect() {
-    this.props.navigator.push({
-      component: Main,
+    this.cycleAnimation();
+
+    MetaWearAPI.connectToMetaWear(() => {
+      this.setState({
+        connected: true,
+      }, () => {
+        this.props.navigator.push({
+          component: Main,
+        });
+      });
     });
   }
 
@@ -60,7 +93,7 @@ class Initiate extends Component {
       <View>
         <View style={styles.statusBar} />
         <View style={styles.container}>
-          <Image style={styles.logo} source={require('../images/logo.png')} />
+          <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={require('../images/logo.png')} />
           <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
             <Text style={styles.buttonText}>
               CONNECT
