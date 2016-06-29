@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#48BBEC',
   },
   container: {
-    marginTop: 80,
+    marginTop: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -24,15 +24,15 @@ const styles = StyleSheet.create({
     width: 300,
   },
   button: {
-    marginTop: 60,
-    height: 60,
-    width: 300,
+    marginTop: 50,
+    height: 75,
+    width: 275,
     borderRadius: 4,
     justifyContent: 'center',
     backgroundColor: '#48BBEC',
   },
   buttonText: {
-    fontSize: 30,
+    fontSize: 32,
     color: 'white',
     alignSelf: 'center',
     fontWeight: 'bold',
