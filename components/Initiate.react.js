@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
+const logo = require('../images/logo.png');
 
 const styles = StyleSheet.create({
   statusBar: {
-    height: 22,
+    height: 23,
     backgroundColor: '#48BBEC',
   },
   container: {
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
 class Initiate extends Component {
   constructor() {
     super();
+
     this.state = {
       connected: false,
       fadeAnim: new Animated.Value(1),
@@ -93,11 +95,9 @@ class Initiate extends Component {
       <View>
         <View style={styles.statusBar} />
         <View style={styles.container}>
-          <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={require('../images/logo.png')} />
+          <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={logo} />
           <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
-            <Text style={styles.buttonText}>
-              CONNECT
-            </Text>
+            <Text style={styles.buttonText}>CONNECT</Text>
           </TouchableHighlight>
         </View>
       </View>

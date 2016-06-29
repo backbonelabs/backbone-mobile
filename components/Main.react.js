@@ -5,7 +5,6 @@ import Activity from './Activity.react';
 import {
   Text,
   View,
-  Navigator,
   StyleSheet,
 } from 'react-native';
 
