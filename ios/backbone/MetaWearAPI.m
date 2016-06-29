@@ -11,9 +11,15 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(connectToMetaWear: (RCTResponseSenderBlock)callback) {
   
   self.postureSensitivity = 0.05;
+  
+  MBLMetaWearManager *manager = [MBLMetaWearManager sharedManager];
 
-  [[MBLMetaWearManager sharedManager] startScanForMetaWearsWithHandler:^(NSArray *array) {
+  [manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
+    
+    [manager stopScanForMetaWears];
+    
     MBLMetaWear *device = [array firstObject];
+    
     [device connectWithHandler:^(NSError *error) {
       if (device.state == MBLConnectionStateConnected) {
         NSLog(@"Connected!");
@@ -23,6 +29,7 @@ RCT_EXPORT_METHOD(connectToMetaWear: (RCTResponseSenderBlock)callback) {
         callback(@[[NSNull null], @YES]);
       }
     }];
+    
   }];
 }
 
