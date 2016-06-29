@@ -3,19 +3,19 @@
  * MetaWear
  *
  * Created by Stephen Schiffli on 8/12/14.
- * Copyright 2014 MbientLab Inc. All rights reserved.
+ * Copyright 2014-2015 MbientLab Inc. All rights reserved.
  *
  * IMPORTANT: Your use of this Software is limited to those specific rights
  * granted under the terms of a software license agreement between the user who
  * downloaded the software, his/her employer (which must be your employer) and
  * MbientLab Inc, (the "License").  You may not use this Software unless you
  * agree to abide by the terms of the License which can be found at
- * www.mbientlab.com/terms . The License limits your use, and you acknowledge,
- * that the  Software may not be modified, copied or distributed and can be used
- * solely and exclusively in conjunction with a MbientLab Inc, product.  Other
- * than for the foregoing purpose, you may not use, reproduce, copy, prepare
- * derivative works of, modify, distribute, perform, display or sell this
- * Software and/or its documentation for any purpose.
+ * www.mbientlab.com/terms.  The License limits your use, and you acknowledge,
+ * that the Software may be modified, copied, and distributed when used in
+ * conjunction with an MbientLab Inc, product.  Other than for the foregoing
+ * purpose, you may not use, reproduce, copy, prepare derivative works of,
+ * modify, distribute, perform, display or sell this Software and/or its
+ * documentation for any purpose.
  *
  * YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE
  * PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
@@ -30,16 +30,39 @@
  * DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *
  * Should you have any questions regarding your right to use this Software,
- * contact MbientLab Inc, at www.mbientlab.com.
+ * contact MbientLab via email: hello@mbientlab.com
  */
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
+/**
+ Container for a device revision data
+ */
 @interface MBLDeviceInfo : NSObject
 
-@property (nonatomic, strong) NSString *manufacturerName; /**< DeviceInfo Manufacturer Name string */
-@property (nonatomic, strong) NSString *serialNumber; /**< DeviceInfo Serial Number string */
-@property (nonatomic, strong) NSString *hardwareRevision; /**< DeviceInfo Hardware Revision string */
-@property (nonatomic, strong) NSString *firmwareRevision; /**< DeviceInfo Firmware Revision string */
+/**
+ Manufacturer Name string
+ */
+@property (nonatomic) NSString *manufacturerName;
+/**
+ Serial Number string
+ */
+@property (nonatomic) NSString *serialNumber;
+/**
+ Hardware Revision string
+ */
+@property (nonatomic) NSString *hardwareRevision;
+/**
+ Firmware Revision string
+ */
+@property (nonatomic) NSString *firmwareRevision;
+/**
+ Model Number string
+ */
+@property (nonatomic, nullable) NSString *modelNumber;
 
 @end
+
+NS_ASSUME_NONNULL_END

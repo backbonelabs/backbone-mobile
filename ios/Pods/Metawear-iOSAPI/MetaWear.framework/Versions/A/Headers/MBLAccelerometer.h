@@ -3,19 +3,19 @@
  * MetaWear
  *
  * Created by Stephen Schiffli on 7/29/14.
- * Copyright 2014 MbientLab Inc. All rights reserved.
+ * Copyright 2014-2015 MbientLab Inc. All rights reserved.
  *
  * IMPORTANT: Your use of this Software is limited to those specific rights
  * granted under the terms of a software license agreement between the user who
  * downloaded the software, his/her employer (which must be your employer) and
  * MbientLab Inc, (the "License").  You may not use this Software unless you
  * agree to abide by the terms of the License which can be found at
- * www.mbientlab.com/terms . The License limits your use, and you acknowledge,
- * that the  Software may not be modified, copied or distributed and can be used
- * solely and exclusively in conjunction with a MbientLab Inc, product.  Other
- * than for the foregoing purpose, you may not use, reproduce, copy, prepare
- * derivative works of, modify, distribute, perform, display or sell this
- * Software and/or its documentation for any purpose.
+ * www.mbientlab.com/terms.  The License limits your use, and you acknowledge,
+ * that the Software may be modified, copied, and distributed when used in
+ * conjunction with an MbientLab Inc, product.  Other than for the foregoing
+ * purpose, you may not use, reproduce, copy, prepare derivative works of,
+ * modify, distribute, perform, display or sell this Software and/or its
+ * documentation for any purpose.
  *
  * YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE
  * PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
@@ -30,112 +30,86 @@
  * DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *
  * Should you have any questions regarding your right to use this Software,
- * contact MbientLab Inc, at www.mbientlab.com.
+ * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <Foundation/Foundation.h>
 #import <MetaWear/MBLConstants.h>
 #import <MetaWear/MBLAccelerometerData.h>
+#import <MetaWear/MBLOrientationData.h>
+#import <MetaWear/MBLEvent.h>
 #import <MetaWear/MBLModule.h>
+@class MBLNumericData;
+@class MBLRMSAccelerometerData;
 
-@class MBLMetaWear;
+NS_ASSUME_NONNULL_BEGIN
 
-typedef enum {
-    MBLAccelerometerRange2G = 0,
-    MBLAccelerometerRange4G = 1,
-    MBLAccelerometerRange8G = 2
-} MBLAccelerometerRange;
+/**
+ Accelerometer axis
+ */
+typedef NS_OPTIONS(uint8_t, MBLAccelerometerAxis) {
+    MBLAccelerometerAxisX = 1 << 0,
+    MBLAccelerometerAxisY = 1 << 1,
+    MBLAccelerometerAxisZ = 1 << 2
+};
 
-typedef enum {
-    MBLAccelerometerSampleFrequency800Hz = 0,
-    MBLAccelerometerSampleFrequency400Hz = 1,
-    MBLAccelerometerSampleFrequency200Hz = 2,
-    MBLAccelerometerSampleFrequency100Hz = 3,
-    MBLAccelerometerSampleFrequency50Hz = 4,
-    MBLAccelerometerSampleFrequency12_5Hz = 5,
-    MBLAccelerometerSampleFrequency6_25Hz = 6,
-    MBLAccelerometerSampleFrequency1_56Hz = 7
-} MBLAccelerometerSampleFrequency;
+/**
+ Accelerometer tap types
+ */
+typedef NS_ENUM(uint8_t, MBLAccelerometerTapType) {
+    MBLAccelerometerTapTypeSingle = 0,
+    MBLAccelerometerTapTypeDouble = 1,
+    MBLAccelerometerTapTypeBoth = 2
+};
 
-typedef enum {
-    MBLAccelerometerSleepSampleFrequency50Hz = 0,
-    MBLAccelerometerSleepSampleFrequency12_5Hz = 1,
-    MBLAccelerometerSleepSampleFrequency6_25Hz = 2,
-    MBLAccelerometerSleepSampleFrequency1_56Hz = 3
-} MBLAccelerometerSleepSampleFrequency;
-
-typedef enum {
-    MBLAccelerometerPowerSchemeNormal = 0,
-    MBLAccelerometerPowerSchemeLowNoiseLowPower = 1,
-    MBLAccelerometerPowerSchemeHighResolution = 2,
-    MBLAccelerometerPowerSchemeLowerPower = 3,
-} MBLAccelerometerPowerScheme;
-
+/**
+ Interface to an abstract on-board accelerometer. If you need more advanced
+ features then upcast to the specific accelerometer on your board, either
+ MBLAccelerometerMMA8452Q or MBLAccelerometerBMI160.
+ @see MBLAccelerometerMMA8452Q
+ @see MBLAccelerometerBMI160
+ */
 @interface MBLAccelerometer : MBLModule
+/**
+ The frequency, in hertz, for providing accelerometer samples to the event handlers.
+ 
+ @discussion  The value of this property is capped to minimum and maximum values; 
+ the maximum value is determined by the maximum frequency supported by the hardware.
+ If your app is sensitive to the intervals of acceleration data, it should always 
+ check the timestamps of the delivered MBLAccelerometerData instances to determine 
+ the true update interval.
+ */
+@property (nonatomic) double sampleFrequency;
 
 /**
- Maximum acceleration the accelerometer can report
+ Event representing a new accelerometer data sample complete with x, y,
+ and z axis data.  This event will occur at the neareast hardware value
+ to sampleFrequency. Event callbacks will be provided an MBLAccelerometerData object.
  */
-@property (nonatomic) MBLAccelerometerRange fullScaleRange;
+@property (nonatomic, readonly) MBLEvent<MBLAccelerometerData *> *dataReadyEvent;
 /**
- High-pass filter enable; YES: Output data high-pass filtered, NO: No filter
+ Event representing a new accelerometer X axis sample. This event
+ will occur at sampleFrequency. Event callbacks will be provided an
+ MBLNumericData object whose double value will be acceleration in G's.
  */
-@property (nonatomic) BOOL highPassFilter;
+@property (nonatomic, readonly) MBLEvent<MBLNumericData *> *xAxisReadyEvent;
 /**
- Data rate selection; 0: 800Hz, 1: 400Hz, 2: 200 Hz, 3: 100 Hz, 4: 50 Hz,
- 5: 12.5 Hz, 6: 6.25 Hz, 7: 1.56 Hz
+ Event representing a new accelerometer Y axis sample. This event
+ will occur at sampleFrequency. Event callbacks will be provided an
+ MBLNumericData object whose double value will be acceleration in G's.
  */
-@property (nonatomic) MBLAccelerometerSampleFrequency sampleFrequency;
+@property (nonatomic, readonly) MBLEvent<MBLNumericData *> *yAxisReadyEvent;
 /**
- Reduced noise reduced mode; NO: Normal Mode, YES: Reduced noise
- in low noise mode, the maximum signal that can be measured is ±4g. Note: Any
- thresholds set above 4g will not be reached.
+ Event representing a new accelerometer Z axis sample. This event
+ will occur at sampleFrequency. Event callbacks will be provided an
+ MBLNumericData object whose double value will be acceleration in G's.
  */
-@property (nonatomic) BOOL lowNoise;
+@property (nonatomic, readonly) MBLEvent<MBLNumericData *> *zAxisReadyEvent;
 /**
- Fast Read mode; NO: Normal Mode, YES: Fast Read Mode F_READ bit selects between
- Normal and Fast Read mode. When selected, the auto-increment counter
- will skip over the LSB data bytes.
+ Event representing a new accelerometer data sample, but filtered down to 
+ just an RMS value. Event callbacks will be provided an MBLRMSAccelerometerData object
  */
-@property (nonatomic) BOOL fastReadMode;
-
-/**
- ACTIVE mode power scheme selection
- */
-@property (nonatomic) MBLAccelerometerPowerScheme activePowerScheme;
-
-/** Configures the Auto-WAKE sample frequency when the device is in 
- SLEEP Mode; 0: 50 Hz, 1: 12.5 Hz, 2: 6.25 Hz, 3: 1.56 Hz 
- */
-@property (nonatomic) MBLAccelerometerSleepSampleFrequency sleepSampleFrequency;
-/**
- SLEEP mode power scheme selection
- */
-@property (nonatomic) MBLAccelerometerPowerScheme sleepPowerScheme;
-/**
- Auto-SLEEP; NO: Disabled, YES: Enabled
- */
-@property (nonatomic) BOOL autoSleep;
-
-
-/**
- Turn on the accelerometer and start receiving updates. This will invoke the provided
- block each time a new reading shows up.  Please set any configuration properties
- before calling this method, setting properties after this call will have no effect
- until startAccelerometerUpdatesWithHandler: is called again.
- @param MBLAccelerometerHandler handler, Callback to handle each time a new reading is taken, 
- it has the signature: (MBLAccelerometerData *acceleration, NSError *error), where the acceleration
- object contains the x, y, and z acceleration data in g's and a time interval since data collection began
- @returns none
- */
-- (void)startAccelerometerUpdatesWithHandler:(MBLAccelerometerHandler)handler;
-
-/**
- Turn off the accelerometer and stop receiving updates.
- will stop being called
- @param none
- @returns none
- */
-- (void)stopAccelerometerUpdates;
+@property (nonatomic, readonly) MBLEvent<MBLRMSAccelerometerData *> *rmsDataReadyEvent;
 
 @end
+
+NS_ASSUME_NONNULL_END

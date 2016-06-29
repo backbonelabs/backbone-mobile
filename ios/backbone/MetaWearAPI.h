@@ -4,6 +4,7 @@
 @interface MetaWearAPI : NSObject <RCTBridgeModule>
   @property (nonatomic, strong) RCTBridge *bridge;
   @property MBLMetaWear *device;
+  @property MBLAccelerometerMMA8452Q *accelerometerMMA8452Q;
   @property int slouchTime;
   @property int postureTime;
   @property BOOL slouching;
