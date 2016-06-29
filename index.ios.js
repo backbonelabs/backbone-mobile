@@ -10,18 +10,24 @@ import {
 class backbone extends Component {
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true);
+    this.configureScene = this.configureScene.bind(this);
+    this.renderScene = this.renderScene.bind(this);
+  }
+
+  configureScene(route, routeStack) {
+    return Navigator.SceneConfigs.FloatFromBottom;
+  }
+
+  renderScene(route, navigator) {
+    return React.createElement(route.component, { navigator });
   }
 
   render() {
     return (
       <Navigator
+        configureScene={this.configureScene}
         initialRoute={{ name: 'Initiate', component: Initiate }}
-        renderScene={(route, navigator) => {
-          if (route.component) {
-            return React.createElement(route.component, { navigator });
-          }
-        }
-      }
+        renderScene={this.renderScene}
       />
     );
   }
