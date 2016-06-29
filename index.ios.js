@@ -17,6 +17,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
   },
+  statusBar: {
+    height: 23,
+    backgroundColor: '#48BBEC',
+  },
   menuButton: {
     width: Dimensions.get('window').width,
     height: 75,
@@ -30,6 +34,8 @@ class backbone extends Component {
   constructor() {
     super();
 
+    const context = this;
+
     this.navigationBarRouteMapper = {
       LeftButton(route, navigator, index, navState) {
       },
@@ -38,12 +44,15 @@ class backbone extends Component {
       Title(route, navigator) {
         if (route.name) {
           return (
-            <TouchableHighlight
-              style={styles.menuButton}
-              onPress={() => { this.showMenu(route, navigator); }}
-            >
-              <Text style={styles.menu}>MENU</Text>
-            </TouchableHighlight>
+            <View>
+              <View style={styles.statusBar} />
+              <TouchableHighlight
+                style={styles.menuButton}
+                onPress={() => { context.showMenu(route, navigator); }}
+              >
+                <Text style={styles.menu}>MENU</Text>
+              </TouchableHighlight>
+            </View>
           );
         }
       },
@@ -78,12 +87,14 @@ class backbone extends Component {
     navigator.push({
       name: 'Menu',
       component: Menu,
-      passProps: menuItems,
+      passProps: {
+        menuItems,
+      },
     });
   }
 
   renderScene(route, navigator) {
-    return React.createElement(route.component, { navigator });
+    return React.createElement(route.component, { navigator, ...route.passProps });
   }
 
   render() {
