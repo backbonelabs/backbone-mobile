@@ -4,6 +4,7 @@ import Initiate from './components/Initiate.react';
 
 import {
   Text,
+  View,
   StatusBar,
   Navigator,
   StyleSheet,
@@ -13,17 +14,21 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  container: {
+    width: Dimensions.get('window').width,
+  },
   menu: {
     fontSize: 24,
     color: 'white',
   },
   statusBar: {
-    height: 23,
+    height: 25,
+    marginTop: -23,
     backgroundColor: '#48BBEC',
   },
   menuButton: {
-    width: Dimensions.get('window').width,
     height: 75,
+    width: Dimensions.get('window').width,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'gray',
@@ -42,19 +47,22 @@ class backbone extends Component {
       RightButton(route, navigator, index, navState) {
       },
       Title(route, navigator) {
+        let menuButton = null;
         if (route.name) {
-          return (
-            <View>
-              <View style={styles.statusBar} />
-              <TouchableHighlight
-                style={styles.menuButton}
-                onPress={() => { context.showMenu(route, navigator); }}
-              >
-                <Text style={styles.menu}>MENU</Text>
-              </TouchableHighlight>
-            </View>
+          menuButton = (
+          <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
+            <Text style={styles.menu}>MENU</Text>
+          </TouchableHighlight>
           );
+        } else {
+          menuButton = <View />;
         }
+        return (
+          <View style={styles.container}>
+            <View style={styles.statusBar} />
+            { menuButton }
+          </View>
+        );
       },
     };
 

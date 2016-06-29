@@ -15,10 +15,6 @@ const MetaWearAPI = NativeModules.MetaWearAPI;
 const logo = require('../images/logo.png');
 
 const styles = StyleSheet.create({
-  statusBar: {
-    height: 23,
-    backgroundColor: '#48BBEC',
-  },
   container: {
     marginTop: 100,
     justifyContent: 'center',
@@ -94,7 +90,6 @@ class Initiate extends Component {
   render() {
     return (
       <View>
-        <View style={styles.statusBar} />
         <View style={styles.container}>
           <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={logo} />
           <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
