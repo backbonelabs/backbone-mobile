@@ -2,20 +2,27 @@ import React, { Component } from 'react';
 import Initiate from './components/Initiate.react';
 
 import {
-  AppRegistry,
-  Navigator,
   StatusBar,
+  Navigator,
+  AppRegistry,
 } from 'react-native';
 
 class backbone extends Component {
-  componentWillMount() {
-    StatusBar.setBarStyle('light-content', true);
+  constructor() {
+    super();
     this.configureScene = this.configureScene.bind(this);
     this.renderScene = this.renderScene.bind(this);
   }
 
-  configureScene() {
-    return Navigator.SceneConfigs.FloatFromBottom;
+  componentWillMount() {
+    StatusBar.setBarStyle('light-content', true);
+  }
+
+  configureScene(route) {
+    if (route.name === 'Menu') {
+      return Navigator.SceneConfigs.FloatFromBottom;
+    }
+    return Navigator.SceneConfigs.PushFromRight;
   }
 
   renderScene(route, navigator) {
@@ -26,7 +33,7 @@ class backbone extends Component {
     return (
       <Navigator
         configureScene={this.configureScene}
-        initialRoute={{ name: 'Initiate', component: Initiate }}
+        initialRoute={{ component: Initiate }}
         renderScene={this.renderScene}
       />
     );
