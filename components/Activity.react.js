@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Progress from 'react-native-progress';
+// import Progress from 'react-native-progress';
 import TimerMixin from 'react-timer-mixin';
 
 import {
@@ -134,14 +134,14 @@ class ActivityView extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Progress.Pie
+{/*        <Progress.Pie
           style={styles.progressPie}
           color="#48BBEC"
           unfilledColor="#f86c41"
           borderWidth={0}
           progress={(this.state.countdown + 0.01) / 1800000}
           size={300}
-        />
+        />*/}
         <Image style={styles.circle} source={require('../images/circle.png')} />
         <Text style={styles.stepsText}>
           STEP

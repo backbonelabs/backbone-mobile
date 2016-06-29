@@ -10,12 +10,7 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(connectToMetaWear: (RCTResponseSenderBlock)callback) {
   NSLog(@"OBJ-C: Connecting to hardware...");
-
-  self.slouching = NO;
-  self.stepCounter = 0;
-  self.slouchCounter = 0;
-  self.correctPosture = 0;
-  self.tempActivityCounter = 0;
+  
   self.postureSensitivity = 0.05;
 
   [[MBLMetaWearManager sharedManager] startScanForMetaWearsWithHandler:^(NSArray *array) {
