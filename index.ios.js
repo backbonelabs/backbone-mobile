@@ -14,7 +14,7 @@ class backbone extends Component {
     this.renderScene = this.renderScene.bind(this);
   }
 
-  configureScene(route, routeStack) {
+  configureScene() {
     return Navigator.SceneConfigs.FloatFromBottom;
   }
 
