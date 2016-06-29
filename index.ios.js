@@ -1,14 +1,30 @@
 import React, { Component } from 'react';
-import Initiate from './components/Initiate.react';
 import Menu from './components/Menu.react';
+import Initiate from './components/Initiate.react';
 
 import {
   Text,
   StatusBar,
   Navigator,
+  StyleSheet,
+  Dimensions,
   AppRegistry,
   TouchableHighlight,
 } from 'react-native';
+
+const styles = StyleSheet.create({
+  menu: {
+    fontSize: 24,
+    color: 'white',
+  },
+  menuButton: {
+    width: Dimensions.get('window').width,
+    height: 75,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'gray',
+  },
+});
 
 class backbone extends Component {
   constructor() {
@@ -22,8 +38,11 @@ class backbone extends Component {
       Title(route, navigator) {
         if (route.name) {
           return (
-            <TouchableHighlight onPress={() => { this.showMenu(route, navigator); }}>
-              <Text>Menu</Text>
+            <TouchableHighlight
+              style={styles.menuButton}
+              onPress={() => { this.showMenu(route, navigator); }}
+            >
+              <Text style={styles.menu}>MENU</Text>
             </TouchableHighlight>
           );
         }
