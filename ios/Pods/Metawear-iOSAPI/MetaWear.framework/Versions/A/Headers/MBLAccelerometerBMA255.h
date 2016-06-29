@@ -1,21 +1,21 @@
 /**
- * MBLDataProcessor.h
+ * MBLAccelerometerBMA255.h
  * MetaWear
  *
- * Created by Stephen Schiffli on 9/15/14.
- * Copyright 2014 MbientLab Inc. All rights reserved.
+ * Created by Stephen Schiffli on 2/29/16.
+ * Copyright 2016 MbientLab Inc. All rights reserved.
  *
  * IMPORTANT: Your use of this Software is limited to those specific rights
  * granted under the terms of a software license agreement between the user who
  * downloaded the software, his/her employer (which must be your employer) and
  * MbientLab Inc, (the "License").  You may not use this Software unless you
  * agree to abide by the terms of the License which can be found at
- * www.mbientlab.com/terms . The License limits your use, and you acknowledge,
- * that the  Software may not be modified, copied or distributed and can be used
- * solely and exclusively in conjunction with a MbientLab Inc, product.  Other
- * than for the foregoing purpose, you may not use, reproduce, copy, prepare
- * derivative works of, modify, distribute, perform, display or sell this
- * Software and/or its documentation for any purpose.
+ * www.mbientlab.com/terms.  The License limits your use, and you acknowledge,
+ * that the Software may be modified, copied, and distributed when used in
+ * conjunction with an MbientLab Inc, product.  Other than for the foregoing
+ * purpose, you may not use, reproduce, copy, prepare derivative works of,
+ * modify, distribute, perform, display or sell this Software and/or its
+ * documentation for any purpose.
  *
  * YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE
  * PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
@@ -30,12 +30,25 @@
  * DEFENSE THEREOF), OR OTHER SIMILAR COSTS.
  *
  * Should you have any questions regarding your right to use this Software,
- * contact MbientLab Inc, at www.mbientlab.com.
+ * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLConstants.h>
-#import <MetaWear/MBLModule.h>
+#import <MetaWear/MBLAccelerometerBosch.h>
+@class MBLAccelerometerBMA255MotionEvent;
 
-@interface MBLDataProcessor : MBLModule
+NS_ASSUME_NONNULL_BEGIN
+
+/**
+ Interface to a BMA25 accelerometer
+ */
+@interface MBLAccelerometerBMA255 : MBLAccelerometerBosch
+
+/**
+ Event representing a motion (change of acceleration) event.
+ Event callbacks will be provided an empty MBLDataSample object
+ */
+@property (nonatomic, readonly) MBLAccelerometerBMA255MotionEvent *motionEvent;
 
 @end
+
+NS_ASSUME_NONNULL_END
