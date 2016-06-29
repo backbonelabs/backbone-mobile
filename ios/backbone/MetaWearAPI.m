@@ -9,19 +9,14 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(connectToMetaWear: (RCTResponseSenderBlock)callback) {
-  NSLog(@"OBJ-C: Connecting to hardware...");
-
-  self.slouching = NO;
-  self.stepCounter = 0;
-  self.slouchCounter = 0;
-  self.correctPosture = 0;
-  self.tempActivityCounter = 0;
+  
   self.postureSensitivity = 0.05;
 
   [[MBLMetaWearManager sharedManager] startScanForMetaWearsWithHandler:^(NSArray *array) {
     for (MBLMetaWear *device in array) {
       [device connectWithHandler:^(NSError *error) {
         if (device.state == MBLConnectionStateConnected) {
+          NSLog(@"Connected!");
           self.device = device;
           self.accelerometerMMA8452Q = (MBLAccelerometerMMA8452Q *)device.accelerometer;
           self.accelerometerMMA8452Q.sampleFrequency = 1.56;
@@ -142,18 +137,15 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
 }
 
 - (void) stepEvent {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"StepDetected" body: @{@"step": [NSNumber numberWithInt: ++self.stepCounter]}];
-  NSLog(@"stepping");
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Step" body: @{@"step": [NSNumber numberWithInt: ++self.stepCounter]}];
 }
 
 - (void) activeEvent {
-  BOOL activeEvent = YES;
-  [self.bridge.eventDispatcher sendAppEventWithName: @"UserActive" body: @{@"event": [NSNumber numberWithBool:activeEvent]}];
+  [self.bridge.eventDispatcher sendAppEventWithName: @"Active" body: @{@"event": [NSNumber numberWithBool:YES]}];
 }
 
 - (void) inactiveEvent {
-  BOOL inactiveEvent = NO;
-  [self.bridge.eventDispatcher sendAppEventWithName: @"UserInactive" body: @{@"event": [NSNumber numberWithBool:inactiveEvent]}];
+  [self.bridge.eventDispatcher sendAppEventWithName: @"Inactive" body: @{@"event": [NSNumber numberWithBool:NO]}];
 }
 
 @end

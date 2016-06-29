@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import Progress from 'react-native-progress';
+// import Progress from 'react-native-progress';
 import TimerMixin from 'react-timer-mixin';
 
 import {
-  StyleSheet,
   View,
   Text,
   Image,
   Vibration,
+  StyleSheet,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
@@ -85,23 +85,22 @@ class ActivityView extends Component {
 
     this.startCountdown();
 
-    const listenToStepEvent = NativeAppEventEmitter.addListener('StepDetected',
-      (steps) => {
-        context.setState({ steps: steps.step });
-      });
+    const listenToStepEvent = NativeAppEventEmitter.addListener('Step',
+    (steps) => {
+      context.setState({ steps: steps.step });
+    });
 
-    const listenToActiveEvent = NativeAppEventEmitter.addListener('UserActive',
-      () => {
-        console.log('active event');
-        context.stopCountdown();
-        context.setState({ countdown: 1800000 });
-      });
+    const listenToActiveEvent = NativeAppEventEmitter.addListener('Active',
+    () => {
+      context.stopCountdown();
+      context.setState({ countdown: 1800000 });
+    });
 
-    const listenToInactiveEvent = NativeAppEventEmitter.addListener('UserInactive',
-      (poor) => {
-        Vibration.vibrate();
-        context.startCountdown();
-      });
+    const listenToInactiveEvent = NativeAppEventEmitter.addListener('Inactive',
+    (poor) => {
+      Vibration.vibrate();
+      context.startCountdown();
+    });
   }
 
   startCountdown() {
@@ -135,14 +134,14 @@ class ActivityView extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Progress.Pie
+{/*        <Progress.Pie
           style={styles.progressPie}
           color="#48BBEC"
           unfilledColor="#f86c41"
           borderWidth={0}
           progress={(this.state.countdown + 0.01) / 1800000}
           size={300}
-        />
+        />*/}
         <Image style={styles.circle} source={require('../images/circle.png')} />
         <Text style={styles.stepsText}>
           STEP

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Progress from 'react-native-progress';
+// import Progress from 'react-native-progress';
 
 import {
   StyleSheet,
@@ -77,7 +77,7 @@ class MonitorView extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Progress.Pie
+{/*        <Progress.Pie
           style={styles.progressPie}
           color="#48BBEC"
           unfilledColor="#f86c41"
@@ -86,7 +86,7 @@ class MonitorView extends Component {
             (this.props.postureTime + 0.01) / (this.props.slouchTime + this.props.postureTime + 0.01)
           }
           size={300}
-        />
+        />*/}
         <Image style={styles.circle} source={require('../images/circle.png')} />
         <Text style={styles.slouchText}>
           SLOUCH
