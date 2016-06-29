@@ -9,7 +9,6 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(connectToMetaWear: (RCTResponseSenderBlock)callback) {
-  NSLog(@"OBJ-C: Connecting to hardware...");
   
   self.postureSensitivity = 0.05;
 
@@ -17,6 +16,7 @@ RCT_EXPORT_METHOD(connectToMetaWear: (RCTResponseSenderBlock)callback) {
     for (MBLMetaWear *device in array) {
       [device connectWithHandler:^(NSError *error) {
         if (device.state == MBLConnectionStateConnected) {
+          NSLog(@"Connected!");
           self.device = device;
           self.accelerometerMMA8452Q = (MBLAccelerometerMMA8452Q *)device.accelerometer;
           self.accelerometerMMA8452Q.sampleFrequency = 1.56;
