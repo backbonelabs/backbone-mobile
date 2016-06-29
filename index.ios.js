@@ -4,6 +4,7 @@ import Initiate from './components/Initiate.react';
 
 import {
   Text,
+  View,
   StatusBar,
   Navigator,
   StyleSheet,
@@ -13,13 +14,21 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  container: {
+    width: Dimensions.get('window').width,
+  },
   menu: {
     fontSize: 24,
     color: 'white',
   },
+  statusBar: {
+    height: 25,
+    marginTop: -23,
+    backgroundColor: '#48BBEC',
+  },
   menuButton: {
-    width: Dimensions.get('window').width,
     height: 75,
+    width: Dimensions.get('window').width,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'gray',
@@ -30,20 +39,30 @@ class backbone extends Component {
   constructor() {
     super();
 
+    const context = this;
+
     this.navigationBarRouteMapper = {
       LeftButton(route, navigator, index, navState) {
       },
       RightButton(route, navigator, index, navState) {
       },
       Title(route, navigator) {
-        if (route.name) {
-          return (
-            <TouchableHighlight
-              style={styles.menuButton}
-              onPress={() => { this.showMenu(route, navigator); }}
-            >
+        if (route.name !== 'menu') {
+          let menuButton = null;
+          if (route.name) {
+            menuButton = (
+            <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
               <Text style={styles.menu}>MENU</Text>
             </TouchableHighlight>
+            );
+          } else {
+            menuButton = <View />;
+          }
+          return (
+            <View style={styles.container}>
+              <View style={styles.statusBar} />
+              { menuButton }
+            </View>
           );
         }
       },
@@ -59,7 +78,7 @@ class backbone extends Component {
   }
 
   configureScene(route) {
-    if (route.name === 'Menu') {
+    if (route.name === 'menu') {
       return Navigator.SceneConfigs.FloatFromBottom;
     }
     return Navigator.SceneConfigs.PushFromRight;
@@ -76,14 +95,16 @@ class backbone extends Component {
     delete menuItems[route.name];
 
     navigator.push({
-      name: 'Menu',
+      name: 'menu',
       component: Menu,
-      passProps: menuItems,
+      passProps: {
+        menuItems,
+      },
     });
   }
 
   renderScene(route, navigator) {
-    return React.createElement(route.component, { navigator });
+    return React.createElement(route.component, { navigator, ...route.passProps });
   }
 
   render() {
