@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-// import Progress from 'react-native-progress';
+import PostureButton from './PostureButton.react';
 
 import {
-  StyleSheet,
-  View,
   Text,
-  Image,
+  View,
+  StyleSheet,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -14,45 +13,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'column',
   },
-  slouches: {
-    fontSize: 120,
-    marginTop: -120,
-    marginBottom: 80,
-    color: '#f86c41',
-    fontWeight: '500',
-  },
-  slouchText: {
-    fontSize: 24,
-    marginTop: -275,
-    marginBottom: 110,
-    color: '#9da2a7',
-    fontWeight: '500',
-  },
-  time: {
-    fontSize: 28,
-    fontFamily: 'Helvetica',
-    fontWeight: '400',
-  },
-  timeContainer: {
-    marginTop: -20,
-    alignItems: 'center',
-  },
-  circle: {
-    marginTop: -275,
-    marginBottom: 65,
-    width: 255,
-    height: 255,
-    borderRadius: 255 / 2,
-    borderWidth: 15,
-    borderColor: 'white',
-    backgroundColor: 'white',
-    alignSelf: 'center',
-  },
-  progressPie: {
-    marginTop: 35,
-    alignSelf: 'center',
-  },
-
 });
 
 class MonitorView extends Component {
@@ -78,23 +38,22 @@ class MonitorView extends Component {
   render() {
     return (
       <View style={styles.container}>
-{/*        <Progress.Pie
-          style={styles.progressPie}
-          color="#48BBEC"
-          unfilledColor="#f86c41"
-          borderWidth={0}
-          progress={
-            (this.props.postureTime + 0.01) / (this.props.slouchTime + this.props.postureTime + 0.01)
-          }
-          size={300}
-        />*/}
-        <Image style={styles.circle} source={require('../images/circle.png')} />
-        <Text style={styles.slouchText}>
-          SLOUCH
+        <Text>
+          Posture
         </Text>
-        <Text style={styles.slouches}>
-          {this.props.slouches}
-        </Text>
+        {this.state.monitoring ?
+          <PostureButton
+            iconName={'pause'}
+            buttonText={'STOP'}
+            colorStyle={{ backgroundColor: '#f86c41' }}
+            onPress={this.props.stop}
+          /> :
+          <PostureButton
+            colorStyle={{ backgroundColor: '#48BBEC' }}
+            onPress={this.beginCalibrate}
+            buttonText={'START'}
+          />
+        }
       </View>
     );
   }

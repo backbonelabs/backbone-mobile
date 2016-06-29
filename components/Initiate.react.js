@@ -7,7 +7,6 @@ import {
   Image,
   StyleSheet,
   TouchableHighlight,
-  ActivityIndicator,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -16,16 +15,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#48BBEC',
   },
   container: {
-    marginTop: 100,
+    marginTop: 80,
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
     height: 300,
     width: 300,
-  },
-  indicator: {
-    marginTop: 20,
   },
   button: {
     marginTop: 60,
@@ -65,18 +61,11 @@ class Initiate extends Component {
         <View style={styles.statusBar} />
         <View style={styles.container}>
           <Image style={styles.logo} source={require('../images/logo.png')} />
-          {this.state.isLoading ?
-            <ActivityIndicator
-              hidden
-              style={styles.indicator}
-              size="large"
-            /> :
-            <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
-              <Text style={styles.buttonText}>
-                CONNECT
-              </Text>
-            </TouchableHighlight>
-          }
+          <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
+            <Text style={styles.buttonText}>
+              CONNECT
+            </Text>
+          </TouchableHighlight>
         </View>
       </View>
     );

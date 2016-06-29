@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Monitor from './Monitor.react';
 import Calibrate from './Calibrate.react';
-import PostureButton from './PostureButton.react';
 
 
 import {
@@ -98,26 +97,13 @@ class Posture extends Component {
       <View style={styles.container}>
         {this.state.calibrating ?
           <Calibrate startPostureMonitoring={this.startPostureMonitoring} /> :
-          <View>
-            <Monitor
-              postureTime={this.state.postureTime}
-              slouchTime={this.state.slouchTime}
-              slouches={this.state.slouches}
-            />
-            {this.state.monitoring ?
-              <PostureButton
-                iconName={'pause'}
-                buttonText={'STOP'}
-                colorStyle={{ backgroundColor: '#f86c41' }}
-                onPress={this.stopPostureMonitoring}
-              /> :
-              <PostureButton
-                colorStyle={{ backgroundColor: '#48BBEC' }}
-                onPress={this.beginCalibrate}
-                buttonText={'START'}
-              />
-            }
-          </View>
+          <Monitor
+            start={this.startPostureMonitoring}
+            stop={this.stopPostureMonitoring}
+            slouches={this.state.slouches}
+            slouchTime={this.state.slouchTime}
+            postureTime={this.state.postureTime}
+          />
         }
       </View>
 		);
