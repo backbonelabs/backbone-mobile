@@ -9,7 +9,7 @@ import {
 
 const styles = StyleSheet.create({
   list: {
-    marginTop: 100,
+    marginTop: 0,
   },
   listItem: {
     borderBottomWidth: 1,

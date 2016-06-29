@@ -47,22 +47,24 @@ class backbone extends Component {
       RightButton(route, navigator, index, navState) {
       },
       Title(route, navigator) {
-        let menuButton = null;
-        if (route.name) {
-          menuButton = (
-          <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
-            <Text style={styles.menu}>MENU</Text>
-          </TouchableHighlight>
+        if (route.name !== 'menu') {
+          let menuButton = null;
+          if (route.name) {
+            menuButton = (
+            <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
+              <Text style={styles.menu}>MENU</Text>
+            </TouchableHighlight>
+            );
+          } else {
+            menuButton = <View />;
+          }
+          return (
+            <View style={styles.container}>
+              <View style={styles.statusBar} />
+              { menuButton }
+            </View>
           );
-        } else {
-          menuButton = <View />;
         }
-        return (
-          <View style={styles.container}>
-            <View style={styles.statusBar} />
-            { menuButton }
-          </View>
-        );
       },
     };
 
@@ -76,7 +78,7 @@ class backbone extends Component {
   }
 
   configureScene(route) {
-    if (route.name === 'Menu') {
+    if (route.name === 'menu') {
       return Navigator.SceneConfigs.FloatFromBottom;
     }
     return Navigator.SceneConfigs.PushFromRight;
@@ -93,7 +95,7 @@ class backbone extends Component {
     delete menuItems[route.name];
 
     navigator.push({
-      name: 'Menu',
+      name: 'menu',
       component: Menu,
       passProps: {
         menuItems,
