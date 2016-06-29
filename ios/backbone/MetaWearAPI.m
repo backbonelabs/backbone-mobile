@@ -13,20 +13,16 @@ RCT_EXPORT_METHOD(connectToMetaWear: (RCTResponseSenderBlock)callback) {
   self.postureSensitivity = 0.05;
 
   [[MBLMetaWearManager sharedManager] startScanForMetaWearsWithHandler:^(NSArray *array) {
-    for (MBLMetaWear *device in array) {
-      [device connectWithHandler:^(NSError *error) {
-        if (device.state == MBLConnectionStateConnected) {
-          NSLog(@"Connected!");
-          self.device = device;
-          self.accelerometerMMA8452Q = (MBLAccelerometerMMA8452Q *)device.accelerometer;
-          self.accelerometerMMA8452Q.sampleFrequency = 1.56;
-          callback(@[[NSNull null], @YES]);
-        } else {
-          callback(@[error, @NO]);
-        }
-      }];
-      [[MBLMetaWearManager sharedManager] stopScanForMetaWears];
-    }
+    MBLMetaWear *device = [array firstObject];
+    [device connectWithHandler:^(NSError *error) {
+      if (device.state == MBLConnectionStateConnected) {
+        NSLog(@"Connected!");
+        self.device = device;
+        self.accelerometerMMA8452Q = (MBLAccelerometerMMA8452Q *)device.accelerometer;
+        self.accelerometerMMA8452Q.sampleFrequency = 1.56;
+        callback(@[[NSNull null], @YES]);
+      }
+    }];
   }];
 }
 
