@@ -46,11 +46,9 @@ const styles = StyleSheet.create({
 class Initiate extends Component {
   constructor() {
     super();
-
     this.state = {
       isLoading: false,
     };
-
     this.initiateConnect = this.initiateConnect.bind(this);
   }
 
@@ -66,7 +64,7 @@ class Initiate extends Component {
         <View style={styles.statusBar} />
         <View style={styles.container}>
           <Image style={styles.logo} source={require('../images/logo.png')} />
-          { this.state.isLoading ?
+          {this.state.isLoading ?
             <ActivityIndicator
               hidden
               style={styles.indicator}
