@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import Activity from './Activity.react';
-import Connect from './Connect.react';
 import Posture from './Posture.react';
+import Connect from './Connect.react';
 
 import {
   View,
@@ -36,10 +35,7 @@ class Main extends Component {
       <View>
         <View style={styles.statusBar} />
         {this.state.connected ?
-          <View>
-            <Posture tabLabel="POSTURE" />
-            <Activity tabLabel="ACTIVITY" />
-          </View> :
+          <Posture /> :
           <Connect connected={this.updateConnected} />
         }
       </View>
