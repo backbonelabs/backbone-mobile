@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import Posture from './Posture.react';
-import Activity from './Activity.react';
 
 import {
-  Text,
   View,
-  Navigator,
   StyleSheet,
 } from 'react-native';
 
 const styles = StyleSheet.create({
   statusBar: {
-    height: 22,
+    height: 23,
     backgroundColor: '#48BBEC',
   },
 });
@@ -21,9 +17,6 @@ class Main extends Component {
     return (
       <View>
         <View style={styles.statusBar} />
-        <Text>
-          NavBar
-        </Text>
       </View>
     );
   }
