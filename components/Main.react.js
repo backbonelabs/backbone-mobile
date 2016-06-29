@@ -18,30 +18,16 @@ const styles = StyleSheet.create({
 class Main extends Component {
   constructor() {
     super();
-
     this.state = {
       connected: false,
     };
-
-    this.connected = this.connected.bind(this);
-    this.renderCustomTab = this.renderCustomTab.bind(this);
+    this.updateConnected = this.updateConnected.bind(this);
   }
 
-  connected() {
+  updateConnected() {
     this.setState({
       connected: true,
     });
-  }
-
-  renderCustomTab() {
-    return (
-      <CustomTabBar
-        activeTextColor="#48BBEC"
-        inactiveTextColor="#9da2a7"
-        underlineColor="transparent"
-        backgroundColor="white"
-      />
-    );
   }
 
   render() {
@@ -53,7 +39,7 @@ class Main extends Component {
             <Posture tabLabel="POSTURE" />
             <Activity tabLabel="ACTIVITY" />
           </View> :
-          <Connect connected={this.connected} />
+          <Connect connected={this.updateConnected} />
         }
       </View>
     );
