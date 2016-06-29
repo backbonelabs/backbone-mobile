@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
 
 import {
+  View,
   Text,
   ListView,
+  StyleSheet,
 } from 'react-native';
 
-// const styles = StyleSheet.create({
-
-// });
+const styles = StyleSheet.create({
+  list: {
+    marginTop: 100,
+  },
+  listItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  },
+  listItemText: {
+    fontSize: 24,
+    paddingTop: 20,
+    paddingLeft: 20,
+    paddingBottom: 20,
+  },
+});
 
 class Menu extends Component {
   constructor() {
@@ -28,8 +42,9 @@ class Menu extends Component {
   render() {
     return (
       <ListView
+        style={styles.list}
         dataSource={this.state.dataSource}
-        renderRow={(rowData) => <Text>{rowData}</Text>}
+        renderRow={(rowData) => <View style={styles.listItem}><Text style={styles.listItemText}>{rowData}</Text></View>}
       />
     );
   }
