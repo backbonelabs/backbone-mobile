@@ -49,6 +49,7 @@ class Initiate extends Component {
     this.state = {
       isLoading: false,
     };
+
     this.initiateConnect = this.initiateConnect.bind(this);
   }
 

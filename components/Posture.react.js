@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
 class Posture extends Component {
   constructor() {
     super();
-
     this.state = {
       postureTime: 0,
       slouchTime: 0,

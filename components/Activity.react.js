@@ -73,6 +73,7 @@ class ActivityView extends Component {
       timer: null,
       countdown: 1800000,
     };
+
     this.convertTotalTime = this.convertTotalTime.bind(this);
     this.startCountdown = this.startCountdown.bind(this);
     this.stopCountdown = this.stopCountdown.bind(this);

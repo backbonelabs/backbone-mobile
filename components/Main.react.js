@@ -21,6 +21,7 @@ class Main extends Component {
     this.state = {
       connected: false,
     };
+
     this.updateConnected = this.updateConnected.bind(this);
   }
 
