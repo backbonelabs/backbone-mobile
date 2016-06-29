@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import TimerMixin from 'react-timer-mixin';
-// import Progress from 'react-native-progress';
 
 import {
   View,

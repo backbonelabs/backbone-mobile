@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Posture from './Posture.react';
-import Connect from './Connect.react';
+import Activity from './Activity.react';
 
 import {
+  Text,
   View,
+  Navigator,
   StyleSheet,
 } from 'react-native';
 
@@ -15,29 +17,13 @@ const styles = StyleSheet.create({
 });
 
 class Main extends Component {
-  constructor() {
-    super();
-    this.state = {
-      connected: false,
-    };
-
-    this.updateConnected = this.updateConnected.bind(this);
-  }
-
-  updateConnected() {
-    this.setState({
-      connected: true,
-    });
-  }
-
   render() {
     return (
       <View>
         <View style={styles.statusBar} />
-        {this.state.connected ?
-          <Posture /> :
-          <Connect connected={this.updateConnected} />
-        }
+        <Text>
+          NavBar
+        </Text>
       </View>
     );
   }
