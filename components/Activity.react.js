@@ -85,7 +85,7 @@ class ActivityView extends Component {
 
     this.startCountdown();
 
-    const listenToStepEvent = NativeAppEventEmitter.addListener('StepDetected',
+    const listenToStepEvent = NativeAppEventEmitter.addListener('Step',
     (steps) => {
       context.setState({ steps: steps.step });
     });

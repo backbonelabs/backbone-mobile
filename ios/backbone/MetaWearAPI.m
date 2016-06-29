@@ -142,7 +142,7 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
 }
 
 - (void) stepEvent {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"StepDetected" body: @{@"step": [NSNumber numberWithInt: ++self.stepCounter]}];
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Step" body: @{@"step": [NSNumber numberWithInt: ++self.stepCounter]}];
 }
 
 - (void) activeEvent {
