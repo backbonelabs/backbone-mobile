@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
 class MonitorView extends Component {
   constructor() {
     super();
+
     this.convertTotalTime = this.convertTotalTime.bind(this);
   }
 

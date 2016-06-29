@@ -56,6 +56,7 @@ class CalibrateView extends Component {
       calibrateCount: 0,
       fadeAnim: new Animated.Value(0),
     };
+
     this.setTimeout = TimerMixin.setTimeout.bind(this);
     this.calibrating = this.calibrating.bind(this);
   }
