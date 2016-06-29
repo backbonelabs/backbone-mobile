@@ -3,11 +3,11 @@ import Progress from 'react-native-progress';
 import TimerMixin from 'react-timer-mixin';
 
 import {
-  StyleSheet,
   View,
   Text,
   Image,
   Vibration,
+  StyleSheet,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
@@ -86,22 +86,21 @@ class ActivityView extends Component {
     this.startCountdown();
 
     const listenToStepEvent = NativeAppEventEmitter.addListener('StepDetected',
-      (steps) => {
-        context.setState({ steps: steps.step });
-      });
+    (steps) => {
+      context.setState({ steps: steps.step });
+    });
 
-    const listenToActiveEvent = NativeAppEventEmitter.addListener('UserActive',
-      () => {
-        console.log('active event');
-        context.stopCountdown();
-        context.setState({ countdown: 1800000 });
-      });
+    const listenToActiveEvent = NativeAppEventEmitter.addListener('Active',
+    () => {
+      context.stopCountdown();
+      context.setState({ countdown: 1800000 });
+    });
 
-    const listenToInactiveEvent = NativeAppEventEmitter.addListener('UserInactive',
-      (poor) => {
-        Vibration.vibrate();
-        context.startCountdown();
-      });
+    const listenToInactiveEvent = NativeAppEventEmitter.addListener('Inactive',
+    (poor) => {
+      Vibration.vibrate();
+      context.startCountdown();
+    });
   }
 
   startCountdown() {
