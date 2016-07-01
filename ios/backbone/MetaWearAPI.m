@@ -10,19 +10,16 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(connectToMetaWear: (RCTResponseSenderBlock)callback) {
   
-  self.postureSensitivity = 0.05;
-  
   MBLMetaWearManager *manager = [MBLMetaWearManager sharedManager];
 
   [manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
     
     [manager stopScanForMetaWears];
-    
+      
     MBLMetaWear *device = [array firstObject];
-    
+      
     [device connectWithHandler:^(NSError *error) {
       if (device.state == MBLConnectionStateConnected) {
-        NSLog(@"Connected!");
         self.device = device;
         self.accelerometerMMA8452Q = (MBLAccelerometerMMA8452Q *)device.accelerometer;
         self.accelerometerMMA8452Q.sampleFrequency = 1.56;
