@@ -6,5 +6,9 @@
   @property MBLMetaWear *device;
   @property MBLMetaWearManager * manager;
   @property MBLAccelerometerMMA8452Q *accelerometer;
-  - (void) connectToMetaWear:(MBLMetaWear *)device;
+  @property BOOL calibrated;
+  @property float controlAngle;
+  @property float currentAngle;
+  @property float tilt;
+  - (void) connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
 @end

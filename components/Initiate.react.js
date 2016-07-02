@@ -51,6 +51,8 @@ class Initiate extends Component {
 
     this.cycleAnimation = this.cycleAnimation.bind(this);
     this.initiateConnect = this.initiateConnect.bind(this);
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
   }
 
   cycleAnimation() {
@@ -72,17 +74,20 @@ class Initiate extends Component {
     });
   }
 
+  start() {
+    MetaWearAPI.startPostureMonitoring();
+  }
+
+  stop() {
+    MetaWearAPI.stopPostureMonitoring();
+  }
+
   initiateConnect() {
     this.cycleAnimation();
 
     MetaWearAPI.searchForMetaWear(() => {
       this.setState({
         connected: true,
-      }, () => {
-        this.props.navigator.push({
-          name: 'main',
-          component: Main,
-        });
       });
     });
   }
@@ -91,10 +96,22 @@ class Initiate extends Component {
     return (
       <View>
         <View style={styles.container}>
+        {!this.state.connected ?
+          <View>
           <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={logo} />
           <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
             <Text style={styles.buttonText}>CONNECT</Text>
           </TouchableHighlight>
+          </View> :
+          <View>
+            <TouchableHighlight style={styles.button} onPress={this.start}>
+              <Text style={styles.buttonText}>START</Text>
+            </TouchableHighlight>
+            <TouchableHighlight style={styles.button} onPress={this.stop}>
+              <Text style={styles.buttonText}>STOP</Text>
+            </TouchableHighlight>
+          </View>
+        }
         </View>
       </View>
     );
