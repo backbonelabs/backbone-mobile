@@ -75,7 +75,7 @@ class Initiate extends Component {
   initiateConnect() {
     this.cycleAnimation();
 
-    MetaWearAPI.connectToMetaWear(() => {
+    MetaWearAPI.searchForMetaWear(() => {
       this.setState({
         connected: true,
       }, () => {
