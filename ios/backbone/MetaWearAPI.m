@@ -14,13 +14,11 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
   
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
-      NSLog(@"yes");
       MBLMetaWear *device = task.result[0];
       self.device = device;
       [self connectToMetaWear:self.device:callback];
       
     } else {
-      NSLog(@"no");
       [self.manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
         self.device = 0;
         
@@ -39,7 +37,6 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
 
 - (void)connectToMetaWear:(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
   [self.device connectWithHandler:^(NSError *error) {
-    NSLog(@"connect");
     if (self.device.state == MBLConnectionStateConnected) {
       self.accelerometer = (MBLAccelerometerMMA8452Q *)self.device.accelerometer;
       self.accelerometer.sampleFrequency = 1.56;
