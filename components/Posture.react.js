@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import Monitor from './Monitor.react';
 import Calibrate from './Calibrate.react';
 
-
 import {
   View,
-  StyleSheet,
   Vibration,
-  NativeAppEventEmitter,
+  StyleSheet,
   NativeModules,
+  NativeAppEventEmitter,
 } from 'react-native';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;

@@ -19,6 +19,10 @@ class MonitorView extends Component {
   constructor() {
     super();
 
+    this.state = {
+      monitoring: false,
+    };
+
     this.convertTotalTime = this.convertTotalTime.bind(this);
   }
 
