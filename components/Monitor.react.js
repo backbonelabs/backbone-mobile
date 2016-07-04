@@ -9,12 +9,13 @@ import {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 125,
+    marginTop: 100,
     alignItems: 'center',
     flexDirection: 'column',
   },
   progressCircle: {
-    marginBottom: 35,
+    marginTop: 50,
+    marginBottom: 50,
   },
 });
 

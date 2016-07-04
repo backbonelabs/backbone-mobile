@@ -14,7 +14,6 @@ const MetaWearAPI = NativeModules.MetaWearAPI;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },

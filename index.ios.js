@@ -28,10 +28,11 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     height: 75,
-    width: Dimensions.get('window').width,
+    opacity: 0.25,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: 'gray',
+    justifyContent: 'center',
+    width: Dimensions.get('window').width,
   },
 });
 
