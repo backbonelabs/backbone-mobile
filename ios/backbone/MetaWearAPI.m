@@ -65,6 +65,7 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
       self.tilt = self.currentAngle - self.controlAngle;
     }
     [self handleTilt];
+    [self tiltEventEmitter];
     NSLog(@"Tilt is: %f", self.tilt);
   }];
 }
