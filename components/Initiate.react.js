@@ -88,31 +88,21 @@ class Initiate extends Component {
     MetaWearAPI.searchForMetaWear(() => {
       this.setState({
         connected: true,
+      }, () => {
+        this.props.navigator.push({
+          component: Main,
+        });
       });
     });
   }
 
   render() {
     return (
-      <View>
-        <View style={styles.container}>
-        {!this.state.connected ?
-          <View>
-          <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={logo} />
-          <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
-            <Text style={styles.buttonText}>CONNECT</Text>
-          </TouchableHighlight>
-          </View> :
-          <View>
-            <TouchableHighlight style={styles.button} onPress={this.start}>
-              <Text style={styles.buttonText}>START</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={styles.button} onPress={this.stop}>
-              <Text style={styles.buttonText}>STOP</Text>
-            </TouchableHighlight>
-          </View>
-        }
-        </View>
+      <View style={styles.container}>
+        <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={logo} />
+        <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
+          <Text style={styles.buttonText}>CONNECT</Text>
+        </TouchableHighlight>
       </View>
     );
   }
