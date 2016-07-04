@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Main from './Main.react';
+import logo from '../images/logo.png';
 
 import {
   View,
@@ -12,7 +13,6 @@ import {
 } from 'react-native';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
-const logo = require('../images/logo.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -80,8 +80,9 @@ class Initiate extends Component {
         connected: true,
       }, () => {
         this.props.navigator.push({
-          name: 'main',
+          name: 'Main',
           component: Main,
+          passProps: { MetaWearAPI },
         });
       });
     });
@@ -89,13 +90,11 @@ class Initiate extends Component {
 
   render() {
     return (
-      <View>
-        <View style={styles.container}>
-          <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={logo} />
-          <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
-            <Text style={styles.buttonText}>CONNECT</Text>
-          </TouchableHighlight>
-        </View>
+      <View style={styles.container}>
+        <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={logo} />
+        <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
+          <Text style={styles.buttonText}>CONNECT</Text>
+        </TouchableHighlight>
       </View>
     );
   }

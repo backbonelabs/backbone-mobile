@@ -1,6 +1,7 @@
 #import "MetaWearAPI.h"
 #import "RCTBridge.h"
 #import "RCTEventDispatcher.h"
+#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 
 @implementation MetaWearAPI
 
@@ -9,21 +10,18 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
-  
+
   self.manager = [MBLMetaWearManager sharedManager];
-  
+
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
-      NSLog(@"yes");
       MBLMetaWear *device = task.result[0];
       self.device = device;
       [self connectToMetaWear:self.device:callback];
-      
     } else {
-      NSLog(@"no");
       [self.manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
         self.device = 0;
-        
+
         for (MBLMetaWear *device in array) {
           if (!self.device || self.device.discoveryTimeRSSI.integerValue > device.discoveryTimeRSSI.integerValue) {
             self.device = device;
@@ -37,15 +35,48 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
   }];
 }
 
-- (void)connectToMetaWear:(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
+- (void)connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
   [self.device connectWithHandler:^(NSError *error) {
-    NSLog(@"connect");
     if (self.device.state == MBLConnectionStateConnected) {
-      self.accelerometer = (MBLAccelerometerMMA8452Q *)self.device.accelerometer;
-      self.accelerometer.sampleFrequency = 1.56;
+      [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
     }
   }];
+}
+
+RCT_EXPORT_METHOD(startPostureMonitoring) {
+  self.accelerometer = (MBLAccelerometerMMA8452Q *)self.device.accelerometer;
+  self.accelerometer.sampleFrequency = 1.56;
+
+  self.calibrated = false;
+
+  [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
+      self.currentAngle = RADIANS_TO_DEGREES(atan(obj.z / obj.x));
+    if (!self.calibrated) {
+      float xControl = obj.x;
+      float zControl = obj.z;
+      self.controlAngle = RADIANS_TO_DEGREES(atan(zControl / xControl));
+      self.calibrated = true;
+    } else if (obj.x < 0 && obj.z > 0) {
+      self.tilt = 90 + (90 + (self.currentAngle - self.controlAngle));
+    } else if (obj.x < 0 && obj.z < 0) {
+      self.tilt = -90 + (-90 - (self.currentAngle - self.controlAngle));
+    } else {
+      self.tilt = self.currentAngle - self.controlAngle;
+    }
+    [self handleTilt];
+    NSLog(@"Tilt is: %f", self.tilt);
+  }];
+}
+
+RCT_EXPORT_METHOD(stopPostureMonitoring) {
+  [self.accelerometer.dataReadyEvent stopNotificationsAsync];
+}
+
+- (void) handleTilt {
+  if (self.tilt > 10) {
+    [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:5];
+  }
 }
 
 //RCT_EXPORT_METHOD(startPostureMonitoring) {
