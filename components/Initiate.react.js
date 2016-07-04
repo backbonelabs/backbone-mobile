@@ -16,18 +16,18 @@ const MetaWearAPI = NativeModules.MetaWearAPI;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100,
-    justifyContent: 'center',
+    marginTop: 125,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   logo: {
-    height: 300,
     width: 300,
+    height: 300,
   },
   button: {
-    marginTop: 50,
     height: 75,
     width: 275,
+    marginTop: 50,
     borderRadius: 4,
     justifyContent: 'center',
     backgroundColor: '#48BBEC',
@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 32,
     color: 'white',
-    alignSelf: 'center',
     fontWeight: 'bold',
+    alignSelf: 'center',
   },
 });
 

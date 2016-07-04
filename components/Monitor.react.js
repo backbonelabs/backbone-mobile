@@ -9,7 +9,7 @@ import {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100,
+    marginTop: 75,
     alignItems: 'center',
     flexDirection: 'column',
   },
