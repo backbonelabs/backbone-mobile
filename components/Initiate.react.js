@@ -80,7 +80,7 @@ class Initiate extends Component {
         connected: true,
       }, () => {
         this.props.navigator.push({
-          name: 'Main',
+          name: 'main',
           component: Main,
           passProps: { MetaWearAPI },
         });
