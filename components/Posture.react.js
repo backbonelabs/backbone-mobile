@@ -24,6 +24,7 @@ class Posture extends Component {
     super();
     this.state = {
       tilt: 0,
+      tiltDirection: 'forward',
       calibrating: false,
       monitoring: false,
     };
@@ -39,9 +40,14 @@ class Posture extends Component {
 
     this.listenToTilt = NativeAppEventEmitter.addListener(
       'Tilt', (event) => {
-        // Vibration.vibrate();
-        console.log('Tilt is: ', event.tilt);
-        context.setState({ tilt: event.tilt });
+        let tiltDirection = 'forward';
+        if (event.tilt < 0) {
+          tiltDirection = 'backward';
+        }
+        context.setState({
+          tiltDirection,
+          tilt: Math.abs(event.tilt),
+        });
       }
     );
   }
@@ -79,10 +85,11 @@ class Posture extends Component {
         {this.state.calibrating ?
           <Calibrate startPostureMonitoring={this.startPostureMonitoring} /> :
           <Monitor
-            begin={this.beginCalibrate}
+            tilt={this.state.tilt}
+            tiltDirection={this.state.tiltDirection}
             start={this.startPostureMonitoring}
             stop={this.stopPostureMonitoring}
-            tilt={this.state.tilt}
+            beginCalibrate={this.beginCalibrate}
             monitoring={this.state.monitoring}
           />
         }
