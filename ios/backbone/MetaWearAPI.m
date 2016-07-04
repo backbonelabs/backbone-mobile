@@ -79,6 +79,10 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
   }
 }
 
+- (void) tiltEventEmitter {
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Tilt" body: @{@"tilt": [NSNumber numberWithFloat:self.tilt]}];
+}
+
 //RCT_EXPORT_METHOD(startPostureMonitoring) {
 //  [self stopActivityTracking];
 //
