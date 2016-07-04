@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Menu from './components/Menu.react';
 import Initiate from './components/Initiate.react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   Text,
@@ -17,9 +18,8 @@ const styles = StyleSheet.create({
   container: {
     width: Dimensions.get('window').width,
   },
-  menu: {
-    fontSize: 24,
-    color: 'white',
+  menuIcon: {
+    marginLeft: 25,
   },
   statusBar: {
     height: 25,
@@ -28,10 +28,8 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     height: 75,
-    width: Dimensions.get('window').width,
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'gray',
+    width: Dimensions.get('window').width,
   },
 });
 
@@ -52,7 +50,7 @@ class backbone extends Component {
           if (route.name) {
             menuButton = (
             <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
-              <Text style={styles.menu}>MENU</Text>
+              <Icon name="bars" style={styles.menuIcon} size={30} color="#48BBEC" />
             </TouchableHighlight>
             );
           } else {

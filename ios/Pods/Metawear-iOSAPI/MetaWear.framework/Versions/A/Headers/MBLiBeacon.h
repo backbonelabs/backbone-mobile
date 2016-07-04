@@ -62,39 +62,43 @@ typedef NS_ENUM(uint8_t, MBLiBeaconTransmitPower) {
 /**
  The iBeacon UUID being broadcast, the default is the MetaWear Service UUID
  */
-@property (nonatomic) CBUUID *uuid;
+- (CBUUID *)uuid;
+- (BFTask *)setUuid:(CBUUID *)uuid;
 /**
  The iBeacon major value being broadcast, the default is 0x0000
  */
-@property (nonatomic) uint16_t major;
+- (uint16_t)major;
+- (BFTask *)setMajor:(uint16_t)major;
 /**
  The iBeacon minor value being broadcast, the default is 0x0000
  */
-@property (nonatomic) uint16_t minor;
+- (uint16_t)minor;
+- (BFTask *)setMinor:(uint16_t)minor;
 
 /**
  Calibrated RX power in dBm. This represents the approximate RSSI value seen 
  by the reciever when 1 meter away from the iBeacon, default is -55 dBm.
  Valid range is [-10, -128].
  */
-@property (nonatomic) int8_t calibratedReceiverPower;
+- (int8_t)calibratedReceiverPower;
+- (BFTask *)setCalibratedReceiverPower:(int8_t)calibratedReceiverPower;
 /**
  iBeacon transmit power.  Setting a smaller (lower dBm) value will result in 
  a smaller beacon discovery radius, default is MBLiBeaconTransmitPower0dBm.
  You should adjust calibratedReceiverPower when changing transmitPower.
  */
-@property (nonatomic) MBLiBeaconTransmitPower transmitPower;
+- (MBLiBeaconTransmitPower)transmitPower;
+- (BFTask *)setTransmitPower:(MBLiBeaconTransmitPower)transmitPower;
 
 /**
  Advertisement frequency in ms, default is 100 ms.
  Valid range is [20, 10,240]
  */
-@property (nonatomic) uint16_t frequency;
+- (uint16_t)frequency;
+- (BFTask *)setFrequency:(uint16_t)frequency;
 
 /**
- Change iBeacon state to on or off. Please set any configuration properties
- before calling this method, setting properties after this call will have
- no effect until setBeaconOn: is called again.  
+ Change iBeacon state to on or off.
  @warning The beacon will only be visible after you disconnect
  @param on YES turns iBeacon on, NO, turns iBeacon off
  */

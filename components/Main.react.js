@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import Posture from './Posture.react';
 
 import {
   View,
-  Text,
 } from 'react-native';
 
 class Main extends Component {
@@ -18,9 +18,7 @@ class Main extends Component {
   render() {
     return (
       <View>
-        <Text>
-          Main
-        </Text>
+        <Posture />
       </View>
     );
   }

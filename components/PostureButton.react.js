@@ -8,7 +8,7 @@ import {
 
 const styles = StyleSheet.create({
   button: {
-    height: 50,
+    height: 75,
     width: 300,
     marginLeft: 10,
     marginRight: 10,
