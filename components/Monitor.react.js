@@ -3,16 +3,18 @@ import * as Progress from 'react-native-progress';
 import PostureButton from './PostureButton.react';
 
 import {
-  Text,
   View,
   StyleSheet,
 } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 35,
+    marginTop: 125,
     alignItems: 'center',
     flexDirection: 'column',
+  },
+  progressCircle: {
+    marginBottom: 35,
   },
 });
 
@@ -43,9 +45,16 @@ class MonitorView extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>
-          Posture
-        </Text>
+        <Progress.Circle
+          size={300}
+          thickness={30}
+          borderWidth={0}
+          progress={0.75}
+          color={'#48BBEC'}
+          unfilledColor={'#f86c41'}
+          style={styles.progressCircle}
+          direction={'counter-clockwise'}
+        />
         {this.state.monitoring ?
           <PostureButton
             iconName={'pause'}
