@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Main from './Main.react';
+import logo from '../images/logo.png';
 
 import {
   View,
@@ -12,7 +13,6 @@ import {
 } from 'react-native';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
-const logo = require('../images/logo.png');
 
 const styles = StyleSheet.create({
   container: {
