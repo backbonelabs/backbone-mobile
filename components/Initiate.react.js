@@ -51,8 +51,6 @@ class Initiate extends Component {
 
     this.cycleAnimation = this.cycleAnimation.bind(this);
     this.initiateConnect = this.initiateConnect.bind(this);
-    this.start = this.start.bind(this);
-    this.stop = this.stop.bind(this);
   }
 
   cycleAnimation() {
@@ -74,14 +72,6 @@ class Initiate extends Component {
     });
   }
 
-  start() {
-    MetaWearAPI.startPostureMonitoring();
-  }
-
-  stop() {
-    MetaWearAPI.stopPostureMonitoring();
-  }
-
   initiateConnect() {
     this.cycleAnimation();
 
@@ -91,6 +81,7 @@ class Initiate extends Component {
       }, () => {
         this.props.navigator.push({
           component: Main,
+          passProps: { MetaWearAPI },
         });
       });
     });
