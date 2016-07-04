@@ -10,5 +10,7 @@
   @property float controlAngle;
   @property float currentAngle;
   @property float tilt;
-  - (void) connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
+- (void) connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
+- (void) handleTilt;
+- (void) tiltEventEmitter;
 @end

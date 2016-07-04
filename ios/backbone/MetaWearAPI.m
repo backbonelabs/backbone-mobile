@@ -65,6 +65,7 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
       self.tilt = self.currentAngle - self.controlAngle;
     }
     [self handleTilt];
+    [self tiltEventEmitter];
     NSLog(@"Tilt is: %f", self.tilt);
   }];
 }
@@ -77,6 +78,10 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
   if (self.tilt > 10) {
     [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:5];
   }
+}
+
+- (void) tiltEventEmitter {
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Tilt" body: @{@"tilt": [NSNumber numberWithFloat:self.tilt]}];
 }
 
 //RCT_EXPORT_METHOD(startPostureMonitoring) {
