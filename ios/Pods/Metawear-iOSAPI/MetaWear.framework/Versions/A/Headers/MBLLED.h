@@ -120,6 +120,12 @@ typedef NS_ENUM(uint8_t, MBLLEDColorChannel) {
  */
 - (BFTask *)setLEDOnAsync:(BOOL)on withOptions:(uint8_t)mode;
 
+/**
+ Certain hardware has additional modes for advanced features
+ @param data Bytes to write to the secondary mode register
+ */
+- (BFTask *)writeSecondaryMode:(NSData *)data;
+
 @end
 
 NS_ASSUME_NONNULL_END

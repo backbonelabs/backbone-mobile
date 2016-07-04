@@ -79,7 +79,8 @@ typedef NS_ENUM(uint8_t, MBLArithmeticOperation) {
 typedef NS_ENUM(uint8_t, MBLPulseOutput) {
     MBLPulseOutputWidth = 0,
     MBLPulseOutputArea = 1,
-    MBLPulseOutputPeak = 2
+    MBLPulseOutputPeak = 2,
+    MBLPulseOutputOnDetection = 3
 };
 
 /**

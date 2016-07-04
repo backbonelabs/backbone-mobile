@@ -1,7 +1,7 @@
 PODS:
   - Bolts/Tasks (1.7.0)
   - FastCoding (3.2.1)
-  - Metawear-iOSAPI (2.5.0):
+  - Metawear-iOSAPI (2.5.1):
     - Bolts/Tasks (~> 1.7)
     - FastCoding (~> 3.2.1)
 
@@ -11,8 +11,8 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
   FastCoding: ed46c83ba23d048aafa0251972a1e1fc1cfc58ed
-  Metawear-iOSAPI: b3bccdc41920087e9d9d2f43a7bddab076e32576
+  Metawear-iOSAPI: 580147c1f82afd1bbb8fedad7fd49c9180baa94e
 
-PODFILE CHECKSUM: 8adc746dbcf960193032d085ec178f7ed8e6d6ca
+PODFILE CHECKSUM: 1fdbb8b00829b27977a3573e277b5fae8ef18ac6
 
 COCOAPODS: 1.0.1
