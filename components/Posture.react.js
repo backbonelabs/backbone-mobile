@@ -33,38 +33,22 @@ class Posture extends Component {
     this.startPostureMonitoring = this.startPostureMonitoring.bind(this);
     this.stopPostureMonitoring = this.stopPostureMonitoring.bind(this);
     this.beginCalibrate = this.beginCalibrate.bind(this);
-    this.listenToSlouchEvent = null;
-    this.listenToSlouchTime = null;
-    this.listenToPostureTime = null;
+    this.listenToTilt = null;
   }
 
   componentWillMount() {
     const context = this;
 
-    this.listenToSlouchEvent = NativeAppEventEmitter.addListener(
-      'SlouchEvent', (event) => {
+    this.listenToTilt = NativeAppEventEmitter.addListener(
+      'Tilt', (event) => {
         Vibration.vibrate();
         context.setState({ slouches: event.slouch });
-      }
-    );
-
-    this.listenToSlouchTime = NativeAppEventEmitter.addListener(
-      'SlouchTime', (event) => {
-        context.setState({ slouchTime: event.time });
-      }
-    );
-
-    this.listenToPostureTime = NativeAppEventEmitter.addListener(
-      'PostureTime', (event) => {
-        context.setState({ postureTime: event.time });
       }
     );
   }
 
   componentWillUnmount() {
-    this.listenToSlouchEvent.remove();
-    this.listenToSlouchTime.remove();
-    this.listenToPostureTime.remove();
+    this.listenToTilt.remove();
   }
 
   startPostureMonitoring() {
