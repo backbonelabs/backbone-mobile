@@ -25,6 +25,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		448FCF891D2305180082FB11 /* MetaWearAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 448FCF881D2305180082FB11 /* MetaWearAPI.m */; };
 		44970BBB1D2AC74B00351480 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44970BB01D2AC74400351480 /* libART.a */; };
+		449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		F1639F5806EEEA0010F2E721 /* libPods-backbone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F234579A5E10506AFD7A9FBB /* libPods-backbone.a */; };
 /* End PBXBuildFile section */
@@ -140,6 +141,7 @@
 		448FCF871D2305180082FB11 /* MetaWearAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MetaWearAPI.h; path = backbone/MetaWearAPI.h; sourceTree = "<group>"; };
 		448FCF881D2305180082FB11 /* MetaWearAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetaWearAPI.m; path = backbone/MetaWearAPI.m; sourceTree = "<group>"; };
 		44970BAB1D2AC74400351480 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
+		449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		9A39265F3B564AAC20C42E22 /* Pods-backboneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-backboneTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-backboneTests/Pods-backboneTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -293,6 +295,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		449AD4C31D2ACD47004919E0 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -330,6 +340,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				449AD4C31D2ACD47004919E0 /* Icons */,
 				448FCF871D2305180082FB11 /* MetaWearAPI.h */,
 				448FCF881D2305180082FB11 /* MetaWearAPI.m */,
 				13B07FAE1A68108700A75B9A /* backbone */,
@@ -589,6 +600,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
