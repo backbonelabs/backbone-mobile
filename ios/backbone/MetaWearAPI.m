@@ -10,9 +10,9 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
-  
+
   self.manager = [MBLMetaWearManager sharedManager];
-  
+
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
       MBLMetaWear *device = task.result[0];
@@ -21,7 +21,7 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
     } else {
       [self.manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
         self.device = 0;
-        
+
         for (MBLMetaWear *device in array) {
           if (!self.device || self.device.discoveryTimeRSSI.integerValue > device.discoveryTimeRSSI.integerValue) {
             self.device = device;
@@ -47,9 +47,9 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(startPostureMonitoring) {
   self.accelerometer = (MBLAccelerometerMMA8452Q *)self.device.accelerometer;
   self.accelerometer.sampleFrequency = 1.56;
-  
+
   self.calibrated = false;
-  
+
   [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
       self.currentAngle = RADIANS_TO_DEGREES(atan(obj.z / obj.x));
     if (!self.calibrated) {
