@@ -56,6 +56,10 @@ class Initiate extends Component {
     this.buttonEnterAnimation = this.buttonEnterAnimation.bind(this);
   }
 
+  componentDidMount() {
+    this.buttonEnterAnimation();
+  }
+
   initiateConnect() {
     this.connectAnimation();
 
@@ -100,7 +104,6 @@ class Initiate extends Component {
   }
 
   render() {
-    this.buttonEnterAnimation();
     const logoDimensions = {
       height: this.state.logoAnim,
       width: this.state.logoAnim,
