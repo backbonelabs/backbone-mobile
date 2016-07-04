@@ -23,9 +23,7 @@ class Posture extends Component {
   constructor() {
     super();
     this.state = {
-      postureTime: 0,
-      slouchTime: 0,
-      slouches: 0,
+      tilt: 0,
       calibrating: false,
       monitoring: false,
     };
@@ -41,8 +39,9 @@ class Posture extends Component {
 
     this.listenToTilt = NativeAppEventEmitter.addListener(
       'Tilt', (event) => {
-        Vibration.vibrate();
-        context.setState({ slouches: event.slouch });
+        // Vibration.vibrate();
+        console.log('Tilt is: ', event.tilt);
+        context.setState({ tilt: event.tilt });
       }
     );
   }
@@ -80,11 +79,11 @@ class Posture extends Component {
         {this.state.calibrating ?
           <Calibrate startPostureMonitoring={this.startPostureMonitoring} /> :
           <Monitor
+            begin={this.beginCalibrate}
             start={this.startPostureMonitoring}
             stop={this.stopPostureMonitoring}
-            slouches={this.state.slouches}
-            slouchTime={this.state.slouchTime}
-            postureTime={this.state.postureTime}
+            tilt={this.state.tilt}
+            monitoring={this.state.monitoring}
           />
         }
       </View>

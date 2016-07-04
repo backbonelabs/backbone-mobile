@@ -23,10 +23,6 @@ class MonitorView extends Component {
   constructor() {
     super();
 
-    this.state = {
-      monitoring: false,
-    };
-
     this.convertTotalTime = this.convertTotalTime.bind(this);
   }
 
@@ -44,19 +40,20 @@ class MonitorView extends Component {
   }
 
   render() {
+    console.log('Props Tilt: ', (180 - this.props.tilt) / 180);
     return (
       <View style={styles.container}>
         <Progress.Circle
           size={300}
           thickness={30}
           borderWidth={0}
-          progress={0.75}
+          progress={((180 - this.props.tilt) / 180) + 0.0001}
           color={'#48BBEC'}
           unfilledColor={'#f86c41'}
           style={styles.progressCircle}
           direction={'counter-clockwise'}
         />
-        {this.state.monitoring ?
+        {this.props.monitoring ?
           <PostureButton
             iconName={'pause'}
             buttonText={'STOP'}
@@ -65,7 +62,7 @@ class MonitorView extends Component {
           /> :
           <PostureButton
             colorStyle={{ backgroundColor: '#48BBEC' }}
-            onPress={this.beginCalibrate}
+            onPress={this.props.start}
             buttonText={'START'}
           />
         }
@@ -75,6 +72,11 @@ class MonitorView extends Component {
 }
 
 MonitorView.propTypes = {
+  begin: React.PropTypes.func,
+  start: React.PropTypes.func,
+  stop: React.PropTypes.func,
+  tilt: React.PropTypes.number,
+  monitoring: React.PropTypes.bool,
   slouches: React.PropTypes.number,
   slouchTime: React.PropTypes.number,
   postureTime: React.PropTypes.number,
