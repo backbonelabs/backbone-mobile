@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   button: {
     height: 75,
     width: 275,
-    marginTop: 50,
+    marginTop: 150,
     borderRadius: 4,
     justifyContent: 'center',
     backgroundColor: '#48BBEC',
@@ -46,34 +46,24 @@ class Initiate extends Component {
 
     this.state = {
       connected: false,
-      fadeAnim: new Animated.Value(1),
+      logoAnimValue: 300,
+      logoAnim: new Animated.Value(300),
+      buttonAnim: new Animated.ValueXY(),
     };
 
-    this.cycleAnimation = this.cycleAnimation.bind(this);
     this.initiateConnect = this.initiateConnect.bind(this);
-  }
-
-  cycleAnimation() {
-    const context = this;
-
-    Animated.sequence([
-      Animated.delay(200),
-      Animated.timing(
-      context.state.fadeAnim,
-      { toValue: 0 }),
-      Animated.delay(200),
-      Animated.timing(
-      context.state.fadeAnim,
-      { toValue: 1 }),
-    ]).start(() => {
-      if (!context.state.connected) {
-        context.cycleAnimation();
-      }
-    });
+    this.connectAnimation = this.connectAnimation.bind(this);
+    this.buttonEnterAnimation = this.buttonEnterAnimation.bind(this);
   }
 
   initiateConnect() {
-    this.cycleAnimation();
+    this.connectAnimation();
+
+    this.state.logoAnim.addListener((value) => {
+      this.setState({
+        logoAnimValue: value.value,
+      });
+    });
 
     MetaWearAPI.searchForMetaWear(() => {
       this.setState({
@@ -88,13 +78,42 @@ class Initiate extends Component {
     });
   }
 
+  connectAnimation() {
+    const context = this;
+
+    Animated.sequence([
+      Animated.delay(200),
+      Animated.timing(
+      context.state.logoAnim,
+      { toValue: 0 }),
+    ]).start();
+  }
+
+  buttonEnterAnimation() {
+    Animated.sequence([
+      Animated.spring(this.state.buttonAnim, {
+        tension: 5,
+        friction: 2,
+        toValue: { x: 0, y: -110 },
+      }),
+    ]).start();
+  }
+
   render() {
+    this.buttonEnterAnimation();
+    const logoDimensions = {
+      height: this.state.logoAnim,
+      width: this.state.logoAnim,
+      marginTop: 300 - this.state.logoAnim,
+    };
     return (
       <View style={styles.container}>
-        <Animated.Image style={[styles.logo, { opacity: this.state.fadeAnim }]} source={logo} />
-        <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
-          <Text style={styles.buttonText}>CONNECT</Text>
-        </TouchableHighlight>
+        <Animated.Image style={logoDimensions} source={logo} />
+        <Animated.View style={{ transform: this.state.buttonAnim.getTranslateTransform() }}>
+          <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
+            <Text style={styles.buttonText}>CONNECT</Text>
+          </TouchableHighlight>
+        </Animated.View>
       </View>
     );
   }
