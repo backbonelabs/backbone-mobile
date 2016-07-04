@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as Progress from 'react-native-progress';
 import PostureButton from './PostureButton.react';
 
 import {

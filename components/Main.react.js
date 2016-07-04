@@ -3,7 +3,6 @@ import Posture from './Posture.react';
 
 import {
   View,
-  Text,
 } from 'react-native';
 
 class Main extends Component {
