@@ -17,7 +17,7 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
     if ([task.result count]) {
       MBLMetaWear *device = task.result[0];
       self.device = device;
-      [self connectToMetaWear:self.device:callback];
+      [self connectToMetaWear:callback];
     } else {
       [self scanForMetaWear:callback];
     }
@@ -39,7 +39,7 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
   }];
 }
 
-- (void)connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
+- (void)connectToMetaWear : (RCTResponseSenderBlock)callback {
   [self.manager stopScanForMetaWears];
   [self.device connectWithHandler:^(NSError *error) {
     if (self.device.state == MBLConnectionStateConnected) {
