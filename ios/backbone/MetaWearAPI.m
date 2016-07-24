@@ -19,19 +19,23 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
       self.device = device;
       [self connectToMetaWear:self.device:callback];
     } else {
-      [self.manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
-        self.device = 0;
-
-        for (MBLMetaWear *device in array) {
-          if (!self.device || self.device.discoveryTimeRSSI.integerValue > device.discoveryTimeRSSI.integerValue) {
-            self.device = device;
-          }
-        }
-        [self connectToMetaWear:self.device:callback];
-        [self.device rememberDevice];
-      }];
+      [self scanForMetaWear:callback];
     }
     return nil;
+  }];
+}
+
+- (void)scanForMetaWear : (RCTResponseSenderBlock)callback {
+  [self.manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
+    self.device = 0;
+    
+    for (MBLMetaWear *device in array) {
+      if (!self.device || self.device.discoveryTimeRSSI.integerValue > device.discoveryTimeRSSI.integerValue) {
+        self.device = device;
+      }
+    }
+    [self connectToMetaWear:self.device:callback];
+    [self.device rememberDevice];
   }];
 }
 
