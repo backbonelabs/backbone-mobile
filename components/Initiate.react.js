@@ -69,7 +69,7 @@ class Initiate extends Component {
       });
     });
 
-    MetaWearAPI.searchForMetaWear(() => {
+    MetaWearAPI.initiateConnection(() => {
       this.setState({
         connected: true,
       }, () => {

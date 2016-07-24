@@ -1,6 +1,5 @@
 #import "MetaWearAPI.h"
 #import "RCTBridge.h"
-#import "RCTEventDispatcher.h"
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 
 @implementation MetaWearAPI
@@ -9,8 +8,11 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"Tilt"];
+}
 
+RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
   self.manager = [MBLMetaWearManager sharedManager];
 
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
@@ -25,7 +27,7 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
   }];
 }
 
-- (void)scanForMetaWear : (RCTResponseSenderBlock)callback {
+- (void)scanForMetaWear :(RCTResponseSenderBlock)callback {
   [self.manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
     self.device = 0;
     
@@ -34,12 +36,12 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
         self.device = device;
       }
     }
-    [self connectToMetaWear:self.device:callback];
+    [self connectToMetaWear:callback];
     [self.device rememberDevice];
   }];
 }
 
-- (void)connectToMetaWear : (RCTResponseSenderBlock)callback {
+- (void)connectToMetaWear :(RCTResponseSenderBlock)callback {
   [self.manager stopScanForMetaWears];
   [self.device connectWithHandler:^(NSError *error) {
     if (self.device.state == MBLConnectionStateConnected) {
@@ -86,7 +88,7 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
 }
 
 - (void) tiltEventEmitter {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"Tilt" body: @{@"tilt": [NSNumber numberWithFloat:self.tilt]}];
+  [self sendEventWithName:@"Tilt" body:[NSNumber numberWithFloat:self.tilt]];
 }
 
 //RCT_EXPORT_METHOD(startPostureMonitoring) {
