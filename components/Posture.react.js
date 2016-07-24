@@ -4,7 +4,6 @@ import Calibrate from './Calibrate.react';
 
 import {
   View,
-  Vibration,
   StyleSheet,
   NativeModules,
   NativeAppEventEmitter,
