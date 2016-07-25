@@ -8,10 +8,14 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
   self.manager = [MBLMetaWearManager sharedManager];
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    if (![task.result count]) {
+    if ([task.result count]) {
       MBLMetaWear *device = task.result[0];
-      self.device = device;
-      [self connectToMetaWear:nil reactCallback:callback];
+      [device connectWithHandler:^(NSError *error) {
+        if (device.state == MBLConnectionStateConnected) {
+          [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+          callback(@[[NSNull null], @YES]);
+        }
+      }];
     } else {
       [self scanForMetaWear];
     }
