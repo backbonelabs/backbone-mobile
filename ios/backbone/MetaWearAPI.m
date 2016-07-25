@@ -13,48 +13,49 @@ RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
       self.device = device;
       [self connectToMetaWear:nil reactCallback:callback];
     } else {
-      [self scanForMetaWear:callback];
+      [self scanForMetaWear];
     }
     return nil;
   }];
 }
 
-- (void)scanForMetaWear:(RCTResponseSenderBlock)callback {
+- (void)scanForMetaWear {
+  self.deviceCollection = [[NSMutableDictionary alloc]initWithCapacity:10];
   [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray * _Nonnull array) {
-    NSMutableArray *deviceCollection = [NSMutableArray new];
+    NSMutableArray *deviceDetailsCollection = [NSMutableArray new];
     for (MBLMetaWear *device in array) {
       NSString *idString = [device.identifier UUIDString];
-      self.deviceCollection = @{idString: device};
+      self.deviceCollection[idString] = device;
       NSDictionary *deviceDetails = @{
                                       @"name": device.name,
                                       @"RSSI": device.discoveryTimeRSSI,
                                       @"id": idString
                                       };
-      [deviceCollection addObject:deviceDetails];
+      [deviceDetailsCollection addObject:deviceDetails];
     }
-    [self scanEventEmitter:deviceCollection];
+    [self scanEventEmitter:deviceDetailsCollection];
   }];
 }
 
 RCT_EXPORT_METHOD(connectToMetaWear:(NSString *)deviceID reactCallback:(RCTResponseSenderBlock)callback) {
   [self.manager stopScanForMetaWears];
-  MBLMetaWear *selectedDevice = self.deviceCollection[deviceID];
-  [selectedDevice connectWithHandler:^(NSError *error) {
-    if (selectedDevice.state == MBLConnectionStateConnected) {
-      [selectedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+  self.device = self.deviceCollection[deviceID];
+  [self.device connectWithHandler:^(NSError *error) {
+    if (self.device.state == MBLConnectionStateConnected) {
+      [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
     }
   }];
 }
 
 RCT_EXPORT_METHOD(startPostureMonitoring) {
-  self.accelerometer = (MBLAccelerometerMMA8452Q *)self.device.accelerometer;
+  self.accelerometer = (MBLAccelerometer *)self.device.accelerometer;
   self.accelerometer.sampleFrequency = 1.56;
 
   self.calibrated = false;
 
   [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
-      self.currentAngle = RADIANS_TO_DEGREES(atan(obj.z / obj.x));
+    self.currentAngle = RADIANS_TO_DEGREES(atan(obj.z / obj.x));
     if (!self.calibrated) {
       float xControl = obj.x;
       float zControl = obj.z;
@@ -78,8 +79,8 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
 }
 
 - (void) handleTilt {
-  if (self.tilt > 10) {
-    [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:5];
+  if (self.tilt > 20) {
+    [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
   }
 }
 

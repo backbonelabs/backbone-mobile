@@ -60,7 +60,6 @@ class Initiate extends Component {
 
     this.state = {
       devices: false,
-      connected: false,
       dataSource: null,
       logoAnimValue: 300,
       logoAnim: new Animated.Value(300),
@@ -71,6 +70,7 @@ class Initiate extends Component {
     this.connectAnimation = this.connectAnimation.bind(this);
     this.buttonEnterAnimation = this.buttonEnterAnimation.bind(this);
     this.renderRowData = this.renderRowData.bind(this);
+    this.metaWearCallback = this.metaWearCallback.bind(this);
   }
 
   componentDidMount() {
@@ -79,6 +79,8 @@ class Initiate extends Component {
 
   initiateConnect() {
     this.connectAnimation();
+    const listenToDevices = new NativeEventEmitter(NativeModules.MetaWearAPI);
+    MetaWearAPI.initiateConnection(this.metaWearCallback);
     this.state.buttonAnim.addListener((value) => {
       if (value.y === -225) {
         this.setState({
@@ -87,27 +89,12 @@ class Initiate extends Component {
       }
     });
 
-    Animated.sequence([
-      Animated.spring(this.state.buttonAnim, {
-        tension: 5,
-        friction: 2,
-        toValue: { x: 0, y: -225 },
-      }),
-    ]).start();
-
-    MetaWearAPI.initiateConnection(() => {
-
-    });
-
-    const listenToDevices = new NativeEventEmitter(NativeModules.MetaWearAPI);
-    
     listenToDevices.addListener('Scan', (collection) => {
-        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        this.setState({
-          dataSource: ds.cloneWithRows(collection),
-        });
-      }
-    );
+      const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.setState({
+        dataSource: ds.cloneWithRows(collection),
+      });
+    });
   }
 
   connectAnimation() {
@@ -117,6 +104,14 @@ class Initiate extends Component {
       Animated.timing(
       context.state.logoAnim,
       { toValue: 0 }),
+    ]).start();
+
+    Animated.sequence([
+      Animated.spring(this.state.buttonAnim, {
+        tension: 5,
+        friction: 2,
+        toValue: { x: 0, y: -225 },
+      }),
     ]).start();
   }
 
@@ -130,24 +125,28 @@ class Initiate extends Component {
     ]).start();
   }
 
-  connectToMetaWear(id) {
-    console.log('PRESSED!');
-    MetaWearAPI.connectToMetaWear(id, () => {
-      console.log('CONNECTED!');
+  metaWearCallback() {
+    this.props.navigator.push({
+      name: 'main',
+      component: Main,
+      passProps: { MetaWearAPI },
     });
   }
 
-  renderRowData(rowData, sectionID, rowID, highlightRow) {
+  connectToMetaWear(id) {
+    MetaWearAPI.connectToMetaWear(id, this.metaWearCallback);
+  }
+
+  renderRowData(rowData) {
     return (
-      <TouchableHighlight onPress={() => {
-          this.connectToMetaWear(rowData.id)
-        }}>
-      <View style={styles.listItem}>
-        <Text style={styles.listItemText}>Name: {rowData.name}</Text>
-        <Text style={styles.listItemText}>RSSI: {rowData.RSSI}</Text>
-        <Text style={styles.listItemText}>Identifier: {rowData.id}</Text>
-      </View>
-      </TouchableHighlight>);
+      <TouchableHighlight onPress={() => { this.connectToMetaWear(rowData.id); }}>
+        <View style={styles.listItem}>
+          <Text style={styles.listItemText}>Name: {rowData.name}</Text>
+          <Text style={styles.listItemText}>RSSI: {rowData.RSSI}</Text>
+          <Text style={styles.listItemText}>Identifier: {rowData.id}</Text>
+        </View>
+      </TouchableHighlight>
+    );
   }
 
   render() {
@@ -164,12 +163,12 @@ class Initiate extends Component {
             <Text style={styles.buttonText}>CONNECT</Text>
           </TouchableHighlight>
         </Animated.View>
-        { this.state.devices ? 
+        {this.state.devices ?
           <ListView
             style={styles.list}
             dataSource={this.state.dataSource}
             renderRow={this.renderRowData}
-          /> : 
+          /> :
           <View />
         }
       </View>
