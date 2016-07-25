@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import {
-	TouchableHighlight,
-	StyleSheet,
+  TouchableHighlight,
+  StyleSheet,
   Text,
 } from 'react-native';
 
@@ -23,17 +23,13 @@ const styles = StyleSheet.create({
   },
 });
 
-class PostureButtonView extends Component {
-  render() {
-    return (
-			<TouchableHighlight style={[styles.button, this.props.colorStyle]} onPress={this.props.onPress}>
-        <Text style={styles.buttonText}>
-          {this.props.buttonText}
-        </Text>
-			</TouchableHighlight>
-		);
-  }
-}
+const PostureButtonView = (props) => (
+  <TouchableHighlight style={[styles.button, props.colorStyle]} onPress={props.onPress}>
+    <Text style={styles.buttonText}>
+      {props.buttonText}
+    </Text>
+  </TouchableHighlight>
+);
 
 PostureButtonView.propTypes = {
   colorStyle: React.PropTypes.object,

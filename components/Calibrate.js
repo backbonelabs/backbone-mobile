@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Progress from 'react-native-progress';
 import TimerMixin from 'react-timer-mixin';
+import circle from '../images/circle.png';
 
 import {
   StyleSheet,
@@ -104,7 +105,7 @@ class CalibrateView extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image style={styles.circle} source={require('../images/circle.png')} />
+        <Image style={styles.circle} source={circle} />
         <Progress.Circle
           style={styles.progressPie}
           color="#48BBEC"

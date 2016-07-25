@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import Menu from './components/Menu.react';
-import Initiate from './components/Initiate.react';
+import Menu from './components/Menu';
+import Initiate from './components/Initiate';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
-  Text,
   View,
   StatusBar,
   Navigator,
@@ -40,18 +39,18 @@ class backbone extends Component {
     const context = this;
 
     this.navigationBarRouteMapper = {
-      LeftButton(route, navigator, index, navState) {
+      LeftButton() {
       },
-      RightButton(route, navigator, index, navState) {
+      RightButton() {
       },
       Title(route, navigator) {
         if (route.name !== 'menu') {
           let menuButton = null;
           if (route.name) {
             menuButton = (
-            <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
-              <Icon name="bars" style={styles.menuIcon} size={30} color="#48BBEC" />
-            </TouchableHighlight>
+              <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
+                <Icon name="bars" style={styles.menuIcon} size={30} color="#48BBEC" />
+              </TouchableHighlight>
             );
           } else {
             menuButton = <View />;
@@ -59,7 +58,7 @@ class backbone extends Component {
           return (
             <View style={styles.container}>
               <View style={styles.statusBar} />
-              { menuButton }
+              {menuButton}
             </View>
           );
         }
