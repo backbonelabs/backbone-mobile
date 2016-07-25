@@ -11,7 +11,7 @@ RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
     if (![task.result count]) {
       MBLMetaWear *device = task.result[0];
       self.device = device;
-      [self connectToMetaWear:callback];
+      [self connectToMetaWear:nil reactCallback:callback];
     } else {
       [self scanForMetaWear:callback];
     }
@@ -21,21 +21,27 @@ RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
 
 - (void)scanForMetaWear:(RCTResponseSenderBlock)callback {
   [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray * _Nonnull array) {
-    self.collection = [NSMutableArray new];
+    NSMutableArray *deviceCollection = [NSMutableArray new];
     for (MBLMetaWear *device in array) {
       NSString *idString = [device.identifier UUIDString];
-      NSArray *details = @[device.name, device.discoveryTimeRSSI, idString];
-      [self.collection addObject:details];
+      self.deviceCollection = @{idString: device};
+      NSDictionary *deviceDetails = @{
+                                      @"name": device.name,
+                                      @"RSSI": device.discoveryTimeRSSI,
+                                      @"id": idString
+                                      };
+      [deviceCollection addObject:deviceDetails];
     }
-    [self scanEventEmitter:self.collection];
+    [self scanEventEmitter:deviceCollection];
   }];
 }
 
-- (void)connectToMetaWear:(RCTResponseSenderBlock)callback {
+RCT_EXPORT_METHOD(connectToMetaWear:(NSString *)deviceID reactCallback:(RCTResponseSenderBlock)callback) {
   [self.manager stopScanForMetaWears];
-  [self.device connectWithHandler:^(NSError *error) {
-    if (self.device.state == MBLConnectionStateConnected) {
-      [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+  MBLMetaWear *selectedDevice = self.deviceCollection[deviceID];
+  [selectedDevice connectWithHandler:^(NSError *error) {
+    if (selectedDevice.state == MBLConnectionStateConnected) {
+      [selectedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
     }
   }];

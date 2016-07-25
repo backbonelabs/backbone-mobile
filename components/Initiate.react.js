@@ -41,11 +41,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   list: {
-    marginTop: -175,
+    marginTop: -200,
   },
   listItem: {
     paddingTop: 10,
-    paddingBottom: 10,
+    paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: 'black',
   },
@@ -131,16 +131,23 @@ class Initiate extends Component {
   }
 
   connectToMetaWear(id) {
-    MetaWearAPI.connectToMetaWear(id);
+    console.log('PRESSED!');
+    MetaWearAPI.connectToMetaWear(id, () => {
+      console.log('CONNECTED!');
+    });
   }
 
   renderRowData(rowData, sectionID, rowID, highlightRow) {
     return (
-      <View style={styles.listItem} onPress={() => { this.connectToMetaWear(rowData[2]) }}>
-        <Text style={styles.listItemText}>Name: {rowData[0]}</Text>
-        <Text style={styles.listItemText}>RSSI: {rowData[1]}</Text>
-        <Text style={styles.listItemText}>Identifier: {rowData[2]}</Text>
-      </View>);
+      <TouchableHighlight onPress={() => {
+          this.connectToMetaWear(rowData.id)
+        }}>
+      <View style={styles.listItem}>
+        <Text style={styles.listItemText}>Name: {rowData.name}</Text>
+        <Text style={styles.listItemText}>RSSI: {rowData.RSSI}</Text>
+        <Text style={styles.listItemText}>Identifier: {rowData.id}</Text>
+      </View>
+      </TouchableHighlight>);
   }
 
   render() {
