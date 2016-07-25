@@ -7,6 +7,7 @@ import {
   Text,
   Image,
   Animated,
+  ListView,
   StyleSheet,
   NativeModules,
   NativeEventEmitter,
@@ -39,6 +40,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
   },
+  list: {
+    marginTop: -175,
+  },
+  listItem: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  },
+  listItemText: {
+    fontSize: 12,
+  },
 });
 
 class Initiate extends Component {
@@ -46,7 +59,9 @@ class Initiate extends Component {
     super();
 
     this.state = {
+      devices: false,
       connected: false,
+      dataSource: null,
       logoAnimValue: 300,
       logoAnim: new Animated.Value(300),
       buttonAnim: new Animated.ValueXY(),
@@ -55,6 +70,7 @@ class Initiate extends Component {
     this.initiateConnect = this.initiateConnect.bind(this);
     this.connectAnimation = this.connectAnimation.bind(this);
     this.buttonEnterAnimation = this.buttonEnterAnimation.bind(this);
+    this.renderRowData = this.renderRowData.bind(this);
   }
 
   componentDidMount() {
@@ -63,27 +79,39 @@ class Initiate extends Component {
 
   initiateConnect() {
     this.connectAnimation();
-    this.state.logoAnim.addListener((value) => {
-      this.setState({
-        logoAnimValue: value.value,
-      });
+    this.state.buttonAnim.addListener((value) => {
+      if (value.y === -225) {
+        this.setState({
+          devices: true,
+        });
+      }
     });
 
+    Animated.sequence([
+      Animated.spring(this.state.buttonAnim, {
+        tension: 5,
+        friction: 2,
+        toValue: { x: 0, y: -225 },
+      }),
+    ]).start();
+
     MetaWearAPI.initiateConnection(() => {
-      console.log('callback');
+
     });
 
     const listenToDevices = new NativeEventEmitter(NativeModules.MetaWearAPI);
     
     listenToDevices.addListener('Scan', (collection) => {
-        
+        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        this.setState({
+          dataSource: ds.cloneWithRows(collection),
+        });
       }
     );
   }
 
   connectAnimation() {
     const context = this;
-
     Animated.sequence([
       Animated.delay(200),
       Animated.timing(
@@ -102,6 +130,19 @@ class Initiate extends Component {
     ]).start();
   }
 
+  connectToMetaWear(id) {
+    MetaWearAPI.connectToMetaWear(id);
+  }
+
+  renderRowData(rowData, sectionID, rowID, highlightRow) {
+    return (
+      <View style={styles.listItem} onPress={() => { this.connectToMetaWear(rowData[2]) }}>
+        <Text style={styles.listItemText}>Name: {rowData[0]}</Text>
+        <Text style={styles.listItemText}>RSSI: {rowData[1]}</Text>
+        <Text style={styles.listItemText}>Identifier: {rowData[2]}</Text>
+      </View>);
+  }
+
   render() {
     const logoDimensions = {
       height: this.state.logoAnim,
@@ -116,6 +157,14 @@ class Initiate extends Component {
             <Text style={styles.buttonText}>CONNECT</Text>
           </TouchableHighlight>
         </Animated.View>
+        { this.state.devices ? 
+          <ListView
+            style={styles.list}
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRowData}
+          /> : 
+          <View />
+        }
       </View>
     );
   }

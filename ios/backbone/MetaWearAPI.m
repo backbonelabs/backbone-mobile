@@ -21,12 +21,13 @@ RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
 
 - (void)scanForMetaWear:(RCTResponseSenderBlock)callback {
   [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray * _Nonnull array) {
-    NSMutableArray *collection = [NSMutableArray new];
+    self.collection = [NSMutableArray new];
     for (MBLMetaWear *device in array) {
-      NSArray *details = @[device.name, device.discoveryTimeRSSI];
-      [collection addObject:details];
+      NSString *idString = [device.identifier UUIDString];
+      NSArray *details = @[device.name, device.discoveryTimeRSSI, idString];
+      [self.collection addObject:details];
     }
-    [self scanEventEmitter:collection];
+    [self scanEventEmitter:self.collection];
   }];
 }
 
