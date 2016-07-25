@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Monitor from './Monitor.react';
-import Calibrate from './Calibrate.react';
+import Monitor from './Monitor';
+import Calibrate from './Calibrate';
 
 import {
   View,

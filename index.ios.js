@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Menu from './components/Menu.react';
-import Initiate from './components/Initiate.react';
+import Menu from './components/Menu';
+import Initiate from './components/Initiate';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
