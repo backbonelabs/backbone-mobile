@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Main from './Main.react';
+import Main from './Main';
 import logo from '../images/logo.png';
 
 import {

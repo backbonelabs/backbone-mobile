@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Posture from './Posture.react';
+import Posture from './Posture';
 
 import {
   View,

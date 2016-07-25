@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import TimerMixin from 'react-timer-mixin';
+import circle from '../images/circle.png';
 
 import {
   View,
   Text,
   Image,
-  Vibration,
+  // Vibration,
   StyleSheet,
   NativeModules,
-  NativeAppEventEmitter,
+  // NativeAppEventEmitter,
 } from 'react-native';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
@@ -79,28 +80,28 @@ class ActivityView extends Component {
   }
 
   componentWillMount() {
-    const context = this;
+    // const context = this;
 
     MetaWearAPI.startActivityTracking();
 
     this.startCountdown();
 
-    const listenToStepEvent = NativeAppEventEmitter.addListener('Step',
-    (steps) => {
-      context.setState({ steps: steps.step });
-    });
+    // const listenToStepEvent = NativeAppEventEmitter.addListener('Step',
+    // (steps) => {
+    //   context.setState({ steps: steps.step });
+    // });
 
-    const listenToActiveEvent = NativeAppEventEmitter.addListener('Active',
-    () => {
-      context.stopCountdown();
-      context.setState({ countdown: 1800000 });
-    });
+    // const listenToActiveEvent = NativeAppEventEmitter.addListener('Active',
+    // () => {
+    //   context.stopCountdown();
+    //   context.setState({ countdown: 1800000 });
+    // });
 
-    const listenToInactiveEvent = NativeAppEventEmitter.addListener('Inactive',
-    (poor) => {
-      Vibration.vibrate();
-      context.startCountdown();
-    });
+    // const listenToInactiveEvent = NativeAppEventEmitter.addListener('Inactive',
+    // (poor) => {
+    //   Vibration.vibrate();
+    //   context.startCountdown();
+    // });
   }
 
   startCountdown() {
@@ -142,18 +143,18 @@ class ActivityView extends Component {
           progress={(this.state.countdown + 0.01) / 1800000}
           size={300}
         />*/}
-        <Image style={styles.circle} source={require('../images/circle.png')} />
+        <Image style={styles.circle} source={circle} />
         <Text style={styles.stepsText}>
           STEP
         </Text>
         <Text style={styles.steps}>
-          { this.state.steps }
+          {this.state.steps}
         </Text>
         <Text style={styles.timerText}>
           TIME UNTIL BREAK
         </Text>
         <Text style={styles.timer}>
-          { this.convertTotalTime((this.state.countdown))}
+          {this.convertTotalTime((this.state.countdown))}
         </Text>
       </View>
     );
