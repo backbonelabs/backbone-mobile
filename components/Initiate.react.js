@@ -9,6 +9,7 @@ import {
   Animated,
   StyleSheet,
   NativeModules,
+  NativeEventEmitter,
   TouchableHighlight,
 } from 'react-native';
 
@@ -62,7 +63,6 @@ class Initiate extends Component {
 
   initiateConnect() {
     this.connectAnimation();
-
     this.state.logoAnim.addListener((value) => {
       this.setState({
         logoAnimValue: value.value,
@@ -70,16 +70,15 @@ class Initiate extends Component {
     });
 
     MetaWearAPI.initiateConnection(() => {
-      this.setState({
-        connected: true,
-      }, () => {
-        this.props.navigator.push({
-          name: 'main',
-          component: Main,
-          passProps: { MetaWearAPI },
-        });
-      });
+      console.log('callback');
     });
+
+    const listenToDevices = new NativeEventEmitter(NativeModules.MetaWearAPI);
+    
+    listenToDevices.addListener('Scan', (collection) => {
+        
+      }
+    );
   }
 
   connectAnimation() {

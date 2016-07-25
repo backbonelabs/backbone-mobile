@@ -14,4 +14,5 @@
 - (void) scanForMetaWear :(RCTResponseSenderBlock)callback;
 - (void) handleTilt;
 - (void) tiltEventEmitter;
+- (void) scanEventEmitter:(NSMutableArray *)collection;
 @end

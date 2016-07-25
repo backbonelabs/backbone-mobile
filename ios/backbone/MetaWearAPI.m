@@ -1,22 +1,14 @@
 #import "MetaWearAPI.h"
-#import "RCTBridge.h"
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 
 @implementation MetaWearAPI
 
-@synthesize bridge = _bridge;
-
 RCT_EXPORT_MODULE();
-
-- (NSArray<NSString *> *)supportedEvents {
-  return @[@"Tilt"];
-}
 
 RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
   self.manager = [MBLMetaWearManager sharedManager];
-
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    if ([task.result count]) {
+    if (![task.result count]) {
       MBLMetaWear *device = task.result[0];
       self.device = device;
       [self connectToMetaWear:callback];
@@ -27,21 +19,18 @@ RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
   }];
 }
 
-- (void)scanForMetaWear :(RCTResponseSenderBlock)callback {
-  [self.manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
-    self.device = 0;
-    
+- (void)scanForMetaWear:(RCTResponseSenderBlock)callback {
+  [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray * _Nonnull array) {
+    NSMutableArray *collection = [NSMutableArray new];
     for (MBLMetaWear *device in array) {
-      if (!self.device || self.device.discoveryTimeRSSI.integerValue > device.discoveryTimeRSSI.integerValue) {
-        self.device = device;
-      }
+      NSArray *details = @[device.name, device.discoveryTimeRSSI];
+      [collection addObject:details];
     }
-    [self connectToMetaWear:callback];
-    [self.device rememberDevice];
+    [self scanEventEmitter:collection];
   }];
 }
 
-- (void)connectToMetaWear :(RCTResponseSenderBlock)callback {
+- (void)connectToMetaWear:(RCTResponseSenderBlock)callback {
   [self.manager stopScanForMetaWears];
   [self.device connectWithHandler:^(NSError *error) {
     if (self.device.state == MBLConnectionStateConnected) {
@@ -87,8 +76,16 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
   }
 }
 
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"Tilt", @"Scan"];
+}
+
 - (void) tiltEventEmitter {
   [self sendEventWithName:@"Tilt" body:[NSNumber numberWithFloat:self.tilt]];
+}
+
+- (void) scanEventEmitter:(NSMutableArray *)collection {
+  [self sendEventWithName:@"Scan" body:collection];
 }
 
 //RCT_EXPORT_METHOD(startPostureMonitoring) {

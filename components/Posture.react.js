@@ -41,7 +41,6 @@ class Posture extends Component {
 
     this.listenToTilt = new NativeEventEmitter(NativeModules.MetaWearAPI);
     
-
     this.listenToTilt.addListener('Tilt', (event) => {
         let tiltDirection = 'forward';
         if (event.tilt < 0) {
