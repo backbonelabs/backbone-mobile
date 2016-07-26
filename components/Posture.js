@@ -35,8 +35,6 @@ class Posture extends Component {
   }
 
   componentWillMount() {
-    const context = this;
-
     this.listenToTilt = new NativeEventEmitter(NativeModules.MetaWearAPI);
 
     this.listenToTilt.addListener('Tilt', (event) => {
@@ -44,7 +42,7 @@ class Posture extends Component {
       if (event < 0) {
         tiltDirection = 'backward';
       }
-      context.setState({
+      this.setState({
         tiltDirection,
         tilt: Math.abs(event),
       });

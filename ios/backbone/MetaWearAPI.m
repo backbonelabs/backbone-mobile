@@ -8,7 +8,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(initiateConnection:(RCTResponseSenderBlock)callback) {
   self.manager = [MBLMetaWearManager sharedManager];
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    if ([task.result count]) {
+    if (![task.result count]) {
       MBLMetaWear *device = task.result[0];
       [device connectWithHandler:^(NSError *error) {
         if (device.state == MBLConnectionStateConnected) {
@@ -93,7 +93,7 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
 }
 
 - (void) tiltEventEmitter {
-  [self sendEventWithName:@"Tilt" body:[NSNumber numberWithFloat:self.tilt]];
+  [self sendEventWithName:@"Tilt" body:@{@"tilt":[NSNumber numberWithFloat:self.tilt]}];
 }
 
 - (void) scanEventEmitter:(NSMutableArray *)collection {
