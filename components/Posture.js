@@ -6,7 +6,7 @@ import {
   View,
   StyleSheet,
   NativeModules,
-  NativeAppEventEmitter,
+  NativeEventEmitter,
 } from 'react-native';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
@@ -35,20 +35,18 @@ class Posture extends Component {
   }
 
   componentWillMount() {
-    const context = this;
+    this.listenToTilt = new NativeEventEmitter(NativeModules.MetaWearAPI);
 
-    this.listenToTilt = NativeAppEventEmitter.addListener(
-      'Tilt', (event) => {
-        let tiltDirection = 'forward';
-        if (event.tilt < 0) {
-          tiltDirection = 'backward';
-        }
-        context.setState({
-          tiltDirection,
-          tilt: Math.abs(event.tilt),
-        });
+    this.listenToTilt.addListener('Tilt', (event) => {
+      let tiltDirection = 'forward';
+      if (event < 0) {
+        tiltDirection = 'backward';
       }
-    );
+      this.setState({
+        tiltDirection,
+        tilt: Math.abs(event),
+      });
+    });
   }
 
   componentWillUnmount() {
