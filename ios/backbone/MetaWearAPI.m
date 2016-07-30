@@ -46,7 +46,7 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(startPostureMonitoring) {
-  self.accelerometer = (MBLAccelerometerMMA8452Q *)self.device.accelerometer;
+  self.accelerometer = (MBLAccelerometer *)self.device.accelerometer;
   self.accelerometer.sampleFrequency = 1.56;
 
   self.calibrated = false;

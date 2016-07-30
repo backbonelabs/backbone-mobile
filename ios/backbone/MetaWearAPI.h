@@ -5,7 +5,7 @@
   @property (nonatomic, strong) RCTBridge *bridge;
   @property MBLMetaWear *device;
   @property MBLMetaWearManager * manager;
-  @property MBLAccelerometerMMA8452Q *accelerometer;
+  @property MBLAccelerometer *accelerometer;
   @property BOOL calibrated;
   @property float controlDistance;
   @property float currentDistance;
