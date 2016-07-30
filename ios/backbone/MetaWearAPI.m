@@ -1,7 +1,6 @@
 #import "MetaWearAPI.h"
 #import "RCTBridge.h"
 #import "RCTEventDispatcher.h"
-#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 
 @implementation MetaWearAPI
 
@@ -23,10 +22,12 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
         self.device = 0;
 
         for (MBLMetaWear *device in array) {
+          NSLog(@"device %@", device);
           if (!self.device || self.device.discoveryTimeRSSI.integerValue > device.discoveryTimeRSSI.integerValue) {
             self.device = device;
           }
         }
+        [self.manager stopScanForMetaWears];
         [self connectToMetaWear:self.device:callback];
         [self.device rememberDevice];
       }];
@@ -51,22 +52,16 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
   self.calibrated = false;
 
   [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
-      self.currentAngle = RADIANS_TO_DEGREES(atan(obj.z / obj.x));
+    self.currentDistance = sqrtf((pow(obj.z, 2) + pow(obj.y, 2)));
     if (!self.calibrated) {
-      float xControl = obj.x;
       float zControl = obj.z;
-      self.controlAngle = RADIANS_TO_DEGREES(atan(zControl / xControl));
+      float yControl = obj.y;
+      self.controlDistance = sqrtf((pow(zControl, 2) + pow(yControl, 2)));
       self.calibrated = true;
-    } else if (obj.x < 0 && obj.z > 0) {
-      self.tilt = 90 + (90 + (self.currentAngle - self.controlAngle));
-    } else if (obj.x < 0 && obj.z < 0) {
-      self.tilt = -90 + (-90 - (self.currentAngle - self.controlAngle));
-    } else {
-      self.tilt = self.currentAngle - self.controlAngle;
     }
-    [self handleTilt];
-    [self tiltEventEmitter];
-    NSLog(@"Tilt is: %f", self.tilt);
+    else if (self.controlDistance < self.currentDistance) {
+      NSLog(@"Control distance: %f, current distance: %f", self.controlDistance, self.currentDistance);
+    }
   }];
 }
 
