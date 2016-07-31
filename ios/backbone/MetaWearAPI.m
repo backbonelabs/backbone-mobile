@@ -60,7 +60,7 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
       self.controlDistance = self.currentDistance;
       self.calibrated = true;
     }
-    else if ((self.controlDistance + self.slouchThreshold) < self.currentDistance) {
+    else if (fabs(self.controlDistance - self.currentDistance) >= self.slouchThreshold) {
       NSLog(@"Control distance: %f, current distance: %f", self.controlDistance, self.currentDistance);
     }
   }];
