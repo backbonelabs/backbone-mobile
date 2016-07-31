@@ -19,10 +19,12 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
       self.device = task.result[0];
       [self connectToMetaWear:self.device:callback];
     } else {
+      self.nativeDeviceList =[NSMutableDictionary new];
       NSMutableDictionary *deviceList = [NSMutableDictionary new];
       [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
         for (MBLMetaWear *device in array) {
           NSString *deviceID = [device.identifier UUIDString];
+          self.nativeDeviceList[deviceID] = device;
           deviceList[deviceID] = @{
             @"name": device.name,
             @"identifier": deviceID,
