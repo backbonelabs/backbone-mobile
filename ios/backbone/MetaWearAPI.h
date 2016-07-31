@@ -6,7 +6,7 @@
   @property MBLMetaWear *device;
   @property MBLMetaWearManager * manager;
   @property MBLAccelerometerMMA8452Q *accelerometer;
-  @property NSMutableDictionary *nativeDeviceList;
+  @property NSMutableDictionary *nativeDeviceCollection;
   @property BOOL calibrated;
   @property float controlAngle;
   @property float currentAngle;
@@ -14,4 +14,5 @@
 - (void) connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
 - (void) handleTilt;
 - (void) tiltEventEmitter;
+- (void) deviceEventEmitter:(NSMutableDictionary *)deviceCollection;
 @end

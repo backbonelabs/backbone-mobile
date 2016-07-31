@@ -19,19 +19,19 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
       self.device = task.result[0];
       [self connectToMetaWear:self.device:callback];
     } else {
-      self.nativeDeviceList =[NSMutableDictionary new];
-      NSMutableDictionary *deviceList = [NSMutableDictionary new];
+      self.nativeDeviceCollection =[NSMutableDictionary new];
+      NSMutableDictionary *deviceCollection = [NSMutableDictionary new];
       [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
         for (MBLMetaWear *device in array) {
           NSString *deviceID = [device.identifier UUIDString];
-          self.nativeDeviceList[deviceID] = device;
-          deviceList[deviceID] = @{
+          self.nativeDeviceCollection[deviceID] = device;
+          deviceCollection[deviceID] = @{
             @"name": device.name,
             @"identifier": deviceID,
             @"RSSI": device.discoveryTimeRSSI,
           };
+          [self deviceEventEmitter:deviceCollection];
         }
-        [self deviceEventEmitter:deviceList];
       }];
     }
     return nil;
@@ -87,8 +87,8 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
   [self.bridge.eventDispatcher sendAppEventWithName:@"Tilt" body: @{@"tilt": [NSNumber numberWithFloat:self.tilt]}];
 }
 
-- (void) deviceEventEmitter:(NSMutableDictionary *)deviceList {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceList];
+- (void) deviceEventEmitter:(NSMutableDictionary *)deviceCollection {
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceCollection];
 }
 
 //RCT_EXPORT_METHOD(startPostureMonitoring) {
