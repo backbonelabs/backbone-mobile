@@ -57,7 +57,7 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
   [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
     self.currentDistance = sqrt((pow(obj.z, 2) + pow(obj.y, 2)));
     if (!self.calibrated) {
-      self.controlDistance = sqrt((pow(obj.z, 2) + pow(obj.y, 2)));
+      self.controlDistance = self.currentDistance;
       self.calibrated = true;
     }
     else if ((self.controlDistance + self.slouchThreshold) < self.currentDistance) {
