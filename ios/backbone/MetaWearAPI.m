@@ -51,19 +51,37 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
   self.calibrated = false;
 
   [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
-      self.currentAngle = RADIANS_TO_DEGREES(atan(obj.z / obj.x));
+    self.currentAngle = RADIANS_TO_DEGREES(atan2(obj.x, obj.z));
     if (!self.calibrated) {
-      float xControl = obj.x;
-      float zControl = obj.z;
-      self.controlAngle = RADIANS_TO_DEGREES(atan(zControl / xControl));
+      // set baseline posture
+      self.controlAngle = self.currentAngle;
       self.calibrated = true;
-    } else if (obj.x < 0 && obj.z > 0) {
-      self.tilt = 90 + (90 + (self.currentAngle - self.controlAngle));
-    } else if (obj.x < 0 && obj.z < 0) {
-      self.tilt = -90 + (-90 - (self.currentAngle - self.controlAngle));
     } else {
-      self.tilt = self.currentAngle - self.controlAngle;
+      // calculate tilt
+      // tilt will be positive if leaning forward, negative if leaning backward
+
+      // check if current angle is in the upper or lower quadrants based on atan2
+      if (self.currentAngle >= 0) {
+        // current angle is in the upper quadrants
+        if (self.currentAngle >= self.controlAngle) {
+          // leaned back
+          self.tilt = -(self.currentAngle - self.controlAngle);
+        } else {
+          // leaned forward
+          self.tilt = self.controlAngle - self.currentAngle;
+        }
+      } else {
+        // current angle is in the lower quadrants
+        if (self.currentAngle >= (self.controlAngle - 180)) {
+          // leaned forward between 90 and 180 degrees
+          self.tilt = self.controlAngle + fabs(self.currentAngle);
+        } else {
+          // leaned backward between 90 and 180 degrees
+          self.tilt = self.controlAngle - self.currentAngle - 360;
+        }
+      }
     }
+
     [self handleTilt];
     [self tiltEventEmitter];
     NSLog(@"Tilt is: %f", self.tilt);
@@ -81,7 +99,7 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
 }
 
 - (void) tiltEventEmitter {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"Tilt" body: @{@"tilt": [NSNumber numberWithFloat:self.tilt]}];
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Tilt" body: @{@"tilt": [NSNumber numberWithDouble:self.tilt]}];
 }
 
 //RCT_EXPORT_METHOD(startPostureMonitoring) {
