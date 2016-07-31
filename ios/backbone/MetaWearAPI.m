@@ -50,16 +50,17 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
   self.accelerometer.sampleFrequency = 1.56;
 
   self.calibrated = false;
+  
+  //placeholder
+  self.slouchThreshold = 0.10;
 
   [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
-    self.currentDistance = sqrtf((pow(obj.z, 2) + pow(obj.y, 2)));
+    self.currentDistance = sqrt((pow(obj.z, 2) + pow(obj.y, 2)));
     if (!self.calibrated) {
-      float zControl = obj.z;
-      float yControl = obj.y;
-      self.controlDistance = sqrtf((pow(zControl, 2) + pow(yControl, 2)));
+      self.controlDistance = sqrt((pow(obj.z, 2) + pow(obj.y, 2)));
       self.calibrated = true;
     }
-    else if (self.controlDistance < self.currentDistance) {
+    else if ((self.controlDistance + self.slouchThreshold) < self.currentDistance) {
       NSLog(@"Control distance: %f, current distance: %f", self.controlDistance, self.currentDistance);
     }
   }];

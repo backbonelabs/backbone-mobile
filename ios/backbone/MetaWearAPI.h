@@ -7,8 +7,9 @@
   @property MBLMetaWearManager * manager;
   @property MBLAccelerometer *accelerometer;
   @property BOOL calibrated;
-  @property float controlDistance;
-  @property float currentDistance;
+  @property double controlDistance;
+  @property double currentDistance;
+  @property double slouchThreshold;
   @property float tilt;
 - (void) connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
 - (void) handleTilt;
