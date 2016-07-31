@@ -10,10 +10,7 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
-
   self.manager = [MBLMetaWearManager sharedManager];
-  
-
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
       self.device = task.result[0];
@@ -45,6 +42,10 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
       callback(@[[NSNull null], @YES]);
     }
   }];
+}
+
+RCT_EXPORT_METHOD(selectMetaWear:(NSString *)deviceID:(RCTResponseSenderBlock)callback) {
+  [self connectToMetaWear:[self.nativeDeviceCollection objectForKey:deviceID]:callback];
 }
 
 RCT_EXPORT_METHOD(startPostureMonitoring) {
