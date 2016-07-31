@@ -70,7 +70,17 @@ class Initiate extends Component {
       });
     });
 
-    MetaWearAPI.searchForMetaWear((error, deviceList) => {});
+    MetaWearAPI.searchForMetaWear((error, response) => {
+      this.setState({
+        connected: true,
+      }, () => {
+        this.props.navigator.push({
+          name: 'main',
+          component: Main,
+          passProps: { MetaWearAPI },
+        });
+      });
+    });
 
     const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
       console.log('Devices: ', event);
@@ -78,7 +88,6 @@ class Initiate extends Component {
   }
 
   connectAnimation() {
-    console.log('HERRO');
     const context = this;
 
     Animated.sequence([
