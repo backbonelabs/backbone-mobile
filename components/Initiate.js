@@ -10,6 +10,7 @@ import {
   StyleSheet,
   NativeModules,
   TouchableHighlight,
+  NativeAppEventEmitter,
 } from 'react-native';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
@@ -69,20 +70,15 @@ class Initiate extends Component {
       });
     });
 
-    MetaWearAPI.searchForMetaWear(() => {
-      this.setState({
-        connected: true,
-      }, () => {
-        this.props.navigator.push({
-          name: 'main',
-          component: Main,
-          passProps: { MetaWearAPI },
-        });
-      });
+    MetaWearAPI.searchForMetaWear((error, deviceList) => {});
+
+    const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
+      console.log('Devices: ', event);
     });
   }
 
   connectAnimation() {
+    console.log('HERRO');
     const context = this;
 
     Animated.sequence([
