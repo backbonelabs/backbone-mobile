@@ -6,7 +6,6 @@
   @property MBLMetaWear *device;
   @property MBLMetaWearManager * manager;
   @property MBLAccelerometerMMA8452Q *accelerometer;
-  @property NSMutableDictionary *deviceCollection;
   @property BOOL calibrated;
   @property float controlAngle;
   @property float currentAngle;
