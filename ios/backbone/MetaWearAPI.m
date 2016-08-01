@@ -1,5 +1,6 @@
 #import "MetaWearAPI.h"
 #import "RCTBridge.h"
+#import "RCTUtils.h"
 #import "RCTEventDispatcher.h"
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 
@@ -10,25 +11,25 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
-
   self.manager = [MBLMetaWearManager sharedManager];
-
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
-      MBLMetaWear *device = task.result[0];
-      self.device = device;
+      self.device = task.result[0];
       [self connectToMetaWear:self.device:callback];
     } else {
-      [self.manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
-        self.device = 0;
-
+      self.nativeDeviceCollection =[NSMutableDictionary new];
+      NSMutableDictionary *deviceCollection = [NSMutableDictionary new];
+      [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
         for (MBLMetaWear *device in array) {
-          if (!self.device || self.device.discoveryTimeRSSI.integerValue > device.discoveryTimeRSSI.integerValue) {
-            self.device = device;
-          }
+          NSString *deviceID = [device.identifier UUIDString];
+          self.nativeDeviceCollection[deviceID] = device;
+          deviceCollection[deviceID] = @{
+            @"name": device.name,
+            @"identifier": deviceID,
+            @"RSSI": device.discoveryTimeRSSI,
+          };
+          [self deviceEventEmitter:deviceCollection];
         }
-        [self connectToMetaWear:self.device:callback];
-        [self.device rememberDevice];
       }];
     }
     return nil;
@@ -37,18 +38,33 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
 
 - (void)connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
   [self.device connectWithHandler:^(NSError *error) {
-    if (self.device.state == MBLConnectionStateConnected) {
+    if (error) {
+      NSDictionary *makeError = RCTMakeError(@"Test", error, @{
+                                                               @"domain": error.domain,
+                                                               @"code": [NSNumber numberWithInteger:error.code],
+                                                               @"userInfo": error.userInfo
+                                                               });
+      callback(@[makeError, @NO]);
+    } else {
+      [self.manager stopScanForMetaWears];
       [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
     }
   }];
 }
 
+RCT_EXPORT_METHOD(selectMetaWear:(NSString *)deviceID:(RCTResponseSenderBlock)callback) {
+  [self connectToMetaWear:[self.nativeDeviceCollection objectForKey:deviceID]:callback];
+}
+
 RCT_EXPORT_METHOD(startPostureMonitoring) {
-  self.accelerometer = (MBLAccelerometerMMA8452Q *)self.device.accelerometer;
+  self.accelerometer = (MBLAccelerometer *)self.device.accelerometer;
   self.accelerometer.sampleFrequency = 1.56;
 
   self.calibrated = false;
+
+  //placeholder
+  self.slouchThreshold = 0.10;
 
   [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
     self.currentAngle = RADIANS_TO_DEGREES(atan2(obj.x, obj.z));
@@ -85,6 +101,15 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
     [self handleTilt];
     [self tiltEventEmitter];
     NSLog(@"Tilt is: %f", self.tilt);
+
+    self.currentDistance = sqrt((pow(obj.z, 2) + pow(obj.y, 2)));
+    if (!self.calibrated) {
+      self.controlDistance = self.currentDistance;
+      self.calibrated = true;
+    }
+    else if (fabs(self.controlDistance - self.currentDistance) >= self.slouchThreshold) {
+      NSLog(@"Control distance: %f, current distance: %f", self.controlDistance, self.currentDistance);
+    }
   }];
 }
 
@@ -100,6 +125,10 @@ RCT_EXPORT_METHOD(stopPostureMonitoring) {
 
 - (void) tiltEventEmitter {
   [self.bridge.eventDispatcher sendAppEventWithName:@"Tilt" body: @{@"tilt": [NSNumber numberWithDouble:self.tilt]}];
+}
+
+- (void) deviceEventEmitter:(NSMutableDictionary *)deviceCollection {
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceCollection];
 }
 
 //RCT_EXPORT_METHOD(startPostureMonitoring) {
