@@ -10,6 +10,7 @@ import {
   StyleSheet,
   NativeModules,
   TouchableHighlight,
+  NativeAppEventEmitter,
 } from 'react-native';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
@@ -69,7 +70,7 @@ class Initiate extends Component {
       });
     });
 
-    MetaWearAPI.searchForMetaWear(() => {
+    MetaWearAPI.searchForMetaWear((error, response) => {
       this.setState({
         connected: true,
       }, () => {
@@ -79,6 +80,10 @@ class Initiate extends Component {
           passProps: { MetaWearAPI },
         });
       });
+    });
+
+    const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
+      console.log('Devices: ', event);
     });
   }
 

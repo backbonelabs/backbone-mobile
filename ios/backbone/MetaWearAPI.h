@@ -6,6 +6,7 @@
   @property MBLMetaWear *device;
   @property MBLMetaWearManager * manager;
   @property MBLAccelerometer *accelerometer;
+  @property NSMutableDictionary *nativeDeviceCollection;
   @property BOOL calibrated;
   @property double controlDistance;
   @property double currentDistance;
@@ -14,4 +15,5 @@
 - (void) connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
 - (void) handleTilt;
 - (void) tiltEventEmitter;
+- (void) deviceEventEmitter:(NSMutableDictionary *)deviceCollection;
 @end
