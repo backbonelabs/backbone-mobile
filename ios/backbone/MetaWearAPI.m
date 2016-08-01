@@ -39,8 +39,10 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
     if (self.device.state == MBLConnectionStateConnected) {
       [self.manager stopScanForMetaWears];
       [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+      callback(@[[NSNull null], @YES]);
+    } else {
+      callback(@[error, @NO]);
     }
-    callback(@[error, @YES]);
   }];
 }
 
