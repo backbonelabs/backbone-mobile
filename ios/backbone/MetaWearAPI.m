@@ -37,13 +37,17 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
 
 - (void)connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
   [self.device connectWithHandler:^(NSError *error) {
-    if (self.device.state == MBLConnectionStateConnected) {
+    if (error) {
+      NSDictionary *makeError = RCTMakeError(@"Test", error, @{
+                                                               @"domain": error.domain,
+                                                               @"code": [NSNumber numberWithInteger:error.code],
+                                                               @"userInfo": error.userInfo
+                                                               });
+      callback(@[makeError, @NO]);
+    } else {
       [self.manager stopScanForMetaWears];
       [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
-    } else {
-      NSDictionary *makeError = RCTMakeError(@"Test", error, @{@"error": @"error"});
-      callback(@[makeError, @NO]);
     }
   }];
 }
