@@ -71,15 +71,19 @@ class Initiate extends Component {
     });
 
     MetaWearAPI.searchForMetaWear((error, response) => {
-      this.setState({
-        connected: true,
-      }, () => {
-        this.props.navigator.push({
-          name: 'main',
-          component: Main,
-          passProps: { MetaWearAPI },
+      if (error) {
+        console.log('Error: ', error);
+      } else {
+        this.setState({
+          connected: response,
+        }, () => {
+          this.props.navigator.push({
+            name: 'main',
+            component: Main,
+            passProps: { MetaWearAPI },
+          });
         });
-      });
+      }
     });
 
     const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {

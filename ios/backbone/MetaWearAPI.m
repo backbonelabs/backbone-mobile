@@ -1,5 +1,6 @@
 #import "MetaWearAPI.h"
 #import "RCTBridge.h"
+#import "RCTUtils.h"
 #import "RCTEventDispatcher.h"
 
 @implementation MetaWearAPI
@@ -41,7 +42,8 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
       [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
     } else {
-      callback(@[error, @NO]);
+      NSDictionary *makeError = RCTMakeError(@"Test", error, @{@"error": @"error"});
+      callback(@[makeError, @NO]);
     }
   }];
 }
