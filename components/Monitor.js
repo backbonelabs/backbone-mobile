@@ -1,20 +1,27 @@
 import React, { Component } from 'react';
 import * as Progress from 'react-native-progress';
 import PostureButton from './PostureButton';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   View,
+  Text,
   StyleSheet,
 } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 75,
     alignItems: 'center',
     flexDirection: 'column',
   },
+  title: {
+    fontSize: 42,
+    marginTop: 100,
+    color: '#A8A8A8',
+    fontWeight: 'bold',
+  },
   progressCircle: {
-    marginTop: 50,
+    marginTop: 25,
     marginBottom: 50,
   },
 });
@@ -40,9 +47,18 @@ class MonitorView extends Component {
   }
 
   render() {
+    const avatarColor = this.props.tilt > 15 ? '#f86c41' : '#48BBEC';
     const direction = this.props.tiltDirection === 'forward' ? 'counter-clockwise' : 'clockwise';
+    const tiltStyle = {
+      marginTop: -265,
+      marginBottom: 130,
+      transform: [
+        { rotate: (direction === 'clockwise') ? `-${this.props.tilt}deg` : `${this.props.tilt}deg` },
+      ],
+    };
     return (
       <View style={styles.container}>
+        <Text style={styles.title}>POSTURE</Text>
         <Progress.Circle
           size={300}
           thickness={30}
@@ -53,6 +69,7 @@ class MonitorView extends Component {
           style={styles.progressCircle}
           direction={direction}
         />
+        <Icon name="user" style={tiltStyle} size={120} color={avatarColor} />
         {this.props.monitoring ?
           <PostureButton
             iconName={'pause'}
