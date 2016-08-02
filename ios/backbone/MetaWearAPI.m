@@ -68,9 +68,11 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
 
   [self.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
     self.currentAngle = RADIANS_TO_DEGREES(atan2(obj.x, obj.z));
+    self.currentDistance = sqrt((pow(obj.z, 2) + pow(obj.y, 2)));
     if (!self.calibrated) {
-      // set baseline posture
+      // set baseline metrics
       self.controlAngle = self.currentAngle;
+      self.controlDistance = self.currentDistance;
       self.calibrated = true;
     } else {
       // calculate tilt
@@ -96,20 +98,16 @@ RCT_EXPORT_METHOD(startPostureMonitoring) {
           self.tilt = self.controlAngle - self.currentAngle - 360;
         }
       }
+
+      // log distance if it exceeds the threshold
+      if (fabs(self.controlDistance - self.currentDistance) >= self.slouchThreshold) {
+        NSLog(@"Control distance: %f, current distance: %f", self.controlDistance, self.currentDistance);
+      }
     }
 
     [self handleTilt];
     [self tiltEventEmitter];
     NSLog(@"Tilt is: %f", self.tilt);
-
-    self.currentDistance = sqrt((pow(obj.z, 2) + pow(obj.y, 2)));
-    if (!self.calibrated) {
-      self.controlDistance = self.currentDistance;
-      self.calibrated = true;
-    }
-    else if (fabs(self.controlDistance - self.currentDistance) >= self.slouchThreshold) {
-      NSLog(@"Control distance: %f, current distance: %f", self.controlDistance, self.currentDistance);
-    }
   }];
 }
 
