@@ -8,10 +8,12 @@
   @property MBLAccelerometer *accelerometer;
   @property NSMutableDictionary *nativeDeviceCollection;
   @property BOOL calibrated;
+  @property double controlAngle;
+  @property double currentAngle;
+  @property double tilt;
   @property double controlDistance;
   @property double currentDistance;
   @property double slouchThreshold;
-  @property float tilt;
 - (void) connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
 - (void) handleTilt;
 - (void) tiltEventEmitter;
