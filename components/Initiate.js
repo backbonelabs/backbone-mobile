@@ -13,7 +13,7 @@ import {
   NativeAppEventEmitter,
 } from 'react-native';
 
-const MetaWearAPI = NativeModules.MetaWearAPI;
+const DeviceManagementService = NativeModules.DeviceManagementService;
 
 const styles = StyleSheet.create({
   container: {
@@ -70,21 +70,7 @@ class Initiate extends Component {
       });
     });
 
-    MetaWearAPI.searchForMetaWear((error, response) => {
-      if (error) {
-        console.log('Error: ', error);
-      } else {
-        this.setState({
-          connected: response,
-        }, () => {
-          this.props.navigator.push({
-            name: 'main',
-            component: Main,
-            passProps: { MetaWearAPI },
-          });
-        });
-      }
-    });
+    DeviceManagementService.scanForDevices();
 
     const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
       console.log('Devices: ', event);

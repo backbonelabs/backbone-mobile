@@ -6,5 +6,6 @@
   @property MBLMetaWear *device;
   @property MBLMetaWearManager * manager;
   @property NSMutableDictionary *nativeDeviceCollection;
-- (void) deviceEventEmitter:(NSMutableDictionary *)deviceCollection;
+- (void) connectToDevice :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
+- (void) deviceEventEmitter :(NSMutableDictionary *)deviceCollection;
 @end
