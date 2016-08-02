@@ -47,7 +47,7 @@ class MonitorView extends Component {
           size={300}
           thickness={30}
           borderWidth={0}
-          progress={((180 - this.props.tilt) / 180) + 0.0001}
+          progress={((360 - this.props.tilt) / 360)}
           color={'#48BBEC'}
           unfilledColor={'#f86c41'}
           style={styles.progressCircle}
