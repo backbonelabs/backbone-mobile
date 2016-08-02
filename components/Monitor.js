@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   title: {
-    fontSize: 36,
-    marginTop: 55,
+    fontSize: 42,
+    marginTop: 100,
     color: '#A8A8A8',
     fontWeight: 'bold',
   },
@@ -51,7 +51,7 @@ class MonitorView extends Component {
     const direction = this.props.tiltDirection === 'forward' ? 'counter-clockwise' : 'clockwise';
     const tiltStyle = {
       marginTop: -265,
-      marginBottom: 125,
+      marginBottom: 130,
       transform: [
         { rotate: (direction === 'clockwise') ? `-${this.props.tilt}deg` : `${this.props.tilt}deg` },
       ],
