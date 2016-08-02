@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as Progress from 'react-native-progress';
 import PostureButton from './PostureButton';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   View,
@@ -24,6 +25,7 @@ class MonitorView extends Component {
     super();
 
     this.convertTotalTime = this.convertTotalTime.bind(this);
+    this.tiltStyle = this.tiltStyle.bind(this);
   }
 
   convertTotalTime(seconds) {
@@ -39,8 +41,33 @@ class MonitorView extends Component {
     return timeString;
   }
 
+  tiltStyle(tilt, direction) {
+    let styleObj = {
+      marginTop: -265,
+      position: 'absolute',
+    };
+    const radians = tilt * (Math.PI / 180);
+    if (direction !== 'clockwise') {
+      styleObj = Object.assign(styleObj, {
+        marginLeft: 110 + (Math.sin(radians) * 60),
+        transform: [
+          { rotate: `${tilt}deg` },
+        ],
+      });
+    } else {
+      styleObj = Object.assign(styleObj, {
+        marginLeft: 110 - (Math.sin(radians) * 60),
+        transform: [
+          { rotate: `-${tilt}deg` },
+        ],
+      });
+    }
+    return styleObj;
+  }
+
   render() {
     const direction = this.props.tiltDirection === 'forward' ? 'counter-clockwise' : 'clockwise';
+    const tiltStyle = this.tiltStyle(this.props.tilt, direction);
     return (
       <View style={styles.container}>
         <Progress.Circle
@@ -53,6 +80,7 @@ class MonitorView extends Component {
           style={styles.progressCircle}
           direction={direction}
         />
+        <Icon name="user" style={tiltStyle} size={120} color="#48BBEC" />
         {this.props.monitoring ?
           <PostureButton
             iconName={'pause'}
