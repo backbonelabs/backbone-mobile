@@ -70,10 +70,19 @@ class Initiate extends Component {
       });
     });
 
-    DeviceManagementService.scanForDevices();
-
-    const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
-      console.log('Devices: ', event);
+    DeviceManagementService.checkForSavedDevice((error, response) => {
+      if (error) {
+        console.log('Error: ', error);
+      } else if (!response) {
+        const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
+          console.log('Devices: ', event);
+        });
+      } else {
+        this.props.navigator.push({
+          name: 'main',
+          component: Main,
+        });
+      }
     });
   }
 
