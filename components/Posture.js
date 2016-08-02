@@ -68,6 +68,7 @@ class Posture extends Component {
     MetaWearAPI.stopPostureMonitoring();
 
     this.setState({
+      tilt: 0,
       monitoring: false,
     });
   }

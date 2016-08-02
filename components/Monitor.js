@@ -5,18 +5,24 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   View,
+  Text,
   StyleSheet,
 } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 75,
     alignItems: 'center',
     flexDirection: 'column',
   },
+  title: {
+    fontSize: 36,
+    marginTop: 55,
+    color: '#A8A8A8',
+    fontWeight: 'bold',
+  },
   progressCircle: {
-    marginTop: 50,
-    marginBottom: 50,
+    marginTop: 30,
+    marginBottom: 45,
   },
 });
 
@@ -25,7 +31,6 @@ class MonitorView extends Component {
     super();
 
     this.convertTotalTime = this.convertTotalTime.bind(this);
-    this.tiltStyle = this.tiltStyle.bind(this);
   }
 
   convertTotalTime(seconds) {
@@ -41,35 +46,19 @@ class MonitorView extends Component {
     return timeString;
   }
 
-  tiltStyle(tilt, direction) {
-    let styleObj = {
-      marginTop: -265,
-      position: 'absolute',
-    };
-    const radians = tilt * (Math.PI / 180);
-    if (direction !== 'clockwise') {
-      styleObj = Object.assign(styleObj, {
-        marginLeft: 110 + (Math.sin(radians) * 60),
-        transform: [
-          { rotate: `${tilt}deg` },
-        ],
-      });
-    } else {
-      styleObj = Object.assign(styleObj, {
-        marginLeft: 110 - (Math.sin(radians) * 60),
-        transform: [
-          { rotate: `-${tilt}deg` },
-        ],
-      });
-    }
-    return styleObj;
-  }
-
   render() {
+    const avatarColor = this.props.tilt > 15 ? '#f86c41' : '#48BBEC';
     const direction = this.props.tiltDirection === 'forward' ? 'counter-clockwise' : 'clockwise';
-    const tiltStyle = this.tiltStyle(this.props.tilt, direction);
+    const tiltStyle = {
+      marginTop: -265,
+      marginBottom: 140,
+      transform: [
+        { rotate: (direction === 'clockwise') ? `-${this.props.tilt}deg` : `${this.props.tilt}deg` },
+      ],
+    };
     return (
       <View style={styles.container}>
+        <Text style={styles.title}>POSTURE</Text>
         <Progress.Circle
           size={300}
           thickness={30}
@@ -80,7 +69,7 @@ class MonitorView extends Component {
           style={styles.progressCircle}
           direction={direction}
         />
-        <Icon name="user" style={tiltStyle} size={120} color="#48BBEC" />
+        <Icon name="user" style={tiltStyle} size={120} color={avatarColor} />
         {this.props.monitoring ?
           <PostureButton
             iconName={'pause'}
