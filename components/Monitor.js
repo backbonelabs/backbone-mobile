@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   progressCircle: {
-    marginTop: 30,
-    marginBottom: 45,
+    marginTop: 25,
+    marginBottom: 50,
   },
 });
 
@@ -51,7 +51,7 @@ class MonitorView extends Component {
     const direction = this.props.tiltDirection === 'forward' ? 'counter-clockwise' : 'clockwise';
     const tiltStyle = {
       marginTop: -265,
-      marginBottom: 140,
+      marginBottom: 125,
       transform: [
         { rotate: (direction === 'clockwise') ? `-${this.props.tilt}deg` : `${this.props.tilt}deg` },
       ],
