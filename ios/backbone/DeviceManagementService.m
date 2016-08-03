@@ -13,12 +13,12 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   NSLog(@"Check saved devices");
   self.manager = [MBLMetaWearManager sharedManager];
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    if ([task.result count]) {
+    if (![task.result count]) {
       self.device = task.result[0];
       [self connectToDevice: self.device: callback];
     } else {
       [self scanForDevices];
-      
+      callback(@[[NSNull null], @NO]);
     }
     return nil;
   }];
@@ -48,23 +48,23 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
 - (void) scanForDevices {
   NSLog(@"Scan for devices");
   self.nativeDeviceCollection = [NSMutableDictionary new];
-  NSMutableDictionary *deviceCollection = [NSMutableDictionary new];
   [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
+    NSMutableArray *deviceList = [NSMutableArray array];
     for (MBLMetaWear *device in array) {
       NSString *deviceID = [device.identifier UUIDString];
       self.nativeDeviceCollection[deviceID] = device;
-      deviceCollection[deviceID] = @{
-                                     @"name": device.name,
-                                     @"identifier": deviceID,
-                                     @"RSSI": device.discoveryTimeRSSI,
-                                     };
+      [deviceList addObject: @{
+                               @"name": device.name,
+                               @"identifier": deviceID,
+                               @"RSSI": device.discoveryTimeRSSI,
+                               }];
     }
-    [self deviceEventEmitter :deviceCollection];
+    [self deviceEventEmitter :deviceList];
   }];
 }
 
-- (void) deviceEventEmitter :(NSMutableDictionary *)deviceCollection {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceCollection];
+- (void) deviceEventEmitter :(NSMutableArray *)deviceList {
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceList];
 }
 
 @end;
