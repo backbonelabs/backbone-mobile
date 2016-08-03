@@ -4,9 +4,7 @@
 @interface MetaWearAPI : NSObject <RCTBridgeModule>
   @property (nonatomic, strong) RCTBridge *bridge;
   @property MBLMetaWear *device;
-  @property MBLMetaWearManager * manager;
   @property MBLAccelerometer *accelerometer;
-  @property NSMutableDictionary *nativeDeviceCollection;
   @property BOOL calibrated;
   @property double controlAngle;
   @property double currentAngle;
@@ -14,8 +12,6 @@
   @property double controlDistance;
   @property double currentDistance;
   @property double slouchThreshold;
-- (void) connectToMetaWear :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
 - (void) handleTilt;
 - (void) tiltEventEmitter;
-- (void) deviceEventEmitter:(NSMutableDictionary *)deviceCollection;
 @end
