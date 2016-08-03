@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Monitor from './Monitor';
 import Calibrate from './Calibrate';
-
 import {
   View,
   StyleSheet,
@@ -9,7 +8,7 @@ import {
   NativeAppEventEmitter,
 } from 'react-native';
 
-const MetaWearAPI = NativeModules.MetaWearAPI;
+const { ActivityService } = NativeModules;
 
 const styles = StyleSheet.create({
   container: {
@@ -17,6 +16,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+// TODO: Refactor into a shared constants export that tracks all the activity names
+const postureActivity = 'posture';
 
 class Posture extends Component {
   constructor() {
@@ -36,9 +38,8 @@ class Posture extends Component {
 
   componentWillMount() {
     const context = this;
-
     this.listenToTilt = NativeAppEventEmitter.addListener(
-      'Tilt', (event) => {
+      'PostureTilt', (event) => {
         let tiltDirection = 'forward';
         if (event.tilt < 0) {
           tiltDirection = 'backward';
@@ -56,16 +57,20 @@ class Posture extends Component {
   }
 
   startPostureMonitoring() {
-    MetaWearAPI.startPostureMonitoring();
-
-    this.setState({
-      calibrating: false,
-      monitoring: true,
+    ActivityService.enableActivity(postureActivity, err => {
+      if (err) {
+        // TODO: Add error handling
+      } else {
+        this.setState({
+          calibrating: false,
+          monitoring: true,
+        });
+      }
     });
   }
 
   stopPostureMonitoring() {
-    MetaWearAPI.stopPostureMonitoring();
+    ActivityService.disableActivity(postureActivity);
 
     this.setState({
       monitoring: false,
