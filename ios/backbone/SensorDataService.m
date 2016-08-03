@@ -3,6 +3,29 @@
 #import "ActivityModule.h"
 #import "SensorNotifications.h"
 
+/**
+ SensorDataService manages which device sensors to listen to based on which ActivityModules
+ are enabled. Each ActivityModule has a property for indicating which sensor they need.
+ Since multiple activities can be enabled at the same time, it's possible that multiple activities
+ will use the same sensor.
+ 
+ SensorDataService will manage the set of active activities and only
+ attach one data handler for each sensor that's needed by all the activities. In other words, if two
+ activity modules need to use the accelerometer, SensorDataService would have one and only one data event
+ handler attached to the accelerometer.
+ 
+ SensorDataService will then post a notification for each sensor data, and the individual ActivityModules
+ will listen to the notifications they are interested in. This allows sensor data from the device to be streamed
+ to one observer (SensorDataService), and SensorDataService will in turn broadcast the event data to any
+ interested ActivityModules.
+ 
+ When a sensor is no longer needed by any active ActivityModules, SensorDataService will remove the data event
+ handler from the sensor.
+ 
+ When retrieving an instance of SensorDataService, always call the getSensorDataService method at the class level.
+ A new instance of SensorDataService should NOT be instantiated. This ensures we are working with a singleton throughout
+ the lifecycle of the app.
+ */
 @implementation SensorDataService
 
 - (id)initWithDevice:(MBLMetaWear *)device {
@@ -12,9 +35,12 @@
   return self;
 }
 
-// Returns a singleton instance
-// Any consumers of SensorDataService should call this to retrieve an instance of SensorDataService
-// instead of instantiating their own SensorDataService instance
+/**
+ Returns a singleton instance.
+ Any consumers of SensorDataService should call this to retrieve an instance of SensorDataService
+ instead of instantiating their own SensorDataService instance.
+ @return SensorDataService A singleton instance of SensorDataService
+ */
 + (SensorDataService *)getSensorDataService {
   static SensorDataService *_sharedInstance = nil;
   MBLMetaWear *device = [MetaWearAPI getDevice];
@@ -29,6 +55,11 @@
   }
 }
 
+/**
+ Registers an ActivityModule as active and attaches a data event handler to the appropriate
+ sensor if needed
+ @param activityModule An ActivityModule to register to the list of active activities
+ */
 - (void)registerActivity:(ActivityModule *)activityModule {
   NSLog(@"registerActivity");
   SensorDataService *sensorDataService = [SensorDataService getSensorDataService];
@@ -67,6 +98,12 @@
   }
 }
 
+/**
+ Removes an ActivityModule from the list of active activities and removes the data event handler
+ from a sensor if no other activities require that particular sensor. This will unregister all
+ active activities with the same name.
+ @param activityName Name of the ActivityModule to unregister
+ */
 - (void)unregisterActivityByName:(NSString *)activityName {
   NSLog(@"unregisterActivityByName");
   SensorDataService *sensorDataService = [SensorDataService getSensorDataService];

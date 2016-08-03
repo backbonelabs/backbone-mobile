@@ -18,6 +18,9 @@
 
 RCT_EXPORT_MODULE();
 
+// React Native components will call this when they need to enable a particular activity module.
+// A callback should be included as the second argument which would be called with an error object
+// if an error occurred while attempting to enable the activity. If no error occurred, null will be passed.
 RCT_EXPORT_METHOD(enableActivity:(NSString *)activityName callback:(RCTResponseSenderBlock)callback) {
   NSLog(@"enableActivity");
   @try {
@@ -41,6 +44,7 @@ RCT_EXPORT_METHOD(enableActivity:(NSString *)activityName callback:(RCTResponseS
   }
 }
 
+// React Native components will call this when they need to disable a particular activity module.
 RCT_EXPORT_METHOD(disableActivity:(NSString *)activityName) {
   NSLog(@"disableActivity");
   SensorDataService *sensorDataService = [SensorDataService getSensorDataService];
