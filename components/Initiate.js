@@ -75,7 +75,6 @@ class Initiate extends Component {
         console.log('Error: ', error);
       } else if (!response) {
         this.props.navigator.push({
-          name: 'devices',
           component: Devices,
         });
       } else {
