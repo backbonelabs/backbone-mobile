@@ -46,7 +46,7 @@ class Initiate extends Component {
     super();
 
     this.state = {
-      connected: false,
+      devices: false,
       logoAnimValue: 300,
       logoAnim: new Animated.Value(300),
       buttonAnim: new Animated.ValueXY(),
@@ -74,7 +74,7 @@ class Initiate extends Component {
       if (error) {
         console.log('Error: ', error);
       } else if (!response) {
-        const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
+        const listenForDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
           console.log('Devices: ', event);
         });
       } else {
@@ -87,12 +87,10 @@ class Initiate extends Component {
   }
 
   connectAnimation() {
-    const context = this;
-
     Animated.sequence([
       Animated.delay(200),
       Animated.timing(
-      context.state.logoAnim,
+      this.state.logoAnim,
       { toValue: 0 }),
     ]).start();
   }
