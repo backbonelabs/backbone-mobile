@@ -26,6 +26,11 @@
 		448FCF891D2305180082FB11 /* MetaWearAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 448FCF881D2305180082FB11 /* MetaWearAPI.m */; };
 		44970BBB1D2AC74B00351480 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44970BB01D2AC74400351480 /* libART.a */; };
 		449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */; };
+		6602D6981D50295300DF3369 /* SensorDataService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6971D50295300DF3369 /* SensorDataService.m */; };
+		6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6991D502EA800DF3369 /* ActivityModule.m */; };
+		669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DC1D50630A00DCEFBE /* ActivityService.m */; };
+		669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DE1D51053F00DCEFBE /* PostureModule.m */; };
+		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		F1639F5806EEEA0010F2E721 /* libPods-backbone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F234579A5E10506AFD7A9FBB /* libPods-backbone.a */; };
 /* End PBXBuildFile section */
@@ -142,6 +147,16 @@
 		448FCF881D2305180082FB11 /* MetaWearAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MetaWearAPI.m; path = backbone/MetaWearAPI.m; sourceTree = "<group>"; };
 		44970BAB1D2AC74400351480 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		6602D6891D5023A500DF3369 /* SensorDataService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SensorDataService.h; path = backbone/SensorDataService.h; sourceTree = "<group>"; };
+		6602D6961D50255D00DF3369 /* ActivityModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityModule.h; path = backbone/ActivityModule.h; sourceTree = "<group>"; };
+		6602D6971D50295300DF3369 /* SensorDataService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorDataService.m; path = backbone/SensorDataService.m; sourceTree = "<group>"; };
+		6602D6991D502EA800DF3369 /* ActivityModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityModule.m; path = backbone/ActivityModule.m; sourceTree = "<group>"; };
+		669B14D01D50626500DCEFBE /* ActivityService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityService.h; path = backbone/ActivityService.h; sourceTree = "<group>"; };
+		669B14DC1D50630A00DCEFBE /* ActivityService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityService.m; path = backbone/ActivityService.m; sourceTree = "<group>"; };
+		669B14DE1D51053F00DCEFBE /* PostureModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PostureModule.m; path = backbone/PostureModule.m; sourceTree = "<group>"; };
+		669B14E01D51066300DCEFBE /* PostureModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PostureModule.h; path = backbone/PostureModule.h; sourceTree = "<group>"; };
+		669B15191D51439E00DCEFBE /* SensorNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SensorNotifications.h; path = backbone/SensorNotifications.h; sourceTree = "<group>"; };
+		669B151C1D51458700DCEFBE /* SensorNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorNotifications.m; path = backbone/SensorNotifications.m; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		9A39265F3B564AAC20C42E22 /* Pods-backboneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-backboneTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-backboneTests/Pods-backboneTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -266,6 +281,16 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				6602D6891D5023A500DF3369 /* SensorDataService.h */,
+				6602D6971D50295300DF3369 /* SensorDataService.m */,
+				669B15191D51439E00DCEFBE /* SensorNotifications.h */,
+				669B151C1D51458700DCEFBE /* SensorNotifications.m */,
+				6602D6961D50255D00DF3369 /* ActivityModule.h */,
+				6602D6991D502EA800DF3369 /* ActivityModule.m */,
+				669B14E01D51066300DCEFBE /* PostureModule.h */,
+				669B14DE1D51053F00DCEFBE /* PostureModule.m */,
+				669B14D01D50626500DCEFBE /* ActivityService.h */,
+				669B14DC1D50630A00DCEFBE /* ActivityService.m */,
 			);
 			name = backbone;
 			sourceTree = "<group>";
@@ -728,8 +753,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				448FCF891D2305180082FB11 /* MetaWearAPI.m in Sources */,
+				6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */,
+				669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */,
+				669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */,
+				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
