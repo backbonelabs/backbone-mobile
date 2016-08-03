@@ -13,7 +13,7 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   NSLog(@"Check saved devices");
   self.manager = [MBLMetaWearManager sharedManager];
   [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    if (![task.result count]) {
+    if ([task.result count]) {
       self.device = task.result[0];
       [self connectToDevice: self.device: callback];
     } else {
