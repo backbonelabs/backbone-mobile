@@ -26,7 +26,8 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
 
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
   [self.manager stopScanForMetaWears];
-  [self connectToDevice: [self.nativeDeviceCollection objectForKey:deviceID]: callback];
+  self.device = [self.nativeDeviceCollection objectForKey:deviceID];
+  [self connectToDevice: self.device: callback];
 }
 
 - (void)connectToDevice :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
