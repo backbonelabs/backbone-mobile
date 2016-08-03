@@ -14,7 +14,7 @@ const DeviceManagementService = NativeModules.DeviceManagementService;
 
 const styles = {
   container: {
-    marginTop: 100,
+    marginTop: 50,
   },
   title: {
     fontSize: 42,
@@ -25,11 +25,11 @@ const styles = {
   },
   listItem: {
     padding: 10,
-    borderWidth: 2,
-    marginLeft: 10,
-    marginRight: 10,
+    borderWidth: 3,
+    marginLeft: 20,
+    marginRight: 20,
     marginBottom: 10,
-    borderColor: 'black',
+    borderColor: '#48BBEC',
   },
 };
 
