@@ -33,7 +33,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
 - (void)connectToDevice :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
   [self.device connectWithHandler:^(NSError *error) {
     if (error) {
-      NSDictionary *makeError = RCTMakeError(@"Error", error, @{
+      NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
                                                                @"domain": error.domain,
                                                                @"code": [NSNumber numberWithInteger:error.code],
                                                                @"userInfo": error.userInfo
