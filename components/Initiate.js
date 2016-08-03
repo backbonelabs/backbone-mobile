@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Main from './Main';
+import Devices from './Devices';
 import logo from '../images/logo.png';
 
 import {
@@ -10,7 +11,6 @@ import {
   StyleSheet,
   NativeModules,
   TouchableHighlight,
-  NativeAppEventEmitter,
 } from 'react-native';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
@@ -74,8 +74,9 @@ class Initiate extends Component {
       if (error) {
         console.log('Error: ', error);
       } else if (!response) {
-        const listenForDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
-          console.log('Devices: ', event);
+        this.props.navigator.push({
+          name: 'devices',
+          component: Devices,
         });
       } else {
         this.props.navigator.push({
