@@ -8,6 +8,12 @@
 
 @synthesize bridge = _bridge;
 
+static MBLMetaWear *_sharedDevice = nil;
+
++ (MBLMetaWear *)getDevice {
+  return _sharedDevice;
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
@@ -48,6 +54,7 @@ RCT_EXPORT_METHOD(searchForMetaWear: (RCTResponseSenderBlock)callback) {
     } else {
       [self.manager stopScanForMetaWears];
       [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+      _sharedDevice = device;
       callback(@[[NSNull null], @YES]);
     }
   }];
