@@ -2,29 +2,11 @@ import React, { Component } from 'react';
 import * as Progress from 'react-native-progress';
 import PostureButton from './PostureButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import {
   View,
   Text,
-  StyleSheet,
 } from 'react-native';
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flexDirection: 'column',
-  },
-  title: {
-    fontSize: 42,
-    marginTop: 100,
-    color: '#A8A8A8',
-    fontWeight: 'bold',
-  },
-  progressCircle: {
-    marginTop: 25,
-    marginBottom: 50,
-  },
-});
+import styles from '../styles/monitor';
 
 class MonitorView extends Component {
   constructor() {

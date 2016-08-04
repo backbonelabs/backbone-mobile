@@ -1,36 +1,15 @@
 import React, { Component } from 'react';
-import Menu from './components/Menu';
-import Initiate from './components/Initiate';
-import Icon from 'react-native-vector-icons/FontAwesome';
-
 import {
   View,
   StatusBar,
   Navigator,
-  StyleSheet,
-  Dimensions,
   AppRegistry,
   TouchableHighlight,
 } from 'react-native';
-
-const styles = StyleSheet.create({
-  container: {
-    width: Dimensions.get('window').width,
-  },
-  menuIcon: {
-    marginLeft: 25,
-  },
-  statusBar: {
-    height: 25,
-    marginTop: -23,
-    backgroundColor: '#48BBEC',
-  },
-  menuButton: {
-    height: 75,
-    justifyContent: 'center',
-    width: Dimensions.get('window').width,
-  },
-});
+import Menu from './app/components/Menu';
+import Initiate from './app/components/Initiate';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import styles from './app/styles/indexiOS';
 
 class backbone extends Component {
   constructor() {

@@ -1,22 +1,14 @@
 import React, { Component } from 'react';
 import Monitor from './Monitor';
 import Calibrate from './Calibrate';
-
 import {
   View,
-  StyleSheet,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
+import styles from '../styles/posture';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 class Posture extends Component {
   constructor() {

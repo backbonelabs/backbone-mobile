@@ -1,27 +1,10 @@
 import React, { Component } from 'react';
-
 import {
   View,
   Text,
   ListView,
-  StyleSheet,
 } from 'react-native';
-
-const styles = StyleSheet.create({
-  list: {
-    marginTop: 0,
-  },
-  listItem: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
-  },
-  listItemText: {
-    fontSize: 24,
-    paddingTop: 20,
-    paddingLeft: 20,
-    paddingBottom: 20,
-  },
-});
+import styles from '../styles/menu';
 
 class Menu extends Component {
   constructor() {
