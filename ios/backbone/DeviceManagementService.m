@@ -8,6 +8,7 @@
 @synthesize bridge = _bridge;
 
 static MBLMetaWear *_sharedDevice = nil;
+static MBLMetaWear *_manager = nil;
 
 + (MBLMetaWear *)getDevice {
   return _sharedDevice;
@@ -15,16 +16,16 @@ static MBLMetaWear *_sharedDevice = nil;
 
 RCT_EXPORT_MODULE();
 
+// Check for saved devices, if none found then scan for nearby devices
 RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
-  NSLog(@"Check saved devices");
-  self.manager = [MBLMetaWearManager sharedManager];
-  [[self.manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
+  NSLog(@"Check for saved device");
+  _manager = [MBLMetaWearManager sharedManager];
+  [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
-      self.device = task.result[0];
-      [self connectToDevice: self.device: callback];
+      _sharedDevice = task.result[0];
+      [self connectToDevice: callback];
     } else {
-      [self scanForDevices];
-      callback(@[[NSNull null], @NO]);
+      [self scanForDevices: callback];
     }
     return nil;
   }];
@@ -36,7 +37,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   [self connectToDevice: self.device: callback];
 }
 
-- (void)connectToDevice :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback {
+- (void)connectToDevice :(RCTResponseSenderBlock)callback {
   [self.device connectWithHandler:^(NSError *error) {
     if (error) {
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
