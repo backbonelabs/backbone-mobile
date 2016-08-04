@@ -7,6 +7,12 @@
 
 @synthesize bridge = _bridge;
 
+static MBLMetaWear *_sharedDevice = nil;
+
++ (MBLMetaWear *)getDevice {
+  return _sharedDevice;
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
