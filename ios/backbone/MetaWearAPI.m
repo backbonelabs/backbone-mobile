@@ -26,7 +26,7 @@
 //      self.nativeDeviceCollection =[NSMutableDictionary new];
 //      NSMutableDictionary *deviceCollection = [NSMutableDictionary new];
 //      [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
-//        for (MBLMetaWear *device in array) {
+//        for (MBLMetx4aWear *device in array) {
 //          NSString *deviceID = [device.identifier UUIDString];
 //          self.nativeDeviceCollection[deviceID] = device;
 //          deviceCollection[deviceID] = @{

@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "MetaWearAPI.h"
+#import "DeviceManagementService.h"
 #import "PostureModule.h"
 #import "SensorNotifications.h"
 #import "RCTEventDispatcher.h"
@@ -70,7 +70,7 @@
 - (void)handleTilt {
   NSLog(@"Tilt is: %f", self.tilt);
   if (self.tilt > self.tiltThreshold) {
-    MBLMetaWear *device = [MetaWearAPI getDevice];
+    MBLMetaWear *device = [DeviceManagementService getDevice];
     [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:5];
   }
   [self.bridge.eventDispatcher sendAppEventWithName:@"PostureTilt" body:@{@"tilt": [NSNumber numberWithDouble:self.tilt]}];

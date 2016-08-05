@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "ActivityModule.h"
-#import "MetaWearAPI.h"
+#import "DeviceManagementService.h"
 
 @interface SensorDataService : NSObject
 @property MBLMetaWear *device;
