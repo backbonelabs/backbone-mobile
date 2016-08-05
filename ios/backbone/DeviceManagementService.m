@@ -18,14 +18,18 @@ RCT_EXPORT_MODULE();
 
 // Check for saved devices, if none found then scan for nearby devices
 RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
-  NSLog(@"Check for saved device");
   _manager = [MBLMetaWearManager sharedManager];
+  
+  // Tries to retrieve any saved devices and runs a block on finish
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
+    
+    // If length of block is not nil, then we have a saved device
     if ([task.result count]) {
       _sharedDevice = task.result[0];
-      [self connectToDevice: callback];
+      [self connectToDevice :callback];
     } else {
-      [self scanForDevices: callback];
+      // Else scan for devices in vicinity
+      [self scanForDevices :callback];
     }
     return nil;
   }];
@@ -53,20 +57,26 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   }];
 }
 
-- (void) scanForDevices {
-  NSLog(@"Scan for devices");
+- (void) scanForDevices :(RCTResponseSenderBlock)callback {
+  callback(@[[NSNull null], @NO]);
+  // Collection for storing devices and connecting to later
   self.nativeDeviceCollection = [NSMutableDictionary new];
-  [self.manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
+  // Scans for devices in the vicinity and updates their info in real-time
+  [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
+    // Stores a list of devices with information that's JS safe
     NSMutableArray *deviceList = [NSMutableArray array];
+    // Loops through found devices
     for (MBLMetaWear *device in array) {
-      NSString *deviceID = [device.identifier UUIDString];
-      self.nativeDeviceCollection[deviceID] = device;
+      // Assign device to collection based on device identifier string
+      self.nativeDeviceCollection[[device.identifier UUIDString]] = device;
+      // Add objects to deviceList array
       [deviceList addObject: @{
                                @"name": device.name,
-                               @"identifier": deviceID,
+                               @"identifier": [device.identifier UUIDString],
                                @"RSSI": device.discoveryTimeRSSI,
                                }];
     }
+    // Once all devices added to array, emit as event
     [self deviceEventEmitter :deviceList];
   }];
 }
