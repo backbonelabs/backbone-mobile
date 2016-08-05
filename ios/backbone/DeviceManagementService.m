@@ -7,7 +7,7 @@
 
 @synthesize bridge = _bridge;
 
-static MBLMetaWear *_manager = nil;
+static MBLMetaWearManager *_manager = nil;
 static MBLMetaWear *_sharedDevice = nil;
 
 + (MBLMetaWear *)getDevice {
@@ -24,10 +24,12 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     
     // If length of block is not nil, then we have a saved device
-    if ([task.result count]) {
+    if (![task.result count]) {
+      NSLog(@"Found device");
       _sharedDevice = task.result[0];
       [self connectToDevice :callback];
     } else {
+      NSLog(@"Didn't find device");
       // Else scan for devices in vicinity
       [self scanForDevices :callback];
     }
@@ -35,14 +37,20 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   }];
 }
 
+// Method for handling a selected device from RN
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
+  // Stop scanning for devices - doesn't stop scanning otherwise
   [_manager stopScanForMetaWears];
+  // Assigned _sharedDevice to the selected device in the collection
   _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
+  // Initiate connection to the device
   [self connectToDevice :callback];
 }
 
+// Connects to the device currently in _sharedDevice
 - (void)connectToDevice :(RCTResponseSenderBlock)callback {
-  [self.device connectWithHandler:^(NSError *error) {
+  NSLog(@"Connecting");
+  [_sharedDevice connectWithHandler:^(NSError *error) {
     if (error) {
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
                                                                @"domain": error.domain,
@@ -51,13 +59,14 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
                                                                });
       callback(@[makeError, @NO]);
     } else {
-      [self.device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+      [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
     }
   }];
 }
 
 - (void) scanForDevices :(RCTResponseSenderBlock)callback {
+  NSLog(@"Scanning");
   callback(@[[NSNull null], @NO]);
   /** 
    Collection for storing devices and connecting to later -
@@ -70,6 +79,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
     NSMutableArray *deviceList = [NSMutableArray array];
     // Loops through found devices
     for (MBLMetaWear *device in array) {
+      NSLog(@"Devices");
       // Assign device to collection based on device identifier string
       self.nativeDeviceCollection[[device.identifier UUIDString]] = device;
       // Add objects to deviceList array
