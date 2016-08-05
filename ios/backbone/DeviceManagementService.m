@@ -7,8 +7,8 @@
 
 @synthesize bridge = _bridge;
 
-static MBLMetaWear *_sharedDevice = nil;
 static MBLMetaWear *_manager = nil;
+static MBLMetaWear *_sharedDevice = nil;
 
 + (MBLMetaWear *)getDevice {
   return _sharedDevice;
@@ -36,9 +36,9 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
-  [self.manager stopScanForMetaWears];
-  self.device = [self.nativeDeviceCollection objectForKey:deviceID];
-  [self connectToDevice: self.device: callback];
+  [_manager stopScanForMetaWears];
+  _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
+  [self connectToDevice :callback];
 }
 
 - (void)connectToDevice :(RCTResponseSenderBlock)callback {
@@ -59,11 +59,14 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
 
 - (void) scanForDevices :(RCTResponseSenderBlock)callback {
   callback(@[[NSNull null], @NO]);
-  // Collection for storing devices and connecting to later
+  /** 
+   Collection for storing devices and connecting to later -
+   sending the entire device object to RN causes app to crash
+   */
   self.nativeDeviceCollection = [NSMutableDictionary new];
   // Scans for devices in the vicinity and updates their info in real-time
   [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
-    // Stores a list of devices with information that's JS safe
+    // Stores a list of devices with information that's "JS-safe"
     NSMutableArray *deviceList = [NSMutableArray array];
     // Loops through found devices
     for (MBLMetaWear *device in array) {
@@ -82,6 +85,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
 }
 
 - (void) deviceEventEmitter :(NSMutableArray *)deviceList {
+  // Emit 'Devices' event with an array of "JS-safe" device objects
   [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceList];
 }
 

@@ -8,6 +8,6 @@
   @property NSMutableDictionary *nativeDeviceCollection;
 + (MBLMetaWear *) getDevice;
 - (void) scanForDevices :(RCTResponseSenderBlock)callback;
-- (void) connectToDevice :(MBLMetaWear *)device :(RCTResponseSenderBlock)callback;
+- (void) connectToDevice :(RCTResponseSenderBlock)callback;
 - (void) deviceEventEmitter :(NSMutableArray *)deviceList;
 @end
