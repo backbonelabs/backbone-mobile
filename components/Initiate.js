@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Main from './Main';
+import Devices from './Devices';
 import logo from '../images/logo.png';
 
 import {
@@ -10,10 +11,9 @@ import {
   StyleSheet,
   NativeModules,
   TouchableHighlight,
-  NativeAppEventEmitter,
 } from 'react-native';
 
-const MetaWearAPI = NativeModules.MetaWearAPI;
+const DeviceManagementService = NativeModules.DeviceManagementService;
 
 const styles = StyleSheet.create({
   container: {
@@ -46,7 +46,6 @@ class Initiate extends Component {
     super();
 
     this.state = {
-      connected: false,
       logoAnimValue: 300,
       logoAnim: new Animated.Value(300),
       buttonAnim: new Animated.ValueXY(),
@@ -70,34 +69,27 @@ class Initiate extends Component {
       });
     });
 
-    MetaWearAPI.searchForMetaWear((error, response) => {
+    DeviceManagementService.checkForSavedDevice((error, response) => {
       if (error) {
         console.log('Error: ', error);
+      } else if (!response) {
+        this.props.navigator.push({
+          component: Devices,
+        });
       } else {
-        this.setState({
-          connected: response,
-        }, () => {
-          this.props.navigator.push({
-            name: 'main',
-            component: Main,
-            passProps: { MetaWearAPI },
-          });
+        this.props.navigator.push({
+          name: 'main',
+          component: Main,
         });
       }
-    });
-
-    const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
-      console.log('Devices: ', event);
     });
   }
 
   connectAnimation() {
-    const context = this;
-
     Animated.sequence([
       Animated.delay(200),
       Animated.timing(
-      context.state.logoAnim,
+      this.state.logoAnim,
       { toValue: 0 }),
     ]).start();
   }
