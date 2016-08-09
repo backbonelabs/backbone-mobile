@@ -46,7 +46,6 @@ class Initiate extends Component {
     super();
 
     this.state = {
-      devices: false,
       logoAnimValue: 300,
       logoAnim: new Animated.Value(300),
       buttonAnim: new Animated.ValueXY(),

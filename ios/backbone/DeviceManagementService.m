@@ -1,5 +1,4 @@
 #import "DeviceManagementService.h"
-#import "RCTBridge.h"
 #import "RCTUtils.h"
 #import "RCTEventDispatcher.h"
 
@@ -14,17 +13,27 @@ static MBLMetaWear *_sharedDevice = nil;
   return _sharedDevice;
 }
 
+// Constructor function
+- (id)init {
+  NSLog(@"Devices: %@", self.nativeDeviceCollection);
+  self = [super init];
+  if (self) {
+    // Assign _manager to device manager
+    _manager = [MBLMetaWearManager sharedManager];
+  }
+  return self;
+}
+
 RCT_EXPORT_MODULE();
 
 // Check for saved devices, if none found then scan for nearby devices
 RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
-  _manager = [MBLMetaWearManager sharedManager];
   
   // Tries to retrieve any saved devices and runs a block on finish
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     
     // If length of block is not nil, then we have a saved device
-    if (![task.result count]) {
+    if ([task.result count]) {
       NSLog(@"Found device");
       _sharedDevice = task.result[0];
       [self connectToDevice :callback];
@@ -79,10 +88,10 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
     NSMutableArray *deviceList = [NSMutableArray array];
     // Loops through found devices
     for (MBLMetaWear *device in array) {
-      NSLog(@"Devices");
       // Assign device to collection based on device identifier string
       self.nativeDeviceCollection[[device.identifier UUIDString]] = device;
       // Add objects to deviceList array
+      NSLog(@"Devices %@", device);
       [deviceList addObject: @{
                                @"name": device.name,
                                @"identifier": [device.identifier UUIDString],

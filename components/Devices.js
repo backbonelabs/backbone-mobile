@@ -43,6 +43,7 @@ class Devices extends Component {
     };
 
     this.listenToDevices = NativeAppEventEmitter.addListener('Devices', (deviceList) => {
+      console.log('Devices List: ', deviceList);
       this.setState({
         dataSource: this.ds.cloneWithRows(deviceList),
       });
