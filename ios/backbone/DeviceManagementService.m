@@ -48,9 +48,9 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
 
 // Method for handling a selected device from RN
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
-  // Stop scanning for devices - doesn't stop scanning otherwise
+  // Stop scanning for devices (startScanForMetaWearsAllowDuplicates doesn't stop scanning otherwise)
   [_manager stopScanForMetaWears];
-  // Assigned _sharedDevice to the selected device in the collection
+  // Assign _sharedDevice to the selected device in the collection
   _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
   // Remember this device
   [_sharedDevice rememberDevice];
