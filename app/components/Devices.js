@@ -53,6 +53,10 @@ class Devices extends Component {
     this.renderRow = this.renderRow.bind(this);
   }
 
+  componentWillUnmount() {
+    this.listenToDevices.remove();
+  }
+
   pressRow(deviceID) {
     DeviceManagementService.selectDevice(deviceID, (error) => {
       if (error) {
