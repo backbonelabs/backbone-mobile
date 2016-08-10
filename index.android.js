@@ -7,29 +7,14 @@
 import React from 'react';
 import {
   AppRegistry,
-  StyleSheet,
   Text,
   View,
 } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import theme from './app/styles/theme';
+import styles from './app/styles/indexAndroid';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+EStyleSheet.build(theme);
 
 const Backbone = () => (
   <View style={styles.container}>

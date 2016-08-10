@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Main from './Main';
-
 import {
   View,
   Text,
@@ -9,29 +8,9 @@ import {
   TouchableHighlight,
   NativeAppEventEmitter,
 } from 'react-native';
+import styles from '../styles/devices';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
-
-const styles = {
-  container: {
-    marginTop: 50,
-  },
-  title: {
-    fontSize: 42,
-    marginBottom: 25,
-    color: '#A8A8A8',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  listItem: {
-    padding: 10,
-    borderWidth: 3,
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 10,
-    borderColor: '#48BBEC',
-  },
-};
 
 class Devices extends Component {
 
@@ -53,6 +32,10 @@ class Devices extends Component {
     this.renderRow = this.renderRow.bind(this);
   }
 
+  componentWillUnmount() {
+    this.listenToDevices.remove();
+  }
+
   pressRow(deviceID) {
     DeviceManagementService.selectDevice(deviceID, (error) => {
       if (error) {
@@ -70,8 +53,8 @@ class Devices extends Component {
     return (
       <TouchableHighlight onPress={() => this.pressRow(data.identifier)}>
         <View style={styles.listItem}>
-          <Text>Name: {data.name}</Text>
-          <Text>Distance: {data.RSSI}</Text>
+          <Text style={styles.listItemText}>Name: {data.name}</Text>
+          <Text style={styles.listItemText}>Distance: {data.RSSI}</Text>
         </View>
       </TouchableHighlight>
     );

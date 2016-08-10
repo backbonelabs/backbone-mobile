@@ -3,19 +3,12 @@ import Monitor from './Monitor';
 import Calibrate from './Calibrate';
 import {
   View,
-  StyleSheet,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
+import styles from '../styles/posture';
 
 const { ActivityService } = NativeModules;
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 // TODO: Refactor into a shared constants export that tracks all the activity names
 const postureActivity = 'posture';

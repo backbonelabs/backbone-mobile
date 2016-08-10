@@ -1,27 +1,9 @@
 import React from 'react';
-
 import {
   TouchableHighlight,
-  StyleSheet,
   Text,
 } from 'react-native';
-
-const styles = StyleSheet.create({
-  button: {
-    height: 75,
-    width: 300,
-    marginLeft: 10,
-    marginRight: 10,
-    borderRadius: 4,
-    justifyContent: 'center',
-  },
-  buttonText: {
-    fontSize: 30,
-    color: 'white',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-});
+import styles from '../styles/postureButton';
 
 const PostureButtonView = (props) => (
   <TouchableHighlight style={[styles.button, props.colorStyle]} onPress={props.onPress}>
