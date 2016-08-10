@@ -1,5 +1,5 @@
 #import "SensorDataService.h"
-#import "MetaWearAPI.h"
+#import "DeviceManagementService.h"
 #import "ActivityModule.h"
 #import "SensorNotifications.h"
 
@@ -43,7 +43,7 @@
  */
 + (SensorDataService *)getSensorDataService {
   static SensorDataService *_sharedInstance = nil;
-  MBLMetaWear *device = [MetaWearAPI getDevice];
+  MBLMetaWear *device = [DeviceManagementService getDevice];
   if (!device) {
     @throw [NSException exceptionWithName:@"DeviceNotConnectedException" reason:@"Not connected to a device" userInfo:nil];
   } else {

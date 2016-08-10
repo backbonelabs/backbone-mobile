@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Main from './Main';
+import Devices from './Devices';
 import logo from '../images/logo.png';
 import {
   View,
@@ -8,18 +9,16 @@ import {
   Animated,
   NativeModules,
   TouchableHighlight,
-  NativeAppEventEmitter,
 } from 'react-native';
 import styles from '../styles/initiate';
 
-const MetaWearAPI = NativeModules.MetaWearAPI;
+const DeviceManagementService = NativeModules.DeviceManagementService;
 
 class Initiate extends Component {
   constructor() {
     super();
 
     this.state = {
-      connected: false,
       logoAnimValue: 300,
       logoAnim: new Animated.Value(300),
       buttonAnim: new Animated.ValueXY(),
@@ -28,17 +27,10 @@ class Initiate extends Component {
     this.initiateConnect = this.initiateConnect.bind(this);
     this.connectAnimation = this.connectAnimation.bind(this);
     this.buttonEnterAnimation = this.buttonEnterAnimation.bind(this);
-    this.deviceListener = null;
   }
 
   componentDidMount() {
     this.buttonEnterAnimation();
-  }
-
-  componentWillUnmount() {
-    if (this.deviceListener) {
-      this.deviceListener.remove();
-    }
   }
 
   initiateConnect() {
@@ -50,34 +42,27 @@ class Initiate extends Component {
       });
     });
 
-    MetaWearAPI.searchForMetaWear((error, response) => {
+    DeviceManagementService.checkForSavedDevice((error, response) => {
       if (error) {
         console.log('Error: ', error);
+      } else if (!response) {
+        this.props.navigator.push({
+          component: Devices,
+        });
       } else {
-        this.setState({
-          connected: response,
-        }, () => {
-          this.props.navigator.push({
-            name: 'main',
-            component: Main,
-            passProps: { MetaWearAPI },
-          });
+        this.props.navigator.push({
+          name: 'main',
+          component: Main,
         });
       }
-    });
-
-    this.deviceListener = NativeAppEventEmitter.addListener('Devices', (event) => {
-      console.log('Devices: ', event);
     });
   }
 
   connectAnimation() {
-    const context = this;
-
     Animated.sequence([
       Animated.delay(200),
       Animated.timing(
-      context.state.logoAnim,
+      this.state.logoAnim,
       { toValue: 0 }),
     ]).start();
   }
