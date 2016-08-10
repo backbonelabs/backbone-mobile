@@ -52,20 +52,24 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   [_manager stopScanForMetaWears];
   // Assigned _sharedDevice to the selected device in the collection
   _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
+  // Remember this device
+  [_sharedDevice rememberDevice];
   // Initiate connection to the device
   [self connectToDevice :callback];
 }
 
 // Connects to the device currently in _sharedDevice
 - (void)connectToDevice :(RCTResponseSenderBlock)callback {
-  NSLog(@"Connecting");
-  [_sharedDevice connectWithHandler:^(NSError *error) {
+  NSLog(@"Attempting to connect to %@", _sharedDevice);
+  // Attempts to connect to the device for 10 seconds
+  [_sharedDevice connectWithTimeout:10 handler:^(NSError *error) {
     if (error) {
+      // If there's an error, make an error object and return in callback
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
-                                                               @"domain": error.domain,
-                                                               @"code": [NSNumber numberWithInteger:error.code],
-                                                               @"userInfo": error.userInfo
-                                                               });
+                                                              @"domain": error.domain,
+                                                              @"code": [NSNumber numberWithInteger:error.code],
+                                                              @"userInfo": error.userInfo
+                                                              });
       callback(@[makeError, @NO]);
     } else {
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
