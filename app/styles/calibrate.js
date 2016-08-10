@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
-export default StyleSheet.create({
+export default EStyleSheet.create({
   container: {
     marginBottom: 35,
     alignItems: 'center',

@@ -6,15 +6,18 @@ import {
   AppRegistry,
   TouchableHighlight,
 } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import Menu from './app/components/Menu';
 import Initiate from './app/components/Initiate';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from './app/styles/indexiOS';
+import theme from './app/styles/theme';
+
+EStyleSheet.build(theme);
 
 class backbone extends Component {
   constructor() {
     super();
-
     const context = this;
 
     this.navigationBarRouteMapper = {
@@ -28,7 +31,7 @@ class backbone extends Component {
           if (route.name) {
             menuButton = (
               <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
-                <Icon name="bars" style={styles.menuIcon} size={30} color="#48BBEC" />
+                <Icon name="bars" style={styles.menuIcon} size={30} color={EStyleSheet.globalVars.$primaryColor} />
               </TouchableHighlight>
             );
           } else {

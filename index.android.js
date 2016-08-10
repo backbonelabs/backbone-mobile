@@ -10,7 +10,11 @@ import {
   Text,
   View,
 } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import theme from './app/styles/theme';
 import styles from './app/styles/indexAndroid';
+
+EStyleSheet.build(theme);
 
 const Backbone = () => (
   <View style={styles.container}>

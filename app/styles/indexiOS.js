@@ -1,9 +1,7 @@
-import {
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
+import { Dimensions } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
-export default StyleSheet.create({
+export default EStyleSheet.create({
   container: {
     width: Dimensions.get('window').width,
   },
@@ -13,7 +11,7 @@ export default StyleSheet.create({
   statusBar: {
     height: 25,
     marginTop: -23,
-    backgroundColor: '#48BBEC',
+    backgroundColor: '$primaryColor',
   },
   menuButton: {
     height: 75,

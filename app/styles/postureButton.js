@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
-export default StyleSheet.create({
+export default EStyleSheet.create({
   button: {
     height: 75,
     width: 300,
