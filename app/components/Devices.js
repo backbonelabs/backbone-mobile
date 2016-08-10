@@ -53,8 +53,8 @@ class Devices extends Component {
     return (
       <TouchableHighlight onPress={() => this.pressRow(data.identifier)}>
         <View style={styles.listItem}>
-          <Text>Name: {data.name}</Text>
-          <Text>Distance: {data.RSSI}</Text>
+          <Text style={styles.listItemText}>Name: {data.name}</Text>
+          <Text style={styles.listItemText}>Distance: {data.RSSI}</Text>
         </View>
       </TouchableHighlight>
     );

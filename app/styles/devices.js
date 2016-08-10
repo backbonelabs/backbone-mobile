@@ -19,4 +19,7 @@ export default EStyleSheet.create({
     marginBottom: 10,
     borderColor: '$primaryColor',
   },
+  listItemText: {
+    fontSize: '1rem',
+  },
 });

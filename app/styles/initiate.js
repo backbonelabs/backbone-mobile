@@ -12,14 +12,14 @@ export default EStyleSheet.create({
   },
   button: {
     height: 75,
-    width: 275,
+    width: 300,
     marginTop: 150,
     borderRadius: 4,
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
   },
   buttonText: {
-    fontSize: 32,
+    fontSize: '2rem',
     color: 'white',
     fontWeight: 'bold',
     alignSelf: 'center',
