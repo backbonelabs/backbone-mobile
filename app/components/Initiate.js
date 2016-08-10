@@ -28,10 +28,17 @@ class Initiate extends Component {
     this.initiateConnect = this.initiateConnect.bind(this);
     this.connectAnimation = this.connectAnimation.bind(this);
     this.buttonEnterAnimation = this.buttonEnterAnimation.bind(this);
+    this.deviceListener = null;
   }
 
   componentDidMount() {
     this.buttonEnterAnimation();
+  }
+
+  componentWillUnmount() {
+    if (this.deviceListener) {
+      this.deviceListener.remove();
+    }
   }
 
   initiateConnect() {
@@ -59,7 +66,7 @@ class Initiate extends Component {
       }
     });
 
-    const listenToDevices = NativeAppEventEmitter.addListener('Devices', (event) => {
+    this.deviceListener = NativeAppEventEmitter.addListener('Devices', (event) => {
       console.log('Devices: ', event);
     });
   }
