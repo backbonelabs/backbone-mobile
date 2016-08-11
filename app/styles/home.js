@@ -24,4 +24,11 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
   },
+  disabledButton: {
+    height: 75,
+    width: 300,
+    borderRadius: 4,
+    justifyContent: 'center',
+    backgroundColor: '$disabledColor',
+  },
 });

@@ -43,13 +43,14 @@ export default class Initiate extends Component {
     return (
       <View style={styles.container}>
         <Image style={styles.logo} source={logo} />
-        {this.state.connecting ?
-          (<View style={styles.connectIndicator}>
+        {!this.state.connecting ?
+          (<TouchableHighlight style={styles.disabledButton}>
             <ActivityIndicator
               animating
+              color="white"
               size="large"
             />
-          </View>) :
+          </TouchableHighlight>) :
           (<TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
             <Text style={styles.buttonText}>CONNECT</Text>
           </TouchableHighlight>)
