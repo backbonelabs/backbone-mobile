@@ -6,6 +6,7 @@ import {
   AppRegistry,
   TouchableHighlight,
 } from 'react-native';
+import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -90,7 +91,7 @@ class backbone extends Component {
       <Drawer
         type="displace"
         content={<Menu
-          menuItems={routes}
+          menuItems={pick(routes, ['activity', 'posture'])}
           navigate={route => this.navigate(route)}
         />}
         openDrawerOffset={0.3} // right margin when drawer is opened
