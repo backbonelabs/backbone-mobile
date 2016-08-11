@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Main from './Main';
+import Posture from './Posture';
 import {
   View,
   Text,
@@ -42,8 +42,8 @@ class Devices extends Component {
         console.log('Error: ', error);
       } else {
         this.props.navigator.push({
-          name: 'main',
-          component: Main,
+          name: 'posture',
+          component: Posture,
         });
       }
     });
