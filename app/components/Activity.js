@@ -9,7 +9,6 @@ import {
   // NativeAppEventEmitter,
 } from 'react-native';
 import styles from '../styles/activity';
-import circle from '../images/circle.png';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
 
