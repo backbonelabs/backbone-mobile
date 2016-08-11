@@ -83,7 +83,7 @@ class backbone extends Component {
   }
 
   renderScene(route, navigator) {
-    return React.createElement(route.component, { navigator, ...route.passProps });
+    return React.createElement(route.component, { navigator, currentRoute: route, ...route.passProps });
   }
 
   render() {
