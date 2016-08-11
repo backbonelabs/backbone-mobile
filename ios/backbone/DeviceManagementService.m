@@ -78,13 +78,11 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   }];
 }
 
-RCT_EXPORT_METHOD(forgetDevice :(RCTResponseSenderBlock)callback ) {
-  NSLog(@"Forget device");
+RCT_EXPORT_METHOD(forgetDevice) {
+  NSLog(@"Forget device %@", _sharedDevice);
   // Forget this particular device
   [_sharedDevice forgetDevice];
   _sharedDevice = nil;
-  // Let RN know operation is complete
-  callback(@[[NSNull null], @YES]);
 }
 
 - (void) scanForDevices :(RCTResponseSenderBlock)callback {
