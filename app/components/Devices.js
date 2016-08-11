@@ -13,6 +13,10 @@ import styles from '../styles/devices';
 const DeviceManagementService = NativeModules.DeviceManagementService;
 
 class Devices extends Component {
+  static propTypes = {
+    navigator: React.PropTypes.object,
+    currentRoute: React.PropTypes.object,
+  };
 
   constructor() {
     super();
@@ -60,7 +64,7 @@ class Devices extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>DEVICES</Text>
+        <Text style={styles.title}>{this.props.currentRoute.title}</Text>
         <ListView
           style={styles.list}
           dataSource={this.state.dataSource}
@@ -71,9 +75,5 @@ class Devices extends Component {
     );
   }
 }
-
-Devices.propTypes = {
-  navigator: React.PropTypes.object,
-};
 
 export default Devices;

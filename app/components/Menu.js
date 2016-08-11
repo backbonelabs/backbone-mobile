@@ -29,7 +29,7 @@ class Menu extends Component {
         dataSource={this.state.dataSource}
         renderRow={(rowData) => (
           <TouchableHighlight style={styles.listItem} onPress={() => this.props.navigate(rowData)}>
-            <Text style={styles.listItemText}>{rowData.name}</Text>
+            <Text style={styles.listItemText}>{rowData.title}</Text>
           </TouchableHighlight>
         )}
       />

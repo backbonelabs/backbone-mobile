@@ -14,6 +14,10 @@ const { ActivityService } = NativeModules;
 const postureActivity = 'posture';
 
 class Posture extends Component {
+  static propTypes = {
+    currentRoute: React.PropTypes.object,
+  };
+
   constructor() {
     super();
     this.state = {
@@ -89,6 +93,7 @@ class Posture extends Component {
             stop={this.stopPostureMonitoring}
             beginCalibrate={this.beginCalibrate}
             monitoring={this.state.monitoring}
+            currentRoute={this.props.currentRoute}
           />
         }
       </View>

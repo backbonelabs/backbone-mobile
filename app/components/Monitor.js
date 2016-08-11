@@ -9,6 +9,10 @@ import {
 import styles from '../styles/monitor';
 
 class MonitorView extends Component {
+  static propTypes = {
+    currentRoute: React.PropTypes.object,
+  };
+
   constructor() {
     super();
 
@@ -40,7 +44,7 @@ class MonitorView extends Component {
     };
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>POSTURE</Text>
+        <Text style={styles.title}>{this.props.currentRoute.title}</Text>
         <Progress.Circle
           size={300}
           thickness={30}
