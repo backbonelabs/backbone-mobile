@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import Main from './Main';
-import Devices from './Devices';
-import logo from '../images/logo.png';
 import {
   View,
   Text,
@@ -10,11 +7,17 @@ import {
   NativeModules,
   TouchableHighlight,
 } from 'react-native';
+import logo from '../images/logo.png';
+import routes from '../routes';
 import styles from '../styles/initiate';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
 
-class Initiate extends Component {
+export default class Initiate extends Component {
+  static propTypes = {
+    navigator: React.PropTypes.object,
+  };
+
   constructor() {
     super();
 
@@ -46,14 +49,9 @@ class Initiate extends Component {
       if (error) {
         console.log('Error: ', error);
       } else if (!response) {
-        this.props.navigator.push({
-          component: Devices,
-        });
+        this.props.navigator.push(routes.devices);
       } else {
-        this.props.navigator.push({
-          name: 'main',
-          component: Main,
-        });
+        this.props.navigator.push(routes.posture);
       }
     });
   }
@@ -95,9 +93,3 @@ class Initiate extends Component {
     );
   }
 }
-
-Initiate.propTypes = {
-  navigator: React.PropTypes.object,
-};
-
-export default Initiate;

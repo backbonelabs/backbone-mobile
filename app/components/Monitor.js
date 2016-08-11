@@ -1,17 +1,29 @@
 import React, { Component } from 'react';
 import * as Progress from 'react-native-progress';
-import PostureButton from './PostureButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   View,
   Text,
 } from 'react-native';
+import PostureButton from './PostureButton';
 import styles from '../styles/monitor';
 
-class MonitorView extends Component {
+export default class MonitorView extends Component {
+  static propTypes = {
+    currentRoute: React.PropTypes.object,
+    tilt: React.PropTypes.number,
+    tiltDirection: React.PropTypes.string,
+    start: React.PropTypes.func,
+    stop: React.PropTypes.func,
+    beginCalibrate: React.PropTypes.func,
+    monitoring: React.PropTypes.bool,
+    slouches: React.PropTypes.number,
+    slouchTime: React.PropTypes.number,
+    postureTime: React.PropTypes.number,
+  };
+
   constructor() {
     super();
-
     this.convertTotalTime = this.convertTotalTime.bind(this);
   }
 
@@ -40,7 +52,7 @@ class MonitorView extends Component {
     };
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>POSTURE</Text>
+        <Text style={styles.title}>{this.props.currentRoute.title}</Text>
         <Progress.Circle
           size={300}
           thickness={30}
@@ -69,17 +81,3 @@ class MonitorView extends Component {
     );
   }
 }
-
-MonitorView.propTypes = {
-  tilt: React.PropTypes.number,
-  tiltDirection: React.PropTypes.string,
-  start: React.PropTypes.func,
-  stop: React.PropTypes.func,
-  beginCalibrate: React.PropTypes.func,
-  monitoring: React.PropTypes.bool,
-  slouches: React.PropTypes.number,
-  slouchTime: React.PropTypes.number,
-  postureTime: React.PropTypes.number,
-};
-
-export default MonitorView;

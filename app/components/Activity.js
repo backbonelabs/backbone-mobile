@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import TimerMixin from 'react-timer-mixin';
-import circle from '../images/circle.png';
 import {
   View,
   Text,
@@ -10,9 +9,16 @@ import {
   // NativeAppEventEmitter,
 } from 'react-native';
 import styles from '../styles/activity';
+import circle from '../images/circle.png';
+
 const MetaWearAPI = NativeModules.MetaWearAPI;
 
-class ActivityView extends Component {
+export default class ActivityView extends Component {
+  static propTypes = {
+    slouchTime: React.PropTypes.number,
+    postureTime: React.PropTypes.number,
+  };
+
   constructor() {
     super();
     this.state = {
@@ -107,10 +113,3 @@ class ActivityView extends Component {
     );
   }
 }
-
-ActivityView.propTypes = {
-  slouchTime: React.PropTypes.number,
-  postureTime: React.PropTypes.number,
-};
-
-export default ActivityView;

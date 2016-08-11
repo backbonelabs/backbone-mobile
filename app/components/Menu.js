@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import {
-  View,
+  TouchableHighlight,
   Text,
   ListView,
 } from 'react-native';
 import styles from '../styles/menu';
 
-class Menu extends Component {
+export default class Menu extends Component {
+  static propTypes = {
+    menuItems: React.PropTypes.object,
+    navigate: React.PropTypes.func,
+  };
+
   constructor() {
     super();
 
@@ -27,14 +32,12 @@ class Menu extends Component {
       <ListView
         style={styles.list}
         dataSource={this.state.dataSource}
-        renderRow={(rowData) => <View style={styles.listItem}><Text style={styles.listItemText}>{rowData}</Text></View>}
+        renderRow={(rowData) => (
+          <TouchableHighlight style={styles.listItem} onPress={() => this.props.navigate(rowData)}>
+            <Text style={styles.listItemText}>{rowData.title}</Text>
+          </TouchableHighlight>
+        )}
       />
     );
   }
 }
-
-Menu.propTypes = {
-  menuItems: React.PropTypes.object,
-};
-
-export default Menu;
