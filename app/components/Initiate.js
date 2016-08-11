@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Posture from './Posture';
-import Devices from './Devices';
 import logo from '../images/logo.png';
 import {
   View,
@@ -10,6 +8,7 @@ import {
   NativeModules,
   TouchableHighlight,
 } from 'react-native';
+import routes from '../routes';
 import styles from '../styles/initiate';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
@@ -46,14 +45,9 @@ class Initiate extends Component {
       if (error) {
         console.log('Error: ', error);
       } else if (!response) {
-        this.props.navigator.push({
-          component: Devices,
-        });
+        this.props.navigator.push(routes.devices);
       } else {
-        this.props.navigator.push({
-          name: 'posture',
-          component: Posture,
-        });
+        this.props.navigator.push(routes.posture);
       }
     });
   }

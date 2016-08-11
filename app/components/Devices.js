@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Posture from './Posture';
 import {
   View,
   Text,
@@ -8,6 +7,7 @@ import {
   TouchableHighlight,
   NativeAppEventEmitter,
 } from 'react-native';
+import postureRoute from '../routes/posture';
 import styles from '../styles/devices';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
@@ -41,10 +41,7 @@ class Devices extends Component {
       if (error) {
         console.log('Error: ', error);
       } else {
-        this.props.navigator.push({
-          name: 'posture',
-          component: Posture,
-        });
+        this.props.navigator.push(postureRoute);
       }
     });
   }
