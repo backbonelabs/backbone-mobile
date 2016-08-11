@@ -9,7 +9,7 @@ export default EStyleSheet.create({
     width: 300,
     height: 50,
     marginTop: 100,
-    marginBottom: 50,
+    marginBottom: 100,
   },
   button: {
     height: 75,
