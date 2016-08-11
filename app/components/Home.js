@@ -28,14 +28,18 @@ export default class Initiate extends Component {
   }
 
   initiateConnect() {
-    DeviceManagementService.checkForSavedDevice((error, response) => {
-      if (error) {
-        console.log('Error: ', error);
-      } else if (!response) {
-        this.props.navigator.push(routes.devices);
-      } else {
-        this.props.navigator.push(routes.posture);
-      }
+    this.setState({
+      connecting: true,
+    }, () => {
+      DeviceManagementService.checkForSavedDevice((error, response) => {
+        if (error) {
+          console.log('Error: ', error);
+        } else if (!response) {
+          this.props.navigator.push(routes.devices);
+        } else {
+          this.props.navigator.push(routes.posture);
+        }
+      });
     });
   }
 
@@ -43,7 +47,7 @@ export default class Initiate extends Component {
     return (
       <View style={styles.container}>
         <Image style={styles.logo} source={logo} />
-        {!this.state.connecting ?
+        {this.state.connecting ?
           (<View style={styles.disabled}>
             <ActivityIndicator
               animating
@@ -53,7 +57,7 @@ export default class Initiate extends Component {
             <Text style={styles.connectingText}>Connecting...</Text>
           </View>) :
           (<TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
-            <Text style={styles.buttonText}>CONNECT</Text>
+            <Text style={styles.buttonText}>Go</Text>
           </TouchableHighlight>)
         }
       </View>

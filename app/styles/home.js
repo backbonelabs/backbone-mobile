@@ -15,14 +15,14 @@ export default EStyleSheet.create({
     height: 75,
     width: 300,
     borderRadius: 4,
+    alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
   },
   buttonText: {
-    fontSize: '2rem',
     color: 'white',
+    fontSize: '1.5rem',
     fontWeight: 'bold',
-    alignSelf: 'center',
   },
   disabled: {
     height: 75,
@@ -35,7 +35,7 @@ export default EStyleSheet.create({
   },
   connectingText: {
     color: 'white',
-    fontSize: '1rem',
+    fontSize: '1.5rem',
     marginLeft: 10,
   },
 });
