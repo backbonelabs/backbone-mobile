@@ -15,7 +15,7 @@ static MBLMetaWear *_sharedDevice = nil;
 
 // Constructor function
 - (id)init {
-  NSLog(@"Devices: %@", self.nativeDeviceCollection);
+  NSLog(@"Init");
   self = [super init];
   if (self) {
     // Assign _manager to device manager
@@ -61,8 +61,8 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
 // Connects to the device currently in _sharedDevice
 - (void)connectToDevice :(RCTResponseSenderBlock)callback {
   NSLog(@"Attempting to connect to %@", _sharedDevice);
-  // Attempts to connect to the device for 10 seconds
-  [_sharedDevice connectWithTimeout:10 handler:^(NSError *error) {
+  // Attempts to connect to the device for 5 seconds
+  [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (error) {
       // If there's an error, make an error object and return in callback
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
