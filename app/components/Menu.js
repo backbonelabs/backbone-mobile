@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View,
+  TouchableHighlight,
   Text,
   ListView,
 } from 'react-native';
@@ -27,7 +27,11 @@ class Menu extends Component {
       <ListView
         style={styles.list}
         dataSource={this.state.dataSource}
-        renderRow={(rowData) => <View style={styles.listItem}><Text style={styles.listItemText}>{rowData}</Text></View>}
+        renderRow={(rowData) => (
+          <TouchableHighlight style={styles.listItem} onPress={() => this.props.navigate(rowData)}>
+            <Text style={styles.listItemText}>{rowData.name}</Text>
+          </TouchableHighlight>
+        )}
       />
     );
   }
@@ -35,6 +39,7 @@ class Menu extends Component {
 
 Menu.propTypes = {
   menuItems: React.PropTypes.object,
+  navigate: React.PropTypes.func,
 };
 
 export default Menu;

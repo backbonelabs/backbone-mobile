@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Main from './Main';
+import Posture from './Posture';
 import Devices from './Devices';
 import logo from '../images/logo.png';
 import {
@@ -51,8 +51,8 @@ class Initiate extends Component {
         });
       } else {
         this.props.navigator.push({
-          name: 'main',
-          component: Main,
+          name: 'posture',
+          component: Posture,
         });
       }
     });

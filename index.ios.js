@@ -6,7 +6,9 @@ import {
   AppRegistry,
   TouchableHighlight,
 } from 'react-native';
+import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import routes from './app/routes';
 import Menu from './app/components/Menu';
 import Initiate from './app/components/Initiate';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,6 +20,7 @@ EStyleSheet.build(theme);
 class backbone extends Component {
   constructor() {
     super();
+
     const context = this;
 
     this.navigationBarRouteMapper = {
@@ -26,60 +29,57 @@ class backbone extends Component {
       RightButton() {
       },
       Title(route, navigator) {
-        if (route.name !== 'menu') {
-          let menuButton = null;
-          if (route.name) {
-            menuButton = (
-              <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
-                <Icon name="bars" style={styles.menuIcon} size={30} color={EStyleSheet.globalVars.$primaryColor} />
-              </TouchableHighlight>
-            );
-          } else {
-            menuButton = <View />;
-          }
-          return (
-            <View style={styles.container}>
-              <View style={styles.statusBar} />
-              {menuButton}
-            </View>
+        let menuButton;
+
+        if (route.name) {
+          menuButton = (
+            <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
+              <Icon name="bars" style={styles.menuIcon} size={30} color={EStyleSheet.globalVars.$primaryColor} />
+            </TouchableHighlight>
           );
         }
+
+        return (
+          <View style={styles.container}>
+            <View style={styles.statusBar} />
+            {menuButton}
+          </View>
+        );
       },
+    };
+
+    this.state = {
+      drawerIsOpen: false,
     };
 
     this.configureScene = this.configureScene.bind(this);
     this.showMenu = this.showMenu.bind(this);
     this.renderScene = this.renderScene.bind(this);
+    this.navigate = this.navigate.bind(this);
   }
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true);
   }
 
-  configureScene(route) {
-    if (route.name === 'menu') {
-      return Navigator.SceneConfigs.FloatFromBottom;
-    }
+  configureScene() {
     return Navigator.SceneConfigs.PushFromRight;
   }
 
+  showMenu() {
+    this.setState({ drawerIsOpen: true });
+  }
 
-  showMenu(route, navigator) {
-    const menuItems = {
-      main: 'main',
-      posture: 'posture',
-      activity: 'activity',
-    };
-
-    delete menuItems[route.name];
-
-    navigator.push({
-      name: 'menu',
-      component: Menu,
-      passProps: {
-        menuItems,
-      },
-    });
+  navigate(route) {
+    const routeStack = this.navigator.getCurrentRoutes();
+    const currentRoute = routeStack[routeStack.length - 1];
+    if (route.name !== currentRoute.name) {
+      // Only navigate if the selected route isn't the current route
+      this.navigator.push(route);
+    }
+    if (this.state.drawerIsOpen) {
+      this.setState({ drawerIsOpen: false });
+    }
   }
 
   renderScene(route, navigator) {
@@ -88,12 +88,26 @@ class backbone extends Component {
 
   render() {
     return (
-      <Navigator
-        navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
-        configureScene={this.configureScene}
-        initialRoute={{ component: Initiate }}
-        renderScene={this.renderScene}
-      />
+      <Drawer
+        type="displace"
+        content={<Menu
+          menuItems={routes}
+          navigate={route => this.navigate(route)}
+        />}
+        openDrawerOffset={0.3} // right margin when drawer is opened
+        open={this.state.drawerIsOpen}
+        onClose={() => this.setState({ drawerIsOpen: false })}
+      >
+        <Navigator
+          ref={ref => {
+            this.navigator = ref;
+          }}
+          navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
+          configureScene={this.configureScene}
+          initialRoute={{ component: Initiate }}
+          renderScene={this.renderScene}
+        />
+      </Drawer>
     );
   }
 }
