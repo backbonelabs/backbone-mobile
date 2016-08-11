@@ -96,6 +96,7 @@ class backbone extends Component {
         openDrawerOffset={0.3} // right margin when drawer is opened
         open={this.state.drawerIsOpen}
         onClose={() => this.setState({ drawerIsOpen: false })}
+        acceptPan={false}
       >
         <Navigator
           ref={ref => {
