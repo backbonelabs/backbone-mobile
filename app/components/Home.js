@@ -16,3 +16,5 @@ const Home = () => (
 Home.propTypes = {
   navigator: React.PropTypes.object,
 };
+
+export default Home;
