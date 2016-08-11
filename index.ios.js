@@ -30,7 +30,7 @@ class backbone extends Component {
       Title(route, navigator) {
         let menuButton;
 
-        if (route.name) {
+        if (route.showMenu) {
           menuButton = (
             <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
               <Icon name="bars" style={styles.menuIcon} size={30} color={EStyleSheet.globalVars.$primaryColor} />
