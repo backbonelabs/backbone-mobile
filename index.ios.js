@@ -8,10 +8,9 @@ import {
 } from 'react-native';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import routes from './app/routes';
 import Menu from './app/components/Menu';
-import Initiate from './app/components/Initiate';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from './app/styles/indexiOS';
 import theme from './app/styles/theme';
 
@@ -104,7 +103,7 @@ class backbone extends Component {
           }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={{ component: Initiate }}
+          initialRoute={routes.initiate}
           renderScene={this.renderScene}
         />
       </Drawer>
