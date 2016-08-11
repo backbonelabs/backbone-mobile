@@ -24,11 +24,18 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
   },
-  disabledButton: {
+  disabled: {
     height: 75,
     width: 300,
     borderRadius: 4,
+    alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'center',
     backgroundColor: '$disabledColor',
+  },
+  connectingText: {
+    color: 'white',
+    fontSize: '1rem',
+    marginLeft: 10,
   },
 });
