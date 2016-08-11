@@ -95,7 +95,6 @@ export default class ActivityView extends Component {
           progress={(this.state.countdown + 0.01) / 1800000}
           size={300}
         />*/}
-        <Image style={styles.circle} source={circle} />
         <Text style={styles.stepsText}>
           STEP
         </Text>
