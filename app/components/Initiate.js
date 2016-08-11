@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from '../images/logo.png';
 import {
   View,
   Text,
@@ -8,12 +7,17 @@ import {
   NativeModules,
   TouchableHighlight,
 } from 'react-native';
+import logo from '../images/logo.png';
 import routes from '../routes';
 import styles from '../styles/initiate';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
 
-class Initiate extends Component {
+export default class Initiate extends Component {
+  static propTypes = {
+    navigator: React.PropTypes.object,
+  };
+
   constructor() {
     super();
 
@@ -89,9 +93,3 @@ class Initiate extends Component {
     );
   }
 }
-
-Initiate.propTypes = {
-  navigator: React.PropTypes.object,
-};
-
-export default Initiate;

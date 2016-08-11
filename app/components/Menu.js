@@ -6,7 +6,12 @@ import {
 } from 'react-native';
 import styles from '../styles/menu';
 
-class Menu extends Component {
+export default class Menu extends Component {
+  static propTypes = {
+    menuItems: React.PropTypes.object,
+    navigate: React.PropTypes.func,
+  };
+
   constructor() {
     super();
 
@@ -36,10 +41,3 @@ class Menu extends Component {
     );
   }
 }
-
-Menu.propTypes = {
-  menuItems: React.PropTypes.object,
-  navigate: React.PropTypes.func,
-};
-
-export default Menu;

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import Monitor from './Monitor';
-import Calibrate from './Calibrate';
 import {
   View,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
+import Monitor from './Monitor';
+import Calibrate from './Calibrate';
 import styles from '../styles/posture';
 
 const { ActivityService } = NativeModules;
@@ -13,7 +13,7 @@ const { ActivityService } = NativeModules;
 // TODO: Refactor into a shared constants export that tracks all the activity names
 const postureActivity = 'posture';
 
-class Posture extends Component {
+export default class Posture extends Component {
   static propTypes = {
     currentRoute: React.PropTypes.object,
   };
@@ -100,5 +100,3 @@ class Posture extends Component {
 		);
   }
 }
-
-export default Posture;
