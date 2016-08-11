@@ -3,6 +3,7 @@ import {
   View,
   Text,
   Image,
+  Alert,
   NativeModules,
   ActivityIndicator,
   TouchableHighlight,
@@ -25,6 +26,7 @@ export default class Initiate extends Component {
     };
 
     this.initiateConnect = this.initiateConnect.bind(this);
+    this.unpairDevice = this.unpairDevice.bind(this);
   }
 
   initiateConnect() {
@@ -33,7 +35,17 @@ export default class Initiate extends Component {
     }, () => {
       DeviceManagementService.checkForSavedDevice((error, response) => {
         if (error) {
-          console.log('Error: ', error);
+          this.setState({
+            connecting: false,
+          }, () => {
+            Alert.alert(
+              'Error!',
+              'Backbone must be within range or fully charged.',
+              [
+                { text: 'Try Again' },
+                { text: 'Unpair Backbone', onPress: this.unpairDevice },
+              ]);
+          });
         } else if (!response) {
           this.props.navigator.push(routes.devices);
         } else {
@@ -41,6 +53,10 @@ export default class Initiate extends Component {
         }
       });
     });
+  }
+
+  unpairDevice() {
+    DeviceManagementService.forgetDevice();
   }
 
   render() {
