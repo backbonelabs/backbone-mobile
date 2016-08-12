@@ -58,7 +58,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
 }
 
 // Attempts connection to the device assigned to _sharedDevice
-- (void)connectToDevice :(RCTResponseSenderBlock)callback {
+- (void)connectToDevice {
   NSLog(@"Attempting connection to %@", _sharedDevice);
   [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (timeoutError) {
@@ -71,18 +71,16 @@ RCT_EXPORT_METHOD(forgetDevice) {
                                                               @"code": [NSNumber numberWithInteger:error.code],
                                                               @"userInfo": error.userInfo,
                                                               });
-      callback(@[makeError, @NO]);
     } else {
       // Stop scanning for devices (startScanForMetaWearsAllowDuplicates doesn't stop scanning otherwise)
       [_manager stopScanForMetaWears];
       [_sharedDevice rememberDevice];
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-      callback(@[[NSNull null], @YES]);
     }
   }];
 
   // Initiate check for device connection state
-  [self checkDeviceConnection :callback];
+  [self checkDeviceConnection];
 }
 
 // Checks after 10 seconds whether device is connected or not
