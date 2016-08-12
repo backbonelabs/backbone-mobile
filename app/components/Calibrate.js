@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Image,
+  // Image,
   Animated,
 } from 'react-native';
 import Progress from 'react-native-progress';

@@ -3,7 +3,7 @@ import TimerMixin from 'react-timer-mixin';
 import {
   View,
   Text,
-  Image,
+  // Image,
   // Vibration,
   NativeModules,
   // NativeAppEventEmitter,
