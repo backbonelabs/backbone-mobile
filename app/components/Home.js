@@ -47,13 +47,12 @@ export default class Home extends Component {
   }
 
   handleConnectError(error) {
-    console.log('Error placeholder: ', error);
     this.setState({
       connecting: false,
     }, () => {
       Alert.alert(
         'Error!',
-        'Backbone must be within range or fully charged.',
+        error.message,
         [
           { text: 'Try Again' },
           { text: 'Unpair Backbone', onPress: this.unpairDevice },
