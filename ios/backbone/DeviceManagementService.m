@@ -6,15 +6,15 @@
 
 @synthesize bridge = _bridge;
 
-static MBLMetaWearManager *_manager = nil;
-static MBLMetaWear *_sharedDevice = nil;
 static BOOL errorThrown = NO;
+static MBLMetaWear *_sharedDevice = nil;
+static MBLMetaWearManager *_manager = nil;
 
 + (MBLMetaWear *)getDevice {
   return _sharedDevice;
 }
 
-// Constructor function runs on module instantiation
+// Runs on initialization
 - (id)init {
   NSLog(@"Init");
   self = [super init];
@@ -31,12 +31,11 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   // Sets errorThrown to false because user initiated/re-initiated connection attempt
   errorThrown = NO;
-  // Tries to retrieve any saved devices and runs block when done
+  // Checks for a saved device
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    // If length of block is not nil, then we have a saved device
+    // If length of array object is not nil, then we've found a saved device
     if ([task.result count]) {
       NSLog(@"Found device");
-      // Assign _sharedDevice to our saved device
       _sharedDevice = task.result[0];
       // Call connectToDevice to handle connection
       [self connectToDevice :callback];
@@ -49,22 +48,19 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   }];
 }
 
-// Method for handling a selected device from React Native
+// Method for initiating connection to a device selected by user
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
   // Stop scanning for devices (startScanForMetaWearsAllowDuplicates doesn't stop scanning otherwise)
   [_manager stopScanForMetaWears];
   // Assign _sharedDevice to the selected device in the collection
   _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
-  // Remember this device
   [_sharedDevice rememberDevice];
-  // Initiate connection to the device
   [self connectToDevice :callback];
 }
 
-// Connects to the device currently in _sharedDevice
+// Attempts connection to the device assigned to _sharedDevice
 - (void)connectToDevice :(RCTResponseSenderBlock)callback {
-  NSLog(@"Attempting to connect to %@", _sharedDevice);
-  // Attempts to connect to the device and runs block once operation complete
+  NSLog(@"Attempting connection to %@", _sharedDevice);
   [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     // errorThrown would be true if connection attempt timed out before
     if (errorThrown) {
@@ -79,7 +75,6 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
                                                                 });
         callback(@[makeError, @NO]);
       } else {
-        // Device is connected to, turn on LED
         [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
         callback(@[[NSNull null], @YES]);
       }
@@ -92,7 +87,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
 
 // Checks after 10 seconds whether device is connected or not
 - (void)checkDeviceConnection :(RCTResponseSenderBlock)callback {
-  // Run block after 10 seconds
+  // Runs block after 10 seconds
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     // If device connection state doesn't equal "connected", then invoke callback with error
     if (_sharedDevice.state != 2) {
