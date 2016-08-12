@@ -39,26 +39,31 @@ export default class Home extends Component {
     };
 
     this.initiateConnect = this.initiateConnect.bind(this);
+    this.monitorConnect = this.monitorConnect.bind(this);
   }
 
   initiateConnect() {
-    DeviceManagementService.checkForSavedDevice((response) => {
-      if (response) {
+    DeviceManagementService.checkForSavedDevice((savedDevice) => {
+      if (savedDevice) {
         this.setState({
           connecting: true,
         }, () => {
-          const deviceConnectionStatus = NativeAppEventEmitter.addListener('Status', (status) => {
-            if (status === 1) {
-              this.props.navigator.push(routes.posture);
-            } else {
-              // navigate to error route
-            }
-            deviceConnectionStatus.remove();
-          });
+          this.monitorConnect();
         });
       } else {
         this.props.navigator.push(routes.devices);
       }
+    });
+  }
+
+  monitorConnect() {
+    const deviceConnectionStatus = NativeAppEventEmitter.addListener('Status', (status) => {
+      if (status.code === 1) {
+        this.props.navigator.push(routes.posture);
+      } else {
+        // navigate to error route
+      }
+      deviceConnectionStatus.remove();
     });
   }
 
