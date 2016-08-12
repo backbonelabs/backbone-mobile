@@ -28,15 +28,15 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   timeoutError = NO;
   // Checks for a saved device
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    // Checks length of array for a saved device
     if ([task.result count]) {
       NSLog(@"Found saved device");
       _sharedDevice = task.result[0];
-      [self connectToDevice :callback];
+      [self connectToDevice];
+      callback(@[@YES]);
     } else {
       NSLog(@"Didn't find device");
-      // If there's no saved device, scan for new ones
-      [self scanForDevices :callback];
+      [self scanForDevices];
+      callback(@[@NO]);
     }
     return nil;
   }];
@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   timeoutError = NO;
   // Assign _sharedDevice to the selected device in the collection
   _sharedDevice = [_deviceCollection objectForKey:deviceID];
-  [self connectToDevice :callback];
+  [self connectToDevice];
 }
 
 RCT_EXPORT_METHOD(forgetDevice) {
@@ -84,7 +84,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
 }
 
 // Checks after 10 seconds whether device is connected or not
-- (void)checkDeviceConnection :(RCTResponseSenderBlock)callback {
+- (void)checkDeviceConnection {
   // Runs block after 10 seconds
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     // If device connection state doesn't equal "connected", then invoke callback with error
@@ -95,14 +95,12 @@ RCT_EXPORT_METHOD(forgetDevice) {
                                                               @"code": [NSNull null],
                                                               @"userInfo": [NSNull null],
                                                               });
-      callback(@[makeError]);
     }
   });
 }
 
-- (void) scanForDevices :(RCTResponseSenderBlock)callback {
+- (void) scanForDevices {
   NSLog(@"Scanning");
-  callback(@[[NSNull null], @NO]);
   /**
    Collection for storing devices and connecting to later -
    sending the entire device object to RN causes app to crash
