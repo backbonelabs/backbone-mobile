@@ -65,22 +65,21 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
     // errorThrown would be true if connection attempt timed out before
     if (errorThrown) {
       return;
+    }
+    else if (error) {
+      // If there's an error, make an error object and return in callback
+      NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
+                                                              @"domain": error.domain,
+                                                              @"code": [NSNumber numberWithInteger:error.code],
+                                                              @"userInfo": error.userInfo
+                                                              });
+      callback(@[makeError, @NO]);
     } else {
-      if (error) {
-        // If there's an error, make an error object and return in callback
-        NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
-                                                                @"domain": error.domain,
-                                                                @"code": [NSNumber numberWithInteger:error.code],
-                                                                @"userInfo": error.userInfo
-                                                                });
-        callback(@[makeError, @NO]);
-      } else {
-        [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-        callback(@[[NSNull null], @YES]);
-      }
+      [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+      callback(@[[NSNull null], @YES]);
     }
   }];
-  
+
   // Initiate check for device connection state
   [self checkDeviceConnection :callback];
 }
@@ -107,7 +106,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
 - (void) scanForDevices :(RCTResponseSenderBlock)callback {
   NSLog(@"Scanning");
   callback(@[[NSNull null], @NO]);
-  /** 
+  /**
    Collection for storing devices and connecting to later -
    sending the entire device object to RN causes app to crash
    */
