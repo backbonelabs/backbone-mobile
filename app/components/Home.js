@@ -15,9 +15,9 @@ import routes from '../routes';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
 
-const ModalBody = () => (
-  <View style={styles.modalBodyContainer}>
-    <View style={styles.modalBodyContent}>
+const ModalContent = () => (
+  <View style={styles.modalContentContainer}>
+    <View style={styles.modalContentBody}>
       <ActivityIndicator
         animating
         size="large"
@@ -73,7 +73,7 @@ export default class Home extends Component {
           <Text style={styles.buttonText}>Connect</Text>
         </TouchableHighlight>
         <Modal animationType="slide" visible={this.state.connecting} transparent>
-          <ModalBody />
+          <ModalContent />
         </Modal>
       </View>
     );

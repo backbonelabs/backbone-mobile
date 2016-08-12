@@ -24,18 +24,13 @@ export default EStyleSheet.create({
     fontSize: '1.5rem',
     fontWeight: 'bold',
   },
-  connectingText: {
-    color: 'white',
-    fontSize: '1.5rem',
-    marginLeft: 10,
-  },
-  modalBodyContainer: {
+  modalContentContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.9)',
   },
-  modalBodyContent: {
+  modalContentBody: {
     width: 150,
     height: 100,
     borderRadius: 8,
