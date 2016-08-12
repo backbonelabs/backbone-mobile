@@ -35,7 +35,7 @@ export default class Home extends Component {
   constructor() {
     super();
     this.state = {
-      connecting: false,
+      modalVisible: false,
     };
 
     this.initiateConnect = this.initiateConnect.bind(this);
@@ -45,7 +45,7 @@ export default class Home extends Component {
   initiateConnect() {
     DeviceManagementService.checkForSavedDevice((savedDevice) => {
       if (savedDevice) {
-        this.setState({ connecting: true }, () => {
+        this.setState({ modalVisible: true }, () => {
           this.monitorConnect();
         });
       } else {
@@ -56,12 +56,14 @@ export default class Home extends Component {
 
   monitorConnect() {
     const deviceConnectionStatus = NativeAppEventEmitter.addListener('Status', (status) => {
-      if (status.code === 1) {
-        this.props.navigator.push(routes.posture);
-      } else {
-        // navigate to error route
-      }
-      deviceConnectionStatus.remove();
+      this.setState({ modalVisible: false }, () => {
+        if (status.code === 1) {
+          this.props.navigator.push(routes.posture);
+        } else {
+          // navigate to error route
+        }
+        deviceConnectionStatus.remove();
+      });
     });
   }
 
@@ -72,7 +74,7 @@ export default class Home extends Component {
         <TouchableHighlight style={styles.button} onPress={this.initiateConnect}>
           <Text style={styles.buttonText}>Connect</Text>
         </TouchableHighlight>
-        <Modal animationType="slide" visible={this.state.connecting} transparent>
+        <Modal animationType="slide" visible={this.state.modalVisible} transparent>
           <ModalContent />
         </Modal>
       </View>
