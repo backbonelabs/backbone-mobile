@@ -75,7 +75,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   }];
 
   // Initiate check for device connection state
-//  [self checkDeviceConnection :callback];
+  [self checkDeviceConnection :callback];
 }
 
 // Checks after 10 seconds whether device is connected or not
