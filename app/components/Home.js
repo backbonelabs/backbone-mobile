@@ -45,9 +45,7 @@ export default class Home extends Component {
   initiateConnect() {
     DeviceManagementService.checkForSavedDevice((savedDevice) => {
       if (savedDevice) {
-        this.setState({
-          connecting: true,
-        }, () => {
+        this.setState({ connecting: true }, () => {
           this.monitorConnect();
         });
       } else {
@@ -75,7 +73,7 @@ export default class Home extends Component {
           <Text style={styles.buttonText}>Connect</Text>
         </TouchableHighlight>
         <Modal animationType="slide" visible={this.state.connecting} transparent>
-          <ModalBody status={this.state.status} />
+          <ModalBody />
         </Modal>
       </View>
     );
