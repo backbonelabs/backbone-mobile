@@ -78,23 +78,12 @@ RCT_EXPORT_METHOD(retryConnect) {
 
 - (void)scanForDevices {
   NSLog(@"Scanning for devices");
-  /* Collection for storing devices and connecting to later -
-   sending the entire device object to RN causes app to crash
-   */
   _deviceCollection = [NSMutableDictionary new];
-  
-  /* Scans for devices within BT range, doesn't run block each
-   time new advertising packet found like other method. However,
-   it does run the handler again when it detects a new device
-   */
   [_manager startScanForMetaWearsWithHandler:^(NSArray *array) {
-    // Stores a list of devices with information that's "JS-safe"
     NSMutableArray *deviceList = [NSMutableArray new];
     
     for (MBLMetaWear *device in array) {
-      // Assign device to collection based on device identifier string
       _deviceCollection[[device.identifier UUIDString]] = device;
-      // Add objects to deviceList array
       [deviceList addObject: @{
                                @"name": device.name,
                                @"identifier": [device.identifier UUIDString],
@@ -102,7 +91,6 @@ RCT_EXPORT_METHOD(retryConnect) {
                                }];
     }
     
-    // Once all devices added to array, emit an event with list
     [self deviceEventEmitter :deviceList];
   }];
 }
@@ -127,7 +115,6 @@ RCT_EXPORT_METHOD(retryConnect) {
 }
 
 - (void)deviceEventEmitter :(NSMutableArray *)deviceList {
-  // Emit 'Devices' event with an array of "JS-safe" device objects
   [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceList];
 }
 
