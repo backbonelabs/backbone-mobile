@@ -9,6 +9,7 @@
 static BOOL timeoutError = NO;
 static MBLMetaWear *_sharedDevice = nil;
 static MBLMetaWearManager *_manager = nil;
+static NSMutableDictionary *_deviceCollection = nil;
 
 + (MBLMetaWear *)getDevice {
   return _sharedDevice;
@@ -23,31 +24,29 @@ static MBLMetaWearManager *_manager = nil;
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
-  
   // Sets timeoutError to false because user initiated/re-initiated connection attempt
   timeoutError = NO;
   // Checks for a saved device
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    // If length of array object is not nil, then we've found a saved device
+    // Checks length of array for a saved device
     if ([task.result count]) {
       NSLog(@"Found saved device");
       _sharedDevice = task.result[0];
       [self connectToDevice :callback];
     } else {
       NSLog(@"Didn't find device");
-      // Scan for devices in vicinity
+      // If there's no saved device, scan for new ones
       [self scanForDevices :callback];
     }
     return nil;
   }];
 }
 
-// Method for initiating connection to a device selected by user
+// Initiates connection to a device selected by user from RN interface
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
-  // User is selecting/re-selecting a device, so reset errorThrown
   timeoutError = NO;
   // Assign _sharedDevice to the selected device in the collection
-  _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
+  _sharedDevice = [_deviceCollection objectForKey:deviceID];
   [self connectToDevice :callback];
 }
 
@@ -111,7 +110,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
    Collection for storing devices and connecting to later -
    sending the entire device object to RN causes app to crash
    */
-  self.nativeDeviceCollection = [NSMutableDictionary new];
+  _deviceCollection = [NSMutableDictionary new];
   // Scans for devices in the vicinity and updates their info in real-time
   [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
     // Stores a list of devices with information that's "JS-safe"
@@ -119,7 +118,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
     // Loops through found devices
     for (MBLMetaWear *device in array) {
       // Assign device to collection based on device identifier string
-      self.nativeDeviceCollection[[device.identifier UUIDString]] = device;
+      _deviceCollection[[device.identifier UUIDString]] = device;
       // Add objects to deviceList array
       NSLog(@"Devices %@", device);
       [deviceList addObject: @{
