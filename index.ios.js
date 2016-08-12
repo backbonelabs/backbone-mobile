@@ -26,40 +26,45 @@ class backbone extends Component {
 
     this.navigationBarRouteMapper = {
       LeftButton(route, navigator) {
-        let menuButton;
-   
-        console.log('LB',route)
-   
+        let menuButton
+
+        console.log('LB', route)
+
         if (route.showMenu) {
           menuButton = (
-            <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
-              <Icon name="bars" style={styles.menuIcon} size={30} color={EStyleSheet.globalVars.$primaryColor} />
+            <TouchableHighlight
+              style={styles.menuButton}
+              underlayColor="gray"
+              onPress={() => { context.showMenu(route, navigator); }}>
+              <Icon name="bars" style={styles.menuButtonIcon}/>
             </TouchableHighlight>
           );
         }
+
         return (
           <View style={styles.container}>
             {menuButton}
           </View>
         );
-
       },
       RightButton(route, navigator) {
         let settingButton;
 
-        console.log('RB',route)
+        console.log('RB', route);
 
         settingButton = (
-          <TouchableHighlight style={styles.settingButton} onPress={() => { context.showMenu(route, navigator); }}>
-            <Icon name="bars" style={styles.menuIcon} size={40} color={EStyleSheet.globalVars.$primaryColor} />
+          <TouchableHighlight
+          style={styles.settingButton}
+          onPress={() => { context.showMenu(route, navigator); }}>
+            <Icon name="tablet" style={styles.settingButtonIcon} />
           </TouchableHighlight>
-        );  
+        );
 
         return (
           <View style={styles.container}>
             {settingButton}
           </View>
-        );        
+        );    
       },
       Title() {
       },
@@ -100,7 +105,7 @@ class backbone extends Component {
   }
 
   renderScene(route, navigator) {
-    console.log('route - renderScene',route)
+    console.log('route - renderScene', route);
     return React.createElement(route.component, { navigator, currentRoute: route, ...route.passProps });
   }
 
