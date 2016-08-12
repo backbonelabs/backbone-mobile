@@ -16,7 +16,6 @@ static NSMutableDictionary *_deviceCollection = nil;
 }
 
 - (id)init {
-  NSLog(@"Type of self: %@", self);
   _manager = [MBLMetaWearManager sharedManager];
   return self;
 }
@@ -70,7 +69,7 @@ RCT_EXPORT_METHOD(retryConnect) {
     } else {
       [_sharedDevice rememberDevice];
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-      [self deviceConnectionStatus: @{@"code:": [NSNumber numberWithInteger:1], @"message": @"Successfully connected"}];
+      [self deviceConnectionStatus :@{@"code": [NSNumber numberWithInteger:1], @"message": @"Successfully connected"}];
     }
   }];
   
@@ -110,8 +109,8 @@ RCT_EXPORT_METHOD(retryConnect) {
 
 - (void)checkForConnectionTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-    NSLog(@"Device connection timed out");
     if (_sharedDevice.state != 2) {
+      NSLog(@"Device connection timed out");
       connectionTimeout = YES;
       NSDictionary *makeError = RCTMakeError(@"This device is taking too long to connect.", nil, @{
                                                               @"domain": [NSNull null],
