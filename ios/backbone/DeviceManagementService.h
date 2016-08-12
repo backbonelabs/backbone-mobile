@@ -4,9 +4,9 @@
 @interface DeviceManagementService : NSObject <RCTBridgeModule>
   @property (nonatomic, strong) RCTBridge *bridge;
 + (MBLMetaWear *) getDevice;
-- (void) connectToSavedDevice;
-- (void) checkDeviceTimeout;
+- (void) connectToDevice;
 - (void) scanForDevices;
-- (void) deviceEventEmitter :(NSMutableArray *)deviceList;
+- (void) checkForConnectionTimeout;
 - (void) deviceConnectionStatus :(NSDictionary *)status;
+- (void) deviceEventEmitter :(NSMutableArray *)deviceList;
 @end
