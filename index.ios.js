@@ -12,6 +12,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import routes from './app/routes';
 import Menu from './app/components/Menu';
+import Setting from './app/components/Setting';
 import styles from './app/styles/indexiOS';
 import theme from './app/styles/theme';
 
@@ -24,13 +25,11 @@ class backbone extends Component {
     const context = this;
 
     this.navigationBarRouteMapper = {
-      LeftButton() {
-      },
-      RightButton() {
-      },
-      Title(route, navigator) {
+      LeftButton(route, navigator) {
         let menuButton;
-
+   
+        console.log('LB',route)
+   
         if (route.showMenu) {
           menuButton = (
             <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
@@ -38,13 +37,31 @@ class backbone extends Component {
             </TouchableHighlight>
           );
         }
-
         return (
           <View style={styles.container}>
-            <View style={styles.statusBar} />
             {menuButton}
           </View>
         );
+
+      },
+      RightButton(route, navigator) {
+        let settingButton;
+
+        console.log('RB',route)
+
+        settingButton = (
+          <TouchableHighlight style={styles.settingButton} onPress={() => { context.showMenu(route, navigator); }}>
+            <Icon name="bars" style={styles.menuIcon} size={40} color={EStyleSheet.globalVars.$primaryColor} />
+          </TouchableHighlight>
+        );  
+
+        return (
+          <View style={styles.container}>
+            {settingButton}
+          </View>
+        );        
+      },
+      Title() {
       },
     };
 
@@ -83,6 +100,7 @@ class backbone extends Component {
   }
 
   renderScene(route, navigator) {
+    console.log('route - renderScene',route)
     return React.createElement(route.component, { navigator, currentRoute: route, ...route.passProps });
   }
 
