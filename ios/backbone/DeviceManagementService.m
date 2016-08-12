@@ -35,7 +35,7 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     // If length of array object is not nil, then we've found a saved device
     if ([task.result count]) {
-      NSLog(@"Found device");
+      NSLog(@"Found device, %lu", [task.result count]);
       _sharedDevice = task.result[0];
       // Call connectToDevice to handle connection
       [self connectToDevice :callback];
@@ -54,7 +54,6 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   [_manager stopScanForMetaWears];
   // Assign _sharedDevice to the selected device in the collection
   _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
-  [_sharedDevice rememberDevice];
   [self connectToDevice :callback];
 }
 
@@ -75,6 +74,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
                                                               });
       callback(@[makeError, @NO]);
     } else {
+      [_sharedDevice rememberDevice];
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
     }
