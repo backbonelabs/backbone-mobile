@@ -70,7 +70,8 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
                                                               @"domain": error.domain,
                                                               @"code": [NSNumber numberWithInteger:error.code],
-                                                              @"userInfo": error.userInfo
+                                                              @"userInfo": error.userInfo,
+                                                              @"message": [NSNull null],
                                                               });
       callback(@[makeError, @NO]);
     } else {
