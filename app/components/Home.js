@@ -7,6 +7,7 @@ import {
   NativeModules,
   ActivityIndicator,
   TouchableHighlight,
+  NativeAppEventEmitter,
 } from 'react-native';
 import logo from '../images/logo.png';
 import styles from '../styles/home';
@@ -20,11 +21,8 @@ const ModalBody = () => (
       <ActivityIndicator
         animating
         size="large"
-        color="black"
+        color="#e73e3a"
       />
-      <Text style={styles.modalBodyTitle}>
-        Connecting
-      </Text>
     </View>
   </View>
 );
@@ -41,55 +39,28 @@ export default class Home extends Component {
     };
 
     this.initiateConnect = this.initiateConnect.bind(this);
-    // this.handleConnectError = this.handleConnectError.bind(this);
-    // this.unpairDevice = this.unpairDevice.bind(this);
   }
 
   initiateConnect() {
-    this.setState({
-      connecting: true,
-    }, () => {
-      // DeviceManagementService.checkForSavedDevice((response) => {
-      //   if (response) {
-      //     Alert.alert(
-      //     'Connecting',
-      //     'Bah',
-      //     );
-      //     // this.props.navigator.push(routes.posture);
-      //   } else {
-      //     this.props.navigator.push(routes.devices);
-      //   }
-      // });
+    DeviceManagementService.checkForSavedDevice((response) => {
+      if (response) {
+        this.setState({
+          connecting: true,
+        }, () => {
+          const deviceConnectionStatus = NativeAppEventEmitter.addListener('Status', (status) => {
+            if (status === 1) {
+              this.props.navigator.push(routes.posture);
+            } else {
+              // navigate to error route
+            }
+            deviceConnectionStatus.remove();
+          });
+        });
+      } else {
+        this.props.navigator.push(routes.devices);
+      }
     });
   }
-
-  // handleConnectError() {
-  //   this.setState({
-  //     connecting: false,
-  //   }, () => {
-      // Alert.alert(
-      //   'Error!',
-      //   'Error!',
-      //   [
-      //     { text: 'Try Again' },
-      //     { text: 'Unpair Backbone', onPress: this.unpairDevice },
-      //   ]);
-  //   });
-  // }
-
-  // unpairDevice() {
-  //   DeviceManagementService.forgetDevice();
-  // }
-
-  // {this.state.connecting ?
-  // (<View style={styles.disabled}>
-  //   <ActivityIndicator
-  //     animating
-  //     color="white"
-  //     size="large"
-  //   />
-  //   <Text style={styles.connectingText}>Connecting...</Text>
-  // </View>) :
 
   render() {
     return (
@@ -99,7 +70,7 @@ export default class Home extends Component {
           <Text style={styles.buttonText}>Connect</Text>
         </TouchableHighlight>
         <Modal animationType="slide" visible={this.state.connecting} transparent>
-          <ModalBody />
+          <ModalBody status={this.state.status} />
         </Modal>
       </View>
     );
