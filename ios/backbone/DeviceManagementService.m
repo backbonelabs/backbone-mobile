@@ -50,6 +50,13 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   [self connectToDevice :callback];
 }
 
+RCT_EXPORT_METHOD(forgetDevice) {
+  NSLog(@"Forget device %@", _sharedDevice);
+  // Forget the saved device
+  [_sharedDevice forgetDevice];
+  _sharedDevice = nil;
+}
+
 // Attempts connection to the device assigned to _sharedDevice
 - (void)connectToDevice :(RCTResponseSenderBlock)callback {
   NSLog(@"Attempting connection to %@", _sharedDevice);
@@ -95,13 +102,6 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   });
 }
 
-RCT_EXPORT_METHOD(forgetDevice) {
-  NSLog(@"Forget device %@", _sharedDevice);
-  // Forget the saved device
-  [_sharedDevice forgetDevice];
-  _sharedDevice = nil;
-}
-
 - (void) scanForDevices :(RCTResponseSenderBlock)callback {
   NSLog(@"Scanning");
   callback(@[[NSNull null], @NO]);
@@ -111,7 +111,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
    */
   _deviceCollection = [NSMutableDictionary new];
   // Scans for devices in the vicinity and updates their info in real-time
-  [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
+  [_manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
     // Stores a list of devices with information that's "JS-safe"
     NSMutableArray *deviceList = [NSMutableArray array];
     // Loops through found devices
