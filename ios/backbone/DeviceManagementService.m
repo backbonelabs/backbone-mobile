@@ -34,7 +34,7 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   // Checks for a saved device
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     // If length of array object is not nil, then we've found a saved device
-    if ([task.result count]) {
+    if (![task.result count]) {
       NSLog(@"Found device, %lu", [task.result count]);
       _sharedDevice = task.result[0];
       // Call connectToDevice to handle connection
@@ -50,6 +50,8 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
 
 // Method for initiating connection to a device selected by user
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
+  // User is selecting/re-selecting a device, so reset errorThrown
+  errorThrown = NO;
   // Assign _sharedDevice to the selected device in the collection
   _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
   [self connectToDevice :callback];
@@ -69,7 +71,6 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
                                                               @"domain": error.domain,
                                                               @"code": [NSNumber numberWithInteger:error.code],
                                                               @"userInfo": error.userInfo,
-                                                              @"message": [NSNull null],
                                                               });
       callback(@[makeError, @NO]);
     } else {
@@ -92,11 +93,10 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
     // If device connection state doesn't equal "connected", then invoke callback with error
     if (_sharedDevice.state != 2) {
       errorThrown = YES;
-      NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
+      NSDictionary *makeError = RCTMakeError(@"This device is taking too long to connect.", nil, @{
                                                               @"domain": [NSNull null],
                                                               @"code": [NSNull null],
                                                               @"userInfo": [NSNull null],
-                                                              @"message": @"This device is taking too long to connect.",
                                                               });
       callback(@[makeError]);
     }
