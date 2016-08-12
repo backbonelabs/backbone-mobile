@@ -95,7 +95,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
                                                               @"domain": [NSNull null],
                                                               @"code": [NSNull null],
                                                               @"userInfo": [NSNull null],
-                                                              @"message": @"Device taking to long to connect, either not in range of smartphone or dead.",
+                                                              @"message": @"This device is taking too long to connect.",
                                                               });
       callback(@[makeError]);
     }
