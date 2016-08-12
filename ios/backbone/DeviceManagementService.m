@@ -34,7 +34,7 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   // Checks for a saved device
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     // If length of array object is not nil, then we've found a saved device
-    if (![task.result count]) {
+    if ([task.result count]) {
       NSLog(@"Found device, %lu", [task.result count]);
       _sharedDevice = task.result[0];
       // Call connectToDevice to handle connection
