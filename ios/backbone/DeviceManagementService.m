@@ -6,7 +6,7 @@
 
 @synthesize bridge = _bridge;
 
-static BOOL errorThrown = NO;
+static BOOL timeoutError = NO;
 static MBLMetaWear *_sharedDevice = nil;
 static MBLMetaWearManager *_manager = nil;
 
@@ -14,30 +14,24 @@ static MBLMetaWearManager *_manager = nil;
   return _sharedDevice;
 }
 
-// Runs on initialization
 - (id)init {
-  NSLog(@"Init");
   self = [super init];
-  if (self) {
-    // Assign _manager to device manager
-    _manager = [MBLMetaWearManager sharedManager];
-  }
+  _manager = [MBLMetaWearManager sharedManager];
   return self;
 }
 
 RCT_EXPORT_MODULE();
 
-// Check for saved devices, if none found then scan for nearby devices
 RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
-  // Sets errorThrown to false because user initiated/re-initiated connection attempt
-  errorThrown = NO;
+  
+  // Sets timeoutError to false because user initiated/re-initiated connection attempt
+  timeoutError = NO;
   // Checks for a saved device
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     // If length of array object is not nil, then we've found a saved device
     if ([task.result count]) {
-      NSLog(@"Found device, %lu", [task.result count]);
+      NSLog(@"Found saved device");
       _sharedDevice = task.result[0];
-      // Call connectToDevice to handle connection
       [self connectToDevice :callback];
     } else {
       NSLog(@"Didn't find device");
@@ -51,7 +45,7 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
 // Method for initiating connection to a device selected by user
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
   // User is selecting/re-selecting a device, so reset errorThrown
-  errorThrown = NO;
+  timeoutError = NO;
   // Assign _sharedDevice to the selected device in the collection
   _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
   [self connectToDevice :callback];
@@ -60,9 +54,9 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
 // Attempts connection to the device assigned to _sharedDevice
 - (void)connectToDevice :(RCTResponseSenderBlock)callback {
   NSLog(@"Attempting connection to %@", _sharedDevice);
-  [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
-    // errorThrown would be true if connection attempt timed out before
-    if (errorThrown) {
+  [_sharedDevice connectWithTimeout:1.0 handler:^(NSError *error) {
+    NSLog(@"Error error error");
+    if (timeoutError) {
       return;
     }
     else if (error) {
@@ -83,7 +77,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   }];
 
   // Initiate check for device connection state
-  [self checkDeviceConnection :callback];
+//  [self checkDeviceConnection :callback];
 }
 
 // Checks after 10 seconds whether device is connected or not
@@ -92,7 +86,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     // If device connection state doesn't equal "connected", then invoke callback with error
     if (_sharedDevice.state != 2) {
-      errorThrown = YES;
+      timeoutError = YES;
       NSDictionary *makeError = RCTMakeError(@"This device is taking too long to connect.", nil, @{
                                                               @"domain": [NSNull null],
                                                               @"code": [NSNull null],
