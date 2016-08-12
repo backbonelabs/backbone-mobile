@@ -91,7 +91,13 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
     // If device connection state doesn't equal "connected", then invoke callback with error
     if (_sharedDevice.state != 2) {
       errorThrown = YES;
-      callback(@[@YES]);
+      NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
+                                                              @"domain": @"N/A",
+                                                              @"code": @"N/A",
+                                                              @"userInfo": @"N/A",
+                                                              @"message": @"Device taking to long to connect, either not in range of smartphone or dead.",
+                                                              });
+      callback(@[makeError]);
     }
   });
 }
