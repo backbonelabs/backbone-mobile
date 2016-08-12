@@ -53,8 +53,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
 // Attempts connection to the device assigned to _sharedDevice
 - (void)connectToDevice :(RCTResponseSenderBlock)callback {
   NSLog(@"Attempting connection to %@", _sharedDevice);
-  [_sharedDevice connectWithTimeout:1.0 handler:^(NSError *error) {
-    NSLog(@"Error error error");
+  [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (timeoutError) {
       return;
     }
