@@ -28,10 +28,10 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   timeoutError = NO;
   // Checks for a saved device
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    if ([task.result count]) {
+    if (![task.result count]) {
       NSLog(@"Found saved device");
       _sharedDevice = task.result[0];
-      [self connectToDevice];
+      [self connectToSavedDevice];
       callback(@[@YES]);
     } else {
       NSLog(@"Didn't find device");
@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   timeoutError = NO;
   // Assign _sharedDevice to the selected device in the collection
   _sharedDevice = [_deviceCollection objectForKey:deviceID];
-  [self connectToDevice];
+  [self connectToSavedDevice];
 }
 
 RCT_EXPORT_METHOD(forgetDevice) {
@@ -57,49 +57,46 @@ RCT_EXPORT_METHOD(forgetDevice) {
   _sharedDevice = nil;
 }
 
-// Attempts connection to the device assigned to _sharedDevice
-- (void)connectToDevice {
-  NSLog(@"Attempting connection to %@", _sharedDevice);
+- (void)connectToSavedDevice {
+  NSLog(@"Attempting connection to saved device: %@", _sharedDevice);
   [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (timeoutError) {
       return;
     }
     else if (error) {
-      // If there's an error, make an error object and return in callback
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
                                                               @"domain": error.domain,
                                                               @"code": [NSNumber numberWithInteger:error.code],
                                                               @"userInfo": error.userInfo,
                                                               });
+      [self deviceConnectionStatus: makeError];
     } else {
-      // Stop scanning for devices (startScanForMetaWearsAllowDuplicates doesn't stop scanning otherwise)
-      [_manager stopScanForMetaWears];
-      [_sharedDevice rememberDevice];
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+      [self deviceConnectionStatus: @{@"code:": [NSNumber numberWithInteger:1], @"message": @"Successfully connected"}];
     }
   }];
-
-  // Initiate check for device connection state
-  [self checkDeviceConnection];
+  
+  [self checkDeviceTimeout];
 }
 
 // Checks after 10 seconds whether device is connected or not
-- (void)checkDeviceConnection {
-  // Runs block after 10 seconds
+- (void)checkDeviceTimeout {
+  NSLog(@"Checking for timeout");
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     // If device connection state doesn't equal "connected", then invoke callback with error
     if (_sharedDevice.state != 2) {
       timeoutError = YES;
       NSDictionary *makeError = RCTMakeError(@"This device is taking too long to connect.", nil, @{
                                                               @"domain": [NSNull null],
-                                                              @"code": [NSNull null],
+                                                              @"code": [NSNumber numberWithInteger:2],
                                                               @"userInfo": [NSNull null],
                                                               });
+      [self deviceConnectionStatus: makeError];
     }
   });
 }
 
-- (void) scanForDevices {
+- (void)scanForDevices {
   NSLog(@"Scanning");
   /**
    Collection for storing devices and connecting to later -
@@ -127,9 +124,13 @@ RCT_EXPORT_METHOD(forgetDevice) {
   }];
 }
 
-- (void) deviceEventEmitter :(NSMutableArray *)deviceList {
+- (void)deviceEventEmitter :(NSMutableArray *)deviceList {
   // Emit 'Devices' event with an array of "JS-safe" device objects
   [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceList];
+}
+
+- (void)deviceConnectionStatus :(NSDictionary *)status {
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Status" body: status];
 }
 
 @end;
