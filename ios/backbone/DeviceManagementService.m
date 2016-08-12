@@ -50,8 +50,6 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
 
 // Method for initiating connection to a device selected by user
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
-  // Stop scanning for devices (startScanForMetaWearsAllowDuplicates doesn't stop scanning otherwise)
-  [_manager stopScanForMetaWears];
   // Assign _sharedDevice to the selected device in the collection
   _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
   [self connectToDevice :callback];
@@ -75,6 +73,8 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
                                                               });
       callback(@[makeError, @NO]);
     } else {
+      // Stop scanning for devices (startScanForMetaWearsAllowDuplicates doesn't stop scanning otherwise)
+      [_manager stopScanForMetaWears];
       [_sharedDevice rememberDevice];
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       callback(@[[NSNull null], @YES]);
