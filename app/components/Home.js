@@ -14,7 +14,7 @@ import routes from '../routes';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
 
-export default class Initiate extends Component {
+export default class Home extends Component {
   static propTypes = {
     navigator: React.PropTypes.object,
   };
