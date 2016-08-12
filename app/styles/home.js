@@ -33,11 +33,11 @@ export default EStyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(0,0,0,0.9)',
   },
   modalBodyContent: {
-    width: 250,
-    height: 150,
+    width: 150,
+    height: 100,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -46,6 +46,6 @@ export default EStyleSheet.create({
   modalBodyTitle: {
     color: 'red',
     fontSize: '1.5rem',
-    marginTop: 15,
+    marginTop: 10,
   },
 });
