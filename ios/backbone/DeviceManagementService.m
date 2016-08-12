@@ -27,11 +27,9 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
     if ([task.result count]) {
       NSLog(@"Found a saved device");
       _sharedDevice = task.result[0];
-      [self connectToDevice];
       callback(@[@YES]);
     } else {
       NSLog(@"No saved devices found");
-      [self scanForDevices];
       callback(@[@NO]);
     }
     return nil;
@@ -56,6 +54,7 @@ RCT_EXPORT_METHOD(retryConnect) {
 
 - (void)connectToDevice {
   NSLog(@"Attempting connection to device: %@", _sharedDevice);
+  NSLog(@"Device state %lu", _sharedDevice.state);
   [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (connectionTimeout) {
       return;
