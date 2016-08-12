@@ -92,9 +92,9 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
     if (_sharedDevice.state != 2) {
       errorThrown = YES;
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
-                                                              @"domain": @"N/A",
-                                                              @"code": @"N/A",
-                                                              @"userInfo": @"N/A",
+                                                              @"domain": [NSNull null],
+                                                              @"code": [NSNull null],
+                                                              @"userInfo": [NSNull null],
                                                               @"message": @"Device taking to long to connect, either not in range of smartphone or dead.",
                                                               });
       callback(@[makeError]);
