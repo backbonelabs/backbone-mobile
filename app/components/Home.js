@@ -44,7 +44,7 @@ export default class Home extends Component {
 
   componentWillMount() {
     DeviceManagementService.getDeviceStatus((status) => {
-      if (status) {
+      if (status === 2) {
         this.props.navigator.push(routes.posture);
       }
     });
