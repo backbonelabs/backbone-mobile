@@ -12,7 +12,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import routes from './app/routes';
 import Menu from './app/components/Menu';
-import Setting from './app/components/Setting';
 import styles from './app/styles/indexiOS';
 import theme from './app/styles/theme';
 
