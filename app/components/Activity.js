@@ -27,7 +27,7 @@ export default class ActivityView extends Component {
       countdown: 1800000,
     };
 
-    this.convertTotalTime = this.convertTotalTime.bind(this);
+    this.stringFormatTime = this.stringFormatTime.bind(this);
     this.startCountdown = this.startCountdown.bind(this);
     this.stopCountdown = this.stopCountdown.bind(this);
   }
@@ -71,19 +71,24 @@ export default class ActivityView extends Component {
     TimerMixin.clearInterval(this.state.timer);
   }
 
-  convertTotalTime(seconds) {
-    let timeString = '';
-    const hourString = (seconds - (seconds % 360)) / 360 + 'h ';
-    const minuteString = (seconds - (seconds % 60)) / 60 + 'm ';
-    const secondString = seconds % 60 + 's';
+  stringFormatTime(seconds) {
+    let time = seconds;
+    let string = '';
 
-    if (seconds > 3600) {
-      timeString += hourString;
-    } else if (seconds > 60) {
-      timeString += minuteString;
+    if (seconds >= 3600) {
+      const hours = (time - (time % 3600)) / 3600 + 'h ';
+      time = time % 3600;
+      string += hours;
     }
-    timeString += secondString;
-    return timeString;
+
+    if (seconds >= 60) {
+      const minutes = (time - (time % 60)) / 60 + 'm ';
+      time = time % 60;
+      string += minutes;
+    }
+
+    string += time % 60 + 's';
+    return string;
   }
 
   render() {
@@ -108,7 +113,7 @@ export default class ActivityView extends Component {
           TIME UNTIL BREAK
         </Text>
         <Text style={styles.timer}>
-          {this.convertTotalTime((this.state.countdown))}
+          {this.stringFormatTime((this.state.countdown))}
         </Text>
       </View>
     );
