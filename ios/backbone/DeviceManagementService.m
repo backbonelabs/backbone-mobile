@@ -48,7 +48,10 @@ RCT_EXPORT_METHOD(connectToDevice) {
     } else {
       [_sharedDevice rememberDevice];
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-      [self deviceConnectionStatus :@{@"message": @"Successfully connected", @"code": @2}];
+      [self deviceConnectionStatus :@{
+                                      @"message": @"Successfully connected",
+                                      @"code": [NSNumber numberWithInt:_sharedDevice.state]
+                                      }];
     }
   }];
   
