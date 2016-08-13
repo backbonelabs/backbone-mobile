@@ -24,7 +24,7 @@ export default class Setting extends Component {
   componentWillMount() {
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.setState({
-      dataSource: ds.cloneWithRows(['setting test1','setting test2'])
+      dataSource: ds.cloneWithRows(['setting test1', 'setting test2']),
     });
   }
 
@@ -35,9 +35,10 @@ export default class Setting extends Component {
           style={styles.list}
           dataSource={this.state.dataSource}
           renderRow={(rowData) => (
-            <TouchableHighlight 
+            <TouchableHighlight
               style={styles.listItem}
-              onPress={() => this.props.navigate(rowData)}>
+              onPress={() => this.props.navigate(rowData)}
+            >
               <Text style={styles.listItemText}>{rowData}</Text>
             </TouchableHighlight>
           )}

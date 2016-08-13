@@ -32,7 +32,7 @@ class backbone extends Component {
             <TouchableHighlight
               style={styles.menuButton}
               underlayColor="gray"
-              onPress={() => {context.showMenu(route, navigator); }}>
+              onPress={() => { context.showMenu(route, navigator); }}>
               <Icon name="bars" style={styles.menuButtonIcon} />
             </TouchableHighlight>
           );
