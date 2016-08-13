@@ -50,7 +50,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       [self deviceConnectionStatus :@{
                                       @"message": @"Successfully connected",
-                                      @"code": [NSNumber numberWithInt:_sharedDevice.state]
+                                      @"code": [NSNumber numberWithInteger:_sharedDevice.state]
                                       }];
     }
   }];
@@ -86,7 +86,7 @@ RCT_EXPORT_METHOD(scanForDevices) {
 }
 
 RCT_EXPORT_METHOD(getDeviceStatus :(RCTResponseSenderBlock)callback) {
-  callback(@[[NSNumber numberWithInt:_sharedDevice.state]]);
+  callback(@[[NSNumber numberWithInteger:_sharedDevice.state]]);
 }
 
 RCT_EXPORT_METHOD(forgetDevice) {
