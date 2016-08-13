@@ -29,14 +29,16 @@ export default class MonitorView extends Component {
 
   convertTotalTime(seconds) {
     let timeString = '';
+    const hourString = (seconds - (seconds % 360)) / 360 + 'h ';
+    const minuteString = (seconds - (seconds % 60)) / 60 + 'm ';
+    const secondString = seconds % 60 + 's';
 
-    if (seconds > 60) {
-      timeString = `${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else if (seconds > 3600) {
-      timeString = `${(seconds - (seconds % 360)) / 360}h ${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else {
-      timeString = `0h 0m ${seconds}s`;
+    if (seconds > 3600) {
+      timeString += hourString;
+    } else if (seconds > 60) {
+      timeString += minuteString;
     }
+    timeString += secondString;
     return timeString;
   }
 
@@ -47,7 +49,10 @@ export default class MonitorView extends Component {
       marginTop: -265,
       marginBottom: 130,
       transform: [
-        { rotate: (direction === 'clockwise') ? `-${this.props.tilt}deg` : `${this.props.tilt}deg` },
+        {rotate: (direction === 'clockwise') ?
+          `-${this.props.tilt}deg` :
+          `${this.props.tilt}deg`
+        },
       ],
     };
     return (

@@ -33,8 +33,18 @@ class backbone extends Component {
 
         if (route.showMenu) {
           menuButton = (
-            <TouchableHighlight style={styles.menuButton} onPress={() => { context.showMenu(route, navigator); }}>
-              <Icon name="bars" style={styles.menuIcon} size={30} color={EStyleSheet.globalVars.$primaryColor} />
+            <TouchableHighlight
+              style={styles.menuButton}
+              onPress={() => {
+                context.showMenu(route, navigator);
+              }}
+            >
+              <Icon
+                name="bars"
+                style={styles.menuIcon}
+                size={30}
+                color={EStyleSheet.globalVars.$primaryColor}
+              />
             </TouchableHighlight>
           );
         }
@@ -83,7 +93,14 @@ class backbone extends Component {
   }
 
   renderScene(route, navigator) {
-    return React.createElement(route.component, { navigator, currentRoute: route, ...route.passProps });
+    return React.createElement(
+      route.component,
+      {
+        navigator,
+        currentRoute: route,
+        ...route.passProps
+      }
+    );
   }
 
   render() {

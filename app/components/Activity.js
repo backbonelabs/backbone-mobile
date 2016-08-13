@@ -71,17 +71,18 @@ export default class ActivityView extends Component {
     TimerMixin.clearInterval(this.state.timer);
   }
 
-  convertTotalTime(milliseconds) {
+  convertTotalTime(seconds) {
     let timeString = '';
-    const seconds = milliseconds / 1000;
+    const hourString = (seconds - (seconds % 360)) / 360 + 'h ';
+    const minuteString = (seconds - (seconds % 60)) / 60 + 'm ';
+    const secondString = seconds % 60 + 's';
 
-    if (seconds > 60) {
-      timeString = `${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else if (seconds > 3600) {
-      timeString = `${(seconds - (seconds % 360)) / 360}h ${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else {
-      timeString = `0h 0m ${seconds}s`;
+    if (seconds > 3600) {
+      timeString += hourString;
+    } else if (seconds > 60) {
+      timeString += minuteString;
     }
+    timeString += secondString;
     return timeString;
   }
 
