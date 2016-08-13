@@ -60,7 +60,7 @@ export default class Home extends Component {
 
   initiateConnection() {
     this.setState({ modalVisible: true }, () => {
-      const deviceConnectionStatus = NativeAppEventEmitter.once('Status', (status) => {
+      NativeAppEventEmitter.once('Status', (status) => {
         this.setState({ modalVisible: false }, () => {
           if (status.code === 2) {
             this.props.navigator.push(routes.posture);
