@@ -27,26 +27,6 @@ export default class ActivityView extends Component {
       countdown: 1800000,
     };
 
-    this.stringFormatTime = function (seconds) {
-      let time = seconds;
-      let string = '';
-
-      if (seconds >= 3600) {
-        const hours = `${(time - (time % 3600)) / 3600}h`;
-        time %= 3600;
-        string += hours;
-      }
-
-      if (seconds >= 60) {
-        const minutes = `${(time - (time % 60)) / 60}m`;
-        time %= 60;
-        string += minutes;
-      }
-
-      string += `${time % 60}s`;
-      return string;
-    };
-
     this.startCountdown = this.startCountdown.bind(this);
     this.stopCountdown = this.stopCountdown.bind(this);
   }
@@ -74,6 +54,26 @@ export default class ActivityView extends Component {
     //   Vibration.vibrate();
     //   context.startCountdown();
     // });
+  }
+
+  stringFormatTime(seconds) {
+    let time = seconds;
+    let string = '';
+
+    if (seconds >= 3600) {
+      const hours = `${(time - (time % 3600)) / 3600}h`;
+      time %= 3600;
+      string += hours;
+    }
+
+    if (seconds >= 60) {
+      const minutes = `${(time - (time % 60)) / 60}m`;
+      time %= 60;
+      string += minutes;
+    }
+
+    string += `${time % 60}s`;
+    return string;
   }
 
   startCountdown() {
