@@ -32,8 +32,8 @@ class backbone extends Component {
             <TouchableHighlight
               style={styles.menuButton}
               underlayColor="gray"
-              onPress={() => { context.showMenu(route, navigator); }}>
-              <Icon name="bars" style={styles.menuButtonIcon}/>
+              onPress={() => {context.showMenu(route, navigator); }}>
+              <Icon name="bars" style={styles.menuButtonIcon} />
             </TouchableHighlight>
           );
         }
@@ -59,7 +59,7 @@ class backbone extends Component {
           <View style={styles.container}>
             {settingButton}
           </View>
-        );    
+        );
       },
       Title() {
       },
@@ -88,14 +88,14 @@ class backbone extends Component {
     this.setState({ drawerIsOpen: true });
   }
 
-  showSetting(route, navigator) {
-    let settingOpen = this.state.settingIsOpen;
-    
-    if(!settingOpen) {
-      this.setState({settingIsOpen: true})
+  showSetting() {
+    const settingOpen = this.state.settingIsOpen;
+
+    if (!settingOpen) {
+      this.setState({ settingIsOpen: true });
       this.navigator.push(routes.setting);
     } else {
-      this.setState({settingIsOpen: false})
+      this.setState({ settingIsOpen: false });
       this.navigator.pop();
     }
   }
