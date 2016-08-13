@@ -94,7 +94,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
 
 - (void)checkForConnectionTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-    if (_sharedDevice.state != 2) {
+    if (_sharedDevice.state != MBLConnectionStateConnected) {
       NSLog(@"Device connection timed out");
       NSDictionary *makeError = RCTMakeError(@"This device is taking too long to connect.", nil, @{
                                                               @"domain": [NSNull null],
