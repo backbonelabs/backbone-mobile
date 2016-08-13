@@ -6,7 +6,6 @@
 
 @synthesize bridge = _bridge;
 
-static BOOL connectionTimeout = NO;
 static MBLMetaWear *_sharedDevice = nil;
 static MBLMetaWearManager *_manager = nil;
 static NSMutableDictionary *_deviceCollection = nil;
@@ -43,9 +42,7 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(connectToDevice) {
   NSLog(@"Attempting connection to device: %@", _sharedDevice);
   [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
-    if (connectionTimeout) {
-      return;
-    } else if (error) {
+    if (error) {
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
                                                               @"domain": error.domain,
                                                               @"code": [NSNumber numberWithInteger:error.code],
@@ -95,18 +92,13 @@ RCT_EXPORT_METHOD(forgetDevice) {
   _sharedDevice = nil;
 }
 
-RCT_EXPORT_METHOD(retryConnect) {
-  connectionTimeout = NO;
-}
-
 - (void)checkForConnectionTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if (_sharedDevice.state != 2) {
       NSLog(@"Device connection timed out");
-      connectionTimeout = YES;
       NSDictionary *makeError = RCTMakeError(@"This device is taking too long to connect.", nil, @{
                                                               @"domain": [NSNull null],
-                                                              @"code": [NSNumber numberWithInteger:2],
+                                                              @"code": [NSNull null],
                                                               @"userInfo": [NSNull null],
                                                               });
       [self deviceConnectionStatus: makeError];
