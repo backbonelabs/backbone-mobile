@@ -98,7 +98,7 @@ class backbone extends Component {
       {
         navigator,
         currentRoute: route,
-        ...route.passProps
+        ...route.passProps,
       }
     );
   }

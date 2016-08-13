@@ -32,18 +32,18 @@ export default class MonitorView extends Component {
     let string = '';
 
     if (seconds >= 3600) {
-      const hours = (time - (time % 3600)) / 3600 + 'h ';
-      time = time % 3600;
+      const hours = `${(time - (time % 3600)) / 3600}h`;
+      time %= 3600;
       string += hours;
     }
 
     if (seconds >= 60) {
-      const minutes = (time - (time % 60)) / 60 + 'm ';
-      time = time % 60;
+      const minutes = `${(time - (time % 60)) / 60}m`;
+      time %= 60;
       string += minutes;
     }
 
-    string += time % 60 + 's';
+    string += `${time % 60}s`;
     return string;
   }
 
@@ -54,9 +54,9 @@ export default class MonitorView extends Component {
       marginTop: -265,
       marginBottom: 130,
       transform: [
-        {rotate: (direction === 'clockwise') ?
+        { rotate: (direction === 'clockwise') ?
           `-${this.props.tilt}deg` :
-          `${this.props.tilt}deg`
+          `${this.props.tilt}deg`,
         },
       ],
     };
