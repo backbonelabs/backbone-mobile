@@ -1,17 +1,20 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
+  container: {
+    flex: 1
+  },
   list: {
-    marginTop: 0,
+    flex:1,
+    marginTop: '10%',
+    backgroundColor: '#BDC3C7' 
   },
   listItem: {
     borderBottomWidth: 1,
-    borderBottomColor: 'black',
+    borderBottomColor: 'black'
   },
   listItemText: {
-    fontSize: 24,
-    paddingTop: 20,
-    paddingLeft: 20,
-    paddingBottom: 20,
+    fontSize: '1.5rem',
+    marginLeft: '5%'
   },
 });

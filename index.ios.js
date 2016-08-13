@@ -26,9 +26,7 @@ class backbone extends Component {
 
     this.navigationBarRouteMapper = {
       LeftButton(route, navigator) {
-        let menuButton
-
-        console.log('LB', route)
+        let menuButton;
 
         if (route.showMenu) {
           menuButton = (
@@ -50,13 +48,11 @@ class backbone extends Component {
       RightButton(route, navigator) {
         let settingButton;
 
-        console.log('RB', route);
-
         settingButton = (
           <TouchableHighlight
-          style={styles.settingButton}
-          onPress={() => { context.showMenu(route, navigator); }}>
-            <Icon name="tablet" style={styles.settingButtonIcon} />
+            style={styles.settingButton}
+            onPress={() => { context.showSetting(route, navigator); }}>
+            <Icon name="mobile-phone" style={styles.settingButtonIcon} />
           </TouchableHighlight>
         );
 
@@ -71,6 +67,7 @@ class backbone extends Component {
     };
 
     this.state = {
+      settingIsOpen: false,
       drawerIsOpen: false,
     };
 
@@ -92,6 +89,18 @@ class backbone extends Component {
     this.setState({ drawerIsOpen: true });
   }
 
+  showSetting(route, navigator) {
+    let settingOpen = this.state.settingIsOpen;
+    
+    if(!settingOpen) {
+      this.setState({settingIsOpen: true})
+      this.navigator.push(routes.setting);
+    } else {
+      this.setState({settingIsOpen: false})
+      this.navigator.pop();
+    }
+  }
+
   navigate(route) {
     const routeStack = this.navigator.getCurrentRoutes();
     const currentRoute = routeStack[routeStack.length - 1];
@@ -105,11 +114,11 @@ class backbone extends Component {
   }
 
   renderScene(route, navigator) {
-    console.log('route - renderScene', route);
     return React.createElement(route.component, { navigator, currentRoute: route, ...route.passProps });
   }
 
   render() {
+    console.log('routes', routes);
     return (
       <Drawer
         type="displace"

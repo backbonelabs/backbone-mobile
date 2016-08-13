@@ -5,16 +5,11 @@ export default EStyleSheet.create({
   container: {
     flex: 2,
     flexDirection: 'row',
-    // width: Dimensions.get('window').width,
-    // borderColor: 'red',
-    // borderWidth: 3
   },
   statusBar: {
     backgroundColor: '$primaryColor',
     borderColor: 'blue',
     borderWidth: 3
-    // height: 25,
-    // marginTop: -23,
   },
   menuButton: {
     justifyContent: 'center',  
@@ -32,5 +27,4 @@ export default EStyleSheet.create({
     fontSize: 30,
     color: '$primaryColor'
   },
-
 });
