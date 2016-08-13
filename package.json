@@ -7,9 +7,9 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
-    "lodash": "4.14.2",
+    "lodash": "4.15.0",
     "react": "15.2.1",
-    "react-native": "0.30.0",
+    "react-native": "0.31.0",
     "react-native-drawer": "2.2.6",
     "react-native-extended-stylesheet": "0.3.0",
     "react-native-progress": "3.0.1",
@@ -19,10 +19,10 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
-    "eslint": "^2.13.1",
-    "eslint-config-airbnb": "^9.0.1",
+    "eslint": "^3.3.0",
+    "eslint-config-airbnb": "^10.0.1",
     "eslint-plugin-import": "^1.11.1",
-    "eslint-plugin-jsx-a11y": "^1.5.5",
-    "eslint-plugin-react": "^5.2.2"
+    "eslint-plugin-jsx-a11y": "^2.1.0",
+    "eslint-plugin-react": "^6.0.0"
   }
 }
