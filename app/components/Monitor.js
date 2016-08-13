@@ -24,27 +24,9 @@ export default class MonitorView extends Component {
 
   constructor() {
     super();
-    this.convertTotalTime = this.convertTotalTime.bind(this);
-  }
-
-  stringFormatTime(seconds) {
-    let time = seconds;
-    let string = '';
-
-    if (seconds >= 3600) {
-      const hours = `${(time - (time % 3600)) / 3600}h`;
-      time %= 3600;
-      string += hours;
-    }
-
-    if (seconds >= 60) {
-      const minutes = `${(time - (time % 60)) / 60}m`;
-      time %= 60;
-      string += minutes;
-    }
-
-    string += `${time % 60}s`;
-    return string;
+    this.state = {
+      placeholder: true,
+    };
   }
 
   render() {
