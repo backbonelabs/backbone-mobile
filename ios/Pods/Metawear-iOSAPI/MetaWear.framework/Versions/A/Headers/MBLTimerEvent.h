@@ -44,6 +44,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BFTask *)start;
 
+/**
+ Stop the timer
+ */
+- (BFTask *)stop;
+
 @end
 
 NS_ASSUME_NONNULL_END

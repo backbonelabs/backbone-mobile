@@ -55,32 +55,32 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Create a new event that will trigger periodically a fixed number of times.
  @param period Period time in mSec
- @param repeatCount Number of times event will be triggered, 0xFFFF will repeat forever
+ @param eventCount Number of times event will be triggered, 0xFFFF will repeat forever
  @returns New event that will trigger periodically
  */
 - (MBLTimerEvent<MBLDataSample *> *)eventWithPeriod:(uint32_t)period
-                                        repeatCount:(uint16_t)repeatCount;
+                                         eventCount:(uint16_t)eventCount;
 /**
  Create a new event that will trigger periodically a fixed number of times.
  @param period Period time in mSec
- @param repeatCount Number of times event will be triggered, 0xFFFF will repeat forever
+ @param eventCount Number of times event will be triggered, 0xFFFF will repeat forever
  @param autoStart Should the timer automatically be started when it is used
  @returns New event that will trigger periodically
  */
 - (MBLTimerEvent<MBLDataSample *> *)eventWithPeriod:(uint32_t)period
-                                        repeatCount:(uint16_t)repeatCount
+                                         eventCount:(uint16_t)eventCount
                                           autoStart:(BOOL)autoStart;
 
 /**
  Create a new event that will trigger periodically a fixed number of times.
  @param period Period time in mSec
- @param repeatCount Number of times event will be triggered, 0xFFFF will repeat forever
+ @param eventCount Number of times event will be triggered, 0xFFFF will repeat forever
  @param autoStart Should the timer automatically be started when it is used
  @param triggerOnStart Should the timer's first event occur when it starts or after one period
  @returns New event that will trigger periodically
  */
 - (MBLTimerEvent<MBLDataSample *> *)eventWithPeriod:(uint32_t)period
-                                        repeatCount:(uint16_t)repeatCount
+                                         eventCount:(uint16_t)eventCount
                                           autoStart:(BOOL)autoStart
                                      triggerOnStart:(BOOL)triggerOnStart;
 
