@@ -42,28 +42,17 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Interface for reading/writing externally connected I2C devices.
  */
+DEPRECATED_MSG_ATTRIBUTE("Use MBLSerial instead")
 @interface MBLI2C : MBLModule
 
-/**
- Create an I2C data endpoint.  The deivce and register address
- will be available in the data sheet of whatever device you connect.
- Event callbacks will be provided an MBLDataSample object whose data
- property can be used to access the data as bytes.
- */
-- (MBLI2CData<MBLDataSample *> *)dataAtDeviceAddress:(uint8_t)deviceAddress
-                                     registerAddress:(uint8_t)registerAddress
-                                              length:(uint8_t)length;
+- (nullable MBLI2CData<MBLDataSample *> *)dataAtDeviceAddress:(uint8_t)deviceAddress
+                                              registerAddress:(uint8_t)registerAddress
+                                                       length:(uint8_t)length DEPRECATED_MSG_ATTRIBUTE("Use MBLSerial instead");
 
-/**
- Create an I2C data endpoint.  The deivce and register address
- will be available in the data sheet of whatever device you connect.
- Event callbacks will be provided an MBLNumericData object whose value
- will contain the register value formatted as a number.
- */
-- (MBLI2CData<MBLDataSample *> *)numberAtDeviceAddress:(uint8_t)deviceAddress
-                                       registerAddress:(uint8_t)registerAddress
-                                                length:(uint8_t)length
-                                              isSigned:(BOOL)isSigned;
+- (nullable MBLI2CData<MBLDataSample *> *)numberAtDeviceAddress:(uint8_t)deviceAddress
+                                                registerAddress:(uint8_t)registerAddress
+                                                         length:(uint8_t)length
+                                                       isSigned:(BOOL)isSigned DEPRECATED_MSG_ATTRIBUTE("Use MBLSerial instead");
 
 @end
 
