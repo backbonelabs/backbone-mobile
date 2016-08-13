@@ -122,7 +122,7 @@ class backbone extends Component {
           }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={routes.initiate}
+          initialRoute={routes.home}
           renderScene={this.renderScene}
         />
       </Drawer>

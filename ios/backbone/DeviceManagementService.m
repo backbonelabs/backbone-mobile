@@ -6,119 +6,116 @@
 
 @synthesize bridge = _bridge;
 
-static MBLMetaWearManager *_manager = nil;
 static MBLMetaWear *_sharedDevice = nil;
+static MBLMetaWearManager *_manager = nil;
+static NSMutableDictionary *_deviceCollection = nil;
 
 + (MBLMetaWear *)getDevice {
   return _sharedDevice;
 }
 
-// Constructor function
 - (id)init {
-  NSLog(@"Devices: %@", self.nativeDeviceCollection);
-  self = [super init];
-  if (self) {
-    // Assign _manager to device manager
-    _manager = [MBLMetaWearManager sharedManager];
-  }
+  _manager = [MBLMetaWearManager sharedManager];
   return self;
 }
 
 RCT_EXPORT_MODULE();
 
-// Check for saved devices, if none found then scan for nearby devices
-RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
-  
-  // Tries to retrieve any saved devices and runs a block on finish
+RCT_EXPORT_METHOD(getSavedDevice :(RCTResponseSenderBlock)callback) {
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    
-    // If length of block is not nil, then we have a saved device
     if ([task.result count]) {
-      NSLog(@"Found device");
+      NSLog(@"Found a saved device");
       _sharedDevice = task.result[0];
-      [self connectToDevice :callback];
+      callback(@[@YES]);
     } else {
-      NSLog(@"Didn't find device");
-      // Else scan for devices in vicinity
-      [self scanForDevices :callback];
+      NSLog(@"No saved devices found");
+      callback(@[@NO]);
     }
     return nil;
   }];
 }
 
-// Method for handling a selected device from RN
-RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
-  // Stop scanning for devices (startScanForMetaWearsAllowDuplicates doesn't stop scanning otherwise)
-  [_manager stopScanForMetaWears];
-  // Assign _sharedDevice to the selected device in the collection
-  _sharedDevice = [self.nativeDeviceCollection objectForKey:deviceID];
-  // Remember this device
-  [_sharedDevice rememberDevice];
-  // Initiate connection to the device
-  [self connectToDevice :callback];
-}
-
-// Connects to the device currently in _sharedDevice
-- (void)connectToDevice :(RCTResponseSenderBlock)callback {
-  NSLog(@"Attempting to connect to %@", _sharedDevice);
-  // Attempts to connect to the device for 10 seconds
-  [_sharedDevice connectWithTimeout:10 handler:^(NSError *error) {
+RCT_EXPORT_METHOD(connectToDevice) {
+  NSLog(@"Attempting connection to device: %@", _sharedDevice);
+  [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (error) {
-      // If there's an error, make an error object and return in callback
       NSDictionary *makeError = RCTMakeError(@"Error", nil, @{
                                                               @"domain": error.domain,
                                                               @"code": [NSNumber numberWithInteger:error.code],
-                                                              @"userInfo": error.userInfo
+                                                              @"userInfo": error.userInfo,
                                                               });
-      callback(@[makeError, @NO]);
+      [self deviceConnectionStatus :makeError];
     } else {
+      [_sharedDevice rememberDevice];
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-      callback(@[[NSNull null], @YES]);
+      [self deviceConnectionStatus :@{
+                                      @"message": @"Successfully connected",
+                                      @"code": [NSNumber numberWithInteger:_sharedDevice.state]
+                                      }];
     }
   }];
+  
+  [self checkForConnectionTimeout];
 }
 
-RCT_EXPORT_METHOD(forgetDevice :(RCTResponseSenderBlock)callback ) {
-  NSLog(@"Forget device");
-  // Forget this particular device
-  [_sharedDevice forgetDevice];
-  _sharedDevice = nil;
-  // Let RN know operation is complete
-  callback(@[[NSNull null], @YES]);
+RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
+  [_manager stopScanForMetaWears];
+  _sharedDevice = [_deviceCollection objectForKey:deviceID];
+  if (_sharedDevice) {
+   callback(@[@YES]);
+  }
 }
 
-- (void) scanForDevices :(RCTResponseSenderBlock)callback {
-  NSLog(@"Scanning");
-  callback(@[[NSNull null], @NO]);
-  /** 
-   Collection for storing devices and connecting to later -
-   sending the entire device object to RN causes app to crash
-   */
-  self.nativeDeviceCollection = [NSMutableDictionary new];
-  // Scans for devices in the vicinity and updates their info in real-time
-  [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
-    // Stores a list of devices with information that's "JS-safe"
-    NSMutableArray *deviceList = [NSMutableArray array];
-    // Loops through found devices
+RCT_EXPORT_METHOD(scanForDevices) {
+  NSLog(@"Scanning for devices");
+  _deviceCollection = [NSMutableDictionary new];
+  [_manager startScanForMetaWearsWithHandler:^(NSArray *array) {
+    NSMutableArray *deviceList = [NSMutableArray new];
+    
     for (MBLMetaWear *device in array) {
-      // Assign device to collection based on device identifier string
-      self.nativeDeviceCollection[[device.identifier UUIDString]] = device;
-      // Add objects to deviceList array
-      NSLog(@"Devices %@", device);
+      _deviceCollection[[device.identifier UUIDString]] = device;
       [deviceList addObject: @{
                                @"name": device.name,
                                @"identifier": [device.identifier UUIDString],
                                @"RSSI": device.discoveryTimeRSSI,
                                }];
     }
-    // Once all devices added to array, emit as event
+    
     [self deviceEventEmitter :deviceList];
   }];
 }
 
-- (void) deviceEventEmitter :(NSMutableArray *)deviceList {
-  // Emit 'Devices' event with an array of "JS-safe" device objects
+RCT_EXPORT_METHOD(getDeviceStatus :(RCTResponseSenderBlock)callback) {
+  callback(@[[NSNumber numberWithInteger:_sharedDevice.state]]);
+}
+
+RCT_EXPORT_METHOD(forgetDevice) {
+  NSLog(@"Forget device %@", _sharedDevice);
+  [_sharedDevice forgetDevice];
+  _sharedDevice = nil;
+}
+
+- (void)checkForConnectionTimeout {
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    if (_sharedDevice.state != MBLConnectionStateConnected) {
+      NSLog(@"Device connection timed out");
+      NSDictionary *makeError = RCTMakeError(@"This device is taking too long to connect.", nil, @{
+                                                              @"domain": [NSNull null],
+                                                              @"code": [NSNull null],
+                                                              @"userInfo": [NSNull null],
+                                                              });
+      [self deviceConnectionStatus: makeError];
+    }
+  });
+}
+
+- (void)deviceConnectionStatus :(NSDictionary *)status {
+  [self.bridge.eventDispatcher sendAppEventWithName:@"Status" body: status];
+}
+
+- (void)deviceEventEmitter :(NSMutableArray *)deviceList {
   [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceList];
 }
+
 
 @end;
