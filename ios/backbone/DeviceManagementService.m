@@ -21,11 +21,7 @@ static NSMutableDictionary *_deviceCollection = nil;
 
 RCT_EXPORT_MODULE();
 
-- (NSDictionary *)constantsToExport {
-  return @{@"deviceState": [NSNumber numberWithInteger: _sharedDevice.state]};
-}
-
-RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(getSavedDevice :(RCTResponseSenderBlock)callback) {
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
       NSLog(@"Found a saved device");
@@ -84,6 +80,10 @@ RCT_EXPORT_METHOD(scanForDevices) {
     
     [self deviceEventEmitter :deviceList];
   }];
+}
+
+RCT_EXPORT_METHOD(getDeviceStatus :(RCTResponseSenderBlock)callback) {
+  callback(@[[NSNumber numberWithInt:_sharedDevice.state]]);
 }
 
 RCT_EXPORT_METHOD(forgetDevice) {
