@@ -48,6 +48,7 @@
 @class MBLEvent;
 @class MBLANCS;
 @class MBLI2C;
+@class MBLSerial;
 @class MBLTimer;
 @class MBLConductance;
 @class MBLBarometer;
@@ -154,9 +155,9 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  */
 @property (nonatomic, readonly, nullable) MBLTimer *timer;
 /**
- MBLTimer object contains all methods for performing raw I2C read/writes
+ MBLSerial object contains all methods for performing raw I2C and SPI read/writes
  */
-@property (nonatomic, readonly, nullable) MBLI2C *i2c;
+@property (nonatomic, readonly, nullable) MBLSerial *serial;
 /**
  MBLConductance object contains all methods for perfoming Conductance reads
  */
@@ -371,6 +372,10 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  */
 - (void)updateFirmwareWithHandler:(MBLErrorHandler)handler
                   progressHandler:(nullable MBLFloatHandler)progressHandler DEPRECATED_MSG_ATTRIBUTE("Use prepareForFirmwareUpdateWithHandler: instead");
+/**
+ @deprecated
+ */
+@property (nonatomic, readonly, nullable) MBLI2C *i2c DEPRECATED_MSG_ATTRIBUTE("Use serial instead");
 
 @end
 

@@ -90,7 +90,9 @@
 #import <MetaWear/MBLRegister.h>
 #import <MetaWear/MBLRGBData.h>
 #import <MetaWear/MBLRMSAccelerometerData.h>
+#import <MetaWear/MBLSerial.h>
 #import <MetaWear/MBLSettings.h>
+#import <MetaWear/MBLSPIData.h>
 #import <MetaWear/MBLStringData.h>
 #import <MetaWear/MBLTemperature.h>
 #import <MetaWear/MBLTimer.h>

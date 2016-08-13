@@ -54,6 +54,15 @@ typedef NS_ENUM(uint8_t, MBLComparisonOperation) {
     MBLComparisonOperationGreaterThan = 4,
     MBLComparisonOperationGreaterThanOrEqual = 5
 };
+/**
+ Supported Comparison filter output types
+ */
+typedef NS_ENUM(uint8_t, MBLComparisonOutput) {
+    MBLComparisonOutputValue = 0,
+    MBLComparisonOutputRightHandSide = 1,
+    MBLComparisonOutputZone = 2,
+    MBLComparisonOutputBinary = 3
+};
 
 /**
  Supported Arithmetic filter operations
@@ -240,7 +249,6 @@ typedef void (^MBLNotificationHandler)(ResultType __nullable obj, NSError *__nul
  @param progressHandler Periodically called while log download is in progress
  */
 - (BFTask<NSArray<ResultType> *> *)downloadLogAndStopLoggingAsync:(BOOL)stopLogging progressHandler:(nullable MBLFloatHandler)progressHandler;
-
 - (BFTask<NSArray<ResultType> *> *)downloadLogAndStopLoggingAsync:(BOOL)stopLogging;
 
 /**
@@ -296,14 +304,13 @@ typedef void (^MBLNotificationHandler)(ResultType __nullable obj, NSError *__nul
 - (MBLFilter<ResultType> *)averageOfEventWithDepth:(uint8_t)depth;
 
 /**
- Create a new event that compares the current event and passes through the
- value only if the comparision is true.  Event callbacks will be provided 
- the same object as the input.
+ Create a new event that compares the current event's value to one or more data points
  @param op Operation type to perform
- @parma data Value on the right hand side of the operation
+ @parma data Array of values to compare against
+ @parma output Type of data to output
  @returns New event representing input values that meet the comparison condition
  */
-- (MBLFilter<ResultType> *)compareEventUsingOperation:(MBLComparisonOperation)op withData:(double)data;
+- (MBLFilter *)compareEventUsingOperation:(MBLComparisonOperation)op data:(NSArray<NSNumber *> *)data output:(MBLComparisonOutput)output;
 
 /**
  Create a new event that occurs at most once every period milliseconds.
@@ -374,6 +381,11 @@ typedef void (^MBLNotificationHandler)(ResultType __nullable obj, NSError *__nul
  */
 - (MBLEvent *)readDataOnEvent:(MBLData *)data;
 
+///----------------------------------
+/// @name Deprecated
+///----------------------------------
+// @deprecated
+- (MBLFilter<ResultType> *)compareEventUsingOperation:(MBLComparisonOperation)op withData:(double)data DEPRECATED_MSG_ATTRIBUTE("Use compareEventUsingOperation:data:output instead");
 @end
 
 NS_ASSUME_NONNULL_END

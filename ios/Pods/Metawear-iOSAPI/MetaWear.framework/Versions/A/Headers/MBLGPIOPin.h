@@ -79,7 +79,8 @@ typedef NS_ENUM(uint8_t, MBLPinChangeType) {
 /**
  Set pull configuration for the pin
  */
-@property (nonatomic) MBLPinConfiguration configuration;
+- (MBLPinConfiguration)configuration;
+- (BFTask *)setConfiguration:(MBLPinConfiguration)configuration;
 
 
 ///----------------------------------
