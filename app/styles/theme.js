@@ -1,4 +1,5 @@
 export default {
-  primaryColor: '#48BBEC',
+  primaryColor: '#e73e3a',
+  disabledColor: '#f9a640',
   rem: 16,
 };
