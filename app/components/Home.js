@@ -43,13 +43,15 @@ export default class Home extends Component {
   }
 
   componentWillMount() {
-    if (DeviceManagementService.deviceState === 2) {
-      this.props.navigator.push(routes.posture);
-    }
+    DeviceManagementService.getDeviceStatus((status) => {
+      if (status) {
+        this.props.navigator.push(routes.posture);
+      }
+    });
   }
 
   checkForSavedDevice() {
-    DeviceManagementService.checkForSavedDevice((savedDevice) => {
+    DeviceManagementService.getSavedDevice((savedDevice) => {
       if (savedDevice) {
         this.initiateConnection();
       } else {
