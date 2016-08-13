@@ -22,6 +22,10 @@ static NSMutableDictionary *_deviceCollection = nil;
 
 RCT_EXPORT_MODULE();
 
+- (NSDictionary *)constantsToExport {
+  return @{@"deviceState": [NSNumber numberWithInteger: _sharedDevice.state]};
+}
+
 RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
@@ -36,25 +40,8 @@ RCT_EXPORT_METHOD(checkForSavedDevice :(RCTResponseSenderBlock)callback) {
   }];
 }
 
-RCT_EXPORT_METHOD(selectDeviceToConnect :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
-  [_manager stopScanForMetaWears];
-  _sharedDevice = [_deviceCollection objectForKey:deviceID];
-  [self connectToDevice];
-}
-
-RCT_EXPORT_METHOD(forgetDevice) {
-  NSLog(@"Forget device %@", _sharedDevice);
-  [_sharedDevice forgetDevice];
-  _sharedDevice = nil;
-}
-
-RCT_EXPORT_METHOD(retryConnect) {
-  connectionTimeout = NO;
-}
-
-- (void)connectToDevice {
+RCT_EXPORT_METHOD(connectToDevice) {
   NSLog(@"Attempting connection to device: %@", _sharedDevice);
-  NSLog(@"Device state %lu", _sharedDevice.state);
   [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (connectionTimeout) {
       return;
@@ -68,11 +55,21 @@ RCT_EXPORT_METHOD(retryConnect) {
     } else {
       [_sharedDevice rememberDevice];
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-      [self deviceConnectionStatus :@{@"code": [NSNumber numberWithInteger:1], @"message": @"Successfully connected"}];
+      [self deviceConnectionStatus :@{@"message": @"Successfully connected", @"code": @2}];
     }
   }];
   
   [self checkForConnectionTimeout];
+}
+
+RCT_EXPORT_METHOD(forgetDevice) {
+  NSLog(@"Forget device %@", _sharedDevice);
+  [_sharedDevice forgetDevice];
+  _sharedDevice = nil;
+}
+
+RCT_EXPORT_METHOD(retryConnect) {
+  connectionTimeout = NO;
 }
 
 - (void)scanForDevices {

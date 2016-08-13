@@ -39,34 +39,38 @@ export default class Home extends Component {
     };
 
     this.checkForSavedDevice = this.checkForSavedDevice.bind(this);
-    this.monitorConnect = this.monitorConnect.bind(this);
+    this.initiateConnection = this.initiateConnection.bind(this);
   }
 
   componentWillMount() {
-    this.monitorConnect();
+    if (DeviceManagementService.deviceState === 2) {
+      this.props.navigator.push(routes.posture);
+    }
   }
 
   checkForSavedDevice() {
     DeviceManagementService.checkForSavedDevice((savedDevice) => {
       if (savedDevice) {
-        this.setState({ modalVisible: true });
+        this.initiateConnection();
       } else {
         this.props.navigator.push(routes.devices);
       }
     });
   }
 
-  monitorConnect() {
-    const deviceConnectionStatus = NativeAppEventEmitter.addListener('Status', (status) => {
-      this.setState({ modalVisible: false }, () => {
-        if (status.code === 1) {
-          console.log('Status code: ', status.code);
-          this.props.navigator.push(routes.posture);
+  initiateConnection() {
+    this.setState({ modalVisible: true }, () => {
+      const deviceConnectionStatus = NativeAppEventEmitter.addListener('Status', (status) => {
+        if (status.code === 2) {
+          this.setState({ modalVisible: false }, () => {
+            this.props.navigator.push(routes.posture);
+          });
         } else {
           // navigate to error route
         }
         deviceConnectionStatus.remove();
       });
+      DeviceManagementService.connectToDevice();
     });
   }
 
