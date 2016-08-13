@@ -61,14 +61,14 @@ export default class Home extends Component {
   initiateConnection() {
     this.setState({ modalVisible: true }, () => {
       const deviceConnectionStatus = NativeAppEventEmitter.addListener('Status', (status) => {
-        if (status.code === 2) {
-          this.setState({ modalVisible: false }, () => {
+        this.setState({ modalVisible: false }, () => {
+          if (status.code === 2) {
             this.props.navigator.push(routes.posture);
-          });
-        } else {
-          // navigate to error route
-        }
-        deviceConnectionStatus.remove();
+          } else {
+            // navigate to error route
+          }
+          deviceConnectionStatus.remove();
+        });
       });
       DeviceManagementService.connectToDevice();
     });
