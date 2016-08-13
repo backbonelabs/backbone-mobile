@@ -118,7 +118,6 @@ class backbone extends Component {
   }
 
   render() {
-    console.log('routes', routes);
     return (
       <Drawer
         type="displace"
