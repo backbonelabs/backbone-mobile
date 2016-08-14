@@ -23,6 +23,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4457C4B01D60273200F05D92 /* BluetoothService.m */; };
 		446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */ = {isa = PBXBuildFile; fileRef = 446AF7F81D53DB1200F85785 /* DeviceManagementService.m */; };
 		44970BBB1D2AC74B00351480 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44970BB01D2AC74400351480 /* libART.a */; };
 		449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */; };
@@ -143,6 +144,8 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = backbone/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		3CDC5737A23EFE2050430BB6 /* Pods-backbone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-backbone.debug.xcconfig"; path = "Pods/Target Support Files/Pods-backbone/Pods-backbone.debug.xcconfig"; sourceTree = "<group>"; };
+		4457C4AF1D60273200F05D92 /* BluetoothService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothService.h; path = backbone/BluetoothService.h; sourceTree = "<group>"; };
+		4457C4B01D60273200F05D92 /* BluetoothService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BluetoothService.m; path = backbone/BluetoothService.m; sourceTree = "<group>"; };
 		446AF7F71D53DB1200F85785 /* DeviceManagementService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeviceManagementService.h; path = backbone/DeviceManagementService.h; sourceTree = "<group>"; };
 		446AF7F81D53DB1200F85785 /* DeviceManagementService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DeviceManagementService.m; path = backbone/DeviceManagementService.m; sourceTree = "<group>"; };
 		44970BAB1D2AC74400351480 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
@@ -274,6 +277,8 @@
 		13B07FAE1A68108700A75B9A /* backbone */ = {
 			isa = PBXGroup;
 			children = (
+				4457C4AF1D60273200F05D92 /* BluetoothService.h */,
+				4457C4B01D60273200F05D92 /* BluetoothService.m */,
 				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
 				446AF7F81D53DB1200F85785 /* DeviceManagementService.m */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -760,6 +765,7 @@
 				669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */,
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
 				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
+				4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
