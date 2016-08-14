@@ -4,9 +4,10 @@ import {
   Text,
   Image,
   Modal,
-  NativeModules,
   ActivityIndicator,
   TouchableHighlight,
+  NativeModules,
+  NativeEventEmitter,
   NativeAppEventEmitter,
 } from 'react-native';
 import logo from '../images/logo.png';
@@ -14,6 +15,7 @@ import styles from '../styles/home';
 import routes from '../routes';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
+const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 
 const ModalContent = () => (
   <View style={styles.modalContentContainer}>
@@ -37,6 +39,11 @@ export default class Home extends Component {
     this.state = {
       modalVisible: false,
     };
+
+    BluetoothService.addListener('CentralStatus', (status) => {
+      // placeholder
+      console.log('Central status: ', status);
+    });
 
     this.checkForSavedDevice = this.checkForSavedDevice.bind(this);
     this.initiateConnection = this.initiateConnection.bind(this);
