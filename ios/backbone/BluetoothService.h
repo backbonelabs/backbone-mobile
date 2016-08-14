@@ -2,6 +2,6 @@
 #import "RCTBridgeModule.h"
 
 @interface BluetoothService : NSObject <CBCentralManagerDelegate, RCTBridgeModule>
-@property CBCentralManager *centralManager;
+@property (nonatomic, strong) CBCentralManager *centralManager;
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central;
 @end
