@@ -1,7 +1,7 @@
-import Devices from '../components/Devices';
+import DeviceList from '../components/DeviceList';
 
 export default {
   name: 'devices',
-  title: 'Device List',
-  component: Devices,
+  title: 'Devices',
+  component: DeviceList,
 };
