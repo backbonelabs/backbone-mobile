@@ -26,7 +26,6 @@ export default class ActivityView extends Component {
       countdown: 1800000,
     };
 
-    this.convertTotalTime = this.convertTotalTime.bind(this);
     this.startCountdown = this.startCountdown.bind(this);
     this.stopCountdown = this.stopCountdown.bind(this);
   }
@@ -56,6 +55,26 @@ export default class ActivityView extends Component {
     // });
   }
 
+  stringFormatTime(seconds) {
+    let time = seconds;
+    let string = '';
+
+    if (seconds >= 3600) {
+      const hours = `${(time - (time % 3600)) / 3600}h`;
+      time %= 3600;
+      string += hours;
+    }
+
+    if (seconds >= 60) {
+      const minutes = `${(time - (time % 60)) / 60}m`;
+      time %= 60;
+      string += minutes;
+    }
+
+    string += `${time % 60}s`;
+    return string;
+  }
+
   startCountdown() {
     const context = this;
     this.state.timer = TimerMixin.setInterval(() => {
@@ -68,20 +87,6 @@ export default class ActivityView extends Component {
 
   stopCountdown() {
     TimerMixin.clearInterval(this.state.timer);
-  }
-
-  convertTotalTime(milliseconds) {
-    let timeString = '';
-    const seconds = milliseconds / 1000;
-
-    if (seconds > 60) {
-      timeString = `${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else if (seconds > 3600) {
-      timeString = `${(seconds - (seconds % 360)) / 360}h ${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else {
-      timeString = `0h 0m ${seconds}s`;
-    }
-    return timeString;
   }
 
   render() {
@@ -105,7 +110,7 @@ export default class ActivityView extends Component {
           TIME UNTIL BREAK
         </Text>
         <Text style={styles.timer}>
-          {this.convertTotalTime((this.state.countdown))}
+          {this.stringFormatTime((this.state.countdown))}
         </Text>
       </View>
     );

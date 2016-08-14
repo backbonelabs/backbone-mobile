@@ -24,20 +24,9 @@ export default class MonitorView extends Component {
 
   constructor() {
     super();
-    this.convertTotalTime = this.convertTotalTime.bind(this);
-  }
-
-  convertTotalTime(seconds) {
-    let timeString = '';
-
-    if (seconds > 60) {
-      timeString = `${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else if (seconds > 3600) {
-      timeString = `${(seconds - (seconds % 360)) / 360}h ${(seconds - (seconds % 60)) / 60}m ${seconds % 60}s`;
-    } else {
-      timeString = `0h 0m ${seconds}s`;
-    }
-    return timeString;
+    this.state = {
+      placeholder: true,
+    };
   }
 
   render() {
@@ -47,7 +36,10 @@ export default class MonitorView extends Component {
       marginTop: -265,
       marginBottom: 130,
       transform: [
-        { rotate: (direction === 'clockwise') ? `-${this.props.tilt}deg` : `${this.props.tilt}deg` },
+        { rotate: (direction === 'clockwise') ?
+          `-${this.props.tilt}deg` :
+          `${this.props.tilt}deg`,
+        },
       ],
     };
     return (
