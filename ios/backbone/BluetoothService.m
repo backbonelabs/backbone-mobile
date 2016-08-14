@@ -2,23 +2,41 @@
 
 @implementation BluetoothService
 
-static int _centralState;
+static BOOL _isObserving;
 
 - (id)init {
+  self = [super init];
   self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
   return self;
 }
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(getCentralState :(RCTResponseSenderBlock)callback) {
-  callback(@[[NSNumber numberWithInt:_centralState]]);
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
+  NSLog(@"Central state: %li", (long)[central state]);
+  if (_isObserving) {
+    [self emitCentralState:[central state]];
+  }
 }
 
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-  NSLog(@"Central is: %@", central);
-  _centralState = [central state];
-  NSLog(@"Central state: %i", _centralState);
+-(void)emitCentralState:(int)state {
+  NSDictionary *stateUpdate = @{
+                          @"state": [NSNumber numberWithInt:state],
+                          };
+  [self sendEventWithName:@"CentralStatus" body:stateUpdate];
+}
+
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[@"CentralStatus"];
+}
+
+- (void)startObserving {
+  _isObserving = YES;
+}
+
+- (void)stopObserving {
+  _isObserving = NO;
 }
 
 @end
