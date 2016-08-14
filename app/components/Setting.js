@@ -24,7 +24,7 @@ export default class Setting extends Component {
   componentWillMount() {
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.setState({
-      dataSource: ds.cloneWithRows(['setting test1', 'setting test2']),
+      dataSource: ds.cloneWithRows(['setting test1 Page', 'setting test2 Page']),
     });
   }
 
