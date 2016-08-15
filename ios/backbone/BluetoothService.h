@@ -3,7 +3,6 @@
 #import "RCTEventEmitter.h"
 
 @interface BluetoothService : RCTEventEmitter <CBCentralManagerDelegate, RCTBridgeModule>
-@property (nonatomic, readwrite) NSInteger *listenerCount;
 @property (nonatomic, strong) CBCentralManager *centralManager;
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central;
 - (void)emitCentralState:(int)state;

@@ -13,13 +13,13 @@ static BOOL _isObserving;
 RCT_EXPORT_MODULE();
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-  NSLog(@"Central state: %li", (long)[central state]);
   if (_isObserving) {
     [self emitCentralState:[central state]];
   }
 }
 
 -(void)emitCentralState:(int)state {
+  NSLog(@"Central state: %i", state);
   NSDictionary *stateUpdate = @{
                           @"state": [NSNumber numberWithInt:state],
                           };
