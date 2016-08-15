@@ -4,9 +4,9 @@ import {
   Text,
   Image,
   Modal,
-  NativeModules,
   ActivityIndicator,
   TouchableHighlight,
+  NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
 import logo from '../images/logo.png';
