@@ -51,7 +51,6 @@ class backbone extends Component {
 
         return (
           <View style={styles.container}>
-            <View />
             {menuButton}
           </View>
         );
