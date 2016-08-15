@@ -8,11 +8,6 @@ export default EStyleSheet.create({
   menuIcon: {
     marginLeft: 25,
   },
-  statusBar: {
-    height: 25,
-    marginTop: -23,
-    backgroundColor: '$primaryColor',
-  },
   menuButton: {
     height: 75,
     justifyContent: 'center',
