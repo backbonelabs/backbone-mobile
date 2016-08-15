@@ -61,9 +61,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
   [_manager stopScanForMetaWears];
   _sharedDevice = [_deviceCollection objectForKey:deviceID];
-  if (_sharedDevice) {
-   callback(@[[NSNull null]]);
-  }
+  callback(@[[NSNull null]]);
 }
 
 RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
