@@ -3,7 +3,6 @@ import {
   View,
   StatusBar,
   Navigator,
-  Dimensions,
   AppRegistry,
   NativeModules,
   NativeEventEmitter,
@@ -22,24 +21,13 @@ const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 
 EStyleSheet.build(theme);
 
-const { width } = Dimensions.get('window');
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
-
-const CustomLeftToRightGesture = Object.assign({}, BaseConfig.gestures.pop, {
-  // Make it snap back really quickly after canceling pop
-  snapVelocity: 8,
-  // Make it so we can drag anywhere on the screen
-  edgeHitWidth: width,
-});
-
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
   // A very tighly wound spring will make this transition fast
   springTension: 100,
   springFriction: 1,
   // Use our custom gesture defined above
-  gestures: {
-    pop: CustomLeftToRightGesture,
-  },
+  gestures: false,
 });
 
 class backbone extends Component {
