@@ -14,14 +14,12 @@ const { DeviceManagementService } = NativeModules;
 
 function ConnectionProgress() {
   return (
-    <View style={styles.modalContentContainer}>
-      <View style={styles.modalContentBody}>
-        <ActivityIndicator
-          animating
-          size="large"
-          color="#e73e3a"
-        />
-      </View>
+    <View style={styles.modalContainer}>
+      <ActivityIndicator
+        animating
+        size="large"
+        color="#e73e3a"
+      />
     </View>
   );
 }
@@ -61,7 +59,9 @@ export default class Connect extends Component {
       if (error) {
         // Redirect to Error component
       } else {
-        this.setState({ modalVisible: false, devices });
+        setTimeout(() => {
+          this.setState({ modalVisible: false, devices });
+        }, 1000);
       }
     });
   }
@@ -82,12 +82,16 @@ export default class Connect extends Component {
   }
 
   selectDevice(deviceIdentifier) {
-    DeviceManagementService.selectDevice(deviceIdentifier, (error) => {
-      if (error) {
-        // Redirect to Error
-      } else {
-        this.connectToDevice();
-      }
+    this.setState({
+      modalVisible: true,
+    }, () => {
+      DeviceManagementService.selectDevice(deviceIdentifier, (error) => {
+        if (error) {
+          // Redirect to Error
+        } else {
+          this.connectToDevice();
+        }
+      });
     });
   }
 
@@ -98,7 +102,7 @@ export default class Connect extends Component {
           <DeviceList devices={this.state.devices} selectDevice={this.selectDevice} /> :
           <View />
         }
-        <Modal animationType="slide" visible={this.state.modalVisible} transparent>
+        <Modal animationType="fade" visible={this.state.modalVisible} transparent>
           <ConnectionProgress />
         </Modal>
       </View>
