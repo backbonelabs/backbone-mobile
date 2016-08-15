@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/connectError';
-import routes from '../routes/';
 
 function ConnectError(props) {
   return (
@@ -25,7 +24,7 @@ function ConnectError(props) {
         </Text>
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={props.navigator.popToTop}>
           <Text style={styles.retry}>Retry</Text>
         </TouchableOpacity>
       </View>
