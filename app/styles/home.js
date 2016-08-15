@@ -1,7 +1,4 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { Dimensions } from 'react-native';
-
-const { height, width } = Dimensions.get('window');
 
 export default EStyleSheet.create({
   container: {
@@ -21,11 +18,11 @@ export default EStyleSheet.create({
   },
   background: {
     position: 'absolute',
-    width,
-    height,
+    width: '100%',
+    height: '100%',
   },
   button: {
-    width,
+    width: '100%',
     height: 75,
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
