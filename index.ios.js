@@ -3,6 +3,7 @@ import {
   View,
   StatusBar,
   Navigator,
+  Dimensions,
   AppRegistry,
   TouchableHighlight,
 } from 'react-native';
@@ -16,6 +17,26 @@ import styles from './app/styles/indexiOS';
 import theme from './app/styles/theme';
 
 EStyleSheet.build(theme);
+
+const { width } = Dimensions.get('window');
+const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
+
+const CustomLeftToRightGesture = Object.assign({}, BaseConfig.gestures.pop, {
+  // Make it snap back really quickly after canceling pop
+  snapVelocity: 8,
+  // Make it so we can drag anywhere on the screen
+  edgeHitWidth: width,
+});
+
+const CustomSceneConfig = Object.assign({}, BaseConfig, {
+  // A very tighly wound spring will make this transition fast
+  springTension: 100,
+  springFriction: 1,
+  // Use our custom gesture defined above
+  gestures: {
+    pop: CustomLeftToRightGesture,
+  },
+});
 
 class backbone extends Component {
   constructor() {
@@ -72,7 +93,7 @@ class backbone extends Component {
   }
 
   configureScene() {
-    return Navigator.SceneConfigs.PushFromRight;
+    return CustomSceneConfig;
   }
 
   showMenu() {
