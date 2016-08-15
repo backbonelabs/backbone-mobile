@@ -851,7 +851,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = co.backbonelabs.backbone;
 				PRODUCT_NAME = backbone;
 				PROVISIONING_PROFILE = "";
 			};
@@ -882,7 +882,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = co.backbonelabs.backbone;
 				PRODUCT_NAME = backbone;
 				PROVISIONING_PROFILE = "";
 			};
