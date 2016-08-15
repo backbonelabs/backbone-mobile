@@ -5,6 +5,8 @@ import {
   Navigator,
   Dimensions,
   AppRegistry,
+  NativeModules,
+  NativeEventEmitter,
   TouchableHighlight,
 } from 'react-native';
 import { pick } from 'lodash';
@@ -15,6 +17,8 @@ import routes from './app/routes';
 import Menu from './app/components/Menu';
 import styles from './app/styles/indexiOS';
 import theme from './app/styles/theme';
+
+const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 
 EStyleSheet.build(theme);
 
@@ -81,6 +85,11 @@ class backbone extends Component {
     this.state = {
       drawerIsOpen: false,
     };
+
+    BluetoothService.addListener('CentralStatus', (status) => {
+      // placeholder
+      console.log('Central status: ', status.state);
+    });
 
     this.configureScene = this.configureScene.bind(this);
     this.showMenu = this.showMenu.bind(this);
