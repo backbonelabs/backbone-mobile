@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Alert,
   ListView,
   NativeModules,
+  ActivityIndicator,
   TouchableHighlight,
   NativeAppEventEmitter,
 } from 'react-native';
@@ -22,11 +24,11 @@ class Devices extends Component {
     super();
     this.ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
     this.state = {
+      connecting: false,
       dataSource: this.ds.cloneWithRows([]),
     };
 
     this.listenToDevices = NativeAppEventEmitter.addListener('Devices', (deviceList) => {
-      console.log('Devices List: ', deviceList);
       this.setState({
         dataSource: this.ds.cloneWithRows(deviceList),
       });
@@ -41,12 +43,29 @@ class Devices extends Component {
   }
 
   pressRow(deviceID) {
-    DeviceManagementService.selectDevice(deviceID, (error) => {
-      if (error) {
-        console.log('Error: ', error);
-      } else {
-        this.props.navigator.push(postureRoute);
-      }
+    this.setState({
+      connecting: true,
+    }, () => {
+      DeviceManagementService.selectDevice(deviceID, (error) => {
+        if (error) {
+          this.handleConnectError(error);
+        } else {
+          this.props.navigator.push(postureRoute);
+        }
+      });
+    });
+  }
+
+  handleConnectError(error) {
+    this.setState({
+      connecting: false,
+    }, () => {
+      Alert.alert(
+        'Error!',
+        error.message,
+        [
+          { text: 'Try Again' },
+        ]);
     });
   }
 
@@ -65,12 +84,19 @@ class Devices extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>{this.props.currentRoute.title}</Text>
-        <ListView
-          style={styles.list}
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow}
-          enableEmptySections
-        />
+        {this.state.connecting ?
+          <ActivityIndicator
+            animating
+            color="gray"
+            size="large"
+          /> :
+          <ListView
+            style={styles.list}
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow}
+            enableEmptySections
+          />
+        }
       </View>
     );
   }

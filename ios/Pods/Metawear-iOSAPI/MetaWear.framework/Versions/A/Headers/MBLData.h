@@ -55,11 +55,11 @@ typedef void (^MBLDataNotificationHandler)(ResultType __nullable obj, NSError *_
 /**
  Create a new event that will periodically read this data a fixed number of times.
  @param period Period time in mSec
- @param repeatCount Number of times event will be triggered, 0xFFFF will repeat forever
+ @param eventCount Number of times event will be triggered, 0xFFFF will repeat forever
  @returns New event that will read this data periodically
  */
 - (MBLEvent<ResultType> *)periodicReadWithPeriod:(uint32_t)period
-                                     repeatCount:(uint16_t)repeatCount;
+                                      eventCount:(uint16_t)eventCount;
 
 /**
  Create a new event that will periodically read this data until canceled.

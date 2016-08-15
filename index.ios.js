@@ -115,7 +115,14 @@ class backbone extends Component {
   }
 
   renderScene(route, navigator) {
-    return React.createElement(route.component, { navigator, currentRoute: route, ...route.passProps });
+    return React.createElement(
+      route.component,
+      {
+        navigator,
+        currentRoute: route,
+        ...route.passProps,
+      }
+    );
   }
 
   render() {
@@ -137,7 +144,7 @@ class backbone extends Component {
           }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={routes.initiate}
+          initialRoute={routes.home}
           renderScene={this.renderScene}
         />
       </Drawer>
