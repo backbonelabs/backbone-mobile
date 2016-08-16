@@ -37,7 +37,7 @@ function ConnectError(props) {
           <Text style={styles.retry}>Retry Connection</Text>
         </TouchableOpacity>
       </View>
-      { !props.currentRoute.remembered ?
+      { props.currentRoute.remembered ?
         (<TouchableOpacity style={styles.subFooter} onPress={forgetDevice}>
           <Icon size={20} name="chain-broken" color="black" />
           <Text style={styles.forgetDevice}>Forget Device</Text>
