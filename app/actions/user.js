@@ -1,3 +1,7 @@
+import { NativeModules } from 'react-native';
+
+const { Environment } = NativeModules;
+
 const fetchUser = user => ({
   type: 'FETCH_USER',
   payload: user,
@@ -11,7 +15,7 @@ const fetchUserError = error => ({
 
 export default {
   login(user) {
-    return dispatch => global.fetch('https://api.gobackbone.com/auth/login', {
+    return dispatch => global.fetch(`${Environment.API_SERVER_URL}/auth/login`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
