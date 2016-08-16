@@ -17,10 +17,10 @@ function ConnectError(props) {
       </View>
       <View style={styles.body}>
         <Text style={styles.errorCode}>
-          Error {props.currentRoute.errorCode}
+          Error {props.currentRoute.code}
         </Text>
         <Text style={styles.errorMessage}>
-          {props.currentRoute.errorMessage}
+          {props.currentRoute.message}
         </Text>
       </View>
       <View style={styles.footer}>
@@ -35,8 +35,8 @@ function ConnectError(props) {
 ConnectError.propTypes = {
   navigator: React.PropTypes.object,
   currentRoute: React.PropTypes.object,
-  errorCode: React.PropTypes.string,
-  errorMessage: React.PropTypes.string,
+  code: React.PropTypes.string,
+  message: React.PropTypes.string,
 };
 
 export default ConnectError;
