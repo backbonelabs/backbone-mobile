@@ -108,7 +108,6 @@ class Application extends Component {
   }
 
   render() {
-    console.log('user', this.props.user);
     return (
       <Drawer
         type="displace"
@@ -136,7 +135,7 @@ class Application extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.user.user,
+  user: state.auth.user,
 });
 
 export default connect(mapStateToProps)(Application);
