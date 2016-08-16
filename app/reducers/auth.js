@@ -1,5 +1,5 @@
 export default (state = {
-  user: null,
+  accessToken: null,
   isFetching: false,
   isFetchingComplete: false,
   errorMessage: null,
@@ -17,7 +17,7 @@ export default (state = {
         isFetching: false,
         isFetchingComplete: true,
         errorMessage: null,
-        user: action.payload,
+        accessToken: action.payload.accessToken,
       };
     }
     case 'FETCH_USER__ERROR': {

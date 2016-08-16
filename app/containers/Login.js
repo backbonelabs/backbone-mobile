@@ -13,10 +13,11 @@ import routes from '../routes';
 
 class Login extends Component {
   static propTypes = {
+    accessToken: React.PropTypes.string,
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
+    isFetching: React.PropTypes.bool,
     navigator: React.PropTypes.object,
-    user: React.PropTypes.object,
   };
 
   constructor(props) {
@@ -29,7 +30,7 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.user && nextProps.user) {
+    if (!this.props.accessToken && nextProps.accessToken) {
       // User successfully authenticated, redirect to Home
       this.props.navigator.replace(routes.home);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
@@ -89,7 +90,7 @@ class Login extends Component {
               returnKeyType="go"
             />
           </View>
-          <TouchableHighlight style={styles.button} onPress={this.login}>
+          <TouchableHighlight style={styles.button} disabled={this.props.isFetching} onPress={this.login}>
             <Text style={styles.buttonText}>Log in</Text>
           </TouchableHighlight>
         </View>

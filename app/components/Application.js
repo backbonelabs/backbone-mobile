@@ -20,7 +20,7 @@ const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 
 class Application extends Component {
   static propTypes = {
-    user: React.PropTypes.object,
+    accessToken: React.PropTypes.string,
   };
 
   constructor(props) {
@@ -126,7 +126,7 @@ class Application extends Component {
           }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={this.props.user ? routes.home : routes.login}
+          initialRoute={this.props.accessToken ? routes.home : routes.login}
           renderScene={this.renderScene}
         />
       </Drawer>
@@ -135,7 +135,7 @@ class Application extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.auth.user,
+  accessToken: state.auth.accessToken,
 });
 
 export default connect(mapStateToProps)(Application);
