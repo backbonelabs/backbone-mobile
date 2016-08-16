@@ -69,7 +69,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   callback(@[[NSNull null]]);
 }
 
-RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
+RCT_REMAP_METHOD(scanForDevices, resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   NSLog(@"Scanning for devices");
   _deviceCollection = [NSMutableDictionary new];
   [_manager startScanForMetaWearsWithHandler:^(NSArray *array) {
@@ -84,7 +84,11 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
                                }];
     }
     [_manager stopScanForMetaWears];
-    callback(@[deviceList]);
+    if (!deviceList) {
+      reject(@"no_devices", @"There were no devices found", nil);
+    } else {
+      resolve(deviceList);
+    }
   }];
 }
 
@@ -92,10 +96,11 @@ RCT_EXPORT_METHOD(getDeviceStatus :(RCTResponseSenderBlock)callback) {
   callback(@[[NSNumber numberWithInteger:_sharedDevice.state]]);
 }
 
-RCT_EXPORT_METHOD(forgetDevice) {
+RCT_EXPORT_METHOD(forgetDevice :(RCTResponseSenderBlock)callback) {
   NSLog(@"Forget device %@", _sharedDevice);
   [_sharedDevice forgetDevice];
   _sharedDevice = nil;
+  callback(@[[NSNull null]]);
 }
 
 - (void)checkForConnectionTimeout {
