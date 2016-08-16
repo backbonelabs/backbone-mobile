@@ -28,41 +28,51 @@ class backbone extends Component {
     const context = this;
 
     this.navigationBarRouteMapper = {
-      LeftButton() {
-      },
-      RightButton() {
-      },
-      Title(route, navigator) {
+      LeftButton(route, navigator) {
         let menuButton;
 
         if (route.showMenu) {
           menuButton = (
             <TouchableHighlight
               style={styles.menuButton}
-              onPress={() => {
-                context.showMenu(route, navigator);
-              }}
+              underlayColor="gray"
+              onPress={() => { context.showMenu(route, navigator); }}
             >
-              <Icon
-                name="bars"
-                style={styles.menuIcon}
-                size={30}
-                color={EStyleSheet.globalVars.$primaryColor}
-              />
+              <Icon name="bars" style={styles.menuButtonIcon} />
             </TouchableHighlight>
           );
         }
 
         return (
           <View style={styles.container}>
-            <View style={styles.statusBar} />
             {menuButton}
           </View>
         );
       },
+      RightButton(route, navigator) {
+        let settingButton;
+
+        settingButton = (
+          <TouchableHighlight
+            style={styles.settingButton}
+            onPress={() => { context.showSetting(route, navigator); }}
+          >
+            <Icon name="mobile-phone" style={styles.settingButtonIcon} />
+          </TouchableHighlight>
+        );
+
+        return (
+          <View style={styles.container}>
+            {settingButton}
+          </View>
+        );
+      },
+      Title() {
+      },
     };
 
     this.state = {
+      settingIsOpen: false,
       drawerIsOpen: false,
     };
 
@@ -87,6 +97,18 @@ class backbone extends Component {
 
   showMenu() {
     this.setState({ drawerIsOpen: true });
+  }
+
+  showSetting() {
+    const settingOpen = this.state.settingIsOpen;
+
+    if (!settingOpen) {
+      this.setState({ settingIsOpen: true });
+      this.navigator.push(routes.setting);
+    } else {
+      this.setState({ settingIsOpen: false });
+      this.navigator.pop();
+    }
   }
 
   navigate(route) {

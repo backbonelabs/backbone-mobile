@@ -3,19 +3,28 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
   container: {
-    width: Dimensions.get('window').width,
-  },
-  menuIcon: {
-    marginLeft: 25,
+    flex: 2,
+    flexDirection: 'row',
   },
   statusBar: {
-    height: 25,
-    marginTop: -23,
     backgroundColor: '$primaryColor',
+    borderColor: 'blue',
+    borderWidth: 3
   },
   menuButton: {
-    height: 75,
+    justifyContent: 'center',  
+    marginLeft: '5%'
+  },
+  settingButton: {
     justifyContent: 'center',
-    width: Dimensions.get('window').width,
+    marginRight: '5%'
+  },
+  menuButtonIcon: {
+    fontSize: 30,
+    color: '$primaryColor'
+  },
+  settingButtonIcon: {
+    fontSize: 30,
+    color: '$primaryColor'
   },
 });
