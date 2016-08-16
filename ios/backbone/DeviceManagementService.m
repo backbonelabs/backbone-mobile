@@ -31,7 +31,7 @@ RCT_EXPORT_METHOD(getSavedDevice :(RCTResponseSenderBlock)callback) {
       callback(@[@YES]);
     } else {
       NSLog(@"No saved devices found");
-      _remembered = YES;
+      _remembered = NO;
       callback(@[@NO]);
     }
     return nil;
