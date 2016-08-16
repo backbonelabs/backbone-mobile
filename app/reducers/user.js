@@ -23,8 +23,8 @@ export default (state = {
     case 'FETCH_USER__ERROR': {
       return {
         ...state,
-        isSubmitting: false,
-        isSubmittingComplete: false,
+        isFetching: false,
+        isFetchingComplete: false,
         errorMessage: action.payload.message,
       };
     }
