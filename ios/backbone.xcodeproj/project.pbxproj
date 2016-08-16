@@ -29,6 +29,7 @@
 		449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */; };
 		6602D6981D50295300DF3369 /* SensorDataService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6971D50295300DF3369 /* SensorDataService.m */; };
 		6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6991D502EA800DF3369 /* ActivityModule.m */; };
+		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
 		669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DC1D50630A00DCEFBE /* ActivityService.m */; };
 		669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DE1D51053F00DCEFBE /* PostureModule.m */; };
 		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
@@ -154,6 +155,8 @@
 		6602D6961D50255D00DF3369 /* ActivityModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityModule.h; path = backbone/ActivityModule.h; sourceTree = "<group>"; };
 		6602D6971D50295300DF3369 /* SensorDataService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorDataService.m; path = backbone/SensorDataService.m; sourceTree = "<group>"; };
 		6602D6991D502EA800DF3369 /* ActivityModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityModule.m; path = backbone/ActivityModule.m; sourceTree = "<group>"; };
+		667641251D63B8F900D45761 /* Environment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Environment.h; path = backbone/Environment.h; sourceTree = "<group>"; };
+		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
 		669B14D01D50626500DCEFBE /* ActivityService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityService.h; path = backbone/ActivityService.h; sourceTree = "<group>"; };
 		669B14DC1D50630A00DCEFBE /* ActivityService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityService.m; path = backbone/ActivityService.m; sourceTree = "<group>"; };
 		669B14DE1D51053F00DCEFBE /* PostureModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PostureModule.m; path = backbone/PostureModule.m; sourceTree = "<group>"; };
@@ -298,6 +301,8 @@
 				669B14DE1D51053F00DCEFBE /* PostureModule.m */,
 				669B14D01D50626500DCEFBE /* ActivityService.h */,
 				669B14DC1D50630A00DCEFBE /* ActivityService.m */,
+				667641251D63B8F900D45761 /* Environment.h */,
+				667641261D63B90800D45761 /* Environment.m */,
 			);
 			name = backbone;
 			sourceTree = "<group>";
@@ -758,6 +763,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */,
+				667641271D63B90800D45761 /* Environment.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */,
@@ -797,6 +803,8 @@
 			baseConfigurationReference = 9CE4FBCDB44FB3EBD2BF31D7 /* Pods-backboneTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -806,6 +814,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/backbone.app/backbone";
 			};
 			name = Debug;
@@ -815,12 +824,15 @@
 			baseConfigurationReference = 9A39265F3B564AAC20C42E22 /* Pods-backboneTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = backboneTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/backbone.app/backbone";
 			};
 			name = Release;
