@@ -53,6 +53,7 @@ ConnectError.propTypes = {
   currentRoute: React.PropTypes.object,
   code: React.PropTypes.string,
   message: React.PropTypes.string,
+  remembered: React.PropTypes.number,
 };
 
 export default ConnectError;
