@@ -3,12 +3,21 @@ import {
   View,
   Text,
   StatusBar,
+  NativeModules,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/connectError';
 
+const { DeviceManagementService } = NativeModules;
+
 function ConnectError(props) {
+  function forgetDevice() {
+    DeviceManagementService.forgetDevice(() => {
+      props.navigator.popToTop();
+    });
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="default" />
@@ -25,9 +34,16 @@ function ConnectError(props) {
       </View>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={props.navigator.popToTop}>
-          <Text style={styles.retry}>Retry</Text>
+          <Text style={styles.retry}>Retry Connection</Text>
         </TouchableOpacity>
       </View>
+      { !props.currentRoute.remembered ?
+        (<TouchableOpacity style={styles.subFooter} onPress={forgetDevice}>
+          <Icon size={20} name="chain-broken" color="black" />
+          <Text style={styles.forgetDevice}>Forget Device</Text>
+        </TouchableOpacity>) :
+        <View style={styles.subFooter} />
+      }
     </View>
   );
 }
