@@ -49,6 +49,26 @@ export default class Connect extends Component {
   }
 
   componentDidMount() {
+    // Make sure to comment out 'Production' code below
+
+    // Test 1: Failed connection to a remembered device
+    // this.connectError({ code: 42, message: 'Remembered', remembered: 1 });
+
+    // Test 2: Failed connection to a new device
+    // this.connectError({ code: 42, message: 'New', remembered: 0 });
+
+    /* Testing 3a (MUST UNCOMMENT 3b below): Scan for devices and test rescan
+       button for trying to scan new ones
+      **/
+    // DeviceManagementService.getSavedDevice((savedDevice) => {
+    //   if (!savedDevice) {
+    //     this.scanForDevices();
+    //   } else {
+    //     this.connectToDevice();
+    //   }
+    // });
+
+    // Production
     DeviceManagementService.getSavedDevice((savedDevice) => {
       if (!savedDevice) {
         this.scanForDevices();
@@ -101,6 +121,9 @@ export default class Connect extends Component {
       <View style={styles.container}>
         { this.state.devices.length ?
           <DeviceList
+            // Test 3b: Empty array to test rescan button
+            // devices={[]}
+            // If testing out test 3a/3b, then make sure to comment below out
             devices={this.state.devices}
             select={this.selectDevice}
             rescan={this.rescanForDevices}
