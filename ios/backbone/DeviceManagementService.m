@@ -8,6 +8,7 @@
 
 static MBLMetaWear *_sharedDevice = nil;
 static MBLMetaWearManager *_manager = nil;
+static BOOL _remembered = nil;
 static NSMutableDictionary *_deviceCollection = nil;
 
 + (MBLMetaWear *)getDevice {
@@ -25,11 +26,13 @@ RCT_EXPORT_METHOD(getSavedDevice :(RCTResponseSenderBlock)callback) {
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
       NSLog(@"Found a saved device");
+      _remembered = YES;
       _sharedDevice = task.result[0];
-      callback(@[[NSNull null], @YES]);
+      callback(@[@YES]);
     } else {
       NSLog(@"No saved devices found");
-      callback(@[[NSNull null], @NO]);
+      _remembered = YES;
+      callback(@[@NO]);
     }
     return nil;
   }];
@@ -43,6 +46,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
                                                               @"domain": error.domain,
                                                               @"code": [NSNumber numberWithInteger:error.code],
                                                               @"userInfo": error.userInfo,
+                                                              @"remembered": _remembered ? @1 : @0,
                                                               });
       [self deviceConnectionStatus :makeError];
     } else {
@@ -50,7 +54,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       [self deviceConnectionStatus :@{
                                       @"message": @"Successfully connected",
-                                      @"code": [NSNumber numberWithInteger:_sharedDevice.state]
+                                      @"code": [NSNumber numberWithInteger:_sharedDevice.state],
                                       }];
     }
   }];
@@ -61,6 +65,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
 RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)callback) {
   [_manager stopScanForMetaWears];
   _sharedDevice = [_deviceCollection objectForKey:deviceID];
+  // Keep callback to signal _sharedDevice is set
   callback(@[[NSNull null]]);
 }
 
@@ -79,7 +84,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
                                }];
     }
     [_manager stopScanForMetaWears];
-    callback(@[[NSNull null], deviceList]);
+    callback(@[deviceList]);
   }];
 }
 
@@ -101,6 +106,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
                                                               @"domain": [NSNull null],
                                                               @"code": [NSNull null],
                                                               @"userInfo": [NSNull null],
+                                                              @"remembered": _remembered ? @1 : @0,
                                                               });
       [self deviceConnectionStatus: makeError];
     }
