@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   View,
   Text,
@@ -55,6 +56,13 @@ class Login extends Component {
     // TODO: Show ActivityIndicator when form is submitted
     return (
       <View style={styles.container}>
+      {this.props.isFetching ?
+        <ActivityIndicator
+          animating
+          size="large"
+          color={styles._activityIndicator.color}
+        />
+        :
         <View style={styles.formContainer}>
           <View style={styles.textFieldView}>
             <TextInput
@@ -90,10 +98,15 @@ class Login extends Component {
               returnKeyType="go"
             />
           </View>
-          <TouchableHighlight style={styles.button} disabled={this.props.isFetching} onPress={this.login}>
+          <TouchableHighlight
+            style={styles.button}
+            disabled={this.props.isFetching}
+            onPress={this.login}
+          >
             <Text style={styles.buttonText}>Log in</Text>
           </TouchableHighlight>
         </View>
+      }
       </View>
     );
   }

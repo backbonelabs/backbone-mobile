@@ -10,6 +10,9 @@ export default EStyleSheet.create({
   formContainer: {
     width: '90%',
   },
+  activityIndicator: {
+    color: '$primaryColor',
+  },
   textField: {
     fontSize: '1.5rem',
     height: '2rem',
