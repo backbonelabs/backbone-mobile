@@ -1,46 +1,47 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Dimensions } from 'react-native';
+
+const { height, width } = Dimensions.get('window');
 
 export default EStyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+  },
+  header: {
+    flex: 0.8,
     justifyContent: 'center',
   },
   logo: {
-    width: 300,
-    height: 50,
+    width: 325,
+    height: 54,
+  },
+  body: {
+    flex: 0.11,
+  },
+  background: {
+    position: 'absolute',
+    width,
+    height,
   },
   button: {
-    width: 300,
-    height: 60,
-    marginTop: 25,
-    borderRadius: 8,
-    alignItems: 'center',
+    width,
+    height: 75,
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
   },
-  buttonText: {
+  connect: {
     color: 'white',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
+    fontSize: '1rem',
+    alignSelf: 'center',
   },
-  modalContentContainer: {
-    flex: 1,
-    alignItems: 'center',
+  footer: {
+    flex: 0.09,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.9)',
   },
-  modalContentBody: {
-    width: 150,
-    height: 100,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-  modalBodyTitle: {
-    color: 'red',
-    fontSize: '1.5rem',
-    marginTop: 10,
+  signup: {
+    color: 'white',
+    fontSize: '0.75rem',
+    alignSelf: 'center',
   },
 });
