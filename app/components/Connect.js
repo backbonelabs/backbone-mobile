@@ -52,7 +52,7 @@ export default class Connect extends Component {
     // Make sure to comment out 'Production' code below
 
     // Test 1: Failed connection to a remembered device
-    // this.connectError({ code: 42, message: 'Remembered', remembered: 1 });
+    this.connectError({ code: 42, message: 'Remembered', remembered: 1 });
 
     // Test 2: Failed connection to a new device
     // this.connectError({ code: 42, message: 'New', remembered: 0 });
@@ -69,13 +69,13 @@ export default class Connect extends Component {
     // });
 
     // Production
-    DeviceManagementService.getSavedDevice((savedDevice) => {
-      if (!savedDevice) {
-        this.scanForDevices();
-      } else {
-        this.connectToDevice();
-      }
-    });
+    // DeviceManagementService.getSavedDevice((savedDevice) => {
+    //   if (!savedDevice) {
+    //     this.scanForDevices();
+    //   } else {
+    //     this.connectToDevice();
+    //   }
+    // });
   }
 
   scanForDevices() {
@@ -99,7 +99,7 @@ export default class Connect extends Component {
 
   connectError(errors) {
     // Combine route object with errors to pass as props when navigating
-    this.props.navigator.push(Object.assign(routes.connectError, errors));
+    this.props.navigator.push(Object.assign({}, routes.connectError, errors));
   }
 
   selectDevice(deviceIdentifier) {
