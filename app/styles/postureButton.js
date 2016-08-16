@@ -6,7 +6,7 @@ export default EStyleSheet.create({
     width: 300,
     marginLeft: 10,
     marginRight: 10,
-    borderRadius: 4,
+    borderRadius: '$buttonBorderRadius',
     justifyContent: 'center',
   },
   buttonText: {

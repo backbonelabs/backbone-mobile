@@ -14,7 +14,7 @@ export default EStyleSheet.create({
     width: 300,
     height: 60,
     marginTop: 25,
-    borderRadius: 8,
+    borderRadius: '$buttonBorderRadius',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
@@ -33,7 +33,7 @@ export default EStyleSheet.create({
   modalContentBody: {
     width: 150,
     height: 100,
-    borderRadius: 8,
+    borderRadius: '$buttonBorderRadius',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
