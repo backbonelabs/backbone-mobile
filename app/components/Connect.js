@@ -42,20 +42,15 @@ export default class Connect extends Component {
     };
 
     this.connectToDevice = this.connectToDevice.bind(this);
-    this.connectError = this.connectError.bind(this);
     this.scanForDevices = this.scanForDevices.bind(this);
+    this.connectError = this.connectError.bind(this);
     this.selectDevice = this.selectDevice.bind(this);
+    this.rescanForDevices = this.rescanForDevices.bind(this);
   }
 
-  // componentWillMount() {
-  //   this.connectError();
-  // }
-
   componentDidMount() {
-    DeviceManagementService.getSavedDevice((error, savedDevice) => {
-      if (error) {
-        // Redirect to Error component
-      } else if (!savedDevice) {
+    DeviceManagementService.getSavedDevice((savedDevice) => {
+      if (!savedDevice) {
         this.scanForDevices();
       } else {
         this.connectToDevice();
@@ -63,11 +58,15 @@ export default class Connect extends Component {
     });
   }
 
+  scanForDevices() {
+    DeviceManagementService.scanForDevices((devices) => {
+      this.setState({ modalVisible: false, devices });
+    });
+  }
+
   connectToDevice() {
     NativeAppEventEmitter.once('ConnectionStatus', (status) => {
-      this.setState({
-        modalVisible: false,
-      }, () => {
+      this.setState({ modalVisible: false }, () => {
         if (status.code === 2) {
           this.props.navigator.push(routes.posture);
         } else {
@@ -79,29 +78,21 @@ export default class Connect extends Component {
   }
 
   connectError(errors) {
-    const connectError = Object.assign(routes.connectError, errors);
-    this.props.navigator.push(connectError);
-  }
-
-  scanForDevices() {
-    DeviceManagementService.scanForDevices((error, devices) => {
-      if (error) {
-        this.connectErrors(error);
-      } else {
-        setTimeout(() => {
-          this.setState({ modalVisible: false, devices });
-        }, 1000);
-      }
-    });
+    // Combine route object with errors to pass as props when navigating
+    this.props.navigator.push(Object.assign(routes.connectError, errors));
   }
 
   selectDevice(deviceIdentifier) {
-    this.setState({
-      modalVisible: true,
-    }, () => {
+    this.setState({ modalVisible: true }, () => {
       DeviceManagementService.selectDevice(deviceIdentifier, () => {
         this.connectToDevice();
       });
+    });
+  }
+
+  rescanForDevices() {
+    this.setState({ modalVisible: true }, () => {
+      this.scanForDevices();
     });
   }
 
@@ -109,7 +100,11 @@ export default class Connect extends Component {
     return (
       <View style={styles.container}>
         { this.state.devices.length ?
-          <DeviceList devices={this.state.devices} selectDevice={this.selectDevice} /> :
+          <DeviceList
+            devices={this.state.devices}
+            select={this.selectDevice}
+            rescan={this.rescanForDevices}
+          /> :
           <View />
         }
         <Modal animationType="fade" visible={this.state.modalVisible} transparent>
