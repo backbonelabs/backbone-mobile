@@ -8,12 +8,10 @@ export default EStyleSheet.create({
     flex: 0.60,
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'rgba(0,0,0,0.8)',
   },
   body: {
     flex: 0.29,
     justifyContent: 'flex-start',
-    // backgroundColor: 'rgba(0,0,0,0.5)',
   },
   footer: {
     flex: 0.11,
