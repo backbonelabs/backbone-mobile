@@ -5,17 +5,23 @@ export default EStyleSheet.create({
     flex: 1,
   },
   header: {
-    flex: 0.60,
+    flex: 0.6,
     alignItems: 'center',
     justifyContent: 'center',
   },
   body: {
-    flex: 0.29,
+    flex: 0.2,
     justifyContent: 'flex-start',
   },
   footer: {
     flex: 0.11,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  subFooter: {
+    flex: 0.09,
+    alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'center',
   },
   button: {
@@ -37,5 +43,9 @@ export default EStyleSheet.create({
     color: 'white',
     fontSize: '1rem',
     alignSelf: 'center',
+  },
+  forgetDevice: {
+    fontSize: '0.75rem',
+    marginLeft: '2%',
   },
 });
