@@ -11,4 +11,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  activityIndicator: {
+    color: '$primaryColor',
+  },
 });

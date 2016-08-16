@@ -12,17 +12,21 @@ import DeviceList from './DeviceList';
 
 const { DeviceManagementService } = NativeModules;
 
-function ConnectionProgress() {
+function ConnectionProgress(props) {
   return (
     <View style={styles.modalContainer}>
       <ActivityIndicator
         animating
         size="large"
-        color="#e73e3a"
+        color={props.color}
       />
     </View>
   );
 }
+
+ConnectionProgress.propTypes = {
+  color: React.PropTypes.string,
+};
 
 export default class Connect extends Component {
   static propTypes = {
@@ -38,9 +42,14 @@ export default class Connect extends Component {
     };
 
     this.connectToDevice = this.connectToDevice.bind(this);
+    this.connectError = this.connectError.bind(this);
     this.scanForDevices = this.scanForDevices.bind(this);
     this.selectDevice = this.selectDevice.bind(this);
   }
+
+  // componentWillMount() {
+  //   this.connectError();
+  // }
 
   componentDidMount() {
     DeviceManagementService.getSavedDevice((error, savedDevice) => {
@@ -54,18 +63,6 @@ export default class Connect extends Component {
     });
   }
 
-  scanForDevices() {
-    DeviceManagementService.scanForDevices((error, devices) => {
-      if (error) {
-        // Redirect to Error component
-      } else {
-        setTimeout(() => {
-          this.setState({ modalVisible: false, devices });
-        }, 1000);
-      }
-    });
-  }
-
   connectToDevice() {
     NativeAppEventEmitter.once('ConnectionStatus', (status) => {
       this.setState({
@@ -74,23 +71,36 @@ export default class Connect extends Component {
         if (status.code === 2) {
           this.props.navigator.push(routes.posture);
         } else {
-          // Redirect to Error component
+          this.connectError(status);
         }
       });
     });
     DeviceManagementService.connectToDevice();
   }
 
+  connectError(errors) {
+    const connectError = Object.assign(routes.connectError, errors);
+    this.props.navigator.push(connectError);
+  }
+
+  scanForDevices() {
+    DeviceManagementService.scanForDevices((error, devices) => {
+      if (error) {
+        this.connectErrors(error);
+      } else {
+        setTimeout(() => {
+          this.setState({ modalVisible: false, devices });
+        }, 1000);
+      }
+    });
+  }
+
   selectDevice(deviceIdentifier) {
     this.setState({
       modalVisible: true,
     }, () => {
-      DeviceManagementService.selectDevice(deviceIdentifier, (error) => {
-        if (error) {
-          // Redirect to Error
-        } else {
-          this.connectToDevice();
-        }
+      DeviceManagementService.selectDevice(deviceIdentifier, () => {
+        this.connectToDevice();
       });
     });
   }
@@ -103,7 +113,7 @@ export default class Connect extends Component {
           <View />
         }
         <Modal animationType="fade" visible={this.state.modalVisible} transparent>
-          <ConnectionProgress />
+          <ConnectionProgress color={styles._activityIndicator.color} />
         </Modal>
       </View>
     );
