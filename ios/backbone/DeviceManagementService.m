@@ -69,7 +69,7 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   callback(@[[NSNull null]]);
 }
 
-RCT_REMAP_METHOD(scanForDevices, resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
   NSLog(@"Scanning for devices");
   _deviceCollection = [NSMutableDictionary new];
   [_manager startScanForMetaWearsWithHandler:^(NSArray *array) {
@@ -84,11 +84,7 @@ RCT_REMAP_METHOD(scanForDevices, resolver:(RCTPromiseResolveBlock)resolve reject
                                }];
     }
     [_manager stopScanForMetaWears];
-    if (!deviceList) {
-      reject(@"no_devices", @"There were no devices found", nil);
-    } else {
-      resolve(deviceList);
-    }
+    callback(@[deviceList]);
   }];
 }
 
