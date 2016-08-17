@@ -10,6 +10,7 @@ import styles from '../styles/deviceList';
 
 export default class DeviceList extends Component {
   static propTypes = {
+    modal: React.PropTypes.bool,
     devices: React.PropTypes.array,
     select: React.PropTypes.func,
     rescan: React.PropTypes.func,
@@ -64,15 +65,15 @@ export default class DeviceList extends Component {
             />
           </ScrollView>
         </View>
-        { this.props.devices.length ?
+        { this.props.modal ?
           <View /> :
-          <View style={styles.footer}>
+          (<View style={styles.footer}>
             <View style={styles.rescanButton}>
               <TouchableOpacity style={styles.button} onPress={this.props.rescan}>
                 <Text style={styles.rescan}>Rescan</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View>)
         }
       </View>
     );
