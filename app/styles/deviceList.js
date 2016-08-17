@@ -53,7 +53,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
   },
-  rescan: {
+  rescanForDevices: {
     color: 'white',
     fontSize: '1rem',
     textAlign: 'center',
