@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  Alert,
   StatusBar,
   Navigator,
   Dimensions,
@@ -86,9 +87,13 @@ class backbone extends Component {
       drawerIsOpen: false,
     };
 
-    BluetoothService.addListener('CentralStatus', (status) => {
-      // placeholder
-      console.log('Central status: ', status.state);
+    BluetoothService.addListener('CentralState', ({ state, stateMap }) => {
+      if (state < 5) {
+        Alert.alert(
+          `Error Code ${state}`,
+          `Bluetooth ${stateMap[state]}`,
+        );
+      }
     });
 
     this.configureScene = this.configureScene.bind(this);
