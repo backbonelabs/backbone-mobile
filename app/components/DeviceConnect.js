@@ -61,6 +61,10 @@ export default class DeviceConnect extends Component {
     });
   }
 
+  componentWillUnmount() {
+    NativeAppEventEmitter.removeAllListeners('DevicesFound');
+  }
+
   getSavedDevice() {
     this.setState({ inProgress: true }, () => {
       DeviceManagementService.getSavedDevice((savedDevice) => {
