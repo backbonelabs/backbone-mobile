@@ -98,7 +98,6 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
     [self devicesFound:deviceList];
     if (_scanCount > 3) {
       [_manager stopScanForMetaWears];
-      _scanCount = 0;
       callback(@[[NSNull null]]);
     }
   }];
@@ -139,6 +138,7 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
       NSDictionary *makeError = RCTMakeError(@"There was a problem scanning", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
       callback(@[makeError]);
     }
+    _scanCount = 0;
   });
 }
 
