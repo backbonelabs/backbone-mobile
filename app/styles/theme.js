@@ -1,5 +1,11 @@
+import { Dimensions } from 'react-native';
+
+const iconSize = 0.08 * Dimensions.get('window').width;
+const iconButtonSize = 1.5 * iconSize;
+
 export default {
   primaryColor: '#e73e3a',
-  disabledColor: '#f9a640',
+  iconSize,
+  iconButtonSize,
   rem: 16,
 };

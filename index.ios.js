@@ -55,28 +55,52 @@ class backbone extends Component {
       },
       Title(route, navigator) {
         let menuButton;
+        let settingsButton;
 
         if (route.showMenu) {
           menuButton = (
-            <TouchableHighlight
-              style={styles.menuButton}
-              onPress={() => {
-                context.showMenu(route, navigator);
-              }}
-            >
-              <Icon
-                name="bars"
-                style={styles.menuIcon}
-                size={30}
-                color={EStyleSheet.globalVars.$primaryColor}
-              />
-            </TouchableHighlight>
+            <View style={styles.menuContainer}>
+              <TouchableHighlight
+                style={styles.menuButton}
+                onPress={() => {
+                  context.showMenu(route, navigator);
+                }}
+              >
+                <Icon
+                  name="bars"
+                  style={styles.menuIcon}
+                  size={EStyleSheet.globalVars.$iconSize}
+                  color={EStyleSheet.globalVars.$primaryColor}
+                />
+              </TouchableHighlight>
+            </View>
+          );
+        }
+
+        if (route.showSettings) {
+          settingsButton = (
+            <View style={styles.settingsContainer}>
+              <TouchableHighlight
+                style={styles.settingsButton}
+                onPress={() => {
+                  context.showMenu(route, navigator);
+                }}
+              >
+                <Icon
+                  name="gear"
+                  style={styles.settingsIcon}
+                  size={EStyleSheet.globalVars.$iconSize}
+                  color={EStyleSheet.globalVars.$primaryColor}
+                />
+              </TouchableHighlight>
+            </View>
           );
         }
 
         return (
           <View style={styles.container}>
             {menuButton}
+            {settingsButton}
           </View>
         );
       },
