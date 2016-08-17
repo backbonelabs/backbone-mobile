@@ -1,16 +1,37 @@
-import { Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
   container: {
-    width: Dimensions.get('window').width,
+    flex: 1,
+    width: '100%',
+    height: '$iconButton',
+    marginTop: '1%',
+    flexDirection: 'row',
   },
-  menuIcon: {
-    marginLeft: 25,
+  menuContainer: {
+    flex: 0.5,
+    alignSelf: 'flex-start',
   },
   menuButton: {
-    height: 75,
+    marginLeft: '2%',
+    width: '$iconButton',
+    height: '$iconButton',
     justifyContent: 'center',
-    width: Dimensions.get('window').width,
+  },
+  menuIcon: {
+    alignSelf: 'center',
+  },
+  settingsContainer: {
+    flex: 0.5,
+    alignItems: 'flex-end',
+  },
+  settingsButton: {
+    marginRight: '2%',
+    width: '$iconButton',
+    height: '$iconButton',
+    justifyContent: 'center',
+  },
+  settingsIcon: {
+    alignSelf: 'center',
   },
 });
