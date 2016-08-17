@@ -13,7 +13,7 @@ import DeviceList from './DeviceList';
 
 const { DeviceManagementService } = NativeModules;
 
-function ConnectionProgress(props) {
+function InProgress(props) {
   return (
     <View style={styles.modalContainer}>
       <ActivityIndicator
@@ -25,7 +25,7 @@ function ConnectionProgress(props) {
   );
 }
 
-ConnectionProgress.propTypes = {
+InProgress.propTypes = {
   color: React.PropTypes.string,
 };
 
@@ -161,7 +161,7 @@ export default class Connect extends Component {
               retry={this.retryConnection}
               errorInfo={this.state.errorInfo}
             />) :
-            <ConnectionProgress color={styles._activityIndicator.color} />
+            <InProgress color={styles._activityIndicator.color} />
           }
         </Modal>
       </View>
