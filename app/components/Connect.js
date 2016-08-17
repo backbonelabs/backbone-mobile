@@ -41,10 +41,11 @@ export default class Connect extends Component {
       devices: [],
       errorInfo: {},
       newDevice: false,
-      modalVisible: true,
+      modalVisible: false,
       errorVisible: false,
     };
 
+    // this.getSavedDevice = this.getSavedDevice.bind(this);
     this.connectToDevice = this.connectToDevice.bind(this);
     this.scanForDevices = this.scanForDevices.bind(this);
     this.deviceError = this.deviceError.bind(this);
@@ -54,28 +55,25 @@ export default class Connect extends Component {
     this.forgetDevice = this.forgetDevice.bind(this);
   }
 
-  componentDidMount() {
-    DeviceManagementService.getSavedDevice((savedDevice) => {
-      if (!savedDevice) {
-        this.setState({ newDevice: true }, () => {
-          this.scanForDevices();
-        });
+  componentWillMount() {
+    DeviceManagementService.getDeviceStatus((status) => {
+      if (status === 2) {
+        this.props.navigator.push(routes.posture);
       } else {
-        this.connectToDevice();
+        this.getSavedDevice();
       }
     });
   }
 
-  scanForDevices() {
-    NativeAppEventEmitter.addListener('DevicesFound', (devices) => {
-      this.setState({ devices });
-    });
-    DeviceManagementService.scanForDevices((error) => {
-      if (!error) {
-        this.setState({ modalVisible: false });
-      } else {
-        this.deviceError(error);
-      }
+  getSavedDevice() {
+    this.setState({ modalVisible: true }, () => {
+      DeviceManagementService.getSavedDevice((savedDevice) => {
+        if (savedDevice) {
+          this.connectToDevice();
+        } else {
+          this.scanForDevices();
+        }
+      });
     });
   }
 
@@ -92,6 +90,21 @@ export default class Connect extends Component {
     DeviceManagementService.connectToDevice();
   }
 
+  scanForDevices() {
+    NativeAppEventEmitter.addListener('DevicesFound', (devices) => {
+      this.setState({ devices });
+    });
+    this.setState({ newDevice: true }, () => {
+      DeviceManagementService.scanForDevices((error) => {
+        if (!error) {
+          this.setState({ modalVisible: false });
+        } else {
+          this.deviceError(error);
+        }
+      });
+    });
+  }
+
   deviceError(errors) {
     this.setState({
       errorInfo: errors,
@@ -102,14 +115,14 @@ export default class Connect extends Component {
   }
 
   selectDevice(deviceIdentifier) {
-    this.setState({ modalVisible: true }, (error) => {
-      if (!error) {
-        DeviceManagementService.selectDevice(deviceIdentifier, () => {
+    this.setState({ modalVisible: true }, () => {
+      DeviceManagementService.selectDevice(deviceIdentifier, (error) => {
+        if (!error) {
           this.connectToDevice();
-        });
-      } else {
-        this.deviceError(error);
-      }
+        } else {
+          this.deviceError(error);
+        }
+      });
     });
   }
 
