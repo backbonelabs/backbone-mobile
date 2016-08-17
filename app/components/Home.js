@@ -6,12 +6,14 @@ import {
   Modal,
   ActivityIndicator,
   TouchableHighlight,
+  TouchableOpacity,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
 import logo from '../images/logo.png';
 import styles from '../styles/home';
 import routes from '../routes';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 const DeviceManagementService = NativeModules.DeviceManagementService;
 
@@ -82,6 +84,18 @@ export default class Home extends Component {
         <TouchableHighlight style={styles.button} onPress={this.checkForSavedDevice}>
           <Text style={styles.buttonText}>Connect</Text>
         </TouchableHighlight>
+        {/*
+          The delete access token below is for temporary testing purposes only.
+          It should be removed after implementing a logout component.
+        */}
+        <TouchableOpacity
+          style={{ marginTop: 20 }}
+          onPress={() => {
+            SensitiveInfo.deleteItem('accessToken');
+          }}
+        >
+          <Text style={{ fontSize: 18 }}>Delete access token</Text>
+        </TouchableOpacity>
         <Modal animationType="slide" visible={this.state.modalVisible} transparent>
           <ModalContent />
         </Modal>
