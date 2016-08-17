@@ -3,21 +3,12 @@ import {
   View,
   Text,
   StatusBar,
-  NativeModules,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/connectError';
 
-const { DeviceManagementService } = NativeModules;
-
-function ConnectError(props) {
-  function forgetDevice() {
-    DeviceManagementService.forgetDevice(() => {
-      props.navigator.popToTop();
-    });
-  }
-
+export default function ConnectError(props) {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="default" />
@@ -26,19 +17,19 @@ function ConnectError(props) {
       </View>
       <View style={styles.body}>
         <Text style={styles.errorCode}>
-          Error {props.currentRoute.code}
+          Error {props.errorInfo.code}
         </Text>
         <Text style={styles.errorMessage}>
-          {props.currentRoute.message}
+          {props.errorInfo.message}
         </Text>
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.button} onPress={props.navigator.popToTop}>
+        <TouchableOpacity style={styles.button} onPress={props.retry}>
           <Text style={styles.retry}>Retry Connection</Text>
         </TouchableOpacity>
       </View>
-      { props.currentRoute.remembered ?
-        (<TouchableOpacity style={styles.subFooter} onPress={forgetDevice}>
+      { props.errorInfo.remembered ?
+        (<TouchableOpacity style={styles.subFooter} onPress={props.forget}>
           <Icon size={20} name="chain-broken" color="black" />
           <Text style={styles.forgetDevice}>Forget Device</Text>
         </TouchableOpacity>) :
@@ -49,11 +40,7 @@ function ConnectError(props) {
 }
 
 ConnectError.propTypes = {
-  navigator: React.PropTypes.object,
-  currentRoute: React.PropTypes.object,
-  code: React.PropTypes.string,
-  message: React.PropTypes.string,
-  remembered: React.PropTypes.number,
+  errorInfo: React.PropTypes.object,
+  retry: React.PropTypes.func,
+  forget: React.PropTypes.func,
 };
-
-export default ConnectError;
