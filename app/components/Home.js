@@ -20,7 +20,7 @@ function Home(props) {
       <View style={styles.body}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => { props.navigator.push(routes.connect); }}
+          onPress={() => { props.navigator.push(routes.deviceConnect); }}
         >
           <Text style={styles.connect}>Connect</Text>
         </TouchableOpacity>

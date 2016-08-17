@@ -4,25 +4,33 @@ import {
   View,
   ListView,
   ScrollView,
-  TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
-import styles from '../styles/devices';
+import styles from '../styles/deviceList';
 
 export default class DeviceList extends Component {
   static propTypes = {
-    devices: React.PropTypes.array,
+    deviceList: React.PropTypes.array,
     selectDevice: React.PropTypes.func,
+    rescanForDevices: React.PropTypes.func,
+    inProgress: React.PropTypes.bool,
   };
 
   constructor(props) {
     super();
-    const ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
+    this.ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
     this.state = {
-      dataSource: ds.cloneWithRows(props.devices),
+      dataSource: this.ds.cloneWithRows(props.deviceList),
     };
 
     this.pressRow = this.pressRow.bind(this);
     this.renderRow = this.renderRow.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(nextProps.deviceList) !== JSON.stringify(this.props.deviceList)) {
+      this.setState({ dataSource: this.ds.cloneWithRows(nextProps.deviceList) });
+    }
   }
 
   pressRow(deviceIdentifier) {
@@ -31,27 +39,41 @@ export default class DeviceList extends Component {
 
   renderRow(data) {
     return (
-      <TouchableHighlight onPress={() => this.pressRow(data.identifier)}>
-        <View style={styles.listItem}>
-          <Text style={styles.listItemText}>Name: {data.name}</Text>
-          <Text style={styles.listItemText}>Distance: {data.RSSI}</Text>
-          <Text style={styles.listItemText}>Identifier: {data.identifier}</Text>
+      <TouchableOpacity onPress={() => this.pressRow(data.identifier)}>
+        <View style={styles.deviceContainer}>
+          <Text style={styles.deviceName}>{data.name}</Text>
+          <Text style={styles.deviceID}>ID: {data.identifier}</Text>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <Text style={styles.title}>Devices</Text>
-        <ListView
-          style={styles.list}
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow}
-          enableEmptySections
-        />
-      </ScrollView>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Devices</Text>
+        </View>
+        <View style={styles.body}>
+          <ScrollView>
+            <ListView
+              dataSource={this.state.dataSource}
+              renderRow={this.renderRow}
+              enableEmptySections
+            />
+          </ScrollView>
+        </View>
+        { this.props.inProgress ?
+          <View /> :
+          (<View style={styles.footer}>
+            <View style={styles.rescanButton}>
+              <TouchableOpacity style={styles.button} onPress={this.props.rescanForDevices}>
+                <Text style={styles.rescanForDevices}>Rescan</Text>
+              </TouchableOpacity>
+            </View>
+          </View>)
+        }
+      </View>
     );
   }
 }
