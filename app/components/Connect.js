@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import routes from '../routes/';
 import styles from '../styles/connect';
-import ConnectError from './ConnectError';
+import DeviceError from './DeviceError';
 import DeviceList from './DeviceList';
 
 const { DeviceManagementService } = NativeModules;
@@ -47,7 +47,7 @@ export default class Connect extends Component {
 
     this.connectToDevice = this.connectToDevice.bind(this);
     this.scanForDevices = this.scanForDevices.bind(this);
-    this.connectError = this.connectError.bind(this);
+    this.deviceError = this.deviceError.bind(this);
     this.selectDevice = this.selectDevice.bind(this);
     this.rescanForDevices = this.rescanForDevices.bind(this);
     this.retryConnection = this.retryConnection.bind(this);
@@ -70,8 +70,12 @@ export default class Connect extends Component {
     NativeAppEventEmitter.addListener('DevicesFound', (devices) => {
       this.setState({ devices });
     });
-    DeviceManagementService.scanForDevices(() => {
-      this.setState({ modalVisible: false });
+    DeviceManagementService.scanForDevices((error) => {
+      if (!error) {
+        this.setState({ modalVisible: false });
+      } else {
+        this.deviceError(error);
+      }
     });
   }
 
@@ -81,14 +85,14 @@ export default class Connect extends Component {
         if (!status.message) {
           this.props.navigator.push(routes.posture);
         } else {
-          this.connectError(status);
+          this.deviceError(status);
         }
       });
     });
     DeviceManagementService.connectToDevice();
   }
 
-  connectError(errors) {
+  deviceError(errors) {
     this.setState({
       errorInfo: errors,
       newDevice: false,
@@ -104,15 +108,13 @@ export default class Connect extends Component {
           this.connectToDevice();
         });
       } else {
-        this.connectError(error);
+        this.deviceError(error);
       }
     });
   }
 
   retryConnection() {
-    this.setState({ modalVisible: true, errorVisible: false }, () => {
-      this.connectToDevice();
-    });
+    this.props.navigator.popToTop();
   }
 
   rescanForDevices() {
@@ -126,7 +128,7 @@ export default class Connect extends Component {
       if (!error) {
         this.props.navigator.pop();
       } else {
-        this.connectError(error);
+        this.deviceError(error);
       }
     });
   }
@@ -145,7 +147,7 @@ export default class Connect extends Component {
         }
         <Modal animationType="fade" visible={this.state.modalVisible} transparent>
           { this.state.errorVisible ?
-            (<ConnectError
+            (<DeviceError
               forget={this.forgetDevice}
               retry={this.retryConnection}
               errorInfo={this.state.errorInfo}

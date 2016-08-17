@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from '../styles/connectError';
+import styles from '../styles/deviceError';
 
-export default function ConnectError(props) {
+export default function DeviceError(props) {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="default" />
@@ -25,7 +25,7 @@ export default function ConnectError(props) {
       </View>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={props.retry}>
-          <Text style={styles.retry}>Retry Connection</Text>
+          <Text style={styles.retry}>Retry</Text>
         </TouchableOpacity>
       </View>
       { props.errorInfo.remembered ?
@@ -39,7 +39,7 @@ export default function ConnectError(props) {
   );
 }
 
-ConnectError.propTypes = {
+DeviceError.propTypes = {
   errorInfo: React.PropTypes.object,
   retry: React.PropTypes.func,
   forget: React.PropTypes.func,
