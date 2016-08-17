@@ -53,7 +53,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
         [_sharedDevice rememberDevice];
       }
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-      [self deviceConnectionStatus:@{ @"message": @"Successfully connected" }];
+      [self deviceConnectionStatus:@{}];
     }
   }];
   
@@ -70,24 +70,27 @@ RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)call
   }
 }
 
-RCT_EXPORT_METHOD(scanForDevices:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(scanForDevices) {
   NSLog(@"Scanning for devices");
   _deviceCollection = [NSMutableDictionary new];
   NSMutableArray *deviceList = [NSMutableArray new];
   
-  [_manager startScanForMetaWearsWithHandler:^(NSArray *array) {
+  [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
     if ([deviceList count]) {
       [deviceList removeAllObjects];
     }
     
     for (MBLMetaWear *device in array) {
-      _deviceCollection[[device.identifier UUIDString]] = device;
-      [deviceList addObject: @{
-                               @"name": device.name,
-                               @"identifier": [device.identifier UUIDString],
-                               @"RSSI": device.discoveryTimeRSSI,
-                               }];
+      if (device.discoveryTimeRSSI.integerValue >= -50) {
+        _deviceCollection[[device.identifier UUIDString]] = device;
+        [deviceList addObject: @{
+                                 @"name": device.name,
+                                 @"identifier": [device.identifier UUIDString],
+                                 @"RSSI": device.discoveryTimeRSSI,
+                                 }];
+      }
     }
+    [NSThread sleepForTimeInterval:1.5f];
     [self devicesFound:deviceList];
   }];
 }
