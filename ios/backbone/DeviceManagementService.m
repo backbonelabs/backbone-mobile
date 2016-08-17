@@ -6,10 +6,11 @@
 
 @synthesize bridge = _bridge;
 
-static MBLMetaWear *_sharedDevice = nil;
-static MBLMetaWearManager *_manager = nil;
-static BOOL _remembered = nil;
-static NSMutableDictionary *_deviceCollection = nil;
+static MBLMetaWear *_sharedDevice;
+static MBLMetaWearManager *_manager;
+static BOOL _remembered;
+static NSMutableDictionary *_deviceCollection;
+static int _scanCount;
 
 + (MBLMetaWear *)getDevice {
   return _sharedDevice;
@@ -73,12 +74,14 @@ RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)call
   }
 }
 
-RCT_EXPORT_METHOD(scanForDevices) {
+RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
   NSLog(@"Scanning for devices");
   _deviceCollection = [NSMutableDictionary new];
   NSMutableArray *deviceList = [NSMutableArray new];
   
   [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
+    NSLog(@"scan count %i", _scanCount);
+    ++_scanCount;
     if ([deviceList count]) {
       [deviceList removeAllObjects];
     }
@@ -95,6 +98,11 @@ RCT_EXPORT_METHOD(scanForDevices) {
     }
     [NSThread sleepForTimeInterval:1.0f];
     [self devicesFound:deviceList];
+    if (_scanCount > 3) {
+      [_manager stopScanForMetaWears];
+      _scanCount = 0;
+      callback(@[[NSNull null]]);
+    }
   }];
 }
 
