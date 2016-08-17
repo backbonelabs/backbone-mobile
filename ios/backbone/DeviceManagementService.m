@@ -77,7 +77,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
   _deviceCollection = [NSMutableDictionary new];
   NSMutableArray *deviceList = [NSMutableArray new];
   
-  [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
+  [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *__nonnull array) {
     NSLog(@"Scan count %i", _scanCount);
     ++_scanCount;
     if ([deviceList count]) {
@@ -96,10 +96,6 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
     }
     [NSThread sleepForTimeInterval:1.0f];
     [self devicesFound:deviceList];
-    if (_scanCount > 3) {
-      [_manager stopScanForMetaWears];
-      callback(@[[NSNull null]]);
-    }
   }];
   
   [self checkScanTimeout:callback];
@@ -132,11 +128,13 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
 
 - (void)checkScanTimeout :(RCTResponseSenderBlock)callback {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-    if (_scanCount < 3) {
+    [_manager stopScanForMetaWears];
+    if (_scanCount < 5) {
       NSLog(@"Scan timeout");
-      [_manager stopScanForMetaWears];
       NSDictionary *makeError = RCTMakeError(@"There was a problem scanning", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
       callback(@[makeError]);
+    } else {
+      callback(@[[NSNull null]]);
     }
     _scanCount = 0;
   });
