@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
-  container: {
+  navbarContainer: {
     flex: 1,
     width: '100%',
     height: '$iconButtonSize',

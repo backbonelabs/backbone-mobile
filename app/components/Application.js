@@ -84,7 +84,7 @@ class Application extends Component {
         }
 
         return (
-          <View style={styles.container}>
+          <View style={styles.navbarContainer}>
             {menuButton}
             {settingsButton}
           </View>
