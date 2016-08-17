@@ -17,13 +17,21 @@ export default class DeviceList extends Component {
 
   constructor(props) {
     super();
-    const ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
+    this.ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
     this.state = {
-      dataSource: ds.cloneWithRows(props.devices),
+      dataSource: this.ds.cloneWithRows(props.devices),
     };
 
     this.pressRow = this.pressRow.bind(this);
     this.renderRow = this.renderRow.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(nextProps.devices) !== JSON.stringify(this.props.devices)) {
+      this.setState({
+        dataSource: this.ds.cloneWithRows(nextProps.devices),
+      });
+    }
   }
 
   pressRow(deviceIdentifier) {
