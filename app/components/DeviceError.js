@@ -17,19 +17,19 @@ export default function DeviceError(props) {
       </View>
       <View style={styles.body}>
         <Text style={styles.errorCode}>
-          Error {props.errorInfo.code}
+          Error {props.deviceError.code}
         </Text>
         <Text style={styles.errorMessage}>
-          {props.errorInfo.message}
+          {props.deviceError.message}
         </Text>
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.button} onPress={props.retry}>
+        <TouchableOpacity style={styles.button} onPress={props.retryConnect}>
           <Text style={styles.retry}>Retry</Text>
         </TouchableOpacity>
       </View>
-      { props.errorInfo.remembered ?
-        (<TouchableOpacity style={styles.subFooter} onPress={props.forget}>
+      { props.deviceError.remembered ?
+        (<TouchableOpacity style={styles.subFooter} onPress={props.forgetDevice}>
           <Icon size={20} name="chain-broken" color="black" />
           <Text style={styles.forgetDevice}>Forget Device</Text>
         </TouchableOpacity>) :
@@ -40,7 +40,7 @@ export default function DeviceError(props) {
 }
 
 DeviceError.propTypes = {
-  errorInfo: React.PropTypes.object,
-  retry: React.PropTypes.func,
-  forget: React.PropTypes.func,
+  forgetDevice: React.PropTypes.func,
+  retryConnect: React.PropTypes.func,
+  deviceError: React.PropTypes.object,
 };
