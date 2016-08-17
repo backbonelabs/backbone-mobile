@@ -10,7 +10,7 @@ import styles from '../styles/deviceList';
 
 export default class DeviceList extends Component {
   static propTypes = {
-    devices: React.PropTypes.array,
+    deviceList: React.PropTypes.array,
     selectDevice: React.PropTypes.func,
     rescanForDevices: React.PropTypes.func,
     inProgress: React.PropTypes.bool,
@@ -20,7 +20,7 @@ export default class DeviceList extends Component {
     super();
     this.ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
     this.state = {
-      dataSource: this.ds.cloneWithRows(props.devices),
+      dataSource: this.ds.cloneWithRows(props.deviceList),
     };
 
     this.pressRow = this.pressRow.bind(this);
@@ -28,8 +28,8 @@ export default class DeviceList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(nextProps.devices) !== JSON.stringify(this.props.devices)) {
-      this.setState({ dataSource: this.ds.cloneWithRows(nextProps.devices) });
+    if (JSON.stringify(nextProps.deviceList) !== JSON.stringify(this.props.deviceList)) {
+      this.setState({ dataSource: this.ds.cloneWithRows(nextProps.deviceList) });
     }
   }
 
