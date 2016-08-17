@@ -10,10 +10,10 @@ import styles from '../styles/deviceList';
 
 export default class DeviceList extends Component {
   static propTypes = {
-    modal: React.PropTypes.bool,
     devices: React.PropTypes.array,
-    select: React.PropTypes.func,
-    rescan: React.PropTypes.func,
+    selectDevice: React.PropTypes.func,
+    rescanForDevices: React.PropTypes.func,
+    inProgress: React.PropTypes.bool,
   };
 
   constructor(props) {
@@ -29,14 +29,12 @@ export default class DeviceList extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (JSON.stringify(nextProps.devices) !== JSON.stringify(this.props.devices)) {
-      this.setState({
-        dataSource: this.ds.cloneWithRows(nextProps.devices),
-      });
+      this.setState({ dataSource: this.ds.cloneWithRows(nextProps.devices) });
     }
   }
 
   pressRow(deviceIdentifier) {
-    this.props.select(deviceIdentifier);
+    this.props.selectDevice(deviceIdentifier);
   }
 
   renderRow(data) {
@@ -65,12 +63,12 @@ export default class DeviceList extends Component {
             />
           </ScrollView>
         </View>
-        { this.props.modal ?
+        { this.props.inProgress ?
           <View /> :
           (<View style={styles.footer}>
             <View style={styles.rescanButton}>
-              <TouchableOpacity style={styles.button} onPress={this.props.rescan}>
-                <Text style={styles.rescan}>Rescan</Text>
+              <TouchableOpacity style={styles.button} onPress={this.props.rescanForDevices}>
+                <Text style={styles.rescanForDevices}>Rescan</Text>
               </TouchableOpacity>
             </View>
           </View>)

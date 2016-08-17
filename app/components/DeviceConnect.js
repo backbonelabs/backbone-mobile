@@ -7,15 +7,15 @@ import {
   NativeAppEventEmitter,
 } from 'react-native';
 import routes from '../routes/';
-import styles from '../styles/connect';
-import DeviceError from './DeviceError';
+import styles from '../styles/deviceConnect';
 import DeviceList from './DeviceList';
+import DeviceError from './DeviceError';
 
 const { DeviceManagementService } = NativeModules;
 
 function InProgress(props) {
   return (
-    <View style={styles.modalContainer}>
+    <View style={styles.progressContainer}>
       <ActivityIndicator
         animating
         size="large"
@@ -29,7 +29,7 @@ InProgress.propTypes = {
   color: React.PropTypes.string,
 };
 
-export default class Connect extends Component {
+export default class DeviceConnect extends Component {
   static propTypes = {
     navigator: React.PropTypes.object,
     currentRoute: React.PropTypes.object,
@@ -38,15 +38,15 @@ export default class Connect extends Component {
   constructor() {
     super();
     this.state = {
-      devices: [],
-      errorInfo: {},
+      deviceList: [],
+      deviceError: {},
       newDevice: false,
-      modalVisible: false,
-      errorVisible: false,
+      inProgress: false,
+      hasError: false,
     };
 
     this.selectDevice = this.selectDevice.bind(this);
-    this.retryConnection = this.retryConnection.bind(this);
+    this.retryConnect = this.retryConnect.bind(this);
     this.rescanForDevices = this.rescanForDevices.bind(this);
     this.forgetDevice = this.forgetDevice.bind(this);
   }
@@ -62,7 +62,7 @@ export default class Connect extends Component {
   }
 
   getSavedDevice() {
-    this.setState({ modalVisible: true }, () => {
+    this.setState({ inProgress: true }, () => {
       DeviceManagementService.getSavedDevice((savedDevice) => {
         if (savedDevice) {
           this.connectToDevice();
@@ -75,7 +75,7 @@ export default class Connect extends Component {
 
   connectToDevice() {
     NativeAppEventEmitter.once('ConnectionStatus', (status) => {
-      this.setState({ modalVisible: false }, () => {
+      this.setState({ inProgress: false }, () => {
         if (!status.message) {
           this.props.navigator.push(routes.posture);
         } else {
@@ -87,13 +87,13 @@ export default class Connect extends Component {
   }
 
   scanForDevices() {
-    NativeAppEventEmitter.addListener('DevicesFound', (devices) => {
-      this.setState({ devices });
+    NativeAppEventEmitter.addListener('DevicesFound', (deviceList) => {
+      this.setState({ deviceList });
     });
     this.setState({ newDevice: true }, () => {
       DeviceManagementService.scanForDevices((error) => {
         if (!error) {
-          this.setState({ modalVisible: false });
+          this.setState({ inProgress: false });
         } else {
           this.deviceError(error);
         }
@@ -103,15 +103,15 @@ export default class Connect extends Component {
 
   deviceError(errors) {
     this.setState({
-      errorInfo: errors,
+      deviceError: errors,
       newDevice: false,
-      modalVisible: true,
-      errorVisible: true,
+      inProgress: true,
+      hasError: true,
     });
   }
 
   selectDevice(deviceIdentifier) {
-    this.setState({ modalVisible: true }, () => {
+    this.setState({ inProgress: true }, () => {
       DeviceManagementService.selectDevice(deviceIdentifier, (error) => {
         if (!error) {
           this.connectToDevice();
@@ -122,12 +122,12 @@ export default class Connect extends Component {
     });
   }
 
-  retryConnection() {
+  retryConnect() {
     this.props.navigator.popToTop();
   }
 
   rescanForDevices() {
-    this.setState({ modalVisible: true }, () => {
+    this.setState({ inProgress: true }, () => {
       this.scanForDevices();
     });
   }
@@ -147,19 +147,19 @@ export default class Connect extends Component {
       <View style={styles.container}>
         { this.state.newDevice ?
           (<DeviceList
-            devices={this.state.devices}
-            select={this.selectDevice}
-            rescan={this.rescanForDevices}
-            modal={this.state.modalVisible}
+            deviceList={this.state.deviceList}
+            selectDevice={this.selectDevice}
+            rescanForDevices={this.rescanForDevices}
+            inProgress={this.state.inProgress}
           />) :
           <View />
         }
-        <Modal animationType="fade" visible={this.state.modalVisible} transparent>
-          { this.state.errorVisible ?
+        <Modal animationType="fade" visible={this.state.inProgress} transparent>
+          { this.state.hasError ?
             (<DeviceError
               forget={this.forgetDevice}
-              retry={this.retryConnection}
-              errorInfo={this.state.errorInfo}
+              retry={this.retryConnect}
+              deviceError={this.state.deviceError}
             />) :
             <InProgress color={styles._activityIndicator.color} />
           }

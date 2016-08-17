@@ -4,7 +4,7 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
   },
-  modalContainer: {
+  progressContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
