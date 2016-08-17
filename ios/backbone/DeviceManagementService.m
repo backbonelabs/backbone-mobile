@@ -26,10 +26,10 @@ RCT_EXPORT_METHOD(getSavedDevice :(RCTResponseSenderBlock)callback) {
     if ([task.result count]) {
       NSLog(@"Found a saved device");
       _sharedDevice = task.result[0];
-      callback(@[@YES]);
+      callback(@[[NSNull null], @YES]);
     } else {
       NSLog(@"No saved devices found");
-      callback(@[@NO]);
+      callback(@[[NSNull null], @NO]);
     }
     return nil;
   }];
@@ -62,11 +62,11 @@ RCT_EXPORT_METHOD(selectDevice :(NSString *)deviceID :(RCTResponseSenderBlock)ca
   [_manager stopScanForMetaWears];
   _sharedDevice = [_deviceCollection objectForKey:deviceID];
   if (_sharedDevice) {
-   callback(@[@YES]);
+   callback(@[[NSNull null]]);
   }
 }
 
-RCT_EXPORT_METHOD(scanForDevices) {
+RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
   NSLog(@"Scanning for devices");
   _deviceCollection = [NSMutableDictionary new];
   [_manager startScanForMetaWearsWithHandler:^(NSArray *array) {
@@ -80,8 +80,8 @@ RCT_EXPORT_METHOD(scanForDevices) {
                                @"RSSI": device.discoveryTimeRSSI,
                                }];
     }
-    
-    [self deviceEventEmitter :deviceList];
+    [_manager stopScanForMetaWears];
+    callback(@[[NSNull null], deviceList]);
   }];
 }
 
@@ -110,11 +110,7 @@ RCT_EXPORT_METHOD(forgetDevice) {
 }
 
 - (void)deviceConnectionStatus :(NSDictionary *)status {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"Status" body: status];
-}
-
-- (void)deviceEventEmitter :(NSMutableArray *)deviceList {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"Devices" body: deviceList];
+  [self.bridge.eventDispatcher sendAppEventWithName:@"ConnectionStatus" body: status];
 }
 
 
