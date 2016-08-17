@@ -1,9 +1,38 @@
-import { Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
   container: {
-    width: Dimensions.get('window').width,
+    flex: 1,
+    width: '100%',
+    height: '$iconButtonSize',
+    marginTop: '1%',
+    flexDirection: 'row',
+  },
+  menuContainer: {
+    flex: 0.5,
+    alignSelf: 'flex-start',
+  },
+  menuButton: {
+    marginLeft: '2%',
+    width: '$iconButtonSize',
+    height: '$iconButtonSize',
+    justifyContent: 'center',
+  },
+  menuIcon: {
+    alignSelf: 'center',
+  },
+  settingsContainer: {
+    flex: 0.5,
+    alignItems: 'flex-end',
+  },
+  settingsButton: {
+    marginRight: '2%',
+    width: '$iconButtonSize',
+    height: '$iconButtonSize',
+    justifyContent: 'center',
+  },
+  settingsIcon: {
+    alignSelf: 'center',
   },
   activityIndicatorView: {
     flex: 1,
@@ -12,18 +41,5 @@ export default EStyleSheet.create({
   },
   activityIndicator: {
     color: '$primaryColor',
-  },
-  menuIcon: {
-    marginLeft: 25,
-  },
-  statusBar: {
-    height: 25,
-    marginTop: -23,
-    backgroundColor: '$primaryColor',
-  },
-  menuButton: {
-    height: 75,
-    justifyContent: 'center',
-    width: Dimensions.get('window').width,
   },
 });

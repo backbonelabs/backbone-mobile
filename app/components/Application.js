@@ -19,6 +19,15 @@ import styles from '../styles/application';
 
 const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 
+const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
+const CustomSceneConfig = Object.assign({}, BaseConfig, {
+  // A very tighly wound spring will make this transition fast
+  springTension: 100,
+  springFriction: 1,
+  // Use our custom gesture defined above
+  gestures: false,
+});
+
 class Application extends Component {
   constructor(props) {
     super(props);
@@ -32,29 +41,52 @@ class Application extends Component {
       },
       Title(route, navigator) {
         let menuButton;
+        let settingsButton;
 
         if (route.showMenu) {
           menuButton = (
-            <TouchableHighlight
-              style={styles.menuButton}
-              onPress={() => {
-                context.showMenu(route, navigator);
-              }}
-            >
-              <Icon
-                name="bars"
-                style={styles.menuIcon}
-                size={30}
-                color={EStyleSheet.globalVars.$primaryColor}
-              />
-            </TouchableHighlight>
+            <View style={styles.menuContainer}>
+              <TouchableHighlight
+                style={styles.menuButton}
+                onPress={() => {
+                  context.showMenu(route, navigator);
+                }}
+              >
+                <Icon
+                  name="bars"
+                  style={styles.menuIcon}
+                  size={EStyleSheet.globalVars.$iconSize}
+                  color={EStyleSheet.globalVars.$primaryColor}
+                />
+              </TouchableHighlight>
+            </View>
+          );
+        }
+
+        if (route.showSettings) {
+          settingsButton = (
+            <View style={styles.settingsContainer}>
+              <TouchableHighlight
+                style={styles.settingsButton}
+                onPress={() => {
+                  context.showMenu(route, navigator);
+                }}
+              >
+                <Icon
+                  name="gear"
+                  style={styles.settingsIcon}
+                  size={EStyleSheet.globalVars.$iconSize}
+                  color={EStyleSheet.globalVars.$primaryColor}
+                />
+              </TouchableHighlight>
+            </View>
           );
         }
 
         return (
           <View style={styles.container}>
-            <View style={styles.statusBar} />
             {menuButton}
+            {settingsButton}
           </View>
         );
       },
@@ -90,7 +122,7 @@ class Application extends Component {
   }
 
   configureScene() {
-    return Navigator.SceneConfigs.PushFromRight;
+    return CustomSceneConfig;
   }
 
   showMenu() {

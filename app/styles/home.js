@@ -4,43 +4,41 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+  },
+  header: {
+    flex: 0.8,
     justifyContent: 'center',
   },
   logo: {
-    width: 300,
-    height: 50,
+    width: 325,
+    height: 54,
+  },
+  body: {
+    flex: 0.11,
+  },
+  background: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
   button: {
-    width: 300,
-    height: 60,
-    marginTop: 25,
-    borderRadius: '$buttonBorderRadius',
-    alignItems: 'center',
+    width: '100%',
+    height: 75,
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
   },
-  buttonText: {
+  connect: {
     color: 'white',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
+    fontSize: '1rem',
+    alignSelf: 'center',
   },
-  modalContentContainer: {
-    flex: 1,
-    alignItems: 'center',
+  footer: {
+    flex: 0.09,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.9)',
   },
-  modalContentBody: {
-    width: 150,
-    height: 100,
-    borderRadius: '$buttonBorderRadius',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-  modalBodyTitle: {
-    color: 'red',
-    fontSize: '1.5rem',
-    marginTop: 10,
+  signup: {
+    color: 'white',
+    fontSize: '0.75rem',
+    alignSelf: 'center',
   },
 });
