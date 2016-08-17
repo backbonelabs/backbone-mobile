@@ -61,7 +61,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
     }
   }];
   
-  [self checkForTimeout];
+  [self checkConnectTimeout];
 }
 
 RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)callback) {
@@ -104,6 +104,8 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
       callback(@[[NSNull null]]);
     }
   }];
+  
+  [self checkScanTimeout:callback];
 }
 
 RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
@@ -121,14 +123,26 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   }
 }
 
-- (void)checkForTimeout {
+- (void)checkConnectTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if (_sharedDevice.state != MBLConnectionStateConnected) {
-      NSLog(@"Timeout");
+      NSLog(@"Connection timeout");
       NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
       [self deviceConnectionStatus:makeError];
     } else {
       [self deviceConnectionStatus:@{ @"message": @"Successfully connected" }];
+    }
+  });
+}
+
+- (void)checkScanTimeout :(RCTResponseSenderBlock)callback {
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    if (_scanCount < 3) {
+      NSLog(@"Scan timeout");
+      [_manager stopScanForMetaWears];
+      _scanCount = 0;
+      NSDictionary *makeError = RCTMakeError(@"There was a problem scanning", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
+      callback(@[makeError]);
     }
   });
 }
