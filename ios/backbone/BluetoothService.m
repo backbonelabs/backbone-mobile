@@ -6,7 +6,10 @@ static BOOL _isObserving;
 
 - (id)init {
   self = [super init];
-  self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
+  self.centralManager = [[CBCentralManager alloc]
+                         initWithDelegate:self
+                         queue:dispatch_get_main_queue() 
+                         options:@{CBCentralManagerOptionShowPowerAlertKey: @(YES)}];
   return self;
 }
 
