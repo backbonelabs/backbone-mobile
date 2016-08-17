@@ -16,6 +16,12 @@ const fetchUserError = error => ({
 });
 
 export default {
+  setAccessToken(accessToken) {
+    return {
+      type: 'ACCESS_TOKEN',
+      payload: accessToken,
+    };
+  },
   login(user) {
     return dispatch => {
       dispatch(fetchUserStart());

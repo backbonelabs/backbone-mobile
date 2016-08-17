@@ -8,10 +8,12 @@ import {
   NativeEventEmitter,
   TouchableHighlight,
 } from 'react-native';
+import { connect } from 'react-redux';
 import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import userActions from '../actions/user';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Menu from './Menu';
 import routes from '../routes';
@@ -22,6 +24,7 @@ const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 class Application extends Component {
   static propTypes = {
     accessToken: React.PropTypes.string,
+    dispatch: React.PropTypes.func,
   };
 
   constructor(props) {
@@ -65,7 +68,6 @@ class Application extends Component {
     };
 
     this.state = {
-      accessToken: null,
       drawerIsOpen: false,
       isFetchingAccessToken: true,
     };
@@ -90,14 +92,18 @@ class Application extends Component {
     SensitiveInfo.getItem('accessToken')
       .then(accessToken => {
         // TODO: Verify with API server if access token is valid
-        this.setState({
-          isFetchingAccessToken: false,
-          accessToken,
-        });
+        this.props.dispatch(userActions.setAccessToken(accessToken));
       })
       .catch(() => {
         this.setState({ isFetchingAccessToken: false });
       });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.accessToken && nextProps.accessToken) {
+      // Found previous access token
+      this.setState({ isFetchingAccessToken: false });
+    }
   }
 
   configureScene() {
@@ -152,11 +158,15 @@ class Application extends Component {
           }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={this.state.accessToken ? routes.home : routes.login}
+          initialRoute={this.props.accessToken ? routes.home : routes.login}
           renderScene={this.renderScene}
         />
       </Drawer>;
   }
 }
 
-export default Application;
+const mapStateToProps = state => ({
+  accessToken: state.auth.accessToken,
+});
+
+export default connect(mapStateToProps)(Application);

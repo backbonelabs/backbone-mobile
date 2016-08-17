@@ -5,6 +5,12 @@ export default (state = {
   errorMessage: null,
 }, action) => {
   switch (action.type) {
+    case 'ACCESS_TOKEN': {
+      return {
+        ...state,
+        accessToken: action.payload,
+      };
+    }
     case 'FETCH_USER__START': {
       return {
         ...state,
