@@ -157,8 +157,8 @@ export default class DeviceConnect extends Component {
         <Modal animationType="fade" visible={this.state.inProgress} transparent>
           { this.state.hasError ?
             (<DeviceError
-              forget={this.forgetDevice}
-              retry={this.retryConnect}
+              forgetDevice={this.forgetDevice}
+              retryConnect={this.retryConnect}
               deviceError={this.state.deviceError}
             />) :
             <InProgress color={styles._activityIndicator.color} />
