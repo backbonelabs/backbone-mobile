@@ -40,8 +40,9 @@ export default class Connect extends Component {
     this.state = {
       devices: [],
       errorInfo: {},
+      newDevice: false,
       modalVisible: true,
-      errorVisisble: false,
+      errorVisible: false,
     };
 
     this.connectToDevice = this.connectToDevice.bind(this);
@@ -56,7 +57,9 @@ export default class Connect extends Component {
   componentDidMount() {
     DeviceManagementService.getSavedDevice((savedDevice) => {
       if (!savedDevice) {
-        this.scanForDevices();
+        this.setState({ newDevice: true }, () => {
+          this.scanForDevices();
+        });
       } else {
         this.connectToDevice();
       }
@@ -65,9 +68,11 @@ export default class Connect extends Component {
 
   scanForDevices() {
     NativeAppEventEmitter.addListener('DevicesFound', (devices) => {
-      this.setState({ modalVisible: false, devices });
+      this.setState({ devices });
     });
-    DeviceManagementService.scanForDevices();
+    DeviceManagementService.scanForDevices(() => {
+      this.setState({ modalVisible: false });
+    });
   }
 
   connectToDevice() {
@@ -86,6 +91,7 @@ export default class Connect extends Component {
   connectError(errors) {
     this.setState({
       errorInfo: errors,
+      newDevice: false,
       modalVisible: true,
       errorVisible: true,
     });
@@ -128,13 +134,14 @@ export default class Connect extends Component {
   render() {
     return (
       <View style={styles.container}>
-        { this.state.modalVisible ?
-          <View /> :
+        { this.state.newDevice ?
           (<DeviceList
             devices={this.state.devices}
             select={this.selectDevice}
             rescan={this.rescanForDevices}
-          />)
+            modal={this.state.modalVisible}
+          />) :
+          <View />
         }
         <Modal animationType="fade" visible={this.state.modalVisible} transparent>
           { this.state.errorVisible ?
