@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import routes from '../routes/';
 import styles from '../styles/connect';
+import ConnectError from './ConnectError';
 import DeviceList from './DeviceList';
 
 const { DeviceManagementService } = NativeModules;
@@ -38,7 +39,9 @@ export default class Connect extends Component {
     super();
     this.state = {
       devices: [],
+      errorInfo: {},
       modalVisible: true,
+      errorVisisble: false,
     };
 
     this.connectToDevice = this.connectToDevice.bind(this);
@@ -46,48 +49,31 @@ export default class Connect extends Component {
     this.connectError = this.connectError.bind(this);
     this.selectDevice = this.selectDevice.bind(this);
     this.rescanForDevices = this.rescanForDevices.bind(this);
+    this.retryConnection = this.retryConnection.bind(this);
+    this.forgetDevice = this.forgetDevice.bind(this);
   }
 
   componentDidMount() {
-    // Make sure to comment out 'Production' code below
-
-    // Test 1: Failed connection to a remembered device
-    this.connectError({ code: 42, message: 'Remembered', remembered: 1 });
-
-    // Test 2: Failed connection to a new device
-    // this.connectError({ code: 42, message: 'New', remembered: 0 });
-
-    /* Testing 3a (MUST UNCOMMENT 3b below): Scan for devices and test rescan
-       button for trying to scan new ones
-      **/
-    // DeviceManagementService.getSavedDevice((savedDevice) => {
-    //   if (!savedDevice) {
-    //     this.scanForDevices();
-    //   } else {
-    //     this.connectToDevice();
-    //   }
-    // });
-
-    // Production
-    // DeviceManagementService.getSavedDevice((savedDevice) => {
-    //   if (!savedDevice) {
-    //     this.scanForDevices();
-    //   } else {
-    //     this.connectToDevice();
-    //   }
-    // });
+    DeviceManagementService.getSavedDevice((savedDevice) => {
+      if (!savedDevice) {
+        this.scanForDevices();
+      } else {
+        this.connectToDevice();
+      }
+    });
   }
 
   scanForDevices() {
-    DeviceManagementService.scanForDevices((devices) => {
+    NativeAppEventEmitter.addListener('DevicesFound', (devices) => {
       this.setState({ modalVisible: false, devices });
     });
+    DeviceManagementService.scanForDevices();
   }
 
   connectToDevice() {
     NativeAppEventEmitter.once('ConnectionStatus', (status) => {
       this.setState({ modalVisible: false }, () => {
-        if (status.code === 2) {
+        if (!status.message) {
           this.props.navigator.push(routes.posture);
         } else {
           this.connectError(status);
@@ -98,15 +84,28 @@ export default class Connect extends Component {
   }
 
   connectError(errors) {
-    // Combine route object with errors to pass as props when navigating
-    this.props.navigator.push(Object.assign({}, routes.connectError, errors));
+    this.setState({
+      errorInfo: errors,
+      modalVisible: true,
+      errorVisible: true,
+    });
   }
 
   selectDevice(deviceIdentifier) {
-    this.setState({ modalVisible: true }, () => {
-      DeviceManagementService.selectDevice(deviceIdentifier, () => {
-        this.connectToDevice();
-      });
+    this.setState({ modalVisible: true }, (error) => {
+      if (!error) {
+        DeviceManagementService.selectDevice(deviceIdentifier, () => {
+          this.connectToDevice();
+        });
+      } else {
+        this.connectError(error);
+      }
+    });
+  }
+
+  retryConnection() {
+    this.setState({ modalVisible: true, errorVisible: false }, () => {
+      this.connectToDevice();
     });
   }
 
@@ -116,22 +115,36 @@ export default class Connect extends Component {
     });
   }
 
+  forgetDevice() {
+    DeviceManagementService.forgetDevice((error) => {
+      if (!error) {
+        this.props.navigator.pop();
+      } else {
+        this.connectError(error);
+      }
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        { this.state.devices.length ?
-          <DeviceList
-            // Test 3b: Empty array to test rescan button
-            // devices={[]}
-            // If testing out test 3a/3b, then make sure to comment below out
+        { this.state.modalVisible ?
+          <View /> :
+          (<DeviceList
             devices={this.state.devices}
             select={this.selectDevice}
             rescan={this.rescanForDevices}
-          /> :
-          <View />
+          />)
         }
         <Modal animationType="fade" visible={this.state.modalVisible} transparent>
-          <ConnectionProgress color={styles._activityIndicator.color} />
+          { this.state.errorVisible ?
+            (<ConnectError
+              forget={this.forgetDevice}
+              retry={this.retryConnection}
+              errorInfo={this.state.errorInfo}
+            />) :
+            <ConnectionProgress color={styles._activityIndicator.color} />
+          }
         </Modal>
       </View>
     );
