@@ -18,8 +18,6 @@ static int _scanCount;
 
 - (id)init {
   _manager = [MBLMetaWearManager sharedManager];
-  [_manager stopScanForMetaWears];
-  
   return self;
 }
 
@@ -67,7 +65,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
 RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)callback) {
   _sharedDevice = [_deviceCollection objectForKey:deviceID];
   if (!_sharedDevice) {
-    NSDictionary *makeError = RCTMakeError(@"Failed to select device", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
+    NSDictionary *makeError = RCTMakeError(@"Failed to select device", nil, @{});
     callback(@[makeError]);
   } else {
     callback(@[[NSNull null]]);
@@ -80,7 +78,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
   NSMutableArray *deviceList = [NSMutableArray new];
   
   [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
-    NSLog(@"scan count %i", _scanCount);
+    NSLog(@"Scan count %i", _scanCount);
     ++_scanCount;
     if ([deviceList count]) {
       [deviceList removeAllObjects];
@@ -129,8 +127,6 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
       NSLog(@"Connection timeout");
       NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
       [self deviceConnectionStatus:makeError];
-    } else {
-      [self deviceConnectionStatus:@{ @"message": @"Successfully connected" }];
     }
   });
 }
@@ -140,7 +136,6 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
     if (_scanCount < 3) {
       NSLog(@"Scan timeout");
       [_manager stopScanForMetaWears];
-      _scanCount = 0;
       NSDictionary *makeError = RCTMakeError(@"There was a problem scanning", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
       callback(@[makeError]);
     }
