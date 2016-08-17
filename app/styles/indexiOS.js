@@ -4,7 +4,7 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    height: '$iconButton',
+    height: '$iconButtonSize',
     marginTop: '1%',
     flexDirection: 'row',
   },
@@ -14,8 +14,8 @@ export default EStyleSheet.create({
   },
   menuButton: {
     marginLeft: '2%',
-    width: '$iconButton',
-    height: '$iconButton',
+    width: '$iconButtonSize',
+    height: '$iconButtonSize',
     justifyContent: 'center',
   },
   menuIcon: {
@@ -27,8 +27,8 @@ export default EStyleSheet.create({
   },
   settingsButton: {
     marginRight: '2%',
-    width: '$iconButton',
-    height: '$iconButton',
+    width: '$iconButtonSize',
+    height: '$iconButtonSize',
     justifyContent: 'center',
   },
   settingsIcon: {
