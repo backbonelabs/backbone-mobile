@@ -5,6 +5,14 @@ export default EStyleSheet.create({
   container: {
     width: Dimensions.get('window').width,
   },
+  activityIndicatorView: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activityIndicator: {
+    color: '$primaryColor',
+  },
   menuIcon: {
     marginLeft: 25,
   },

@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
+import SInfo from 'react-native-sensitive-info';
 import userActions from '../actions/user';
 import styles from '../styles/login';
 import routes from '../routes';
@@ -32,12 +33,23 @@ class Login extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.accessToken && nextProps.accessToken) {
-      // User successfully authenticated, redirect to Home
+      // User successfully authenticated, save access token to local device
+      this.saveAccessToken(nextProps.accessToken);
+
+      // Redirect to Home
       this.props.navigator.replace(routes.home);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', 'Invalid email/password. Please try again.');
     }
+  }
+
+  saveAccessToken(accessToken) {
+    const namespace = 'backbone';
+    SInfo.setItem('accessToken', accessToken, {
+      sharedPreferencesName: namespace, // Android
+      keychainService: namespace, // iOS
+    });
   }
 
   login() {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   View,
   StatusBar,
   Navigator,
@@ -7,14 +8,14 @@ import {
   NativeEventEmitter,
   TouchableHighlight,
 } from 'react-native';
-import { connect } from 'react-redux';
 import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SInfo from 'react-native-sensitive-info';
 import Menu from './Menu';
 import routes from '../routes';
-import styles from '../styles/indexiOS';
+import styles from '../styles/application';
 
 const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 
@@ -64,7 +65,9 @@ class Application extends Component {
     };
 
     this.state = {
+      accessToken: null,
       drawerIsOpen: false,
+      isFetchingAccessToken: true,
     };
 
     BluetoothService.addListener('CentralStatus', (status) => {
@@ -80,6 +83,25 @@ class Application extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true);
+  }
+
+  componentDidMount() {
+    // Attempt to retrieve a saved access token
+    const namespace = 'backbone';
+    SInfo.getItem('accessToken', {
+      sharedPreferencesName: namespace, // Android
+      keychainService: namespace, // iOS
+    })
+      .then(accessToken => {
+        // TODO: Verify with API server if access token is valid
+        this.setState({
+          isFetchingAccessToken: false,
+          accessToken,
+        });
+      })
+      .catch(() => {
+        this.setState({ isFetchingAccessToken: false });
+      });
   }
 
   configureScene() {
@@ -108,7 +130,15 @@ class Application extends Component {
   }
 
   render() {
-    return (
+    return this.state.isFetchingAccessToken ?
+      <View style={styles.activityIndicatorView}>
+        <ActivityIndicator
+          animating
+          size="large"
+          color={styles._activityIndicator.color}
+        />
+      </View>
+      :
       <Drawer
         type="displace"
         content={<Menu
@@ -126,16 +156,11 @@ class Application extends Component {
           }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={this.props.accessToken ? routes.home : routes.login}
+          initialRoute={this.state.accessToken ? routes.home : routes.login}
           renderScene={this.renderScene}
         />
-      </Drawer>
-    );
+      </Drawer>;
   }
 }
 
-const mapStateToProps = state => ({
-  accessToken: state.auth.accessToken,
-});
-
-export default connect(mapStateToProps)(Application);
+export default Application;
