@@ -45,13 +45,9 @@ export default class Connect extends Component {
       errorVisible: false,
     };
 
-    // this.getSavedDevice = this.getSavedDevice.bind(this);
-    this.connectToDevice = this.connectToDevice.bind(this);
-    this.scanForDevices = this.scanForDevices.bind(this);
-    this.deviceError = this.deviceError.bind(this);
     this.selectDevice = this.selectDevice.bind(this);
-    this.rescanForDevices = this.rescanForDevices.bind(this);
     this.retryConnection = this.retryConnection.bind(this);
+    this.rescanForDevices = this.rescanForDevices.bind(this);
     this.forgetDevice = this.forgetDevice.bind(this);
   }
 
