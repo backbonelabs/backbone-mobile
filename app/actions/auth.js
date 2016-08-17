@@ -27,16 +27,23 @@ export default {
         },
         body: JSON.stringify(user),
       })
-        .then(response => response.json())
-        .then(body => {
-          if (body.error) {
-            throw new Error(body.error);
-          } else {
-            dispatch(fetchAccessToken(body));
-          }
-        })
-        .catch(err => {
-          dispatch(fetchAccessTokenError(err));
+        .then(response => response.json()
+          .then(body => {
+            if (body.error) {
+              // Error received from API server
+              dispatch(fetchAccessTokenError(
+                new Error('Invalid email/password. Please try again.')
+              ));
+            } else {
+              dispatch(fetchAccessToken(body));
+            }
+          })
+        )
+        .catch(() => {
+          // Network error
+          dispatch(fetchAccessTokenError(
+            new Error('We are encountering server issues. Please try again later.')
+          ));
         });
     };
   },

@@ -40,7 +40,7 @@ class Login extends Component {
       this.props.navigator.replace(routes.home);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Authentication error
-      Alert.alert('Authentication Error', 'Invalid email/password. Please try again.');
+      Alert.alert('Authentication Error', nextProps.errorMessage);
     }
   }
 
