@@ -8,12 +8,10 @@ import {
   NativeEventEmitter,
   TouchableHighlight,
 } from 'react-native';
-import { connect } from 'react-redux';
 import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import authActions from '../actions/auth';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Menu from './Menu';
 import routes from '../routes';
@@ -22,11 +20,6 @@ import styles from '../styles/application';
 const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 
 class Application extends Component {
-  static propTypes = {
-    accessToken: React.PropTypes.string,
-    dispatch: React.PropTypes.func,
-  };
-
   constructor(props) {
     super(props);
 
@@ -85,25 +78,15 @@ class Application extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true);
-  }
-
-  componentDidMount() {
-    // Attempt to retrieve a saved access token
+    // Attempt to find a previously saved access token
     SensitiveInfo.getItem('accessToken')
       .then(accessToken => {
         // TODO: Verify with API server if access token is valid
-        this.props.dispatch(authActions.setAccessToken(accessToken));
+        this.setState({ isFetchingAccessToken: false, accessToken });
       })
       .catch(() => {
         this.setState({ isFetchingAccessToken: false });
       });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.accessToken && nextProps.accessToken) {
-      // Found previous access token
-      this.setState({ isFetchingAccessToken: false });
-    }
   }
 
   configureScene() {
@@ -158,15 +141,11 @@ class Application extends Component {
           }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={this.props.accessToken ? routes.home : routes.login}
+          initialRoute={this.state.accessToken ? routes.home : routes.login}
           renderScene={this.renderScene}
         />
       </Drawer>;
   }
 }
 
-const mapStateToProps = state => ({
-  accessToken: state.auth.accessToken,
-});
-
-export default connect(mapStateToProps)(Application);
+export default Application;
