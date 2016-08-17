@@ -2,29 +2,23 @@ import { NativeModules } from 'react-native';
 
 const { Environment } = NativeModules;
 
-const fetchUserStart = () => ({ type: 'FETCH_USER__START' });
+const fetchAccessTokenStart = () => ({ type: 'FETCH_ACCESS_TOKEN__START' });
 
-const fetchUser = user => ({
-  type: 'FETCH_USER',
-  payload: user,
+const fetchAccessToken = payload => ({
+  type: 'FETCH_ACCESS_TOKEN',
+  payload,
 });
 
-const fetchUserError = error => ({
-  type: 'FETCH_USER__ERROR',
+const fetchAccessTokenError = error => ({
+  type: 'FETCH_ACCESS_TOKEN__ERROR',
   payload: error,
   error: true,
 });
 
 export default {
-  setAccessToken(accessToken) {
-    return {
-      type: 'ACCESS_TOKEN',
-      payload: accessToken,
-    };
-  },
   login(user) {
     return dispatch => {
-      dispatch(fetchUserStart());
+      dispatch(fetchAccessTokenStart());
       return global.fetch(`${Environment.API_SERVER_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -38,12 +32,11 @@ export default {
           if (body.error) {
             throw new Error(body.error);
           } else {
-            dispatch(fetchUser(body));
+            dispatch(fetchAccessToken(body));
           }
         })
         .catch(err => {
-          console.log('error', err);
-          dispatch(fetchUserError(err));
+          dispatch(fetchAccessTokenError(err));
         });
     };
   },

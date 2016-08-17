@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import SensitiveInfo from '../utils/SensitiveInfo';
-import userActions from '../actions/user';
+import authActions from '../actions/auth';
 import styles from '../styles/login';
 import routes from '../routes';
 
@@ -55,7 +55,7 @@ class Login extends Component {
     } else {
       this.setState({ submitted: true }, () => {
         const { email, password } = this.state;
-        this.props.dispatch(userActions.login({ email, password }));
+        this.props.dispatch(authActions.login({ email, password }));
       });
     }
   }

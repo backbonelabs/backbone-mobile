@@ -5,19 +5,14 @@ export default (state = {
   errorMessage: null,
 }, action) => {
   switch (action.type) {
-    case 'ACCESS_TOKEN': {
-      return {
-        ...state,
-        accessToken: action.payload,
-      };
-    }
-    case 'FETCH_USER__START': {
+    case 'FETCH_ACCESS_TOKEN__START': {
       return {
         ...state,
         isFetching: true,
+        errorMessage: null,
       };
     }
-    case 'FETCH_USER': {
+    case 'FETCH_ACCESS_TOKEN': {
       return {
         ...state,
         isFetching: false,
@@ -26,7 +21,7 @@ export default (state = {
         accessToken: action.payload.accessToken,
       };
     }
-    case 'FETCH_USER__ERROR': {
+    case 'FETCH_ACCESS_TOKEN__ERROR': {
       return {
         ...state,
         isFetching: false,

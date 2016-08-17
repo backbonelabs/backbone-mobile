@@ -13,7 +13,7 @@ import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import userActions from '../actions/user';
+import authActions from '../actions/auth';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Menu from './Menu';
 import routes from '../routes';
@@ -92,7 +92,7 @@ class Application extends Component {
     SensitiveInfo.getItem('accessToken')
       .then(accessToken => {
         // TODO: Verify with API server if access token is valid
-        this.props.dispatch(userActions.setAccessToken(accessToken));
+        this.props.dispatch(authActions.setAccessToken(accessToken));
       })
       .catch(() => {
         this.setState({ isFetchingAccessToken: false });
