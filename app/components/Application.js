@@ -12,7 +12,7 @@ import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SInfo from 'react-native-sensitive-info';
+import SensitiveInfo from '../utils/SensitiveInfo';
 import Menu from './Menu';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -87,11 +87,7 @@ class Application extends Component {
 
   componentDidMount() {
     // Attempt to retrieve a saved access token
-    const namespace = 'backbone';
-    SInfo.getItem('accessToken', {
-      sharedPreferencesName: namespace, // Android
-      keychainService: namespace, // iOS
-    })
+    SensitiveInfo.getItem('accessToken')
       .then(accessToken => {
         // TODO: Verify with API server if access token is valid
         this.setState({

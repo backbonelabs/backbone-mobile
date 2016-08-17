@@ -8,7 +8,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
-import SInfo from 'react-native-sensitive-info';
+import SensitiveInfo from '../utils/SensitiveInfo';
 import userActions from '../actions/user';
 import styles from '../styles/login';
 import routes from '../routes';
@@ -45,11 +45,7 @@ class Login extends Component {
   }
 
   saveAccessToken(accessToken) {
-    const namespace = 'backbone';
-    SInfo.setItem('accessToken', accessToken, {
-      sharedPreferencesName: namespace, // Android
-      keychainService: namespace, // iOS
-    });
+    SensitiveInfo.setItem('accessToken', accessToken);
   }
 
   login() {
