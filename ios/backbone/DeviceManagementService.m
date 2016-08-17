@@ -17,6 +17,8 @@ static NSMutableDictionary *_deviceCollection = nil;
 
 - (id)init {
   _manager = [MBLMetaWearManager sharedManager];
+  [_manager stopScanForMetaWears];
+  
   return self;
 }
 
@@ -38,6 +40,7 @@ RCT_EXPORT_METHOD(getSavedDevice:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(connectToDevice) {
+  NSLog(@"Attempting to connect to %@", _sharedDevice);
   [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (error) {
       NSDictionary *makeError = RCTMakeError(@"Failed to connect to device", nil, @{
@@ -81,7 +84,7 @@ RCT_EXPORT_METHOD(scanForDevices) {
     }
     
     for (MBLMetaWear *device in array) {
-      if (device.discoveryTimeRSSI.integerValue >= -50) {
+      if (device.discoveryTimeRSSI.integerValue >= -60) {
         _deviceCollection[[device.identifier UUIDString]] = device;
         [deviceList addObject: @{
                                  @"name": device.name,
@@ -90,7 +93,7 @@ RCT_EXPORT_METHOD(scanForDevices) {
                                  }];
       }
     }
-    [NSThread sleepForTimeInterval:1.5f];
+    [NSThread sleepForTimeInterval:1.0f];
     [self devicesFound:deviceList];
   }];
 }
@@ -113,6 +116,7 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
 - (void)checkForTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if (_sharedDevice.state != MBLConnectionStateConnected) {
+      NSLog(@"Timeout");
       NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
       [self deviceConnectionStatus:makeError];
     } else {
