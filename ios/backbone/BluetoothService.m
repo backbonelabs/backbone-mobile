@@ -8,7 +8,7 @@ static BOOL _isObserving;
   self = [super init];
   self.centralManager = [[CBCentralManager alloc]
                          initWithDelegate:self
-                         queue:dispatch_get_main_queue() 
+                         queue:nil
                          options:@{CBCentralManagerOptionShowPowerAlertKey: @(YES)}];
   return self;
 }
@@ -34,12 +34,12 @@ RCT_EXPORT_MODULE();
                               @"5": @"Powered On",
                               },
                           };
-  [self sendEventWithName:@"CentralState" body:stateUpdate];
+  [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"CentralState"];
+  return @[@"BluetoothState"];
 }
 
 - (void)startObserving {

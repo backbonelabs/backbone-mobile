@@ -87,10 +87,10 @@ class backbone extends Component {
       drawerIsOpen: false,
     };
 
-    BluetoothService.addListener('CentralState', ({ state, stateMap }) => {
+    BluetoothService.addListener('BluetoothState', ({ state, stateMap }) => {
       if (state < 5) {
         Alert.alert(
-          `Error Code ${state}`,
+          `Error #${state}`,
           `Bluetooth ${stateMap[state]}`,
         );
       }
