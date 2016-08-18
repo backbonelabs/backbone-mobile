@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   View,
   StatusBar,
   Navigator,
@@ -94,9 +95,13 @@ class Application extends Component {
       drawerIsOpen: false,
     };
 
-    BluetoothService.addListener('CentralStatus', (status) => {
-      // placeholder
-      console.log('Central status: ', status.state);
+    BluetoothService.addListener('BluetoothState', ({ state, stateMap }) => {
+      if (state < 5) {
+        Alert.alert(
+          `Error #${state}`,
+          `Bluetooth ${stateMap[state]}`,
+        );
+      }
     });
 
     this.configureScene = this.configureScene.bind(this);
