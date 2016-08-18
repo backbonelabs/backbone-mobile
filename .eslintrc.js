@@ -1,6 +1,9 @@
 module.exports = {
   extends: 'airbnb',
   parser: 'babel-eslint',
+  globals: {
+    fetch: true,
+  },
   rules: {
     'react/jsx-filename-extension': [1, { extensions: ['.js'] }],
     'max-len': [2, { code: 100 }],

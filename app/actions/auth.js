@@ -34,7 +34,7 @@ export default {
   login(user) {
     return dispatch => {
       dispatch(fetchAccessTokenStart());
-      return global.fetch(`${Environment.API_SERVER_URL}/auth/login`, {
+      return fetch(`${Environment.API_SERVER_URL}/auth/login`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -66,7 +66,7 @@ export default {
   verifyAccessToken(accessToken) {
     return dispatch => {
       dispatch(verifyAccessTokenStart());
-      return global.fetch(`${Environment.API_SERVER_URL}/auth/verify`, {
+      return fetch(`${Environment.API_SERVER_URL}/auth/verify`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
