@@ -1,4 +1,5 @@
 import { NativeModules } from 'react-native';
+import Fetcher from '../utils/Fetcher';
 
 const { Environment } = NativeModules;
 
@@ -28,18 +29,12 @@ const verifyAccessTokenError = error => ({
   error: true,
 });
 
-// TODO: DRY up the fetch calls
-
 export default {
   login(user) {
     return dispatch => {
       dispatch(fetchAccessTokenStart());
-      return fetch(`${Environment.API_SERVER_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+      return Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/auth/login`,
         body: JSON.stringify(user),
       })
         .then(response => response.json()
@@ -66,12 +61,8 @@ export default {
   verifyAccessToken(accessToken) {
     return dispatch => {
       dispatch(verifyAccessTokenStart());
-      return fetch(`${Environment.API_SERVER_URL}/auth/verify`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+      return Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/auth/verify`,
         body: JSON.stringify({ accessToken }),
       })
         .then(response => {
