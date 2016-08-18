@@ -15,6 +15,21 @@ const fetchAccessTokenError = error => ({
   error: true,
 });
 
+const verifyAccessTokenStart = () => ({ type: 'VERIFY_ACCESS_TOKEN__START' });
+
+const verifyAccessToken = payload => ({
+  type: 'VERIFY_ACCESS_TOKEN',
+  payload,
+});
+
+const verifyAccessTokenError = error => ({
+  type: 'VERIFY_ACCESS_TOKEN__ERROR',
+  payload: error,
+  error: true,
+});
+
+// TODO: DRY up the fetch calls
+
 export default {
   login(user) {
     return dispatch => {
@@ -42,6 +57,29 @@ export default {
         .catch(() => {
           // Network error
           dispatch(fetchAccessTokenError(
+            new Error('We are encountering server issues. Please try again later.')
+          ));
+        });
+    };
+  },
+
+  verifyAccessToken(accessToken) {
+    return dispatch => {
+      dispatch(verifyAccessTokenStart());
+      return global.fetch(`${Environment.API_SERVER_URL}/auth/verify`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ accessToken }),
+      })
+        .then(response => {
+          dispatch(verifyAccessToken(response.ok)); // response.ok is true when status code is 2xx
+        })
+        .catch(() => {
+          // Network error
+          dispatch(verifyAccessTokenError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });
