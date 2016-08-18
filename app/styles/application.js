@@ -34,12 +34,4 @@ export default EStyleSheet.create({
   settingsIcon: {
     alignSelf: 'center',
   },
-  activityIndicatorView: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  activityIndicator: {
-    color: '$primaryColor',
-  },
 });

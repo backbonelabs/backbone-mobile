@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  ActivityIndicator,
   View,
   StatusBar,
   Navigator,
@@ -12,7 +11,6 @@ import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import Menu from './Menu';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -94,7 +92,6 @@ class Application extends Component {
 
     this.state = {
       drawerIsOpen: false,
-      isFetchingAccessToken: true,
     };
 
     BluetoothService.addListener('CentralStatus', (status) => {
@@ -110,15 +107,6 @@ class Application extends Component {
 
   componentWillMount() {
     StatusBar.setBarStyle('light-content', true);
-    // Attempt to find a previously saved access token
-    SensitiveInfo.getItem('accessToken')
-      .then(accessToken => {
-        // TODO: Verify with API server if access token is valid
-        this.setState({ isFetchingAccessToken: false, accessToken });
-      })
-      .catch(() => {
-        this.setState({ isFetchingAccessToken: false });
-      });
   }
 
   configureScene() {
@@ -147,15 +135,7 @@ class Application extends Component {
   }
 
   render() {
-    return this.state.isFetchingAccessToken ?
-      <View style={styles.activityIndicatorView}>
-        <ActivityIndicator
-          animating
-          size="large"
-          color={styles._activityIndicator.color}
-        />
-      </View>
-      :
+    return (
       <Drawer
         type="displace"
         content={<Menu
@@ -173,10 +153,11 @@ class Application extends Component {
           }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={this.state.accessToken ? routes.home : routes.login}
+          initialRoute={routes.home}
           renderScene={this.renderScene}
         />
-      </Drawer>;
+      </Drawer>
+    );
   }
 }
 
