@@ -8,4 +8,5 @@ export default {
   iconSize,
   iconButtonSize,
   rem: 16,
+  buttonBorderRadius: 4,
 };
