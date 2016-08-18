@@ -26,8 +26,8 @@ const getItem = key => SInfo.getItem(key, options)
  * Sets a value at a given key. If the value is a string, it will be stored
  * as a string. If the value is any other type, it will be stringified using
  * JSON.stringify before being stored. If value is undefined, it is a no-op.
- * @param  {String} key   The key to store value in
- * @param  {*}      value The value to store
+ * @param {String} key   The key to store value in
+ * @param {*}      value The value to store
  */
 const setItem = (key, value) => {
   if (value === undefined) {
@@ -42,7 +42,7 @@ const setItem = (key, value) => {
 
 /**
  * Removes a key-value pair.
- * @param  {String} key The key the value is stored in
+ * @param {String} key The key the value is stored in
  */
 const deleteItem = key => SInfo.deleteItem(key, options);
 

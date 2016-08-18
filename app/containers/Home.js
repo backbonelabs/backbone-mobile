@@ -34,11 +34,13 @@ class Home extends Component {
 
   componentWillMount() {
     // Attempt to find a previously saved access token
+    // An access token would have been saved on a successful login
     SensitiveInfo.getItem('accessToken')
       .then(accessToken => {
         this.setState({ isFetchingAccessToken: false, accessToken });
 
         if (accessToken) {
+          // There is a saved access token
           // Verify with API server if access token is valid
           this.props.dispatch(authActions.verifyAccessToken(accessToken));
         }
@@ -46,6 +48,16 @@ class Home extends Component {
       .catch(() => {
         this.setState({ isFetchingAccessToken: false });
       });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.auth.isVerifyingAccessToken &&
+      !nextProps.auth.isVerifyingAccessToken &&
+      !nextProps.auth.isValidAccessToken) {
+      // Access token is invalid
+      // Delete from local device to prevent unnecessary API calls on subsequent app load
+      SensitiveInfo.deleteItem('accessToken');
+    }
   }
 
   getMainBody() {
