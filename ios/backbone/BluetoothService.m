@@ -6,7 +6,10 @@ static BOOL _isObserving;
 
 - (id)init {
   self = [super init];
-  self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
+  self.centralManager = [[CBCentralManager alloc]
+                         initWithDelegate:self
+                         queue:nil
+                         options:@{CBCentralManagerOptionShowPowerAlertKey: @(YES)}];
   return self;
 }
 
@@ -22,13 +25,21 @@ RCT_EXPORT_MODULE();
   NSLog(@"Emitting central state: %i", state);
   NSDictionary *stateUpdate = @{
                           @"state": [NSNumber numberWithInt:state],
+                          @"stateMap": @{
+                              @"0": @"Unknown",
+                              @"1": @"Resetting",
+                              @"2": @"Unsupported",
+                              @"3": @"Unauthorized",
+                              @"4": @"Powered Off",
+                              @"5": @"Powered On",
+                              },
                           };
-  [self sendEventWithName:@"CentralStatus" body:stateUpdate];
+  [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"CentralStatus"];
+  return @[@"BluetoothState"];
 }
 
 - (void)startObserving {
