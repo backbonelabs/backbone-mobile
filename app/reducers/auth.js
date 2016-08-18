@@ -1,7 +1,6 @@
 export default (state = {
   accessToken: null,
   isFetchingAccessToken: false,
-  isFetchingAccessTokenComplete: false,
   errorMessage: null,
   isVerifyingAccessToken: false,
   isValidAccessToken: false,
@@ -18,7 +17,6 @@ export default (state = {
       return {
         ...state,
         isFetchingAccessToken: false,
-        isFetchingAccessTokenComplete: true,
         errorMessage: null,
         accessToken: action.payload.accessToken,
       };
@@ -27,7 +25,6 @@ export default (state = {
       return {
         ...state,
         isFetchingAccessToken: false,
-        isFetchingAccessTokenComplete: false,
         errorMessage: action.payload.message,
       };
     }
@@ -42,7 +39,6 @@ export default (state = {
       return {
         ...state,
         isVerifyingAccessToken: false,
-        isVerifyingAccessTokenComplete: true,
         errorMessage: null,
         isValidAccessToken: action.payload,
       };
@@ -51,7 +47,6 @@ export default (state = {
       return {
         ...state,
         isVerifyingAccessToken: false,
-        isVerifyingAccessTokenComplete: false,
         errorMessage: action.payload.message,
       };
     }
