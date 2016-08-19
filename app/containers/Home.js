@@ -53,6 +53,7 @@ class Home extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.auth.isVerifyingAccessToken &&
       !nextProps.auth.isVerifyingAccessToken &&
+      !nextProps.auth.errorMessage &&
       !nextProps.auth.isValidAccessToken) {
       // Access token is invalid
       // Delete from local device to prevent unnecessary API calls on subsequent app load
