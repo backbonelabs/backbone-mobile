@@ -58,6 +58,38 @@ export default {
     };
   },
 
+  signup(user) {
+    return dispatch => {
+      dispatch(fetchAccessTokenStart());
+      return global.fetch(`${Environment.API_SERVER_URL}/auth/signup`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      })
+        .then(response => response.json()
+          .then(body => {
+            if (body.error) {
+              // Error received from API server
+              dispatch(fetchAccessTokenError(
+                new Error('Invalid email/password. Please try again.')
+              ));
+            } else {
+              dispatch(fetchAccessToken(body));
+            }
+          })
+        )
+        .catch(() => {
+          // Network error
+          dispatch(fetchAccessTokenError(
+            new Error('We are encountering server issues. Please try again later.')
+          ));
+        });
+    };
+  },
+
   verifyAccessToken(accessToken) {
     return dispatch => {
       dispatch(verifyAccessTokenStart());
