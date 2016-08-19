@@ -1,4 +1,5 @@
 import { NativeModules } from 'react-native';
+import Fetcher from '../utils/Fetcher';
 
 const { Environment } = NativeModules;
 
@@ -15,16 +16,25 @@ const fetchAccessTokenError = error => ({
   error: true,
 });
 
+const verifyAccessTokenStart = () => ({ type: 'VERIFY_ACCESS_TOKEN__START' });
+
+const verifyAccessToken = payload => ({
+  type: 'VERIFY_ACCESS_TOKEN',
+  payload,
+});
+
+const verifyAccessTokenError = error => ({
+  type: 'VERIFY_ACCESS_TOKEN__ERROR',
+  payload: error,
+  error: true,
+});
+
 export default {
   login(user) {
     return dispatch => {
       dispatch(fetchAccessTokenStart());
-      return global.fetch(`${Environment.API_SERVER_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+      return Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/auth/login`,
         body: JSON.stringify(user),
       })
         .then(response => response.json()
@@ -42,6 +52,25 @@ export default {
         .catch(() => {
           // Network error
           dispatch(fetchAccessTokenError(
+            new Error('We are encountering server issues. Please try again later.')
+          ));
+        });
+    };
+  },
+
+  verifyAccessToken(accessToken) {
+    return dispatch => {
+      dispatch(verifyAccessTokenStart());
+      return Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/auth/verify`,
+        body: JSON.stringify({ accessToken }),
+      })
+        .then(response => {
+          dispatch(verifyAccessToken(response.ok)); // response.ok is true when status code is 2xx
+        })
+        .catch(() => {
+          // Network error
+          dispatch(verifyAccessTokenError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });
