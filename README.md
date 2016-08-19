@@ -7,6 +7,12 @@ Backbone mobile app for iOS and Android
 
 - Node.js 6.3.1
 
+## Development
+
+When developing on your local machine, be sure to use the `backbone dev` scheme in Xcode. You can select this scheme by going to Product > Scheme > backbone dev.
+
+The dev scheme has environment variables specific to your local development environment. Be sure to review the environment variables in the scheme. Edit the scheme and in the Run step, and you will find the environment variables under the Arguments tab.
+
 ## Versioning
 
 iOS apps have a marketing version and build version. These are used by the store to identify the build. The marketing version should follow semantic versioning (http://semver.org/), e.g., 1.2.3. The build version should be an integer that always increments, e.g., 1, 2, 3, etc.
@@ -29,9 +35,9 @@ sh buildVersion.sh
 
 Before uploading the app to iTunes Connect, be sure to update the marketing version number.
 
-To change the marketing version number, make sure to pull down the latest `master` and that you are on the `master` branch. Then close the Xcode project because agvtool will update the project file and could potentially cause problems for Xcode when the project is opened.
+To change the marketing version number, make sure you are on the `master` branch and it is up to date. Then close the Xcode project because agvtool will update the project file and could potentially cause problems for Xcode when the project is opened.
 
-The run the following from the `ios` folder:
+Then run the following from the `ios` folder:
 
 ```
 sh marketingVersion.sh <new_version_number>

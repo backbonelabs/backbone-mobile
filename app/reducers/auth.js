@@ -1,22 +1,22 @@
 export default (state = {
   accessToken: null,
-  isFetching: false,
-  isFetchingComplete: false,
+  isFetchingAccessToken: false,
   errorMessage: null,
+  isVerifyingAccessToken: false,
+  isValidAccessToken: false,
 }, action) => {
   switch (action.type) {
     case 'FETCH_ACCESS_TOKEN__START': {
       return {
         ...state,
-        isFetching: true,
+        isFetchingAccessToken: true,
         errorMessage: null,
       };
     }
     case 'FETCH_ACCESS_TOKEN': {
       return {
         ...state,
-        isFetching: false,
-        isFetchingComplete: true,
+        isFetchingAccessToken: false,
         errorMessage: null,
         accessToken: action.payload.accessToken,
       };
@@ -24,8 +24,29 @@ export default (state = {
     case 'FETCH_ACCESS_TOKEN__ERROR': {
       return {
         ...state,
-        isFetching: false,
-        isFetchingComplete: false,
+        isFetchingAccessToken: false,
+        errorMessage: action.payload.message,
+      };
+    }
+    case 'VERIFY_ACCESS_TOKEN__START': {
+      return {
+        ...state,
+        isVerifyingAccessToken: true,
+        errorMessage: null,
+      };
+    }
+    case 'VERIFY_ACCESS_TOKEN': {
+      return {
+        ...state,
+        isVerifyingAccessToken: false,
+        errorMessage: null,
+        isValidAccessToken: action.payload,
+      };
+    }
+    case 'VERIFY_ACCESS_TOKEN__ERROR': {
+      return {
+        ...state,
+        isVerifyingAccessToken: false,
         errorMessage: action.payload.message,
       };
     }
