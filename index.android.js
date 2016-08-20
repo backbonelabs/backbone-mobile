@@ -1,33 +1,24 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React from 'react';
-import {
-  AppRegistry,
-  Text,
-  View,
-} from 'react-native';
+import { AppRegistry } from 'react-native';
+import { Provider } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import reducers from './app/reducers';
+import Application from './app/components/Application';
 import theme from './app/styles/theme';
-import styles from './app/styles/indexAndroid';
 
 EStyleSheet.build(theme);
 
+const store = createStore(
+  reducers,
+  applyMiddleware(thunk)
+);
+
 const Backbone = () => (
-  <View style={styles.container}>
-    <Text style={styles.welcome}>
-      Welcome to React Native!
-    </Text>
-    <Text style={styles.instructions}>
-      To get started, edit index.android.js
-    </Text>
-    <Text style={styles.instructions}>
-      Shake or press menu button for dev menu
-    </Text>
-  </View>
+  <Provider store={store}>
+    <Application />
+  </Provider>
 );
 
 AppRegistry.registerComponent('backbone', () => Backbone);
