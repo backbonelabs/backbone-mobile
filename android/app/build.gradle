@@ -105,7 +105,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "API_SERVER_URL", '"http://192.168.1.155:3000"'
+        }
         release {
+            buildConfigField "String", "API_SERVER_URL", '"https://api.gobackbone.com"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
