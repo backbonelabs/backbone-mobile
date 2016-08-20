@@ -9,5 +9,6 @@
 @property double currentDistance;
 @property double distanceThreshold;
 @property double tiltThreshold;
++ (void)setShouldSendNotifications:(BOOL)flag;
 - (void)handleTilt;
 @end

@@ -8,7 +8,7 @@
  */
 
 #import "AppDelegate.h"
-
+#import "PostureModule.h"
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 
@@ -16,6 +16,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Register notification types
+  UIUserNotificationType types = (UIUserNotificationType) (UIUserNotificationTypeSound | UIUserNotificationTypeAlert);
+  UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types
+                                                                                       categories:nil];
+  [application registerUserNotificationSettings:notificationSettings];
+
+  // Launch React Native app
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
@@ -32,6 +39,31 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
+}
+
+// Handler for when the app is active in the foreground
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+  NSLog(@"applicationDidBecomeActive");
+  // Prevent posture module from sending local notifications if the app is in the foreground
+  [PostureModule setShouldSendNotifications:false];
+}
+
+// Handler for when the app is in the background
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+  NSLog(@"applicationDidEnterBackground");
+  // Allow posture module to send local notifications if the app switches to the background
+  [PostureModule setShouldSendNotifications:true];
+}
+
+// Handler for when a local notification is received (local notifications can be received
+// if the app is either in the foreground or background
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(nonnull UILocalNotification *)notification {
+  NSLog(@"didReceiveLocalNotification");
+  if ([application applicationState] == UIApplicationStateBackground) {
+    // App received local notification while in the background
+    // Don't show anymore posture notifications until the next time the app goes to the background
+    [PostureModule setShouldSendNotifications:false];
+  }
 }
 
 @end
