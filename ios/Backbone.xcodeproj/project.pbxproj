@@ -292,10 +292,6 @@
 		13B07FAE1A68108700A75B9A /* Backbone */ = {
 			isa = PBXGroup;
 			children = (
-				4457C4AF1D60273200F05D92 /* BluetoothService.h */,
-				4457C4B01D60273200F05D92 /* BluetoothService.m */,
-				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
-				446AF7F81D53DB1200F85785 /* DeviceManagementService.m */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -303,6 +299,12 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				667641251D63B8F900D45761 /* Environment.h */,
+				667641261D63B90800D45761 /* Environment.m */,
+				4457C4AF1D60273200F05D92 /* BluetoothService.h */,
+				4457C4B01D60273200F05D92 /* BluetoothService.m */,
+				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
+				446AF7F81D53DB1200F85785 /* DeviceManagementService.m */,
 				6602D6891D5023A500DF3369 /* SensorDataService.h */,
 				6602D6971D50295300DF3369 /* SensorDataService.m */,
 				669B15191D51439E00DCEFBE /* SensorNotifications.h */,
@@ -313,8 +315,6 @@
 				669B14DE1D51053F00DCEFBE /* PostureModule.m */,
 				669B14D01D50626500DCEFBE /* ActivityService.h */,
 				669B14DC1D50630A00DCEFBE /* ActivityService.m */,
-				667641251D63B8F900D45761 /* Environment.h */,
-				667641261D63B90800D45761 /* Environment.m */,
 			);
 			name = Backbone;
 			sourceTree = "<group>";
