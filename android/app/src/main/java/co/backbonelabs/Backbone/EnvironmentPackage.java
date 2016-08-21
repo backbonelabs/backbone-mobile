@@ -1,4 +1,4 @@
-package com.backbone;
+package co.backbonelabs.Backbone;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
