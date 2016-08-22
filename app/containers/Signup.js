@@ -1,77 +1,53 @@
 import React, { Component } from 'react';
-
 import {
+  ActivityIndicator,
+  Alert,
   View,
   Text,
-  Alert,
   TextInput,
-  ActivityIndicator,
+  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
-import styles from '../styles/signup';
-import routes from '../routes/signup';
+import styles from '../styles/auth';
+import routes from '../routes';
 
 class Signup extends Component {
   static propTypes = {
-    accessToken: React.PropTypes.string,
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
-    isFetching: React.PropTypes.bool,
+    userAccount: React.PropTypes.bool,
+    isCreatingUserAccount: React.PropTypes.bool,
     navigator: React.PropTypes.object,
   };
 
-  constructor() {
-    super();
-
+  constructor(props) {
+    super(props);
     this.state = {
       email: '',
       password: '',
-      confirmPassword: '',
+      verifyPassword: '',
     };
-    this.signup = this.signup.bind();
+    this.signup = this.signup.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.accessToken && nextProps.accessToken) {
-      // User successfully authenticated, save access token to local device
-      this.saveAccessToken(nextProps.accessToken);
-
-      // Redirect to DeviceConnect
-      this.props.navigator.replace(routes.deviceConnect);
+    if (!this.props.userAccount && nextProps.userAccount) {
+      const { email } = this.state;
+      this.props.navigator.replace(Object.assign({}, routes.userConfirm, { email }));
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      // Authentication error
-      Alert.alert('Authentication Error', nextProps.errorMessage);
+      Alert.alert('Sign-up Error', nextProps.errorMessage);
     }
-  }
-
-  saveAccessToken(accessToken) {
-    SensitiveInfo.setItem('accessToken', accessToken);
   }
 
   signup() {
     if (!this.state.email || !this.state.password) {
-      // Show alert if email, password, or confirm password is missing
+      // Show alert if email or password is missing
       Alert.alert('Missing fields', `${this.state.email ? 'Password' : 'Email'} is required`);
-    } else if (this.state.password !== this.state.confirmPassword) {
-      // Show alert if passwords don't match
-      Alert.alert(
-        'Passwords don\'t match',
-        'Please try again',
-        { text: 'OK',
-          onPress: () => {
-            this.setState({
-              password: '',
-              confirmPassword: '',
-            });
-          },
-        },
-      );
     } else {
       this.setState({ submitted: true }, () => {
-        const { email, password } = this.state;
-        this.props.dispatch(authActions.signup({ email, password }));
+        const { email, password, verifyPassword } = this.state;
+        this.props.dispatch(authActions.signup({ email, password, verifyPassword }));
       });
     }
   }
@@ -80,7 +56,7 @@ class Signup extends Component {
     // TODO: Show ActivityIndicator when form is submitted
     return (
       <View style={styles.container}>
-      {this.props.isFetching ?
+      {this.props.isCreatingUserAccount ?
         <ActivityIndicator
           animating
           size="large"
@@ -116,6 +92,23 @@ class Signup extends Component {
               placeholder="Password"
               keyboardType="default"
               onChangeText={text => this.setState({ password: text })}
+              onSubmitEditing={() => this.verifyPasswordField.focus()}
+              autoCorrect={false}
+              secureTextEntry
+              returnKeyType="next"
+            />
+          </View>
+          <View style={styles.textFieldView}>
+            <TextInput
+              ref={ref => {
+                this.verifyPasswordField = ref;
+              }}
+              style={styles.textField}
+              value={this.state.verifyPassword}
+              autoCapitalize="none"
+              placeholder="Verify Password"
+              keyboardType="default"
+              onChangeText={text => this.setState({ verifyPassword: text })}
               onSubmitEditing={this.signup}
               autoCorrect={false}
               secureTextEntry
@@ -124,10 +117,10 @@ class Signup extends Component {
           </View>
           <TouchableHighlight
             style={styles.button}
-            disabled={this.props.isFetching}
+            disabled={this.props.isCreatingUserAccount}
             onPress={this.signup}
           >
-            <Text style={styles.buttonText}>Log in</Text>
+            <Text style={styles.buttonText}>Sign-up</Text>
           </TouchableHighlight>
         </View>
       }
