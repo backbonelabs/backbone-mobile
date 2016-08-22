@@ -87,7 +87,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.backbone"
+        applicationId "co.backbonelabs.Backbone"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -105,7 +105,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "API_SERVER_URL", '"http://192.168.1.155:3000"'
+        }
         release {
+            buildConfigField "String", "API_SERVER_URL", '"https://api.gobackbone.com"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
