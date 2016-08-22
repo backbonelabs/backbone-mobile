@@ -2,7 +2,6 @@ import React from 'react';
 import {
   View,
   Text,
-  StatusBar,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -11,7 +10,6 @@ import styles from '../styles/deviceError';
 export default function DeviceError(props) {
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="default" />
       <View style={styles.header}>
         <Icon size={150} name="warning" color="black" />
       </View>
