@@ -10,7 +10,7 @@ import {
 import { connect } from 'react-redux';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
-import styles from '../styles/login';
+import styles from '../styles/auth';
 import routes from '../routes';
 
 class Login extends Component {
@@ -18,7 +18,7 @@ class Login extends Component {
     accessToken: React.PropTypes.string,
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
-    isFetching: React.PropTypes.bool,
+    isFetchingAccessToken: React.PropTypes.bool,
     navigator: React.PropTypes.object,
   };
 
@@ -64,7 +64,7 @@ class Login extends Component {
     // TODO: Show ActivityIndicator when form is submitted
     return (
       <View style={styles.container}>
-      {this.props.isFetching ?
+      {this.props.isFetchingAccessToken ?
         <ActivityIndicator
           animating
           size="large"
@@ -108,7 +108,7 @@ class Login extends Component {
           </View>
           <TouchableHighlight
             style={styles.button}
-            disabled={this.props.isFetching}
+            disabled={this.props.isFetchingAccessToken}
             onPress={this.login}
           >
             <Text style={styles.buttonText}>Log in</Text>

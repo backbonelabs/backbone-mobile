@@ -29,6 +29,32 @@ const verifyAccessTokenError = error => ({
   error: true,
 });
 
+const createUserAccountStart = () => ({ type: 'CREATE_USER_ACCOUNT__START' });
+
+const createUserAccount = payload => ({
+  type: 'CREATE_USER_ACCOUNT',
+  payload,
+});
+
+const createUserAccountError = error => ({
+  type: 'CREATE_USER_ACCOUNT__ERROR',
+  payload: error,
+  error: true,
+});
+
+const checkEmailConfirmationStart = () => ({ type: 'CHECK_EMAIL_CONFIRMATION__START' });
+
+const checkEmailConfirmation = payload => ({
+  type: 'CHECK_EMAIL_CONFIRMATION',
+  payload,
+});
+
+const checkEmailConfirmationError = error => ({
+  type: 'CHECK_EMAIL_CONFIRMATION__ERROR',
+  payload: error,
+  error: true,
+});
+
 export default {
   login(user) {
     return dispatch => {
@@ -60,30 +86,26 @@ export default {
 
   signup(user) {
     return dispatch => {
-      dispatch(fetchAccessTokenStart());
-      return global.fetch(`${Environment.API_SERVER_URL}/auth/signup`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+      dispatch(createUserAccountStart());
+      return Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
       })
         .then(response => response.json()
           .then(body => {
             if (body.error) {
               // Error received from API server
-              dispatch(fetchAccessTokenError(
-                new Error('Invalid email/password. Please try again.')
+              dispatch(createUserAccountError(
+                new Error(body.error)
               ));
             } else {
-              dispatch(fetchAccessToken(body));
+              dispatch(createUserAccount(body));
             }
           })
         )
         .catch(() => {
           // Network error
-          dispatch(fetchAccessTokenError(
+          dispatch(createUserAccountError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });
@@ -103,6 +125,27 @@ export default {
         .catch(() => {
           // Network error
           dispatch(verifyAccessTokenError(
+            new Error('We are encountering server issues. Please try again later.')
+          ));
+        });
+    };
+  },
+
+  checkEmailConfirmation(email) {
+    return dispatch => {
+      dispatch(checkEmailConfirmationStart());
+      return Fetcher.get({
+        url: `${Environment.API_SERVER_URL}/users/confirmed/${email}`,
+      })
+        .then(response => {
+          if (response.ok) {
+            dispatch(checkEmailConfirmation(response.ok));
+          } else {
+            return;
+          }
+        })
+        .catch(() => {
+          dispatch(checkEmailConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });

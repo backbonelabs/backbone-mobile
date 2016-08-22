@@ -5,6 +5,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
 import logo from '../images/logo.png';
@@ -22,6 +23,7 @@ class Home extends Component {
     }),
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
+
   };
 
   constructor(props) {
@@ -105,7 +107,9 @@ class Home extends Component {
           }
         </View>
         <View style={styles.footer}>
-          <Text style={styles.signup}>Don't have an account? Sign-up</Text>
+          <TouchableHighlight onPress={() => { this.props.navigator.push(routes.signup); }}>
+            <Text style={styles.signup}>Don't have an account? Sign-up</Text>
+          </TouchableHighlight>
           {this.state.accessToken && this.props.auth.isValidAccessToken &&
             // This conditional block for deleting the access token is for temporary
             // testing purposes only. Remove this entire conditional block after
