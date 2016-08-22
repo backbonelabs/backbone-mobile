@@ -1,6 +1,6 @@
 export default (state = {
   accessToken: null,
-  userAccount: false,
+  userId: null,
   userConfirmed: false,
   isFetchingAccessToken: false,
   isCreatingUserAccount: false,
@@ -44,7 +44,7 @@ export default (state = {
         ...state,
         isCreatingUserAccount: false,
         errorMessage: null,
-        userAccount: action.payload,
+        userId: action.payload.id,
       };
     }
     case 'CREATE_USER_ACCOUNT__ERROR': {

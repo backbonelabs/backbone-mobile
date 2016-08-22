@@ -16,7 +16,7 @@ class Signup extends Component {
   static propTypes = {
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
-    userAccount: React.PropTypes.bool,
+    userId: React.PropTypes.string,
     isCreatingUserAccount: React.PropTypes.bool,
     navigator: React.PropTypes.object,
   };
@@ -32,7 +32,7 @@ class Signup extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.userAccount && nextProps.userAccount) {
+    if (!this.props.userId && nextProps.userId) {
       const { email } = this.state;
       this.props.navigator.replace(Object.assign({}, routes.userConfirm, { email }));
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
