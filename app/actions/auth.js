@@ -135,7 +135,7 @@ export default {
     return dispatch => {
       dispatch(checkEmailConfirmationStart());
       return Fetcher.get({
-        url: `${Environment.API_SERVER_URL}/users/confirmed/${email}`,
+        url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
       })
         .then(response => {
           if (response.ok) {

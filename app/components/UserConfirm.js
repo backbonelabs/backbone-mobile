@@ -12,7 +12,7 @@ import authActions from '../actions/auth';
 class UserConfirm extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
-    userConfirmed: React.PropTypes.bool,
+    isConfirmed: React.PropTypes.bool,
     navigator: React.PropTypes.object,
     currentRoute: React.PropTypes.object,
   };
@@ -27,7 +27,7 @@ class UserConfirm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.userConfirmed && nextProps.userConfirmed) {
+    if (!this.props.isConfirmed && nextProps.isConfirmed) {
       clearInterval(this.setPollingInterval);
       this.props.navigator.replace(routes.posture);
     }
