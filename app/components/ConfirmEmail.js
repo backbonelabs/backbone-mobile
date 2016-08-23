@@ -9,7 +9,7 @@ import styles from '../styles/confirmEmail';
 import routes from '../routes/';
 import authActions from '../actions/auth';
 
-class UserConfirm extends Component {
+class ConfirmEmail extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
     isConfirmed: React.PropTypes.bool,
@@ -20,8 +20,8 @@ class UserConfirm extends Component {
   constructor(props) {
     super(props);
     this.setPollingInterval = setInterval(() =>
-      this.props.dispatch(
-        authActions.checkEmailConfirmation(this.props.currentRoute.email)
+      props.dispatch(
+        authActions.checkEmailConfirmation(props.currentRoute.email)
       ), 5000
     );
   }
@@ -54,4 +54,4 @@ const mapStateToProps = state => {
   return auth;
 };
 
-export default connect(mapStateToProps)(UserConfirm);
+export default connect(mapStateToProps)(ConfirmEmail);
