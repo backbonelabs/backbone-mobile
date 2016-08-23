@@ -110,10 +110,6 @@ class Application extends Component {
     this.navigate = this.navigate.bind(this);
   }
 
-  componentWillMount() {
-    StatusBar.setBarStyle('light-content', true);
-  }
-
   configureScene() {
     return CustomSceneConfig;
   }
@@ -136,7 +132,12 @@ class Application extends Component {
 
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
-    return <RouteComponent navigator={navigator} currentRoute={route} {...route.passProps} />;
+    return (
+      <View style={{ flex: 1 }}>
+        <StatusBar />
+        <RouteComponent navigator={navigator} currentRoute={route} {...route.passProps} />
+      </View>
+    );
   }
 
   render() {
