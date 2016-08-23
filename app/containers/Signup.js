@@ -45,10 +45,8 @@ class Signup extends Component {
       // Show alert if email or password is missing
       Alert.alert('Missing fields', `${this.state.email ? 'Password' : 'Email'} is required`);
     } else {
-      this.setState({ submitted: true }, () => {
-        const { email, password, verifyPassword } = this.state;
-        this.props.dispatch(authActions.signup({ email, password, verifyPassword }));
-      });
+      const { email, password, verifyPassword } = this.state;
+      this.props.dispatch(authActions.signup({ email, password, verifyPassword }));
     }
   }
 
