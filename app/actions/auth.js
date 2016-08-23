@@ -68,7 +68,7 @@ export default {
             if (body.error) {
               // Error received from API server
               dispatch(fetchAccessTokenError(
-                new Error('Invalid email/password. Please try again.')
+                new Error(body.error)
               ));
             } else {
               dispatch(fetchAccessToken(body));
