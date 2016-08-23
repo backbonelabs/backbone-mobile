@@ -140,9 +140,8 @@ export default {
         .then(response => {
           if (response.ok) {
             dispatch(checkEmailConfirmation(response.ok));
-          } else {
-            return;
           }
+          return;
         })
         .catch(() => {
           dispatch(checkEmailConfirmationError(

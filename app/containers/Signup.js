@@ -53,7 +53,6 @@ class Signup extends Component {
   }
 
   render() {
-    // TODO: Show ActivityIndicator when form is submitted
     return (
       <View style={styles.container}>
       {this.props.isCreatingUserAccount ?
