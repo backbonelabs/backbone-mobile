@@ -138,10 +138,7 @@ export default {
         url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
       })
         .then(response => {
-          if (response.ok) {
-            dispatch(checkEmailConfirmation(response.ok));
-          }
-          return;
+          dispatch(checkEmailConfirmation(response.ok));
         })
         .catch(() => {
           dispatch(checkEmailConfirmationError(

@@ -10,6 +10,6 @@ module.exports = {
     'consistent-return': [0],
     'no-console': [1],
     'no-underscore-dangle': [0],
-    'prefer-template': [0],
+    'prefer-template': [1],
   },
 };
