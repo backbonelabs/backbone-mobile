@@ -34,7 +34,7 @@ class Signup extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.isSignedup && nextProps.isSignedup) {
       const { email } = this.state;
-      this.props.navigator.replace(Object.assign({}, routes.userConfirm, { email }));
+      this.props.navigator.replace(Object.assign({}, routes.confirmEmail, { email }));
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Sign-up Error', nextProps.errorMessage);
     }

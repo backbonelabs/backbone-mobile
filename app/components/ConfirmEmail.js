@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
-import styles from '../styles/userConfirm';
+import styles from '../styles/confirmEmail';
 import routes from '../routes/';
 import authActions from '../actions/auth';
 
