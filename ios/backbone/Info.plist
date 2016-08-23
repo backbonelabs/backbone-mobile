@@ -9,7 +9,7 @@
 			<string>co.backbonelabs.backbone</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>openBackbone</string>
+				<string>backbone</string>
 			</array>
 		</dict>
 	</array>
