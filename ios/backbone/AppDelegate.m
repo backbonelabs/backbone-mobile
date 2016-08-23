@@ -55,15 +55,4 @@
   [PostureModule setShouldSendNotifications:true];
 }
 
-// Handler for when a local notification is received (local notifications can be received
-// if the app is either in the foreground or background
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(nonnull UILocalNotification *)notification {
-  NSLog(@"didReceiveLocalNotification");
-  if ([application applicationState] == UIApplicationStateBackground) {
-    // App received local notification while in the background
-    // Don't show anymore posture notifications until the next time the app goes to the background
-    [PostureModule setShouldSendNotifications:false];
-  }
-}
-
 @end
