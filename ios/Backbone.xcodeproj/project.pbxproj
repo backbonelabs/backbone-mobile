@@ -139,12 +139,12 @@
 		00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTImage.xcodeproj; path = "../node_modules/react-native/Libraries/Image/RCTImage.xcodeproj"; sourceTree = "<group>"; };
 		00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTNetwork.xcodeproj; path = "../node_modules/react-native/Libraries/Network/RCTNetwork.xcodeproj"; sourceTree = "<group>"; };
 		00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVibration.xcodeproj; path = "../node_modules/react-native/Libraries/Vibration/RCTVibration.xcodeproj"; sourceTree = "<group>"; };
-		00E356EE1AD99517003FC87E /* backboneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = backboneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* BackboneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BackboneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* backboneTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = backboneTests.m; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* backbone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = backbone.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Backbone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Backbone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = backbone/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = backbone/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -255,12 +255,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		00E356EF1AD99517003FC87E /* backboneTests */ = {
+		00E356EF1AD99517003FC87E /* BackboneTests */ = {
 			isa = PBXGroup;
 			children = (
 				00E356F21AD99517003FC87E /* backboneTests.m */,
 				00E356F01AD99517003FC87E /* Supporting Files */,
 			);
+			name = BackboneTests;
 			path = backboneTests;
 			sourceTree = "<group>";
 		};
@@ -288,13 +289,9 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* backbone */ = {
+		13B07FAE1A68108700A75B9A /* Backbone */ = {
 			isa = PBXGroup;
 			children = (
-				4457C4AF1D60273200F05D92 /* BluetoothService.h */,
-				4457C4B01D60273200F05D92 /* BluetoothService.m */,
-				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
-				446AF7F81D53DB1200F85785 /* DeviceManagementService.m */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -302,6 +299,12 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				667641251D63B8F900D45761 /* Environment.h */,
+				667641261D63B90800D45761 /* Environment.m */,
+				4457C4AF1D60273200F05D92 /* BluetoothService.h */,
+				4457C4B01D60273200F05D92 /* BluetoothService.m */,
+				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
+				446AF7F81D53DB1200F85785 /* DeviceManagementService.m */,
 				6602D6891D5023A500DF3369 /* SensorDataService.h */,
 				6602D6971D50295300DF3369 /* SensorDataService.m */,
 				669B15191D51439E00DCEFBE /* SensorNotifications.h */,
@@ -312,10 +315,8 @@
 				669B14DE1D51053F00DCEFBE /* PostureModule.m */,
 				669B14D01D50626500DCEFBE /* ActivityService.h */,
 				669B14DC1D50630A00DCEFBE /* ActivityService.m */,
-				667641251D63B8F900D45761 /* Environment.h */,
-				667641261D63B90800D45761 /* Environment.m */,
 			);
-			name = backbone;
+			name = Backbone;
 			sourceTree = "<group>";
 		};
 		146834001AC3E56700842450 /* Products */ = {
@@ -398,9 +399,9 @@
 			isa = PBXGroup;
 			children = (
 				449AD4C31D2ACD47004919E0 /* Icons */,
-				13B07FAE1A68108700A75B9A /* backbone */,
+				13B07FAE1A68108700A75B9A /* Backbone */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* backboneTests */,
+				00E356EF1AD99517003FC87E /* BackboneTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				E112B341869066EE71294579 /* Pods */,
 				369510872F4AB91A754073D5 /* Frameworks */,
@@ -412,8 +413,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* backbone.app */,
-				00E356EE1AD99517003FC87E /* backboneTests.xctest */,
+				13B07F961A680F5B00A75B9A /* Backbone.app */,
+				00E356EE1AD99517003FC87E /* BackboneTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -432,9 +433,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* backboneTests */ = {
+		00E356ED1AD99517003FC87E /* BackboneTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "backboneTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BackboneTests" */;
 			buildPhases = (
 				C759A8355A6451A7CFEF9959 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -448,14 +449,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = backboneTests;
+			name = BackboneTests;
 			productName = backboneTests;
-			productReference = 00E356EE1AD99517003FC87E /* backboneTests.xctest */;
+			productReference = 00E356EE1AD99517003FC87E /* BackboneTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* backbone */ = {
+		13B07F861A680F5B00A75B9A /* Backbone */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "backbone" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Backbone" */;
 			buildPhases = (
 				3D63ABF47EE64C29F994E9F6 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
@@ -469,9 +470,9 @@
 			);
 			dependencies = (
 			);
-			name = backbone;
+			name = Backbone;
 			productName = "Hello World";
-			productReference = 13B07F961A680F5B00A75B9A /* backbone.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Backbone.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -481,10 +482,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 730;
-				ORGANIZATIONNAME = Facebook;
+				ORGANIZATIONNAME = "Backbone Labs, Inc.";
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = FK7Z2C5Q2Q;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -497,7 +499,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "backbone" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Backbone" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -560,8 +562,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* backbone */,
-				00E356ED1AD99517003FC87E /* backboneTests */,
+				13B07F861A680F5B00A75B9A /* Backbone */,
+				00E356ED1AD99517003FC87E /* BackboneTests */,
 			);
 		};
 /* End PBXProject section */
@@ -811,7 +813,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* backbone */;
+			target = 13B07F861A680F5B00A75B9A /* Backbone */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -850,7 +852,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/backbone.app/backbone";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Backbone.app/Backbone";
 			};
 			name = Debug;
 		};
@@ -872,7 +874,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/backbone.app/backbone";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Backbone.app/Backbone";
 			};
 			name = Release;
 		};
@@ -905,7 +907,7 @@
 					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = co.backbonelabs.backbone;
-				PRODUCT_NAME = backbone;
+				PRODUCT_NAME = Backbone;
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -939,7 +941,7 @@
 					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = co.backbonelabs.backbone;
-				PRODUCT_NAME = backbone;
+				PRODUCT_NAME = Backbone;
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1041,7 +1043,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "backboneTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BackboneTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -1050,7 +1052,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "backbone" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Backbone" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -1059,7 +1061,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "backbone" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Backbone" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

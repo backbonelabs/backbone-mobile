@@ -8,6 +8,12 @@
 
 @implementation PostureModule
 
+static BOOL shouldSendNotifications;
+
++ (void)setShouldSendNotifications:(BOOL)flag {
+  shouldSendNotifications = flag;
+}
+
 - (id)init {
   self = [super init];
   self.name = @"posture";
@@ -72,6 +78,23 @@
   if (self.tilt > self.tiltThreshold) {
     MBLMetaWear *device = [DeviceManagementService getDevice];
     [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:5];
+
+    if (shouldSendNotifications) {
+      NSLog(@"Sending posture local notification");
+      UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+      if (localNotif) {
+        localNotif.alertBody = NSLocalizedString(@"Your posture is not optimal!", nil);
+        localNotif.soundName = UILocalNotificationDefaultSoundName;
+        localNotif.userInfo = @{
+                                @"module": self.name
+                                };
+
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+
+        // Disable additional notifications until the next time the app goes to the background
+        shouldSendNotifications = false;
+      }
+    }
   }
   [self.bridge.eventDispatcher sendAppEventWithName:@"PostureTilt" body:@{@"tilt": [NSNumber numberWithDouble:self.tilt]}];
 }
