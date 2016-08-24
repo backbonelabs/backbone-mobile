@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EnvironmentPackage implements ReactPackage {
+public class BackbonePackage implements ReactPackage {
     @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
