@@ -8,17 +8,16 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
 
-class Login extends Component {
+class Signup extends Component {
   static propTypes = {
-    accessToken: React.PropTypes.string,
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
-    isFetchingAccessToken: React.PropTypes.bool,
+    isSignedup: React.PropTypes.bool,
+    isCreatingUserAccount: React.PropTypes.bool,
     navigator: React.PropTypes.object,
   };
 
@@ -27,41 +26,36 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      verifyPassword: '',
     };
-    this.login = this.login.bind(this);
+    this.signup = this.signup.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.accessToken && nextProps.accessToken) {
-      // User successfully authenticated, save access token to local device
-      this.saveAccessToken(nextProps.accessToken);
-
-      // Redirect to Home
-      this.props.navigator.replace(routes.deviceConnect);
+    if (!this.props.isSignedup && nextProps.isSignedup) {
+      const { email } = this.state;
+      this.props.navigator.replace(Object.assign({}, routes.confirmEmail, { email }));
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      // Authentication error
-      Alert.alert('Authentication Error', nextProps.errorMessage);
+      Alert.alert('Sign-up Error', nextProps.errorMessage);
     }
   }
 
-  saveAccessToken(accessToken) {
-    SensitiveInfo.setItem('accessToken', accessToken);
-  }
-
-  login() {
+  signup() {
     if (!this.state.email || !this.state.password) {
       // Show alert if email or password is missing
       Alert.alert('Missing fields', `${this.state.email ? 'Password' : 'Email'} is required`);
+    } else if (!this.state.verifyPassword) {
+      Alert.alert('Missing fields', 'Please verify your password');
     } else {
-      const { email, password } = this.state;
-      this.props.dispatch(authActions.login({ email, password }));
+      const { email, password, verifyPassword } = this.state;
+      this.props.dispatch(authActions.signup({ email, password, verifyPassword }));
     }
   }
 
   render() {
     return (
       <View style={styles.container}>
-      {this.props.isFetchingAccessToken ?
+      {this.props.isCreatingUserAccount ?
         <ActivityIndicator
           animating
           size="large"
@@ -97,7 +91,24 @@ class Login extends Component {
               placeholder="Password"
               keyboardType="default"
               onChangeText={text => this.setState({ password: text })}
-              onSubmitEditing={this.login}
+              onSubmitEditing={() => this.verifyPasswordField.focus()}
+              autoCorrect={false}
+              secureTextEntry
+              returnKeyType="next"
+            />
+          </View>
+          <View style={styles.textFieldView}>
+            <TextInput
+              ref={ref => {
+                this.verifyPasswordField = ref;
+              }}
+              style={styles.textField}
+              value={this.state.verifyPassword}
+              autoCapitalize="none"
+              placeholder="Verify Password"
+              keyboardType="default"
+              onChangeText={text => this.setState({ verifyPassword: text })}
+              onSubmitEditing={this.signup}
               autoCorrect={false}
               secureTextEntry
               returnKeyType="go"
@@ -105,10 +116,10 @@ class Login extends Component {
           </View>
           <TouchableHighlight
             style={styles.button}
-            disabled={this.props.isFetchingAccessToken}
-            onPress={this.login}
+            disabled={this.props.isCreatingUserAccount}
+            onPress={this.signup}
           >
-            <Text style={styles.buttonText}>Log in</Text>
+            <Text style={styles.buttonText}>Sign-up</Text>
           </TouchableHighlight>
         </View>
       }
@@ -122,4 +133,5 @@ const mapStateToProps = state => {
   return auth;
 };
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps)(Signup);
+

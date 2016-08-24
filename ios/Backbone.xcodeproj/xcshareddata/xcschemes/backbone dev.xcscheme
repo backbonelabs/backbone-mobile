@@ -88,7 +88,7 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "API_SERVER_URL"
-            value = "http://192.168.1.155:3000"
+            value = "http://10.0.1.2:3000"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
