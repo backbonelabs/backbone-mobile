@@ -1,8 +1,43 @@
 package co.backbonelabs.Backbone;
 
-import com.facebook.react.ReactActivity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
 
-public class MainActivity extends ReactActivity {
+import com.facebook.react.ReactActivity;
+import com.mbientlab.metawear.MetaWearBleService;
+
+public class MainActivity extends ReactActivity implements ServiceConnection {
+    public static MetaWearBleService.LocalBinder metaWearServiceBinder;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Bind the service when the activity is created
+        getApplicationContext().bindService(new Intent(this, MetaWearBleService.class),
+                this, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Unbind the service when the activity is destroyed
+        getApplicationContext().unbindService(this);
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        // Typecast the binder to the service's LocalBinder class
+        metaWearServiceBinder = (MetaWearBleService.LocalBinder) service;
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) { }
 
     /**
      * Returns the name of the main component registered from JavaScript.
