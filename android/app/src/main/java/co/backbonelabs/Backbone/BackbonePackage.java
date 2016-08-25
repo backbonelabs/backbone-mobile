@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EnvironmentPackage implements ReactPackage {
+public class BackbonePackage implements ReactPackage {
     @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
@@ -25,6 +25,7 @@ public class EnvironmentPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new EnvironmentModule(reactContext));
+        modules.add(BluetoothService.getInstance(reactContext));
         return modules;
     }
 
