@@ -107,6 +107,19 @@ class Application extends Component {
   }
 
   componentWillMount() {
+    // For Android only, check if Bluetooth is enabled.
+    // If not, display prompt for user to enable Bluetooth.
+    // This cannot be done on the BluetoothService module side
+    // compared to iOS.
+    if (Platform.OS === 'android') {
+      NativeModules.BluetoothService.getIsEnabled()
+        .then(isEnabled => {
+          if (!isEnabled) {
+            NativeModules.BluetoothService.enable();
+          }
+        });
+    }
+
     const handler = ({ state }) => {
       if (state === bluetoothStates.OFF) {
         Alert.alert(
