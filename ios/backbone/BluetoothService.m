@@ -3,9 +3,18 @@
 @implementation BluetoothService
 
 static BOOL _isObserving;
+static NSDictionary *stateMap;
 
 - (id)init {
   self = [super init];
+  stateMap = @{
+               @"0": [NSNumber numberWithInteger:-1],
+               @"1": [NSNumber numberWithInteger:1],
+               @"2": [NSNumber numberWithInteger:0],
+               @"3": [NSNumber numberWithInteger:-1],
+               @"4": [NSNumber numberWithInteger:2],
+               @"5": [NSNumber numberWithInteger:4]
+               };
   self.centralManager = [[CBCentralManager alloc]
                          initWithDelegate:self
                          queue:nil
@@ -24,15 +33,7 @@ RCT_EXPORT_MODULE();
 -(void)emitCentralState:(int)state {
   NSLog(@"Emitting central state: %i", state);
   NSDictionary *stateUpdate = @{
-                          @"state": [NSNumber numberWithInt:state],
-                          @"stateMap": @{
-                              @"0": @"Unknown",
-                              @"1": @"Resetting",
-                              @"2": @"Unsupported",
-                              @"3": @"Unauthorized",
-                              @"4": @"Powered Off",
-                              @"5": @"Powered On",
-                              },
+                          @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", state]]
                           };
   [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
