@@ -9,11 +9,12 @@ import { connect } from 'react-redux';
 import styles from '../styles/confirmAccount';
 import routes from '../routes/';
 import authActions from '../actions/auth';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
-class ConfirmEmail extends Component {
+class ConfirmAccount extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
-    isConfirmed: React.PropTypes.bool,
+    accessToken: React.PropTypes.string,
     navigator: React.PropTypes.object,
     currentRoute: React.PropTypes.object,
   };
@@ -22,29 +23,35 @@ class ConfirmEmail extends Component {
     super(props);
     this.state = {
       pollingCount: 0,
+      resendThreshold: 3,
     };
 
     this.setPollingInterval = setInterval(() => {
-      this.setState({ pollingCount: ++this.state.pollingCount }, () => {
-        console.log('polling count increment', this.state.pollingCount);
-        props.dispatch(authActions.checkEmailConfirmation(props.currentRoute.email));
-      }
+      this.setState({ pollingCount: ++this.state.pollingCount }, () =>
+        props.dispatch(authActions.checkConfirmation(props.currentRoute.email))
       );
     }, 5000);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.isConfirmed && nextProps.isConfirmed) {
+    if (!this.props.accessToken && nextProps.accessToken) {
       clearInterval(this.setPollingInterval);
+      this.saveAccessToken(nextProps.accessToken);
       this.props.navigator.replace(routes.posture);
     }
   }
 
+  saveAccessToken(accessToken) {
+    SensitiveInfo.setItem('accessToken', accessToken);
+  }
+
   resendEmail() {
-    this.setState({ pollingCount: 0 }, () => {
-      console.log('polling count reset');
-      props.dispatch(authActions.checkEmailConfirmation(props.currentRoute.email));
-    });
+    this.setState({
+      pollingCount: 0,
+      resendThreshold: this.state.resendThreshold * 2,
+    }, () =>
+      this.props.dispatch(authActions.resendConfirmation({ email: this.props.currentRoute.email }))
+    );
   }
 
   render() {
@@ -63,7 +70,7 @@ class ConfirmEmail extends Component {
           </Text>
         </View>
         <View style={styles.resendTextContainer}>
-        { this.state.pollingCount >= 3 &&
+        { this.state.pollingCount === this.state.resendThreshold &&
           <TouchableOpacity
             style={styles.resendButton}
             onPress={() => this.resendEmail()}
@@ -82,4 +89,4 @@ const mapStateToProps = state => {
   return auth;
 };
 
-export default connect(mapStateToProps)(ConfirmEmail);
+export default connect(mapStateToProps)(ConfirmAccount);

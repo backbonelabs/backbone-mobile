@@ -5,8 +5,13 @@ export default EStyleSheet.create({
     flex: 1,
     width: '100%',
     height: '$iconButtonSize',
-    marginTop: '1%',
+    marginTop: '3%',
     flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  navBarTitle: {
+    fontSize: '1.25rem',
+    textAlign: 'center',
   },
   menuContainer: {
     flex: 0.5,

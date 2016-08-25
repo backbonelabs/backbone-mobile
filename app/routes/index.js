@@ -4,7 +4,7 @@ import home from './home';
 import login from './login';
 import posture from './posture';
 import signup from './signup';
-import confirmEmail from './confirmEmail';
+import confirmAccount from './confirmAccount';
 
 export default {
   activity,
@@ -13,5 +13,5 @@ export default {
   login,
   posture,
   signup,
-  confirmEmail,
+  confirmAccount,
 };

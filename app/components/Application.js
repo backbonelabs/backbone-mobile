@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
+  Text,
   StatusBar,
   Navigator,
   NativeModules,
@@ -85,6 +86,7 @@ class Application extends Component {
         return (
           <View style={styles.navbarContainer}>
             {menuButton}
+            <Text style={styles.navBarTitle}>{route.title}</Text>
             {settingsButton}
           </View>
         );
