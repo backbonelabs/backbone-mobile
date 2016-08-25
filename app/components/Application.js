@@ -4,8 +4,10 @@ import {
   View,
   StatusBar,
   Navigator,
+  DeviceEventEmitter,
   NativeModules,
   NativeEventEmitter,
+  Platform,
   TouchableHighlight,
 } from 'react-native';
 import { pick } from 'lodash';
@@ -15,6 +17,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Menu from './Menu';
 import routes from '../routes';
 import styles from '../styles/application';
+import constants from '../utils/constants';
+
+const { bluetoothStates } = constants;
 
 const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
 
@@ -95,19 +100,33 @@ class Application extends Component {
       drawerIsOpen: false,
     };
 
-    BluetoothService.addListener('BluetoothState', ({ state, stateMap }) => {
-      if (state < 5) {
-        Alert.alert(
-          `Error #${state}`,
-          `Bluetooth ${stateMap[state]}`,
-        );
-      }
-    });
-
     this.configureScene = this.configureScene.bind(this);
     this.showMenu = this.showMenu.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
+  }
+
+  componentWillMount() {
+    const handler = ({ state }) => {
+      if (state === bluetoothStates.OFF) {
+        Alert.alert(
+          `Error #${state}`,
+          'Bluetooth is disabled'
+        );
+      }
+    };
+
+    if (Platform.OS === 'ios') {
+      this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
+    } else {
+      this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.bluetoothListener) {
+      this.bluetoothListener.remove();
+    }
   }
 
   configureScene() {
