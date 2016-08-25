@@ -1,5 +1,6 @@
 package co.backbonelabs.Backbone;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,17 +12,20 @@ import android.util.SparseIntArray;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import java.util.MissingFormatArgumentException;
 
 public class BluetoothService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static BluetoothService instance = null;
     private static final String TAG = "BluetoothService";
-//    private static final int REQUEST_ENABLE_BLUETOOTH = 1;
-    
+
     public static BluetoothService getInstance(ReactApplicationContext reactContext) {
         if (instance == null) {
             instance = new BluetoothService(reactContext);
@@ -43,7 +47,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     };
 
     private ReactContext mReactContext;
-//    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothAdapter mBluetoothAdapter;
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -65,39 +69,36 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         // Listen to the Activity's lifecycle events
         reactContext.addLifecycleEventListener(this);
 
-//        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    }
 
-//        // Ensures Bluetooth is available on the device and it is enabled. If not,
-//        // displays a dialog requesting user permission to enable Bluetooth.
-//        if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
-//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//            Activity currentActivity = MainActivity.currentActivity;
-//            currentActivity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
-//        }
+    /**
+     * Checks if Bluetooth is enabled
+     * @param promise Resolves with a boolean indicating if Bluetooth is enabled or not
+     */
+    @ReactMethod
+    public void getIsEnabled(Promise promise) {
+        if (promise != null) {
+            promise.resolve(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled());
+        } else {
+            promise.reject(new MissingFormatArgumentException("Missing promise"));
+        }
+    }
+
+    /**
+     * Initiates the activity to prompt the user to enable Bluetooth
+     */
+    @ReactMethod
+    public void enable() {
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        Activity currentActivity = getCurrentActivity();
+        currentActivity.startActivity(enableBtIntent);
     }
 
     @Override
     public String getName() {
         return "BluetoothService";
     }
-
-//    @Override
-//    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-//        Log.d(TAG, "onActivityResult");
-//        Log.d(TAG, "requestCode " + requestCode);
-//        Log.d(TAG, "resultCode " + resultCode);
-//        switch (requestCode) {
-//            case REQUEST_ENABLE_BLUETOOTH:
-//                // When the request to enable Bluetooth returns
-//                if (resultCode == Activity.RESULT_OK) {
-//                    Log.d(TAG, "Bluetooth enabled");
-//                    sendEvent(mReactContext, "BluetoothState", null);
-//                } else {
-//                    // User did not enable Bluetooth or an error occurred
-//                    Log.d(TAG, "Bluetooth not enabled");
-//                }
-//        }
-//    }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
         Log.d(TAG, "sendEvent");
