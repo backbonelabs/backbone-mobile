@@ -42,15 +42,28 @@ const createUserAccountError = error => ({
   error: true,
 });
 
-const checkEmailConfirmationStart = () => ({ type: 'CHECK_EMAIL_CONFIRMATION__START' });
+const checkConfirmationStart = () => ({ type: 'CHECK_CONFIRMATION__START' });
 
-const checkEmailConfirmation = payload => ({
-  type: 'CHECK_EMAIL_CONFIRMATION',
+const checkConfirmation = payload => ({
+  type: 'CHECK_CONFIRMATION',
   payload,
 });
 
-const checkEmailConfirmationError = error => ({
-  type: 'CHECK_EMAIL_CONFIRMATION__ERROR',
+const checkConfirmationError = error => ({
+  type: 'CHECK_CONFIRMATION__ERROR',
+  payload: error,
+  error: true,
+});
+
+const resendConfirmationStart = () => ({ type: 'RESEND_CONFIRMATION__START' });
+
+const resendConfirmation = payload => ({
+  type: 'RESEND_CONFIRMATION',
+  payload,
+});
+
+const resendConfirmationError = error => ({
+  type: 'RESEND_CONFIRMATION__ERROR',
   payload: error,
   error: true,
 });
@@ -131,17 +144,36 @@ export default {
     };
   },
 
-  checkEmailConfirmation(email) {
+  checkConfirmation(email) {
     return dispatch => {
-      dispatch(checkEmailConfirmationStart());
+      dispatch(checkConfirmationStart());
       return Fetcher.get({
         url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
       })
-        .then(response => {
-          dispatch(checkEmailConfirmation(response.ok));
+        .then(response => response.json())
+        .then(body => {
+          dispatch(checkConfirmation(body));
         })
         .catch(() => {
-          dispatch(checkEmailConfirmationError(
+          dispatch(checkConfirmationError(
+            new Error('We are encountering server issues. Please try again later.')
+          ));
+        });
+    };
+  },
+
+  resendConfirmation(email) {
+    return dispatch => {
+      dispatch(resendConfirmationStart());
+      return Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/users/resend/`,
+        body: JSON.stringify(email),
+      })
+        .then(response => {
+          dispatch(resendConfirmation(response.ok));
+        })
+        .catch(() => {
+          dispatch(resendConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });

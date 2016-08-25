@@ -1,10 +1,9 @@
 export default (state = {
   accessToken: null,
   isSignedup: false,
-  isConfirmed: false,
   isFetchingAccessToken: false,
   isCreatingUserAccount: false,
-  isCheckingEmailConfirmation: false,
+  isCheckingConfirmation: false,
   errorMessage: null,
   isVerifyingAccessToken: false,
   isValidAccessToken: false,
@@ -54,25 +53,46 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
-    case 'CHECK_EMAIL_CONFIRMATION__START': {
+    case 'CHECK_CONFIRMATION__START': {
       return {
         ...state,
-        isCheckingEmailConfirmation: true,
+        isCheckingConfirmation: true,
         errorMessage: null,
       };
     }
-    case 'CHECK_EMAIL_CONFIRMATION': {
+    case 'CHECK_CONFIRMATION': {
       return {
         ...state,
-        isCheckingEmailConfirmation: false,
+        isCheckingConfirmation: false,
         errorMessage: null,
-        isConfirmed: action.payload,
+        accessToken: action.payload.accessToken,
       };
     }
-    case 'CHECK_EMAIL_CONFIRMATION__ERROR': {
+    case 'CHECK_CONFIRMATION__ERROR': {
       return {
         ...state,
-        isCheckingEmailConfirmation: false,
+        isCheckingConfirmation: false,
+        errorMessage: action.payload.message,
+      };
+    }
+    case 'RESEND_CONFIRMATION__START': {
+      return {
+        ...state,
+        isResendingConfirmation: true,
+        errorMessage: null,
+      };
+    }
+    case 'RESEND_CONFIRMATION': {
+      return {
+        ...state,
+        isResendingConfirmation: false,
+        errorMessage: null,
+      };
+    }
+    case 'RESEND_CONFIRMATION__ERROR': {
+      return {
+        ...state,
+        isResendingConfirmation: false,
         errorMessage: action.payload.message,
       };
     }

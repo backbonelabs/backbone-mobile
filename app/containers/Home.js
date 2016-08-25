@@ -23,7 +23,6 @@ class Home extends Component {
     }),
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
-
   };
 
   constructor(props) {
