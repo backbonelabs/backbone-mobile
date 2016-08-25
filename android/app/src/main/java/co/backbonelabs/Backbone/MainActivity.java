@@ -1,5 +1,6 @@
 package co.backbonelabs.Backbone;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import com.mbientlab.metawear.MetaWearBleService;
 
 public class MainActivity extends ReactActivity implements ServiceConnection {
     public static MetaWearBleService.LocalBinder metaWearServiceBinder;
+    public static Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +22,18 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
         // Bind the service when the activity is created
         getApplicationContext().bindService(new Intent(this, MetaWearBleService.class),
                 this, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        currentActivity = this;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        currentActivity = null;
     }
 
     @Override
