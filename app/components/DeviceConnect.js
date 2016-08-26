@@ -160,7 +160,14 @@ export default class DeviceConnect extends Component {
           />) :
           <View />
         }
-        <Modal animationType="fade" visible={this.state.inProgress} transparent>
+        <Modal
+          animationType="fade"
+          visible={this.state.inProgress}
+          transparent
+          onRequestClose={() => {
+            // no-op, onRequestClose is required for Android
+          }}
+        >
           { this.state.hasError ?
             (<DeviceError
               forgetDevice={this.forgetDevice}
