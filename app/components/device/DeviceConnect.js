@@ -52,6 +52,10 @@ export default class DeviceConnect extends Component {
   }
 
   componentWillMount() {
+    NativeAppEventEmitter.addListener('DevicesFound', (deviceList) => {
+      this.setState({ deviceList });
+    });
+
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === 2) {
         this.props.navigator.push(routes.posture);
@@ -79,6 +83,7 @@ export default class DeviceConnect extends Component {
 
   connectToDevice() {
     NativeAppEventEmitter.once('ConnectionStatus', (status) => {
+      // TODO: Refactor to use new status shape: { isConnected: boolean, message: string }
       this.setState({ inProgress: false }, () => {
         if (!status.message) {
           this.props.navigator.push(routes.posture);
@@ -91,9 +96,6 @@ export default class DeviceConnect extends Component {
   }
 
   scanForDevices() {
-    NativeAppEventEmitter.addListener('DevicesFound', (deviceList) => {
-      this.setState({ deviceList });
-    });
     this.setState({ newDevice: true }, () => {
       DeviceManagementService.scanForDevices((error) => {
         if (!error) {
@@ -158,7 +160,14 @@ export default class DeviceConnect extends Component {
           />) :
           <View />
         }
-        <Modal animationType="fade" visible={this.state.inProgress} transparent>
+        <Modal
+          animationType="fade"
+          visible={this.state.inProgress}
+          transparent
+          onRequestClose={() => {
+            // no-op, onRequestClose is required for Android
+          }}
+        >
           { this.state.hasError ?
             (<DeviceError
               forgetDevice={this.forgetDevice}
