@@ -191,6 +191,10 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
             wm.putBoolean("isConnected", true);
             wm.putNull("message");
             sendEvent(mReactContext, "ConnectionStatus", wm);
+
+            // TODO: Remove the registerActivity call since it was added for testing purposes only
+            Log.d(TAG, "Registering activity with sensor data service");
+            SensorDataService.getInstance().registerActivity(new PostureModule());
         }
 
         @Override
