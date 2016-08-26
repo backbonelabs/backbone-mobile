@@ -20,8 +20,8 @@ export default class Posture extends Component {
     currentRoute: React.PropTypes.object,
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       tilt: 0,
       tiltDirection: 'forward',

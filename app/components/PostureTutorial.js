@@ -19,8 +19,8 @@ export default class PostureTutorial extends Component {
     calibrate: React.PropTypes.func,
   }
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       slide: 1,
       valueX: 0,

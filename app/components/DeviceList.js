@@ -17,7 +17,7 @@ export default class DeviceList extends Component {
   };
 
   constructor(props) {
-    super();
+    super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
     this.state = {
       dataSource: this.ds.cloneWithRows(props.deviceList),
