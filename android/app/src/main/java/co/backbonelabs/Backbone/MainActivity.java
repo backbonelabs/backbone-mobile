@@ -48,6 +48,7 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     public void onServiceConnected(ComponentName name, IBinder service) {
         // Typecast the binder to the service's LocalBinder class
         metaWearServiceBinder = (MetaWearBleService.LocalBinder) service;
+        metaWearServiceBinder.executeOnUiThread();
     }
 
     @Override
