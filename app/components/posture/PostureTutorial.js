@@ -14,7 +14,6 @@ const SPRING_CONFIG = { tension: 2, friction: 3 };
 
 export default class PostureTutorial extends Component {
   static propTypes = {
-    navigator: React.PropTypes.object,
     calibrate: React.PropTypes.func,
   }
 
