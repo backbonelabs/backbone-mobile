@@ -4,8 +4,9 @@ import {
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
-import Monitor from './Monitor';
-import Calibrate from './Calibrate';
+// import Monitor from './Monitor';
+// import Calibrate from './Calibrate';
+import PostureTutorial from './PostureTutorial';
 import styles from '../styles/posture';
 
 const { ActivityService } = NativeModules;
@@ -84,7 +85,10 @@ export default class Posture extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.state.calibrating ?
+        <View style={styles.header}>
+          <PostureTutorial />
+        </View>
+{/*        {this.state.calibrating ?
           <Calibrate startPostureMonitoring={this.startPostureMonitoring} /> :
           <Monitor
             tilt={this.state.tilt}
@@ -95,7 +99,7 @@ export default class Posture extends Component {
             monitoring={this.state.monitoring}
             currentRoute={this.props.currentRoute}
           />
-        }
+        }*/}
       </View>
 		);
   }

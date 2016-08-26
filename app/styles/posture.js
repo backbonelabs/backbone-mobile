@@ -2,7 +2,11 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
+  },
+  header: {
+    flex: 1,
+    width: '100%',
+    marginTop: '12%',
   },
 });

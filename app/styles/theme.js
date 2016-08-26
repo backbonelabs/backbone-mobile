@@ -5,6 +5,7 @@ const iconButtonSize = 1.5 * iconSize;
 
 export default {
   primaryColor: '#e73e3a',
+  navIconColor: '#7e7e7e',
   iconSize,
   iconButtonSize,
   rem: 16,
