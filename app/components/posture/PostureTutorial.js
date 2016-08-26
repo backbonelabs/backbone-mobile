@@ -133,12 +133,6 @@ export default class PostureTutorial extends Component {
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.button}>
-          <Button
-            onPress={() => this.props.navigator.push(routes.postureCalibrate)}
-            buttonText={'Start'}
-          />
-        </View>
       </View>
     );
   }

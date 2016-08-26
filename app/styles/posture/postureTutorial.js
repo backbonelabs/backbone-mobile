@@ -5,7 +5,7 @@ export default EStyleSheet.create({
     flex: 1,
   },
   stepContainer: {
-    flex: 0.6,
+    flex: 0.9,
     flexDirection: 'row',
   },
   stepNavigationContainer: {
@@ -59,9 +59,5 @@ export default EStyleSheet.create({
   stepThree: {
     width: '100%',
     backgroundColor: 'yellow',
-  },
-  button: {
-    flex: 0.3,
-    justifyContent: 'center',
   },
 });
