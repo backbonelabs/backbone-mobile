@@ -7,8 +7,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../styles/posture/postureTutorial';
-import Button from './PostureButton';
-import routes from '../../routes';
 import tutorialSteps from './tutorialSteps';
 
 const { width } = Dimensions.get('window');
