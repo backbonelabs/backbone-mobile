@@ -19,28 +19,34 @@ export default EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  slideIcon: {
+  slideIndicator: {
     color: '$primaryColor',
   },
-  slideIconButton: {
-    width: 40,
-    height: 40,
+  slideIndicatorButton: {
+    width: 50,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  slideLeftIcon: {
+  slideLeftButton: {
     flex: 0.25,
-    height: 40,
-    marginLeft: '5%',
+    height: 50,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  slideRightIcon: {
+  slideRightButton: {
     flex: 0.25,
-    height: 40,
-    marginRight: '5%',
+    height: 50,
     alignItems: 'flex-end',
     justifyContent: 'center',
+  },
+  slideLeft: {
+    marginLeft: '5%',
+    color: 'rgba(0,0,0,0.25)',
+  },
+  slideRight: {
+    marginRight: '5%',
+    color: 'rgba(0,0,0,0.25)',
   },
   slideOne: {
     width: '100%',

@@ -68,28 +68,28 @@ export default class PostureTutorial extends Component {
   slideIndicator(selection) {
     return (
       <View style={styles.slideIndicatorContainer}>
-        <TouchableOpacity style={styles.slideIconButton} onPress={() => this.selectScene(0)}>
+        <TouchableOpacity style={styles.slideIndicatorButton} onPress={() => this.selectScene(0)}>
           <Icon
             name={selection === 1 ? 'circle' : 'circle-o'}
             size={30}
-            style={styles.slideIcon}
-            color={styles._slideIcon.color}
+            style={styles.slideIndicator}
+            color={styles._slideIndicator.color}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.slideIconButton} onPress={() => this.selectScene(1)}>
+        <TouchableOpacity style={styles.slideIndicatorButton} onPress={() => this.selectScene(1)}>
           <Icon
             name={selection === 2 ? 'circle' : 'circle-o'}
             size={30}
-            style={styles.slideIcon}
-            color={styles._slideIcon.color}
+            style={styles.slideIndicator}
+            color={styles._slideIndicator.color}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.slideIconButton} onPress={() => this.selectScene(2)}>
+        <TouchableOpacity style={styles.slideIndicatorButton} onPress={() => this.selectScene(2)}>
           <Icon
             name={selection === 3 ? 'circle' : 'circle-o'}
             size={30}
-            style={styles.slideIcon}
-            color={styles._slideIcon.color}
+            style={styles.slideIndicator}
+            color={styles._slideIndicator.color}
           />
         </TouchableOpacity>
       </View>
@@ -123,12 +123,22 @@ export default class PostureTutorial extends Component {
       <View style={styles.container}>
         { this.slideshow(this.state.slide) }
         <View style={styles.slideNavigationContainer}>
-          <TouchableOpacity style={styles.slideLeftIcon} onPress={() => this.popSlide()}>
-            <Icon name="chevron-left" size={25} color="rgba(0,0,0,0.25)" />
+          <TouchableOpacity style={styles.slideLeftButton} onPress={() => this.popSlide()}>
+            <Icon
+              name="chevron-left"
+              size={25}
+              color={styles._slideLeft.color}
+              style={styles.slideLeft}
+            />
           </TouchableOpacity>
           { this.slideIndicator(this.state.slide) }
-          <TouchableOpacity style={styles.slideRightIcon} onPress={() => this.pushSlide()}>
-            <Icon name="chevron-right" size={25} color="rgba(0,0,0,0.25)" />
+          <TouchableOpacity style={styles.slideRightButton} onPress={() => this.pushSlide()}>
+            <Icon
+              name="chevron-right"
+              size={25}
+              color={styles._slideRight.color}
+              style={styles.slideRight}
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.button}>
