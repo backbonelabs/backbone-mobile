@@ -2,17 +2,14 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
   button: {
+    width: '100%',
     height: 75,
-    width: 300,
-    marginLeft: 10,
-    marginRight: 10,
-    borderRadius: '$buttonBorderRadius',
     justifyContent: 'center',
+    backgroundColor: '$primaryColor',
   },
   buttonText: {
-    fontSize: 30,
     color: 'white',
-    fontWeight: 'bold',
-    alignSelf: 'center',
+    fontSize: '1rem',
+    textAlign: 'center',
   },
 });

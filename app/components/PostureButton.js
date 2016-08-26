@@ -1,16 +1,16 @@
 import React from 'react';
 import {
-  TouchableHighlight,
+  TouchableOpacity,
   Text,
 } from 'react-native';
 import styles from '../styles/postureButton';
 
 const PostureButtonView = (props) => (
-  <TouchableHighlight style={[styles.button, props.colorStyle]} onPress={props.onPress}>
+  <TouchableOpacity style={styles.button} onPress={props.onPress}>
     <Text style={styles.buttonText}>
       {props.buttonText}
     </Text>
-  </TouchableHighlight>
+  </TouchableOpacity>
 );
 
 PostureButtonView.propTypes = {

@@ -16,11 +16,12 @@ const postureActivity = 'posture';
 
 export default class Posture extends Component {
   static propTypes = {
+    navigator: React.PropTypes.object,
     currentRoute: React.PropTypes.object,
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       tilt: 0,
       tiltDirection: 'forward',
@@ -30,7 +31,6 @@ export default class Posture extends Component {
 
     this.startPostureMonitoring = this.startPostureMonitoring.bind(this);
     this.stopPostureMonitoring = this.stopPostureMonitoring.bind(this);
-    this.beginCalibrate = this.beginCalibrate.bind(this);
     this.listenToTilt = null;
   }
 
@@ -76,30 +76,12 @@ export default class Posture extends Component {
     });
   }
 
-  beginCalibrate() {
-    this.setState({
-      calibrating: true,
-    });
-  }
-
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <PostureTutorial />
+          <PostureTutorial navigator={this.props.navigator} />
         </View>
-{/*        {this.state.calibrating ?
-          <Calibrate startPostureMonitoring={this.startPostureMonitoring} /> :
-          <Monitor
-            tilt={this.state.tilt}
-            tiltDirection={this.state.tiltDirection}
-            start={this.startPostureMonitoring}
-            stop={this.stopPostureMonitoring}
-            beginCalibrate={this.beginCalibrate}
-            monitoring={this.state.monitoring}
-            currentRoute={this.props.currentRoute}
-          />
-        }*/}
       </View>
 		);
   }
