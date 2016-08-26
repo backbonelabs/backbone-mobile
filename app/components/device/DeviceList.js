@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import styles from '../styles/deviceList';
+import styles from '../../styles/device/deviceList';
 
 export default class DeviceList extends Component {
   static propTypes = {

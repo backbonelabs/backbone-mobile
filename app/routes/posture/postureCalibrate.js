@@ -1,4 +1,4 @@
-import PostureCalibrate from '../components/PostureCalibrate';
+import PostureCalibrate from '../../components/posture/PostureCalibrate';
 
 export default {
   name: 'postureCalibrate',

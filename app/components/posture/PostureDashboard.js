@@ -4,17 +4,13 @@ import {
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
-// import Monitor from './Monitor';
-// import Calibrate from './Calibrate';
-import PostureTutorial from './PostureTutorial';
-import styles from '../styles/posture';
 
 const { ActivityService } = NativeModules;
 
 // TODO: Refactor into a shared constants export that tracks all the activity names
 const postureActivity = 'posture';
 
-export default class Posture extends Component {
+export default class PostureDashboard extends Component {
   static propTypes = {
     navigator: React.PropTypes.object,
     currentRoute: React.PropTypes.object,
@@ -78,11 +74,7 @@ export default class Posture extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <PostureTutorial navigator={this.props.navigator} />
-        </View>
-      </View>
+      <View />
 		);
   }
 }

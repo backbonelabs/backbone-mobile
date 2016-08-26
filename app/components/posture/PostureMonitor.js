@@ -5,8 +5,8 @@ import {
   View,
   Text,
 } from 'react-native';
-import PostureButton from './PostureButton';
-import styles from '../styles/monitor';
+import Button from './PostureButton';
+import styles from '../../styles/posture/postureMonitor';
 
 export default class MonitorView extends Component {
   static propTypes = {
@@ -57,13 +57,13 @@ export default class MonitorView extends Component {
         />
         <Icon name="user" style={tiltStyle} size={120} color={avatarColor} />
         {this.props.monitoring ?
-          <PostureButton
+          <Button
             iconName={'pause'}
             buttonText={'STOP'}
             colorStyle={{ backgroundColor: '#f86c41' }}
             onPress={this.props.stop}
           /> :
-          <PostureButton
+          <Button
             colorStyle={{ backgroundColor: '#48BBEC' }}
             onPress={this.props.start}
             buttonText={'START'}

@@ -3,9 +3,9 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import styles from '../styles/postureButton';
+import styles from '../../styles/posture/postureButton';
 
-const PostureButtonView = (props) => (
+const PostureButton = (props) => (
   <TouchableOpacity style={styles.button} onPress={props.onPress}>
     <Text style={styles.buttonText}>
       {props.buttonText}
@@ -13,10 +13,10 @@ const PostureButtonView = (props) => (
   </TouchableOpacity>
 );
 
-PostureButtonView.propTypes = {
+PostureButton.propTypes = {
   colorStyle: React.PropTypes.object,
   onPress: React.PropTypes.func,
   buttonText: React.PropTypes.string,
 };
 
-export default PostureButtonView;
+export default PostureButton;

@@ -6,9 +6,13 @@ import {
   Animated,
 } from 'react-native';
 import TimerMixin from 'react-timer-mixin';
-import styles from '../styles/postureCalibrate';
+import styles from '../../styles/posture/postureCalibrate';
 
-class CalibrateView extends Component {
+export default class PostureCalibrate extends Component {
+  static propTypes = {
+    startPostureMonitoring: React.PropTypes.func,
+  }
+
   constructor() {
     super();
     this.state = {
@@ -73,9 +77,3 @@ class CalibrateView extends Component {
     );
   }
 }
-
-CalibrateView.propTypes = {
-  startPostureMonitoring: React.PropTypes.func,
-};
-
-export default CalibrateView;

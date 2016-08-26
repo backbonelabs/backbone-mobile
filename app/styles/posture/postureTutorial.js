@@ -4,59 +4,59 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
   },
-  slideContainer: {
+  stepContainer: {
     flex: 0.6,
     flexDirection: 'row',
   },
-  slideNavigationContainer: {
+  stepNavigationContainer: {
     flex: 0.1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  slideIndicatorContainer: {
+  stepIndicatorContainer: {
     flex: 0.5,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  slideIndicator: {
+  stepIndicator: {
     color: '$primaryColor',
   },
-  slideIndicatorButton: {
+  stepIndicatorButton: {
     width: 50,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  slideLeftButton: {
+  previousStepButton: {
     flex: 0.25,
     height: 50,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  slideRightButton: {
+  nextStepButton: {
     flex: 0.25,
     height: 50,
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
-  slideLeft: {
+  previousStep: {
     marginLeft: '5%',
     color: 'rgba(0,0,0,0.25)',
   },
-  slideRight: {
+  nextStep: {
     marginRight: '5%',
     color: 'rgba(0,0,0,0.25)',
   },
-  slideOne: {
+  stepOne: {
     width: '100%',
     backgroundColor: 'red',
   },
-  slideTwo: {
+  stepTwo: {
     width: '100%',
     backgroundColor: 'orange',
   },
-  slideThree: {
+  stepThree: {
     width: '100%',
     backgroundColor: 'yellow',
   },
