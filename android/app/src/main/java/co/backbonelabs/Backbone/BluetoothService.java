@@ -26,6 +26,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private static BluetoothService instance = null;
     private static final String TAG = "BluetoothService";
 
+    public static BluetoothService getInstance() {
+        return instance;
+    }
+
     public static BluetoothService getInstance(ReactApplicationContext reactContext) {
         if (instance == null) {
             instance = new BluetoothService(reactContext);
@@ -73,13 +77,29 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     /**
+     * Retrieves the BluetoothAdapter
+     * @return The default BluetoothAdapter
+     */
+    public BluetoothAdapter getAdapter() {
+        return mBluetoothAdapter;
+    }
+
+    /**
      * Checks if Bluetooth is enabled
+     * @return True/false indicating whether Bluetooth is enabled
+     */
+    public boolean getIsEnabled() {
+        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
+    }
+
+    /**
+     * React method for checking if Bluetooth is enabled
      * @param promise Resolves with a boolean indicating if Bluetooth is enabled or not
      */
     @ReactMethod
     public void getIsEnabled(Promise promise) {
         if (promise != null) {
-            promise.resolve(mBluetoothAdapter != null && mBluetoothAdapter.isEnabled());
+            promise.resolve(getIsEnabled());
         } else {
             promise.reject(new MissingFormatArgumentException("Missing promise"));
         }
