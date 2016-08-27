@@ -28,16 +28,9 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  previousStepButton: {
+  paginationIcon: {
     flex: 0.25,
     height: 50,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  nextStepButton: {
-    flex: 0.25,
-    height: 50,
-    alignItems: 'flex-end',
     justifyContent: 'center',
   },
   previousStep: {

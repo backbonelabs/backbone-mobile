@@ -24,6 +24,9 @@ export default class PostureTutorial extends Component {
       valueX: 0,
       animatedValues: new Animated.ValueXY(),
     };
+
+    this.nextStep = this.nextStep.bind(this);
+    this.previousStep = this.previousStep.bind(this);
   }
 
   getStepStyle() {
@@ -49,7 +52,7 @@ export default class PostureTutorial extends Component {
     this.setState({
       step: selection,
       valueX: -width * selection,
-    }, () => this.animationSequence());
+    }, this.animationSequence());
   }
 
   steps() {
@@ -86,24 +89,20 @@ export default class PostureTutorial extends Component {
   }
 
   previousStep() {
-    if (this.state.step) {
-      let stepNumber = this.state.step;
-
+    if (this.state.step > 0) {
       this.setState({
-        step: --stepNumber,
+        step: this.state.step - 1,
         valueX: this.state.valueX + width,
-      }, () => this.animationSequence());
+      }, this.animationSequence());
     }
   }
 
   nextStep() {
-    if (this.state.step < 2) {
-      let stepNumber = this.state.step;
-
+    if (tutorialSteps.length - 1) {
       this.setState({
-        step: ++stepNumber,
+        step: this.state.step + 1,
         valueX: this.state.valueX - width,
-      }, () => this.animationSequence());
+      }, this.animationSequence());
     }
   }
 
@@ -112,7 +111,10 @@ export default class PostureTutorial extends Component {
       <View style={styles.container}>
         { this.steps() }
         <View style={styles.stepNavigationContainer}>
-          <TouchableOpacity style={styles.previousStepButton} onPress={() => this.previousStep()}>
+          <TouchableOpacity
+            style={[styles.paginationIcon, { alignItems: 'flex-start' }]}
+            onPress={this.previousStep}
+          >
             <Icon
               name="chevron-left"
               size={25}
@@ -121,7 +123,10 @@ export default class PostureTutorial extends Component {
             />
           </TouchableOpacity>
           { this.stepIndicator(this.state.step) }
-          <TouchableOpacity style={styles.nextStepButton} onPress={() => this.nextStep()}>
+          <TouchableOpacity
+            style={[styles.paginationIcon, { alignItems: 'flex-end' }]}
+            onPress={this.nextStep}
+          >
             <Icon
               name="chevron-right"
               size={25}

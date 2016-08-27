@@ -68,7 +68,7 @@ class Home extends Component {
       return (
         <TouchableOpacity
           style={styles.button}
-          onPress={() => { this.props.navigator.push(routes.postureTutorial); }}
+          onPress={() => { this.props.navigator.push(routes.posture.postureTutorial); }}
         >
           <Text style={styles.connect}>Connect</Text>
         </TouchableOpacity>
