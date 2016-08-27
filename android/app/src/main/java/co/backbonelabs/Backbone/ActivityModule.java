@@ -2,9 +2,7 @@ package co.backbonelabs.Backbone;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 
-import java.util.HashMap;
-
-public abstract class ActivityModule {
+public abstract class ActivityModule<V> {
     protected String name;
     protected String sensor;
     protected String notificationName;
@@ -26,5 +24,5 @@ public abstract class ActivityModule {
         return notificationName;
     }
 
-    public abstract void update();
+    abstract void process(V data);
 }
