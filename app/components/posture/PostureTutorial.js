@@ -13,10 +13,6 @@ const { width } = Dimensions.get('window');
 const SPRING_CONFIG = { tension: 2, friction: 3 };
 
 export default class PostureTutorial extends Component {
-  static propTypes = {
-    calibrate: React.PropTypes.func,
-  }
-
   constructor() {
     super();
     this.state = {
@@ -52,7 +48,7 @@ export default class PostureTutorial extends Component {
     this.setState({
       step: selection,
       valueX: -width * selection,
-    }, this.animationSequence());
+    }, this.animationSequence);
   }
 
   steps() {
@@ -74,7 +70,7 @@ export default class PostureTutorial extends Component {
       >
         <Icon
           name={selection === i ? 'circle' : 'circle-o'}
-          size={30}
+          size={styles._stepIndicator.width}
           style={styles.stepIndicator}
           color={styles._stepIndicator.color}
         />
@@ -93,16 +89,16 @@ export default class PostureTutorial extends Component {
       this.setState({
         step: this.state.step - 1,
         valueX: this.state.valueX + width,
-      }, this.animationSequence());
+      }, this.animationSequence);
     }
   }
 
   nextStep() {
-    if (tutorialSteps.length - 1) {
+    if (this.state.step < tutorialSteps.length - 1) {
       this.setState({
         step: this.state.step + 1,
         valueX: this.state.valueX - width,
-      }, this.animationSequence());
+      }, this.animationSequence);
     }
   }
 
@@ -111,27 +107,19 @@ export default class PostureTutorial extends Component {
       <View style={styles.container}>
         { this.steps() }
         <View style={styles.stepNavigationContainer}>
-          <TouchableOpacity
-            style={[styles.paginationIcon, { alignItems: 'flex-start' }]}
-            onPress={this.previousStep}
-          >
+          <TouchableOpacity style={styles.previousStepButton} onPress={this.previousStep}>
             <Icon
-              name="chevron-left"
-              size={25}
-              color={styles._previousStep.color}
-              style={styles.previousStep}
+              name="caret-left"
+              size={styles._paginationIcon.width}
+              color={styles._paginationIcon.color}
             />
           </TouchableOpacity>
           { this.stepIndicator(this.state.step) }
-          <TouchableOpacity
-            style={[styles.paginationIcon, { alignItems: 'flex-end' }]}
-            onPress={this.nextStep}
-          >
+          <TouchableOpacity style={styles.nextStepButton} onPress={this.nextStep}>
             <Icon
-              name="chevron-right"
-              size={25}
-              color={styles._nextStep.color}
-              style={styles.nextStep}
+              name="caret-right"
+              size={styles._paginationIcon.width}
+              color={styles._paginationIcon.color}
             />
           </TouchableOpacity>
         </View>
