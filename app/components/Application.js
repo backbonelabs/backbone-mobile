@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
+  Text,
   StatusBar,
   Navigator,
   DeviceEventEmitter,
@@ -33,8 +34,8 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
 });
 
 class Application extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     const context = this;
 
@@ -60,7 +61,7 @@ class Application extends Component {
                   name="bars"
                   style={styles.menuIcon}
                   size={EStyleSheet.globalVars.$iconSize}
-                  color={EStyleSheet.globalVars.$primaryColor}
+                  color={EStyleSheet.globalVars.$navIconColor}
                 />
               </TouchableHighlight>
             </View>
@@ -80,7 +81,7 @@ class Application extends Component {
                   name="gear"
                   style={styles.settingsIcon}
                   size={EStyleSheet.globalVars.$iconSize}
-                  color={EStyleSheet.globalVars.$primaryColor}
+                  color={EStyleSheet.globalVars.$navIconColor}
                 />
               </TouchableHighlight>
             </View>
@@ -90,6 +91,9 @@ class Application extends Component {
         return (
           <View style={styles.navbarContainer}>
             {menuButton}
+            <View style={styles.navBarTitle}>
+              <Text style={styles.navBarText}>{route.title}</Text>
+            </View>
             {settingsButton}
           </View>
         );

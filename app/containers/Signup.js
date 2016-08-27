@@ -21,8 +21,8 @@ class Signup extends Component {
     navigator: React.PropTypes.object,
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       email: '',
       password: '',

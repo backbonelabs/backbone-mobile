@@ -21,7 +21,7 @@ class ConfirmEmail extends Component {
     super(props);
     this.setPollingInterval = setInterval(() =>
       props.dispatch(
-        authActions.checkEmailConfirmation(props.currentRoute.email)
+        authActions.checkEmailConfirmation(this.props.currentRoute.email)
       ), 5000
     );
   }

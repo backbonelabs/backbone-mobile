@@ -4,17 +4,15 @@ import {
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
-import Monitor from './Monitor';
-import Calibrate from './Calibrate';
-import styles from '../styles/posture';
 
 const { ActivityService } = NativeModules;
 
 // TODO: Refactor into a shared constants export that tracks all the activity names
 const postureActivity = 'posture';
 
-export default class Posture extends Component {
+export default class PostureDashboard extends Component {
   static propTypes = {
+    navigator: React.PropTypes.object,
     currentRoute: React.PropTypes.object,
   };
 
@@ -29,7 +27,6 @@ export default class Posture extends Component {
 
     this.startPostureMonitoring = this.startPostureMonitoring.bind(this);
     this.stopPostureMonitoring = this.stopPostureMonitoring.bind(this);
-    this.beginCalibrate = this.beginCalibrate.bind(this);
     this.listenToTilt = null;
   }
 
@@ -75,28 +72,9 @@ export default class Posture extends Component {
     });
   }
 
-  beginCalibrate() {
-    this.setState({
-      calibrating: true,
-    });
-  }
-
   render() {
     return (
-      <View style={styles.container}>
-        {this.state.calibrating ?
-          <Calibrate startPostureMonitoring={this.startPostureMonitoring} /> :
-          <Monitor
-            tilt={this.state.tilt}
-            tiltDirection={this.state.tiltDirection}
-            start={this.startPostureMonitoring}
-            stop={this.stopPostureMonitoring}
-            beginCalibrate={this.beginCalibrate}
-            monitoring={this.state.monitoring}
-            currentRoute={this.props.currentRoute}
-          />
-        }
-      </View>
+      <View />
 		);
   }
 }

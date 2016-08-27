@@ -6,7 +6,7 @@ import {
   Text,
 } from 'react-native';
 import PostureButton from './PostureButton';
-import styles from '../styles/monitor';
+import styles from '../../styles/posture/postureMonitor';
 
 export default class MonitorView extends Component {
   static propTypes = {

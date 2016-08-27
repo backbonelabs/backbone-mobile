@@ -5,11 +5,14 @@ import {
   // Image,
   Animated,
 } from 'react-native';
-import Progress from 'react-native-progress';
 import TimerMixin from 'react-timer-mixin';
-import styles from '../styles/calibrate';
+import styles from '../../styles/posture/postureCalibrate';
 
-class CalibrateView extends Component {
+export default class PostureCalibrate extends Component {
+  static propTypes = {
+    startPostureMonitoring: React.PropTypes.func,
+  }
+
   constructor() {
     super();
     this.state = {
@@ -65,16 +68,6 @@ class CalibrateView extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Progress.Circle
-          style={styles.progressPie}
-          color="#48BBEC"
-          unfilledColor="#f86c41"
-          borderWidth={0}
-          showsText
-          thickness={20}
-          progress={this.state.calibrateCount / 5}
-          size={300}
-        />
         <Animated.View style={{ opacity: this.state.fadeAnim }}>
           <Text style={styles.slouches}>
             STRAIGHTEN UP
@@ -84,9 +77,3 @@ class CalibrateView extends Component {
     );
   }
 }
-
-CalibrateView.propTypes = {
-  startPostureMonitoring: React.PropTypes.func,
-};
-
-export default CalibrateView;
