@@ -7,7 +7,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
   },
-  buttonText: {
+  text: {
     color: 'white',
     fontSize: '1rem',
     textAlign: 'center',
