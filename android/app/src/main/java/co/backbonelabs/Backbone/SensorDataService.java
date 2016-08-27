@@ -2,7 +2,9 @@ package co.backbonelabs.Backbone;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.mbientlab.metawear.AsyncOperation;
@@ -14,10 +16,12 @@ import com.mbientlab.metawear.UnsupportedModuleException;
 import com.mbientlab.metawear.data.CartesianFloat;
 import com.mbientlab.metawear.module.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
 public class SensorDataService {
+    public static final String INTENT_EXTRA_NAME = "co.backbonelabs.Backbone.sensorData";
     private static final String TAG = "SensorDataService";
     private static SensorDataService instance = null;
     private MetaWearBoard device = DeviceManagementService.mMWBoard;
@@ -83,7 +87,7 @@ public class SensorDataService {
      * sensor if needed.
      * @param activityModule An ActivityModule to register to the collection of active activities
      */
-    public void registerActivity(ActivityModule activityModule) {
+    public void registerActivity(final ActivityModule activityModule) {
         Log.d(TAG, "registerActivity");
 
         // Add activity to the collection of active activities
@@ -122,6 +126,16 @@ public class SensorDataService {
                                             public void process(Message msg) {
                                                 CartesianFloat axes = msg.getData(CartesianFloat.class);
                                                 Log.d(TAG, "axes data: " + axes.toString());
+
+                                                HashMap<String, Float> data = new HashMap<String, Float>();
+                                                data.put("x", axes.x());
+                                                data.put("y", axes.y());
+                                                data.put("z", axes.z());
+
+                                                Intent intent = new Intent(activityModule.getNotificationName());
+                                                intent.putExtra(INTENT_EXTRA_NAME, data);
+                                                LocalBroadcastManager.getInstance(MainActivity.currentActivity)
+                                                        .sendBroadcast(intent);
                                             }
                                         });
                                     }
@@ -143,6 +157,7 @@ public class SensorDataService {
 
     public void unregisterActivity(String activityName) {
         Log.d(TAG, "unregisterActivity " + activityName);
+        // TODO: Implement
     }
 
     private void toggleSensor(String sensor, boolean enable) {
@@ -172,8 +187,7 @@ public class SensorDataService {
         }
     }
 
-    // TODO: This should be a private method
-    public void stopAllSensors() {
+    private void stopAllSensors() {
         Log.d(TAG, "stopAllSensors");
         Iterator<String> iterator = activeSensors.iterator();
         if (iterator.hasNext()) {
