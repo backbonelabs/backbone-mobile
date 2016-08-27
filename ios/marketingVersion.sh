@@ -5,6 +5,6 @@ then
 else
   agvtool new-marketing-version $1
   VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" backbone/Info.plist)
-  git commit -a -m "Version $VERSION"
+  git commit -a -m "iOS version $VERSION"
   git push origin master
 fi
