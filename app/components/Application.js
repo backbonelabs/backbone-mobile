@@ -37,66 +37,34 @@ class Application extends Component {
   constructor() {
     super();
 
-    const context = this;
-
     this.navigationBarRouteMapper = {
-      LeftButton() {
-      },
-      RightButton() {
-      },
-      Title(route, navigator) {
-        let menuButton;
-        let settingsButton;
-
+      LeftButton: (route, navigator) => {
         if (route.showMenu) {
-          menuButton = (
-            <View style={styles.menuContainer}>
-              <TouchableHighlight
-                style={styles.menuButton}
-                onPress={() => {
-                  context.showMenu(route, navigator);
-                }}
-              >
-                <Icon
-                  name="bars"
-                  style={styles.menuIcon}
-                  size={EStyleSheet.globalVars.$iconSize}
-                  color={EStyleSheet.globalVars.$navIconColor}
-                />
-              </TouchableHighlight>
-            </View>
+          return (
+            <TouchableHighlight
+              style={styles.leftButton}
+              onPress={() => this.showMenu(route, navigator)}
+            >
+              <Icon
+                name="bars"
+                style={styles.menuIcon}
+                size={EStyleSheet.globalVars.$iconSize}
+                color={styles._menuIcon.color}
+              />
+            </TouchableHighlight>
           );
         }
-
-        if (route.showSettings) {
-          settingsButton = (
-            <View style={styles.settingsContainer}>
-              <TouchableHighlight
-                style={styles.settingsButton}
-                onPress={() => {
-                  context.showMenu(route, navigator);
-                }}
-              >
-                <Icon
-                  name="gear"
-                  style={styles.settingsIcon}
-                  size={EStyleSheet.globalVars.$iconSize}
-                  color={EStyleSheet.globalVars.$navIconColor}
-                />
-              </TouchableHighlight>
-            </View>
+      },
+      RightButton: () => {
+      },
+      Title: (route) => {
+        if (route.title) {
+          return (
+            <Text style={styles.navbarContainer}>
+              {route.title}
+            </Text>
           );
         }
-
-        return (
-          <View style={styles.navbarContainer}>
-            {menuButton}
-            <View style={styles.navBarTitle}>
-              <Text style={styles.navBarText}>{route.title}</Text>
-            </View>
-            {settingsButton}
-          </View>
-        );
       },
     };
 
@@ -105,7 +73,6 @@ class Application extends Component {
     };
 
     this.configureScene = this.configureScene.bind(this);
-    this.showMenu = this.showMenu.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
   }
