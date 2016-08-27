@@ -7,6 +7,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import co.backbonelabs.Backbone.util.JSError;
@@ -18,9 +20,11 @@ public class ActivityService extends ReactContextBaseJavaModule {
             put("posture", PostureModule.class);
         }
     };
+    private ReactApplicationContext mReactContext;
 
     public ActivityService(ReactApplicationContext reactContext) {
         super(reactContext);
+        mReactContext = reactContext;
     }
 
     @Override
@@ -44,16 +48,14 @@ public class ActivityService extends ReactContextBaseJavaModule {
             // and register it as an observer to SensorDataService
             Class<ActivityModule> _class = activityClassMap.get(activityName);
             try {
-                ActivityModule activityModule = _class.newInstance();
+                Constructor<?> constructor = _class.getConstructor(ReactApplicationContext.class);
+                ActivityModule activityModule = (ActivityModule) constructor.newInstance(mReactContext);
                 Log.d(TAG, "Instantiated " + activityModule.getClass().getName() + " activity");
 
                 SensorDataService sensorDataService = SensorDataService.getInstance();
                 sensorDataService.registerActivity(activityModule);
                 callback.invoke();
-            } catch (InstantiationException e) {
-                callback.invoke(JSError.make(e.toString()));
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 callback.invoke(JSError.make(e.toString()));
                 e.printStackTrace();
             }
