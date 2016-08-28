@@ -10,7 +10,6 @@ import styles from '../../styles/posture/postureTutorial';
 import tutorialSteps from './tutorialSteps';
 
 const { width } = Dimensions.get('window');
-const SPRING_CONFIG = { tension: 2, friction: 3 };
 
 export default class PostureTutorial extends Component {
   constructor() {
@@ -37,7 +36,7 @@ export default class PostureTutorial extends Component {
       Animated.spring(
         this.state.animatedValues,
         {
-          SPRING_CONFIG,
+          tension: 10,
           toValue: { x: this.state.valueX, y: 0 },
         }
       ),
