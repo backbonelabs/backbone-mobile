@@ -25,30 +25,30 @@ export default class PostureCalibrate extends Component {
     this.calibrating = this.calibrating.bind(this);
   }
 
-  componentDidMount() {
-    const context = this;
-    let count = 0;
+  // componentDidMount() {
+  //   const context = this;
+  //   let count = 0;
 
-    function cycleAnimation() {
-      Animated.sequence([
-        Animated.delay(200),
-        Animated.timing(
-        context.state.fadeAnim,
-        { toValue: 1 }),
-        Animated.delay(200),
-        Animated.timing(
-        context.state.fadeAnim,
-        { toValue: 0 }),
-      ]).start(() => {
-        count = context.props.calibrateCount ? 1 : 0;
-        if (!count) {
-          cycleAnimation();
-        }
-      });
-    }
-    this.calibrating();
-    cycleAnimation();
-  }
+  //   function cycleAnimation() {
+  //     Animated.sequence([
+  //       Animated.delay(200),
+  //       Animated.timing(
+  //       context.state.fadeAnim,
+  //       { toValue: 1 }),
+  //       Animated.delay(200),
+  //       Animated.timing(
+  //       context.state.fadeAnim,
+  //       { toValue: 0 }),
+  //     ]).start(() => {
+  //       count = context.props.calibrateCount ? 1 : 0;
+  //       if (!count) {
+  //         cycleAnimation();
+  //       }
+  //     });
+  //   }
+  //   this.calibrating();
+  //   cycleAnimation();
+  // }
 
   calibrating() {
     if (this.state.calibrateCount < 6 && !this.state.calibrating) {
