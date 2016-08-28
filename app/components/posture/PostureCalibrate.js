@@ -2,77 +2,93 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  // Image,
   Animated,
+  Dimensions,
 } from 'react-native';
-import TimerMixin from 'react-timer-mixin';
 import styles from '../../styles/posture/postureCalibrate';
+import PostureButton from './PostureButton';
+import postureRoutes from '../../routes/posture';
+
+const { width } = Dimensions.get('window');
 
 export default class PostureCalibrate extends Component {
   static propTypes = {
-    startPostureMonitoring: React.PropTypes.func,
+    navigator: React.PropTypes.object,
   }
 
   constructor() {
     super();
     this.state = {
-      calibrating: null,
-      calibrateCount: 0,
-      fadeAnim: new Animated.Value(0),
+      count: 5,
+      countdown: false,
+      animatedValues: new Animated.ValueXY(),
     };
 
-    this.setTimeout = TimerMixin.setTimeout.bind(this);
-    this.calibrating = this.calibrating.bind(this);
+    this.startCountdown = this.startCountdown.bind(this);
+    this.stopCountdown = this.stopCountdown.bind(this);
+    this.countdownHandler = this.countdownHandler.bind(this);
   }
 
-  // componentDidMount() {
-  //   const context = this;
-  //   let count = 0;
+  getStepStyle() {
+    return [
+      styles.calibrateAnimation,
+      { transform: this.state.animatedValues.getTranslateTransform() },
+    ];
+  }
 
-  //   function cycleAnimation() {
-  //     Animated.sequence([
-  //       Animated.delay(200),
-  //       Animated.timing(
-  //       context.state.fadeAnim,
-  //       { toValue: 1 }),
-  //       Animated.delay(200),
-  //       Animated.timing(
-  //       context.state.fadeAnim,
-  //       { toValue: 0 }),
-  //     ]).start(() => {
-  //       count = context.props.calibrateCount ? 1 : 0;
-  //       if (!count) {
-  //         cycleAnimation();
-  //       }
-  //     });
-  //   }
-  //   this.calibrating();
-  //   cycleAnimation();
-  // }
+  startCountdown() {
+    this.setState({ countdown: true }, () => this.animationSequence(this.state.count));
+  }
 
-  calibrating() {
-    if (this.state.calibrateCount < 6 && !this.state.calibrating) {
-      this.state.calibrating = TimerMixin.setInterval(() => {
-        this.setState({
-          calibrateCount: ++this.state.calibrateCount,
-        }, () => {
-          this.calibrating();
-        });
-      }, 1250);
-    } else if (this.state.calibrating && this.state.calibrateCount >= 6) {
-      TimerMixin.clearInterval(this.state.calibrating);
-      this.props.startPostureMonitoring();
+  stopCountdown() {
+    this.setState({
+      count: 5,
+      countdown: false,
+      animatedValues: new Animated.ValueXY(),
+    });
+  }
+
+  countdownHandler() {
+    if (this.state.countdown) {
+      this.setState({ count: this.state.count - 1 }, () => {
+        if (this.state.count) {
+          this.animationSequence(this.state.count);
+        } else {
+          // TODO: Set posture tilt/distance threshold here
+          this.props.navigator.push(postureRoutes.postureMonitor);
+        }
+      });
     }
   }
 
+  animationSequence(count) {
+    const valueX = count % 2 ? -1.02 * width : 0;
+
+    Animated.timing(this.state.animatedValues, {
+      duration: 1500,
+      toValue: { x: valueX, y: 0 },
+    }).start(this.countdownHandler);
+  }
+
   render() {
+    let buttonText = this.state.countdown ? 'Stop' : 'Start';
+    let onPressHandler = this.state.countdown ? this.stopCountdown : this.startCountdown;
+
     return (
       <View style={styles.container}>
-        <Animated.View style={{ opacity: this.state.fadeAnim }}>
-          <Text style={styles.slouches}>
-            STRAIGHTEN UP
-          </Text>
-        </Animated.View>
+        <View style={styles.calibrateContainer}>
+          <View style={styles.calibrateImage}>
+          { this.state.countdown &&
+            <Text style={styles.calibrateCountdown}>
+              {this.state.count}
+            </Text>
+          }
+          </View>
+          <Animated.View style={this.getStepStyle()} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <PostureButton text={buttonText} onPress={onPressHandler} />
+        </View>
       </View>
     );
   }
