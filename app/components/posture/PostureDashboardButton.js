@@ -7,7 +7,6 @@ import postureRoutes from '../../routes/posture';
 import styles from '../../styles/posture/postureDashboard';
 
 const PostureDashboardButton = (props) => {
-  console.log('props ', props);
   return (
     <TouchableOpacity
       style={props.navStyle}
@@ -18,10 +17,11 @@ const PostureDashboardButton = (props) => {
         size={props.iconSize}
         color={styles._button.color}
       />
-    </TouchableOpacity>)
+    </TouchableOpacity>);
 };
 
 PostureDashboardButton.propTypes = {
+  iconSize: React.PropTypes.number,
   navigator: React.PropTypes.object,
   currentRoute: React.PropTypes.object,
 };
