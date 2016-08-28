@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import postureRoutes from '../../routes/posture';
 import styles from '../../styles/posture/postureDashboard';
 
-const PostureDashboardButton = (props) => (
+const PostureDashboardRightButton = (props) => (
   <TouchableOpacity
     style={props.navStyle}
     onPress={() => props.navigator.push(postureRoutes.postureTutorial)}
@@ -14,15 +14,15 @@ const PostureDashboardButton = (props) => (
     <Icon
       name="question-circle-o"
       size={props.iconSize}
-      color={styles._button.color}
+      color={styles._rightButton.color}
     />
   </TouchableOpacity>
 );
 
-PostureDashboardButton.propTypes = {
+PostureDashboardRightButton.propTypes = {
   iconSize: React.PropTypes.number,
   navigator: React.PropTypes.object,
   currentRoute: React.PropTypes.object,
 };
 
-export default PostureDashboardButton;
+export default PostureDashboardRightButton;

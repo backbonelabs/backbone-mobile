@@ -1,9 +1,9 @@
 import PostureDashboard from '../../components/posture/PostureDashboard';
-import PostureDashboardButton from '../../components/posture/PostureDashboardButton';
+import PostureDashboardRightButton from '../../components/posture/PostureDashboardRightButton';
 
 export default {
   name: 'postureDashboard',
   component: PostureDashboard,
   showMenu: true,
-  rightButton: PostureDashboardButton,
+  rightButton: PostureDashboardRightButton,
 };

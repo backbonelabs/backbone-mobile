@@ -5,12 +5,6 @@ export default EStyleSheet.create({
     flex: 1,
     marginTop: '10%',
   },
-  learnMoreButton: {
-    width: 45,
-    height: 45,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   analyticsContainer: {
     flex: 0.7,
     backgroundColor: 'rgba(0,0,0,0.68)',
@@ -20,6 +14,10 @@ export default EStyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
     justifyContent: 'center',
   },
+  rightButton: {
+    color: '$primaryColor',
+  },
+  // We'll want to style our button later, so keeping placeholder
   button: {
     color: '$primaryColor',
   },
