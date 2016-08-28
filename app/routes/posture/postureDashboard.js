@@ -3,6 +3,7 @@ import PostureDashboardRightButton from '../../components/posture/PostureDashboa
 
 export default {
   name: 'postureDashboard',
+  title: 'Posture Dashboard',
   component: PostureDashboard,
   showMenu: true,
   rightButton: PostureDashboardRightButton,
