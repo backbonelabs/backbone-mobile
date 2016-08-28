@@ -55,7 +55,14 @@ class Application extends Component {
           );
         }
       },
-      RightButton: () => {
+      RightButton: (route, navigator) => {
+        if (route.rightButton) {
+          return route.rightButton({
+            navigator,
+            navStyle: styles.rightButton,
+            iconSize: EStyleSheet.globalVars.$iconSize,
+          });
+        }
       },
       Title: (route) => {
         if (route.title) {
