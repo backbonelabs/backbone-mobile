@@ -50,9 +50,9 @@ class Application extends Component {
             <TouchableOpacity style={styles.leftButton} onPress={onPressHandler}>
               <Icon
                 name={iconName}
-                style={styles.menuIcon}
+                style={styles.leftButtonIcon}
                 size={EStyleSheet.globalVars.$iconSize}
-                color={styles._menuIcon.color}
+                color={styles._leftButtonIcon.color}
               />
             </TouchableOpacity>
           );
@@ -70,9 +70,9 @@ class Application extends Component {
       Title: (route) => {
         if (route.title) {
           return (
-            <Text style={styles.navbarContainer}>
-              {route.title}
-            </Text>
+            <View style={styles.titleContainer}>
+              <Text>{route.title}</Text>
+            </View>
           );
         }
       },

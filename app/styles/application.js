@@ -10,8 +10,11 @@ const navButton = {
 export default EStyleSheet.create({
   leftButton: Object.assign({}, navButton, { marginLeft: '1.5%' }),
   rightButton: Object.assign({}, navButton, { marginRight: '1.5%' }),
-  menuIcon: {
+  leftButtonIcon: {
     alignSelf: 'center',
     color: '$primaryColor',
+  },
+  titleContainer: {
+    marginTop: '0.65rem',
   },
 });
