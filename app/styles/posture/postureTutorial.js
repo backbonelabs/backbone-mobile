@@ -9,6 +9,7 @@ const stepButton = {
 export default EStyleSheet.create({
   container: {
     flex: 1,
+    marginTop: '10%',
   },
   stepContainer: {
     flex: 0.9,
