@@ -6,7 +6,7 @@ import {
 import styles from '../../styles/posture/postureButton';
 
 const PostureButton = (props) => (
-  <TouchableOpacity style={styles.button} onPress={props.onPress}>
+  <TouchableOpacity style={styles.button} onPress={props.onPressHandler}>
     <Text style={styles.text}>
       {props.text}
     </Text>
@@ -14,7 +14,7 @@ const PostureButton = (props) => (
 );
 
 PostureButton.propTypes = {
-  onPress: React.PropTypes.func,
+  onPressHandler: React.PropTypes.func,
   text: React.PropTypes.string,
 };
 

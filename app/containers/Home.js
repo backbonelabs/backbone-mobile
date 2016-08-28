@@ -118,7 +118,7 @@ class Home extends Component {
             >
               <Text style={{ fontSize: 18, color: 'white' }}>Delete access token</Text>
             </TouchableOpacity> :
-            <TouchableHighlight onPress={() => this.props.navigator.push(routes.signup)}>
+            <TouchableHighlight onPress={() => this.props.navigator.push(routes.posture.postureDashboard)}>
               <Text style={styles.signup}>Don't have an account? Sign-up</Text>
             </TouchableHighlight>
           }

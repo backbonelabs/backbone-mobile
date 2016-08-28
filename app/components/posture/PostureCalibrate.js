@@ -20,39 +20,39 @@ export default class PostureCalibrate extends Component {
     super();
     this.state = {
       count: 5,
-      countdown: false,
+      isCalibrating: false,
       animatedValues: new Animated.ValueXY(),
     };
 
-    this.startCountdown = this.startCountdown.bind(this);
-    this.stopCountdown = this.stopCountdown.bind(this);
+    this.startCalibration = this.startCalibration.bind(this);
+    this.stopCalibration = this.stopCalibration.bind(this);
     this.countdownHandler = this.countdownHandler.bind(this);
   }
 
-  getStepStyle() {
+  getScanAnimationStyle() {
     return [
-      styles.calibrateAnimation,
+      styles.calibrationScanAnimation,
       { transform: this.state.animatedValues.getTranslateTransform() },
     ];
   }
 
-  startCountdown() {
-    this.setState({ countdown: true }, () => this.animationSequence(this.state.count));
+  startCalibration() {
+    this.setState({ isCalibrating: true }, () => this.scanAnimation(this.state.count));
   }
 
-  stopCountdown() {
+  stopCalibration() {
     this.setState({
       count: 5,
-      countdown: false,
+      isCalibrating: false,
       animatedValues: new Animated.ValueXY(),
     });
   }
 
   countdownHandler() {
-    if (this.state.countdown) {
+    if (this.state.isCalibrating) {
       this.setState({ count: this.state.count - 1 }, () => {
         if (this.state.count) {
-          this.animationSequence(this.state.count);
+          this.scanAnimation(this.state.count);
         } else {
           // TODO: Set posture tilt/distance threshold here
           this.props.navigator.push(postureRoutes.postureMonitor);
@@ -61,7 +61,7 @@ export default class PostureCalibrate extends Component {
     }
   }
 
-  animationSequence(count) {
+  scanAnimation(count) {
     const valueX = count % 2 ? -1.02 * width : 0;
 
     Animated.timing(this.state.animatedValues, {
@@ -71,23 +71,23 @@ export default class PostureCalibrate extends Component {
   }
 
   render() {
-    let buttonText = this.state.countdown ? 'Stop' : 'Start';
-    let onPressHandler = this.state.countdown ? this.stopCountdown : this.startCountdown;
+    let buttonText = this.state.isCalibrating ? 'Stop' : 'Calibrate';
+    let onPressHandler = this.state.isCalibrating ? this.stopCalibration : this.startCalibration;
 
     return (
       <View style={styles.container}>
-        <View style={styles.calibrateContainer}>
-          <View style={styles.calibrateImage}>
-          { this.state.countdown &&
-            <Text style={styles.calibrateCountdown}>
+        <View style={styles.animationContainer}>
+          <View style={styles.calibrationImage}>
+          { this.state.isCalibrating &&
+            <Text style={styles.calibrationCountdown}>
               {this.state.count}
             </Text>
           }
           </View>
-          <Animated.View style={this.getStepStyle()} />
+          <Animated.View style={this.getScanAnimationStyle()} />
         </View>
         <View style={styles.buttonContainer}>
-          <PostureButton text={buttonText} onPress={onPressHandler} />
+          <PostureButton text={buttonText} onPressHandler={onPressHandler} />
         </View>
       </View>
     );

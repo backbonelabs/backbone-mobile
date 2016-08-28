@@ -12,8 +12,8 @@ const PostureDashboard = (props) => (
     <View style={styles.analyticsContainer} />
     <View style={styles.buttonContainer}>
       <PostureButton
-        text="Next"
-        onPress={() => props.navigator.push(postureRoutes.postureCalibrate)}
+        text="Start"
+        onPressHandler={() => props.navigator.push(postureRoutes.postureCalibrate)}
         styleColor={styles._button.color}
       />
     </View>

@@ -5,21 +5,21 @@ export default EStyleSheet.create({
     flex: 1,
     marginTop: '10%',
   },
-  calibrateContainer: {
+  animationContainer: {
     flex: 0.7,
     flexDirection: 'row',
   },
-  calibrateCountdown: {
+  calibrationCountdown: {
     color: 'white',
     fontSize: '10rem',
     textAlign: 'center',
   },
-  calibrateImage: {
+  calibrationImage: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
   },
-  calibrateAnimation: {
+  calibrationScanAnimation: {
     width: 5,
     backgroundColor: 'rgba(144,178,71,1)',
     marginRight: '-2%',

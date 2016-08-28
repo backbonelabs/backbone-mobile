@@ -44,7 +44,7 @@ class Application extends Component {
 
         if (route.showMenu || route.backButton) {
           onPressHandler = route.showMenu ? () => this.showMenu(route, navigator) : navigator.pop;
-          iconName = route.showMenu ? 'bars' : 'caret-square-o-left';
+          iconName = route.showMenu ? 'bars' : 'angle-left';
 
           return (
             <TouchableOpacity style={styles.leftButton} onPress={onPressHandler}>
