@@ -9,7 +9,7 @@ import {
   NativeModules,
   NativeEventEmitter,
   Platform,
-  TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
@@ -39,19 +39,22 @@ class Application extends Component {
 
     this.navigationBarRouteMapper = {
       LeftButton: (route, navigator) => {
-        if (route.showMenu) {
+        let onPressHandler;
+        let iconName;
+
+        if (route.showMenu || route.backButton) {
+          onPressHandler = route.showMenu ? () => this.showMenu(route, navigator) : navigator.pop;
+          iconName = route.showMenu ? 'bars' : 'caret-square-o-left';
+
           return (
-            <TouchableHighlight
-              style={styles.leftButton}
-              onPress={() => this.showMenu(route, navigator)}
-            >
+            <TouchableOpacity style={styles.leftButton} onPress={onPressHandler}>
               <Icon
-                name="bars"
+                name={iconName}
                 style={styles.menuIcon}
                 size={EStyleSheet.globalVars.$iconSize}
                 color={styles._menuIcon.color}
               />
-            </TouchableHighlight>
+            </TouchableOpacity>
           );
         }
       },
