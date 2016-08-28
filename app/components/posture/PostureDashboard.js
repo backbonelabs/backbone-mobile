@@ -22,7 +22,6 @@ const PostureDashboard = (props) => (
 
 PostureDashboard.propTypes = {
   navigator: React.PropTypes.object,
-  currentRoute: React.PropTypes.object,
 };
 
 

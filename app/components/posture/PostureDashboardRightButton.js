@@ -22,7 +22,6 @@ const PostureDashboardRightButton = (props) => (
 PostureDashboardRightButton.propTypes = {
   iconSize: React.PropTypes.number,
   navigator: React.PropTypes.object,
-  currentRoute: React.PropTypes.object,
 };
 
 export default PostureDashboardRightButton;
