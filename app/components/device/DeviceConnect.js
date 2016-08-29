@@ -6,8 +6,8 @@ import {
   ActivityIndicator,
   NativeAppEventEmitter,
 } from 'react-native';
-import routes from '../routes/';
-import styles from '../styles/deviceConnect';
+import routes from '../../routes';
+import styles from '../../styles/device/deviceConnect';
 import DeviceList from './DeviceList';
 import DeviceError from './DeviceError';
 

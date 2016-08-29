@@ -1,4 +1,4 @@
-import DeviceConnect from '../components/DeviceConnect';
+import DeviceConnect from '../../components/device/DeviceConnect';
 
 export default {
   name: 'deviceConnect',

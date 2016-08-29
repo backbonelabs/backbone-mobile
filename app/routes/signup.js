@@ -4,4 +4,5 @@ export default {
   name: 'signup',
   title: 'Signup',
   component: Signup,
+  showBackButton: true,
 };

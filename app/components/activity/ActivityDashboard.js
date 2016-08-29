@@ -8,7 +8,7 @@ import {
   NativeModules,
   // NativeAppEventEmitter,
 } from 'react-native';
-import styles from '../styles/activity';
+import styles from '../../styles/activity/activityDashboard';
 
 const MetaWearAPI = NativeModules.MetaWearAPI;
 

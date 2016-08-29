@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from '../styles/deviceError';
+import styles from '../../styles/device/deviceError';
 
 export default function DeviceError(props) {
   return (

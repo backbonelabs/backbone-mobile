@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import styles from '../styles/deviceList';
+import styles from '../../styles/device/deviceList';
 
 export default class DeviceList extends Component {
   static propTypes = {
@@ -17,10 +17,10 @@ export default class DeviceList extends Component {
   };
 
   constructor(props) {
-    super();
+    super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 });
     this.state = {
-      dataSource: this.ds.cloneWithRows(props.deviceList),
+      dataSource: this.ds.cloneWithRows(this.props.deviceList),
     };
 
     this.pressRow = this.pressRow.bind(this);

@@ -1,37 +1,20 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 
+const navButton = {
+  width: '$iconButtonSize',
+  height: '$iconButtonSize',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
 export default EStyleSheet.create({
-  navbarContainer: {
-    flex: 1,
-    width: '100%',
-    height: '$iconButtonSize',
-    marginTop: '1%',
-    flexDirection: 'row',
-  },
-  menuContainer: {
-    flex: 0.5,
-    alignSelf: 'flex-start',
-  },
-  menuButton: {
-    marginLeft: '2%',
-    width: '$iconButtonSize',
-    height: '$iconButtonSize',
-    justifyContent: 'center',
-  },
-  menuIcon: {
+  leftButton: Object.assign({}, navButton, { paddingLeft: '1.5%' }),
+  rightButton: Object.assign({}, navButton, { paddingRight: '1.5%' }),
+  leftButtonIcon: {
     alignSelf: 'center',
+    color: '$primaryColor',
   },
-  settingsContainer: {
-    flex: 0.5,
-    alignItems: 'flex-end',
-  },
-  settingsButton: {
-    marginRight: '2%',
-    width: '$iconButtonSize',
-    height: '$iconButtonSize',
-    justifyContent: 'center',
-  },
-  settingsIcon: {
-    alignSelf: 'center',
+  titleContainer: {
+    marginTop: '0.65rem',
   },
 });
