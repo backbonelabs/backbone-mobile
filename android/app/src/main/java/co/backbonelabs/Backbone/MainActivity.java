@@ -40,6 +40,8 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     public void onDestroy() {
         super.onDestroy();
 
+        DeviceManagementService.mMWBoard.disconnect();
+
         // Unbind the service when the activity is destroyed
         getApplicationContext().unbindService(this);
     }
@@ -48,6 +50,7 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     public void onServiceConnected(ComponentName name, IBinder service) {
         // Typecast the binder to the service's LocalBinder class
         metaWearServiceBinder = (MetaWearBleService.LocalBinder) service;
+        metaWearServiceBinder.executeOnUiThread();
     }
 
     @Override
