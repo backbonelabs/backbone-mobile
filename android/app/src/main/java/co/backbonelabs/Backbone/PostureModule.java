@@ -1,23 +1,20 @@
 package co.backbonelabs.Backbone;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
-import com.mbientlab.metawear.UnsupportedModuleException;
 import com.mbientlab.metawear.module.Led;
 
 import java.util.HashMap;
 
+import co.backbonelabs.Backbone.util.Constants;
 import co.backbonelabs.Backbone.util.EventEmitter;
 
 public class PostureModule extends ActivityModule<HashMap<String, Float>> {
@@ -32,54 +29,13 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
     public PostureModule(ReactApplicationContext reactContext) {
         super(reactContext);
         name = "posture";
-        sensor = "accelerometer";
+        sensor = Constants.SENSOR.ACCELEROMETER;
         notificationName = "Accelerometer";
         calibrated = false;
         tilt = 0;
 
         LocalBroadcastManager.getInstance(MainActivity.currentActivity)
                 .registerReceiver(messageReceiver, new IntentFilter(notificationName));
-
-        MainActivity.currentActivity.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
-            }
-
-            @Override
-            public void onActivityStarted(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-                Log.d(TAG, "onActivityResumed registering receiver");
-                LocalBroadcastManager.getInstance(MainActivity.currentActivity)
-                        .registerReceiver(messageReceiver, new IntentFilter(notificationName));
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-                Log.d(TAG, "onActivityPaused unregistering receiver");
-                LocalBroadcastManager.getInstance(MainActivity.currentActivity)
-                        .unregisterReceiver(messageReceiver);
-            }
-
-            @Override
-            public void onActivityStopped(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-
-            }
-        });
     }
 
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {

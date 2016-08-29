@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import co.backbonelabs.Backbone.util.Constants;
+
 public class SensorDataService {
     public static final String INTENT_EXTRA_NAME = "co.backbonelabs.Backbone.sensorData";
     private static final String TAG = "SensorDataService";
@@ -56,13 +58,22 @@ public class SensorDataService {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                Log.d(TAG, "onResume");
-                startAllSensors();
+                Log.d(TAG, "onActivityResume");
+                // Stop foreground service
+                Intent stopIntent = new Intent(activity, ForegroundService.class);
+                stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+                activity.startService(stopIntent);
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-                stopAllSensors();
+                Log.d(TAG, "onActivityPaused");
+                if (!activeSensors.isEmpty()) {
+                    // There are active sensors, start foreground service to continue listening
+                    Intent startIntent = new Intent(activity, ForegroundService.class);
+                    startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+                    activity.startService(startIntent);
+                }
             }
 
             @Override
@@ -77,7 +88,10 @@ public class SensorDataService {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-
+                Log.d(TAG, "onActivityDestroyed");
+                Intent stopIntent = new Intent(activity, ForegroundService.class);
+                stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+                activity.startService(stopIntent);
             }
         });
     }
@@ -99,7 +113,7 @@ public class SensorDataService {
             // so we will register an event handler with the sensor
 
             switch (activityModule.getSensor()) {
-                case "accelerometer":
+                case Constants.SENSOR.ACCELEROMETER:
                     Log.d(TAG, "Enabling accelerometer");
                     try {
                         Accelerometer accelerometer = device.getModule(Accelerometer.class);
@@ -157,14 +171,40 @@ public class SensorDataService {
 
     public void unregisterActivity(String activityName) {
         Log.d(TAG, "unregisterActivity " + activityName);
-        // TODO: Implement
+
+        // Remove the corresponding ActivityModule from activeActivities
+        Iterator<ActivityModule> activeActivitiesIterator = activeActivities.iterator();
+        while (activeActivitiesIterator.hasNext()) {
+            ActivityModule activityModule = activeActivitiesIterator.next();
+            if (activityModule.getName().equals(activityName)) {
+                activeActivitiesIterator.remove();
+            }
+        }
+
+        // Stop any sensors that are no longer needed for the remaining active activities
+        Iterator<String> activeSensorsIterator = activeSensors.iterator();
+        while (activeSensorsIterator.hasNext()) {
+            String sensor = activeSensorsIterator.next();
+            boolean isSensorUsed = false;
+            activeActivitiesIterator = activeActivities.iterator();
+            while (activeActivitiesIterator.hasNext()) {
+                ActivityModule activityModule = activeActivitiesIterator.next();
+                if (activityModule.getSensor().equals(sensor)) {
+                    isSensorUsed = true;
+                }
+            }
+            if (!isSensorUsed) {
+                activeSensorsIterator.remove();
+                toggleSensor(sensor, false);
+            }
+        }
     }
 
     private void toggleSensor(String sensor, boolean enable) {
         Log.d(TAG, "toggleSensor " + sensor + " " + enable);
         try {
             switch (sensor) {
-                case "accelerometer":
+                case Constants.SENSOR.ACCELEROMETER:
                     Accelerometer accelerometer = device.getModule(Accelerometer.class);
                     if (enable) {
                         accelerometer.start();
