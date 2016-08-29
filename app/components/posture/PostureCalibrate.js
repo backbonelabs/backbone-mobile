@@ -54,7 +54,6 @@ export default class PostureCalibrate extends Component {
         if (this.state.count) {
           this.scanAnimation(this.state.count);
         } else {
-          // TODO: Set posture tilt/distance threshold here
           this.props.navigator.push(postureRoutes.postureMonitor);
         }
       });
