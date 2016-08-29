@@ -2,77 +2,92 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  // Image,
   Animated,
+  Dimensions,
 } from 'react-native';
-import TimerMixin from 'react-timer-mixin';
 import styles from '../../styles/posture/postureCalibrate';
+import PostureButton from './PostureButton';
+import postureRoutes from '../../routes/posture';
+
+const { width } = Dimensions.get('window');
 
 export default class PostureCalibrate extends Component {
   static propTypes = {
-    startPostureMonitoring: React.PropTypes.func,
+    navigator: React.PropTypes.object,
   }
 
   constructor() {
     super();
     this.state = {
-      calibrating: null,
-      calibrateCount: 0,
-      fadeAnim: new Animated.Value(0),
+      count: 5,
+      isCalibrating: false,
+      animatedValues: new Animated.ValueXY(),
     };
 
-    this.setTimeout = TimerMixin.setTimeout.bind(this);
-    this.calibrating = this.calibrating.bind(this);
+    this.startCalibration = this.startCalibration.bind(this);
+    this.stopCalibration = this.stopCalibration.bind(this);
+    this.countdownHandler = this.countdownHandler.bind(this);
   }
 
-  componentDidMount() {
-    const context = this;
-    let count = 0;
+  getScanAnimationStyle() {
+    return [
+      styles.calibrationScanAnimation,
+      { transform: this.state.animatedValues.getTranslateTransform() },
+    ];
+  }
 
-    function cycleAnimation() {
-      Animated.sequence([
-        Animated.delay(200),
-        Animated.timing(
-        context.state.fadeAnim,
-        { toValue: 1 }),
-        Animated.delay(200),
-        Animated.timing(
-        context.state.fadeAnim,
-        { toValue: 0 }),
-      ]).start(() => {
-        count = context.props.calibrateCount ? 1 : 0;
-        if (!count) {
-          cycleAnimation();
+  startCalibration() {
+    this.setState({ isCalibrating: true }, () => this.scanAnimation(this.state.count));
+  }
+
+  stopCalibration() {
+    this.setState({
+      count: 5,
+      isCalibrating: false,
+      animatedValues: new Animated.ValueXY(),
+    });
+  }
+
+  countdownHandler() {
+    if (this.state.isCalibrating) {
+      this.setState({ count: this.state.count - 1 }, () => {
+        if (this.state.count) {
+          this.scanAnimation(this.state.count);
+        } else {
+          this.props.navigator.push(postureRoutes.postureMonitor);
         }
       });
     }
-    this.calibrating();
-    cycleAnimation();
   }
 
-  calibrating() {
-    if (this.state.calibrateCount < 6 && !this.state.calibrating) {
-      this.state.calibrating = TimerMixin.setInterval(() => {
-        this.setState({
-          calibrateCount: ++this.state.calibrateCount,
-        }, () => {
-          this.calibrating();
-        });
-      }, 1250);
-    } else if (this.state.calibrating && this.state.calibrateCount >= 6) {
-      TimerMixin.clearInterval(this.state.calibrating);
-      this.props.startPostureMonitoring();
-    }
+  scanAnimation(count) {
+    const valueX = count % 2 ? -1.02 * width : 0;
+
+    Animated.timing(this.state.animatedValues, {
+      duration: 1500,
+      toValue: { x: valueX, y: 0 },
+    }).start(this.countdownHandler);
   }
 
   render() {
+    let buttonText = this.state.isCalibrating ? 'Stop' : 'Calibrate';
+    let onPressHandler = this.state.isCalibrating ? this.stopCalibration : this.startCalibration;
+
     return (
       <View style={styles.container}>
-        <Animated.View style={{ opacity: this.state.fadeAnim }}>
-          <Text style={styles.slouches}>
-            STRAIGHTEN UP
-          </Text>
-        </Animated.View>
+        <View style={styles.animationContainer}>
+          <View style={styles.calibrationImage}>
+          { this.state.isCalibrating &&
+            <Text style={styles.calibrationCountdown}>
+              {this.state.count}
+            </Text>
+          }
+          </View>
+          <Animated.View style={this.getScanAnimationStyle()} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <PostureButton text={buttonText} onPressHandler={onPressHandler} />
+        </View>
       </View>
     );
   }

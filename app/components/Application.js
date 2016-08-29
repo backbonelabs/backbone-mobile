@@ -9,7 +9,7 @@ import {
   NativeModules,
   NativeEventEmitter,
   Platform,
-  TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
@@ -37,66 +37,44 @@ class Application extends Component {
   constructor() {
     super();
 
-    const context = this;
-
     this.navigationBarRouteMapper = {
-      LeftButton() {
-      },
-      RightButton() {
-      },
-      Title(route, navigator) {
-        let menuButton;
-        let settingsButton;
+      LeftButton: (route, navigator) => {
+        let onPressHandler;
+        let iconName;
 
-        if (route.showMenu) {
-          menuButton = (
-            <View style={styles.menuContainer}>
-              <TouchableHighlight
-                style={styles.menuButton}
-                onPress={() => {
-                  context.showMenu(route, navigator);
-                }}
-              >
-                <Icon
-                  name="bars"
-                  style={styles.menuIcon}
-                  size={EStyleSheet.globalVars.$iconSize}
-                  color={EStyleSheet.globalVars.$navIconColor}
-                />
-              </TouchableHighlight>
+        if (route.showMenu || route.showBackButton) {
+          onPressHandler = route.showMenu ? () => this.showMenu(route, navigator) : navigator.pop;
+          iconName = route.showMenu ? 'bars' : 'angle-left';
+
+          return (
+            <TouchableOpacity style={styles.leftButton} onPress={onPressHandler}>
+              <Icon
+                name={iconName}
+                style={styles.leftButtonIcon}
+                size={EStyleSheet.globalVars.$iconSize}
+                color={styles._leftButtonIcon.color}
+              />
+            </TouchableOpacity>
+          );
+        }
+      },
+      RightButton: (route, navigator) => {
+        if (route.rightButton) {
+          return route.rightButton({
+            navigator,
+            navStyle: styles.rightButton,
+            iconSize: EStyleSheet.globalVars.$iconSize,
+          });
+        }
+      },
+      Title: (route) => {
+        if (route.title) {
+          return (
+            <View style={styles.titleContainer}>
+              <Text>{route.title}</Text>
             </View>
           );
         }
-
-        if (route.showSettings) {
-          settingsButton = (
-            <View style={styles.settingsContainer}>
-              <TouchableHighlight
-                style={styles.settingsButton}
-                onPress={() => {
-                  context.showMenu(route, navigator);
-                }}
-              >
-                <Icon
-                  name="gear"
-                  style={styles.settingsIcon}
-                  size={EStyleSheet.globalVars.$iconSize}
-                  color={EStyleSheet.globalVars.$navIconColor}
-                />
-              </TouchableHighlight>
-            </View>
-          );
-        }
-
-        return (
-          <View style={styles.navbarContainer}>
-            {menuButton}
-            <View style={styles.navBarTitle}>
-              <Text style={styles.navBarText}>{route.title}</Text>
-            </View>
-            {settingsButton}
-          </View>
-        );
       },
     };
 
@@ -105,7 +83,6 @@ class Application extends Component {
     };
 
     this.configureScene = this.configureScene.bind(this);
-    this.showMenu = this.showMenu.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
   }

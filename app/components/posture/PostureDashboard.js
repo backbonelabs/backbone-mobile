@@ -1,80 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
-  NativeModules,
-  NativeAppEventEmitter,
 } from 'react-native';
+import postureRoutes from '../../routes/posture';
+import styles from '../../styles/posture/postureDashboard';
 
-const { ActivityService } = NativeModules;
+import PostureButton from './PostureButton';
 
-// TODO: Refactor into a shared constants export that tracks all the activity names
-const postureActivity = 'posture';
+const PostureDashboard = (props) => (
+  <View style={styles.container}>
+    <View style={styles.analyticsContainer} />
+    <View style={styles.buttonContainer}>
+      <PostureButton
+        text="Start"
+        onPressHandler={() => props.navigator.push(postureRoutes.postureCalibrate)}
+        styleColor={styles._button.color}
+      />
+    </View>
+  </View>
+);
 
-export default class PostureDashboard extends Component {
-  static propTypes = {
-    navigator: React.PropTypes.object,
-    currentRoute: React.PropTypes.object,
-  };
+PostureDashboard.propTypes = {
+  navigator: React.PropTypes.object,
+};
 
-  constructor() {
-    super();
-    this.state = {
-      tilt: 0,
-      tiltDirection: 'forward',
-      calibrating: false,
-      monitoring: false,
-    };
 
-    this.startPostureMonitoring = this.startPostureMonitoring.bind(this);
-    this.stopPostureMonitoring = this.stopPostureMonitoring.bind(this);
-    this.listenToTilt = null;
-  }
-
-  componentWillMount() {
-    const context = this;
-    this.listenToTilt = NativeAppEventEmitter.addListener(
-      'PostureTilt', (event) => {
-        let tiltDirection = 'forward';
-        if (event.tilt < 0) {
-          tiltDirection = 'backward';
-        }
-        context.setState({
-          tiltDirection,
-          tilt: Math.abs(event.tilt),
-        });
-      }
-    );
-  }
-
-  componentWillUnmount() {
-    this.listenToTilt.remove();
-  }
-
-  startPostureMonitoring() {
-    ActivityService.enableActivity(postureActivity, err => {
-      if (err) {
-        // TODO: Add error handling
-      } else {
-        this.setState({
-          calibrating: false,
-          monitoring: true,
-        });
-      }
-    });
-  }
-
-  stopPostureMonitoring() {
-    ActivityService.disableActivity(postureActivity);
-
-    this.setState({
-      tilt: 0,
-      monitoring: false,
-    });
-  }
-
-  render() {
-    return (
-      <View />
-		);
-  }
-}
+export default PostureDashboard;

@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import styles from '../styles/confirmEmail';
-import routes from '../routes/';
+import postureRoutes from '../routes/posture';
 import authActions from '../actions/auth';
 
 class ConfirmEmail extends Component {
@@ -29,7 +29,7 @@ class ConfirmEmail extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.isConfirmed && nextProps.isConfirmed) {
       clearInterval(this.setPollingInterval);
-      this.props.navigator.replace(routes.posture);
+      this.props.navigator.replace(postureRoutes.postureDashboard);
     }
   }
 

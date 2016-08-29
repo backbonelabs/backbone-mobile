@@ -10,7 +10,6 @@ import styles from '../../styles/posture/postureTutorial';
 import tutorialSteps from './tutorialSteps';
 
 const { width } = Dimensions.get('window');
-const SPRING_CONFIG = { tension: 2, friction: 3 };
 
 export default class PostureTutorial extends Component {
   constructor() {
@@ -37,7 +36,7 @@ export default class PostureTutorial extends Component {
       Animated.spring(
         this.state.animatedValues,
         {
-          SPRING_CONFIG,
+          tension: 10,
           toValue: { x: this.state.valueX, y: 0 },
         }
       ),
@@ -85,21 +84,17 @@ export default class PostureTutorial extends Component {
   }
 
   previousStep() {
-    if (this.state.step > 0) {
-      this.setState({
-        step: this.state.step - 1,
-        valueX: this.state.valueX + width,
-      }, this.animationSequence);
-    }
+    this.setState({
+      step: this.state.step - 1,
+      valueX: this.state.valueX + width,
+    }, this.animationSequence);
   }
 
   nextStep() {
-    if (this.state.step < tutorialSteps.length - 1) {
-      this.setState({
-        step: this.state.step + 1,
-        valueX: this.state.valueX - width,
-      }, this.animationSequence);
-    }
+    this.setState({
+      step: this.state.step + 1,
+      valueX: this.state.valueX - width,
+    }, this.animationSequence);
   }
 
   render() {
@@ -108,19 +103,23 @@ export default class PostureTutorial extends Component {
         { this.steps() }
         <View style={styles.stepNavigationContainer}>
           <TouchableOpacity style={styles.previousStepButton} onPress={this.previousStep}>
+          { this.state.step > 0 &&
             <Icon
-              name="caret-left"
+              name="backward"
               size={styles._paginationIcon.width}
               color={styles._paginationIcon.color}
             />
+          }
           </TouchableOpacity>
           { this.stepIndicator(this.state.step) }
           <TouchableOpacity style={styles.nextStepButton} onPress={this.nextStep}>
+          { this.state.step < tutorialSteps.length - 1 &&
             <Icon
-              name="caret-right"
+              name="forward"
               size={styles._paginationIcon.width}
               color={styles._paginationIcon.color}
             />
+          }
           </TouchableOpacity>
         </View>
       </View>
