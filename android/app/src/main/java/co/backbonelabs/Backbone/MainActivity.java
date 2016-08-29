@@ -40,6 +40,8 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     public void onDestroy() {
         super.onDestroy();
 
+        DeviceManagementService.mMWBoard.disconnect();
+
         // Unbind the service when the activity is destroyed
         getApplicationContext().unbindService(this);
     }
