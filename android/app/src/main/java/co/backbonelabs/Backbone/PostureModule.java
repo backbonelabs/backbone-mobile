@@ -13,6 +13,8 @@ import android.util.Log;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
+import com.mbientlab.metawear.UnsupportedModuleException;
+import com.mbientlab.metawear.module.Led;
 
 import java.util.HashMap;
 
@@ -24,7 +26,8 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
     private double controlAngle;
     private double controlDistance;
     private double tilt;
-    private double tiltThreshold;
+    private double tiltThreshold = 10.0;
+    private boolean isLedBlinking = false;
 
     public PostureModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -130,8 +133,25 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
     }
 
     private void handleTilt() {
-        if (tilt > tiltThreshold) {
-            // Do something
+        Led ledModule = DeviceManagementService.mMWBoard.lookupModule(Led.class);
+
+        if (ledModule != null) {
+            if (Math.abs(tilt) > tiltThreshold && !isLedBlinking) {
+                Log.d(TAG, "Blink LED");
+                ledModule
+                        .configureColorChannel(Led.ColorChannel.GREEN)
+                        .setHighTime((short) 50)
+                        .setHighIntensity((byte) 20)
+                        .setPulseDuration((short) 100)
+                        .setRepeatCount((byte) -1)
+                        .commit();
+
+                ledModule.play(false);
+                isLedBlinking = true;
+            } else {
+                isLedBlinking = false;
+                ledModule.stop(false);
+            }
         }
         emitTilt();
     }
