@@ -4,5 +4,5 @@ export default {
   name: 'login',
   title: 'Login',
   component: Login,
-  backButton: true,
+  showBackButton: true,
 };

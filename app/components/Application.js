@@ -42,7 +42,7 @@ class Application extends Component {
         let onPressHandler;
         let iconName;
 
-        if (route.showMenu || route.backButton) {
+        if (route.showMenu || route.showBackButton) {
           onPressHandler = route.showMenu ? () => this.showMenu(route, navigator) : navigator.pop;
           iconName = route.showMenu ? 'bars' : 'angle-left';
 

@@ -4,5 +4,5 @@ export default {
   name: 'postureTutorial',
   title: 'Posture Tutorial',
   component: PostureTutorial,
-  backButton: true,
+  showBackButton: true,
 };

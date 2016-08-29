@@ -4,5 +4,4 @@ export default {
   name: 'activityDashboard',
   component: ActivityDashboard,
   showMenu: true,
-  showSettings: true,
 };
