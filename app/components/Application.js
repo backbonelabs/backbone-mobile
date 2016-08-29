@@ -60,11 +60,18 @@ class Application extends Component {
       },
       RightButton: (route, navigator) => {
         if (route.rightButton) {
-          return route.rightButton({
-            navigator,
-            navStyle: styles.rightButton,
-            iconSize: EStyleSheet.globalVars.$iconSize,
-          });
+          return (
+            <TouchableOpacity
+              style={styles.rightButton}
+              onPress={() => navigator.push(route.rightButton.route)}
+            >
+              <Icon
+                name={route.rightButton.iconName}
+                size={EStyleSheet.globalVars.$iconSize}
+                color={EStyleSheet.globalVars.$primaryColor}
+              />
+            </TouchableOpacity>
+          );
         }
       },
       Title: (route) => {
