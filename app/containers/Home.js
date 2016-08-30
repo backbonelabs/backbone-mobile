@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
+import Button from '../components/Button';
 import logo from '../images/logo.png';
 import bg from '../images/bg.jpg';
 import styles from '../styles/home';
@@ -66,21 +67,17 @@ class Home extends Component {
   getMainBody() {
     if (this.state.accessToken && this.props.auth.isValidAccessToken) {
       return (
-        <TouchableOpacity
-          style={styles.button}
+        <Button
           onPress={() => { this.props.navigator.push(routes.posture.postureTutorial); }}
-        >
-          <Text style={styles.connect}>Connect</Text>
-        </TouchableOpacity>
+          text="Connect"
+        />
       );
     }
     return (
-      <TouchableOpacity
-        style={styles.button}
+      <Button
         onPress={() => { this.props.navigator.push(routes.login); }}
-      >
-        <Text style={styles.connect}>Log In</Text>
-      </TouchableOpacity>
+        text="Log In"
+      />
     );
   }
 
