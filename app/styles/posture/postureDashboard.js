@@ -17,8 +17,4 @@ export default EStyleSheet.create({
   rightButton: {
     color: '$primaryColor',
   },
-  // We'll want to style our button later, so keeping placeholder
-  button: {
-    color: '$primaryColor',
-  },
 });

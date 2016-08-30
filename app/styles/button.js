@@ -3,7 +3,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 export default EStyleSheet.create({
   button: {
     width: '100%',
-    height: 75,
+    padding: '1rem',
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
   },
