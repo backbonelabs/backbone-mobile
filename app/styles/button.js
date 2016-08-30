@@ -7,6 +7,9 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
   },
+  disabled: {
+    backgroundColor: '$disabledColor',
+  },
   text: {
     color: 'white',
     fontSize: '1rem',
