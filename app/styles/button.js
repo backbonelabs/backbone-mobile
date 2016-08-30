@@ -2,9 +2,10 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
   button: {
-    width: '100%',
-    padding: '1rem',
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: '0.5rem',
     backgroundColor: '$primaryColor',
   },
   disabled: {

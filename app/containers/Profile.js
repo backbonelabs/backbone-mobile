@@ -16,6 +16,7 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      profileDidChange: false,
       firstName: this.props.firstName,
       lastName: this.props.lastName,
       password: '',
@@ -31,28 +32,28 @@ class Profile extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView style={styles.innerContainer}>
           <Input
             value={this.state.firstName}
             placeholder="First name"
-            onChangeText={text => this.setState({ firstName: text })}
+            onChangeText={text => this.setState({ profileDidChange: true, firstName: text })}
           />
           <Input
             value={this.state.lastName}
             placeholder="Last name"
-            onChangeText={text => this.setState({ lastName: text })}
+            onChangeText={text => this.setState({ profileDidChange: true, lastName: text })}
           />
           <Input
             value={this.state.password}
             placeholder="Password"
-            onChangeText={text => this.setState({ password: text })}
+            onChangeText={text => this.setState({ profileDidChange: true, password: text })}
           />
           <Input
             value={this.state.verifyPassword}
             placeholder="Verify password"
-            onChangeText={text => this.setState({ verifyPassword: text })}
+            onChangeText={text => this.setState({ profileDidChange: true, verifyPassword: text })}
           />
-          <Button onPress={this.update} text="Save" />
+          <Button disabled={!this.state.profileDidChange} onPress={this.update} text="Save" />
         </ScrollView>
       </View>
     );
