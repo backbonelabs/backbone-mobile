@@ -52,16 +52,4 @@ export default EStyleSheet.create({
     width: 25,
     color: 'rgba(0,0,0,0.25)',
   },
-  stepOne: {
-    width: '100%',
-    backgroundColor: 'red',
-  },
-  stepTwo: {
-    width: '100%',
-    backgroundColor: 'orange',
-  },
-  stepThree: {
-    width: '100%',
-    backgroundColor: 'yellow',
-  },
 });
