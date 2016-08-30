@@ -85,21 +85,17 @@ export default class Tutorial extends Component {
   }
 
   previousStep() {
-    if (this.state.step > 0 ) {
-      this.setState({
-        step: this.state.step - 1,
-        valueX: this.state.valueX + width,
-      }, this.animationSequence);
-    }
+    this.setState({
+      step: this.state.step - 1,
+      valueX: this.state.valueX + width,
+    }, this.animationSequence);
   }
 
   nextStep() {
-    if (this.state.step < this.props.currentRoute.tutorialSteps.length - 1) {
-      this.setState({
-        step: this.state.step + 1,
-        valueX: this.state.valueX - width,
-      }, this.animationSequence);
-    }
+    this.setState({
+      step: this.state.step + 1,
+      valueX: this.state.valueX - width,
+    }, this.animationSequence);
   }
 
   render() {
@@ -107,25 +103,29 @@ export default class Tutorial extends Component {
       <View style={styles.container}>
         { this.displayTutorialSteps() }
         <View style={styles.stepNavigationContainer}>
-          <TouchableOpacity style={styles.previousStepButton} onPress={this.previousStep}>
-          { this.state.step > 0 &&
-            <Icon
-              name="backward"
-              size={styles._paginationIcon.width}
-              color={styles._paginationIcon.color}
-            />
+          { this.state.step > 0 ?
+            <TouchableOpacity style={styles.previousStepButton} onPress={this.previousStep}>
+              <Icon
+                name="backward"
+                size={styles._paginationIcon.width}
+                color={styles._paginationIcon.color}
+              />
+            </TouchableOpacity>
+            :
+            <View style={styles.previousStepButton} />
           }
-          </TouchableOpacity>
           { this.displayStepIndicators(this.state.step) }
-          <TouchableOpacity style={styles.nextStepButton} onPress={this.nextStep}>
-          { this.state.step < this.props.currentRoute.tutorialSteps.length - 1 &&
-            <Icon
-              name="forward"
-              size={styles._paginationIcon.width}
-              color={styles._paginationIcon.color}
-            />
+          { this.state.step < this.props.currentRoute.tutorialSteps.length - 1 ?
+            <TouchableOpacity style={styles.nextStepButton} onPress={this.nextStep}>
+              <Icon
+                name="forward"
+                size={styles._paginationIcon.width}
+                color={styles._paginationIcon.color}
+              />
+            </TouchableOpacity>
+            :
+            <View style={styles.nextStepButton} />
           }
-          </TouchableOpacity>
         </View>
       </View>
     );
