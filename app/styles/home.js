@@ -24,17 +24,6 @@ export default EStyleSheet.create({
   activityIndicator: {
     color: '$primaryColor',
   },
-  button: {
-    width: '100%',
-    height: 75,
-    justifyContent: 'center',
-    backgroundColor: '$primaryColor',
-  },
-  connect: {
-    color: 'white',
-    fontSize: '1rem',
-    alignSelf: 'center',
-  },
   footer: {
     flex: 0.09,
     justifyContent: 'center',

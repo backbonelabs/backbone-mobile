@@ -6,7 +6,7 @@ import {
   Dimensions,
 } from 'react-native';
 import styles from '../../styles/posture/postureCalibrate';
-import PostureButton from './PostureButton';
+import Button from '../Button';
 import postureRoutes from '../../routes/posture';
 
 const { width } = Dimensions.get('window');
@@ -86,7 +86,7 @@ export default class PostureCalibrate extends Component {
           <Animated.View style={this.getScanAnimationStyle()} />
         </View>
         <View style={styles.buttonContainer}>
-          <PostureButton text={buttonText} onPressHandler={onPressHandler} />
+          <Button text={buttonText} onPress={onPressHandler} />
         </View>
       </View>
     );
