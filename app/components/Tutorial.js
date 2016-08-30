@@ -85,17 +85,21 @@ export default class Tutorial extends Component {
   }
 
   previousStep() {
-    this.setState({
-      step: this.state.step - 1,
-      valueX: this.state.valueX + width,
-    }, this.animationSequence);
+    if (this.state.step > 0 ) {
+      this.setState({
+        step: this.state.step - 1,
+        valueX: this.state.valueX + width,
+      }, this.animationSequence);
+    }
   }
 
   nextStep() {
-    this.setState({
-      step: this.state.step + 1,
-      valueX: this.state.valueX - width,
-    }, this.animationSequence);
+    if (this.state.step < this.props.currentRoute.tutorialSteps.length - 1) {
+      this.setState({
+        step: this.state.step + 1,
+        valueX: this.state.valueX - width,
+      }, this.animationSequence);
+    }
   }
 
   render() {
