@@ -8,7 +8,9 @@ export default {
   component: PostureDashboard,
   showMenu: true,
   rightButton: {
-    route: Object.assign({}, tutorial, { tutorialSteps: postureTutorialSteps }),
+    onPress: (navigator) => (
+      navigator.push(Object.assign({}, tutorial, { tutorialSteps: postureTutorialSteps }))
+    ),
     iconName: 'question-circle-o',
   },
 };

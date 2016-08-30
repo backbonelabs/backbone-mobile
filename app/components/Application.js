@@ -63,7 +63,7 @@ class Application extends Component {
           return (
             <TouchableOpacity
               style={styles.rightButton}
-              onPress={() => navigator.push(route.rightButton.route)}
+              onPress={() => route.rightButton.onPress(navigator)}
             >
               <Icon
                 name={route.rightButton.iconName}

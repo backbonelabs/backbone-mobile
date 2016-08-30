@@ -1,4 +1,4 @@
-import Tutorial from '../components/Tutorial';
+import Tutorial from '../containers/Tutorial';
 
 export default {
   name: 'Tutorial',
