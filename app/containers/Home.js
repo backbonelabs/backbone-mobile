@@ -68,7 +68,7 @@ class Home extends Component {
     if (this.state.accessToken && this.props.auth.isValidAccessToken) {
       return (
         <Button
-          onPress={() => { this.props.navigator.push(routes.posture.postureTutorial); }}
+          onPress={() => { this.props.navigator.push(routes.posture.postureDashboard); }}
           text="Connect"
         />
       );
