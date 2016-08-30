@@ -5,6 +5,7 @@ import login from './login';
 import signup from './signup';
 import confirmEmail from './confirmEmail';
 import posture from './posture';
+import tutorial from './tutorial';
 
 export default {
   activity,
@@ -14,4 +15,5 @@ export default {
   signup,
   posture,
   confirmEmail,
+  tutorial,
 };

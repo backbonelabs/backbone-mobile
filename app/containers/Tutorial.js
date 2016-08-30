@@ -6,12 +6,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from '../../styles/posture/postureTutorial';
-import tutorialSteps from './tutorialSteps';
+import styles from '../styles/tutorial';
 
 const { width } = Dimensions.get('window');
 
-export default class PostureTutorial extends Component {
+export default class Tutorial extends Component {
+  static propTypes = {
+    currentRoute: React.PropTypes.object,
+  }
+
   constructor() {
     super();
     this.state = {
@@ -32,15 +35,13 @@ export default class PostureTutorial extends Component {
   }
 
   animationSequence() {
-    Animated.sequence([
-      Animated.spring(
-        this.state.animatedValues,
-        {
-          tension: 10,
-          toValue: { x: this.state.valueX, y: 0 },
-        }
-      ),
-    ]).start();
+    Animated.spring(this.state.animatedValues, {
+      tension: 10,
+      toValue: {
+        x: this.state.valueX,
+        y: 0,
+      },
+    }).start();
   }
 
   selectStep(selection) {
@@ -50,8 +51,8 @@ export default class PostureTutorial extends Component {
     }, this.animationSequence);
   }
 
-  steps() {
-    const steps = tutorialSteps.map((step, i) => step({ key: i }));
+  displayTutorialSteps() {
+    const steps = this.props.currentRoute.tutorialSteps.map((step, i) => step({ key: i }));
 
     return (
       <Animated.View style={this.getStepStyle()}>
@@ -60,8 +61,8 @@ export default class PostureTutorial extends Component {
     );
   }
 
-  stepIndicator(selection) {
-    const stepIndicators = tutorialSteps.map((step, i) => (
+  displayStepIndicators(selection) {
+    const stepIndicators = this.props.currentRoute.tutorialSteps.map((step, i) => (
       <TouchableOpacity
         key={i}
         style={styles.stepIndicatorButton}
@@ -100,27 +101,31 @@ export default class PostureTutorial extends Component {
   render() {
     return (
       <View style={styles.container}>
-        { this.steps() }
+        { this.displayTutorialSteps() }
         <View style={styles.stepNavigationContainer}>
-          <TouchableOpacity style={styles.previousStepButton} onPress={this.previousStep}>
-          { this.state.step > 0 &&
-            <Icon
-              name="backward"
-              size={styles._paginationIcon.width}
-              color={styles._paginationIcon.color}
-            />
+          { this.state.step > 0 ?
+            <TouchableOpacity style={styles.previousStepButton} onPress={this.previousStep}>
+              <Icon
+                name="backward"
+                size={styles._paginationIcon.width}
+                color={styles._paginationIcon.color}
+              />
+            </TouchableOpacity>
+            :
+            <View style={styles.previousStepButton} />
           }
-          </TouchableOpacity>
-          { this.stepIndicator(this.state.step) }
-          <TouchableOpacity style={styles.nextStepButton} onPress={this.nextStep}>
-          { this.state.step < tutorialSteps.length - 1 &&
-            <Icon
-              name="forward"
-              size={styles._paginationIcon.width}
-              color={styles._paginationIcon.color}
-            />
+          { this.displayStepIndicators(this.state.step) }
+          { this.state.step < this.props.currentRoute.tutorialSteps.length - 1 ?
+            <TouchableOpacity style={styles.nextStepButton} onPress={this.nextStep}>
+              <Icon
+                name="forward"
+                size={styles._paginationIcon.width}
+                color={styles._paginationIcon.color}
+              />
+            </TouchableOpacity>
+            :
+            <View style={styles.nextStepButton} />
           }
-          </TouchableOpacity>
         </View>
       </View>
     );
