@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
+import Input from '../components/Input';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
@@ -69,40 +70,34 @@ class Login extends Component {
         />
         :
         <View style={styles.formContainer}>
-          <View style={styles.textFieldView}>
-            <TextInput
-              ref={ref => {
-                this.emailField = ref;
-              }}
-              style={styles.textField}
-              value={this.state.email}
-              autoCapitalize="none"
-              placeholder="Email"
-              keyboardType="email-address"
-              onChangeText={text => this.setState({ email: text })}
-              onSubmitEditing={() => this.passwordField.focus()}
-              autoCorrect={false}
-              autoFocus
-              returnKeyType="next"
-            />
-          </View>
-          <View style={styles.textFieldView}>
-            <TextInput
-              ref={ref => {
-                this.passwordField = ref;
-              }}
-              style={styles.textField}
-              value={this.state.password}
-              autoCapitalize="none"
-              placeholder="Password"
-              keyboardType="default"
-              onChangeText={text => this.setState({ password: text })}
-              onSubmitEditing={this.login}
-              autoCorrect={false}
-              secureTextEntry
-              returnKeyType="go"
-            />
-          </View>
+          <Input
+            handleRef={ref => {
+              this.emailField = ref;
+            }}
+            value={this.state.email}
+            autoCapitalize="none"
+            placeholder="Email"
+            keyboardType="email-address"
+            onChangeText={text => this.setState({ email: text })}
+            onSubmitEditing={() => this.passwordField.focus()}
+            autoCorrect={false}
+            autoFocus
+            returnKeyType="next"
+          />
+          <Input
+            handleRef={ref => {
+              this.passwordField = ref;
+            }}
+            value={this.state.password}
+            autoCapitalize="none"
+            placeholder="Password"
+            keyboardType="default"
+            onChangeText={text => this.setState({ password: text })}
+            onSubmitEditing={this.login}
+            autoCorrect={false}
+            secureTextEntry
+            returnKeyType="go"
+          />
           <TouchableHighlight
             style={styles.button}
             disabled={this.props.isFetchingAccessToken}
