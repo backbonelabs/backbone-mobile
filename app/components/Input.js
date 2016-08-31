@@ -10,12 +10,18 @@ const Input = props => {
   } = props;
   const remainingProps = omit(props, ['handleRef', 'style']);
 
+  const inputStyles = [styles.inputField];
+  if (props.editable === false) {
+    inputStyles.push(styles.disabled);
+  }
+  inputStyles.push(style);
+
   const inputField = (
     <TextInput
       ref={ref => {
         handleRef(ref);
       }}
-      style={[styles.inputField, style]}
+      style={inputStyles}
       {...remainingProps}
     />
   );
@@ -40,6 +46,7 @@ const Input = props => {
 const { PropTypes } = React;
 
 Input.propTypes = {
+  editable: PropTypes.bool,
   handleRef: PropTypes.func,
   style: PropTypes.object,
 };

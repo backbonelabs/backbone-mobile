@@ -22,6 +22,7 @@ class Profile extends Component {
     isUpdating: PropTypes.bool,
     user: PropTypes.shape({
       _id: PropTypes.string,
+      email: PropTypes.string,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
     }),
@@ -127,6 +128,11 @@ class Profile extends Component {
               value={this.state.lastName}
               placeholder="Last name*"
               onChangeText={text => this.updateField('lastName', text)}
+            />
+            <Input
+              value={get(this.props.user, 'email')}
+              placeholder="Email"
+              editable={false}
             />
             <Input
               value={this.state.password}

@@ -16,4 +16,7 @@ export default EStyleSheet.create({
       },
     }),
   },
+  disabled: {
+    color: '$disabledColor',
+  },
 });
