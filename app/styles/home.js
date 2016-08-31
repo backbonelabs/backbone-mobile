@@ -22,9 +22,6 @@ export default EStyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  activityIndicator: {
-    color: '$primaryColor',
-  },
   footer: {
     flex: 0.09,
     justifyContent: 'center',

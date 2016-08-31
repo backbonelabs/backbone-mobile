@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  ActivityIndicator,
   View,
   Text,
   Image,
@@ -8,6 +7,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
+import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import logo from '../images/logo.png';
 import bg from '../images/bg.jpg';
@@ -82,14 +82,6 @@ class Home extends Component {
   }
 
   render() {
-    const activityModal = (
-      <ActivityIndicator
-        animating
-        size="large"
-        color={styles._activityIndicator.color}
-      />
-    );
-
     return (
       <View style={styles.container}>
         <Image style={styles.background} source={bg} />
@@ -98,7 +90,7 @@ class Home extends Component {
         </View>
         <View style={styles.body}>
           {this.state.isFetchingAccessToken || this.props.auth.isVerifyingAccessToken ?
-            activityModal
+            <Spinner />
             :
             this.getMainBody()
           }

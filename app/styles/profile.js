@@ -9,7 +9,4 @@ export default EStyleSheet.create({
   innerContainer: {
     width: '90%',
   },
-  activityIndicator: {
-    color: '$primaryColor',
-  },
 });

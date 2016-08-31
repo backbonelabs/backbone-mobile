@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   View,
   Text,
@@ -8,6 +7,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
+import Spinner from '../components/Spinner';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
@@ -56,11 +56,7 @@ class Signup extends Component {
     return (
       <View style={styles.container}>
       {this.props.isCreatingUserAccount ?
-        <ActivityIndicator
-          animating
-          size="large"
-          color={styles._activityIndicator.color}
-        />
+        <Spinner />
         :
         <View style={styles.formContainer}>
           <Input

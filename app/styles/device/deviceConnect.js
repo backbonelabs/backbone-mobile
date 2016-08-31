@@ -10,7 +10,4 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
-  activityIndicator: {
-    color: '$primaryColor',
-  },
 });
