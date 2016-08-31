@@ -15,10 +15,7 @@ const { PropTypes } = React;
 Spinner.propTypes = {
   animating: PropTypes.bool,
   color: PropTypes.string,
-  size: PropTypes.oneOfType([
-    PropTypes.oneOf(['small', 'large']),
-    PropTypes.number, // number is only supported in Android
-  ]),
+  size: PropTypes.oneOf(['small', 'large']),
 };
 
 Spinner.defaultProps = {
