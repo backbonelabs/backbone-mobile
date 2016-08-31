@@ -4,12 +4,12 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '9.0'
 
-target 'backbone' do
+target 'Backbone' do
 
   # Pods for backbone
   pod 'Metawear-iOSAPI'
 
-  target 'backboneTests' do
+  target 'BackboneTests' do
     inherit! :search_paths
     # Pods for testing
   end

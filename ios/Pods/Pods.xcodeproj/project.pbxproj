@@ -15,35 +15,35 @@
 		34B55874A2EA143C38D09155321C6BE5 /* BFCancellationToken.h in Headers */ = {isa = PBXBuildFile; fileRef = 86BD4BB8E30E3EE731AE1A87907419F0 /* BFCancellationToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		371C156B2A88C69C622DFE151BD0AA56 /* BFTask+Exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = A7862F9C6626FCE80D848D80E973D3B2 /* BFTask+Exceptions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3C866D37AFF48BB35D91B13D50B1FF36 /* BFTaskCompletionSource.h in Headers */ = {isa = PBXBuildFile; fileRef = C81D1D0CC501860A2A9733434F09F494 /* BFTaskCompletionSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4542B11AC6B06384C2788A1064C0AEE2 /* Pods-Backbone-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 215D402092BAD8FABA245820BAFBD79E /* Pods-Backbone-dummy.m */; };
 		47225334CC5DBC4D5E3EAD00A71D1804 /* BFCancellationTokenSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 582E91E66D3830C246DA51CB5E4ED27F /* BFCancellationTokenSource.m */; };
 		486A4A2F9E6E413DCB3BDA8CE51B92A2 /* Bolts-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D1AB4179456EE48A14FEE3B16441506 /* Bolts-dummy.m */; };
 		54AB7F96F285FA3604275DF625C7162B /* FastCoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C8EDA1AE6667B2CA1F8BEA5569F26A6 /* FastCoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		561039AF85EB33CED933164D0073D957 /* BFCancellationTokenRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = E0FFC722590C91E51E2E4772776DC0D5 /* BFCancellationTokenRegistration.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6B85509D6C826222D802DB7F06AEACED /* Pods-backbone-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F0E1C35838334F2B5FB92863641158 /* Pods-backbone-dummy.m */; };
 		726E5A8E19EC9EFF09A067E4D3F53B63 /* BFCancellationToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C314955E1967483528E7888C653DE /* BFCancellationToken.m */; };
 		790AB5767EF04EA40E8EF6C455CCF3B8 /* BFTask+Exceptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45AD74258D41D0BE1D8A7400362F3176 /* BFTask+Exceptions.m */; };
-		851D18154BDFBA0AD40F84C390663411 /* Pods-backboneTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DFBCFCE3969B645CA44D67AB96F45424 /* Pods-backboneTests-dummy.m */; };
+		8402203D1256FEDF9120453AF5E6739D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
 		8F7CE50FC43EFDC632BA5D6E22448F37 /* Bolts.m in Sources */ = {isa = PBXBuildFile; fileRef = 1798FF927B07D9488D877B2437E9D486 /* Bolts.m */; };
 		8F8D552B1B00AC296B2097505781B3D4 /* BFCancellationTokenRegistration.m in Sources */ = {isa = PBXBuildFile; fileRef = 70FE150EB119F519D2E3C0DAC3C6C0B9 /* BFCancellationTokenRegistration.m */; };
 		97BF761291D00285E81F9459CAFB8EC3 /* FastCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C70C96572D101D6E01C99493810F2CC /* FastCoder.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9AC8DD5E4DCEA2F30D25BE866287BF45 /* BFExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EB3F33D48AEF7DDB5E8E1A48A21FC34 /* BFExecutor.m */; };
 		A96582D4171204D5B29A6FD84D330C9F /* BFTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CB080629EE97220CD226ECAEAB93E55 /* BFTask.m */; };
 		B85899B92BC88A465DAFB39A14006E8C /* FastCoding-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 215E122361D4FA3BC2E179957FE888CD /* FastCoding-dummy.m */; };
+		BB16CC8082D5C5B706BDAA17A630DE7A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
 		CC9CAA2E90DA0309AFE56BEEFBDF42A6 /* Bolts.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E8E33D983719A0BE6C97633AB425422 /* Bolts.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		CD7FB51A03F82EB6A43B7E15D1F07633 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
 		DF2E84E0B39519983E0C7E36B4DCE9B0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
-		EFB3AB329645F4B25915A0ADD23B156A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
+		E5D559E66A29E40B8F33E067A915599B /* Pods-BackboneTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 69DBF30F49671C233758ABAD46A33549 /* Pods-BackboneTests-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8AC98DA36BF95DC8EA8E7757AD8C95F0 /* PBXContainerItemProxy */ = {
+		30D095E3FE21D91B687816C64A98833B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 0E63E8E2BC4E15BB676B14B1DFA7B20D;
 			remoteInfo = FastCoding;
 		};
-		DE09610E6A87E88FB77F3EDDA1437DA5 /* PBXContainerItemProxy */ = {
+		5E42DB29946F629E81044DB7DE1A10C3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
@@ -55,15 +55,17 @@
 /* Begin PBXFileReference section */
 		03F415E42AD6E046250D7D62182FDF96 /* BFTask+MBLExtensions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "BFTask+MBLExtensions.h"; path = "MetaWear.framework/Versions/A/Headers/BFTask+MBLExtensions.h"; sourceTree = "<group>"; };
 		059AE27A9659AD645DF450463C8667EF /* MBLConductance.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLConductance.h; path = MetaWear.framework/Versions/A/Headers/MBLConductance.h; sourceTree = "<group>"; };
+		08282D535E6EFB1D441DEFDDA59B7E77 /* Pods-BackboneTests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BackboneTests-resources.sh"; sourceTree = "<group>"; };
 		090ABB59DCA6DD0FD8B04D79E6F9ACC2 /* MBLTimer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLTimer.h; path = MetaWear.framework/Versions/A/Headers/MBLTimer.h; sourceTree = "<group>"; };
-		0B2870BE6AB74BD2297BF2200059D8B8 /* libPods-backboneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-backboneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C25A1D054F86F96718EC82F99A0CFBD /* Bolts.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Bolts.xcconfig; sourceTree = "<group>"; };
 		0C90DF2D7D0740A793FB887D84C13778 /* BFExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = BFExecutor.h; path = Bolts/Common/BFExecutor.h; sourceTree = "<group>"; };
-		14BBB96D6E4BC5EA359D7451C4E6269F /* Pods-backbone-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-backbone-resources.sh"; sourceTree = "<group>"; };
+		114B0684C1EE7FEC202638328C7176DB /* Pods-Backbone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Backbone.release.xcconfig"; sourceTree = "<group>"; };
 		1798FF927B07D9488D877B2437E9D486 /* Bolts.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = Bolts.m; path = Bolts/Common/Bolts.m; sourceTree = "<group>"; };
 		1A9ACC4AD3D38B966C04B6111E6D32DC /* MBLSerial.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLSerial.h; path = MetaWear.framework/Versions/A/Headers/MBLSerial.h; sourceTree = "<group>"; };
+		1AD21B381DCB0D3EC9E96EDA1F3E4C94 /* Pods-Backbone-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Backbone-acknowledgements.markdown"; sourceTree = "<group>"; };
 		1B7878006972A3881405E932C1B52601 /* MBLStringData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLStringData.h; path = MetaWear.framework/Versions/A/Headers/MBLStringData.h; sourceTree = "<group>"; };
 		20A8B0BB142FC00F1CD2BFD813397603 /* MBLAccelerometerBoschLowOrHighGEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometerBoschLowOrHighGEvent.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometerBoschLowOrHighGEvent.h; sourceTree = "<group>"; };
+		215D402092BAD8FABA245820BAFBD79E /* Pods-Backbone-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Backbone-dummy.m"; sourceTree = "<group>"; };
 		215E122361D4FA3BC2E179957FE888CD /* FastCoding-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FastCoding-dummy.m"; sourceTree = "<group>"; };
 		21A246AF4F8643B41B66D1F04B12DFA1 /* MBLAccelerometer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometer.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometer.h; sourceTree = "<group>"; };
 		23184E69FEC02532857D2476548F257C /* MBLData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLData.h; path = MetaWear.framework/Versions/A/Headers/MBLData.h; sourceTree = "<group>"; };
@@ -72,10 +74,10 @@
 		2D1AB4179456EE48A14FEE3B16441506 /* Bolts-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Bolts-dummy.m"; sourceTree = "<group>"; };
 		31A16EE9D58C4643D6BA7570B72938E1 /* MBLDataSample.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLDataSample.h; path = MetaWear.framework/Versions/A/Headers/MBLDataSample.h; sourceTree = "<group>"; };
 		32BDFF3F0639544C3CC4AA53662294D3 /* MBLEntityModule.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLEntityModule.h; path = MetaWear.framework/Versions/A/Headers/MBLEntityModule.h; sourceTree = "<group>"; };
-		36B4124D96C0BCEB9C8B1AAAC91D4799 /* libFastCoding.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFastCoding.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		36D193BCD5596F633525861818F8B99C /* MBLAccelerometerBosch.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometerBosch.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometerBosch.h; sourceTree = "<group>"; };
 		3CE45FC000034F730F9A133C23B554A3 /* MBLANCS.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLANCS.h; path = MetaWear.framework/Versions/A/Headers/MBLANCS.h; sourceTree = "<group>"; };
 		3E563B134BF660ABDED97A257345E079 /* MBLDeviceInfo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLDeviceInfo.h; path = MetaWear.framework/Versions/A/Headers/MBLDeviceInfo.h; sourceTree = "<group>"; };
+		4433A94C2BCF065014A4010BA56EAC24 /* libPods-BackboneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BackboneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		44A5BE566C2B111F76570AB1AE3CF664 /* MBLAmbientLight.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAmbientLight.h; path = MetaWear.framework/Versions/A/Headers/MBLAmbientLight.h; sourceTree = "<group>"; };
 		45AD74258D41D0BE1D8A7400362F3176 /* BFTask+Exceptions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "BFTask+Exceptions.m"; path = "Bolts/Common/BFTask+Exceptions.m"; sourceTree = "<group>"; };
 		4610C384D6DA4F9FF1E39CD21CFA1944 /* MBLTimerEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLTimerEvent.h; path = MetaWear.framework/Versions/A/Headers/MBLTimerEvent.h; sourceTree = "<group>"; };
@@ -86,7 +88,7 @@
 		57AF02E54685121A0C0C5CAE58261BC9 /* MBLNeopixelStrand.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLNeopixelStrand.h; path = MetaWear.framework/Versions/A/Headers/MBLNeopixelStrand.h; sourceTree = "<group>"; };
 		582E91E66D3830C246DA51CB5E4ED27F /* BFCancellationTokenSource.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = BFCancellationTokenSource.m; path = Bolts/Common/BFCancellationTokenSource.m; sourceTree = "<group>"; };
 		5A047AB5158347907619B7540449E9AC /* MBLGyroData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLGyroData.h; path = MetaWear.framework/Versions/A/Headers/MBLGyroData.h; sourceTree = "<group>"; };
-		5A08BCA63C4831B4EDBEB3C4E451ADF6 /* libPods-backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C00CD81B7F051B4E5C19CEC55298C0B /* Pods-Backbone-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Backbone-resources.sh"; sourceTree = "<group>"; };
 		5C2C314955E1967483528E7888C653DE /* BFCancellationToken.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = BFCancellationToken.m; path = Bolts/Common/BFCancellationToken.m; sourceTree = "<group>"; };
 		5CCD73DA3F49F52CBC8B8AE06477617E /* MBLEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLEvent.h; path = MetaWear.framework/Versions/A/Headers/MBLEvent.h; sourceTree = "<group>"; };
 		5E73180AA8C409500BD86F66DD1823DA /* MetaWear.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MetaWear.h; path = MetaWear.framework/Versions/A/Headers/MetaWear.h; sourceTree = "<group>"; };
@@ -95,68 +97,67 @@
 		6712A494ED00C7DDA9189E02F48AF962 /* MBLMechanicalSwitch.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLMechanicalSwitch.h; path = MetaWear.framework/Versions/A/Headers/MBLMechanicalSwitch.h; sourceTree = "<group>"; };
 		672FD20C9D0D6DFBEB99207523212BCE /* MBLGyroBMI160.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLGyroBMI160.h; path = MetaWear.framework/Versions/A/Headers/MBLGyroBMI160.h; sourceTree = "<group>"; };
 		6760BCCA77E98CFD16FDA254603F3ED7 /* MBLProximityTSL2671.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLProximityTSL2671.h; path = MetaWear.framework/Versions/A/Headers/MBLProximityTSL2671.h; sourceTree = "<group>"; };
-		6A5F96B1F35444B88CA26E620A49B5F0 /* Pods-backboneTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-backboneTests-acknowledgements.plist"; sourceTree = "<group>"; };
-		6AE87D8A4661F9B859FBFE8CD9C0523D /* libBolts.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBolts.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		69DBF30F49671C233758ABAD46A33549 /* Pods-BackboneTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BackboneTests-dummy.m"; sourceTree = "<group>"; };
 		6BE25D0D361341FBA358ACC56D4084CA /* MBLAmbientLightLTR329.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAmbientLightLTR329.h; path = MetaWear.framework/Versions/A/Headers/MBLAmbientLightLTR329.h; sourceTree = "<group>"; };
+		6C6B843B77932CA9F83B5D1CE3AF15BD /* Pods-BackboneTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BackboneTests-acknowledgements.plist"; sourceTree = "<group>"; };
 		6E8E33D983719A0BE6C97633AB425422 /* Bolts.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Bolts.h; path = Bolts/Common/Bolts.h; sourceTree = "<group>"; };
 		6FAF671B5933D2E3AD7ACA2A901607B0 /* MBLAccelerometerBMA255MotionEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometerBMA255MotionEvent.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometerBMA255MotionEvent.h; sourceTree = "<group>"; };
-		7062B906D684369C62BAAC442F0D5E96 /* Pods-backbone-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-backbone-frameworks.sh"; sourceTree = "<group>"; };
 		706719A74833F7DC59337C6B0DE77524 /* FastCoding-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FastCoding-prefix.pch"; sourceTree = "<group>"; };
 		70AD75CA44F5F523F30FDA88B5080C00 /* MBLANCSEventData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLANCSEventData.h; path = MetaWear.framework/Versions/A/Headers/MBLANCSEventData.h; sourceTree = "<group>"; };
 		70FE150EB119F519D2E3C0DAC3C6C0B9 /* BFCancellationTokenRegistration.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = BFCancellationTokenRegistration.m; path = Bolts/Common/BFCancellationTokenRegistration.m; sourceTree = "<group>"; };
-		71F4913279ACC47ECFFB7D23E9D10639 /* Pods-backboneTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-backboneTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7328A1452716F458FF9E1C05E830769B /* MBLRMSAccelerometerData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLRMSAccelerometerData.h; path = MetaWear.framework/Versions/A/Headers/MBLRMSAccelerometerData.h; sourceTree = "<group>"; };
+		73BB0D91CA87B3266565294F7E3B6F55 /* libBolts.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBolts.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C70C96572D101D6E01C99493810F2CC /* FastCoder.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FastCoder.m; path = FastCoder/FastCoder.m; sourceTree = "<group>"; };
 		7F4BEC8B3B54EACF0730FE5A8B6F9120 /* MBLTemperature.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLTemperature.h; path = MetaWear.framework/Versions/A/Headers/MBLTemperature.h; sourceTree = "<group>"; };
 		7F9D5B17C70DFA141A4041E1F0527884 /* MBLOrientationData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLOrientationData.h; path = MetaWear.framework/Versions/A/Headers/MBLOrientationData.h; sourceTree = "<group>"; };
 		7FA62CD7C77CBE6BBA57E02119944201 /* MBLMagnetometerBMM150.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLMagnetometerBMM150.h; path = MetaWear.framework/Versions/A/Headers/MBLMagnetometerBMM150.h; sourceTree = "<group>"; };
 		7FC9210CE8DEC46A26403B0B3374FF22 /* MBLLED.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLLED.h; path = MetaWear.framework/Versions/A/Headers/MBLLED.h; sourceTree = "<group>"; };
-		81741FE725F60209637A55EEE1266ACC /* Pods-backbone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-backbone.release.xcconfig"; sourceTree = "<group>"; };
 		820FF5700E9AA704DF74B3FAFC6FAFD1 /* BFTask.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = BFTask.h; path = Bolts/Common/BFTask.h; sourceTree = "<group>"; };
 		826021D8DA1B96F33E956CCBB484C741 /* bmi160.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = bmi160.h; path = MetaWear.framework/Versions/A/Headers/bmi160.h; sourceTree = "<group>"; };
 		85ACA2D308CB97C866D9BB4730B446F4 /* MBLGyro.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLGyro.h; path = MetaWear.framework/Versions/A/Headers/MBLGyro.h; sourceTree = "<group>"; };
 		86BD4BB8E30E3EE731AE1A87907419F0 /* BFCancellationToken.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = BFCancellationToken.h; path = Bolts/Common/BFCancellationToken.h; sourceTree = "<group>"; };
 		8E0BB10FD2C6603C1AE3100E49C2E9A3 /* MBLAccelerometerMMA8452Q.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometerMMA8452Q.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometerMMA8452Q.h; sourceTree = "<group>"; };
-		937A1D69E5C376E3BE448735678E88A8 /* Pods-backboneTests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-backboneTests-resources.sh"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		946A9AF9AC3B176F08B0D73F729B9E02 /* MBLConstants.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLConstants.h; path = MetaWear.framework/Versions/A/Headers/MBLConstants.h; sourceTree = "<group>"; };
-		94F0E1C35838334F2B5FB92863641158 /* Pods-backbone-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-backbone-dummy.m"; sourceTree = "<group>"; };
 		9A06F452F38B36829B3F200264282ACA /* MBLPhotometer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLPhotometer.h; path = MetaWear.framework/Versions/A/Headers/MBLPhotometer.h; sourceTree = "<group>"; };
 		9C8EDA1AE6667B2CA1F8BEA5569F26A6 /* FastCoder.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FastCoder.h; path = FastCoder/FastCoder.h; sourceTree = "<group>"; };
 		9EB3F33D48AEF7DDB5E8E1A48A21FC34 /* BFExecutor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = BFExecutor.m; path = Bolts/Common/BFExecutor.m; sourceTree = "<group>"; };
 		A22412DE20409D12075B35A65D9DC55E /* MBLModule.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLModule.h; path = MetaWear.framework/Versions/A/Headers/MBLModule.h; sourceTree = "<group>"; };
 		A6176BEE74103A0357289FF1EAC3C833 /* MetaWear.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MetaWear.framework; sourceTree = "<group>"; };
 		A7862F9C6626FCE80D848D80E973D3B2 /* BFTask+Exceptions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "BFTask+Exceptions.h"; path = "Bolts/Common/BFTask+Exceptions.h"; sourceTree = "<group>"; };
+		AA107DEA43274ABFBF25FC7A77200D10 /* Pods-BackboneTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BackboneTests-frameworks.sh"; sourceTree = "<group>"; };
 		AE8C1BA9960A87280E051FD55E5835D2 /* MBLMagnetometerData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLMagnetometerData.h; path = MetaWear.framework/Versions/A/Headers/MBLMagnetometerData.h; sourceTree = "<group>"; };
-		AF338EFC0328813729F1430F448239F6 /* Pods-backbone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-backbone.debug.xcconfig"; sourceTree = "<group>"; };
 		B352F6F9189429E726BE6A52F5AAAE72 /* MBLBarometerBosch.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLBarometerBosch.h; path = MetaWear.framework/Versions/A/Headers/MBLBarometerBosch.h; sourceTree = "<group>"; };
 		B5B6C2235138D72EA9C490427EB44915 /* FastCoding.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FastCoding.xcconfig; sourceTree = "<group>"; };
-		B75E426F1C1256DDA863359142274CA0 /* Pods-backboneTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-backboneTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		B9D5AE1C042404EFBD37E8864DBB2448 /* Pods-BackboneTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BackboneTests.debug.xcconfig"; sourceTree = "<group>"; };
+		BBF5C25398313ADDF6D4F2320E9E460C /* Pods-BackboneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BackboneTests.release.xcconfig"; sourceTree = "<group>"; };
+		C05E2F8E0526A1D199BEB4DBC52E5363 /* libFastCoding.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFastCoding.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2CF4F13C9F518821815958C5F26E9C6 /* Pods-Backbone-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Backbone-acknowledgements.plist"; sourceTree = "<group>"; };
 		C806E4A6F569644FA26EEA8D122B5E50 /* MBLAccelerometerBMI160.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometerBMI160.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometerBMI160.h; sourceTree = "<group>"; };
 		C81D1D0CC501860A2A9733434F09F494 /* BFTaskCompletionSource.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = BFTaskCompletionSource.h; path = Bolts/Common/BFTaskCompletionSource.h; sourceTree = "<group>"; };
 		C894C04D56DA4061E5854DCD38A17F51 /* MBLBarometerBMP280.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLBarometerBMP280.h; path = MetaWear.framework/Versions/A/Headers/MBLBarometerBMP280.h; sourceTree = "<group>"; };
 		CD7CA611A02EE93C65510BDE1B7A49AC /* MBLHygrometer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLHygrometer.h; path = MetaWear.framework/Versions/A/Headers/MBLHygrometer.h; sourceTree = "<group>"; };
 		CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		CF9D8FC59CC4B491F3A009B0A03E5646 /* Pods-backbone-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-backbone-acknowledgements.markdown"; sourceTree = "<group>"; };
 		D338E1BC271A86410AD7A9189D8121FD /* MBLAccelerometerBMA255.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometerBMA255.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometerBMA255.h; sourceTree = "<group>"; };
 		D34A874EB669F118679BD43CDB01DC79 /* MBLFilter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLFilter.h; path = MetaWear.framework/Versions/A/Headers/MBLFilter.h; sourceTree = "<group>"; };
-		D612101F73FCE84ADD78121B6A2A8770 /* Pods-backboneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-backboneTests.release.xcconfig"; sourceTree = "<group>"; };
 		D878372B4A55A6FE150692273F6C1CBA /* BFTaskCompletionSource.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = BFTaskCompletionSource.m; path = Bolts/Common/BFTaskCompletionSource.m; sourceTree = "<group>"; };
 		D8C438C6D11DB32B71986FAD1A61DFAF /* Bolts-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Bolts-prefix.pch"; sourceTree = "<group>"; };
 		D9601474A7680680358BF6D0AED1B449 /* MBLSettings.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLSettings.h; path = MetaWear.framework/Versions/A/Headers/MBLSettings.h; sourceTree = "<group>"; };
 		DB6F6823130590B3786E6F5E9068ED78 /* MBLHapticBuzzer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLHapticBuzzer.h; path = MetaWear.framework/Versions/A/Headers/MBLHapticBuzzer.h; sourceTree = "<group>"; };
+		DBE921859799AD5025F964289160E706 /* Pods-Backbone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Backbone.debug.xcconfig"; sourceTree = "<group>"; };
 		DC5B86C6A115689213F8BAB7ADEBC2C7 /* MBLProximity.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLProximity.h; path = MetaWear.framework/Versions/A/Headers/MBLProximity.h; sourceTree = "<group>"; };
 		DDB7C450E6C0A8D42047D5E3E0D8307A /* MBLMetaWear.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLMetaWear.h; path = MetaWear.framework/Versions/A/Headers/MBLMetaWear.h; sourceTree = "<group>"; };
-		DFBCFCE3969B645CA44D67AB96F45424 /* Pods-backboneTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-backboneTests-dummy.m"; sourceTree = "<group>"; };
+		DF4D58489AB9DC9CA832488913794D62 /* libPods-Backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0FFC722590C91E51E2E4772776DC0D5 /* BFCancellationTokenRegistration.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = BFCancellationTokenRegistration.h; path = Bolts/Common/BFCancellationTokenRegistration.h; sourceTree = "<group>"; };
 		E37E482FC9BC79B89842DC0C07F755BB /* MBLiBeacon.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLiBeacon.h; path = MetaWear.framework/Versions/A/Headers/MBLiBeacon.h; sourceTree = "<group>"; };
 		E4FBAC6EBBB18FD6C9F20B9278E5CB72 /* MBLI2CData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLI2CData.h; path = MetaWear.framework/Versions/A/Headers/MBLI2CData.h; sourceTree = "<group>"; };
 		E5A54078D02D8143BB931A0ACCDB4F28 /* MBLBarometerBME280.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLBarometerBME280.h; path = MetaWear.framework/Versions/A/Headers/MBLBarometerBME280.h; sourceTree = "<group>"; };
-		E5B9AC7E3E4A3F75A9AB91437FCE0E93 /* Pods-backboneTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-backboneTests-frameworks.sh"; sourceTree = "<group>"; };
 		E6C795CB0BEA97C3D6F2BB1232565372 /* MBLRegister.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLRegister.h; path = MetaWear.framework/Versions/A/Headers/MBLRegister.h; sourceTree = "<group>"; };
 		E7485F9C8131F094C8AFCA9D928B5548 /* MBLDataSwitch.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLDataSwitch.h; path = MetaWear.framework/Versions/A/Headers/MBLDataSwitch.h; sourceTree = "<group>"; };
 		E7AC95FBA6CA3DA638AB35772CE2A8A2 /* MBLAccelerometerBMI160MotionEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometerBMI160MotionEvent.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometerBMI160MotionEvent.h; sourceTree = "<group>"; };
+		E82BE08D686DAED3CD8AE25C747D06EE /* Pods-Backbone-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Backbone-frameworks.sh"; sourceTree = "<group>"; };
 		EC1DDD243773E34667F4359062CD8EE9 /* MBLBarometer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLBarometer.h; path = MetaWear.framework/Versions/A/Headers/MBLBarometer.h; sourceTree = "<group>"; };
+		ECF2ADCAF89C190F09DE1EDBB37C793C /* Pods-BackboneTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BackboneTests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		ED48ABA20DA18095406A7760D6E81961 /* MBLI2C.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLI2C.h; path = MetaWear.framework/Versions/A/Headers/MBLI2C.h; sourceTree = "<group>"; };
 		EDDE004E56028CFF7AEC71BF8C5A4B3E /* MBLSPIData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLSPIData.h; path = MetaWear.framework/Versions/A/Headers/MBLSPIData.h; sourceTree = "<group>"; };
 		EF256EAFEF61E98E185DA0A3C5934CB9 /* MBLHygrometerBME280.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLHygrometerBME280.h; path = MetaWear.framework/Versions/A/Headers/MBLHygrometerBME280.h; sourceTree = "<group>"; };
@@ -165,15 +166,14 @@
 		F6122C72B98CDE8A4635A86FC42A19DF /* MBLEntityEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLEntityEvent.h; path = MetaWear.framework/Versions/A/Headers/MBLEntityEvent.h; sourceTree = "<group>"; };
 		FA6C935C5B1382FB4706F700BB501073 /* MBLMagnetometer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLMagnetometer.h; path = MetaWear.framework/Versions/A/Headers/MBLMagnetometer.h; sourceTree = "<group>"; };
 		FC9F9EA86687B01FFCA4C2EB38C5BB69 /* MBLAccelerometerData.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MBLAccelerometerData.h; path = MetaWear.framework/Versions/A/Headers/MBLAccelerometerData.h; sourceTree = "<group>"; };
-		FD6AF63B5D09952E043BBCE1726F1171 /* Pods-backbone-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-backbone-acknowledgements.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3F565E68E1EC13D013F75248EDFE311D /* Frameworks */ = {
+		42D502C2AAB0E50E0B7190DC4E10EE13 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD7FB51A03F82EB6A43B7E15D1F07633 /* Foundation.framework in Frameworks */,
+				BB16CC8082D5C5B706BDAA17A630DE7A /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,19 +185,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5BAC306578B92D48A5674261FB015312 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8402203D1256FEDF9120453AF5E6739D /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6A9BA2012076B44E798C54E8678B06A5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				DF2E84E0B39519983E0C7E36B4DCE9B0 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F45A10E8E1BEE6739F25BA358C6CF6A0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EFB3AB329645F4B25915A0ADD23B156A /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,17 +224,6 @@
 			path = "../Target Support Files/Bolts";
 			sourceTree = "<group>";
 		};
-		1A4ECC09F6899947B4E17D77DB4A73DD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				6AE87D8A4661F9B859FBFE8CD9C0523D /* libBolts.a */,
-				36B4124D96C0BCEB9C8B1AAAC91D4799 /* libFastCoding.a */,
-				5A08BCA63C4831B4EDBEB3C4E451ADF6 /* libPods-backbone.a */,
-				0B2870BE6AB74BD2297BF2200059D8B8 /* libPods-backboneTests.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		1FC57A9B78626E1ADA57F578E8D361B8 /* Tasks */ = {
 			isa = PBXGroup;
 			children = (
@@ -258,6 +247,15 @@
 			name = Tasks;
 			sourceTree = "<group>";
 		};
+		25B866E9497EC289F8F7A9CC9407705A /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				94F1683457202519A34F869033192782 /* Pods-Backbone */,
+				60CFF4B7B35942C3BD50531D23FC9B41 /* Pods-BackboneTests */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
 		3A1BBA230C03E3E24C9D9D6E158740D9 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -277,15 +275,6 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		461D232663C1B20E4C86EDAFA77D9832 /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				A115CE68B944EBB197BD174B79084B21 /* Pods-backbone */,
-				7DB9ED28059D193940F0F3EDB9368690 /* Pods-backboneTests */,
-			);
-			name = "Targets Support Files";
-			sourceTree = "<group>";
-		};
 		5661A715CB2CBA8861DC2B5FB6E0BBC0 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -294,6 +283,21 @@
 				B75970B83A439C44039119EF08CA7A42 /* Metawear-iOSAPI */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		60CFF4B7B35942C3BD50531D23FC9B41 /* Pods-BackboneTests */ = {
+			isa = PBXGroup;
+			children = (
+				ECF2ADCAF89C190F09DE1EDBB37C793C /* Pods-BackboneTests-acknowledgements.markdown */,
+				6C6B843B77932CA9F83B5D1CE3AF15BD /* Pods-BackboneTests-acknowledgements.plist */,
+				69DBF30F49671C233758ABAD46A33549 /* Pods-BackboneTests-dummy.m */,
+				AA107DEA43274ABFBF25FC7A77200D10 /* Pods-BackboneTests-frameworks.sh */,
+				08282D535E6EFB1D441DEFDDA59B7E77 /* Pods-BackboneTests-resources.sh */,
+				B9D5AE1C042404EFBD37E8864DBB2448 /* Pods-BackboneTests.debug.xcconfig */,
+				BBF5C25398313ADDF6D4F2320E9E460C /* Pods-BackboneTests.release.xcconfig */,
+			);
+			name = "Pods-BackboneTests";
+			path = "Target Support Files/Pods-BackboneTests";
 			sourceTree = "<group>";
 		};
 		6D0148AE59C97829159A62601243857D /* Frameworks */ = {
@@ -310,39 +314,35 @@
 				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
 				BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */,
 				5661A715CB2CBA8861DC2B5FB6E0BBC0 /* Pods */,
-				1A4ECC09F6899947B4E17D77DB4A73DD /* Products */,
-				461D232663C1B20E4C86EDAFA77D9832 /* Targets Support Files */,
+				879AE395B944CB5E9CF41C686C5FE054 /* Products */,
+				25B866E9497EC289F8F7A9CC9407705A /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
-		7DB9ED28059D193940F0F3EDB9368690 /* Pods-backboneTests */ = {
+		879AE395B944CB5E9CF41C686C5FE054 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B75E426F1C1256DDA863359142274CA0 /* Pods-backboneTests-acknowledgements.markdown */,
-				6A5F96B1F35444B88CA26E620A49B5F0 /* Pods-backboneTests-acknowledgements.plist */,
-				DFBCFCE3969B645CA44D67AB96F45424 /* Pods-backboneTests-dummy.m */,
-				E5B9AC7E3E4A3F75A9AB91437FCE0E93 /* Pods-backboneTests-frameworks.sh */,
-				937A1D69E5C376E3BE448735678E88A8 /* Pods-backboneTests-resources.sh */,
-				71F4913279ACC47ECFFB7D23E9D10639 /* Pods-backboneTests.debug.xcconfig */,
-				D612101F73FCE84ADD78121B6A2A8770 /* Pods-backboneTests.release.xcconfig */,
+				73BB0D91CA87B3266565294F7E3B6F55 /* libBolts.a */,
+				C05E2F8E0526A1D199BEB4DBC52E5363 /* libFastCoding.a */,
+				DF4D58489AB9DC9CA832488913794D62 /* libPods-Backbone.a */,
+				4433A94C2BCF065014A4010BA56EAC24 /* libPods-BackboneTests.a */,
 			);
-			name = "Pods-backboneTests";
-			path = "Target Support Files/Pods-backboneTests";
+			name = Products;
 			sourceTree = "<group>";
 		};
-		A115CE68B944EBB197BD174B79084B21 /* Pods-backbone */ = {
+		94F1683457202519A34F869033192782 /* Pods-Backbone */ = {
 			isa = PBXGroup;
 			children = (
-				CF9D8FC59CC4B491F3A009B0A03E5646 /* Pods-backbone-acknowledgements.markdown */,
-				FD6AF63B5D09952E043BBCE1726F1171 /* Pods-backbone-acknowledgements.plist */,
-				94F0E1C35838334F2B5FB92863641158 /* Pods-backbone-dummy.m */,
-				7062B906D684369C62BAAC442F0D5E96 /* Pods-backbone-frameworks.sh */,
-				14BBB96D6E4BC5EA359D7451C4E6269F /* Pods-backbone-resources.sh */,
-				AF338EFC0328813729F1430F448239F6 /* Pods-backbone.debug.xcconfig */,
-				81741FE725F60209637A55EEE1266ACC /* Pods-backbone.release.xcconfig */,
+				1AD21B381DCB0D3EC9E96EDA1F3E4C94 /* Pods-Backbone-acknowledgements.markdown */,
+				C2CF4F13C9F518821815958C5F26E9C6 /* Pods-Backbone-acknowledgements.plist */,
+				215D402092BAD8FABA245820BAFBD79E /* Pods-Backbone-dummy.m */,
+				E82BE08D686DAED3CD8AE25C747D06EE /* Pods-Backbone-frameworks.sh */,
+				5C00CD81B7F051B4E5C19CEC55298C0B /* Pods-Backbone-resources.sh */,
+				DBE921859799AD5025F964289160E706 /* Pods-Backbone.debug.xcconfig */,
+				114B0684C1EE7FEC202638328C7176DB /* Pods-Backbone.release.xcconfig */,
 			);
-			name = "Pods-backbone";
-			path = "Target Support Files/Pods-backbone";
+			name = "Pods-Backbone";
+			path = "Target Support Files/Pods-Backbone";
 			sourceTree = "<group>";
 		};
 		B75970B83A439C44039119EF08CA7A42 /* Metawear-iOSAPI */ = {
@@ -482,41 +482,23 @@
 			);
 			name = FastCoding;
 			productName = FastCoding;
-			productReference = 36B4124D96C0BCEB9C8B1AAAC91D4799 /* libFastCoding.a */;
+			productReference = C05E2F8E0526A1D199BEB4DBC52E5363 /* libFastCoding.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		189C2B703C9F5FFD87BC2CD9FFFC5147 /* Pods-backbone */ = {
+		5E1C51F4D59B0861666186A893B2CA4E /* Pods-BackboneTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 595AADEEF781DF2E909DA7BF5D9734A5 /* Build configuration list for PBXNativeTarget "Pods-backbone" */;
+			buildConfigurationList = 64D62C109DEDF516E829013B8CBA070E /* Build configuration list for PBXNativeTarget "Pods-BackboneTests" */;
 			buildPhases = (
-				E6FAD6F9C9789EABF688C608E195A1DA /* Sources */,
-				F45A10E8E1BEE6739F25BA358C6CF6A0 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F7BB2B7C894FD28C5ED32FE965E8F05A /* PBXTargetDependency */,
-				CDE1B7A73B2CB8855559B945D493A002 /* PBXTargetDependency */,
-			);
-			name = "Pods-backbone";
-			productName = "Pods-backbone";
-			productReference = 5A08BCA63C4831B4EDBEB3C4E451ADF6 /* libPods-backbone.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		51661FE2A03560134A57EBBA66D87DDF /* Pods-backboneTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5ED425756D70CE832F72288BE6F92ADD /* Build configuration list for PBXNativeTarget "Pods-backboneTests" */;
-			buildPhases = (
-				1F47CD53DF2674A68C5E0397375153CC /* Sources */,
-				3F565E68E1EC13D013F75248EDFE311D /* Frameworks */,
+				9370BDEDEF01D37D21D69C91B0CEC148 /* Sources */,
+				5BAC306578B92D48A5674261FB015312 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "Pods-backboneTests";
-			productName = "Pods-backboneTests";
-			productReference = 0B2870BE6AB74BD2297BF2200059D8B8 /* libPods-backboneTests.a */;
+			name = "Pods-BackboneTests";
+			productName = "Pods-BackboneTests";
+			productReference = 4433A94C2BCF065014A4010BA56EAC24 /* libPods-BackboneTests.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		5F9CDF21330F4787AC04D56E0E745343 /* Bolts */ = {
@@ -533,7 +515,25 @@
 			);
 			name = Bolts;
 			productName = Bolts;
-			productReference = 6AE87D8A4661F9B859FBFE8CD9C0523D /* libBolts.a */;
+			productReference = 73BB0D91CA87B3266565294F7E3B6F55 /* libBolts.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		AF5E4929449526403C1C97AA58738360 /* Pods-Backbone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E862C30A8BA3036284DCF855DD3151F /* Build configuration list for PBXNativeTarget "Pods-Backbone" */;
+			buildPhases = (
+				80A9FA45F22B6A1C4C8DEFBD85C8E72D /* Sources */,
+				42D502C2AAB0E50E0B7190DC4E10EE13 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B785D4956CB26DDC4BC1D20ED84178E9 /* PBXTargetDependency */,
+				D8A15DA1D19174E6AF8B209E0A2F01E9 /* PBXTargetDependency */,
+			);
+			name = "Pods-Backbone";
+			productName = "Pods-Backbone";
+			productReference = DF4D58489AB9DC9CA832488913794D62 /* libPods-Backbone.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -553,24 +553,32 @@
 				en,
 			);
 			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
-			productRefGroup = 1A4ECC09F6899947B4E17D77DB4A73DD /* Products */;
+			productRefGroup = 879AE395B944CB5E9CF41C686C5FE054 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				5F9CDF21330F4787AC04D56E0E745343 /* Bolts */,
 				0E63E8E2BC4E15BB676B14B1DFA7B20D /* FastCoding */,
-				189C2B703C9F5FFD87BC2CD9FFFC5147 /* Pods-backbone */,
-				51661FE2A03560134A57EBBA66D87DDF /* Pods-backboneTests */,
+				AF5E4929449526403C1C97AA58738360 /* Pods-Backbone */,
+				5E1C51F4D59B0861666186A893B2CA4E /* Pods-BackboneTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1F47CD53DF2674A68C5E0397375153CC /* Sources */ = {
+		80A9FA45F22B6A1C4C8DEFBD85C8E72D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				851D18154BDFBA0AD40F84C390663411 /* Pods-backboneTests-dummy.m in Sources */,
+				4542B11AC6B06384C2788A1064C0AEE2 /* Pods-Backbone-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9370BDEDEF01D37D21D69C91B0CEC148 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5D559E66A29E40B8F33E067A915599B /* Pods-BackboneTests-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,28 +607,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E6FAD6F9C9789EABF688C608E195A1DA /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6B85509D6C826222D802DB7F06AEACED /* Pods-backbone-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CDE1B7A73B2CB8855559B945D493A002 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = FastCoding;
-			target = 0E63E8E2BC4E15BB676B14B1DFA7B20D /* FastCoding */;
-			targetProxy = 8AC98DA36BF95DC8EA8E7757AD8C95F0 /* PBXContainerItemProxy */;
-		};
-		F7BB2B7C894FD28C5ED32FE965E8F05A /* PBXTargetDependency */ = {
+		B785D4956CB26DDC4BC1D20ED84178E9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Bolts;
 			target = 5F9CDF21330F4787AC04D56E0E745343 /* Bolts */;
-			targetProxy = DE09610E6A87E88FB77F3EDDA1437DA5 /* PBXContainerItemProxy */;
+			targetProxy = 5E42DB29946F629E81044DB7DE1A10C3 /* PBXContainerItemProxy */;
+		};
+		D8A15DA1D19174E6AF8B209E0A2F01E9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = FastCoding;
+			target = 0E63E8E2BC4E15BB676B14B1DFA7B20D /* FastCoding */;
+			targetProxy = 30D095E3FE21D91B687816C64A98833B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -709,9 +709,30 @@
 			};
 			name = Release;
 		};
-		43601D57A43776C13526C6ADA7D76F1A /* Debug */ = {
+		4C2BC3A22A486076F9C2585FDFA2BA06 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AF338EFC0328813729F1430F448239F6 /* Pods-backbone.debug.xcconfig */;
+			baseConfigurationReference = 114B0684C1EE7FEC202638328C7176DB /* Pods-Backbone.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACH_O_TYPE = staticlib;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		6538DB27294BF63CD17F4507DCD36EDE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B9D5AE1C042404EFBD37E8864DBB2448 /* Pods-BackboneTests.debug.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -730,9 +751,9 @@
 			};
 			name = Debug;
 		};
-		71830B3AF3B6EBEBFED1BBB52CD4A9B6 /* Debug */ = {
+		7B05BAC62154220AC0D7CF2B2E7637CE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 71F4913279ACC47ECFFB7D23E9D10639 /* Pods-backboneTests.debug.xcconfig */;
+			baseConfigurationReference = DBE921859799AD5025F964289160E706 /* Pods-Backbone.debug.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -772,9 +793,9 @@
 			};
 			name = Release;
 		};
-		930432DFFDE5AAE6E49A188112669471 /* Release */ = {
+		8167F4DBC15B16F3F067AFE7DD8C9E46 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81741FE725F60209637A55EEE1266ACC /* Pods-backbone.release.xcconfig */;
+			baseConfigurationReference = BBF5C25398313ADDF6D4F2320E9E460C /* Pods-BackboneTests.release.xcconfig */;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -831,27 +852,6 @@
 			};
 			name = Release;
 		};
-		EBFF320D652BAB85CE1E00832CFA7748 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D612101F73FCE84ADD78121B6A2A8770 /* Pods-backboneTests.release.xcconfig */;
-			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACH_O_TYPE = staticlib;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		FBBC003B7C626B782B8C2DEA0900BFEC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B5B6C2235138D72EA9C490427EB44915 /* FastCoding.xcconfig */;
@@ -894,11 +894,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		595AADEEF781DF2E909DA7BF5D9734A5 /* Build configuration list for PBXNativeTarget "Pods-backbone" */ = {
+		3E862C30A8BA3036284DCF855DD3151F /* Build configuration list for PBXNativeTarget "Pods-Backbone" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				43601D57A43776C13526C6ADA7D76F1A /* Debug */,
-				930432DFFDE5AAE6E49A188112669471 /* Release */,
+				7B05BAC62154220AC0D7CF2B2E7637CE /* Debug */,
+				4C2BC3A22A486076F9C2585FDFA2BA06 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -912,11 +912,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5ED425756D70CE832F72288BE6F92ADD /* Build configuration list for PBXNativeTarget "Pods-backboneTests" */ = {
+		64D62C109DEDF516E829013B8CBA070E /* Build configuration list for PBXNativeTarget "Pods-BackboneTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				71830B3AF3B6EBEBFED1BBB52CD4A9B6 /* Debug */,
-				EBFF320D652BAB85CE1E00832CFA7748 /* Release */,
+				6538DB27294BF63CD17F4507DCD36EDE /* Debug */,
+				8167F4DBC15B16F3F067AFE7DD8C9E46 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
