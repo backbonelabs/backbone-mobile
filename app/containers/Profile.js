@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import { ScrollView, View } from 'react-native';
 import { connect } from 'react-redux';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isEqual, pick } from 'lodash';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import userActions from '../actions/user';
 import styles from '../styles/profile';
 
 const { PropTypes } = React;
 
 class Profile extends Component {
   static propTypes = {
+    dispatch: React.PropTypes.func,
     user: PropTypes.shape({
+      _id: PropTypes.string,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
     }),
@@ -29,6 +32,20 @@ class Profile extends Component {
     this.update = this.update.bind(this);
   }
 
+  componentWillMount() {
+    // Fetch latest user profile info
+    this.props.dispatch(userActions.fetchUser());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.user, nextProps.user)) {
+      this.setState({
+        firstName: nextProps.user.firstName,
+        lastName: nextProps.user.lastName,
+      });
+    }
+  }
+
   isValid() {
     const {
       firstName,
@@ -41,7 +58,15 @@ class Profile extends Component {
   }
 
   update() {
-    console.log('update', this.state);
+    const updatedFields = pick(this.state, ['firstName', 'lastName']);
+    if (!isEmpty(this.state.password)) {
+      updatedFields.password = this.state.password;
+      updatedFields.verifyPassword = this.state.verifyPassword;
+    }
+    this.props.dispatch(userActions.updateUser({
+      _id: this.props.user._id,
+      ...updatedFields,
+    }));
   }
 
   render() {
