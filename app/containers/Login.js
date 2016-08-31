@@ -4,7 +4,6 @@ import {
   Alert,
   View,
   Text,
-  TextInput,
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
