@@ -5,7 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import reducers from './app/reducers';
-import Application from './app/components/Application';
+import Application from './app/containers/Application';
 import theme from './app/styles/theme';
 
 EStyleSheet.build(theme);

@@ -14,7 +14,7 @@ import {
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Menu from './Menu';
+import Menu from '../components/Menu';
 import routes from '../routes';
 import styles from '../styles/application';
 import constants from '../utils/constants';
