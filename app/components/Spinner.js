@@ -17,7 +17,7 @@ Spinner.propTypes = {
   color: PropTypes.string,
   size: PropTypes.oneOfType([
     PropTypes.oneOf(['small', 'large']),
-    PropTypes.number,
+    PropTypes.number, // number is only supported in Android
   ]),
 };
 
