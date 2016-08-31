@@ -38,6 +38,7 @@ class Profile extends Component {
     };
     this.isValid = this.isValid.bind(this);
     this.update = this.update.bind(this);
+    this.updateField = this.updateField.bind(this);
   }
 
   componentWillMount() {
@@ -94,6 +95,18 @@ class Profile extends Component {
     }));
   }
 
+  /**
+   * Updates a field and sets the pristine flag to false
+   * @param {String} field
+   * @param {String} value
+   */
+  updateField(field, value) {
+    this.setState({
+      isPristine: false,
+      [field]: value,
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -108,24 +121,24 @@ class Profile extends Component {
             <Input
               value={this.state.firstName}
               placeholder="First name*"
-              onChangeText={text => this.setState({ isPristine: false, firstName: text })}
+              onChangeText={text => this.updateField('firstName', text)}
             />
             <Input
               value={this.state.lastName}
               placeholder="Last name*"
-              onChangeText={text => this.setState({ isPristine: false, lastName: text })}
+              onChangeText={text => this.updateField('lastName', text)}
             />
             <Input
               value={this.state.password}
               placeholder="Password"
-              onChangeText={text => this.setState({ isPristine: false, password: text })}
+              onChangeText={text => this.updateField('password', text)}
               autoCorrect={false}
               secureTextEntry
             />
             <Input
               value={this.state.verifyPassword}
               placeholder="Verify password"
-              onChangeText={text => this.setState({ isPristine: false, verifyPassword: text })}
+              onChangeText={text => this.updateField('verifyPassword', text)}
               autoCorrect={false}
               secureTextEntry
             />
