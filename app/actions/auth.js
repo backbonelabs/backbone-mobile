@@ -120,9 +120,7 @@ export default {
         body: JSON.stringify({ accessToken }),
       })
         .then(response => response.json()
-          .then(body => {
-            dispatch(verifyAccessToken(body));
-          })
+          .then(body => dispatch(verifyAccessToken(body)))
         )
         .catch(() => {
           // Network error
@@ -139,9 +137,7 @@ export default {
       return Fetcher.get({
         url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
       })
-        .then(response => {
-          dispatch(checkEmailConfirmation(response.ok));
-        })
+        .then(response => dispatch(checkEmailConfirmation(response.ok)))
         .catch(() => {
           dispatch(checkEmailConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
