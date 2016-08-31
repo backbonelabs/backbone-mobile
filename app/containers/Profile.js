@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  View,
+} from 'react-native';
 import { connect } from 'react-redux';
 import { get, isEmpty, isEqual, pick } from 'lodash';
 import Input from '../components/Input';
@@ -11,7 +15,9 @@ const { PropTypes } = React;
 
 class Profile extends Component {
   static propTypes = {
-    dispatch: React.PropTypes.func,
+    dispatch: PropTypes.func,
+    isFetching: PropTypes.bool,
+    isUpdating: PropTypes.bool,
     user: PropTypes.shape({
       _id: PropTypes.string,
       firstName: PropTypes.string,
@@ -72,37 +78,45 @@ class Profile extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.innerContainer}>
-          <Input
-            value={this.state.firstName}
-            placeholder="First name*"
-            onChangeText={text => this.setState({ isPristine: false, firstName: text })}
+        {this.props.isFetching || this.props.isUpdating ?
+          <ActivityIndicator
+            animating
+            size="large"
+            color={styles._activityIndicator.color}
           />
-          <Input
-            value={this.state.lastName}
-            placeholder="Last name*"
-            onChangeText={text => this.setState({ isPristine: false, lastName: text })}
-          />
-          <Input
-            value={this.state.password}
-            placeholder="Password"
-            onChangeText={text => this.setState({ isPristine: false, password: text })}
-            autoCorrect={false}
-            secureTextEntry
-          />
-          <Input
-            value={this.state.verifyPassword}
-            placeholder="Verify password"
-            onChangeText={text => this.setState({ isPristine: false, verifyPassword: text })}
-            autoCorrect={false}
-            secureTextEntry
-          />
-          <Button
-            disabled={this.state.isPristine || !this.isValid()}
-            onPress={this.update}
-            text="Save"
-          />
-        </ScrollView>
+          :
+          <ScrollView style={styles.innerContainer}>
+            <Input
+              value={this.state.firstName}
+              placeholder="First name*"
+              onChangeText={text => this.setState({ isPristine: false, firstName: text })}
+            />
+            <Input
+              value={this.state.lastName}
+              placeholder="Last name*"
+              onChangeText={text => this.setState({ isPristine: false, lastName: text })}
+            />
+            <Input
+              value={this.state.password}
+              placeholder="Password"
+              onChangeText={text => this.setState({ isPristine: false, password: text })}
+              autoCorrect={false}
+              secureTextEntry
+            />
+            <Input
+              value={this.state.verifyPassword}
+              placeholder="Verify password"
+              onChangeText={text => this.setState({ isPristine: false, verifyPassword: text })}
+              autoCorrect={false}
+              secureTextEntry
+            />
+            <Button
+              disabled={this.state.isPristine || !this.isValid()}
+              onPress={this.update}
+              text="Save"
+            />
+          </ScrollView>
+        }
       </View>
     );
   }
