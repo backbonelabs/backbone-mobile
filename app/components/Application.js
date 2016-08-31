@@ -11,7 +11,6 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
