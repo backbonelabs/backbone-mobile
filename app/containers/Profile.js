@@ -54,6 +54,11 @@ class Profile extends Component {
         lastName: nextProps.user.lastName,
       });
     }
+
+    // Reset pristine flag after updating profile
+    if (this.props.isUpdating && !nextProps.isUpdating && !nextProps.errorMessage) {
+      this.setState({ isPristine: true });
+    }
   }
 
   isValid() {
