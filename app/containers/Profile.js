@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   ScrollView,
   View,
 } from 'react-native';
@@ -16,6 +17,7 @@ const { PropTypes } = React;
 class Profile extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
+    errorMessage: PropTypes.string,
     isFetching: PropTypes.bool,
     isUpdating: PropTypes.bool,
     user: PropTypes.shape({
@@ -44,7 +46,9 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(this.props.user, nextProps.user)) {
+    if (!this.props.errorMessage && nextProps.errorMessage) {
+      Alert.alert('Error', nextProps.errorMessage);
+    } else if (!isEqual(this.props.user, nextProps.user)) {
       this.setState({
         firstName: nextProps.user.firstName,
         lastName: nextProps.user.lastName,
