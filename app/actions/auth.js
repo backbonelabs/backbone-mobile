@@ -119,9 +119,11 @@ export default {
         url: `${Environment.API_SERVER_URL}/auth/verify`,
         body: JSON.stringify({ accessToken }),
       })
-        .then(response => {
-          dispatch(verifyAccessToken(response.ok)); // response.ok is true when status code is 2xx
-        })
+        .then(response => response.json()
+          .then(body => {
+            dispatch(verifyAccessToken(body));
+          })
+        )
         .catch(() => {
           // Network error
           dispatch(verifyAccessTokenError(

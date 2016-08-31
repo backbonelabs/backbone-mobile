@@ -8,6 +8,7 @@ export default (state = {
   errorMessage: null,
   isVerifyingAccessToken: false,
   isValidAccessToken: false,
+  userId: null,
 }, action) => {
   switch (action.type) {
     case 'FETCH_ACCESS_TOKEN__START': {
@@ -88,7 +89,9 @@ export default (state = {
         ...state,
         isVerifyingAccessToken: false,
         errorMessage: null,
-        isValidAccessToken: action.payload,
+        accessToken: action.payload.accessToken,
+        isValidAccessToken: action.payload.isValid,
+        userId: action.payload.userId,
       };
     }
     case 'VERIFY_ACCESS_TOKEN__ERROR': {
