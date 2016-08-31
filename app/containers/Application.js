@@ -11,11 +11,10 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { pick } from 'lodash';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Menu from './Menu';
+import Menu from '../components/Menu';
 import routes from '../routes';
 import styles from '../styles/application';
 import constants from '../utils/constants';
@@ -165,7 +164,11 @@ class Application extends Component {
       <Drawer
         type="displace"
         content={<Menu
-          menuItems={pick(routes, ['activity', 'posture'])}
+          menuItems={{
+            activity: routes.activity.activityDashboard,
+            posture: routes.posture.postureDashboard,
+            profile: routes.profile,
+          }}
           navigate={route => this.navigate(route)}
         />}
         openDrawerOffset={0.3} // right margin when drawer is opened

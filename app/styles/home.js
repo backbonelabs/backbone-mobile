@@ -15,6 +15,7 @@ export default EStyleSheet.create({
   },
   body: {
     flex: 0.11,
+    width: '100%',
   },
   background: {
     position: 'absolute',
