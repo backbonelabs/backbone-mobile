@@ -38,7 +38,7 @@ class Login extends Component {
       this.saveAccessToken(nextProps.accessToken);
 
       // Redirect to Home
-      this.props.navigator.replace(routes.deviceConnect);
+      this.props.navigator.replace(routes.posture.postureDashboard);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', nextProps.errorMessage);
