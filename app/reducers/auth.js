@@ -24,6 +24,7 @@ export default (state = {
         isFetchingAccessToken: false,
         errorMessage: null,
         accessToken: action.payload.accessToken,
+        userId: action.payload._id,
       };
     }
     case 'FETCH_ACCESS_TOKEN__ERROR': {
