@@ -46,18 +46,28 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    let stateChanges = {};
+
     if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
     } else if (!isEqual(this.props.user, nextProps.user)) {
-      this.setState({
+      stateChanges = {
+        ...stateChanges,
         firstName: nextProps.user.firstName,
         lastName: nextProps.user.lastName,
-      });
+      };
     }
 
     // Reset pristine flag after updating profile
     if (this.props.isUpdating && !nextProps.isUpdating && !nextProps.errorMessage) {
-      this.setState({ isPristine: true });
+      stateChanges = {
+        ...stateChanges,
+        isPristine: true,
+      };
+    }
+
+    if (!isEmpty(stateChanges)) {
+      this.setState(stateChanges);
     }
   }
 
