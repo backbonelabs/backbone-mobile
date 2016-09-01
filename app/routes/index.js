@@ -7,7 +7,6 @@ import confirmEmail from './confirmEmail';
 import posture from './posture';
 import tutorial from './tutorial';
 import profile from './profile';
-import list from './list';
 
 export default {
   activity,
@@ -19,5 +18,4 @@ export default {
   confirmEmail,
   tutorial,
   profile,
-  list,
 };
