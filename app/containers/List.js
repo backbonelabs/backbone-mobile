@@ -11,7 +11,7 @@ export default class DeviceList extends Component {
     dataBlob: React.PropTypes.array,
     onPressRow: React.PropTypes.func,
     formatRowData: React.PropTypes.func,
-    getRowData: React.PropTypes.func,
+    refreshRowData: React.PropTypes.func,
   };
 
   static defaultProps = { dataBlob: [] };
