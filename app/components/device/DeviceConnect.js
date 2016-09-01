@@ -133,7 +133,7 @@ export default class DeviceConnect extends Component {
     });
   }
 
-  formatDevices(rowData) {
+  formatDeviceRow(rowData) {
     return (
       <View>
         <Text style={styles.deviceName}>{rowData.name}</Text>
@@ -149,7 +149,7 @@ export default class DeviceConnect extends Component {
           <List
             dataBlob={this.state.deviceList}
             onPressRow={this.selectDevice}
-            formatRowData={this.formatDevices}
+            formatRowData={this.formatDeviceRow}
             getRowData={this.rescanForDevices}
           />
         }

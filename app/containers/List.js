@@ -17,7 +17,6 @@ export default class DeviceList extends Component {
   static defaultProps = { dataBlob: [] };
 
   constructor(props) {
-    console.log('hello', props);
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = { dataSource: this.ds.cloneWithRows(this.props.dataBlob) };
@@ -25,7 +24,6 @@ export default class DeviceList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('next', nextProps);
     this.setState({ dataSource: this.state.dataSource.cloneWithRows(nextProps.dataBlob) });
   }
 
