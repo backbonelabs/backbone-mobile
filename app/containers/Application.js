@@ -14,6 +14,7 @@ import {
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { clone } from 'lodash';
 import Menu from '../components/Menu';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -91,6 +92,7 @@ class Application extends Component {
     this.configureScene = this.configureScene.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
+    this.navigator = null;
   }
 
   componentWillMount() {
@@ -151,10 +153,22 @@ class Application extends Component {
 
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
+
+    // Alter the push method on the navigator object to include a timestamp for
+    // each route in the route stack so that each route in the stack is unique.
+    // This prevents React errors when a route is in the stack multiple times.
+    if (!this.navigator) {
+      this.navigator = clone(navigator);
+      this.navigator._push = this.navigator.push; // the original push method
+      this.navigator.push = function push(routeObj) {
+        return this._push({ ...routeObj, key: Date.now() });
+      };
+    }
+
     return (
       <View style={{ flex: 1 }}>
         <StatusBar />
-        <RouteComponent navigator={navigator} currentRoute={route} {...route.passProps} />
+        <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
       </View>
     );
   }
@@ -177,9 +191,6 @@ class Application extends Component {
         acceptPan={false}
       >
         <Navigator
-          ref={ref => {
-            this.navigator = ref;
-          }}
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
           initialRoute={routes.home}
