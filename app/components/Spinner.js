@@ -1,15 +1,8 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  View,
-} from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import styles from '../styles/spinner';
 
-const Spinner = props => (
-  <View style={styles.container}>
-    <ActivityIndicator color={styles._spinner.color} {...props} />
-  </View>
-);
+const Spinner = props => <ActivityIndicator color={styles._spinner.color} {...props} />;
 
 const { PropTypes } = React;
 Spinner.propTypes = {
