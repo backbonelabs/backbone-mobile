@@ -148,9 +148,8 @@ export default class DeviceConnect extends Component {
         { this.state.newDevice &&
           <List
             dataBlob={this.state.deviceList}
-            onPressRow={this.selectDevice}
             formatRowData={this.formatDeviceRow}
-            refreshRowData={this.rescanForDevices}
+            onPressRow={this.selectDevice}
           />
         }
         <Modal
