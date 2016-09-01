@@ -6,12 +6,11 @@ import {
 } from 'react-native';
 import styles from '../styles/list';
 
-export default class DeviceList extends Component {
+export default class List extends Component {
   static propTypes = {
-    dataBlob: React.PropTypes.array,
+    dataBlob: React.PropTypes.array.isRequired,
+    formatRowData: React.PropTypes.func.isRequired,
     onPressRow: React.PropTypes.func,
-    formatRowData: React.PropTypes.func,
-    refreshRowData: React.PropTypes.func,
   };
 
   static defaultProps = { dataBlob: [] };
@@ -29,7 +28,14 @@ export default class DeviceList extends Component {
 
   renderRow(rowData) {
     return (
-      <TouchableOpacity style={styles.rowButton} onPress={() => this.props.onPressRow(rowData)}>
+      <TouchableOpacity
+        style={styles.rowButton}
+        onPress={() => {
+          if (this.props.onPressRow) {
+            this.props.onPressRow(rowData);
+          }
+        }}
+      >
         { this.props.formatRowData(rowData) }
       </TouchableOpacity>
     );
