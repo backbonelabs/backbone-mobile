@@ -70,8 +70,8 @@ export default class PostureCalibrate extends Component {
   }
 
   render() {
-    let buttonText = this.state.isCalibrating ? 'Stop' : 'Calibrate';
-    let onPressHandler = this.state.isCalibrating ? this.stopCalibration : this.startCalibration;
+    const buttonText = this.state.isCalibrating ? 'Stop' : 'Calibrate';
+    const onPressHandler = this.state.isCalibrating ? this.stopCalibration : this.startCalibration;
 
     return (
       <View style={styles.container}>
