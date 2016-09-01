@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   ScrollView,
   View,
@@ -9,6 +8,7 @@ import { connect } from 'react-redux';
 import { get, isEmpty, isEqual, pick } from 'lodash';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
 import styles from '../styles/profile';
 
@@ -112,11 +112,7 @@ class Profile extends Component {
     return (
       <View style={styles.container}>
         {this.props.isFetching || this.props.isUpdating ?
-          <ActivityIndicator
-            animating
-            size="large"
-            color={styles._activityIndicator.color}
-          />
+          <Spinner />
           :
           <ScrollView style={styles.innerContainer}>
             <Input

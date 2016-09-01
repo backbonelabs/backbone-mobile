@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
+import Spinner from './Spinner';
 import styles from '../styles/confirmEmail';
 import postureRoutes from '../routes/posture';
 import authActions from '../actions/auth';
@@ -36,11 +36,7 @@ class ConfirmEmail extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator
-          animating
-          size="large"
-          color={styles._activityIndicator.color}
-        />
+        <Spinner />
         <Text style={styles.confirmText}>
           Check your email inbox and click on the confirmation link!
         </Text>

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   View,
   Text,
-  TextInput,
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
+import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
@@ -63,11 +62,7 @@ class Login extends Component {
     return (
       <View style={styles.container}>
       {this.props.isFetchingAccessToken ?
-        <ActivityIndicator
-          animating
-          size="large"
-          color={styles._activityIndicator.color}
-        />
+        <Spinner />
         :
         <View style={styles.formContainer}>
           <Input

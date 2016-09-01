@@ -10,7 +10,4 @@ export default EStyleSheet.create({
     fontSize: '1rem',
     textAlign: 'center',
   },
-  activityIndicator: {
-    color: '$primaryColor',
-  },
 });

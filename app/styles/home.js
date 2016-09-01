@@ -15,15 +15,13 @@ export default EStyleSheet.create({
   },
   body: {
     flex: 0.11,
+    justifyContent: 'center',
     width: '100%',
   },
   background: {
     position: 'absolute',
     width: '100%',
     height: '100%',
-  },
-  activityIndicator: {
-    color: '$primaryColor',
   },
   footer: {
     flex: 0.09,

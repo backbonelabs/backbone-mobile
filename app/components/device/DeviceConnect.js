@@ -3,31 +3,15 @@ import {
   View,
   Modal,
   NativeModules,
-  ActivityIndicator,
   NativeAppEventEmitter,
 } from 'react-native';
 import routes from '../../routes';
 import styles from '../../styles/device/deviceConnect';
+import Spinner from '../Spinner';
 import DeviceList from './DeviceList';
 import DeviceError from './DeviceError';
 
 const { DeviceManagementService } = NativeModules;
-
-function InProgress(props) {
-  return (
-    <View style={styles.progressContainer}>
-      <ActivityIndicator
-        animating
-        size="large"
-        color={props.color}
-      />
-    </View>
-  );
-}
-
-InProgress.propTypes = {
-  color: React.PropTypes.string,
-};
 
 export default class DeviceConnect extends Component {
   static propTypes = {
@@ -174,7 +158,9 @@ export default class DeviceConnect extends Component {
               retryConnect={this.retryConnect}
               deviceError={this.state.deviceError}
             />) :
-            <InProgress color={styles._activityIndicator.color} />
+            <View style={styles.progressContainer}>
+              <Spinner />
+            </View>
           }
         </Modal>
       </View>
