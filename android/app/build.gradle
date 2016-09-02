@@ -96,6 +96,14 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+    signingConfigs {
+        release {
+            storeFile file(BACKBONE_RELEASE_STORE_FILE)
+            storePassword BACKBONE_RELEASE_STORE_PASSWORD
+            keyAlias BACKBONE_RELEASE_KEY_ALIAS
+            keyPassword BACKBONE_RELEASE_KEY_PASSWORD
+        }
+    }
     splits {
         abi {
             reset()
@@ -112,6 +120,7 @@ android {
             buildConfigField "String", "API_SERVER_URL", '"https://api.gobackbone.com"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
