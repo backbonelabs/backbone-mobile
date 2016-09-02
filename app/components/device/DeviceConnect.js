@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  Text,
   Modal,
   NativeModules,
   NativeAppEventEmitter,
@@ -8,7 +9,7 @@ import {
 import routes from '../../routes';
 import styles from '../../styles/device/deviceConnect';
 import Spinner from '../Spinner';
-import DeviceList from './DeviceList';
+import List from '../../containers/List';
 import DeviceError from './DeviceError';
 
 const { DeviceManagementService } = NativeModules;
@@ -42,7 +43,7 @@ export default class DeviceConnect extends Component {
 
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === 2) {
-        this.props.navigator.push(routes.posture);
+        this.props.navigator.push(routes.posture.postureDashboard);
       } else {
         this.getSavedDevice();
       }
@@ -70,7 +71,7 @@ export default class DeviceConnect extends Component {
       // TODO: Refactor to use new status shape: { isConnected: boolean, message: string }
       this.setState({ inProgress: false }, () => {
         if (!status.message) {
-          this.props.navigator.push(routes.posture);
+          this.props.navigator.push(routes.posture.postureDashboard);
         } else {
           this.deviceError(status);
         }
@@ -100,9 +101,9 @@ export default class DeviceConnect extends Component {
     });
   }
 
-  selectDevice(deviceIdentifier) {
+  selectDevice(deviceData) {
     this.setState({ inProgress: true }, () => {
-      DeviceManagementService.selectDevice(deviceIdentifier, (error) => {
+      DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
         if (!error) {
           this.connectToDevice();
         } else {
@@ -132,17 +133,24 @@ export default class DeviceConnect extends Component {
     });
   }
 
+  formatDeviceRow(rowData) {
+    return (
+      <View>
+        <Text style={styles.deviceName}>{rowData.name}</Text>
+        <Text style={styles.deviceID}>{rowData.identifier}</Text>
+      </View>
+    );
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        { this.state.newDevice ?
-          (<DeviceList
-            deviceList={this.state.deviceList}
-            selectDevice={this.selectDevice}
-            rescanForDevices={this.rescanForDevices}
-            inProgress={this.state.inProgress}
-          />) :
-          <View />
+        { this.state.newDevice &&
+          <List
+            dataBlob={this.state.deviceList}
+            formatRowData={this.formatDeviceRow}
+            onPressRow={this.selectDevice}
+          />
         }
         <Modal
           animationType="fade"

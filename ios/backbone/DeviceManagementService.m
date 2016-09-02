@@ -85,14 +85,12 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
     }
     
     for (MBLMetaWear *device in array) {
-      if (device.discoveryTimeRSSI.integerValue >= -60) {
         _deviceCollection[[device.identifier UUIDString]] = device;
         [deviceList addObject: @{
                                  @"name": device.name,
                                  @"identifier": [device.identifier UUIDString],
                                  @"RSSI": device.discoveryTimeRSSI,
                                  }];
-      }
     }
     [NSThread sleepForTimeInterval:1.0f];
     [self devicesFound:deviceList];
