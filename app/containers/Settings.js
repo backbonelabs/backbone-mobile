@@ -11,7 +11,7 @@ import { get, isEmpty, isEqual, pick } from 'lodash';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
-import styles from '../styles/profile';
+import styles from '../styles/settings';
 
 const { PropTypes } = React;
 
@@ -33,7 +33,6 @@ class Settings extends Component {
       isPristine: true,
       settings: get(this.props.user, 'settings'),
     };
-    this.isValid = this.isValid.bind(this);
     this.update = this.update.bind(this);
     this.updateSettings = this.updateSettings.bind(this);
   }
@@ -44,6 +43,7 @@ class Settings extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log('nextProps', nextProps);
     let stateChanges = {};
 
     if (!this.props.errorMessage && nextProps.errorMessage) {
@@ -66,14 +66,6 @@ class Settings extends Component {
     if (!isEmpty(stateChanges)) {
       this.setState(stateChanges);
     }
-  }
-
-  isValid() {
-    const {
-      settings,
-    } = this.state;
-
-    return !isEmpty(settings);
   }
 
   update() {
@@ -108,6 +100,9 @@ class Settings extends Component {
               <Text>Posture Threshold</Text>
               <Slider
                 style={styles.slider}
+                minimumValue={0.1}
+                maximumValue={1}
+                step={0.01}
                 value={this.state.settings && this.state.settings.postureThreshold}
                 onSlidingComplete={(value) =>
                   this.updateSettings('settings', { postureThreshold: value })
@@ -115,7 +110,7 @@ class Settings extends Component {
               />
             </View>
             <Button
-              disabled={this.state.isPristine || !this.isValid()}
+              disabled={this.state.isPristine}
               onPress={this.update}
               text="Save"
             />
