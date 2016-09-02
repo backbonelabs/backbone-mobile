@@ -182,6 +182,7 @@ class Application extends Component {
             activity: routes.activity.activityDashboard,
             posture: routes.posture.postureDashboard,
             profile: routes.profile,
+            settings: routes.settings,
           }}
           navigate={route => this.navigate(route)}
         />}
