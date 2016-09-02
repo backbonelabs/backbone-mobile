@@ -43,7 +43,6 @@ class Settings extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps', nextProps);
     let stateChanges = {};
 
     if (!this.props.errorMessage && nextProps.errorMessage) {
