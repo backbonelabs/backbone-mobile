@@ -165,6 +165,8 @@ export default {
       ...userSettingsUpdateFields,
     } = user;
 
+    const { postureThreshold } = userSettingsUpdateFields.settings;
+
     return (dispatch, getState) => {
       const state = getState();
       const { accessToken } = state.auth;
@@ -174,7 +176,7 @@ export default {
       return Fetcher.post({
         url: `${settingsUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify(userSettingsUpdateFields),
+        body: JSON.stringify({ postureThreshold }),
       })
         .then(response => response.json()
           .then(body => {
