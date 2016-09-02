@@ -10,7 +10,4 @@ export default EStyleSheet.create({
   innerContainer: {
     width: '90%',
   },
-  slider: {
-    backgroundColor: '$primaryColor',
-  },
 });
