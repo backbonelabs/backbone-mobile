@@ -27,6 +27,28 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
+    case 'FETCH_USER_SETTINGS__START': {
+      return {
+        ...state,
+        isFetching: true,
+        errorMessage: null,
+      };
+    }
+    case 'FETCH_USER_SETTINGS': {
+      return {
+        ...state,
+        isFetching: false,
+        user: action.payload,
+        errorMessage: null,
+      };
+    }
+    case 'FETCH_USER_SETTINGS__ERROR': {
+      return {
+        ...state,
+        isFetching: false,
+        errorMessage: action.payload.message,
+      };
+    }
     case 'UPDATE_USER__START': {
       return {
         ...state,
@@ -46,6 +68,28 @@ export default (state = {
       return {
         ...state,
         isUpdating: false,
+        errorMessage: action.payload.message,
+      };
+    }
+    case 'UPDATE_USER_SETTINGS__START': {
+      return {
+        ...state,
+        isFetching: true,
+        errorMessage: null,
+      };
+    }
+    case 'UPDATE_USER_SETTINGS': {
+      return {
+        ...state,
+        isFetching: false,
+        user: action.payload,
+        errorMessage: null,
+      };
+    }
+    case 'UPDATE_USER_SETTINGS__ERROR': {
+      return {
+        ...state,
+        isFetching: false,
         errorMessage: action.payload.message,
       };
     }
