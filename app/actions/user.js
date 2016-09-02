@@ -3,7 +3,7 @@ import Fetcher from '../utils/Fetcher';
 
 const { Environment } = NativeModules;
 const baseUrl = `${Environment.API_SERVER_URL}/users`;
-const settingsUrl = `${Environment.API_SERVER_URL}/users/settings`;
+const settingsUrl = `${baseUrl}/settings`;
 
 const fetchUserStart = () => ({ type: 'FETCH_USER__START' });
 
