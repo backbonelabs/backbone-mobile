@@ -23,32 +23,24 @@ class Settings extends Component {
     isUpdating: PropTypes.bool,
     user: PropTypes.shape({
       _id: PropTypes.string,
-      postureThreshold: PropTypes.string,
-    }),
-  };
-
-  static defaultProps = {
-    user: PropTypes.shape({
-      _id: undefined,
-      postureThreshold: 20,
+      settings: PropTypes.object,
     }),
   };
 
   constructor(props) {
     super(props);
-    console.log('props ', props);
     this.state = {
       isPristine: true,
-      postureThreshold: get(this.props.user, 'postureThreshold'),
+      settings: get(this.props.user, 'settings'),
     };
     this.isValid = this.isValid.bind(this);
     this.update = this.update.bind(this);
-    this.updateConfig = this.updateConfig.bind(this);
+    this.updateSettings = this.updateSettings.bind(this);
   }
 
   componentWillMount() {
     // Fetch latest user profile info
-    this.props.dispatch(userActions.fetchUser());
+    this.props.dispatch(userActions.fetchUserSettings());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -59,7 +51,7 @@ class Settings extends Component {
     } else if (!isEqual(this.props.user, nextProps.user)) {
       stateChanges = {
         ...stateChanges,
-        postureThreshold: nextProps.user.postureThreshold,
+        settings: nextProps.user.settings,
       };
     }
 
@@ -72,23 +64,22 @@ class Settings extends Component {
     }
 
     if (!isEmpty(stateChanges)) {
-      console.log('state changes ', stateChanges);
       this.setState(stateChanges);
     }
   }
 
   isValid() {
     const {
-      postureThreshold,
+      settings,
     } = this.state;
 
-    return !isEmpty(postureThreshold);
+    return !isEmpty(settings);
   }
 
   update() {
-    const updatedFields = pick(this.state, ['postureThreshold']);
+    const updatedFields = pick(this.state, ['settings']);
 
-    this.props.dispatch(userActions.updateUserConfig({
+    this.props.dispatch(userActions.updateUserSettings({
       _id: this.props.user._id,
       ...updatedFields,
     }));
@@ -99,7 +90,7 @@ class Settings extends Component {
    * @param {String} field
    * @param {String} value
    */
-  updateConfig(field, value) {
+  updateSettings(field, value) {
     this.setState({
       isPristine: false,
       [field]: value,
@@ -114,10 +105,13 @@ class Settings extends Component {
           :
           <ScrollView style={styles.innerContainer}>
             <View style={styles.postureThreshold}>
-              <Text>Posture Threshold ({this.state.postureThreshold})</Text>
+              <Text>Posture Threshold</Text>
               <Slider
                 style={styles.slider}
-                value={this.state.postureThreshold}
+                value={this.state.settings && this.state.settings.postureThreshold}
+                onSlidingComplete={(value) =>
+                  this.updateSettings('settings', { postureThreshold: value })
+                }
               />
             </View>
             <Button
