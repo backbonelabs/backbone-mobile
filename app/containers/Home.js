@@ -19,53 +19,57 @@ import authActions from '../actions/auth';
 class Home extends Component {
   static propTypes = {
     auth: React.PropTypes.shape({
-      isValidAccessToken: React.PropTypes.bool,
-      isVerifyingAccessToken: React.PropTypes.bool,
+      accessToken: React.PropTypes.string,
+      isFetchingAccessToken: React.PropTypes.bool,
     }),
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
-
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      isFetchingAccessToken: true,
+      isInitializing: true,
     };
     this.getMainBody = this.getMainBody.bind(this);
   }
 
   componentWillMount() {
-    // Attempt to find a previously saved access token
-    // An access token would have been saved on a successful login
+    // This is the initialization process where we check if there
+    // is a stored access token. An access token would have been saved
+    // on a previously successful login.
     SensitiveInfo.getItem('accessToken')
       .then(accessToken => {
-        this.setState({ isFetchingAccessToken: false, accessToken });
-
         if (accessToken) {
           // There is a saved access token
-          // Verify with API server if access token is valid
-          this.props.dispatch(authActions.verifyAccessToken(accessToken));
+          // Attempt to log in using the access token
+          this.props.dispatch(authActions.login({ accessToken }));
         }
       })
+      .then(() => {
+        this.setState({ isInitializing: false });
+      })
       .catch(() => {
-        this.setState({ isFetchingAccessToken: false });
+        this.setState({ isInitializing: false });
       });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.auth.isVerifyingAccessToken &&
-      !nextProps.auth.isVerifyingAccessToken &&
-      !nextProps.auth.errorMessage &&
-      !nextProps.auth.isValidAccessToken) {
-      // Access token is invalid
-      // Delete from local device to prevent unnecessary API calls on subsequent app load
-      SensitiveInfo.deleteItem('accessToken');
+    if (this.props.auth.isFetchingAccessToken && !nextProps.auth.isFetchingAccessToken) {
+      // Finished login attempt
+      if (nextProps.auth.errorMessage) {
+        // Access token is invalid
+        // Delete from local device to prevent unnecessary API calls on subsequent app load
+        SensitiveInfo.deleteItem('accessToken');
+      } else {
+        // Successful login, save new access token
+        SensitiveInfo.setItem('accessToken', nextProps.auth.accessToken);
+      }
     }
   }
 
   getMainBody() {
-    if (this.state.accessToken && this.props.auth.isValidAccessToken) {
+    if (this.props.auth.accessToken) {
       return (
         <Button
           onPress={() => { this.props.navigator.push(routes.device.deviceConnect); }}
@@ -89,14 +93,14 @@ class Home extends Component {
           <Image style={styles.logo} source={logo} />
         </View>
         <View style={styles.body}>
-          {this.state.isFetchingAccessToken || this.props.auth.isVerifyingAccessToken ?
+          {this.state.isInitializing || this.props.auth.isFetchingAccessToken ?
             <Spinner />
             :
             this.getMainBody()
           }
         </View>
         <View style={styles.footer}>
-          {this.state.accessToken && this.props.auth.isValidAccessToken ?
+          {this.props.auth.accessToken ?
             // This conditional block for deleting the access token is for temporary
             // testing purposes only. Remove this entire conditional block after
             // implementing a logout component.
