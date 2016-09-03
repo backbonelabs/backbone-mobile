@@ -3,28 +3,15 @@ import Fetcher from '../utils/Fetcher';
 
 const { Environment } = NativeModules;
 
-const fetchAccessTokenStart = () => ({ type: 'FETCH_ACCESS_TOKEN__START' });
+const loginStart = () => ({ type: 'LOGIN__START' });
 
-const fetchAccessToken = payload => ({
-  type: 'FETCH_ACCESS_TOKEN',
+const login = payload => ({
+  type: 'LOGIN',
   payload,
 });
 
-const fetchAccessTokenError = error => ({
-  type: 'FETCH_ACCESS_TOKEN__ERROR',
-  payload: error,
-  error: true,
-});
-
-const verifyAccessTokenStart = () => ({ type: 'VERIFY_ACCESS_TOKEN__START' });
-
-const verifyAccessToken = payload => ({
-  type: 'VERIFY_ACCESS_TOKEN',
-  payload,
-});
-
-const verifyAccessTokenError = error => ({
-  type: 'VERIFY_ACCESS_TOKEN__ERROR',
+const loginError = error => ({
+  type: 'LOGIN__ERROR',
   payload: error,
   error: true,
 });
@@ -58,7 +45,7 @@ const checkEmailConfirmationError = error => ({
 export default {
   login(user) {
     return dispatch => {
-      dispatch(fetchAccessTokenStart());
+      dispatch(loginStart());
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/login`,
         body: JSON.stringify(user),
@@ -67,17 +54,17 @@ export default {
           .then(body => {
             if (body.error) {
               // Error received from API server
-              dispatch(fetchAccessTokenError(
+              dispatch(loginError(
                 new Error(body.error)
               ));
             } else {
-              dispatch(fetchAccessToken(body));
+              dispatch(login(body));
             }
           })
         )
         .catch(() => {
           // Network error
-          dispatch(fetchAccessTokenError(
+          dispatch(loginError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });
@@ -106,25 +93,6 @@ export default {
         .catch(() => {
           // Network error
           dispatch(createUserAccountError(
-            new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
-    };
-  },
-
-  verifyAccessToken(accessToken) {
-    return dispatch => {
-      dispatch(verifyAccessTokenStart());
-      return Fetcher.post({
-        url: `${Environment.API_SERVER_URL}/auth/verify`,
-        body: JSON.stringify({ accessToken }),
-      })
-        .then(response => response.json()
-          .then(body => dispatch(verifyAccessToken(body)))
-        )
-        .catch(() => {
-          // Network error
-          dispatch(verifyAccessTokenError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });

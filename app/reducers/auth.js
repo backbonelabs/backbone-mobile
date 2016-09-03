@@ -6,19 +6,17 @@ export default (state = {
   isCreatingUserAccount: false,
   isCheckingEmailConfirmation: false,
   errorMessage: null,
-  isVerifyingAccessToken: false,
-  isValidAccessToken: false,
   userId: null,
 }, action) => {
   switch (action.type) {
-    case 'FETCH_ACCESS_TOKEN__START': {
+    case 'LOGIN__START': {
       return {
         ...state,
         isFetchingAccessToken: true,
         errorMessage: null,
       };
     }
-    case 'FETCH_ACCESS_TOKEN': {
+    case 'LOGIN': {
       return {
         ...state,
         isFetchingAccessToken: false,
@@ -27,7 +25,7 @@ export default (state = {
         userId: action.payload._id,
       };
     }
-    case 'FETCH_ACCESS_TOKEN__ERROR': {
+    case 'LOGIN__ERROR': {
       return {
         ...state,
         isFetchingAccessToken: false,
@@ -75,30 +73,6 @@ export default (state = {
       return {
         ...state,
         isCheckingEmailConfirmation: false,
-        errorMessage: action.payload.message,
-      };
-    }
-    case 'VERIFY_ACCESS_TOKEN__START': {
-      return {
-        ...state,
-        isVerifyingAccessToken: true,
-        errorMessage: null,
-      };
-    }
-    case 'VERIFY_ACCESS_TOKEN': {
-      return {
-        ...state,
-        isVerifyingAccessToken: false,
-        errorMessage: null,
-        accessToken: action.payload.accessToken,
-        isValidAccessToken: action.payload.isValid,
-        userId: action.payload.userId,
-      };
-    }
-    case 'VERIFY_ACCESS_TOKEN__ERROR': {
-      return {
-        ...state,
-        isVerifyingAccessToken: false,
         errorMessage: action.payload.message,
       };
     }
