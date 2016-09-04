@@ -1,3 +1,5 @@
+import { omit } from 'lodash';
+
 export default (state = {
   isFetching: false,
   isUpdating: false,
@@ -5,6 +7,12 @@ export default (state = {
   errorMessage: null,
 }, action) => {
   switch (action.type) {
+    case 'LOGIN': {
+      return {
+        ...state,
+        user: omit(action.payload, 'accessToken'),
+      };
+    }
     case 'FETCH_USER__START': {
       return {
         ...state,
