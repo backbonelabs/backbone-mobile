@@ -46,7 +46,12 @@ export default (state = {
       return {
         ...state,
         isFetching: false,
-        user: action.payload,
+        user: {
+          ...state.user,
+          settings: {
+            ...action.payload,
+          },
+        },
         errorMessage: null,
       };
     }
@@ -90,7 +95,12 @@ export default (state = {
       return {
         ...state,
         isFetching: false,
-        user: action.payload,
+        user: {
+          ...state.user,
+          settings: {
+            ...action.payload,
+          },
+        },
         errorMessage: null,
       };
     }
