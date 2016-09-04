@@ -20,7 +20,10 @@ static BOOL shouldSendNotifications;
   self.notificationName = AccelerometerNotification;
   self.sensor = @"accelerometer";
   self.calibrated = false;
-  self.distanceThreshold = 0.10;
+  self.isIncrementing = false;
+  self.distanceThreshold = 0.20;
+  self.time = 0;
+  self.timeThreshold = 5;
   self.tiltThreshold = 10;
   return self;
 }
@@ -49,7 +52,7 @@ static BOOL shouldSendNotifications;
   } else {
     // calculate tilt
     // tilt will be positive if leaning forward, negative if leaning backward
-    
+
     // check if current angle is in the upper or lower quadrants based on atan2
     if (self.currentAngle >= 0) {
       // current angle is in the upper quadrants
@@ -99,12 +102,33 @@ static BOOL shouldSendNotifications;
   [self.bridge.eventDispatcher sendAppEventWithName:@"PostureTilt" body:@{@"tilt": [NSNumber numberWithDouble:self.tilt]}];
 }
 
+- (void) incrementTime {
+  NSLog(@"Incrementing time");
+  self.isIncrementing = true;
+  self.time++;
+  [NSThread sleepForTimeInterval:1.0f];
+  self.isIncrementing = false;
+}
+
 - (void)handleDistance {
   // log distance if it exceeds the threshold
   if (fabs(self.controlDistance - self.currentDistance) >= self.distanceThreshold) {
-    NSLog(@"Control distance: %f, current distance: %f", self.controlDistance, self.currentDistance);
+    NSLog(@"Control distance: %f, current distance: %f, time: %f", self.controlDistance, self.currentDistance, self.time);
+    if (self.time >= self.timeThreshold) {
+      self.time = 0;
+      MBLMetaWear *device = [DeviceManagementService getDevice];
+      [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+    } else if (!self.isIncrementing) {
+      [self performSelectorInBackground:@selector(incrementTime) withObject:nil];
+    }
+  } else {
+    self.time = 0;
   }
-  [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{@"distance": [NSNumber numberWithDouble:self.currentDistance]}];
+  [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
+                                                                              @"currentDistance": [NSNumber numberWithDouble:self.currentDistance],
+                                                                              @"controlDistance": [NSNumber numberWithDouble:self.controlDistance],
+                                                                              @"slouchTime": [NSNumber numberWithDouble:self.time]
+                                                                              }];
 }
 
 
