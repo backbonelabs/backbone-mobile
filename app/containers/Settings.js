@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { get, isEmpty, isEqual, pick } from 'lodash';
+import { get, isEmpty, isEqual } from 'lodash';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
@@ -31,14 +31,14 @@ class Settings extends Component {
     super(props);
     this.state = {
       isPristine: true,
-      settings: get(this.props.user, 'settings'),
+      settings: get(this.props.user, 'settings', {}),
     };
     this.update = this.update.bind(this);
     this.updateSettings = this.updateSettings.bind(this);
   }
 
   componentWillMount() {
-    // Fetch latest user profile info
+    // Fetch latest user settings
     this.props.dispatch(userActions.fetchUserSettings());
   }
 
@@ -54,7 +54,7 @@ class Settings extends Component {
       };
     }
 
-    // Reset pristine flag after updating profile
+    // Reset pristine flag after updating settings
     if (this.props.isUpdating && !nextProps.isUpdating && !nextProps.errorMessage) {
       stateChanges = {
         ...stateChanges,
@@ -68,11 +68,9 @@ class Settings extends Component {
   }
 
   update() {
-    const updatedFields = pick(this.state, ['settings']);
-
     this.props.dispatch(userActions.updateUserSettings({
       _id: this.props.user._id,
-      ...updatedFields,
+      settings: this.state.settings,
     }));
   }
 
@@ -84,7 +82,7 @@ class Settings extends Component {
   updateSettings(field, value) {
     this.setState({
       isPristine: false,
-      [field]: value,
+      settings: Object.assign({}, this.state.settings, { [field]: value }),
     });
   }
 
@@ -102,10 +100,8 @@ class Settings extends Component {
                 minimumValue={0.1}
                 maximumValue={1}
                 step={0.01}
-                value={this.state.settings && this.state.settings.postureThreshold}
-                onSlidingComplete={(value) =>
-                  this.updateSettings('settings', { postureThreshold: value })
-                }
+                value={this.state.settings.postureThreshold}
+                onSlidingComplete={value => this.updateSettings('postureThreshold', value)}
               />
             </View>
             <Button
