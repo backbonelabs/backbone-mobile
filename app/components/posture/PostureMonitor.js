@@ -48,7 +48,7 @@ class PostureMonitor extends Component {
           const absoluteDistance = Math.abs(event.controlDistance - event.currentDistance);
           const isSlouching = gte(absoluteDistance, this.state.settings.postureThreshold);
 
-          if (isSlouching) {
+          if (isSlouching && this.state.settings.phoneVibration) {
             /**
              * Next PR will include toggling on/off vibration settings and fetching user settings
              * without the user having to go to the settings route (which is how it currently is)
