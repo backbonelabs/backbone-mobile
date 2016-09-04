@@ -56,7 +56,7 @@ class PostureMonitor extends Component {
           }
         });
       } else {
-        // TODO: Show an alert, modal, or send to Error component (tbd)
+        // TODO: Send to Error component (tbd)
         Alert.alert('Error', error.message);
       }
     });
