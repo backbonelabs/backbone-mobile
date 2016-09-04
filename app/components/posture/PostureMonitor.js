@@ -7,7 +7,7 @@ import {
   NativeAppEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { get, isFunction } from 'lodash';
+import { isFunction } from 'lodash';
 import Button from '../Button';
 import styles from '../../styles/posture/postureMonitor';
 
