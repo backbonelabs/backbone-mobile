@@ -45,10 +45,11 @@ RCT_EXPORT_METHOD(enableActivity:(NSString *)activityName callback:(RCTResponseS
 }
 
 // React Native components will call this when they need to disable a particular activity module.
-RCT_EXPORT_METHOD(disableActivity:(NSString *)activityName) {
+RCT_EXPORT_METHOD(disableActivity:(NSString *)activityName callback:(RCTResponseSenderBlock)callback) {
   NSLog(@"disableActivity");
   SensorDataService *sensorDataService = [SensorDataService getSensorDataService];
   [sensorDataService unregisterActivityByName:activityName];
+  callback(@[[NSNull null]]);
 }
 
 @end
