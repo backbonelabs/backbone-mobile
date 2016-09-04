@@ -87,14 +87,14 @@ export default (state = {
     case 'UPDATE_USER_SETTINGS__START': {
       return {
         ...state,
-        isFetching: true,
+        isUpdating: true,
         errorMessage: null,
       };
     }
     case 'UPDATE_USER_SETTINGS': {
       return {
         ...state,
-        isFetching: false,
+        isUpdating: false,
         user: {
           ...state.user,
           settings: {
@@ -107,7 +107,7 @@ export default (state = {
     case 'UPDATE_USER_SETTINGS__ERROR': {
       return {
         ...state,
-        isFetching: false,
+        isUpdating: false,
         errorMessage: action.payload.message,
       };
     }
