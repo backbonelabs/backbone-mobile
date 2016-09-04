@@ -8,12 +8,13 @@ import Spinner from './Spinner';
 import styles from '../styles/confirmEmail';
 import postureRoutes from '../routes/posture';
 import authActions from '../actions/auth';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 class ConfirmEmail extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
-    isConfirmed: React.PropTypes.bool,
     navigator: React.PropTypes.object,
+    accessToken: React.PropTypes.string,
     currentRoute: React.PropTypes.object,
   };
 
@@ -27,8 +28,9 @@ class ConfirmEmail extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.isConfirmed && nextProps.isConfirmed) {
+    if (!this.props.accessToken && nextProps.accessToken) {
       clearInterval(this.setPollingInterval);
+      SensitiveInfo.setItem('accessToken', nextProps.accessToken);
       this.props.navigator.replace(postureRoutes.postureDashboard);
     }
   }
