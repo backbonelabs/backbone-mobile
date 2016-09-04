@@ -1,7 +1,6 @@
 export default (state = {
   accessToken: null,
   isSignedup: false,
-  isConfirmed: false,
   isFetchingAccessToken: false,
   isCreatingUserAccount: false,
   isCheckingEmailConfirmation: false,
@@ -66,7 +65,8 @@ export default (state = {
         ...state,
         isCheckingEmailConfirmation: false,
         errorMessage: null,
-        isConfirmed: action.payload,
+        accessToken: action.payload.accessToken,
+        userId: action.payload._id,
       };
     }
     case 'CHECK_EMAIL_CONFIRMATION__ERROR': {

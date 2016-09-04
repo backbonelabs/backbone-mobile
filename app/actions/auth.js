@@ -105,7 +105,12 @@ export default {
       return Fetcher.get({
         url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
       })
-        .then(response => dispatch(checkEmailConfirmation(response.ok)))
+        .then(response => response.json())
+          .then(body => {
+            if (!body.error) {
+              dispatch(checkEmailConfirmation(body));
+            }
+          })
         .catch(() => {
           dispatch(checkEmailConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
