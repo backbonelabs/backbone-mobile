@@ -20,14 +20,15 @@ class PostureMonitor extends Component {
   static propTypes = {
     user: PropTypes.object,
     settings: PropTypes.shape({
-      postureThreshold: PropTypes.number,
       phoneVibration: PropTypes.bool,
+      postureThreshold: PropTypes.number,
     }),
   };
 
   constructor(props) {
     super(props);
     this.state = {
+      monitoring: null,
       settings: get(this.props.user, 'settings', {}),
     };
     this.postureListener = null;
@@ -46,24 +47,26 @@ class PostureMonitor extends Component {
   enablePostureActivity() {
     ActivityService.enableActivity(activityName, (error) => {
       if (!error) {
-        // Attach listener
-        this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
-          // Find absolute value of difference between controlDistance and currentDistance
-          const absoluteDistance = Math.abs(event.controlDistance - event.currentDistance);
+        this.setState({ monitoring: true }, () => {
+          // Attach listener
+          this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
+            // Find absolute value of difference between controlDistance and currentDistance
+            const absoluteDistance = Math.abs(event.controlDistance - event.currentDistance);
 
-          // User is slouching if absoluteDistance is greater than or equal to threshold
-          const isSlouching = gte(absoluteDistance, this.state.settings.postureThreshold);
+            // User is slouching if absoluteDistance is greater than or equal to threshold
+            const isSlouching = gte(absoluteDistance, this.state.settings.postureThreshold);
 
-          // If user is slouching and phone vibration is set to true, then vibrate phone
-          if (isSlouching && this.state.settings.phoneVibration) {
-            /**
-             * Next PR will include toggling on/off vibration settings and fetching user settings
-             * without the user having to go to the settings route (which is how it currently is)
-             */
-            Vibration.vibrate();
-          } else if (isSlouching && !this.state.settings.phoneVibration) {
-            // We may still want to do something here, even if phoneVibration isn't true
-          }
+            // If user is slouching and phone vibration is set to true, then vibrate phone
+            if (isSlouching && this.state.settings.phoneVibration) {
+              /**
+               * Next PR will include toggling on/off vibration settings and fetching user settings
+               * without the user having to go to the settings route (which is how it currently is)
+               */
+              Vibration.vibrate();
+            } else if (isSlouching && !this.state.settings.phoneVibration) {
+              // We may still want to do something here, even if phoneVibration isn't true
+            }
+          });
         });
       } else {
         // TODO: Send to Error component (tbd)
@@ -73,15 +76,25 @@ class PostureMonitor extends Component {
   }
 
   disablePostureActivity() {
-    // Disable activity and remove listener
-    ActivityService.disableActivity(activityName, () => this.postureListener.remove());
+    // Disable activity, set monitoring to false, and remove listener
+    ActivityService.disableActivity(activityName, () =>
+      this.setState({ monitoring: false }, () => this.postureListener.remove())
+    );
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Button text="Start" onPress={this.enablePostureActivity} />
-        <Button text="Stop" onPress={this.disablePostureActivity} />
+        <Button
+          text="Start"
+          onPress={this.enablePostureActivity}
+          disabled={this.state.monitoring}
+        />
+        <Button
+          text="Stop"
+          onPress={this.disablePostureActivity}
+          disabled={!this.state.monitoring}
+        />
       </View>
     );
   }
