@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Alert,
+  Vibration,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
@@ -20,6 +21,7 @@ class PostureMonitor extends Component {
     user: PropTypes.object,
     settings: PropTypes.shape({
       postureThreshold: PropTypes.number,
+      phoneVibration: PropTypes.bool,
     }),
   };
 
@@ -28,7 +30,7 @@ class PostureMonitor extends Component {
     this.state = {
       settings: get(this.props.user, 'settings', {}),
     };
-    this.postureDistance = null;
+    this.postureListener = null;
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
     this.disablePostureActivity = this.disablePostureActivity.bind(this);
   }
@@ -44,15 +46,23 @@ class PostureMonitor extends Component {
   enablePostureActivity() {
     ActivityService.enableActivity(activityName, (error) => {
       if (!error) {
-        this.postureDistance = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
+        // Attach listener
+        this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
+          // Find absolute value of difference between controlDistance and currentDistance
           const absoluteDistance = Math.abs(event.controlDistance - event.currentDistance);
+
+          // User is slouching if absoluteDistance is greater than or equal to threshold
           const isSlouching = gte(absoluteDistance, this.state.settings.postureThreshold);
 
+          // If user is slouching and phone vibration is set to true, then vibrate phone
           if (isSlouching && this.state.settings.phoneVibration) {
             /**
              * Next PR will include toggling on/off vibration settings and fetching user settings
              * without the user having to go to the settings route (which is how it currently is)
              */
+            Vibration.vibrate();
+          } else if (isSlouching && !this.state.settings.phoneVibration) {
+            // We may still want to do something here, even if phoneVibration isn't true
           }
         });
       } else {
@@ -63,7 +73,8 @@ class PostureMonitor extends Component {
   }
 
   disablePostureActivity() {
-    ActivityService.disableActivity(activityName, () => this.postureDistance.remove());
+    // Disable activity and remove listener
+    ActivityService.disableActivity(activityName, () => this.postureListener.remove());
   }
 
   render() {
