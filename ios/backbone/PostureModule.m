@@ -20,14 +20,18 @@ static BOOL shouldSendNotifications;
   self.notificationName = AccelerometerNotification;
   self.sensor = @"accelerometer";
   self.calibrated = false;
+  self.isIncrementing = false;
   self.distanceThreshold = 0.20;
+  self.time = 0;
+  self.slouchTime = 0;
+  self.slouchTimeThreshold = 5;
 //  self.tiltThreshold = 10;
   return self;
 }
 
 - (void)notify:(NSNotification *)notification {
   [super notify:notification];
-//  NSLog(@"Start PostureModule notify");
+  NSLog(@"Start PostureModule notify");
   NSDictionary *data = notification.userInfo;
   [self calculatePostureMetrics:data];
 //  [self handleTilt];
@@ -40,7 +44,7 @@ static BOOL shouldSendNotifications;
   double z = [[data objectForKey:@"z"] doubleValue];
 //  self.currentAngle = RADIANS_TO_DEGREES(atan2(x, z));
   self.currentDistance = sqrt(pow(z, 2) + pow(y, 2));
-
+  
   if (!self.calibrated) {
     // set baseline metrics
 //    self.controlAngle = self.currentAngle;
@@ -79,7 +83,7 @@ static BOOL shouldSendNotifications;
 //  if (self.tilt > self.tiltThreshold) {
 //    MBLMetaWear *device = [DeviceManagementService getDevice];
 //    [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:5];
-//
+//    
 //    if (shouldSendNotifications) {
 //      NSLog(@"Sending posture local notification");
 //      UILocalNotification *localNotif = [[UILocalNotification alloc] init];
@@ -89,9 +93,9 @@ static BOOL shouldSendNotifications;
 //        localNotif.userInfo = @{
 //                                @"module": self.name
 //                                };
-//
+//        
 //        [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
-//
+//        
 //        // Disable additional notifications until the next time the app goes to the background
 //        shouldSendNotifications = false;
 //      }
@@ -101,30 +105,53 @@ static BOOL shouldSendNotifications;
 //}
 
 - (void)handleDistance {
+  NSLog(@"Control distance: %f, current distance: %f, slouch time: %f", self.controlDistance, self.currentDistance, self.slouchTime);
   // log distance if it exceeds the threshold
   if (fabs(self.controlDistance - self.currentDistance) >= self.distanceThreshold) {
-    MBLMetaWear *device = [DeviceManagementService getDevice];
-    [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-    
-    if (shouldSendNotifications) {
-      NSLog(@"Sending posture local notification");
-      UILocalNotification *localNotif = [[UILocalNotification alloc] init];
-      if (localNotif) {
-        localNotif.alertBody = NSLocalizedString(@"Your posture is not optimal!", nil);
-        localNotif.soundName = UILocalNotificationDefaultSoundName;
-        localNotif.userInfo = @{
-                                @"module": self.name
-                                };
-        
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
-        
-        // Disable additional notifications until the next time the app goes to the background
-        shouldSendNotifications = false;
-      }
+    if (!self.time) {
+      self.time = [[NSDate date] timeIntervalSince1970];
+    } else {
+      self.slouchTime = [[NSDate date] timeIntervalSince1970] - self.time;
     }
-    NSLog(@"Control distance: %f, current distance: %f", self.controlDistance, self.currentDistance);
+    
+    if (self.slouchTime > self.slouchTimeThreshold) {
+      // Add call to emitPostureData, because of time and slouchTime reset
+      [self emitPostureData];
+      MBLMetaWear *device = [DeviceManagementService getDevice];
+      [device.hapticBuzzer startHapticWithDutyCycleAsync:255 pulseWidth:500 completion:nil];
+      self.time = 0;
+      self.slouchTime = 0;
+    }
+  } else {
+    self.time = 0;
+    self.slouchTime = 0;
   }
-  [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{@"currentDistance": [NSNumber numberWithDouble:self.currentDistance], @"controlDistance": [NSNumber numberWithDouble:self.controlDistance]}];
+  
+  if (shouldSendNotifications) {
+    NSLog(@"Sending posture local notification");
+    UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+    if (localNotif) {
+      localNotif.alertBody = NSLocalizedString(@"Your posture is not optimal!", nil);
+      localNotif.soundName = UILocalNotificationDefaultSoundName;
+      localNotif.userInfo = @{
+                              @"module": self.name
+                              };
+      
+      [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+      
+      // Disable additional notifications until the next time the app goes to the background
+      shouldSendNotifications = false;
+    }
+  }
+  [self emitPostureData];
+}
+
+- (void)emitPostureData {
+  [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
+                                                                              @"currentDistance": [NSNumber numberWithDouble:self.currentDistance],
+                                                                              @"controlDistance": [NSNumber numberWithDouble:self.controlDistance],
+                                                                              @"slouchTime": [NSNumber numberWithDouble: self.slouchTime]
+                                                                              }];
 }
 
 

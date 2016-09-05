@@ -165,7 +165,12 @@ export default {
       ...userSettingsUpdateFields,
     } = user;
 
-    const { postureThreshold } = userSettingsUpdateFields.settings;
+    const {
+      postureThreshold,
+      backboneVibration,
+      phoneVibration,
+      slouchTimeThreshold,
+    } = userSettingsUpdateFields.settings;
 
     return (dispatch, getState) => {
       const state = getState();
@@ -176,7 +181,12 @@ export default {
       return Fetcher.post({
         url: `${settingsUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ postureThreshold }),
+        body: JSON.stringify({
+          postureThreshold,
+          backboneVibration,
+          phoneVibration,
+          slouchTimeThreshold,
+        }),
       })
         .then(response => response.json()
           .then(body => {

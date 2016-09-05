@@ -22,6 +22,7 @@ class PostureMonitor extends Component {
     settings: PropTypes.shape({
       phoneVibration: PropTypes.bool,
       postureThreshold: PropTypes.number,
+      slouchTimeThreshold: PropTypes.number,
     }),
   };
 
@@ -48,7 +49,6 @@ class PostureMonitor extends Component {
       if (!error) {
         this.setState({ monitoring: true }, () => {
           const { settings } = this.props.user;
-
           // Attach listener
           this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
             // Find absolute value of difference between controlDistance and currentDistance
@@ -57,14 +57,17 @@ class PostureMonitor extends Component {
             // User is slouching if absoluteDistance is greater than or equal to threshold
             const isSlouching = (absoluteDistance >= settings.postureThreshold);
 
+            // Check if user slouch time is over slouch time threshold
+            const isOverSlouchTimeThreshold = (event.slouchTime >= settings.slouchTimeThreshold);
+
             // If user is slouching and phone vibration is set to true, then vibrate phone
-            if (isSlouching && settings.phoneVibration) {
+            if (isSlouching && settings.phoneVibration && isOverSlouchTimeThreshold) {
               /**
                * Next PR will include toggling on/off vibration settings and fetching user settings
                * without the user having to go to the settings route (which is how it currently is)
                */
               Vibration.vibrate();
-            } else if (isSlouching && !this.state.settings.phoneVibration) {
+            } else if (isSlouching && !settings.phoneVibration) {
               // We may still want to do something here, even if phoneVibration isn't true
             }
           });
