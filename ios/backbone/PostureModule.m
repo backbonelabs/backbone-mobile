@@ -38,15 +38,15 @@ static BOOL shouldSendNotifications;
 }
 
 - (void)calculatePostureMetrics:(NSDictionary *)data {
-  double x = [[data objectForKey:@"x"] doubleValue];
+//  double x = [[data objectForKey:@"x"] doubleValue];
   double y = [[data objectForKey:@"y"] doubleValue];
   double z = [[data objectForKey:@"z"] doubleValue];
-  self.currentAngle = RADIANS_TO_DEGREES(atan2(x, z));
+//  self.currentAngle = RADIANS_TO_DEGREES(atan2(x, z));
   self.currentDistance = sqrt(pow(z, 2) + pow(y, 2));
   
   if (!self.calibrated) {
     // set baseline metrics
-    self.controlAngle = self.currentAngle;
+//    self.controlAngle = self.currentAngle;
     self.controlDistance = self.currentDistance;
     self.calibrated = true;
   }

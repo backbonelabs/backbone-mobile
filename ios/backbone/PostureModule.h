@@ -3,8 +3,8 @@
 @interface PostureModule : ActivityModule
 @property BOOL calibrated;
 @property BOOL isIncrementing;
-@property double controlAngle;
-@property double currentAngle;
+//@property double controlAngle;
+//@property double currentAngle;
 //@property double tilt;
 @property double controlDistance;
 @property double currentDistance;
