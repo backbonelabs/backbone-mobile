@@ -103,24 +103,16 @@ static BOOL shouldSendNotifications;
 //  [self.bridge.eventDispatcher sendAppEventWithName:@"PostureTilt" body:@{@"tilt": [NSNumber numberWithDouble:self.tilt]}];
 //}
 
-- (void) incrementTime {
-  NSLog(@"Incrementing time");
-  self.isIncrementing = true;
-  self.time++;
-  [NSThread sleepForTimeInterval:1.0f];
-  self.isIncrementing = false;
-}
-
 - (void)handleDistance {
   NSLog(@"Control distance: %f, current distance: %f, time: %f", self.controlDistance, self.currentDistance, self.time);
   // log distance if it exceeds the threshold
   if (fabs(self.controlDistance - self.currentDistance) >= self.distanceThreshold) {
-    if (self.time > self.timeThreshold) {
+    if (!self.time) {
+      self.time = [[NSDate date] timeIntervalSince1970];
+    } else if (([[NSDate date] timeIntervalSince1970] - self.time) > self.timeThreshold) {
       self.time = 0;
       MBLMetaWear *device = [DeviceManagementService getDevice];
       [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-    } else if (!self.isIncrementing) {
-      [self performSelectorInBackground:@selector(incrementTime) withObject:nil];
     }
   } else {
     self.time = 0;
@@ -146,7 +138,7 @@ static BOOL shouldSendNotifications;
   [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
                                                                               @"currentDistance": [NSNumber numberWithDouble:self.currentDistance],
                                                                               @"controlDistance": [NSNumber numberWithDouble:self.controlDistance],
-                                                                              @"slouchTime": [NSNumber numberWithDouble:self.time]
+                                                                              @"slouchTime": [NSNumber numberWithDouble: ([[NSDate date] timeIntervalSince1970] - self.time)]
                                                                               }];
 }
 

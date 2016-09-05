@@ -15,5 +15,4 @@
 + (void)setShouldSendNotifications:(BOOL)flag;
 //- (void)handleTilt;
 - (void)handleDistance;
-- (void)incrementTime;
 @end
