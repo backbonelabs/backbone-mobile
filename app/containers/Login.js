@@ -11,7 +11,7 @@ import Input from '../components/Input';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
-import routes from '../routes';
+import deviceRoutes from '../routes/device';
 
 class Login extends Component {
   static propTypes = {
@@ -36,8 +36,8 @@ class Login extends Component {
       // User successfully authenticated, save access token to local device
       this.saveAccessToken(nextProps.accessToken);
 
-      // Redirect to Home
-      this.props.navigator.replace(routes.posture.postureDashboard);
+      // Redirect for device connect
+      this.props.navigator.replace(deviceRoutes.deviceConnect);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', nextProps.errorMessage);

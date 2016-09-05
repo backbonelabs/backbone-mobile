@@ -6,7 +6,7 @@ import {
 import { connect } from 'react-redux';
 import Spinner from './Spinner';
 import styles from '../styles/confirmEmail';
-import postureRoutes from '../routes/posture';
+import deviceRoutes from '../routes/device';
 import authActions from '../actions/auth';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
@@ -31,7 +31,7 @@ class ConfirmEmail extends Component {
     if (!this.props.accessToken && nextProps.accessToken) {
       clearInterval(this.setPollingInterval);
       SensitiveInfo.setItem('accessToken', nextProps.accessToken);
-      this.props.navigator.replace(postureRoutes.postureDashboard);
+      this.props.navigator.replace(deviceRoutes.deviceConnect);
     }
   }
 
