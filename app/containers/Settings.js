@@ -4,6 +4,7 @@ import {
   Text,
   Alert,
   Slider,
+  Switch,
   ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -94,14 +95,39 @@ class Settings extends Component {
           :
           <ScrollView style={styles.innerContainer}>
             <View style={styles.postureThreshold}>
-              <Text>Posture Threshold</Text>
+              <Text style={styles.text}>Posture Threshold</Text>
               <Slider
-                style={styles.slider}
                 minimumValue={0.1}
                 maximumValue={1}
                 step={0.01}
                 value={this.state.settings.postureThreshold}
                 onSlidingComplete={value => this.updateSettings('postureThreshold', value)}
+              />
+            </View>
+            <View style={styles.vibrationContainer}>
+              <View style={styles.vibration}>
+                <Text>Backbone Vibration</Text>
+                <Switch
+                  value={this.state.settings.backboneVibration}
+                  onValueChange={value => this.updateSettings('backboneVibration', value)}
+                />
+              </View>
+              <View style={styles.vibration}>
+                <Text>Phone Vibration</Text>
+                <Switch
+                  value={this.state.settings.phoneVibration}
+                  onValueChange={value => this.updateSettings('phoneVibration', value)}
+                />
+              </View>
+            </View>
+            <View style={styles.postureThreshold}>
+              <Text style={styles.text}>Slouch Time Threshold</Text>
+              <Slider
+                minimumValue={5}
+                maximumValue={60}
+                step={1}
+                value={this.state.settings.slouchTimeThreshold}
+                onSlidingComplete={value => this.updateSettings('slouchTimeThreshold', value)}
               />
             </View>
             <Button
