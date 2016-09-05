@@ -11,8 +11,8 @@
 @property double distanceThreshold;
 //@property double tiltThreshold;
 @property double time;
-@property double timeThreshold;
 @property double slouchTime;
+@property double slouchTimeThreshold;
 + (void)setShouldSendNotifications:(BOOL)flag;
 //- (void)handleTilt;
 - (void)handleDistance;

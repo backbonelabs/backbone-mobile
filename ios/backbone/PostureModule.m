@@ -24,7 +24,7 @@ static BOOL shouldSendNotifications;
   self.distanceThreshold = 0.20;
   self.time = 0;
   self.slouchTime = 0;
-  self.timeThreshold = 5;
+  self.slouchTimeThreshold = 5;
 //  self.tiltThreshold = 10;
   return self;
 }
@@ -105,18 +105,16 @@ static BOOL shouldSendNotifications;
 //}
 
 - (void)handleDistance {
-  NSLog(@"Control distance: %f, current distance: %f, time: %f", self.controlDistance, self.currentDistance, self.time);
+  NSLog(@"Control distance: %f, current distance: %f, slouch time: %f", self.controlDistance, self.currentDistance, self.slouchTime);
   // log distance if it exceeds the threshold
   if (fabs(self.controlDistance - self.currentDistance) >= self.distanceThreshold) {
     if (!self.time) {
       self.time = [[NSDate date] timeIntervalSince1970];
-    }
-    
-    if (self.time) {
+    } else {
       self.slouchTime = [[NSDate date] timeIntervalSince1970] - self.time;
     }
     
-    if (self.slouchTime > self.timeThreshold) {
+    if (self.slouchTime > self.slouchTimeThreshold) {
       // Add call to emitPostureData, because of time and slouchTime reset
       [self emitPostureData];
       MBLMetaWear *device = [DeviceManagementService getDevice];
