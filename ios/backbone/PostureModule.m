@@ -23,6 +23,7 @@ static BOOL shouldSendNotifications;
   self.isIncrementing = false;
   self.distanceThreshold = 0.20;
   self.time = 0;
+  self.slouchTime = 0;
   self.timeThreshold = 5;
 //  self.tiltThreshold = 10;
   return self;
@@ -109,13 +110,23 @@ static BOOL shouldSendNotifications;
   if (fabs(self.controlDistance - self.currentDistance) >= self.distanceThreshold) {
     if (!self.time) {
       self.time = [[NSDate date] timeIntervalSince1970];
-    } else if (([[NSDate date] timeIntervalSince1970] - self.time) > self.timeThreshold) {
-      self.time = 0;
+    }
+    
+    if (self.time) {
+      self.slouchTime = [[NSDate date] timeIntervalSince1970] - self.time;
+    }
+    
+    if (self.slouchTime > self.timeThreshold) {
+      // Add call to emitPostureData, because of time and slouchTime reset
+      [self emitPostureData];
       MBLMetaWear *device = [DeviceManagementService getDevice];
-      [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+      [device.hapticBuzzer startHapticWithDutyCycleAsync:255 pulseWidth:500 completion:nil];
+      self.time = 0;
+      self.slouchTime = 0;
     }
   } else {
     self.time = 0;
+    self.slouchTime = 0;
   }
   
   if (shouldSendNotifications) {
@@ -134,11 +145,14 @@ static BOOL shouldSendNotifications;
       shouldSendNotifications = false;
     }
   }
-  
+  [self emitPostureData];
+}
+
+- (void)emitPostureData {
   [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
                                                                               @"currentDistance": [NSNumber numberWithDouble:self.currentDistance],
                                                                               @"controlDistance": [NSNumber numberWithDouble:self.controlDistance],
-                                                                              @"slouchTime": [NSNumber numberWithDouble: ([[NSDate date] timeIntervalSince1970] - self.time)]
+                                                                              @"slouchTime": [NSNumber numberWithDouble: self.slouchTime]
                                                                               }];
 }
 

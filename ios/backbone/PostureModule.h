@@ -12,7 +12,9 @@
 //@property double tiltThreshold;
 @property double time;
 @property double timeThreshold;
+@property double slouchTime;
 + (void)setShouldSendNotifications:(BOOL)flag;
 //- (void)handleTilt;
 - (void)handleDistance;
+- (void)emitPostureData;
 @end
