@@ -35,4 +35,13 @@ export default EStyleSheet.create({
     fontSize: '1rem',
     textAlign: 'center',
   },
+  primaryText: {
+    color: 'white',
+    fontSize: '1rem',
+    alignSelf: 'center',
+  },
+  secondaryText: {
+    fontSize: '0.75rem',
+    marginLeft: '2%',
+  },
 });

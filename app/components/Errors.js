@@ -23,12 +23,12 @@ const Errors = (props) => {
       </View>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.primaryButton} onPress={currentRoute.onPress.primary}>
-          <Text style={styles.retry}>{currentRoute.onPressText.primary}</Text>
+          <Text style={styles.primaryText}>{currentRoute.onPressText.primary}</Text>
         </TouchableOpacity>
       { currentRoute.onPressText.secondary &&
         <TouchableOpacity style={styles.secondaryButton} onPress={currentRoute.onPress.secondary}>
           <Icon size={20} name={currentRoute.iconName.footer} color="black" />
-          <Text style={styles.forgetDevice}>{currentRoute.onPressText.secondary}</Text>
+          <Text style={styles.secondaryText}>{currentRoute.onPressText.secondary}</Text>
         </TouchableOpacity>
       }
       </View>
@@ -38,10 +38,13 @@ const Errors = (props) => {
 
 const { PropTypes } = React;
 
-console.log('PropTypes ', PropTypes);
-
 Errors.propTypes = {
-  currentRoute: PropTypes.object,
+  currentRoute: PropTypes.shape({
+    error: PropTypes.object,
+    iconName: PropTypes.object,
+    onPress: PropTypes.object,
+    onPressText: PropTypes.object,
+  }),
   error: PropTypes.shape({
     title: PropTypes.string,
     message: PropTypes.string,
