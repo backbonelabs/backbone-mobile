@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Modal,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
@@ -10,7 +9,6 @@ import routes from '../../routes';
 import styles from '../../styles/device/deviceConnect';
 import Spinner from '../Spinner';
 import List from '../../containers/List';
-import Errors from '../Errors';
 
 const { DeviceManagementService } = NativeModules;
 

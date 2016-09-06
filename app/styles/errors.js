@@ -31,22 +31,8 @@ export default EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  errorTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   errorMessage: {
     fontSize: '1rem',
     textAlign: 'center',
-  },
-  retry: {
-    color: 'white',
-    fontSize: '1rem',
-    alignSelf: 'center',
-  },
-  forgetDevice: {
-    fontSize: '0.75rem',
-    marginLeft: '2%',
   },
 });

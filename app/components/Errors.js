@@ -10,7 +10,7 @@ import styles from '../styles/errors';
 
 const Errors = (props) => {
   const { currentRoute } = props;
-  console.log(' true? ', currentRoute.onPressText.secondary);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
