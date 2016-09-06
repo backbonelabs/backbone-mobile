@@ -93,9 +93,7 @@ export default class DeviceConnect extends Component {
   deviceError(errors) {
     this.props.navigator.replace(
       Object.assign({}, routes.errors, {
-        error: {
-          message: errors.message,
-        },
+        errorMessage: errors.message,
         iconName: {
           header: 'warning',
           footer: 'chain-broken',

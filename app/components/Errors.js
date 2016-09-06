@@ -18,7 +18,7 @@ const Errors = (props) => {
       </View>
       <View style={styles.body}>
         <Text style={styles.errorMessage}>
-          {currentRoute.error.message}
+          {currentRoute.errorMessage}
         </Text>
       </View>
       <View style={styles.footer}>
@@ -40,15 +40,12 @@ const { PropTypes } = React;
 
 Errors.propTypes = {
   currentRoute: PropTypes.shape({
-    error: PropTypes.object,
+    errorMessage: PropTypes.string,
     iconName: PropTypes.object,
     onPress: PropTypes.object,
     onPressText: PropTypes.object,
   }),
-  error: PropTypes.shape({
-    title: PropTypes.string,
-    message: PropTypes.string,
-  }),
+  errorMessage: PropTypes.string,
   iconName: PropTypes.shape({
     header: PropTypes.string,
     footer: PropTypes.string,
