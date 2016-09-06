@@ -8,6 +8,7 @@ import posture from './posture';
 import tutorial from './tutorial';
 import profile from './profile';
 import settings from './settings';
+import errors from './errors';
 
 export default {
   activity,
@@ -20,4 +21,5 @@ export default {
   tutorial,
   profile,
   settings,
+  errors,
 };
