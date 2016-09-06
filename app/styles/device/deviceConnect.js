@@ -5,11 +5,8 @@ export default EStyleSheet.create({
     flex: 1,
     marginTop: '$totalNavHeight',
   },
-  progressContainer: {
+  progress: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   deviceName: {
     color: 'white',

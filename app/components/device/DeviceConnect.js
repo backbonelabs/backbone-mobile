@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Modal,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
@@ -10,7 +9,6 @@ import routes from '../../routes';
 import styles from '../../styles/device/deviceConnect';
 import Spinner from '../Spinner';
 import List from '../../containers/List';
-import DeviceError from './DeviceError';
 
 const { DeviceManagementService } = NativeModules;
 
@@ -93,12 +91,23 @@ export default class DeviceConnect extends Component {
   }
 
   deviceError(errors) {
-    this.setState({
-      deviceError: errors,
-      newDevice: false,
-      inProgress: true,
-      hasError: true,
-    });
+    this.props.navigator.replace(
+      Object.assign({}, routes.errors, {
+        errorMessage: errors.message,
+        iconName: {
+          header: 'warning',
+          footer: 'chain-broken',
+        },
+        onPress: {
+          primary: this.retryConnect,
+          secondary: this.forgetDevice,
+        },
+        onPressText: {
+          primary: 'Retry',
+          secondary: 'Forget this device',
+        },
+      })
+    );
   }
 
   selectDevice(deviceData) {
@@ -145,32 +154,14 @@ export default class DeviceConnect extends Component {
   render() {
     return (
       <View style={styles.container}>
-        { this.state.newDevice &&
+        { this.state.inProgress ?
+          <Spinner style={styles.progress} /> :
           <List
             dataBlob={this.state.deviceList}
             formatRowData={this.formatDeviceRow}
             onPressRow={this.selectDevice}
           />
         }
-        <Modal
-          animationType="fade"
-          visible={this.state.inProgress}
-          transparent
-          onRequestClose={() => {
-            // no-op, onRequestClose is required for Android
-          }}
-        >
-          { this.state.hasError ?
-            (<DeviceError
-              forgetDevice={this.forgetDevice}
-              retryConnect={this.retryConnect}
-              deviceError={this.state.deviceError}
-            />) :
-            <View style={styles.progressContainer}>
-              <Spinner />
-            </View>
-          }
-        </Modal>
       </View>
     );
   }
