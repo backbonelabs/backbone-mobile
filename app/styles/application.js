@@ -14,7 +14,7 @@ export default EStyleSheet.create({
     alignSelf: 'center',
     color: '$primaryColor',
   },
-  titleContainer: {
+  titleText: {
     marginTop: '0.65rem',
   },
 });
