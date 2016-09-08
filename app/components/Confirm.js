@@ -10,7 +10,7 @@ import deviceRoutes from '../routes/device';
 import authActions from '../actions/auth';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
-class ConfirmEmail extends Component {
+class Confirm extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
@@ -52,4 +52,4 @@ const mapStateToProps = state => {
   return auth;
 };
 
-export default connect(mapStateToProps)(ConfirmEmail);
+export default connect(mapStateToProps)(Confirm);
