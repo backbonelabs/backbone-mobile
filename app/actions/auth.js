@@ -16,28 +16,28 @@ const loginError = error => ({
   error: true,
 });
 
-const createUserAccountStart = () => ({ type: 'CREATE_USER_ACCOUNT__START' });
+const signupStart = () => ({ type: 'SIGNUP__START' });
 
-const createUserAccount = payload => ({
-  type: 'CREATE_USER_ACCOUNT',
+const signup = payload => ({
+  type: 'SIGNUP',
   payload,
 });
 
-const createUserAccountError = error => ({
-  type: 'CREATE_USER_ACCOUNT__ERROR',
+const signupError = error => ({
+  type: 'SIGNUP__ERROR',
   payload: error,
   error: true,
 });
 
-const checkEmailConfirmationStart = () => ({ type: 'CHECK_EMAIL_CONFIRMATION__START' });
+const checkConfirmationStart = () => ({ type: 'CHECK_CONFIRMATION__START' });
 
-const checkEmailConfirmation = payload => ({
-  type: 'CHECK_EMAIL_CONFIRMATION',
+const checkConfirmation = payload => ({
+  type: 'CHECK_CONFIRMATION',
   payload,
 });
 
-const checkEmailConfirmationError = error => ({
-  type: 'CHECK_EMAIL_CONFIRMATION__ERROR',
+const checkConfirmationError = error => ({
+  type: 'CHECK_CONFIRMATION__ERROR',
   payload: error,
   error: true,
 });
@@ -73,7 +73,7 @@ export default {
 
   signup(user) {
     return dispatch => {
-      dispatch(createUserAccountStart());
+      dispatch(signupStart());
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
@@ -82,37 +82,37 @@ export default {
           .then(body => {
             if (body.error) {
               // Error received from API server
-              dispatch(createUserAccountError(
+              dispatch(signupError(
                 new Error(body.error)
               ));
             } else {
-              dispatch(createUserAccount(body));
+              dispatch(signup(body));
             }
           })
         )
         .catch(() => {
           // Network error
-          dispatch(createUserAccountError(
+          dispatch(signupError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });
     };
   },
 
-  checkEmailConfirmation(email) {
+  checkConfirmation(email) {
     return dispatch => {
-      dispatch(checkEmailConfirmationStart());
+      dispatch(checkConfirmationStart());
       return Fetcher.get({
         url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
       })
         .then(response => response.json())
           .then(body => {
             if (!body.error) {
-              dispatch(checkEmailConfirmation(body));
+              dispatch(checkConfirmation(body));
             }
           })
         .catch(() => {
-          dispatch(checkEmailConfirmationError(
+          dispatch(checkConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
           ));
         });
