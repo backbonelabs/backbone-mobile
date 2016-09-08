@@ -72,20 +72,28 @@ class Home extends Component {
     if (this.props.auth.accessToken) {
       return (
         <Button
-          onPress={() => { this.props.navigator.push(routes.device.deviceConnect); }}
+          onPress={() => this.props.navigator.push(routes.device.deviceConnect)}
           text="Connect"
         />
       );
     }
     return (
       <Button
-        onPress={() => { this.props.navigator.push(routes.login); }}
+        onPress={() => this.props.navigator.push(routes.login)}
         text="Log In"
       />
     );
   }
 
   render() {
+    const footerButton = this.props.auth.accessToken ?
+    { text: 'Delete access token',
+      onPress: () => SensitiveInfo.deleteItem('accessToken'),
+    } :
+    { text: 'Don\'t have an account? Sign up',
+      onPress: () => this.props.navigator.push(routes.signup),
+    };
+
     return (
       <View style={styles.container}>
         <Image style={styles.background} source={bg} />
@@ -99,23 +107,9 @@ class Home extends Component {
             this.getMainBody()
           }
         </View>
-        <View style={styles.footer}>
-          {this.props.auth.accessToken ?
-            // This conditional block for deleting the access token is for temporary
-            // testing purposes only. Remove this entire conditional block after
-            // implementing a logout component.
-            <TouchableOpacity
-              onPress={() => {
-                SensitiveInfo.deleteItem('accessToken');
-              }}
-            >
-              <Text style={{ fontSize: 18, color: 'white' }}>Delete access token</Text>
-            </TouchableOpacity> :
-            <TouchableHighlight onPress={() => this.props.navigator.push(routes.signup)}>
-              <Text style={styles.signup}>Don't have an account? Sign-up</Text>
-            </TouchableHighlight>
-          }
-        </View>
+        <TouchableHighlight style={styles.footer} onPress={() => footerButton.onPress()}>
+          <Text style={styles.footerText}>{footerButton.text}</Text>
+        </TouchableHighlight>
       </View>
     );
   }

@@ -76,9 +76,7 @@ class Application extends Component {
       },
       Title: (route) => {
         if (route.title) {
-          return (
-            <Text style={styles.titleContainer}>{route.title}</Text>
-          );
+          return <Text style={styles.titleText}>{route.title}</Text>;
         }
       },
     };

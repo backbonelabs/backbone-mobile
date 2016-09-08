@@ -25,9 +25,10 @@ export default EStyleSheet.create({
   },
   footer: {
     flex: 0.09,
+    width: '100%',
     justifyContent: 'center',
   },
-  signup: {
+  footerText: {
     color: 'white',
     fontSize: '0.75rem',
     alignSelf: 'center',
