@@ -35,9 +35,9 @@ export default class DeviceConnect extends Component {
   }
 
   componentWillMount() {
-    NativeAppEventEmitter.addListener('DevicesFound', (deviceList) => {
-      this.setState({ deviceList });
-    });
+    NativeAppEventEmitter.addListener('DevicesFound', (deviceList) =>
+      this.setState({ deviceList })
+    );
 
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === 2) {
@@ -65,7 +65,7 @@ export default class DeviceConnect extends Component {
   }
 
   connectToDevice() {
-    NativeAppEventEmitter.once('ConnectionStatus', (status) => {
+    NativeAppEventEmitter.once('ConnectionStatus', (status) => (
       // TODO: Refactor to use new status shape: { isConnected: boolean, message: string }
       this.setState({ inProgress: false }, () => {
         if (!status.message) {
@@ -73,21 +73,21 @@ export default class DeviceConnect extends Component {
         } else {
           this.deviceError(status);
         }
-      });
-    });
+      })
+    ));
     DeviceManagementService.connectToDevice();
   }
 
   scanForDevices() {
-    this.setState({ newDevice: true }, () => {
+    this.setState({ newDevice: true }, () => (
       DeviceManagementService.scanForDevices((error) => {
         if (!error) {
           this.setState({ inProgress: false });
         } else {
           this.deviceError(error);
         }
-      });
-    });
+      })
+    ));
   }
 
   deviceError(errors) {
@@ -111,15 +111,15 @@ export default class DeviceConnect extends Component {
   }
 
   selectDevice(deviceData) {
-    this.setState({ inProgress: true }, () => {
+    this.setState({ inProgress: true }, () => (
       DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
         if (!error) {
           this.connectToDevice();
         } else {
           this.deviceError(error);
         }
-      });
-    });
+      })
+    ));
   }
 
   retryConnect() {
@@ -127,9 +127,7 @@ export default class DeviceConnect extends Component {
   }
 
   rescanForDevices() {
-    this.setState({ inProgress: true }, () => {
-      this.scanForDevices();
-    });
+    this.setState({ inProgress: true }, () => this.scanForDevices());
   }
 
   forgetDevice() {
