@@ -4,7 +4,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
@@ -18,10 +17,8 @@ import authActions from '../actions/auth';
 
 class Home extends Component {
   static propTypes = {
-    auth: React.PropTypes.shape({
-      accessToken: React.PropTypes.string,
-      isFetchingAccessToken: React.PropTypes.bool,
-    }),
+    accessToken: React.PropTypes.string,
+    isFetchingAccessToken: React.PropTypes.bool,
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
   };
@@ -55,21 +52,21 @@ class Home extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.auth.isFetchingAccessToken && !nextProps.auth.isFetchingAccessToken) {
+    if (this.props.isFetchingAccessToken && !nextProps.isFetchingAccessToken) {
       // Finished login attempt
-      if (nextProps.auth.errorMessage) {
+      if (nextProps.errorMessage) {
         // Access token is invalid
         // Delete from local device to prevent unnecessary API calls on subsequent app load
         SensitiveInfo.deleteItem('accessToken');
       } else {
         // Successful login, save new access token
-        SensitiveInfo.setItem('accessToken', nextProps.auth.accessToken);
+        SensitiveInfo.setItem('accessToken', nextProps.accessToken);
       }
     }
   }
 
   getMainBody() {
-    if (this.props.auth.accessToken) {
+    if (this.props.accessToken) {
       return (
         <Button
           onPress={() => this.props.navigator.push(routes.device.deviceConnect)}
@@ -86,7 +83,7 @@ class Home extends Component {
   }
 
   render() {
-    const footerButton = this.props.auth.accessToken ?
+    const footerButton = this.props.accessToken ?
     { text: 'Delete access token',
       onPress: () => SensitiveInfo.deleteItem('accessToken'),
     } :
@@ -101,22 +98,23 @@ class Home extends Component {
           <Image style={styles.logo} source={logo} />
         </View>
         <View style={styles.body}>
-          {this.state.isInitializing || this.props.auth.isFetchingAccessToken ?
+          {this.state.isInitializing || this.props.isFetchingAccessToken ?
             <Spinner />
             :
             this.getMainBody()
           }
         </View>
-        <TouchableHighlight style={styles.footer} onPress={() => footerButton.onPress()}>
+        <TouchableOpacity style={styles.footer} onPress={() => footerButton.onPress()}>
           <Text style={styles.footerText}>{footerButton.text}</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-});
+const mapStateToProps = state => {
+  const { auth } = state;
+  return auth;
+};
 
 export default connect(mapStateToProps)(Home);
