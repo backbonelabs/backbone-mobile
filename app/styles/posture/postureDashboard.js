@@ -11,8 +11,6 @@ export default EStyleSheet.create({
   },
   buttonContainer: {
     flex: 0.3,
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    justifyContent: 'center',
   },
   rightButton: {
     color: '$primaryColor',

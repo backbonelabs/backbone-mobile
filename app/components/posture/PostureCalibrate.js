@@ -64,7 +64,7 @@ export default class PostureCalibrate extends Component {
     const valueX = count % 2 ? -1.02 * width : 0;
 
     Animated.timing(this.state.animatedValues, {
-      duration: 1500,
+      duration: 1000,
       toValue: { x: valueX, y: 0 },
     }).start(this.countdownHandler);
   }

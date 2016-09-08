@@ -31,6 +31,6 @@ export default EStyleSheet.create({
   footerText: {
     color: 'white',
     fontSize: '0.75rem',
-    alignSelf: 'center',
+    textAlign: 'center',
   },
 });
