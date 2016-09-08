@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from './Spinner';
-import styles from '../styles/confirmEmail';
+import styles from '../styles/confirm';
 import deviceRoutes from '../routes/device';
 import authActions from '../actions/auth';
 import SensitiveInfo from '../utils/SensitiveInfo';
