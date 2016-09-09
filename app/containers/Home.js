@@ -40,12 +40,8 @@ class Home extends Component {
         // Attempt to log in using the access token
         accessToken && this.props.dispatch(authActions.login({ accessToken }))
       )
-      .then(() => {
-        this.setState({ isInitializing: false });
-      })
-      .catch(() => {
-        this.setState({ isInitializing: false });
-      });
+      .then(() => this.setState({ isInitializing: false }))
+      .catch(() => this.setState({ isInitializing: false }));
   }
 
   componentWillReceiveProps(nextProps) {

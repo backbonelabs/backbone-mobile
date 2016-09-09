@@ -84,9 +84,9 @@ class PostureMonitor extends Component {
   disablePostureActivity() {
     // Disable activity, set monitoring to false, and remove listener
     ActivityService.disableActivity(activityName, () => (
-      this.setState({ monitoring: false }, () => isFunction(this.postureListener.remove) &&
-        this.postureListener.remove()
-      )
+      this.setState({
+        monitoring: false,
+      }, () => isFunction(this.postureListener.remove) && this.postureListener.remove())
     ));
   }
 
