@@ -6,8 +6,8 @@ import styles from '../styles/menu';
 import List from '../containers/List';
 
 const Menu = (props) => {
-  const onPressMenu = (rowData) => props.navigate(rowData);
-  const formatMenuRow = (rowData) => <Text style={styles.listItemText}>{rowData.title}</Text>;
+  const onPressMenu = rowData => props.navigate(rowData);
+  const formatMenuRow = rowData => <Text style={styles.listItemText}>{rowData.title}</Text>;
 
   return (
     <List

@@ -80,12 +80,12 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(updateUserError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 
@@ -118,12 +118,12 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(updateUserError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 
@@ -150,12 +150,12 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(fetchUserSettingsError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 
@@ -200,12 +200,12 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(updateUserSettingsError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 };

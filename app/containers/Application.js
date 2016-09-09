@@ -58,27 +58,19 @@ class Application extends Component {
           );
         }
       },
-      RightButton: (route, navigator) => {
-        if (route.rightButton) {
-          return (
-            <TouchableOpacity
-              style={styles.rightButton}
-              onPress={() => route.rightButton.onPress(navigator)}
-            >
-              <Icon
-                name={route.rightButton.iconName}
-                size={EStyleSheet.globalVars.$iconSize}
-                color={EStyleSheet.globalVars.$primaryColor}
-              />
-            </TouchableOpacity>
-          );
-        }
-      },
-      Title: (route) => {
-        if (route.title) {
-          return <Text style={styles.titleText}>{route.title}</Text>;
-        }
-      },
+      RightButton: (route, navigator) => route.rightButton && (
+        <TouchableOpacity
+          style={styles.rightButton}
+          onPress={() => route.rightButton.onPress(navigator)}
+        >
+          <Icon
+            name={route.rightButton.iconName}
+            size={EStyleSheet.globalVars.$iconSize}
+            color={EStyleSheet.globalVars.$primaryColor}
+          />
+        </TouchableOpacity>
+      ),
+      Title: route => route.title && <Text style={styles.titleText}>{route.title}</Text>,
     };
 
     this.state = {

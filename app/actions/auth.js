@@ -46,6 +46,7 @@ export default {
   login(user) {
     return dispatch => {
       dispatch(loginStart());
+
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/login`,
         body: JSON.stringify(user),
@@ -74,6 +75,7 @@ export default {
   signup(user) {
     return dispatch => {
       dispatch(signupStart());
+
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
@@ -90,18 +92,19 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(signupError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 
   checkConfirmation(email) {
     return dispatch => {
       dispatch(checkConfirmationStart());
+
       return Fetcher.get({
         url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
       })
@@ -111,11 +114,11 @@ export default {
               dispatch(checkConfirmation(body));
             }
           })
-        .catch(() => {
+        .catch(() => (
           dispatch(checkConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 };

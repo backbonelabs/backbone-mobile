@@ -28,7 +28,6 @@ class Home extends Component {
     this.state = {
       isInitializing: true,
     };
-    this.getMainBody = this.getMainBody.bind(this);
   }
 
   componentWillMount() {

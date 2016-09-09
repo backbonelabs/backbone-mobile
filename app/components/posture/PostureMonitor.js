@@ -47,12 +47,12 @@ class PostureMonitor extends Component {
   }
 
   enablePostureActivity() {
-    ActivityService.enableActivity(activityName, (error) => {
+    ActivityService.enableActivity(activityName, error => {
       if (!error) {
         this.setState({ monitoring: true }, () => {
           const { settings } = this.props.user;
           // Attach listener
-          this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
+          this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', event => {
             // Find absolute value of difference between controlDistance and currentDistance
             const absoluteDistance = Math.abs(event.controlDistance - event.currentDistance);
 

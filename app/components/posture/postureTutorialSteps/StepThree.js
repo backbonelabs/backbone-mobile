@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import styles from '../../../styles/posture/postureTutorial';
 
-const StepThree = (props) => (
+const StepThree = props => (
   <View key={props.key} style={styles.stepThree} />
 );
 
