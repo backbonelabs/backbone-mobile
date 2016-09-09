@@ -7,7 +7,9 @@ import styles from '../styles/button';
 
 const Button = props => {
   const buttonStyles = [styles.button];
-  { props.disabled && buttonStyles.push(styles.disabled) } ;
+  if (props.disabled) {
+    buttonStyles.push(styles.disabled);
+  }
   buttonStyles.push(props.style);
   return (
     <TouchableOpacity style={buttonStyles} onPress={props.disabled ? undefined : props.onPress}>
