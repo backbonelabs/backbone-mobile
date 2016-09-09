@@ -82,13 +82,7 @@ class Home extends Component {
   }
 
   render() {
-    const footerButton = this.props.accessToken ?
-    { text: 'Delete access token',
-      onPress: () => SensitiveInfo.deleteItem('accessToken'),
-    } :
-    { text: 'Don\'t have an account? Sign up',
-      onPress: () => this.props.navigator.push(routes.signup),
-    };
+    const { accessToken } = this.props;
 
     return (
       <View style={styles.container}>
@@ -98,13 +92,18 @@ class Home extends Component {
         </View>
         <View style={styles.body}>
           {this.state.isInitializing || this.props.isFetchingAccessToken ?
-            <Spinner />
-            :
-            this.getMainBody()
+            <Spinner /> : this.getMainBody()
           }
         </View>
-        <TouchableOpacity style={styles.footer} onPress={() => footerButton.onPress()}>
-          <Text style={styles.footerText}>{footerButton.text}</Text>
+        <TouchableOpacity
+          style={styles.footer}
+          onPress={accessToken ?
+            SensitiveInfo.deleteItem('accessToken') : () => this.props.navigator.push(routes.signup)
+          }
+        >
+          <Text style={styles.footerText}>
+            {accessToken ? 'Delete access token' : 'Don\'t have an account? Sign up'}
+          </Text>
         </TouchableOpacity>
       </View>
     );
