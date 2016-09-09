@@ -20,11 +20,9 @@ class Confirm extends Component {
 
   constructor(props) {
     super(props);
-    this.setPollingInterval = setInterval(() =>
-      this.props.dispatch(
+    this.setPollingInterval = setInterval(() => this.props.dispatch(
         authActions.checkConfirmation(this.props.currentRoute.email)
-      ), 5000
-    );
+    ), 5000);
   }
 
   componentWillReceiveProps(nextProps) {

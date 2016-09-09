@@ -109,11 +109,7 @@ export default {
         url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
       })
         .then(response => response.json())
-          .then(body => {
-            if (!body.error) {
-              dispatch(checkConfirmation(body));
-            }
-          })
+          .then(body => !body.error && dispatch(checkConfirmation(body)))
         .catch(() => (
           dispatch(checkConfirmationError(
             new Error('We are encountering server issues. Please try again later.')

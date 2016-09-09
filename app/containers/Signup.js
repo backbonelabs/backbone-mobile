@@ -33,7 +33,7 @@ class Signup extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.confirmationSent && nextProps.confirmationSent) {
       const { email } = this.state;
-      this.props.navigator.replace(Object.assign({}, routes.confirmEmail, { email }));
+      this.props.navigator.replace(Object.assign({}, routes.confirm, { email }));
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
     }

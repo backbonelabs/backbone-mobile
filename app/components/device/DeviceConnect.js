@@ -25,7 +25,6 @@ export default class DeviceConnect extends Component {
       newDevice: false,
       inProgress: false,
     };
-
     this.selectDevice = this.selectDevice.bind(this);
     this.retryConnect = this.retryConnect.bind(this);
     this.rescanForDevices = this.rescanForDevices.bind(this);
@@ -51,15 +50,15 @@ export default class DeviceConnect extends Component {
   }
 
   getSavedDevice() {
-    this.setState({ inProgress: true }, () => {
+    this.setState({ inProgress: true }, () => (
       DeviceManagementService.getSavedDevice(savedDevice => {
         if (savedDevice) {
           this.connectToDevice();
         } else {
           this.scanForDevices();
         }
-      });
-    });
+      })
+    ));
   }
 
   connectToDevice() {

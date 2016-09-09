@@ -28,8 +28,8 @@ class PostureMonitor extends Component {
     }),
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       monitoring: null,
     };
@@ -84,11 +84,9 @@ class PostureMonitor extends Component {
   disablePostureActivity() {
     // Disable activity, set monitoring to false, and remove listener
     ActivityService.disableActivity(activityName, () => (
-      this.setState({ monitoring: false }, () => {
-        if (isFunction(this.postureListener.remove)) {
-          this.postureListener.remove();
-        }
-      })
+      this.setState({ monitoring: false }, () => isFunction(this.postureListener.remove) &&
+        this.postureListener.remove()
+      )
     ));
   }
 
