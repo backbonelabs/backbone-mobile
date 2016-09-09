@@ -35,13 +35,11 @@ class Home extends Component {
     // is a stored access token. An access token would have been saved
     // on a previously successful login.
     SensitiveInfo.getItem('accessToken')
-      .then(accessToken => {
-        if (accessToken) {
-          // There is a saved access token
-          // Attempt to log in using the access token
-          this.props.dispatch(authActions.login({ accessToken }));
-        }
-      })
+      .then(accessToken =>
+        // There is a saved access token
+        // Attempt to log in using the access token
+        accessToken && this.props.dispatch(authActions.login({ accessToken }))
+      )
       .then(() => {
         this.setState({ isInitializing: false });
       })
@@ -65,18 +63,14 @@ class Home extends Component {
   }
 
   getMainBody() {
-    if (this.props.accessToken) {
-      return (
-        <Button
-          onPress={() => this.props.navigator.push(routes.device.deviceConnect)}
-          text="Connect"
-        />
-      );
-    }
+    const { accessToken } = this.props;
+
     return (
       <Button
-        onPress={() => this.props.navigator.push(routes.login)}
-        text="Log In"
+        onPress={
+          () => this.props.navigator.push(accessToken ? routes.device.deviceConnect : routes.login)
+        }
+        text={accessToken ? 'Connect' : 'Log In'}
       />
     );
   }

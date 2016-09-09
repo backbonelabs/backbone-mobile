@@ -90,11 +90,7 @@ class Application extends Component {
     // compared to iOS.
     if (Platform.OS === 'android') {
       NativeModules.BluetoothService.getIsEnabled()
-        .then(isEnabled => {
-          if (!isEnabled) {
-            NativeModules.BluetoothService.enable();
-          }
-        });
+        .then(isEnabled => !isEnabled && NativeModules.BluetoothService.enable());
     }
 
     const handler = ({ state }) => {
