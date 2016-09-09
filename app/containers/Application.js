@@ -174,12 +174,12 @@ class Application extends Component {
       <Drawer
         type="displace"
         content={<Menu
-          menuItems={{
-            activity: routes.activity.activityDashboard,
-            posture: routes.posture.postureDashboard,
-            profile: routes.profile,
-            settings: routes.settings,
-          }}
+          menuItems={[
+            routes.activity.activityDashboard,
+            routes.posture.postureDashboard,
+            routes.profile,
+            routes.settings,
+          ]}
           navigate={route => this.navigate(route)}
         />}
         openDrawerOffset={0.3} // right margin when drawer is opened

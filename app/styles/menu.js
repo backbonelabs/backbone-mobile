@@ -9,9 +9,8 @@ export default EStyleSheet.create({
     borderBottomColor: 'black',
   },
   listItemText: {
-    fontSize: 24,
-    paddingTop: 20,
-    paddingLeft: 20,
-    paddingBottom: 20,
+    fontSize: 18,
+    color: 'white',
+    textAlign: 'center',
   },
 });
