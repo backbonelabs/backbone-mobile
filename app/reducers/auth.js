@@ -3,7 +3,6 @@ export default (state = {
   confirmationSent: false,
   isFetchingAccessToken: false,
   isSigningUp: false,
-  isCheckingConfirmation: false,
   errorMessage: null,
   userId: null,
 }, action) => {

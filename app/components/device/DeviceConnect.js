@@ -124,7 +124,7 @@ export default class DeviceConnect extends Component {
   }
 
   rescanForDevices() {
-    this.setState({ inProgress: true }, () => this.scanForDevices());
+    this.setState({ inProgress: true }, this.scanForDevices);
   }
 
   forgetDevice() {
