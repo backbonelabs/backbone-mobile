@@ -26,7 +26,6 @@ static BOOL shouldSendNotifications;
   self.time = 0;
   self.slouchTime = 0;
   self.slouchTimeThreshold = 5;
-  self.tiltThreshold = 10;
   return self;
 }
 

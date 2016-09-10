@@ -12,8 +12,8 @@
 // For reference purposes only
 @property double controlDistanceOld;
 @property double currentDistanceOld;
+
 @property double distanceThreshold;
-@property double tiltThreshold;
 @property double time;
 @property double slouchTime;
 @property double slouchTimeThreshold;
