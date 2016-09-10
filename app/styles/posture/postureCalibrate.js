@@ -26,6 +26,5 @@ export default EStyleSheet.create({
   },
   buttonContainer: {
     flex: 0.3,
-    justifyContent: 'space-around',
   },
 });

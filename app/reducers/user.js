@@ -111,7 +111,7 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
-    case 'CHECK_EMAIL_CONFIRMATION': {
+    case 'CHECK_CONFIRMATION': {
       return {
         ...state,
         user: omit(action.payload, 'accessToken'),

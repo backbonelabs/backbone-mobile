@@ -18,7 +18,9 @@ const { PropTypes } = React;
 
 class PostureMonitor extends Component {
   static propTypes = {
-    user: PropTypes.object,
+    user: PropTypes.shape({
+      settings: PropTypes.object,
+    }),
     settings: PropTypes.shape({
       phoneVibration: PropTypes.bool,
       postureThreshold: PropTypes.number,
@@ -26,8 +28,8 @@ class PostureMonitor extends Component {
     }),
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       monitoring: null,
     };
@@ -45,12 +47,12 @@ class PostureMonitor extends Component {
   }
 
   enablePostureActivity() {
-    ActivityService.enableActivity(activityName, (error) => {
+    ActivityService.enableActivity(activityName, error => {
       if (!error) {
         this.setState({ monitoring: true }, () => {
           const { settings } = this.props.user;
           // Attach listener
-          this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
+          this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', event => {
             // Find absolute value of difference between controlDistance and currentDistance
             const absoluteDistance = Math.abs(event.controlDistance - event.currentDistance);
 
@@ -81,13 +83,11 @@ class PostureMonitor extends Component {
 
   disablePostureActivity() {
     // Disable activity, set monitoring to false, and remove listener
-    ActivityService.disableActivity(activityName, () =>
-      this.setState({ monitoring: false }, () => {
-        if (isFunction(this.postureListener.remove)) {
-          this.postureListener.remove();
-        }
-      })
-    );
+    ActivityService.disableActivity(activityName, () => (
+      this.setState({
+        monitoring: false,
+      }, () => isFunction(this.postureListener.remove) && this.postureListener.remove())
+    ));
   }
 
   render() {

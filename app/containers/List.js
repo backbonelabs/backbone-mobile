@@ -30,11 +30,7 @@ export default class List extends Component {
     return (
       <TouchableOpacity
         style={styles.rowButton}
-        onPress={() => {
-          if (this.props.onPressRow) {
-            this.props.onPressRow(rowData);
-          }
-        }}
+        onPress={() => this.props.onPressRow && this.props.onPressRow(rowData)}
       >
         { this.props.formatRowData(rowData) }
       </TouchableOpacity>

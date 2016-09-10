@@ -5,12 +5,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from './Spinner';
-import styles from '../styles/confirmEmail';
+import styles from '../styles/confirm';
 import deviceRoutes from '../routes/device';
 import authActions from '../actions/auth';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
-class ConfirmEmail extends Component {
+class Confirm extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.object,
@@ -20,11 +20,11 @@ class ConfirmEmail extends Component {
 
   constructor(props) {
     super(props);
-    this.setPollingInterval = setInterval(() =>
-      props.dispatch(
-        authActions.checkEmailConfirmation(this.props.currentRoute.email)
-      ), 5000
-    );
+    this.setPollingInterval = setInterval(() => (
+      this.props.dispatch(
+        authActions.checkConfirmation(this.props.currentRoute.email)
+      )
+    ), 5000);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,4 +52,4 @@ const mapStateToProps = state => {
   return auth;
 };
 
-export default connect(mapStateToProps)(ConfirmEmail);
+export default connect(mapStateToProps)(Confirm);

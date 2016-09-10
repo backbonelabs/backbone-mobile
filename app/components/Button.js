@@ -15,7 +15,7 @@ const Button = props => {
     <TouchableOpacity style={buttonStyles} onPress={props.disabled ? undefined : props.onPress}>
       <Text style={[styles.text, props.textStyle]}>{props.text}</Text>
     </TouchableOpacity>
-    );
+  );
 };
 
 Button.propTypes = {
