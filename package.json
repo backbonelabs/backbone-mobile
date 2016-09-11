@@ -13,12 +13,9 @@
     "react-native": "0.31.0",
     "react-native-drawer": "2.2.6",
     "react-native-extended-stylesheet": "0.3.0",
-    "react-native-progress": "3.0.1",
-    "react-native-scrollable-tab-view": "0.5.3",
     "react-native-sensitive-info": "3.0.1",
     "react-native-vector-icons": "2.0.3",
     "react-redux": "4.4.5",
-    "react-timer-mixin": "0.13.3",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0"
   },
