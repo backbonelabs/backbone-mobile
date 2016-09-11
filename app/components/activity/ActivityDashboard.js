@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import TimerMixin from 'react-timer-mixin';
+// OLD ACTIVITY COMPONENT
+// import TimerMixin from 'react-timer-mixin';
 import {
   View,
   Text,
