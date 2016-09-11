@@ -3,7 +3,7 @@ import { TextInput, Platform, ScrollView, View } from 'react-native';
 import { omit } from 'lodash';
 import styles from '../styles/input';
 
-const Input = props => {
+const Input = (props) => {
   const {
     handleRef,
     style,
@@ -18,9 +18,7 @@ const Input = props => {
 
   const inputField = (
     <TextInput
-      ref={ref => {
-        handleRef(ref);
-      }}
+      ref={ref => handleRef(ref)}
       style={inputStyles}
       {...remainingProps}
     />

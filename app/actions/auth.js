@@ -44,7 +44,7 @@ const checkConfirmationError = error => ({
 
 export default {
   login(user) {
-    return dispatch => {
+    return (dispatch) => {
       dispatch(loginStart());
 
       return Fetcher.post({
@@ -52,7 +52,7 @@ export default {
         body: JSON.stringify(user),
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               // Error received from API server
               dispatch(loginError(
@@ -73,7 +73,7 @@ export default {
   },
 
   signup(user) {
-    return dispatch => {
+    return (dispatch) => {
       dispatch(signupStart());
 
       return Fetcher.post({
@@ -81,7 +81,7 @@ export default {
         body: JSON.stringify(user),
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               // Error received from API server
               dispatch(signupError(
@@ -102,7 +102,7 @@ export default {
   },
 
   checkConfirmation(email) {
-    return dispatch => {
+    return (dispatch) => {
       dispatch(checkConfirmationStart());
 
       return Fetcher.get({
