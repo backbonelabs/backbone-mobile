@@ -77,17 +77,17 @@ export default class ActivityView extends Component {
   }
 
   startCountdown() {
-    const context = this;
-    this.state.timer = TimerMixin.setInterval(() => {
-      const tick = context.state.countdown - 1000;
-      context.setState({
-        countdown: tick,
-      });
-    }, 1000);
+    // const context = this;
+    // this.state.timer = TimerMixin.setInterval(() => {
+    //   const tick = context.state.countdown - 1000;
+    //   context.setState({
+    //     countdown: tick,
+    //   });
+    // }, 1000);
   }
 
   stopCountdown() {
-    TimerMixin.clearInterval(this.state.timer);
+    // TimerMixin.clearInterval(this.state.timer);
   }
 
   render() {
