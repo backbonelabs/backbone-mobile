@@ -10,7 +10,9 @@ module.exports = {
     'no-console': [1],
     'no-underscore-dangle': [0],
     'prefer-template': [1],
-    'max-len': [2, {"code": 100}],
+
+    // Testing
+    // 'max-len': [2, {"code": 100}],
 
     // New rules added by latest eslint-config-airbnb
 
