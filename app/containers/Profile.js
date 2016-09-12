@@ -156,7 +156,7 @@ class Profile extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { user } = state;
   return user;
 };

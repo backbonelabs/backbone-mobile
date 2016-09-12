@@ -70,7 +70,7 @@ export default {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               dispatch(fetchUserError(
                 new Error(body.error)
@@ -107,7 +107,7 @@ export default {
         body: JSON.stringify(userUpdateFields),
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               // Error received from API server
               dispatch(updateUserError(
@@ -139,7 +139,7 @@ export default {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               // Error received from API server
               dispatch(fetchUserSettingsError(
@@ -189,7 +189,7 @@ export default {
         }),
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               // Error received from API server
               dispatch(updateUserSettingsError(

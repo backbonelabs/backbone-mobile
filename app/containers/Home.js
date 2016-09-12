@@ -20,7 +20,9 @@ class Home extends Component {
     accessToken: React.PropTypes.string,
     isFetchingAccessToken: React.PropTypes.bool,
     dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.object,
+    navigator: React.PropTypes.shape({
+      push: React.PropTypes.func,
+    }),
   };
 
   constructor() {
@@ -100,7 +102,7 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { auth } = state;
   return auth;
 };

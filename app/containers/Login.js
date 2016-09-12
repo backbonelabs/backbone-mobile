@@ -65,9 +65,9 @@ class Login extends Component {
         :
         <View style={styles.formContainer}>
           <Input
-            handleRef={ref => {
-              this.emailField = ref;
-            }}
+            handleRef={ref => (
+              this.emailField = ref
+            )}
             value={this.state.email}
             autoCapitalize="none"
             placeholder="Email"
@@ -79,9 +79,9 @@ class Login extends Component {
             returnKeyType="next"
           />
           <Input
-            handleRef={ref => {
-              this.passwordField = ref;
-            }}
+            handleRef={ref => (
+              this.passwordField = ref
+            )}
             value={this.state.password}
             autoCapitalize="none"
             placeholder="Password"
@@ -104,7 +104,7 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { auth } = state;
   return auth;
 };

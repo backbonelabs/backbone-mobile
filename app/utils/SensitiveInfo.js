@@ -14,7 +14,7 @@ const options = {
  * @return {Promise}
  */
 const getItem = key => SInfo.getItem(key, options)
-  .then(value => {
+  .then((value) => {
     try {
       return JSON.parse(value);
     } catch (err) {

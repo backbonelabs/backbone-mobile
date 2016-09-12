@@ -36,7 +36,7 @@ export default class DeviceConnect extends Component {
       this.setState({ deviceList })
     );
 
-    DeviceManagementService.getDeviceStatus(status => {
+    DeviceManagementService.getDeviceStatus((status) => {
       if (status === 2) {
         this.props.navigator.push(routes.posture.postureDashboard);
       } else {
@@ -51,7 +51,7 @@ export default class DeviceConnect extends Component {
 
   getSavedDevice() {
     this.setState({ inProgress: true }, () => (
-      DeviceManagementService.getSavedDevice(savedDevice => {
+      DeviceManagementService.getSavedDevice((savedDevice) => {
         if (savedDevice) {
           this.connectToDevice();
         } else {
@@ -77,7 +77,7 @@ export default class DeviceConnect extends Component {
 
   scanForDevices() {
     this.setState({ newDevice: true }, () => (
-      DeviceManagementService.scanForDevices(error => {
+      DeviceManagementService.scanForDevices((error) => {
         if (!error) {
           this.setState({ inProgress: false });
         } else {
@@ -109,7 +109,7 @@ export default class DeviceConnect extends Component {
 
   selectDevice(deviceData) {
     this.setState({ inProgress: true }, () => (
-      DeviceManagementService.selectDevice(deviceData.identifier, error => {
+      DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
         if (!error) {
           this.connectToDevice();
         } else {
@@ -128,7 +128,7 @@ export default class DeviceConnect extends Component {
   }
 
   forgetDevice() {
-    DeviceManagementService.forgetDevice(error => {
+    DeviceManagementService.forgetDevice((error) => {
       if (!error) {
         this.props.navigator.pop();
       } else {

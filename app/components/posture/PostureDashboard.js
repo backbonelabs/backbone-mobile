@@ -6,7 +6,7 @@ import Button from '../Button';
 import postureRoutes from '../../routes/posture';
 import styles from '../../styles/posture/postureDashboard';
 
-const PostureDashboard = (props) => (
+const PostureDashboard = props => (
   <View style={styles.container}>
     <View style={styles.analyticsContainer} />
     <View style={styles.buttonContainer}>

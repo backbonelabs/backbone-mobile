@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import styles from '../styles/button';
 
-const Button = props => {
+const Button = (props) => {
   const buttonStyles = [styles.button];
   if (props.disabled) {
     buttonStyles.push(styles.disabled);
