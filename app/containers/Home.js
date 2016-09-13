@@ -25,11 +25,13 @@ class Home extends Component {
     }),
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       isInitializing: true,
     };
+
+    console.log('props', this.props);
   }
 
   componentWillMount() {
@@ -66,7 +68,7 @@ class Home extends Component {
     return (
       <Button
         onPress={
-          () => this.props.navigator.push(accessToken ? routes.device.deviceConnect : routes.login)
+          () => this.props.navigator.push(accessToken ? routes.device : routes.login)
         }
         text={accessToken ? 'Connect' : 'Log In'}
       />
