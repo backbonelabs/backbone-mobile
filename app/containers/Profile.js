@@ -86,6 +86,7 @@ class Profile extends Component {
       verifyPassword,
     } = this.state;
 
+    // Check whether any of the profile information has changed
     if (
       user.firstName !== firstName ||
       user.lastName !== lastName ||
@@ -95,7 +96,6 @@ class Profile extends Component {
       fieldChanged = true;
     }
 
-    // Check whether any of the profile information has changed
     return fieldChanged && password === verifyPassword;
   }
 
