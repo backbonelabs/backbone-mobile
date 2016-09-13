@@ -96,10 +96,7 @@ class Profile extends Component {
     }
 
     // Check whether any of the profile information has changed
-    return (
-      fieldChanged &&
-      password === verifyPassword
-    );
+    return fieldChanged && password === verifyPassword;
   }
 
   update() {
@@ -109,7 +106,7 @@ class Profile extends Component {
       updatedFields.verifyPassword = this.state.verifyPassword;
     }
 
-    // Check whether this is a new email address
+    // Check whether this is an updated email address
     if (this.props.user.email !== this.state.email) {
       updatedFields.email = this.state.email;
     }
