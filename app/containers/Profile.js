@@ -86,7 +86,12 @@ class Profile extends Component {
       verifyPassword,
     } = this.state;
 
-    if (user.firstName !== firstName || user.lastName !== lastName || user.email !== email || !!password) {
+    if (
+      user.firstName !== firstName ||
+      user.lastName !== lastName ||
+      user.email !== email ||
+      !!password
+    ) {
       fieldChanged = true;
     }
 
