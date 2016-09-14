@@ -17,8 +17,13 @@ import authActions from '../actions/auth';
 
 class Home extends Component {
   static propTypes = {
-    accessToken: React.PropTypes.string,
-    isFetchingAccessToken: React.PropTypes.bool,
+    auth: React.PropTypes.shape({
+      accessToken: React.PropTypes.string,
+      isFetchingAccessToken: React.PropTypes.bool,
+    }),
+    generic: React.PropTypes.shape({
+      bluetoothState: React.PropTypes.number,
+    }),
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.shape({
       push: React.PropTypes.func,
@@ -29,6 +34,7 @@ class Home extends Component {
     super();
     this.state = {
       isInitializing: true,
+      bluetoothState: null,
     };
   }
 
@@ -47,7 +53,7 @@ class Home extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isFetchingAccessToken && !nextProps.isFetchingAccessToken) {
+    if (this.props.auth.isFetchingAccessToken && !nextProps.isFetchingAccessToken) {
       // Finished login attempt
       if (nextProps.errorMessage) {
         // Access token is invalid
@@ -58,23 +64,29 @@ class Home extends Component {
         SensitiveInfo.setItem('accessToken', nextProps.accessToken);
       }
     }
+
+    if (this.state.bluetoothState !== nextProps.generic.bluetoothState) {
+      this.setState({ bluetoothState: nextProps.generic.bluetoothState });
+    }
   }
 
   getMainBody() {
-    const { accessToken } = this.props;
+    const { accessToken } = this.props.auth;
+    console.log('bluetoothState', this.state.bluetoothState);
 
     return (
       <Button
         onPress={
           () => this.props.navigator.push(accessToken ? routes.device.deviceConnect : routes.login)
         }
+        disabled={accessToken && this.state.bluetoothState !== 4}
         text={accessToken ? 'Connect' : 'Log In'}
       />
     );
   }
 
   render() {
-    const { accessToken } = this.props;
+    const { accessToken, isFetchingAccessToken } = this.props.auth;
 
     return (
       <View style={styles.container}>
@@ -83,7 +95,7 @@ class Home extends Component {
           <Image style={styles.logo} source={logo} />
         </View>
         <View style={styles.body}>
-          {this.state.isInitializing || this.props.isFetchingAccessToken ?
+          {this.state.isInitializing || isFetchingAccessToken ?
             <Spinner /> : this.getMainBody()
           }
         </View>
@@ -103,8 +115,8 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth } = state;
-  return auth;
+  const { auth, generic } = state;
+  return { auth, generic };
 };
 
 export default connect(mapStateToProps)(Home);
