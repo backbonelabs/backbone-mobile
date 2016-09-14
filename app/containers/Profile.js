@@ -34,6 +34,7 @@ class Profile extends Component {
       isPristine: true,
       firstName: get(this.props.user, 'firstName'),
       lastName: get(this.props.user, 'lastName'),
+      email: get(this.props.user, 'email'),
       password: '',
       verifyPassword: '',
     };
@@ -57,6 +58,7 @@ class Profile extends Component {
         ...stateChanges,
         firstName: nextProps.user.firstName,
         lastName: nextProps.user.lastName,
+        email: nextProps.user.email,
       };
     }
 
@@ -74,14 +76,27 @@ class Profile extends Component {
   }
 
   isValid() {
+    let fieldChanged = false;
+    const { user } = this.props;
     const {
       firstName,
       lastName,
+      email,
       password,
       verifyPassword,
     } = this.state;
 
-    return !isEmpty(firstName) && !isEmpty(lastName) && password === verifyPassword;
+    // Check whether any of the profile information has changed
+    if (
+      user.firstName !== firstName ||
+      user.lastName !== lastName ||
+      user.email !== email ||
+      !!password
+    ) {
+      fieldChanged = true;
+    }
+
+    return fieldChanged && password === verifyPassword;
   }
 
   update() {
@@ -90,6 +105,12 @@ class Profile extends Component {
       updatedFields.password = this.state.password;
       updatedFields.verifyPassword = this.state.verifyPassword;
     }
+
+    // Check whether this is an updated email address
+    if (this.props.user.email !== this.state.email) {
+      updatedFields.email = this.state.email;
+    }
+
     this.props.dispatch(userActions.updateUser({
       _id: this.props.user._id,
       ...updatedFields,
@@ -118,17 +139,21 @@ class Profile extends Component {
             <Input
               value={this.state.firstName}
               placeholder="First name*"
+              autoCorrect={false}
               onChangeText={text => this.updateField('firstName', text)}
             />
             <Input
               value={this.state.lastName}
               placeholder="Last name*"
+              autoCorrect={false}
               onChangeText={text => this.updateField('lastName', text)}
             />
             <Input
-              value={get(this.props.user, 'email')}
+              value={this.state.email}
               placeholder="Email"
-              editable={false}
+              autoCorrect={false}
+              autoCapitalize="none"
+              onChangeText={text => this.updateField('email', text)}
             />
             <Input
               value={this.state.password}
