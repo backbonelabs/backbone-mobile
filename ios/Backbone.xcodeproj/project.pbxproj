@@ -973,7 +973,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.gobackbone.backbone;
+				PRODUCT_BUNDLE_IDENTIFIER = co.backbonelabs.backbone;
 				PRODUCT_NAME = Backbone;
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1009,7 +1009,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.gobackbone.backbone;
+				PRODUCT_BUNDLE_IDENTIFIER = co.backbonelabs.backbone;
 				PRODUCT_NAME = Backbone;
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
