@@ -14,6 +14,7 @@ import styles from '../styles/home';
 import routes from '../routes';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
+import constants from '../utils/constants';
 
 class Home extends Component {
   static propTypes = {
@@ -72,14 +73,14 @@ class Home extends Component {
 
   getMainBody() {
     const { accessToken } = this.props.auth;
-    console.log('bluetoothState', this.state.bluetoothState);
+    const { bluetoothStates } = constants;
 
     return (
       <Button
         onPress={
           () => this.props.navigator.push(accessToken ? routes.device.deviceConnect : routes.login)
         }
-        disabled={accessToken && this.state.bluetoothState !== 4}
+        disabled={accessToken && this.state.bluetoothState === bluetoothStates.OFF}
         text={accessToken ? 'Connect' : 'Log In'}
       />
     );
