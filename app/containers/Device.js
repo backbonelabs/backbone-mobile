@@ -44,7 +44,7 @@ export default class Device extends Component {
   }
 
   componentWillUnmount() {
-    NativeAppEventEmitter.removeAllListeners();
+    NativeAppEventEmitter.removeAllListeners('DevicesFound');
   }
 
   getSavedDevice() {
