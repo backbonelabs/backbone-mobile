@@ -953,6 +953,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 27;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = FK7Z2C5Q2Q;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -972,7 +973,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.backbonelabs.backbone;
+				PRODUCT_BUNDLE_IDENTIFIER = co.gobackbone.backbone;
 				PRODUCT_NAME = Backbone;
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -988,6 +989,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 27;
+				DEVELOPMENT_TEAM = FK7Z2C5Q2Q;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1007,7 +1009,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = co.backbonelabs.backbone;
+				PRODUCT_BUNDLE_IDENTIFIER = co.gobackbone.backbone;
 				PRODUCT_NAME = Backbone;
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
