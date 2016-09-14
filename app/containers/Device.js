@@ -15,7 +15,6 @@ const { DeviceManagementService } = NativeModules;
 export default class Device extends Component {
   static propTypes = {
     navigator: React.PropTypes.shape({
-      push: React.PropTypes.func,
       replace: React.PropTypes.func,
       popToTop: React.PropTypes.func,
       pop: React.PropTypes.func,
@@ -37,7 +36,7 @@ export default class Device extends Component {
   componentWillMount() {
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === 2) {
-        this.props.navigator.push(routes.posture.postureDashboard);
+        this.props.navigator.replace(routes.posture.postureDashboard);
       } else {
         this.getSavedDevice();
       }
@@ -65,7 +64,7 @@ export default class Device extends Component {
       // TODO: Refactor to use new status shape: { isConnected: boolean, message: string }
       this.setState({ inProgress: false }, () => {
         if (!status.message) {
-          this.props.navigator.push(routes.posture.postureDashboard);
+          this.props.navigator.replace(routes.posture.postureDashboard);
         } else {
           this.deviceError(status);
         }

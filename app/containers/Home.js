@@ -30,8 +30,6 @@ class Home extends Component {
     this.state = {
       isInitializing: true,
     };
-
-    console.log('props', this.props);
   }
 
   componentWillMount() {

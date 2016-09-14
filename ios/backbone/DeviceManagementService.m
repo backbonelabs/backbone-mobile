@@ -92,7 +92,8 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
                                  @"RSSI": device.discoveryTimeRSSI,
                                  }];
     }
-    [NSThread sleepForTimeInterval:1.0f];
+    NSLog(@"collection %lu", (unsigned long)[_deviceCollection count]);
+//    [NSThread sleepForTimeInterval:1.0f];
     [self devicesFound:deviceList];
   }];
   
@@ -104,14 +105,17 @@ RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
-  [_sharedDevice forgetDevice];
-  _sharedDevice = nil;
-  if (_sharedDevice) {
-    NSDictionary *makeError = RCTMakeError(@"Failed to forget device", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
-    callback(@[makeError]);
-  } else {
-    callback(@[[NSNull null]]);
-  }
+  NSLog(@"forget device");
+  [_sharedDevice disconnectWithHandler:^(NSError * _Nullable error) {
+    [_sharedDevice forgetDevice];
+    _sharedDevice = nil;
+    if (_sharedDevice) {
+      NSDictionary *makeError = RCTMakeError(@"Failed to forget device", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
+      callback(@[makeError]);
+    } else {
+      callback(@[[NSNull null]]);
+    }
+  }];
 }
 
 - (void)checkConnectTimeout {

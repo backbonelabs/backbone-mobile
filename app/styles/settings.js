@@ -28,4 +28,8 @@ export default EStyleSheet.create({
   text: {
     textAlign: 'center',
   },
+  forget: {
+    marginTop: '1rem',
+    alignItems: 'center',
+  },
 });
