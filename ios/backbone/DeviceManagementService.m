@@ -92,7 +92,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
                                  @"RSSI": device.discoveryTimeRSSI,
                                  }];
     }
-    NSLog(@"collection %lu", (unsigned long)[_deviceCollection count]);
+// Potentially caused problems while scanning, which resulted in "false" scan timeouts
 //    [NSThread sleepForTimeInterval:1.0f];
     [self devicesFound:deviceList];
   }];
