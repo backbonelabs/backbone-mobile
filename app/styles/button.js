@@ -4,8 +4,6 @@ export default EStyleSheet.create({
   button: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: '0.5rem',
     backgroundColor: '$primaryColor',
   },
   disabled: {

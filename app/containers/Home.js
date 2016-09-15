@@ -4,7 +4,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
@@ -18,12 +17,12 @@ import authActions from '../actions/auth';
 
 class Home extends Component {
   static propTypes = {
-    auth: React.PropTypes.shape({
-      accessToken: React.PropTypes.string,
-      isFetchingAccessToken: React.PropTypes.bool,
-    }),
+    accessToken: React.PropTypes.string,
+    isFetchingAccessToken: React.PropTypes.bool,
     dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.object,
+    navigator: React.PropTypes.shape({
+      push: React.PropTypes.func,
+    }),
   };
 
   constructor() {
@@ -31,7 +30,6 @@ class Home extends Component {
     this.state = {
       isInitializing: true,
     };
-    this.getMainBody = this.getMainBody.bind(this);
   }
 
   componentWillMount() {
@@ -39,53 +37,45 @@ class Home extends Component {
     // is a stored access token. An access token would have been saved
     // on a previously successful login.
     SensitiveInfo.getItem('accessToken')
-      .then(accessToken => {
-        if (accessToken) {
-          // There is a saved access token
-          // Attempt to log in using the access token
-          this.props.dispatch(authActions.login({ accessToken }));
-        }
-      })
-      .then(() => {
-        this.setState({ isInitializing: false });
-      })
-      .catch(() => {
-        this.setState({ isInitializing: false });
-      });
+      .then(accessToken =>
+        // There is a saved access token
+        // Attempt to log in using the access token
+        accessToken && this.props.dispatch(authActions.login({ accessToken }))
+      )
+      .then(() => this.setState({ isInitializing: false }))
+      .catch(() => this.setState({ isInitializing: false }));
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.auth.isFetchingAccessToken && !nextProps.auth.isFetchingAccessToken) {
+    if (this.props.isFetchingAccessToken && !nextProps.isFetchingAccessToken) {
       // Finished login attempt
-      if (nextProps.auth.errorMessage) {
+      if (nextProps.errorMessage) {
         // Access token is invalid
         // Delete from local device to prevent unnecessary API calls on subsequent app load
         SensitiveInfo.deleteItem('accessToken');
       } else {
         // Successful login, save new access token
-        SensitiveInfo.setItem('accessToken', nextProps.auth.accessToken);
+        SensitiveInfo.setItem('accessToken', nextProps.accessToken);
       }
     }
   }
 
   getMainBody() {
-    if (this.props.auth.accessToken) {
-      return (
-        <Button
-          onPress={() => { this.props.navigator.push(routes.device.deviceConnect); }}
-          text="Connect"
-        />
-      );
-    }
+    const { accessToken } = this.props;
+
     return (
       <Button
-        onPress={() => { this.props.navigator.push(routes.login); }}
-        text="Log In"
+        onPress={
+          () => this.props.navigator.push(accessToken ? routes.device : routes.login)
+        }
+        text={accessToken ? 'Connect' : 'Log In'}
       />
     );
   }
 
   render() {
+    const { accessToken } = this.props;
+
     return (
       <View style={styles.container}>
         <Image style={styles.background} source={bg} />
@@ -93,36 +83,28 @@ class Home extends Component {
           <Image style={styles.logo} source={logo} />
         </View>
         <View style={styles.body}>
-          {this.state.isInitializing || this.props.auth.isFetchingAccessToken ?
-            <Spinner />
-            :
-            this.getMainBody()
+          {this.state.isInitializing || this.props.isFetchingAccessToken ?
+            <Spinner /> : this.getMainBody()
           }
         </View>
-        <View style={styles.footer}>
-          {this.props.auth.accessToken ?
-            // This conditional block for deleting the access token is for temporary
-            // testing purposes only. Remove this entire conditional block after
-            // implementing a logout component.
-            <TouchableOpacity
-              onPress={() => {
-                SensitiveInfo.deleteItem('accessToken');
-              }}
-            >
-              <Text style={{ fontSize: 18, color: 'white' }}>Delete access token</Text>
-            </TouchableOpacity> :
-            <TouchableHighlight onPress={() => this.props.navigator.push(routes.signup)}>
-              <Text style={styles.signup}>Don't have an account? Sign-up</Text>
-            </TouchableHighlight>
+        <TouchableOpacity
+          style={styles.footer}
+          onPress={accessToken ?
+            SensitiveInfo.deleteItem('accessToken') : () => this.props.navigator.push(routes.signup)
           }
-        </View>
+        >
+          <Text style={styles.footerText}>
+            {accessToken ? 'Delete access token' : 'Don\'t have an account? Sign up'}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-});
+const mapStateToProps = (state) => {
+  const { auth } = state;
+  return auth;
+};
 
 export default connect(mapStateToProps)(Home);

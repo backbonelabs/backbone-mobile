@@ -3,7 +3,7 @@ import device from './device';
 import home from './home';
 import login from './login';
 import signup from './signup';
-import confirmEmail from './confirmEmail';
+import confirm from './confirm';
 import posture from './posture';
 import tutorial from './tutorial';
 import profile from './profile';
@@ -17,7 +17,7 @@ export default {
   login,
   signup,
   posture,
-  confirmEmail,
+  confirm,
   tutorial,
   profile,
   settings,

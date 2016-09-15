@@ -18,7 +18,9 @@ const { PropTypes } = React;
 
 class PostureMonitor extends Component {
   static propTypes = {
-    user: PropTypes.object,
+    user: PropTypes.shape({
+      settings: PropTypes.object,
+    }),
     settings: PropTypes.shape({
       phoneVibration: PropTypes.bool,
       postureThreshold: PropTypes.number,
@@ -26,8 +28,8 @@ class PostureMonitor extends Component {
     }),
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       monitoring: null,
     };
@@ -81,13 +83,11 @@ class PostureMonitor extends Component {
 
   disablePostureActivity() {
     // Disable activity, set monitoring to false, and remove listener
-    ActivityService.disableActivity(activityName, () =>
-      this.setState({ monitoring: false }, () => {
-        if (isFunction(this.postureListener.remove)) {
-          this.postureListener.remove();
-        }
-      })
-    );
+    ActivityService.disableActivity(activityName, () => (
+      this.setState({
+        monitoring: false,
+      }, () => isFunction(this.postureListener.remove) && this.postureListener.remove())
+    ));
   }
 
   render() {
@@ -108,7 +108,7 @@ class PostureMonitor extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { user } = state;
   return user;
 };

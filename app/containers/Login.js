@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
-  Text,
-  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
@@ -11,7 +9,8 @@ import Input from '../components/Input';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
-import deviceRoutes from '../routes/device';
+import routes from '../routes';
+import Button from '../components/Button';
 
 class Login extends Component {
   static propTypes = {
@@ -37,7 +36,7 @@ class Login extends Component {
       this.saveAccessToken(nextProps.accessToken);
 
       // Redirect for device connect
-      this.props.navigator.replace(deviceRoutes.deviceConnect);
+      this.props.navigator.replace(routes.device);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', nextProps.errorMessage);
@@ -66,9 +65,9 @@ class Login extends Component {
         :
         <View style={styles.formContainer}>
           <Input
-            handleRef={ref => {
-              this.emailField = ref;
-            }}
+            handleRef={ref => (
+              this.emailField = ref
+            )}
             value={this.state.email}
             autoCapitalize="none"
             placeholder="Email"
@@ -80,9 +79,9 @@ class Login extends Component {
             returnKeyType="next"
           />
           <Input
-            handleRef={ref => {
-              this.passwordField = ref;
-            }}
+            handleRef={ref => (
+              this.passwordField = ref
+            )}
             value={this.state.password}
             autoCapitalize="none"
             placeholder="Password"
@@ -93,13 +92,11 @@ class Login extends Component {
             secureTextEntry
             returnKeyType="go"
           />
-          <TouchableHighlight
-            style={styles.button}
+          <Button
+            text="Log in"
             disabled={this.props.isFetchingAccessToken}
             onPress={this.login}
-          >
-            <Text style={styles.buttonText}>Log in</Text>
-          </TouchableHighlight>
+          />
         </View>
       }
       </View>
@@ -107,7 +104,7 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { auth } = state;
   return auth;
 };

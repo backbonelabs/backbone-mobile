@@ -70,7 +70,7 @@ export default {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               dispatch(fetchUserError(
                 new Error(body.error)
@@ -80,12 +80,12 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(updateUserError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 
@@ -107,7 +107,7 @@ export default {
         body: JSON.stringify(userUpdateFields),
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               // Error received from API server
               dispatch(updateUserError(
@@ -118,12 +118,12 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(updateUserError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 
@@ -139,7 +139,7 @@ export default {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               // Error received from API server
               dispatch(fetchUserSettingsError(
@@ -150,12 +150,12 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(fetchUserSettingsError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 
@@ -189,7 +189,7 @@ export default {
         }),
       })
         .then(response => response.json()
-          .then(body => {
+          .then((body) => {
             if (body.error) {
               // Error received from API server
               dispatch(updateUserSettingsError(
@@ -200,12 +200,12 @@ export default {
             }
           })
         )
-        .catch(() => {
+        .catch(() => (
           // Network error
           dispatch(updateUserSettingsError(
             new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+          ))
+        ));
     };
   },
 };

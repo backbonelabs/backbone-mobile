@@ -17,9 +17,7 @@ const Errors = (props) => {
         <Icon size={150} name={currentRoute.iconName.header} color="black" />
       </View>
       <View style={styles.body}>
-        <Text style={styles.errorMessage}>
-          {currentRoute.errorMessage}
-        </Text>
+        <Text style={styles.errorMessage}>{currentRoute.errorMessage}</Text>
       </View>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.primaryButton} onPress={currentRoute.onPress.primary}>

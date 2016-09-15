@@ -58,31 +58,19 @@ class Application extends Component {
           );
         }
       },
-      RightButton: (route, navigator) => {
-        if (route.rightButton) {
-          return (
-            <TouchableOpacity
-              style={styles.rightButton}
-              onPress={() => route.rightButton.onPress(navigator)}
-            >
-              <Icon
-                name={route.rightButton.iconName}
-                size={EStyleSheet.globalVars.$iconSize}
-                color={EStyleSheet.globalVars.$primaryColor}
-              />
-            </TouchableOpacity>
-          );
-        }
-      },
-      Title: (route) => {
-        if (route.title) {
-          return (
-            <View style={styles.titleContainer}>
-              <Text>{route.title}</Text>
-            </View>
-          );
-        }
-      },
+      RightButton: (route, navigator) => route.rightButton && (
+        <TouchableOpacity
+          style={styles.rightButton}
+          onPress={() => route.rightButton.onPress(navigator)}
+        >
+          <Icon
+            name={route.rightButton.iconName}
+            size={EStyleSheet.globalVars.$iconSize}
+            color={EStyleSheet.globalVars.$primaryColor}
+          />
+        </TouchableOpacity>
+      ),
+      Title: route => route.title && <Text style={styles.titleText}>{route.title}</Text>,
     };
 
     this.state = {
@@ -102,11 +90,7 @@ class Application extends Component {
     // compared to iOS.
     if (Platform.OS === 'android') {
       NativeModules.BluetoothService.getIsEnabled()
-        .then(isEnabled => {
-          if (!isEnabled) {
-            NativeModules.BluetoothService.enable();
-          }
-        });
+        .then(isEnabled => !isEnabled && NativeModules.BluetoothService.enable());
     }
 
     const handler = ({ state }) => {
@@ -178,12 +162,12 @@ class Application extends Component {
       <Drawer
         type="displace"
         content={<Menu
-          menuItems={{
-            activity: routes.activity.activityDashboard,
-            posture: routes.posture.postureDashboard,
-            profile: routes.profile,
-            settings: routes.settings,
-          }}
+          menuItems={[
+            routes.activity.activityDashboard,
+            routes.posture.postureDashboard,
+            routes.profile,
+            routes.settings,
+          ]}
           navigate={route => this.navigate(route)}
         />}
         openDrawerOffset={0.3} // right margin when drawer is opened

@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import styles from '../styles/button';
 
-const Button = props => {
+const Button = (props) => {
   const buttonStyles = [styles.button];
   if (props.disabled) {
     buttonStyles.push(styles.disabled);
@@ -15,7 +15,7 @@ const Button = props => {
     <TouchableOpacity style={buttonStyles} onPress={props.disabled ? undefined : props.onPress}>
       <Text style={[styles.text, props.textStyle]}>{props.text}</Text>
     </TouchableOpacity>
-    );
+  );
 };
 
 Button.propTypes = {

@@ -13,7 +13,7 @@ const { width } = Dimensions.get('window');
 export default class Tutorial extends Component {
   static propTypes = {
     currentRoute: React.PropTypes.object,
-  }
+  };
 
   constructor() {
     super();
@@ -22,7 +22,6 @@ export default class Tutorial extends Component {
       valueX: 0,
       animatedValues: new Animated.ValueXY(),
     };
-
     this.nextStep = this.nextStep.bind(this);
     this.previousStep = this.previousStep.bind(this);
   }
@@ -53,12 +52,7 @@ export default class Tutorial extends Component {
 
   displayTutorialSteps() {
     const steps = this.props.currentRoute.tutorialSteps.map((step, i) => step({ key: i }));
-
-    return (
-      <Animated.View style={this.getStepStyle()}>
-        {steps}
-      </Animated.View>
-    );
+    return <Animated.View style={this.getStepStyle()}>{steps}</Animated.View>;
   }
 
   displayStepIndicators(selection) {
@@ -77,11 +71,7 @@ export default class Tutorial extends Component {
       </TouchableOpacity>
     ));
 
-    return (
-      <View style={styles.stepIndicatorContainer}>
-        {stepIndicators}
-      </View>
-    );
+    return <View style={styles.stepIndicatorContainer}>{stepIndicators}</View>;
   }
 
   previousStep() {

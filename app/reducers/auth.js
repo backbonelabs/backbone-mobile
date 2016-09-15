@@ -1,9 +1,8 @@
 export default (state = {
   accessToken: null,
-  isSignedup: false,
+  confirmationSent: false,
   isFetchingAccessToken: false,
-  isCreatingUserAccount: false,
-  isCheckingEmailConfirmation: false,
+  isSigningUp: false,
   errorMessage: null,
   userId: null,
 }, action) => {
@@ -31,48 +30,45 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
-    case 'CREATE_USER_ACCOUNT__START': {
+    case 'SIGNUP__START': {
       return {
         ...state,
-        isCreatingUserAccount: true,
+        isSigningUp: true,
         errorMessage: null,
       };
     }
-    case 'CREATE_USER_ACCOUNT': {
+    case 'SIGNUP': {
       return {
         ...state,
-        isCreatingUserAccount: false,
+        isSigningUp: false,
         errorMessage: null,
-        isSignedup: action.payload,
+        confirmationSent: action.payload,
       };
     }
-    case 'CREATE_USER_ACCOUNT__ERROR': {
+    case 'SIGNUP__ERROR': {
       return {
         ...state,
-        isCreatingUserAccount: false,
+        isSigningUp: false,
         errorMessage: action.payload.message,
       };
     }
-    case 'CHECK_EMAIL_CONFIRMATION__START': {
+    case 'CHECK_CONFIRMATION__START': {
       return {
         ...state,
-        isCheckingEmailConfirmation: true,
         errorMessage: null,
       };
     }
-    case 'CHECK_EMAIL_CONFIRMATION': {
+    case 'CHECK_CONFIRMATION': {
       return {
         ...state,
-        isCheckingEmailConfirmation: false,
         errorMessage: null,
         accessToken: action.payload.accessToken,
         userId: action.payload._id,
       };
     }
-    case 'CHECK_EMAIL_CONFIRMATION__ERROR': {
+    case 'CHECK_CONFIRMATION__ERROR': {
       return {
         ...state,
-        isCheckingEmailConfirmation: false,
         errorMessage: action.payload.message,
       };
     }

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
-  Text,
-  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
@@ -11,13 +9,14 @@ import Spinner from '../components/Spinner';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
+import Button from '../components/Button';
 
 class Signup extends Component {
   static propTypes = {
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
-    isSignedup: React.PropTypes.bool,
-    isCreatingUserAccount: React.PropTypes.bool,
+    confirmationSent: React.PropTypes.bool,
+    isSigningUp: React.PropTypes.bool,
     navigator: React.PropTypes.object,
   };
 
@@ -32,11 +31,11 @@ class Signup extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.isSignedup && nextProps.isSignedup) {
+    if (!this.props.confirmationSent && nextProps.confirmationSent) {
       const { email } = this.state;
-      this.props.navigator.replace(Object.assign({}, routes.confirmEmail, { email }));
+      this.props.navigator.replace(Object.assign({}, routes.confirm, { email }));
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      Alert.alert('Sign-up Error', nextProps.errorMessage);
+      Alert.alert('Error', nextProps.errorMessage);
     }
   }
 
@@ -55,14 +54,14 @@ class Signup extends Component {
   render() {
     return (
       <View style={styles.container}>
-      {this.props.isCreatingUserAccount ?
+      {this.props.isSigningUp ?
         <Spinner />
         :
         <View style={styles.formContainer}>
           <Input
-            handleRef={ref => {
-              this.emailField = ref;
-            }}
+            handleRef={ref => (
+              this.emailField = ref
+            )}
             value={this.state.email}
             autoCapitalize="none"
             placeholder="Email"
@@ -74,9 +73,9 @@ class Signup extends Component {
             returnKeyType="next"
           />
           <Input
-            handleRef={ref => {
-              this.passwordField = ref;
-            }}
+            handleRef={ref => (
+              this.passwordField = ref
+            )}
             value={this.state.password}
             autoCapitalize="none"
             placeholder="Password"
@@ -88,9 +87,9 @@ class Signup extends Component {
             returnKeyType="next"
           />
           <Input
-            handleRef={ref => {
-              this.verifyPasswordField = ref;
-            }}
+            handleRef={ref => (
+              this.verifyPasswordField = ref
+            )}
             value={this.state.verifyPassword}
             autoCapitalize="none"
             placeholder="Verify Password"
@@ -101,13 +100,11 @@ class Signup extends Component {
             secureTextEntry
             returnKeyType="go"
           />
-          <TouchableHighlight
-            style={styles.button}
-            disabled={this.props.isCreatingUserAccount}
+          <Button
+            text="Sign Up"
+            disabled={this.props.isSigningUp}
             onPress={this.signup}
-          >
-            <Text style={styles.buttonText}>Sign-up</Text>
-          </TouchableHighlight>
+          />
         </View>
       }
       </View>
@@ -115,7 +112,7 @@ class Signup extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { auth } = state;
   return auth;
 };

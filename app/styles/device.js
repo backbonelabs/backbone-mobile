@@ -5,14 +5,15 @@ export default EStyleSheet.create({
     flex: 1,
     marginTop: '$totalNavHeight',
   },
-  analyticsContainer: {
-    flex: 0.7,
-    backgroundColor: 'rgba(0,0,0,0.68)',
+  progress: {
+    flex: 1,
   },
-  buttonContainer: {
-    flex: 0.3,
+  deviceName: {
+    color: 'white',
+    fontSize: '1.25rem',
   },
-  rightButton: {
-    color: '$primaryColor',
+  deviceID: {
+    marginTop: '0.5rem',
+    fontSize: '0.5rem',
   },
 });
