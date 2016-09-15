@@ -5,24 +5,26 @@ import {
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
-import routes from '../../routes';
-import styles from '../../styles/device/deviceConnect';
-import Spinner from '../Spinner';
-import List from '../../containers/List';
+import routes from '../routes';
+import styles from '../styles/device';
+import Spinner from '../components/Spinner';
+import List from './List';
 
 const { DeviceManagementService } = NativeModules;
 
-export default class DeviceConnect extends Component {
+export default class Device extends Component {
   static propTypes = {
-    navigator: React.PropTypes.object,
-    currentRoute: React.PropTypes.object,
+    navigator: React.PropTypes.shape({
+      replace: React.PropTypes.func,
+      popToTop: React.PropTypes.func,
+      pop: React.PropTypes.func,
+    }),
   };
 
   constructor() {
     super();
     this.state = {
       deviceList: [],
-      newDevice: false,
       inProgress: false,
     };
     this.selectDevice = this.selectDevice.bind(this);
@@ -32,13 +34,9 @@ export default class DeviceConnect extends Component {
   }
 
   componentWillMount() {
-    NativeAppEventEmitter.addListener('DevicesFound', deviceList =>
-      this.setState({ deviceList })
-    );
-
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === 2) {
-        this.props.navigator.push(routes.posture.postureDashboard);
+        this.props.navigator.replace(routes.posture.postureDashboard);
       } else {
         this.getSavedDevice();
       }
@@ -66,7 +64,7 @@ export default class DeviceConnect extends Component {
       // TODO: Refactor to use new status shape: { isConnected: boolean, message: string }
       this.setState({ inProgress: false }, () => {
         if (!status.message) {
-          this.props.navigator.push(routes.posture.postureDashboard);
+          this.props.navigator.replace(routes.posture.postureDashboard);
         } else {
           this.deviceError(status);
         }
@@ -76,15 +74,15 @@ export default class DeviceConnect extends Component {
   }
 
   scanForDevices() {
-    this.setState({ newDevice: true }, () => (
-      DeviceManagementService.scanForDevices((error) => {
-        if (!error) {
-          this.setState({ inProgress: false });
-        } else {
-          this.deviceError(error);
-        }
-      })
-    ));
+    NativeAppEventEmitter.addListener('DevicesFound', deviceList => this.setState({ deviceList }));
+
+    DeviceManagementService.scanForDevices((error) => {
+      if (!error) {
+        this.setState({ inProgress: false });
+      } else {
+        this.deviceError(error);
+      }
+    });
   }
 
   deviceError(errors) {

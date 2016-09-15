@@ -9,7 +9,7 @@ import Input from '../components/Input';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
-import deviceRoutes from '../routes/device';
+import routes from '../routes';
 import Button from '../components/Button';
 
 class Login extends Component {
@@ -36,7 +36,7 @@ class Login extends Component {
       this.saveAccessToken(nextProps.accessToken);
 
       // Redirect for device connect
-      this.props.navigator.replace(deviceRoutes.deviceConnect);
+      this.props.navigator.replace(routes.device);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', nextProps.errorMessage);

@@ -6,7 +6,7 @@ import {
 import { connect } from 'react-redux';
 import Spinner from './Spinner';
 import styles from '../styles/confirm';
-import deviceRoutes from '../routes/device';
+import routes from '../routes';
 import authActions from '../actions/auth';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
@@ -31,7 +31,7 @@ class Confirm extends Component {
     if (!this.props.accessToken && nextProps.accessToken) {
       clearInterval(this.setPollingInterval);
       SensitiveInfo.setItem('accessToken', nextProps.accessToken);
-      this.props.navigator.replace(deviceRoutes.deviceConnect);
+      this.props.navigator.replace(routes.device);
     }
   }
 
