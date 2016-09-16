@@ -95,13 +95,14 @@ class Login extends Component {
             returnKeyType="go"
           />
           <Button
-            text="Log in"
+            text="Log In"
             disabled={this.props.isFetchingAccessToken}
             onPress={this.login}
           />
           <TouchableHighlight
             style={styles.forgotPasswordButton}
-            onPress={() => this.props.navigator.push(routes.recover)}
+            // Pushing to route doesn't unmount this scene, oddly enough
+            onPress={() => this.props.navigator.replace(routes.recover)}
           >
             <Text style={styles.forgotPassword}>Forgot password?</Text>
           </TouchableHighlight>

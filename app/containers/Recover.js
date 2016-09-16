@@ -30,27 +30,26 @@ class Recover extends Component {
       email: null,
       inProgress: false,
     };
+
     this.recoverPassword = this.recoverPassword.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.confirmationSent && nextProps.confirmationSent) {
-      const { email } = this.state;
-      this.props.navigator.replace(Object.assign({}, routes.confirm, { email }));
-    } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      Alert.alert('Error', nextProps.errorMessage);
-    }
+    this.setState({ inProgress: false }, () => {
+      if (!this.props.confirmationSent && nextProps.confirmationSent) {
+        const { email } = this.state;
 
-    if (!this.props.inProgress !== nextProps.inProgress) {
-      this.setState({
-        inProgress: true,
-      });
-    }
+        this.props.navigator.replace(Object.assign({}, routes.confirm, { email }));
+      } else if (!this.props.errorMessage && nextProps.errorMessage) {
+        Alert.alert('Error', nextProps.errorMessage);
+      }
+    });
   }
 
   recoverPassword() {
-    console.log('recover password');
-    this.props.dispatch(authActions.recover({ email: this.state.email }));
+    this.setState({ inProgress: true }, () =>
+      this.props.dispatch(authActions.recover({ email: this.state.email }))
+    );
   }
 
   render() {
