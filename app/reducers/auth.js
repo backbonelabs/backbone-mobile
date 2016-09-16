@@ -2,7 +2,7 @@ export default (state = {
   accessToken: null,
   confirmationSent: false,
   isFetchingAccessToken: false,
-  isSigningUp: false,
+  inProgress: false,
   errorMessage: null,
   userId: null,
 }, action) => {
@@ -33,14 +33,14 @@ export default (state = {
     case 'SIGNUP__START': {
       return {
         ...state,
-        isSigningUp: true,
+        inProgress: true,
         errorMessage: null,
       };
     }
     case 'SIGNUP': {
       return {
         ...state,
-        isSigningUp: false,
+        inProgress: false,
         errorMessage: null,
         confirmationSent: action.payload,
       };
@@ -48,7 +48,26 @@ export default (state = {
     case 'SIGNUP__ERROR': {
       return {
         ...state,
-        isSigningUp: false,
+        inProgress: false,
+        errorMessage: action.payload.message,
+      };
+    }
+    case 'RECOVER__START': {
+      return {
+        ...state,
+        errorMessage: null,
+      };
+    }
+    case 'RECOVER': {
+      return {
+        ...state,
+        errorMessage: null,
+        confirmationSent: action.payload,
+      };
+    }
+    case 'RECOVER__ERROR': {
+      return {
+        ...state,
         errorMessage: action.payload.message,
       };
     }

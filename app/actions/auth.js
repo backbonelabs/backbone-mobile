@@ -29,6 +29,19 @@ const signupError = error => ({
   error: true,
 });
 
+const recoverStart = () => ({ type: 'RECOVER__START' });
+
+const recover = payload => ({
+  type: 'RECOVER',
+  payload,
+});
+
+const recoverError = error => ({
+  type: 'RECOVER__ERROR',
+  payload: error,
+  error: true,
+});
+
 const checkConfirmationStart = () => ({ type: 'CHECK_CONFIRMATION__START' });
 
 const checkConfirmation = payload => ({
@@ -80,7 +93,7 @@ export default {
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
       })
-        .then(response => response.json()
+        .then(response => response.json())
           .then((body) => {
             if (body.error) {
               // Error received from API server
@@ -91,7 +104,33 @@ export default {
               dispatch(signup(body));
             }
           })
-        )
+        .catch(() => (
+          // Network error
+          dispatch(signupError(
+            new Error('We are encountering server issues. Please try again later.')
+          ))
+        ));
+    };
+  },
+
+  recover(user) {
+    return (dispatch) => {
+      dispatch(recoverStart());
+
+      return Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/auth/reset`,
+        body: JSON.stringify(user),
+      })
+        .then(response => response.json())
+          .then((body) => {
+            if (body.error) {
+              dispatch(recoverError(
+                new Error(body.error)
+              ));
+            } else {
+              dispatch(recover(body));
+            }
+          })
         .catch(() => (
           // Network error
           dispatch(signupError(

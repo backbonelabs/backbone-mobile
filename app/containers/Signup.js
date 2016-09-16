@@ -16,7 +16,7 @@ class Signup extends Component {
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
     confirmationSent: React.PropTypes.bool,
-    isSigningUp: React.PropTypes.bool,
+    inProgress: React.PropTypes.bool,
     navigator: React.PropTypes.object,
   };
 
@@ -54,7 +54,7 @@ class Signup extends Component {
   render() {
     return (
       <View style={styles.container}>
-      {this.props.isSigningUp ?
+      {this.props.inProgress ?
         <Spinner />
         :
         <View style={styles.formContainer}>
@@ -102,7 +102,7 @@ class Signup extends Component {
           />
           <Button
             text="Sign Up"
-            disabled={this.props.isSigningUp}
+            disabled={this.props.inProgress}
             onPress={this.signup}
           />
         </View>
