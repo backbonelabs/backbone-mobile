@@ -40,23 +40,6 @@ static BOOL shouldSendNotifications;
   double x = [[data objectForKey:@"x"] doubleValue];
   double y = [[data objectForKey:@"y"] doubleValue];
   double z = [[data objectForKey:@"z"] doubleValue];
-  
-  // In high acceleration cases where -1 < value > 1
-  // Perform modulus operation on appropriate axis
-  if (x < -1 || x > 1) {
-    x = fmod(x, 1);
-    //    NSLog(@"MOD X %f", x);
-  }
-  
-  if (y < -1 || y > 1) {
-    y = fmod(y, 1);
-    //    NSLog(@"MOD Y %f", y);
-  }
-  
-  if (z < -1 || z > 1) {
-    z = fmod(z, 1);
-    //    NSLog(@"MOD Z %f", z);
-  }
 
   double currentAngleXY = RADIANS_TO_DEGREES(atan2(x, y));
   double currentAngleXZ = RADIANS_TO_DEGREES(atan2(x, z));
