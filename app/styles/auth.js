@@ -32,4 +32,14 @@ export default EStyleSheet.create({
     fontSize: '1.5rem',
     fontWeight: 'bold',
   },
+  forgotPasswordButton: {
+    marginTop: 10,
+    height: 30,
+    justifyContent: 'center',
+  },
+  forgotPassword: {
+    fontSize: '0.75rem',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
 });

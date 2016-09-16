@@ -9,6 +9,7 @@ import tutorial from './tutorial';
 import profile from './profile';
 import settings from './settings';
 import errors from './errors';
+import recover from './recover';
 
 export default {
   activity,
@@ -22,4 +23,5 @@ export default {
   profile,
   settings,
   errors,
+  recover,
 };

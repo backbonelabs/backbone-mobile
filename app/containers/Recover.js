@@ -40,7 +40,7 @@ class Recover extends Component {
             autoFocus
             returnKeyType="go"
           />
-          <Button text="Recover" onPress={this.recoverPassword} />
+          <Button style={{ marginTop: 5 }} text="Recover" onPress={this.recoverPassword} />
         </View>
       </View>
     );
