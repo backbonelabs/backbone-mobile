@@ -29,19 +29,6 @@ const signupError = error => ({
   error: true,
 });
 
-const recoverStart = () => ({ type: 'RECOVER__START' });
-
-const recover = payload => ({
-  type: 'RECOVER',
-  payload,
-});
-
-const recoverError = error => ({
-  type: 'RECOVER__ERROR',
-  payload: error,
-  error: true,
-});
-
 const checkConfirmationStart = () => ({ type: 'CHECK_CONFIRMATION__START' });
 
 const checkConfirmation = payload => ({
@@ -51,6 +38,19 @@ const checkConfirmation = payload => ({
 
 const checkConfirmationError = error => ({
   type: 'CHECK_CONFIRMATION__ERROR',
+  payload: error,
+  error: true,
+});
+
+const recoverStart = () => ({ type: 'RECOVER__START' });
+
+const recover = payload => ({
+  type: 'RECOVER',
+  payload,
+});
+
+const recoverError = error => ({
+  type: 'RECOVER__ERROR',
   payload: error,
   error: true,
 });
@@ -122,18 +122,10 @@ export default {
         body: JSON.stringify(user),
       })
         .then(response => response.json())
-          .then((body) => {
-            if (body.error) {
-              dispatch(recoverError(
-                new Error(body.error)
-              ));
-            } else {
-              dispatch(recover(body));
-            }
-          })
+          .then(body => dispatch(recover(body)))
         .catch(() => (
           // Network error
-          dispatch(signupError(
+          dispatch(recoverError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));

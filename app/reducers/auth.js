@@ -38,6 +38,7 @@ export default (state = {
       };
     }
     case 'SIGNUP': {
+      console.log('action ', action);
       return {
         ...state,
         inProgress: false,
@@ -55,12 +56,14 @@ export default (state = {
     case 'RECOVER__START': {
       return {
         ...state,
+        inProgress: true,
         errorMessage: null,
       };
     }
     case 'RECOVER': {
       return {
         ...state,
+        inProgress: false,
         errorMessage: null,
         confirmationSent: action.payload,
       };
@@ -68,6 +71,7 @@ export default (state = {
     case 'RECOVER__ERROR': {
       return {
         ...state,
+        inProgress: false,
         errorMessage: action.payload.message,
       };
     }

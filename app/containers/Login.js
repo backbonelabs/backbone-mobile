@@ -3,7 +3,7 @@ import {
   Alert,
   View,
   Text,
-  TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
@@ -99,13 +99,12 @@ class Login extends Component {
             disabled={this.props.isFetchingAccessToken}
             onPress={this.login}
           />
-          <TouchableHighlight
+          <TouchableOpacity
             style={styles.forgotPasswordButton}
-            // Pushing to route doesn't unmount this scene, oddly enough
-            onPress={() => this.props.navigator.replace(routes.recover)}
+            onPress={() => this.props.navigator.push(routes.reset)}
           >
             <Text style={styles.forgotPassword}>Forgot password?</Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
       }
       </View>

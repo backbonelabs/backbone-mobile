@@ -10,7 +10,6 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import styles from '../styles/auth';
 import Spinner from '../components/Spinner';
-import routes from '../routes';
 
 const { PropTypes } = React;
 
@@ -30,45 +29,55 @@ class Recover extends Component {
       email: null,
       inProgress: false,
     };
-
-    this.recoverPassword = this.recoverPassword.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ inProgress: false }, () => {
-      if (!this.props.confirmationSent && nextProps.confirmationSent) {
-        const { email } = this.state;
+    if (this.state.inProgress !== nextProps.inProgress) {
+      this.setState({ inProgress: !this.state.inProgress });
+    }
 
-        this.props.navigator.replace(Object.assign({}, routes.confirm, { email }));
-      } else if (!this.props.errorMessage && nextProps.errorMessage) {
-        Alert.alert('Error', nextProps.errorMessage);
-      }
-    });
-  }
-
-  recoverPassword() {
-    this.setState({ inProgress: true }, () =>
-      this.props.dispatch(authActions.recover({ email: this.state.email }))
-    );
+    if (!this.props.confirmationSent && nextProps.confirmationSent) {
+      // Pop up an alert and have user check their inbox to confirm
+      Alert.alert(
+        'Success',
+        'We\'ve emailed you a confirmation email please check your ' +
+        'inbox and follow the instructions to reset your password',
+        [{
+          text: 'OK',
+          onPress: () => this.props.navigator.popToTop(),
+        }]
+      );
+    } else if (!this.props.errorMessage && nextProps.errorMessage) {
+      Alert.alert('Error', nextProps.errorMessage);
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
         { this.state.inProgress ?
-          <Spinner /> :
+          <Spinner />
+          :
           <View style={styles.formContainer}>
             <Input
               autoCapitalize="none"
               placeholder="Email"
               keyboardType="email-address"
               onChangeText={text => this.setState({ email: text })}
-              onSubmitEditing={() => this.recoverPassword}
+              onSubmitEditing={
+                () => this.props.dispatch(authActions.recover({ email: this.state.email }))
+              }
               autoCorrect={false}
               autoFocus
               returnKeyType="go"
             />
-            <Button style={{ marginTop: 5 }} text="Recover" onPress={this.recoverPassword} />
+            <Button
+              style={{ marginTop: 5 }}
+              text="Reset Password"
+              onPress={
+                () => this.props.dispatch(authActions.recover({ email: this.state.email }))
+              }
+            />
           </View>
 
         }
