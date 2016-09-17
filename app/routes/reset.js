@@ -1,7 +1,7 @@
 import Reset from '../containers/Reset';
 
 export default {
-  name: 'recover',
+  name: 'reset',
   title: 'Reset Password',
   component: Reset,
   showBackButton: true,
