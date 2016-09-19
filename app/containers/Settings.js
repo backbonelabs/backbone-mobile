@@ -6,7 +6,6 @@ import {
   Slider,
   Switch,
   ScrollView,
-  NativeModules,
   TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -14,12 +13,11 @@ import { get, isEmpty, isEqual } from 'lodash';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
+import deviceActions from '../actions/device';
 import styles from '../styles/settings';
 import routes from '../routes';
 
 const { PropTypes } = React;
-
-const { DeviceManagementService } = NativeModules;
 
 class Settings extends Component {
   static propTypes = {
@@ -146,15 +144,9 @@ class Settings extends Component {
             />
             <TouchableHighlight
               style={styles.forget}
-              onPress={() => (
-                DeviceManagementService.forgetDevice((error) => {
-                  if (error) {
-                    // Placeholder until Rocio finalizes flow
-                  } else {
-                    this.props.navigator.resetTo(routes.deviceConnect);
-                  }
-                })
-              )}
+              onPress={() => {
+                this.props.dispatch(deviceActions.forget());
+              }}
             >
               <Text>Forget this device</Text>
             </TouchableHighlight>

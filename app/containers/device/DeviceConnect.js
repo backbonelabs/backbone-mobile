@@ -114,8 +114,8 @@ class DeviceConnect extends Component {
 }
 
 const mapStateToProps = state => {
-  const { generic } = state;
-  return generic;
+  const { device } = state;
+  return device;
 };
 
 export default connect(mapStateToProps)(DeviceConnect);

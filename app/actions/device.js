@@ -33,13 +33,13 @@ const forget = payload => ({
   payload,
 });
 
-const forgetError = payload => ({
+const forgetError = error => ({
   type: 'FORGET__ERROR',
-  payload,
+  error,
 });
 
 async function connectEventListener(dispatch) {
-  const eventListener = await NativeAppEventEmitter.once('ConnectionStatus', status => {
+  const eventListener = await NativeAppEventEmitter.once('ConnectionStatus', (status) => {
     dispatch(connect(status));
   });
 
@@ -47,7 +47,7 @@ async function connectEventListener(dispatch) {
 }
 
 async function scanEventListener(dispatch) {
-  const eventListener = await NativeAppEventEmitter.once('DevicesFound', deviceList => {
+  const eventListener = await NativeAppEventEmitter.once('DevicesFound', (deviceList) => {
     dispatch(scan(deviceList));
   });
 
@@ -77,7 +77,7 @@ export default {
 
       return DeviceManagementService.forgetDevice()
         .then(() => dispatch(forget()))
-        .catch((error) => dispatch(forgetError(error)));
+        .catch(error => dispatch(forgetError(error)));
     };
   },
 };

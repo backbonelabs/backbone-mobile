@@ -2,7 +2,7 @@ export default (state = {
   inProgress: null,
   connectionStatus: null,
   deviceList: null,
-  deviceError: null,
+  errorMessage: null,
 }, action) => {
   switch (action.type) {
     case 'CONNECT__START': {
@@ -22,7 +22,7 @@ export default (state = {
       return {
         ...state,
         inProgress: false,
-        deviceError: action.error.message,
+        errorMessage: action.error.message,
       };
     }
     case 'SCAN__START': {
@@ -42,7 +42,27 @@ export default (state = {
       return {
         ...state,
         inProgress: false,
-        deviceError: action.error.message,
+        errorMessage: action.error.message,
+      };
+    }
+    case 'FORGET__START': {
+      return {
+        ...state,
+        inProgress: true,
+      };
+    }
+    case 'FORGET': {
+      return {
+        ...state,
+        inProgress: false,
+        connectionStatus: null,
+      };
+    }
+    case 'FORGET__ERROR': {
+      return {
+        ...state,
+        inProgress: false,
+        errorMessage: action.error.message,
       };
     }
     default:
