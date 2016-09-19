@@ -39,17 +39,17 @@ const forgetError = error => ({
 });
 
 async function connectEventListener(dispatch) {
-  const eventListener = await NativeAppEventEmitter.once('ConnectionStatus', (status) => {
-    dispatch(connect(status));
-  });
+  const eventListener = await NativeAppEventEmitter.once('ConnectionStatus', status =>
+    dispatch(connect(status))
+  );
 
   return eventListener;
 }
 
 async function scanEventListener(dispatch) {
-  const eventListener = await NativeAppEventEmitter.once('DevicesFound', (deviceList) => {
-    dispatch(scan(deviceList));
-  });
+  const eventListener = await NativeAppEventEmitter.once('DevicesFound', deviceList =>
+    dispatch(scan(deviceList))
+  );
 
   return eventListener;
 }
