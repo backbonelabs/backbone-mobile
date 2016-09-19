@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 import routes from '../../routes';
 import deviceActions from '../../actions/device';
-import styles from '../../styles/deviceConnect';
+import styles from '../../styles/device';
 import Spinner from '../../components/Spinner';
 
 const { DeviceManagementService } = NativeModules;
