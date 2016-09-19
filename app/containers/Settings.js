@@ -15,7 +15,6 @@ import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
 import deviceActions from '../actions/device';
 import styles from '../styles/settings';
-import routes from '../routes';
 
 const { PropTypes } = React;
 

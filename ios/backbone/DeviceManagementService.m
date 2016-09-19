@@ -101,9 +101,10 @@ RCT_REMAP_METHOD(forgetDevice, resolver:(RCTPromiseResolveBlock)resolve rejecter
   [_sharedDevice disconnectWithHandler:^(NSError * _Nullable error) {
     [_sharedDevice forgetDevice];
 //      NSDictionary *makeError = RCTMakeError(@"Failed to disconnect device!", nil, @{@"isConnected": @false, @"message": @"Failed to disconnect device!"});
-    if (error) {
-      // TO DO: Create our own NSError object
-      reject(@"Failed to disconnect device!", nil, error);
+    if (!error) {
+      // TO DO: Start using our error mappings
+      // Format for reject is code, message, error object
+      reject(@"13", @"Failed to disconnect device!", error);
     }
     else {
       resolve(@[[NSNull null]]);
