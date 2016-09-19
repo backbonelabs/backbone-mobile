@@ -24,8 +24,8 @@ class Login extends Component {
   constructor() {
     super();
     this.state = {
-      email: 'kp@gobackbone.com',
-      password: 'swordfish1',
+      email: '',
+      password: '',
     };
     this.login = this.login.bind(this);
   }

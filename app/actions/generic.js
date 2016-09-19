@@ -1,7 +1,4 @@
-import {
-  NativeModules,
-  NativeAppEventEmitter,
-} from 'react-native';
+import { NativeModules, NativeAppEventEmitter } from 'react-native';
 
 const { DeviceManagementService } = NativeModules;
 
