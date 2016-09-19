@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import routes from '../../routes';
-import deviceActions from '../../actions/generic';
+import deviceActions from '../../actions/device';
 import styles from '../../styles/deviceConnect';
 import Spinner from '../../components/Spinner';
 
