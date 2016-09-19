@@ -12,10 +12,10 @@ const connect = payload => ({
   payload,
 });
 
-const connectError = error => ({
-  type: 'CONNECT__ERROR',
-  error,
-});
+// const connectError = error => ({
+//   type: 'CONNECT__ERROR',
+//   error,
+// });
 
 const scanStart = () => ({ type: 'SCAN__START' });
 
@@ -24,10 +24,10 @@ const scan = payload => ({
   payload,
 });
 
-const scanError = error => ({
-  type: 'SCAN__ERROR',
-  error,
-});
+// const scanError = error => ({
+//   type: 'SCAN__ERROR',
+//   error,
+// });
 
 const forgetStart = () => ({ type: 'FORGET__START' });
 
@@ -41,16 +41,16 @@ const forgetError = payload => ({
   payload,
 });
 
-async function ConnectEventListener(dispatch) {
-  let eventListener = await NativeAppEventEmitter.once('ConnectionStatus', status => {
+async function connectEventListener(dispatch) {
+  const eventListener = await NativeAppEventEmitter.once('ConnectionStatus', status => {
     dispatch(connect(status));
   });
 
   return eventListener;
 }
 
-async function ScanEventListener(dispatch) {
-  let eventListener = await NativeAppEventEmitter.once('DevicesFound', deviceList => {
+async function scanEventListener(dispatch) {
+  const eventListener = await NativeAppEventEmitter.once('DevicesFound', deviceList => {
     dispatch(scan(deviceList));
   });
 
@@ -62,7 +62,7 @@ export default {
     return (dispatch) => {
       dispatch(connectStart());
 
-      return ConnectEventListener(dispatch)
+      return connectEventListener(dispatch)
         .then(() => DeviceManagementService.connectToDevice());
     };
   },
@@ -70,7 +70,7 @@ export default {
     return (dispatch) => {
       dispatch(scanStart());
 
-      return ScanEventListener(dispatch)
+      return scanEventListener(dispatch)
         .then(() => DeviceManagementService.scanForDevices());
     };
   },
