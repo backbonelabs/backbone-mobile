@@ -31,7 +31,7 @@ class Confirm extends Component {
     if (!this.props.accessToken && nextProps.accessToken) {
       clearInterval(this.setPollingInterval);
       SensitiveInfo.setItem('accessToken', nextProps.accessToken);
-      this.props.navigator.replace(routes.device);
+      this.props.navigator.replace(routes.deviceConnect);
     }
   }
 

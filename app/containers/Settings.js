@@ -151,7 +151,7 @@ class Settings extends Component {
                   if (error) {
                     // Placeholder until Rocio finalizes flow
                   } else {
-                    this.props.navigator.resetTo(routes.device);
+                    this.props.navigator.resetTo(routes.deviceConnect);
                   }
                 })
               )}

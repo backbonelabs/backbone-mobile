@@ -24,8 +24,8 @@ class Login extends Component {
   constructor() {
     super();
     this.state = {
-      email: '',
-      password: '',
+      email: 'kp@gobackbone.com',
+      password: 'swordfish1',
     };
     this.login = this.login.bind(this);
   }
@@ -36,7 +36,7 @@ class Login extends Component {
       this.saveAccessToken(nextProps.accessToken);
 
       // Redirect for device connect
-      this.props.navigator.replace(routes.device);
+      this.props.navigator.replace(routes.deviceConnect);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', nextProps.errorMessage);
