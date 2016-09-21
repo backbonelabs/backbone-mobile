@@ -35,33 +35,6 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
-    case 'FETCH_USER_SETTINGS__START': {
-      return {
-        ...state,
-        isFetching: true,
-        errorMessage: null,
-      };
-    }
-    case 'FETCH_USER_SETTINGS': {
-      return {
-        ...state,
-        isFetching: false,
-        user: {
-          ...state.user,
-          settings: {
-            ...action.payload,
-          },
-        },
-        errorMessage: null,
-      };
-    }
-    case 'FETCH_USER_SETTINGS__ERROR': {
-      return {
-        ...state,
-        isFetching: false,
-        errorMessage: action.payload.message,
-      };
-    }
     case 'UPDATE_USER__START': {
       return {
         ...state,
