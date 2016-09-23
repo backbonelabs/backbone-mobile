@@ -93,7 +93,7 @@ export default {
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
       })
-        .then(response => response.json())
+        .then(response => response.json()
           .then((body) => {
             if (body.error) {
               // Error received from API server
@@ -104,6 +104,7 @@ export default {
               dispatch(signup(body));
             }
           })
+        )
         .catch(() => (
           // Network error
           dispatch(signupError(
