@@ -31,19 +31,6 @@ const updateUserError = error => ({
   error: true,
 });
 
-const fetchUserSettingsStart = () => ({ type: 'FETCH_USER_SETTINGS__START' });
-
-const fetchUserSettings = payload => ({
-  type: 'FETCH_USER_SETTINGS',
-  payload,
-});
-
-const fetchUserSettingsError = error => ({
-  type: 'FETCH_USER_SETTINGS__ERROR',
-  payload: error,
-  error: true,
-});
-
 const updateUserSettingsStart = () => ({ type: 'UPDATE_USER_SETTINGS__START' });
 
 const updateUserSettings = payload => ({
@@ -121,38 +108,6 @@ export default {
         .catch(() => (
           // Network error
           dispatch(updateUserError(
-            new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
-    };
-  },
-
-  fetchUserSettings() {
-    return (dispatch, getState) => {
-      const state = getState();
-      const { accessToken, userId } = state.auth;
-
-      dispatch(fetchUserSettingsStart());
-
-      return Fetcher.get({
-        url: `${settingsUrl}/${userId}`,
-        headers: { Authorization: `Bearer ${accessToken}` },
-      })
-        .then(response => response.json()
-          .then((body) => {
-            if (body.error) {
-              // Error received from API server
-              dispatch(fetchUserSettingsError(
-                new Error(body.error)
-              ));
-            } else {
-              dispatch(fetchUserSettings(body));
-            }
-          })
-        )
-        .catch(() => (
-          // Network error
-          dispatch(fetchUserSettingsError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));
