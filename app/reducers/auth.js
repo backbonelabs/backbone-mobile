@@ -1,6 +1,6 @@
 export default (state = {
   accessToken: null,
-  confirmationSent: false,
+  confirmationStatus: null,
   isFetchingAccessToken: false,
   inProgress: false,
   errorMessage: null,
@@ -38,12 +38,11 @@ export default (state = {
       };
     }
     case 'SIGNUP': {
-      console.log('action ', action);
       return {
         ...state,
         inProgress: false,
         errorMessage: null,
-        confirmationSent: action.payload,
+        confirmationStatus: action.payload,
       };
     }
     case 'SIGNUP__ERROR': {
@@ -65,7 +64,7 @@ export default (state = {
         ...state,
         inProgress: false,
         errorMessage: null,
-        confirmationSent: action.payload,
+        confirmationStatus: action.payload,
       };
     }
     case 'RECOVER__ERROR': {
