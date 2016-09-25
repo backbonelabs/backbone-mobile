@@ -42,15 +42,15 @@ const checkConfirmationError = error => ({
   error: true,
 });
 
-const resetStart = () => ({ type: 'RESET__START' });
+const passwordResetStart = () => ({ type: 'PASSWORD_RESET__START' });
 
-const reset = payload => ({
-  type: 'RESET',
+const passwordReset = payload => ({
+  type: 'PASSWORD_RESET',
   payload,
 });
 
-const resetError = error => ({
-  type: 'RESET__ERROR',
+const passwordResetError = error => ({
+  type: 'PASSWORD_RESET__ERROR',
   payload: error,
   error: true,
 });
@@ -93,12 +93,12 @@ export default {
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
       })
-        .then(response => {
+        .then((response) => {
           if (response.ok) {
             dispatch(signup(response.ok));
           } else {
             return response.json()
-              .then((body) => (
+              .then(body => (
                 // Error received from API server
                 dispatch(signupError(
                   new Error(body.error)
@@ -117,16 +117,16 @@ export default {
 
   reset(user) {
     return (dispatch) => {
-      dispatch(resetStart());
+      dispatch(passwordResetStart());
 
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/reset`,
         body: JSON.stringify(user),
       })
-        .then(response => dispatch(reset(response.ok)))
+        .then(response => dispatch(passwordReset(response.ok)))
         .catch(() => (
           // Network error
-          dispatch(resetError(
+          dispatch(passwordResetError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));

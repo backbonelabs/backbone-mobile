@@ -53,14 +53,14 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
-    case 'RESET__START': {
+    case 'PASSWORD_RESET__START': {
       return {
         ...state,
         inProgress: true,
         errorMessage: null,
       };
     }
-    case 'RESET': {
+    case 'PASSWORD_RESET': {
       return {
         ...state,
         inProgress: false,
@@ -68,7 +68,7 @@ export default (state = {
         passwordResetSent: action.payload,
       };
     }
-    case 'RESET__ERROR': {
+    case 'PASSWORD_RESET__ERROR': {
       return {
         ...state,
         inProgress: false,
