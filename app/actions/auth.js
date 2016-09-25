@@ -123,7 +123,18 @@ export default {
         url: `${Environment.API_SERVER_URL}/auth/reset`,
         body: JSON.stringify(user),
       })
-        .then(response => dispatch(passwordReset(response.ok)))
+        .then((response) => {
+          if (response.ok) {
+            dispatch(passwordReset(response.ok));
+          } else {
+            return response.json()
+              .then(body => (
+                dispatch(passwordResetError(
+                  new Error(body.error)
+                ))
+              ));
+          }
+        })
         .catch(() => (
           // Network error
           dispatch(passwordResetError(
