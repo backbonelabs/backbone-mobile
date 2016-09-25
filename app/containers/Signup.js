@@ -15,7 +15,7 @@ class Signup extends Component {
   static propTypes = {
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
-    confirmationStatus: React.PropTypes.object,
+    confirmationSent: React.PropTypes.bool,
     inProgress: React.PropTypes.bool,
     navigator: React.PropTypes.object,
   };
@@ -31,7 +31,7 @@ class Signup extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.confirmationStatus && nextProps.confirmationStatus) {
+    if (!this.props.confirmationSent && nextProps.confirmationSent) {
       const { email } = this.state;
       this.props.navigator.replace(Object.assign({}, routes.confirm, { email }));
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
