@@ -1,6 +1,7 @@
 export default (state = {
   accessToken: null,
-  confirmationStatus: null,
+  confirmationSent: false,
+  passwordResetSent: false,
   isFetchingAccessToken: false,
   inProgress: false,
   errorMessage: null,
@@ -42,7 +43,7 @@ export default (state = {
         ...state,
         inProgress: false,
         errorMessage: null,
-        confirmationStatus: action.payload,
+        confirmationSent: action.payload,
       };
     }
     case 'SIGNUP__ERROR': {
@@ -52,22 +53,22 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
-    case 'RECOVER__START': {
+    case 'RESET__START': {
       return {
         ...state,
         inProgress: true,
         errorMessage: null,
       };
     }
-    case 'RECOVER': {
+    case 'RESET': {
       return {
         ...state,
         inProgress: false,
         errorMessage: null,
-        confirmationStatus: action.payload,
+        passwordResetSent: action.payload,
       };
     }
-    case 'RECOVER__ERROR': {
+    case 'RESET__ERROR': {
       return {
         ...state,
         inProgress: false,

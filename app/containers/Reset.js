@@ -18,7 +18,7 @@ class Reset extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     navigator: PropTypes.object,
-    confirmationSent: PropTypes.bool,
+    passwordResetSent: PropTypes.bool,
     inProgress: PropTypes.bool,
     errorMessage: PropTypes.string,
   };
@@ -27,12 +27,11 @@ class Reset extends Component {
     super();
     this.state = {
       email: null,
-      inProgress: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.confirmationSent && nextProps.confirmationSent) {
+    if (!this.props.passwordResetSent && nextProps.passwordResetSent) {
       // Pop up an alert and have user check their inbox to confirm
       Alert.alert(
         'Success',
@@ -59,7 +58,7 @@ class Reset extends Component {
               keyboardType="email-address"
               onChangeText={text => this.setState({ email: text })}
               onSubmitEditing={
-                () => this.props.dispatch(authActions.recover({ email: this.state.email }))
+                () => this.props.dispatch(authActions.reset({ email: this.state.email }))
               }
               autoCorrect={false}
               autoFocus
@@ -69,7 +68,7 @@ class Reset extends Component {
               style={{ marginTop: 5 }}
               text="Reset Password"
               onPress={
-                () => this.props.dispatch(authActions.recover({ email: this.state.email }))
+                () => this.props.dispatch(authActions.reset({ email: this.state.email }))
               }
             />
           </View>

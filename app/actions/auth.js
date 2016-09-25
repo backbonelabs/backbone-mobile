@@ -42,15 +42,15 @@ const checkConfirmationError = error => ({
   error: true,
 });
 
-const recoverStart = () => ({ type: 'RECOVER__START' });
+const resetStart = () => ({ type: 'RESET__START' });
 
-const recover = payload => ({
-  type: 'RECOVER',
+const reset = payload => ({
+  type: 'RESET',
   payload,
 });
 
-const recoverError = error => ({
-  type: 'RECOVER__ERROR',
+const resetError = error => ({
+  type: 'RESET__ERROR',
   payload: error,
   error: true,
 });
@@ -114,19 +114,18 @@ export default {
     };
   },
 
-  recover(user) {
+  reset(user) {
     return (dispatch) => {
-      dispatch(recoverStart());
+      dispatch(resetStart());
 
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/reset`,
         body: JSON.stringify(user),
       })
-        .then(response => response.json())
-          .then(body => dispatch(recover(body)))
+        .then(response => dispatch(reset(response.ok)))
         .catch(() => (
           // Network error
-          dispatch(recoverError(
+          dispatch(resetError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));
