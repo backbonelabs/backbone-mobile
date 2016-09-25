@@ -28,6 +28,7 @@ class Reset extends Component {
     this.state = {
       email: null,
     };
+    this.sendPasswordResetRequest = this.sendPasswordResetRequest.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,6 +46,14 @@ class Reset extends Component {
     }
   }
 
+  sendPasswordResetRequest() {
+    if (this.state.email && this.state.email.length) {
+      this.props.dispatch(authActions.reset({ email: this.state.email }));
+    } else {
+      Alert.alert('Missing fields', 'Email is required');
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -57,9 +66,7 @@ class Reset extends Component {
               placeholder="Email"
               keyboardType="email-address"
               onChangeText={text => this.setState({ email: text })}
-              onSubmitEditing={
-                () => this.props.dispatch(authActions.reset({ email: this.state.email }))
-              }
+              onSubmitEditing={this.sendPasswordResetRequest}
               autoCorrect={false}
               autoFocus
               returnKeyType="go"
@@ -67,9 +74,7 @@ class Reset extends Component {
             <Button
               style={{ marginTop: 5 }}
               text="Reset Password"
-              onPress={
-                () => this.props.dispatch(authActions.reset({ email: this.state.email }))
-              }
+              onPress={this.sendPasswordResetRequest}
             />
           </View>
 
