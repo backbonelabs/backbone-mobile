@@ -13,7 +13,7 @@ import Spinner from '../components/Spinner';
 
 const { PropTypes } = React;
 
-class Recover extends Component {
+class Reset extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
@@ -32,10 +32,6 @@ class Recover extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.inProgress !== nextProps.inProgress) {
-      this.setState({ inProgress: !this.state.inProgress });
-    }
-
     if (!this.props.confirmationSent && nextProps.confirmationSent) {
       // Pop up an alert and have user check their inbox to confirm
       Alert.alert(
@@ -47,15 +43,13 @@ class Recover extends Component {
           onPress: () => this.props.navigator.popToTop(),
         }]
       );
-    } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      Alert.alert('Error', nextProps.errorMessage);
     }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        { this.state.inProgress ?
+        { this.props.inProgress ?
           <Spinner />
           :
           <View style={styles.formContainer}>
@@ -91,4 +85,4 @@ const mapPropsToState = (state) => {
   return auth;
 };
 
-export default connect(mapPropsToState)(Recover);
+export default connect(mapPropsToState)(Reset);
