@@ -35,7 +35,6 @@ class Home extends Component {
     super();
     this.state = {
       isInitializing: true,
-      bluetoothState: null,
     };
   }
 
@@ -54,20 +53,16 @@ class Home extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.auth.isFetchingAccessToken && !nextProps.isFetchingAccessToken) {
+    if (this.props.auth.isFetchingAccessToken && !nextProps.auth.isFetchingAccessToken) {
       // Finished login attempt
-      if (nextProps.errorMessage) {
+      if (nextProps.auth.errorMessage) {
         // Access token is invalid
         // Delete from local device to prevent unnecessary API calls on subsequent app load
         SensitiveInfo.deleteItem('accessToken');
       } else {
         // Successful login, save new access token
-        SensitiveInfo.setItem('accessToken', nextProps.accessToken);
+        SensitiveInfo.setItem('accessToken', nextProps.auth.accessToken);
       }
-    }
-
-    if (this.state.bluetoothState !== nextProps.generic.bluetoothState) {
-      this.setState({ bluetoothState: nextProps.generic.bluetoothState });
     }
   }
 
@@ -80,7 +75,7 @@ class Home extends Component {
         onPress={
           () => this.props.navigator.push(accessToken ? routes.device : routes.login)
         }
-        disabled={accessToken && this.state.bluetoothState === bluetoothStates.OFF}
+        disabled={accessToken && this.props.generic.bluetoothState === bluetoothStates.OFF}
         text={accessToken ? 'Connect' : 'Log In'}
       />
     );
