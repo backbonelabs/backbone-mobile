@@ -11,6 +11,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,7 +23,9 @@ import constants from '../utils/constants';
 
 const { bluetoothStates } = constants;
 
-const BluetoothService = new NativeEventEmitter(NativeModules.BluetoothService);
+const { BluetoothService: Bluetooth } = NativeModules;
+
+const BluetoothService = new NativeEventEmitter(Bluetooth);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -34,6 +37,10 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
 });
 
 class Application extends Component {
+  static propTypes = {
+    dispatch: React.PropTypes.func,
+  };
+
   constructor() {
     super();
 
@@ -84,21 +91,33 @@ class Application extends Component {
   }
 
   componentWillMount() {
+    Bluetooth.getState((error, state) => {
+      if (!error) {
+        this.props.dispatch({
+          type: 'UPDATE_BLUETOOTH_STATE',
+          payload: state,
+        });
+      } else {
+        Alert.alert('Error', error);
+      }
+    });
     // For Android only, check if Bluetooth is enabled.
     // If not, display prompt for user to enable Bluetooth.
     // This cannot be done on the BluetoothService module side
     // compared to iOS.
     if (Platform.OS === 'android') {
-      NativeModules.BluetoothService.getIsEnabled()
-        .then(isEnabled => !isEnabled && NativeModules.BluetoothService.enable());
+      Bluetooth.getIsEnabled()
+        .then(isEnabled => !isEnabled && Bluetooth.enable());
     }
 
     const handler = ({ state }) => {
+      this.props.dispatch({
+        type: 'UPDATE_BLUETOOTH_STATE',
+        payload: state,
+      });
+
       if (state === bluetoothStates.OFF) {
-        Alert.alert(
-          `Error #${state}`,
-          'Bluetooth is disabled'
-        );
+        Alert.alert('Error', 'Bluetooth is off');
       }
     };
 
@@ -186,4 +205,4 @@ class Application extends Component {
   }
 }
 
-export default Application;
+export default connect()(Application);
