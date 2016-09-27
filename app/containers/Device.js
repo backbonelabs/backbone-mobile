@@ -29,7 +29,6 @@ export default class Device extends Component {
     };
     this.selectDevice = this.selectDevice.bind(this);
     this.retryConnect = this.retryConnect.bind(this);
-    this.rescanForDevices = this.rescanForDevices.bind(this);
     this.forgetDevice = this.forgetDevice.bind(this);
   }
 
@@ -124,10 +123,6 @@ export default class Device extends Component {
     this.props.navigator.popToTop();
   }
 
-  rescanForDevices() {
-    this.setState({ inProgress: true }, this.scanForDevices);
-  }
-
   forgetDevice() {
     DeviceManagementService.forgetDevice((error) => {
       if (!error) {
@@ -150,14 +145,12 @@ export default class Device extends Component {
   render() {
     return (
       <View style={styles.container}>
-        { this.state.inProgress ?
-          <Spinner style={styles.progress} /> :
-          <List
-            dataBlob={this.state.deviceList}
-            formatRowData={this.formatDeviceRow}
-            onPressRow={this.selectDevice}
-          />
-        }
+        <Spinner />
+        <List
+          dataBlob={this.state.deviceList}
+          formatRowData={this.formatDeviceRow}
+          onPressRow={this.selectDevice}
+        />
       </View>
     );
   }
