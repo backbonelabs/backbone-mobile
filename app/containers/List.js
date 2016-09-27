@@ -6,11 +6,13 @@ import {
 } from 'react-native';
 import styles from '../styles/list';
 
+const { PropTypes } = React;
+
 export default class List extends Component {
   static propTypes = {
-    dataBlob: React.PropTypes.array.isRequired,
-    formatRowData: React.PropTypes.func.isRequired,
-    onPressRow: React.PropTypes.func,
+    dataBlob: PropTypes.array.isRequired,
+    formatRowData: PropTypes.func.isRequired,
+    onPressRow: PropTypes.func,
   };
 
   static defaultProps = { dataBlob: [] };

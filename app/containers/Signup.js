@@ -10,16 +10,19 @@ import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
+import SensitiveInfo from '../utils/SensitiveInfo';
+
+const { PropTypes } = React;
 
 class Signup extends Component {
   static propTypes = {
-    dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.shape({
-      replace: React.PropTypes.func,
+    dispatch: PropTypes.func,
+    navigator: PropTypes.shape({
+      replace: PropTypes.func,
     }),
-    accessToken: React.PropTypes.string,
-    errorMessage: React.PropTypes.string,
-    isFetchingAccessToken: React.PropTypes.bool,
+    accessToken: PropTypes.string,
+    errorMessage: PropTypes.string,
+    isFetchingAccessToken: PropTypes.bool,
   };
 
   constructor() {
@@ -33,7 +36,9 @@ class Signup extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.accessToken && nextProps.accessToken) {
-      this.props.navigator.replace(routes.posture.postureDashboard);
+      this.saveAccessToken(nextProps.accessToken);
+
+      this.props.navigator.replace(routes.device);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
     }
@@ -47,6 +52,10 @@ class Signup extends Component {
       const { email, password } = this.state;
       this.props.dispatch(authActions.signup({ email, password }));
     }
+  }
+
+  saveAccessToken(accessToken) {
+    SensitiveInfo.setItem('accessToken', accessToken);
   }
 
   render() {

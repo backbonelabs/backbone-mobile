@@ -10,14 +10,16 @@ import styles from '../styles/device';
 import Spinner from '../components/Spinner';
 import List from './List';
 
+const { PropTypes } = React;
+
 const { DeviceManagementService } = NativeModules;
 
 export default class Device extends Component {
   static propTypes = {
-    navigator: React.PropTypes.shape({
-      replace: React.PropTypes.func,
-      popToTop: React.PropTypes.func,
-      pop: React.PropTypes.func,
+    navigator: PropTypes.shape({
+      replace: PropTypes.func,
+      popToTop: PropTypes.func,
+      pop: PropTypes.func,
     }),
   };
 
