@@ -7,8 +7,10 @@ import styles from '../../../styles/posture/postureTutorial';
 
 const StepTwo = props => <View key={props.key} style={styles.stepTwo} />;
 
+const { PropTypes } = React;
+
 StepTwo.propTypes = {
-  key: React.PropTypes.number,
+  key: PropTypes.number,
 };
 
 export default StepTwo;

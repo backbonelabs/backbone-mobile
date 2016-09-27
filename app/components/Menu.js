@@ -18,9 +18,11 @@ const Menu = (props) => {
   );
 };
 
+const { PropTypes } = React;
+
 Menu.propTypes = {
-  menuItems: React.PropTypes.array,
-  navigate: React.PropTypes.func,
+  menuItems: PropTypes.array,
+  navigate: PropTypes.func,
 };
 
 export default Menu;

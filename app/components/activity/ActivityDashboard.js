@@ -11,12 +11,13 @@ import {
 } from 'react-native';
 import styles from '../../styles/activity/activityDashboard';
 
+const { PropTypes } = React;
 const MetaWearAPI = NativeModules.MetaWearAPI;
 
 export default class ActivityView extends Component {
   static propTypes = {
-    slouchTime: React.PropTypes.number,
-    postureTime: React.PropTypes.number,
+    slouchTime: PropTypes.number,
+    postureTime: PropTypes.number,
   };
 
   constructor() {

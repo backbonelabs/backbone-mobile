@@ -15,13 +15,15 @@ import routes from '../routes';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 
+const { PropTypes } = React;
+
 class Home extends Component {
   static propTypes = {
-    accessToken: React.PropTypes.string,
-    isFetchingAccessToken: React.PropTypes.bool,
-    dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.shape({
-      push: React.PropTypes.func,
+    accessToken: PropTypes.string,
+    isFetchingAccessToken: PropTypes.bool,
+    dispatch: PropTypes.func,
+    navigator: PropTypes.shape({
+      push: PropTypes.func,
     }),
   };
 
