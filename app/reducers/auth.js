@@ -1,6 +1,5 @@
 export default (state = {
   accessToken: null,
-  confirmationSent: false,
   isFetchingAccessToken: false,
   isSigningUp: false,
   errorMessage: null,
@@ -33,43 +32,22 @@ export default (state = {
     case 'SIGNUP__START': {
       return {
         ...state,
-        isSigningUp: true,
-        errorMessage: null,
+        isFetchingAccessToken: true,
       };
     }
     case 'SIGNUP': {
       return {
         ...state,
-        isSigningUp: false,
-        errorMessage: null,
-        confirmationSent: action.payload,
+        accessToken: action.payload.accessToken,
+        userId: action.payload._id,
+        isFetchingAccessToken: false,
       };
     }
     case 'SIGNUP__ERROR': {
       return {
         ...state,
-        isSigningUp: false,
         errorMessage: action.payload.message,
-      };
-    }
-    case 'CHECK_CONFIRMATION__START': {
-      return {
-        ...state,
-        errorMessage: null,
-      };
-    }
-    case 'CHECK_CONFIRMATION': {
-      return {
-        ...state,
-        errorMessage: null,
-        accessToken: action.payload.accessToken,
-        userId: action.payload._id,
-      };
-    }
-    case 'CHECK_CONFIRMATION__ERROR': {
-      return {
-        ...state,
-        errorMessage: action.payload.message,
+        isFetchingAccessToken: false,
       };
     }
     default:
