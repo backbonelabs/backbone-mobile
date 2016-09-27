@@ -12,13 +12,15 @@ import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
 
+const { PropTypes } = React;
+
 class Login extends Component {
   static propTypes = {
-    accessToken: React.PropTypes.string,
-    errorMessage: React.PropTypes.string,
-    dispatch: React.PropTypes.func,
-    isFetchingAccessToken: React.PropTypes.bool,
-    navigator: React.PropTypes.object,
+    accessToken: PropTypes.string,
+    errorMessage: PropTypes.string,
+    dispatch: PropTypes.func,
+    isFetchingAccessToken: PropTypes.bool,
+    navigator: PropTypes.object,
   };
 
   constructor() {
