@@ -4,6 +4,7 @@ export default (state = {
   switch (action.type) {
     case 'UPDATE_BLUETOOTH_STATE': {
       return {
+        ...state,
         bluetoothState: action.payload,
       };
     }
