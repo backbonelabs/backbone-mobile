@@ -23,8 +23,8 @@ class Signup extends Component {
   constructor() {
     super();
     this.state = {
-      email: 'kp@go.com',
-      password: 'hulahula',
+      email: '',
+      password: '',
     };
     this.signup = this.signup.bind(this);
   }

@@ -69,7 +69,6 @@ export default {
       })
         .then(response => response.json()
           .then((body) => {
-            console.log('body', body);
             if (body.error) {
               // Error received from API server
               dispatch(signupError(
