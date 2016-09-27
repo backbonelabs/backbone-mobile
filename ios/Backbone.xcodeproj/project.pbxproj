@@ -953,7 +953,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 32;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = FK7Z2C5Q2Q;
+				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -989,6 +989,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 32;
+				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
