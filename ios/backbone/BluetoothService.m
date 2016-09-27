@@ -1,7 +1,9 @@
 #import "BluetoothService.h"
+#import "RCTUtils.h"
 
 @implementation BluetoothService
 
+static int _state;
 static BOOL _isObserving;
 static NSDictionary *stateMap;
 
@@ -24,16 +26,27 @@ static NSDictionary *stateMap;
 
 RCT_EXPORT_MODULE();
 
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-  if (_isObserving) {
-    [self emitCentralState:[central state]];
+RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
+  if (_state) {
+    callback(@[[NSNull null], [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]]);
+  } else {
+    NSDictionary *makeError = RCTMakeError(@"Error with Bluetooth", nil, @{@"state": [NSNull null]});
+    callback(@[makeError]);
   }
 }
 
--(void)emitCentralState:(int)state {
-  NSLog(@"Emitting central state: %i", state);
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
+  _state = [central state];
+  
+  if (_isObserving) {
+    [self emitCentralState];
+  }
+}
+
+-(void)emitCentralState {
+  NSLog(@"Emitting central state: %i", _state);
   NSDictionary *stateUpdate = @{
-                          @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", state]]
+                          @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]
                           };
   [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
