@@ -84,7 +84,7 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
-    case 'SIGN_UP': {
+    case 'SIGNUP': {
       return {
         ...state,
         user: omit(action.payload, 'accessToken'),

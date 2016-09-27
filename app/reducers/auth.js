@@ -1,7 +1,6 @@
 export default (state = {
   accessToken: null,
   isFetchingAccessToken: false,
-  isSigningUp: false,
   errorMessage: null,
   userId: null,
 }, action) => {
@@ -38,8 +37,8 @@ export default (state = {
     case 'SIGNUP': {
       return {
         ...state,
-        accessToken: action.payload.accessToken,
         userId: action.payload._id,
+        accessToken: action.payload.accessToken,
         isFetchingAccessToken: false,
       };
     }
