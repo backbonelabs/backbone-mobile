@@ -45,6 +45,9 @@ export default class Device extends Component {
 
   componentWillUnmount() {
     NativeAppEventEmitter.removeAllListeners('DevicesFound');
+
+    // Stop device scanning in case a scan is in progress
+    DeviceManagementService.stopScanForDevices();
   }
 
   getSavedDevice() {

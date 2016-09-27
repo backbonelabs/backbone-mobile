@@ -150,30 +150,31 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
         } else if (!bluetoothService.getIsEnabled()) {
             callback.invoke(JSError.make("Bluetooth is not enabled"));
         } else {
-            mBluetoothAdapter = bluetoothService.getAdapter();
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "Stopping scan");
-                    mScanning = false;
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                }
-            }, SCAN_PERIOD);
-
             mScanning = true;
             deviceCollection = new HashMap<String, BluetoothDevice>();
             Log.d(TAG, "Starting scan");
             UUID[] serviceUuids = new UUID[] {
                     MetaWearBoard.METAWEAR_SERVICE_UUID,
             };
+            mBluetoothAdapter = bluetoothService.getAdapter();
             mBluetoothAdapter.startLeScan(serviceUuids, mLeScanCallback);
             callback.invoke();
         }
     }
 
     @ReactMethod
+    public void stopScanForDevices() {
+        Log.d(TAG, "Stopping scan");
+        mScanning = false;
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+        mBluetoothAdapter = bluetoothService.getAdapter();
+        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+    }
+
+    @ReactMethod
     public void selectDevice(String macAddress, Callback callback) {
         Log.d(TAG, "selectDevice " + macAddress);
+        stopScanForDevices();
         BluetoothDevice device = deviceCollection.get(macAddress);
         if (device == null) {
             callback.invoke(JSError.make("Device not in range"));
