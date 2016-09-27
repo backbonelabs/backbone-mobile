@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import co.backbonelabs.Backbone.util.JSError;
+
 public class DeviceManagementService extends ReactContextBaseJavaModule {
     private static final String TAG = "DeviceManagementService";
     public static MetaWearBoard mMWBoard;
@@ -144,9 +146,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
     public void scanForDevices(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
         if (mScanning) {
-            callback.invoke("A scan has already been initiated");
+            callback.invoke(JSError.make("A scan has already been initiated"));
         } else if (!bluetoothService.getIsEnabled()) {
-            callback.invoke("Bluetooth is not enabled");
+            callback.invoke(JSError.make("Bluetooth is not enabled"));
         } else {
             mBluetoothAdapter = bluetoothService.getAdapter();
             mHandler.postDelayed(new Runnable() {
@@ -174,9 +176,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
         Log.d(TAG, "selectDevice " + macAddress);
         BluetoothDevice device = deviceCollection.get(macAddress);
         if (device == null) {
-            WritableMap error = Arguments.createMap();
-            error.putString("message", "Device not in range");
-            callback.invoke(error);
+            callback.invoke(JSError.make("Device not in range"));
         } else {
             mMWBoard = MainActivity.metaWearServiceBinder.getMetaWearBoard(device);
             callback.invoke();
@@ -232,9 +232,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
         if (mMWBoard == null) {
             callback.invoke();
         } else {
-            WritableMap error = Arguments.createMap();
-            error.putString("message", "Failed to forget device");
-            callback.invoke(error);
+            callback.invoke(JSError.make("Failed to forget device"));
         }
     }
 
