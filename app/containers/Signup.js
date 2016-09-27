@@ -14,7 +14,9 @@ import Button from '../components/Button';
 class Signup extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.object,
+    navigator: React.PropTypes.shape({
+      replace: React.PropTypes.func,
+    }),
     accessToken: React.PropTypes.string,
     errorMessage: React.PropTypes.string,
     isFetchingAccessToken: React.PropTypes.bool,
