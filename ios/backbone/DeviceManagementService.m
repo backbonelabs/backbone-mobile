@@ -85,14 +85,14 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
     }
     
     for (MBLMetaWear *device in array) {
-        _deviceCollection[[device.identifier UUIDString]] = device;
-        [deviceList addObject: @{
-                                 @"name": device.name,
-                                 @"identifier": [device.identifier UUIDString],
-                                 @"RSSI": device.discoveryTimeRSSI,
-                                 }];
+      _deviceCollection[[device.identifier UUIDString]] = device;
+      [deviceList addObject: @{
+                               @"name": device.name,
+                               @"identifier": [device.identifier UUIDString],
+                               @"RSSI": device.discoveryTimeRSSI ?: [NSNull null]
+                               }];
     }
-// Potentially caused problems while scanning, which resulted in "false" scan timeouts
+//    Potentially caused problems while scanning, which resulted in "false" scan timeouts
 //    [NSThread sleepForTimeInterval:1.0f];
     [self devicesFound:deviceList];
   }];
