@@ -49,7 +49,6 @@ class DeviceConnect extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps', nextProps);
     // If connectionStatus is true, then alert the user that
     // the device is successfully connected to their smartphone
     if (!this.props.connectionStatus && nextProps.connectionStatus) {

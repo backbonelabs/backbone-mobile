@@ -37,7 +37,6 @@ class DeviceScan extends Component {
 
   // Begin scanning for hardware devices in the vicinity
   componentWillMount() {
-    console.log('device actions');
     this.props.dispatch(deviceActions.scan());
   }
 
