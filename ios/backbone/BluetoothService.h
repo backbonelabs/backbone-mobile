@@ -4,6 +4,7 @@
 
 @interface BluetoothService : RCTEventEmitter <CBCentralManagerDelegate, RCTBridgeModule>
 @property (nonatomic, strong) CBCentralManager *centralManager;
++ (BOOL)getIsEnabled;
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central;
 - (void)emitCentralState;
 - (void)startObserving;

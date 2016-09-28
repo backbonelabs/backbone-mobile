@@ -25,11 +25,9 @@ export default class Device extends Component {
     super();
     this.state = {
       deviceList: [],
-      inProgress: false,
     };
     this.selectDevice = this.selectDevice.bind(this);
     this.retryConnect = this.retryConnect.bind(this);
-    this.rescanForDevices = this.rescanForDevices.bind(this);
     this.forgetDevice = this.forgetDevice.bind(this);
   }
 
@@ -45,41 +43,38 @@ export default class Device extends Component {
 
   componentWillUnmount() {
     NativeAppEventEmitter.removeAllListeners('DevicesFound');
+
+    // Stop device scanning in case a scan is in progress
+    DeviceManagementService.stopScanForDevices();
   }
 
   getSavedDevice() {
-    this.setState({ inProgress: true }, () => (
-      DeviceManagementService.getSavedDevice((savedDevice) => {
-        if (savedDevice) {
-          this.connectToDevice();
-        } else {
-          this.scanForDevices();
-        }
-      })
-    ));
+    DeviceManagementService.getSavedDevice((savedDevice) => {
+      if (savedDevice) {
+        this.connectToDevice();
+      } else {
+        this.scanForDevices();
+      }
+    });
   }
 
   connectToDevice() {
-    NativeAppEventEmitter.once('ConnectionStatus', status => (
+    NativeAppEventEmitter.once('ConnectionStatus', status => {
       // TODO: Refactor to use new status shape: { isConnected: boolean, message: string }
-      this.setState({ inProgress: false }, () => {
-        if (!status.message) {
-          this.props.navigator.replace(routes.posture.postureDashboard);
-        } else {
-          this.deviceError(status);
-        }
-      })
-    ));
+      if (!status.message) {
+        this.props.navigator.replace(routes.posture.postureDashboard);
+      } else {
+        this.deviceError(status);
+      }
+    });
     DeviceManagementService.connectToDevice();
   }
 
   scanForDevices() {
     NativeAppEventEmitter.addListener('DevicesFound', deviceList => this.setState({ deviceList }));
 
-    DeviceManagementService.scanForDevices((error) => {
-      if (!error) {
-        this.setState({ inProgress: false });
-      } else {
+    DeviceManagementService.scanForDevices(error => {
+      if (error) {
         this.deviceError(error);
       }
     });
@@ -106,23 +101,17 @@ export default class Device extends Component {
   }
 
   selectDevice(deviceData) {
-    this.setState({ inProgress: true }, () => (
-      DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
-        if (!error) {
-          this.connectToDevice();
-        } else {
-          this.deviceError(error);
-        }
-      })
-    ));
+    DeviceManagementService.selectDevice(deviceData.identifier, error => {
+      if (error) {
+        this.deviceError(error);
+      } else {
+        this.connectToDevice();
+      }
+    });
   }
 
   retryConnect() {
     this.props.navigator.popToTop();
-  }
-
-  rescanForDevices() {
-    this.setState({ inProgress: true }, this.scanForDevices);
   }
 
   forgetDevice() {
@@ -147,14 +136,12 @@ export default class Device extends Component {
   render() {
     return (
       <View style={styles.container}>
-        { this.state.inProgress ?
-          <Spinner style={styles.progress} /> :
-          <List
-            dataBlob={this.state.deviceList}
-            formatRowData={this.formatDeviceRow}
-            onPressRow={this.selectDevice}
-          />
-        }
+        <Spinner />
+        <List
+          dataBlob={this.state.deviceList}
+          formatRowData={this.formatDeviceRow}
+          onPressRow={this.selectDevice}
+        />
       </View>
     );
   }
