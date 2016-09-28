@@ -1,4 +1,5 @@
 #import "DeviceManagementService.h"
+#import "BluetoothService.h"
 #import "RCTUtils.h"
 #import "RCTEventDispatcher.h"
 
@@ -75,25 +76,30 @@ RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)call
 
 RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
   NSLog(@"Scanning for devices");
-  _deviceCollection = [NSMutableDictionary new];
-  NSMutableArray *deviceList = [NSMutableArray new];
-  
-  [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *__nonnull array) {
-    if ([deviceList count]) {
-      [deviceList removeAllObjects];
-    }
+  if ([BluetoothService getIsEnabled]) {
+    // Bluetooth is enabled, continue with scan
+    _deviceCollection = [NSMutableDictionary new];
+    NSMutableArray *deviceList = [NSMutableArray new];
     
-    for (MBLMetaWear *device in array) {
-      _deviceCollection[[device.identifier UUIDString]] = device;
-      [deviceList addObject: @{
-                               @"name": device.name,
-                               @"identifier": [device.identifier UUIDString],
-                               @"RSSI": device.discoveryTimeRSSI ?: [NSNull null]
-                               }];
-    }
-    [self devicesFound:deviceList];
-  }];
-  callback(@[[NSNull null]]);
+    [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *__nonnull array) {
+      if ([deviceList count]) {
+        [deviceList removeAllObjects];
+      }
+
+      for (MBLMetaWear *device in array) {
+        _deviceCollection[[device.identifier UUIDString]] = device;
+        [deviceList addObject: @{
+                                 @"name": device.name,
+                                 @"identifier": [device.identifier UUIDString],
+                                 @"RSSI": device.discoveryTimeRSSI ?: [NSNull null]
+                                 }];
+      }
+      [self devicesFound:deviceList];
+    }];
+  } else {
+    // Bluetooth is disabled
+    callback(@[RCTMakeError(@"Bluetooth is not enabled", nil, nil)]);
+  }
 }
 
 RCT_EXPORT_METHOD(stopScanForDevices) {

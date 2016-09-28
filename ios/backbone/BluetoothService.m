@@ -51,6 +51,10 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
 
++ (BOOL)getIsEnabled {
+  return _state == CBCentralManagerStatePoweredOn;
+}
+
 - (NSArray<NSString *> *)supportedEvents
 {
   return @[@"BluetoothState"];
