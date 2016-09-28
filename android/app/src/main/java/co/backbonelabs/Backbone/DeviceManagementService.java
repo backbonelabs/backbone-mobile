@@ -108,6 +108,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                                     }
                                 }
                             }
+                            // Close GATT client to release resources
+                            Log.d(TAG, "Closing GATT client");
+                            gatt.close();
                         }
                     };
 
