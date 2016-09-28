@@ -26,6 +26,7 @@ class DeviceConnect extends Component {
     }),
     dispatch: PropTypes.func,
     inProgress: PropTypes.bool,
+    errorMessage: PropTypes.string,
   };
 
   constructor() {
@@ -48,19 +49,18 @@ class DeviceConnect extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log('nextProps', nextProps);
     // If connectionStatus is true, then alert the user that
     // the device is successfully connected to their smartphone
     if (!this.props.connectionStatus && nextProps.connectionStatus) {
-      if (nextProps.connectionStatus.isConnected) {
-        Alert.alert('Success', nextProps.connectionStatus.message, [{
-          text: 'Continue',
-          onPress: () => this.props.navigator.replace(routes.postureDashboard),
-        }]);
-      } else {
-        // On a failed attempt to connect, send them to the
-        // Errors scene with the connectionStatus error message
-        this.deviceError(nextProps.connectionStatus.message);
-      }
+      Alert.alert('Success', nextProps.connectionStatus.message, [{
+        text: 'Continue',
+        onPress: () => this.props.navigator.replace(routes.postureDashboard),
+      }]);
+    } else if (!this.props.errorMessage && nextProps.errorMessage) {
+      // On a failed attempt to connect, send them to the
+      // Errors scene with the connectionStatus error message
+      this.deviceError(nextProps.errorMessage);
     }
   }
 
@@ -68,16 +68,11 @@ class DeviceConnect extends Component {
   checkForDevice() {
     DeviceManagementService.checkForDevice((device) => {
       if (device) {
+        // Stored device is found, attempt to connect
         this.props.dispatch(deviceActions.connect());
       } else {
-        // No device found, send to `DeviceScan` with rightButton handler
-        // used to rescan for devices
-        this.props.navigator.replace(Object.assign({}, routes.deviceScan, {
-          rightButton: {
-            onPress: () => this.props.dispatch(deviceActions.scan()),
-            iconName: 'refresh',
-          },
-        }));
+        // There's no device, route to scene for scanning
+        this.props.navigator.replace(routes.deviceScan);
       }
     });
   }

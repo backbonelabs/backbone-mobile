@@ -5,6 +5,7 @@ import {
   Text,
   Alert,
   NativeModules,
+  NativeAppEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
 import List from '../List';
@@ -25,6 +26,7 @@ class DeviceScan extends Component {
     deviceList: PropTypes.array,
     dispatch: PropTypes.func,
     inProgress: PropTypes.bool,
+    errorMessage: PropTypes.string,
   };
 
 
@@ -35,20 +37,36 @@ class DeviceScan extends Component {
 
   // Begin scanning for hardware devices in the vicinity
   componentWillMount() {
+    console.log('device actions');
     this.props.dispatch(deviceActions.scan());
   }
 
-  // Calls native selectDevice method with the deviceData identifier
+  componentWillReceiveProps(nextProps) {
+    // Check for error message
+    if (!this.props.errorMessage && nextProps.errorMessage) {
+      Alert.alert(
+        'Error',
+        nextProps.errorMessage,
+        [{ text: 'OK', onPress: () => this.props.navigator.pop() }]
+      );
+    }
+  }
+
+  componentWillUnmount() {
+    NativeAppEventEmitter.removeAllListeners('DevicesFound');
+
+    // Stop device scanning in case a scan is in progress
+    DeviceManagementService.stopScanForDevices();
+  }
+
+  // Calls selectDevice action with the deviceData identifier
   // in order to specify which device to connect to
   selectDevice(deviceData) {
     DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
-      if (!error) {
-        this.props.navigator.replace(routes.deviceConnect);
+      if (error) {
+        this.props.dispatch({ type: 'SELECT_DEVICE__ERROR', error });
       } else {
-        Alert.alert('Error', 'Failed to connect!', [{
-          text: 'Try Again',
-          onPress: () => this.props.dispatch(deviceActions.scan()),
-        }]);
+        this.props.navigator.replace(routes.deviceConnect);
       }
     });
   }
@@ -66,18 +84,12 @@ class DeviceScan extends Component {
   render() {
     return (
       <View style={styles.container}>
-      { this.props.inProgress ?
-        <View style={styles.spinner}>
-          <Spinner style={styles.progress} />
-          <Text style={styles.spinnerText}>Scanning</Text>
-        </View>
-        :
+        { this.props.inProgress && <Spinner /> }
         <List
           dataBlob={this.props.deviceList || []}
           formatRowData={this.formatDeviceRow}
           onPressRow={this.selectDevice}
         />
-      }
       </View>
     );
   }
