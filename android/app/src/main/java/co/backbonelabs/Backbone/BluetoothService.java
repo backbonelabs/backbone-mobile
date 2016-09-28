@@ -11,6 +11,7 @@ import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -25,6 +26,7 @@ import java.util.MissingFormatArgumentException;
 public class BluetoothService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static BluetoothService instance = null;
     private static final String TAG = "BluetoothService";
+    private int state;
 
     public static BluetoothService getInstance() {
         return instance;
@@ -58,7 +60,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("state", bluetoothStateMap.get(state, -1));
                 sendEvent(mReactContext, "BluetoothState", wm);
@@ -90,6 +92,15 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
      */
     public boolean getIsEnabled() {
         return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
+    }
+
+    /**
+     * Returns the current Bluetooth state (based on the custom state map) to a callback
+     * @param callback The Bluetooth state is passed in the second argument
+     */
+    @ReactMethod
+    public void getState(Callback callback) {
+        callback.invoke(null, bluetoothStateMap.get(state, -1));
     }
 
     /**
