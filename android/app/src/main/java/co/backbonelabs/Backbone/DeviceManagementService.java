@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -33,7 +34,7 @@ import java.util.UUID;
 
 import co.backbonelabs.Backbone.util.JSError;
 
-public class DeviceManagementService extends ReactContextBaseJavaModule {
+public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static final String TAG = "DeviceManagementService";
     public static MetaWearBoard mMWBoard;
     private boolean mScanning;
@@ -47,6 +48,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
+
+        // Listen to the Activity's lifecycle events
+        reactContext.addLifecycleEventListener(this);
     }
 
     @Override
@@ -249,5 +253,22 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
+    }
+
+    @Override
+    public void onHostResume() {
+        // Activity `onResume`
+    }
+
+    @Override
+    public void onHostPause() {
+        // Activity `onPause`
+        // Stop scanning regardless if a scan is in progress or not
+        stopScanForDevices();
+    }
+
+    @Override
+    public void onHostDestroy() {
+        // Activity `onDestroy`
     }
 }
