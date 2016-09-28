@@ -9,6 +9,8 @@ export default (state = {
       return {
         ...state,
         inProgress: true,
+        connectionStatus: null,
+        errorMessage: null,
       };
     }
     case 'CONNECT': {
@@ -18,7 +20,7 @@ export default (state = {
         connectionStatus: action.payload,
       };
     }
-    case 'CONNECT_ERROR': {
+    case 'CONNECT__ERROR': {
       return {
         ...state,
         inProgress: false,
@@ -29,12 +31,13 @@ export default (state = {
       return {
         ...state,
         inProgress: true,
+        deviceList: null,
+        errorMessage: null,
       };
     }
     case 'SCAN': {
       return {
         ...state,
-        inProgress: false,
         deviceList: action.payload,
       };
     }
@@ -45,10 +48,11 @@ export default (state = {
         errorMessage: action.error.message,
       };
     }
-    case 'FORGET__START': {
+    case 'SELECT_DEVICE__ERROR': {
       return {
         ...state,
-        inProgress: true,
+        inProgress: false,
+        errorMessage: action.error.message,
       };
     }
     case 'FORGET': {

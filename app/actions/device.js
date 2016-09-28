@@ -9,10 +9,10 @@ const connect = payload => ({
   payload,
 });
 
-// const connectError = error => ({
-//   type: 'CONNECT__ERROR',
-//   error,
-// });
+const connectError = error => ({
+  type: 'CONNECT__ERROR',
+  error,
+});
 
 const scanStart = () => ({ type: 'SCAN__START' });
 
@@ -21,12 +21,10 @@ const scan = payload => ({
   payload,
 });
 
-// const scanError = error => ({
-//   type: 'SCAN__ERROR',
-//   error,
-// });
-
-const forgetStart = () => ({ type: 'FORGET__START' });
+const scanError = error => ({
+  type: 'SCAN__ERROR',
+  error,
+});
 
 const forget = payload => ({
   type: 'FORGET',
@@ -39,15 +37,19 @@ const forgetError = error => ({
 });
 
 async function connectEventListener(dispatch) {
-  const eventListener = await NativeAppEventEmitter.once('ConnectionStatus', status =>
-    dispatch(connect(status))
-  );
+  const eventListener = await NativeAppEventEmitter.once('ConnectionStatus', status => {
+    if (status.isConnected) {
+      dispatch(connect(status));
+    } else {
+      dispatch(connectError(status));
+    }
+  });
 
   return eventListener;
 }
 
 async function scanEventListener(dispatch) {
-  const eventListener = await NativeAppEventEmitter.once('DevicesFound', deviceList =>
+  const eventListener = await NativeAppEventEmitter.addListener('DevicesFound', deviceList =>
     dispatch(scan(deviceList))
   );
 
@@ -68,16 +70,16 @@ export default {
       dispatch(scanStart());
 
       return scanEventListener(dispatch)
-        .then(() => DeviceManagementService.scanForDevices());
+        .then(() => DeviceManagementService.scanForDevices(error => (
+          dispatch(scanError(error))
+        )));
     };
   },
   forget() {
-    return (dispatch) => {
-      dispatch(forgetStart());
-
-      return DeviceManagementService.forgetDevice()
+    return (dispatch) => (
+      DeviceManagementService.forgetDevice()
         .then(() => dispatch(forget()))
-        .catch(error => dispatch(forgetError(error)));
-    };
+        .catch(error => dispatch(forgetError(error)))
+    );
   },
 };
