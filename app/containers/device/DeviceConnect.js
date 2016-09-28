@@ -11,32 +11,35 @@ import deviceActions from '../../actions/device';
 import styles from '../../styles/device';
 import Spinner from '../../components/Spinner';
 
+const { PropTypes } = React;
 const { DeviceManagementService } = NativeModules;
 
 class DeviceConnect extends Component {
   static propTypes = {
-    navigator: React.PropTypes.shape({
-      replace: React.PropTypes.func,
-      pop: React.PropTypes.func,
+    navigator: PropTypes.shape({
+      replace: PropTypes.func,
+      pop: PropTypes.func,
     }),
-    connectionStatus: React.PropTypes.shape({
-      isConnected: React.PropTypes.number,
-      message: React.PropTypes.string,
+    connectionStatus: PropTypes.shape({
+      isConnected: PropTypes.number,
+      message: PropTypes.string,
     }),
-    dispatch: React.PropTypes.func,
+    dispatch: PropTypes.func,
+    inProgress: PropTypes.bool,
   };
 
   constructor() {
     super();
-    this.state = {
-      inProgress: false,
-    };
+    this.state = {};
   }
 
   componentWillMount() {
     // Check current connection status with device
     DeviceManagementService.getDeviceStatus((status) => {
+      // Status code 2 means that it's currently connected
       if (status === 2) {
+        // Already connected, replace route with postureDashboard
+        // since there's no need to navigate back to this scene
         this.props.navigator.replace(routes.postureDashboard);
       } else {
         this.checkForDevice();
@@ -45,10 +48,8 @@ class DeviceConnect extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.inProgress !== nextProps.inProgress) {
-      this.setState({ inProgress: nextProps.inProgress });
-    }
-
+    // If connectionStatus is true, then alert the user that
+    // the device is successfully connected to their smartphone
     if (!this.props.connectionStatus && nextProps.connectionStatus) {
       if (nextProps.connectionStatus.isConnected) {
         Alert.alert('Success', nextProps.connectionStatus.message, [{
@@ -56,6 +57,8 @@ class DeviceConnect extends Component {
           onPress: () => this.props.navigator.replace(routes.postureDashboard),
         }]);
       } else {
+        // On a failed attempt to connect, send them to the
+        // Errors scene with the connectionStatus error message
         this.deviceError(nextProps.connectionStatus.message);
       }
     }
@@ -68,6 +71,7 @@ class DeviceConnect extends Component {
         this.props.dispatch(deviceActions.connect());
       } else {
         // No device found, send to `DeviceScan` with rightButton handler
+        // used to rescan for devices
         this.props.navigator.replace(Object.assign({}, routes.deviceScan, {
           rightButton: {
             onPress: () => this.props.dispatch(deviceActions.scan()),
@@ -78,7 +82,8 @@ class DeviceConnect extends Component {
     });
   }
 
-  // Handle connect error
+  // Handle connectionStatus error message and allows user to perform
+  // actions such as retrying a connection attempt or forgetting device
   deviceError(errorMessage) {
     this.props.navigator.replace(
       Object.assign({}, routes.errors, {
@@ -102,7 +107,7 @@ class DeviceConnect extends Component {
   render() {
     return (
       <View style={styles.container}>
-      { this.state.inProgress &&
+      { this.props.inProgress &&
         <View style={styles.spinner}>
           <Spinner />
           <Text style={styles.spinnerText}>Connecting</Text>

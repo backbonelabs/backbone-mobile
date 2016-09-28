@@ -13,41 +13,33 @@ import Spinner from '../../components/Spinner';
 import styles from '../../styles/device';
 import routes from '../../routes';
 
+const { PropTypes } = React;
 const { DeviceManagementService } = NativeModules;
 
 class DeviceScan extends Component {
   static propTypes = {
-    navigator: React.PropTypes.shape({
-      replace: React.PropTypes.func,
-      pop: React.PropTypes.func,
+    navigator: PropTypes.shape({
+      replace: PropTypes.func,
+      pop: PropTypes.func,
     }),
-    deviceList: React.PropTypes.array,
-    dispatch: React.PropTypes.func,
+    deviceList: PropTypes.array,
+    dispatch: PropTypes.func,
+    inProgress: PropTypes.bool,
   };
+
 
   constructor() {
     super();
-    this.state = {
-      deviceList: [],
-      inProgress: false,
-    };
     this.selectDevice = this.selectDevice.bind(this);
   }
 
+  // Begin scanning for hardware devices in the vicinity
   componentWillMount() {
     this.props.dispatch(deviceActions.scan());
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.state.inProgress !== nextProps.inProgress) {
-      this.setState({ inProgress: nextProps.inProgress });
-    }
-
-    if (!this.props.deviceList && nextProps.deviceList) {
-      this.setState({ deviceList: nextProps.deviceList });
-    }
-  }
-
+  // Calls native selectDevice method with the deviceData identifier
+  // in order to specify which device to connect to
   selectDevice(deviceData) {
     DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
       if (!error) {
@@ -61,6 +53,7 @@ class DeviceScan extends Component {
     });
   }
 
+  // Formats row data and displays it in a component
   formatDeviceRow(rowData) {
     return (
       <View>
@@ -73,14 +66,14 @@ class DeviceScan extends Component {
   render() {
     return (
       <View style={styles.container}>
-      { this.state.inProgress ?
+      { this.props.inProgress ?
         <View style={styles.spinner}>
           <Spinner style={styles.progress} />
           <Text style={styles.spinnerText}>Scanning</Text>
         </View>
         :
         <List
-          dataBlob={this.state.deviceList}
+          dataBlob={this.props.deviceList || []}
           formatRowData={this.formatDeviceRow}
           onPressRow={this.selectDevice}
         />

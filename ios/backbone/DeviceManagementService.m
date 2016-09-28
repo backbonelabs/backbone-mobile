@@ -103,7 +103,9 @@ RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
 
 RCT_REMAP_METHOD(forgetDevice, resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
   [_sharedDevice disconnectWithHandler:^(NSError * _Nullable error) {
+    // Forget _sharedDevice and set it to nil to prevent reconnecting to
     [_sharedDevice forgetDevice];
+    _sharedDevice = nil;
 //      NSDictionary *makeError = RCTMakeError(@"Failed to disconnect device!", nil, @{@"isConnected": @false, @"message": @"Failed to disconnect device!"});
     if (!error) {
       // TO DO: Start using our error mappings
