@@ -68,7 +68,6 @@ class PostureMonitor extends Component {
                * Next PR will include toggling on/off vibration settings and fetching user settings
                * without the user having to go to the settings route (which is how it currently is)
                */
-              console.log('vibrate');
               Vibration.vibrate();
             } else if (isSlouching && !settings.phoneVibration) {
               // We may still want to do something here, even if phoneVibration isn't true
