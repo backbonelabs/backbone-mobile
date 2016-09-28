@@ -74,7 +74,7 @@ RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)call
   }
 }
 
-RCT_EXPORT_METHOD(scanForDevices) {
+RCT_EXPORT_METHOD(scanForDevices:(RCTResponseSenderBlock)callback) {
   NSLog(@"Scanning for devices");
   if ([BluetoothService getIsEnabled]) {
     // Bluetooth is enabled, continue with scan
