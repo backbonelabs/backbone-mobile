@@ -1,4 +1,5 @@
 #import "DeviceManagementService.h"
+#import "BluetoothService.h"
 #import "RCTUtils.h"
 #import "RCTEventDispatcher.h"
 
@@ -63,6 +64,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
 }
 
 RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)callback) {
+  [self stopScanForDevices];
   _sharedDevice = [_deviceCollection objectForKey:deviceID];
   if (!_sharedDevice) {
     NSDictionary *makeError = RCTMakeError(@"Failed to select device", nil, @{});
@@ -74,27 +76,35 @@ RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)call
 
 RCT_EXPORT_METHOD(scanForDevices) {
   NSLog(@"Scanning for devices");
-  _deviceCollection = [NSMutableDictionary new];
-  NSMutableArray *deviceList = [NSMutableArray new];
+  if ([BluetoothService getIsEnabled]) {
+    // Bluetooth is enabled, continue with scan
+    _deviceCollection = [NSMutableDictionary new];
+    NSMutableArray *deviceList = [NSMutableArray new];
 
-  [_manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *__nonnull array) {
-    for (MBLMetaWear *device in array) {
-      _deviceCollection[[device.identifier UUIDString]] = device;
-      [deviceList addObject: @{
-                               @"name": device.name,
-                               @"identifier": [device.identifier UUIDString],
-                               @"RSSI": device.discoveryTimeRSSI ?: [NSNull null]
-                               }];
-    }
-//    Potentially caused problems while scanning, which resulted in "false" scan timeouts
-//    [NSThread sleepForTimeInterval:1.0f];
-    [self devicesFound:deviceList];
-  }];
+    [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *__nonnull array) {
+      if ([deviceList count]) {
+        [deviceList removeAllObjects];
+      }
 
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-    [_manager stopScanForMetaWears];
-    [self devicesFound:deviceList];
-  });
+      for (MBLMetaWear *device in array) {
+        _deviceCollection[[device.identifier UUIDString]] = device;
+        [deviceList addObject: @{
+                                 @"name": device.name,
+                                 @"identifier": [device.identifier UUIDString],
+                                 @"RSSI": device.discoveryTimeRSSI ?: [NSNull null]
+                                 }];
+      }
+      [self devicesFound:deviceList];
+    }];
+  } else {
+    // Bluetooth is disabled
+    callback(@[RCTMakeError(@"Bluetooth is not enabled", nil, nil)]);
+  }
+}
+
+RCT_EXPORT_METHOD(stopScanForDevices) {
+  NSLog(@"Stopping device scan");
+  [_manager stopScanForMetaWears];
 }
 
 RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
@@ -127,20 +137,6 @@ RCT_REMAP_METHOD(forgetDevice, resolver:(RCTPromiseResolveBlock)resolve rejecter
     }
   });
 }
-
-//- (void)checkScanTimeout :(RCTResponseSenderBlock)callback {
-//  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-//    [_manager stopScanForMetaWears];
-//    if (_scanCount < 5) {
-//      NSLog(@"Scan timeout");
-//      NSDictionary *makeError = RCTMakeError(@"There was a problem scanning", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
-//      callback(@[makeError]);
-//    } else {
-//      callback(@[[NSNull null]]);
-//    }
-//    _scanCount = 0;
-//  });
-//}
 
 - (void)deviceConnectionStatus:(NSDictionary *)status {
   [self.bridge.eventDispatcher sendAppEventWithName:@"ConnectionStatus" body: status];
