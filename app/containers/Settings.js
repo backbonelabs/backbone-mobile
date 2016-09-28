@@ -44,11 +44,6 @@ class Settings extends Component {
     this.updateSettings = this.updateSettings.bind(this);
   }
 
-  componentWillMount() {
-    // Fetch latest user settings
-    this.props.dispatch(userActions.fetchUserSettings());
-  }
-
   componentWillReceiveProps(nextProps) {
     let stateChanges = {};
 

@@ -58,7 +58,7 @@ RCT_EXPORT_METHOD(connectToDevice) {
       [self deviceConnectionStatus:@{@"isConnected": @true, @"message": @"Connected!"}];
     }
   }];
-  
+
   [self checkConnectTimeout];
 }
 
@@ -76,17 +76,21 @@ RCT_EXPORT_METHOD(scanForDevices) {
   NSLog(@"Scanning for devices");
   _deviceCollection = [NSMutableDictionary new];
   NSMutableArray *deviceList = [NSMutableArray new];
-  
+
   [_manager startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *__nonnull array) {
     for (MBLMetaWear *device in array) {
-        _deviceCollection[[device.identifier UUIDString]] = device;
-        [deviceList addObject: @{
-                                 @"name": device.name,
-                                 @"identifier": [device.identifier UUIDString],
-                                 }];
+      _deviceCollection[[device.identifier UUIDString]] = device;
+      [deviceList addObject: @{
+                               @"name": device.name,
+                               @"identifier": [device.identifier UUIDString],
+                               @"RSSI": device.discoveryTimeRSSI ?: [NSNull null]
+                               }];
     }
+//    Potentially caused problems while scanning, which resulted in "false" scan timeouts
+//    [NSThread sleepForTimeInterval:1.0f];
+    [self devicesFound:deviceList];
   }];
-  
+
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     [_manager stopScanForMetaWears];
     [self devicesFound:deviceList];

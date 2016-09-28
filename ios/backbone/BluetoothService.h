@@ -5,7 +5,7 @@
 @interface BluetoothService : RCTEventEmitter <CBCentralManagerDelegate, RCTBridgeModule>
 @property (nonatomic, strong) CBCentralManager *centralManager;
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central;
-- (void)emitCentralState:(int)state;
+- (void)emitCentralState;
 - (void)startObserving;
 - (void)stopObserving;
 
