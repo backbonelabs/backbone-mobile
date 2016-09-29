@@ -42,9 +42,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     private ReactContext mReactContext;
     private BluetoothAdapter mBluetoothAdapter;
 
-    // Stops scanning after 5 seconds
-    private static final long SCAN_PERIOD = 5000;
-
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
