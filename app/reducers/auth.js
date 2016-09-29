@@ -58,13 +58,13 @@ export default (state = {
         ...state,
         inProgress: true,
         errorMessage: null,
+        passwordResetSent: false,
       };
     }
     case 'PASSWORD_RESET': {
       return {
         ...state,
         inProgress: false,
-        errorMessage: null,
         passwordResetSent: action.payload,
       };
     }
