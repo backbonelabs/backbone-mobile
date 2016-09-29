@@ -11,6 +11,5 @@ module.exports = {
     'no-underscore-dangle': [0],
     'prefer-template': [1],
     'max-len': [2, {"code": 100}],
-    'generator-star-spacing': [0],
   },
 };
