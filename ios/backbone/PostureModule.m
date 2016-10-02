@@ -2,9 +2,10 @@
 #import "DeviceManagementService.h"
 #import "PostureModule.h"
 #import "SensorNotifications.h"
+#import "LocalNotificationManager.h"
 #import "RCTEventDispatcher.h"
 
-#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
+#import "Constant.h"
 
 @implementation PostureModule
 
@@ -129,18 +130,9 @@ static BOOL shouldSendNotifications;
   
   if (shouldSendNotifications) {
     NSLog(@"Sending posture local notification");
-    UILocalNotification *localNotif = [[UILocalNotification alloc] init];
-    if (localNotif) {
-      localNotif.alertBody = NSLocalizedString(@"Your posture is not optimal!", nil);
-      localNotif.soundName = UILocalNotificationDefaultSoundName;
-      localNotif.userInfo = @{
-                              @"module": self.name
-                              };
-      
-      [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
-      
-      // Disable additional notifications until the next time the app goes to the background
-      shouldSendNotifications = false;
+    
+    if ([LocalNotificationManager scheduleNotification:self.name]) {
+      shouldSendNotifications = NO;
     }
   }
   [self emitPostureData];
