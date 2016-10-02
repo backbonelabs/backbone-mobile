@@ -38,7 +38,8 @@
         newNotif.fireDate = [NSDate dateWithTimeIntervalSinceNow:NOTIFICATION_PERIOD * i];
         newNotif.alertBody = NSLocalizedString(@"Go and take a walk!", nil);
         newNotif.soundName = UILocalNotificationDefaultSoundName;
-        newNotif.repeatInterval = NSCalendarUnitMinute;
+        // Change this NSCalendarUnitMinute for faster test.
+        newNotif.repeatInterval = NSCalendarUnitHour;
         newNotif.userInfo = @{
                               @"module": moduleName
                               };

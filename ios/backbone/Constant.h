@@ -14,6 +14,8 @@
 
 #define MINIMUM_STEP 30
 #define STEP_TIME_LIMIT 15.0
+
+// Change this value if you want to test it faster. Both values are in 'seconds'
 #define NOTIFICATION_PERIOD 60.0 * 30.0
 #define NOTIFICATION_CYCLE 60.0 * 60.0
 
