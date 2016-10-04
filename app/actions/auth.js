@@ -29,19 +29,6 @@ const signupError = error => ({
   error: true,
 });
 
-const checkConfirmationStart = () => ({ type: 'CHECK_CONFIRMATION__START' });
-
-const checkConfirmation = payload => ({
-  type: 'CHECK_CONFIRMATION',
-  payload,
-});
-
-const checkConfirmationError = error => ({
-  type: 'CHECK_CONFIRMATION__ERROR',
-  payload: error,
-  error: true,
-});
-
 export default {
   login(user) {
     return (dispatch) => {
@@ -95,23 +82,6 @@ export default {
         .catch(() => (
           // Network error
           dispatch(signupError(
-            new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
-    };
-  },
-
-  checkConfirmation(email) {
-    return (dispatch) => {
-      dispatch(checkConfirmationStart());
-
-      return Fetcher.get({
-        url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
-      })
-        .then(response => response.json())
-          .then(body => !body.error && dispatch(checkConfirmation(body)))
-        .catch(() => (
-          dispatch(checkConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));

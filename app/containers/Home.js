@@ -16,18 +16,20 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import constants from '../utils/constants';
 
+const { PropTypes } = React;
+
 class Home extends Component {
   static propTypes = {
-    auth: React.PropTypes.shape({
-      accessToken: React.PropTypes.string,
-      isFetchingAccessToken: React.PropTypes.bool,
+    auth: PropTypes.shape({
+      accessToken: PropTypes.string,
+      isFetchingAccessToken: PropTypes.bool,
     }),
-    generic: React.PropTypes.shape({
-      bluetoothState: React.PropTypes.number,
+    generic: PropTypes.shape({
+      bluetoothState: PropTypes.number,
     }),
-    dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.shape({
-      push: React.PropTypes.func,
+    dispatch: PropTypes.func,
+    navigator: PropTypes.shape({
+      push: PropTypes.func,
     }),
   };
 

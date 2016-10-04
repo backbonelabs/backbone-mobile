@@ -9,11 +9,12 @@ import styles from '../../styles/posture/postureCalibrate';
 import Button from '../Button';
 import postureRoutes from '../../routes/posture';
 
+const { PropTypes } = React;
 const { width } = Dimensions.get('window');
 
 export default class PostureCalibrate extends Component {
   static propTypes = {
-    navigator: React.PropTypes.object,
+    navigator: PropTypes.object,
   }
 
   constructor() {
