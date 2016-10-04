@@ -23,22 +23,20 @@
                               };
       
       [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
-      
-      return YES;
     }
-    
-    return NO;
+    else {
+      return NO;
+    }
   }
   else if ([moduleName isEqualToString:@"step"]) {
-    for (int i = 1; i <= (int)ceil(NOTIFICATION_CYCLE / NOTIFICATION_PERIOD); i++) {
+    for (int i = 1; i <= NOTIFICATION_CYCLE / NOTIFICATION_PERIOD; i++) {
       UILocalNotification *newNotif = [[UILocalNotification alloc] init];
       
       if (newNotif) {
         newNotif.timeZone = [NSTimeZone localTimeZone];
-        newNotif.fireDate = [NSDate dateWithTimeIntervalSinceNow:NOTIFICATION_PERIOD * i];
+        newNotif.fireDate = [NSDate dateWithTimeIntervalSinceNow:NOTIFICATION_PERIOD * 60.0 * i];
         newNotif.alertBody = NSLocalizedString(@"Go and take a walk!", nil);
         newNotif.soundName = UILocalNotificationDefaultSoundName;
-        // Change this NSCalendarUnitMinute for faster test.
         newNotif.repeatInterval = NSCalendarUnitHour;
         newNotif.userInfo = @{
                               @"module": moduleName

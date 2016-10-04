@@ -42,11 +42,6 @@ static BOOL shouldSendNotifications;
 
 - (void)checkIdleTime {
   dispatch_async(dispatch_get_main_queue(), ^(void){
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *eventArray = [app scheduledLocalNotifications];
-    
-    BOOL hasScheduledNotification = [LocalNotificationManager hasScheduledNotification:self.name];
-    
     [_previousSteps addObject:@{
                                 @"timestamp" : [NSNumber numberWithDouble:TIME_STAMP]
                                 }];
@@ -70,7 +65,7 @@ static BOOL shouldSendNotifications;
       }
     }
 
-    if ([_previousSteps count] >= MINIMUM_STEP || !hasScheduledNotification) {
+    if ([_previousSteps count] >= MINIMUM_STEP || ![LocalNotificationManager hasScheduledNotification:self.name]) {
       [LocalNotificationManager cancelScheduledNotification:self.name];
       
       if ([LocalNotificationManager scheduleNotification:self.name]) {
