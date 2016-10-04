@@ -87,7 +87,7 @@ export default (state = {
     case 'SIGNUP': {
       return {
         ...state,
-        user: omit(action.payload, 'accessToken'),
+        user: action.payload.user,
       };
     }
     default:

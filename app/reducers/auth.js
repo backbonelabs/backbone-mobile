@@ -32,21 +32,22 @@ export default (state = {
       return {
         ...state,
         isFetchingAccessToken: true,
+        errorMessage: null,
       };
     }
     case 'SIGNUP': {
       return {
         ...state,
-        userId: action.payload._id,
-        accessToken: action.payload.accessToken,
         isFetchingAccessToken: false,
+        userId: action.payload.user._id,
+        accessToken: action.payload.accessToken,
       };
     }
     case 'SIGNUP__ERROR': {
       return {
         ...state,
-        errorMessage: action.payload.message,
         isFetchingAccessToken: false,
+        errorMessage: action.payload.message,
       };
     }
     default:

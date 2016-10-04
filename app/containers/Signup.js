@@ -11,6 +11,7 @@ import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import { accessTokenStorageKey } from '../utils/constants';
 
 const { PropTypes } = React;
 
@@ -55,51 +56,51 @@ class Signup extends Component {
   }
 
   saveAccessToken(accessToken) {
-    SensitiveInfo.setItem('accessToken', accessToken);
+    SensitiveInfo.setItem(accessTokenStorageKey, accessToken);
   }
 
   render() {
     return (
       <View style={styles.container}>
-      {this.props.isFetchingAccessToken ?
-        <Spinner />
-        :
-        <View style={styles.formContainer}>
-          <Input
-            handleRef={ref => (
-              this.emailField = ref
-            )}
-            value={this.state.email}
-            autoCapitalize="none"
-            placeholder="Email"
-            keyboardType="email-address"
-            onChangeText={text => this.setState({ email: text })}
-            onSubmitEditing={() => this.passwordField.focus()}
-            autoCorrect={false}
-            autoFocus
-            returnKeyType="next"
-          />
-          <Input
-            handleRef={ref => (
-              this.passwordField = ref
-            )}
-            value={this.state.password}
-            autoCapitalize="none"
-            placeholder="Password"
-            keyboardType="default"
-            onChangeText={text => this.setState({ password: text })}
-            onSubmitEditing={this.signup}
-            autoCorrect={false}
-            secureTextEntry
-            returnKeyType="go"
-          />
-          <Button
-            text="Sign Up"
-            disabled={this.props.isFetchingAccessToken}
-            onPress={this.signup}
-          />
-        </View>
-      }
+        {this.props.isFetchingAccessToken ?
+          <Spinner />
+          :
+          <View style={styles.formContainer}>
+            <Input
+              handleRef={ref => (
+                this.emailField = ref
+              )}
+              value={this.state.email}
+              autoCapitalize="none"
+              placeholder="Email"
+              keyboardType="email-address"
+              onChangeText={text => this.setState({ email: text })}
+              onSubmitEditing={() => this.passwordField.focus()}
+              autoCorrect={false}
+              autoFocus
+              returnKeyType="next"
+            />
+            <Input
+              handleRef={ref => (
+                this.passwordField = ref
+              )}
+              value={this.state.password}
+              autoCapitalize="none"
+              placeholder="Password"
+              keyboardType="default"
+              onChangeText={text => this.setState({ password: text })}
+              onSubmitEditing={this.signup}
+              autoCorrect={false}
+              secureTextEntry
+              returnKeyType="go"
+            />
+            <Button
+              text="Sign Up"
+              disabled={this.props.isFetchingAccessToken}
+              onPress={this.signup}
+            />
+          </View>
+        }
       </View>
     );
   }

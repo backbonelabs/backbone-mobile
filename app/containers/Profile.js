@@ -37,7 +37,6 @@ class Profile extends Component {
       firstName: get(this.props.user, 'firstName'),
       lastName: get(this.props.user, 'lastName'),
       email: get(this.props.user, 'email'),
-      isConfirmed: get(this.props.user, 'isConfirmed'),
       password: '',
       verifyPassword: '',
     };
@@ -140,10 +139,7 @@ class Profile extends Component {
           :
           <ScrollView style={styles.innerContainer}>
             <Text style={{ textAlign: 'center' }}>
-              {
-                (this.state.isConfirmed !== undefined && !this.state.isConfirmed) &&
-                'Unconfirmed Email'
-              }
+              { !this.props.user.isConfirmed && 'Unconfirmed Email' }
             </Text>
             <Input
               value={this.state.firstName}
