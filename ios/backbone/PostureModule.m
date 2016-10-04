@@ -115,8 +115,25 @@ static BOOL shouldSendNotifications;
     }
     
     if (self.slouchTime > self.slouchTimeThreshold) {
-      // Add call to emitPostureData, because of time and slouchTime reset
-      [self emitPostureData];
+      // Check if a notification should be posted
+      if (shouldSendNotifications) {
+        // Post local notification to phone
+        NSLog(@"Sending posture local notification");
+        UILocalNotification *localNotif = [[UILocalNotification alloc] init];
+        if (localNotif) {
+          localNotif.alertBody = NSLocalizedString(@"Your posture is not optimal!", nil);
+          localNotif.soundName = UILocalNotificationDefaultSoundName;
+          localNotif.userInfo = @{
+                                  @"module": self.name
+                                  };
+          
+          [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+          
+          // Disable additional notifications until the next time the app goes to the background
+          shouldSendNotifications = false;
+        }
+      }
+
       MBLMetaWear *device = [DeviceManagementService getDevice];
       [device.hapticBuzzer startHapticWithDutyCycleAsync:255 pulseWidth:500 completion:nil];
       self.time = 0;
@@ -127,22 +144,6 @@ static BOOL shouldSendNotifications;
     self.slouchTime = 0;
   }
   
-  if (shouldSendNotifications) {
-    NSLog(@"Sending posture local notification");
-    UILocalNotification *localNotif = [[UILocalNotification alloc] init];
-    if (localNotif) {
-      localNotif.alertBody = NSLocalizedString(@"Your posture is not optimal!", nil);
-      localNotif.soundName = UILocalNotificationDefaultSoundName;
-      localNotif.userInfo = @{
-                              @"module": self.name
-                              };
-      
-      [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
-      
-      // Disable additional notifications until the next time the app goes to the background
-      shouldSendNotifications = false;
-    }
-  }
   [self emitPostureData];
 }
 
