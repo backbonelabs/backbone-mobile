@@ -88,10 +88,18 @@ public class SensorDataService {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
+                // App is terminated, perform cleanup tasks
                 Log.d(TAG, "onActivityDestroyed");
+
+                // Stop the foreground service
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
                 stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
                 activity.startService(stopIntent);
+
+                // Stop active sensors
+                if (!activeSensors.isEmpty()) {
+                    stopAllSensors();
+                }
             }
         });
     }
