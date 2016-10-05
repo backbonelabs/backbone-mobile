@@ -102,16 +102,14 @@
       [[UIApplication sharedApplication] cancelAllLocalNotifications];
       
       if ([LocalNotificationManager scheduleNotification:activityModule.name]) {
+        MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
         
+        [accelerometerBMI160.stepEvent startNotificationsWithHandlerAsync:^(MBLNumericData * _Nullable obj, NSError * _Nullable error) {
+          [[NSNotificationCenter defaultCenter] postNotificationName:AccelerometerBMI160Notification
+                                                              object:sensorDataService
+                                                            userInfo:nil];
+        }];
       }
-      
-      MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
-      
-      [accelerometerBMI160.stepEvent startNotificationsWithHandlerAsync:^(MBLNumericData * _Nullable obj, NSError * _Nullable error) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:AccelerometerBMI160Notification
-                                                            object:sensorDataService
-                                                          userInfo:nil];
-      }];
     }
 
     // Add the sensor to the list of sensors we're actively listening to
