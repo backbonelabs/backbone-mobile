@@ -95,16 +95,10 @@ class Login extends Component {
               returnKeyType="go"
             />
             <Button
-              text="Log In"
+              text="Log in"
               disabled={this.props.isFetchingAccessToken}
               onPress={this.login}
             />
-            <TouchableOpacity
-              style={styles.forgotPasswordButton}
-              onPress={() => this.props.navigator.push(routes.reset)}
-            >
-              <Text style={styles.forgotPassword}>Forgot password?</Text>
-            </TouchableOpacity>
           </View>
         }
       </View>

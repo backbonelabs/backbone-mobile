@@ -77,7 +77,7 @@ export default class PostureCalibrate extends Component {
       <View style={styles.container}>
         <View style={styles.animationContainer}>
           <View style={styles.calibrationImage}>
-            {this.state.isCalibrating &&
+            { this.state.isCalibrating &&
               <Text style={styles.calibrationCountdown}>
                 {this.state.count}
               </Text>
