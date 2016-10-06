@@ -93,7 +93,7 @@ export default class ActivityView extends Component {
   render() {
     return (
       <View style={styles.container}>
-{/*        <Progress.Pie
+        {/*        <Progress.Pie
           style={styles.progressPie}
           color="#48BBEC"
           unfilledColor="#f86c41"

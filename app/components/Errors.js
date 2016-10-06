@@ -23,12 +23,12 @@ const Errors = (props) => {
         <TouchableOpacity style={styles.primaryButton} onPress={currentRoute.onPress.primary}>
           <Text style={styles.primaryText}>{currentRoute.onPressText.primary}</Text>
         </TouchableOpacity>
-      { currentRoute.onPressText.secondary &&
-        <TouchableOpacity style={styles.secondaryButton} onPress={currentRoute.onPress.secondary}>
-          <Icon size={20} name={currentRoute.iconName.footer} color="black" />
-          <Text style={styles.secondaryText}>{currentRoute.onPressText.secondary}</Text>
-        </TouchableOpacity>
-      }
+        { currentRoute.onPressText.secondary &&
+          <TouchableOpacity style={styles.secondaryButton} onPress={currentRoute.onPress.secondary}>
+            <Icon size={20} name={currentRoute.iconName.footer} color="black" />
+            <Text style={styles.secondaryText}>{currentRoute.onPressText.secondary}</Text>
+          </TouchableOpacity>
+        }
       </View>
     </View>
   );
