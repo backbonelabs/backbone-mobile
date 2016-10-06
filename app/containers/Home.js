@@ -24,6 +24,7 @@ class Home extends Component {
     }),
     generic: React.PropTypes.shape({
       bluetoothState: React.PropTypes.number,
+      config: React.PropTypes.object,
     }),
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.shape({
@@ -97,12 +98,14 @@ class Home extends Component {
         </View>
         <TouchableOpacity
           style={styles.footer}
-          onPress={accessToken ?
-            SensitiveInfo.deleteItem('accessToken') : () => this.props.navigator.push(routes.signup)
-          }
+          onPress={() => (
+            this.props.generic.config.DEV_MODE && accessToken ?
+              SensitiveInfo.deleteItem('accessToken') : this.props.navigator.push(routes.signup)
+          )}
         >
           <Text style={styles.footerText}>
-            {accessToken ? 'Delete access token' : 'Don\'t have an account? Sign up'}
+            {this.props.generic.config.DEV_MODE && accessToken ?
+              'Delete access token' : 'Don\'t have an account? Sign up'}
           </Text>
         </TouchableOpacity>
       </View>
