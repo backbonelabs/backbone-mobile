@@ -15,6 +15,7 @@
 /**
  Schedule local notifications based on the moduleName
  @param moduleName Name of the ActivityModule set as userInfo in the notification
+ @return BOOL Whether the notification scheduling is successful
  */
 + (BOOL)scheduleNotification:(NSString*)moduleName {
   if ([moduleName isEqualToString:@"posture"]) {
@@ -60,6 +61,7 @@
 /**
  Check for any scheduled notification with the following moduleName set as userInfo
  @param moduleName Name of the ActivityModule set as userInfo in the notification
+ @return BOOL Whether any scheduled notification matching the criteria exists
  */
 + (BOOL)hasScheduledNotification:(NSString *)moduleName {
   NSArray *eventArray = [[UIApplication sharedApplication] scheduledLocalNotifications];

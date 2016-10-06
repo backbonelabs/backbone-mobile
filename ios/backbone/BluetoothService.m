@@ -4,12 +4,24 @@
 
 @implementation BluetoothService
 
-static int _state;
-static BOOL _isObserving;
-static NSDictionary *stateMap;
+/**
+ Returns a singleton instance of BluetoothService.
+ @return BluetoothService A singleton instance of BluetoothService
+ */
++ (BluetoothService*)getBluetoothService {
+  static BluetoothService *_bluetoothService = nil;
+  
+  static dispatch_once_t bluetoothServiceInitialized;
+  dispatch_once(&bluetoothServiceInitialized, ^{
+    _bluetoothService = [[self alloc] init];
+  });
+  
+  return _bluetoothService;
+}
 
 - (id)init {
   self = [super init];
+  
   stateMap = @{
                @"0": [NSNumber numberWithInteger:-1],
                @"1": [NSNumber numberWithInteger:1],
@@ -18,6 +30,7 @@ static NSDictionary *stateMap;
                @"4": [NSNumber numberWithInteger:2],
                @"5": [NSNumber numberWithInteger:4]
                };
+  
   self.centralManager = [[CBCentralManager alloc]
                          initWithDelegate:self
                          queue:nil
@@ -74,7 +87,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 }
 
 + (BOOL)getIsEnabled {
-  return _state == CBCentralManagerStatePoweredOn;
+  return [BluetoothService getBluetoothService].state == CBCentralManagerStatePoweredOn;
 }
 
 - (NSArray<NSString *> *)supportedEvents

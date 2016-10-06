@@ -2,8 +2,13 @@
 #import "RCTBridgeModule.h"
 #import "RCTEventEmitter.h"
 
-@interface BluetoothService : RCTEventEmitter <CBCentralManagerDelegate, RCTBridgeModule>
+@interface BluetoothService : RCTEventEmitter <CBCentralManagerDelegate, RCTBridgeModule> {
+  BOOL _isObserving;
+  NSDictionary *stateMap;
+}
 @property (nonatomic, strong) CBCentralManager *centralManager;
+@property int state;
++ (BluetoothService *)getBluetoothService;
 + (BOOL)getIsEnabled;
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central;
 - (void)emitCentralState;

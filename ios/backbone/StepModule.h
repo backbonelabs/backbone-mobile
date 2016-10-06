@@ -11,8 +11,7 @@
 
 #import "ActivityModule.h"
 
-@interface StepModule : ActivityModule
-{
+@interface StepModule : ActivityModule {
   NSMutableArray *_previousSteps;
 }
 
