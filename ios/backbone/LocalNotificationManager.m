@@ -12,6 +12,10 @@
 
 @implementation LocalNotificationManager
 
+/**
+ Schedule local notifications based on the moduleName
+ @param moduleName Name of the ActivityModule set as userInfo in the notification
+ */
 + (BOOL)scheduleNotification:(NSString*)moduleName {
   if ([moduleName isEqualToString:@"posture"]) {
     UILocalNotification *localNotif = [[UILocalNotification alloc] init];
@@ -53,6 +57,10 @@
   return YES;
 }
 
+/**
+ Check for any scheduled notification with the following moduleName set as userInfo
+ @param moduleName Name of the ActivityModule set as userInfo in the notification
+ */
 + (BOOL)hasScheduledNotification:(NSString *)moduleName {
   NSArray *eventArray = [[UIApplication sharedApplication] scheduledLocalNotifications];
   
@@ -67,6 +75,10 @@
   return NO;
 }
 
+/**
+ Cancel all scheduled notification with the following moduleName set as userInfo
+ @param moduleName Name of the ActivityModule set as userInfo in the notification
+ */
 + (void)cancelScheduledNotification:(NSString *)moduleName {
   NSArray *eventArray = [[UIApplication sharedApplication] scheduledLocalNotifications];
   

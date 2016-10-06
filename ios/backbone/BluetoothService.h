@@ -10,4 +10,5 @@
 - (void)startObserving;
 - (void)stopObserving;
 
+- (void)applicationWillTerminate:(NSNotification *)notification;
 @end

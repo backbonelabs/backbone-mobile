@@ -1,5 +1,6 @@
 #import "BluetoothService.h"
 #import "RCTUtils.h"
+#import "SensorDataService.h"
 
 @implementation BluetoothService
 
@@ -21,6 +22,13 @@ static NSDictionary *stateMap;
                          initWithDelegate:self
                          queue:nil
                          options:@{CBCentralManagerOptionShowPowerAlertKey: @(YES)}];
+  
+  // Listening to app termination event
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(applicationWillTerminate:)
+                                               name:UIApplicationWillTerminateNotification
+                                             object:nil];
+  
   return self;
 }
 
@@ -60,8 +68,8 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 -(void)emitCentralState {
   NSLog(@"Emitting central state: %i", _state);
   NSDictionary *stateUpdate = @{
-                          @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]
-                          };
+                                @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]
+                                };
   [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
 
@@ -80,6 +88,19 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 
 - (void)stopObserving {
   _isObserving = NO;
+}
+
+// Handler for application termination
+- (void)applicationWillTerminate:(NSNotification *)notification {
+  NSLog(@"Application Will Terminate");
+  // Cancel all prior notifications before termination
+  [[UIApplication sharedApplication] cancelAllLocalNotifications];
+  
+  // Close all open events and stop all sensors
+  [[SensorDataService getSensorDataService] unregisterAllActivities];
+  
+  // Gives the app additional time before termination
+  [NSThread sleepForTimeInterval:2];
 }
 
 @end
