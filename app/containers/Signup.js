@@ -89,6 +89,20 @@ class Signup extends Component {
               placeholder="Password"
               keyboardType="default"
               onChangeText={text => this.setState({ password: text })}
+              onSubmitEditing={() => this.verifyPasswordField.focus()}
+              autoCorrect={false}
+              secureTextEntry
+              returnKeyType="next"
+            />
+            <Input
+              handleRef={ref => (
+                this.verifyPasswordField = ref
+              )}
+              value={this.state.verifyPassword}
+              autoCapitalize="none"
+              placeholder="Verify Password"
+              keyboardType="default"
+              onChangeText={text => this.setState({ verifyPassword: text })}
               onSubmitEditing={this.signup}
               autoCorrect={false}
               secureTextEntry

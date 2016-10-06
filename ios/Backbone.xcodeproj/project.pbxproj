@@ -33,6 +33,8 @@
 		669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DC1D50630A00DCEFBE /* ActivityService.m */; };
 		669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DE1D51053F00DCEFBE /* PostureModule.m */; };
 		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
+		697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 697D0FE71DA3DCDC00F6FF13 /* StepModule.m */; };
+		69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */; };
 		7593D56BEF6AA0DB5D4CE824 /* libPods-BackboneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B98A4387B7B289536F06F13 /* libPods-BackboneTests.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		D588726279044FBADFEDDBA8 /* libPods-Backbone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */; };
@@ -175,6 +177,11 @@
 		669B14E01D51066300DCEFBE /* PostureModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PostureModule.h; path = backbone/PostureModule.h; sourceTree = "<group>"; };
 		669B15191D51439E00DCEFBE /* SensorNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SensorNotifications.h; path = backbone/SensorNotifications.h; sourceTree = "<group>"; };
 		669B151C1D51458700DCEFBE /* SensorNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorNotifications.m; path = backbone/SensorNotifications.m; sourceTree = "<group>"; };
+		697D0FE61DA3DCDC00F6FF13 /* StepModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StepModule.h; path = backbone/StepModule.h; sourceTree = "<group>"; };
+		697D0FE71DA3DCDC00F6FF13 /* StepModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StepModule.m; path = backbone/StepModule.m; sourceTree = "<group>"; };
+		69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalNotificationManager.h; path = backbone/LocalNotificationManager.h; sourceTree = "<group>"; };
+		69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalNotificationManager.m; path = backbone/LocalNotificationManager.m; sourceTree = "<group>"; };
+		69ABF9E81DA3CA6F00D9B15A /* Constant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constant.h; path = backbone/Constant.h; sourceTree = "<group>"; };
 		6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -321,6 +328,11 @@
 				6602D6991D502EA800DF3369 /* ActivityModule.m */,
 				669B14E01D51066300DCEFBE /* PostureModule.h */,
 				669B14DE1D51053F00DCEFBE /* PostureModule.m */,
+				697D0FE61DA3DCDC00F6FF13 /* StepModule.h */,
+				697D0FE71DA3DCDC00F6FF13 /* StepModule.m */,
+				69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */,
+				69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */,
+				69ABF9E81DA3CA6F00D9B15A /* Constant.h */,
 				669B14D01D50626500DCEFBE /* ActivityService.h */,
 				669B14DC1D50630A00DCEFBE /* ActivityService.m */,
 			);
@@ -503,7 +515,8 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = FK7Z2C5Q2Q;
+						DevelopmentTeam = 538BXQKM9F;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -865,7 +878,9 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */,
+				697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */,
 				669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */,
+				69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */,
 				669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */,
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
 				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
@@ -903,6 +918,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 538BXQKM9F;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -929,6 +945,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 538BXQKM9F;
 				INFOPLIST_FILE = backboneTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -951,7 +968,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 36;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
@@ -988,7 +1005,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 36;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
