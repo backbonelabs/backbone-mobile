@@ -23,7 +23,7 @@ class Signup extends Component {
     }),
     accessToken: PropTypes.string,
     errorMessage: PropTypes.string,
-    isFetchingAccessToken: PropTypes.bool,
+    isSigningUp: PropTypes.bool,
   };
 
   constructor() {
@@ -62,7 +62,7 @@ class Signup extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.props.isFetchingAccessToken ?
+        {this.props.isSigningUp ?
           <Spinner />
           :
           <View style={styles.formContainer}>
@@ -96,7 +96,7 @@ class Signup extends Component {
             />
             <Button
               text="Sign Up"
-              disabled={this.props.isFetchingAccessToken}
+              disabled={this.props.isSigningUp}
               onPress={this.signup}
             />
           </View>

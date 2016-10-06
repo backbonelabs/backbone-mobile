@@ -1,6 +1,7 @@
 export default (state = {
   accessToken: null,
   isFetchingAccessToken: false,
+  isSigningUp: false,
   errorMessage: null,
   userId: null,
 }, action) => {
@@ -31,14 +32,14 @@ export default (state = {
     case 'SIGNUP__START': {
       return {
         ...state,
-        isFetchingAccessToken: true,
+        isSigningUp: true,
         errorMessage: null,
       };
     }
     case 'SIGNUP': {
       return {
         ...state,
-        isFetchingAccessToken: false,
+        isSigningUp: false,
         userId: action.payload.user._id,
         accessToken: action.payload.accessToken,
       };
@@ -46,7 +47,7 @@ export default (state = {
     case 'SIGNUP__ERROR': {
       return {
         ...state,
-        isFetchingAccessToken: false,
+        isSigningUp: false,
         errorMessage: action.payload.message,
       };
     }
