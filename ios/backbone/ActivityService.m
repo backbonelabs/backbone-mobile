@@ -11,7 +11,8 @@
 - (id)init {
   // Map activity names to classes
   self.activityClassMap = @{
-                            @"posture": @"PostureModule"
+                            @"posture": @"PostureModule",
+                            @"step": @"StepModule"
                             };
   return self;
 }
