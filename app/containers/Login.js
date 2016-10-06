@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
-  Text,
-  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
