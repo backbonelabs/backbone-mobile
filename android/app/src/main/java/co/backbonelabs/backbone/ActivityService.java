@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.util.Log;
 
@@ -10,7 +10,7 @@ import com.facebook.react.bridge.ReactMethod;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
-import co.backbonelabs.Backbone.util.JSError;
+import co.backbonelabs.backbone.util.JSError;
 
 public class ActivityService extends ReactContextBaseJavaModule {
     private static final String TAG = "ActivityService";
