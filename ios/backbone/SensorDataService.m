@@ -187,4 +187,25 @@
   [sensorDataService.activeSensors setSet:activeSensors];
 }
 
+/**
+ Removes all ActivityModule from the list of active activities and removes all data event handlers
+ from all active sensors
+ */
+- (void)unregisterAllActivities {
+  NSLog(@"unregisterAllActivities");
+  SensorDataService *sensorDataService = [SensorDataService getSensorDataService];
+  
+  NSMutableSet *activeActivityNames = [[NSMutableSet alloc] init];
+  
+  // Store the names into a separate set before we start manipulating the activity set
+  for (ActivityModule *activity in sensorDataService.activeActivities) {
+    [activeActivityNames addObject:activity.name];
+  }
+  
+  // Unregister active activities one by one
+  for (NSString *activityName in activeActivityNames) {
+    [sensorDataService unregisterActivityByName:activityName];
+  }
+}
+
 @end

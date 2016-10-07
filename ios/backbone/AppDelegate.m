@@ -58,15 +58,9 @@
   [PostureModule setShouldSendNotifications:true];
 }
 
-// Handler for when the app is about to be killed
+// Handler for application termination
 - (void)applicationWillTerminate:(UIApplication *)application {
-  NSLog(@"applicationWillTerminate");
   
-  // Cancel all prior notifications before termination
-  [application cancelAllLocalNotifications];
-  
-  // Gives the app additional time before termination
-  [NSThread sleepForTimeInterval:2];
 }
 
 @end
