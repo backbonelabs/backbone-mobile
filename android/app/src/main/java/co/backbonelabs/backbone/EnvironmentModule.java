@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;

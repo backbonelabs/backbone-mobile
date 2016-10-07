@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import co.backbonelabs.Backbone.util.JSError;
+import co.backbonelabs.backbone.util.JSError;
 
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static final String TAG = "DeviceManagementService";

@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone.util;
+package co.backbonelabs.backbone.util;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;

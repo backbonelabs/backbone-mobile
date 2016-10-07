@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone.util;
+package co.backbonelabs.backbone.util;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
