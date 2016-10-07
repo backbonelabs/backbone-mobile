@@ -13,13 +13,13 @@
   
   static dispatch_once_t bluetoothServiceInitialized;
   dispatch_once(&bluetoothServiceInitialized, ^{
-    _bluetoothService = [[self alloc] init];
+    _bluetoothService = [[self alloc] initService];
   });
   
   return _bluetoothService;
 }
 
-- (id)init {
+- (id)initService {
   self = [super init];
   
   stateMap = @{
@@ -43,6 +43,10 @@
                                              object:nil];
   
   return self;
+}
+
+- (id)init {
+  return [BluetoothService getBluetoothService];
 }
 
 RCT_EXPORT_MODULE();

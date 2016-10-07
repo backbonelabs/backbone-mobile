@@ -9,6 +9,7 @@
 @property (nonatomic, strong) CBCentralManager *centralManager;
 @property int state;
 + (BluetoothService *)getBluetoothService;
+- (id)initService;
 + (BOOL)getIsEnabled;
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central;
 - (void)emitCentralState;
