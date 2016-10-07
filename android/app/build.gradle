@@ -114,7 +114,7 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "API_SERVER_URL", '"http://192.168.1.155:3000"'
+            buildConfigField "String", "API_SERVER_URL", '"http://192.168.1.154:3000"'
             buildConfigField "String", "DEV_MODE", '"true"'
         }
         release {
