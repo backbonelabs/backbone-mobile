@@ -4,6 +4,7 @@ export default (state = {
   passwordResetSent: false,
   isFetchingAccessToken: false,
   inProgress: false,
+  isSigningUp: false,
   errorMessage: null,
   userId: null,
 }, action) => {
@@ -34,22 +35,21 @@ export default (state = {
     case 'SIGNUP__START': {
       return {
         ...state,
-        inProgress: true,
+        isSigningUp: true,
         errorMessage: null,
       };
     }
     case 'SIGNUP': {
       return {
         ...state,
-        inProgress: false,
-        errorMessage: null,
+        isSigningUp: false,
         confirmationSent: action.payload,
       };
     }
     case 'SIGNUP__ERROR': {
       return {
         ...state,
-        inProgress: false,
+        isSigningUp: false,
         errorMessage: action.payload.message,
       };
     }
