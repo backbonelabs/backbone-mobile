@@ -30,7 +30,6 @@ export default EStyleSheet.create({
   },
   footerText: {
     color: 'white',
-    fontSize: '0.75rem',
     textAlign: 'center',
   },
 });

@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
+import BodyText from '../components/BodyText';
+import SecondaryText from '../components/SecondaryText';
 import Button from '../components/Button';
 import logo from '../images/logo.png';
 import bg from '../images/bg.jpg';
@@ -103,10 +105,10 @@ class Home extends Component {
               SensitiveInfo.deleteItem('accessToken') : this.props.navigator.push(routes.signup)
           )}
         >
-          <Text style={styles.footerText}>
+          <SecondaryText style={styles._footerText}>
             {this.props.app.config.DEV_MODE && accessToken ?
               'Delete access token' : 'Don\'t have an account? Sign up'}
-          </Text>
+          </SecondaryText>
         </TouchableOpacity>
       </View>
     );
