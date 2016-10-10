@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -8,7 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import co.backbonelabs.Backbone.util.Constants;
+import co.backbonelabs.backbone.util.Constants;
 
 public class ForegroundService extends Service {
     private static String TAG = "ForegroundService";

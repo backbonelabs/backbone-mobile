@@ -22,8 +22,9 @@ class Home extends Component {
       accessToken: React.PropTypes.string,
       isFetchingAccessToken: React.PropTypes.bool,
     }),
-    generic: React.PropTypes.shape({
+    app: React.PropTypes.shape({
       bluetoothState: React.PropTypes.number,
+      config: React.PropTypes.object,
     }),
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.shape({
@@ -75,7 +76,7 @@ class Home extends Component {
         onPress={
           () => this.props.navigator.push(accessToken ? routes.device : routes.login)
         }
-        disabled={accessToken && this.props.generic.bluetoothState === bluetoothStates.OFF}
+        disabled={accessToken && this.props.app.bluetoothState === bluetoothStates.OFF}
         text={accessToken ? 'Connect' : 'Log In'}
       />
     );
@@ -97,12 +98,14 @@ class Home extends Component {
         </View>
         <TouchableOpacity
           style={styles.footer}
-          onPress={accessToken ?
-            SensitiveInfo.deleteItem('accessToken') : () => this.props.navigator.push(routes.signup)
-          }
+          onPress={() => (
+            this.props.app.config.DEV_MODE && accessToken ?
+              SensitiveInfo.deleteItem('accessToken') : this.props.navigator.push(routes.signup)
+          )}
         >
           <Text style={styles.footerText}>
-            {accessToken ? 'Delete access token' : 'Don\'t have an account? Sign up'}
+            {this.props.app.config.DEV_MODE && accessToken ?
+              'Delete access token' : 'Don\'t have an account? Sign up'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -111,8 +114,8 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth, generic } = state;
-  return { auth, generic };
+  const { auth, app } = state;
+  return { auth, app };
 };
 
 export default connect(mapStateToProps)(Home);
