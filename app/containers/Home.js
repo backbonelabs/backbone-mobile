@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   Image,
   TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
-import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Button from '../components/Button';
 import logo from '../images/logo.png';
