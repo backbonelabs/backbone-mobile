@@ -7,6 +7,7 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': [1, { extensions: ['.js'] }],
     'consistent-return': [0],
+    'generator-star-spacing': [0],
     'no-console': [1],
     'no-underscore-dangle': [0],
     'prefer-template': [1],
