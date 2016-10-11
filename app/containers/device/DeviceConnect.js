@@ -101,12 +101,12 @@ class DeviceConnect extends Component {
   render() {
     return (
       <View style={styles.container}>
-      { this.props.inProgress &&
-        <View style={styles.spinner}>
-          <Spinner />
-          <Text style={styles.spinnerText}>Connecting</Text>
-        </View>
-      }
+        { this.props.inProgress &&
+          <View style={styles.spinner}>
+            <Spinner />
+            <Text style={styles.spinnerText}>Connecting</Text>
+          </View>
+        }
       </View>
     );
   }
