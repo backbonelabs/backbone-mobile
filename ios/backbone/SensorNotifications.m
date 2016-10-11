@@ -6,4 +6,5 @@
 // in turn emit separate events to React Native components through RCTEventEmitter.
 // The naming convention is simply the sensor name followed by "Notification" in title case format.
 NSString * const AccelerometerNotification = @"AccelerometerNotification";
+NSString * const AccelerometerBMI160Notification = @"AccelerometerBMI160Notification";
 NSString * const GyroscopeNotification = @"GyroscopeNotification";

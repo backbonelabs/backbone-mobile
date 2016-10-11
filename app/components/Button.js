@@ -1,19 +1,23 @@
 import React from 'react';
 import {
   TouchableOpacity,
-  Text,
 } from 'react-native';
+import BodyText from './BodyText';
 import styles from '../styles/button';
 
 const Button = (props) => {
-  const buttonStyles = [styles.button];
+  const buttonStyles = [styles._button];
+  const textStyles = [styles._text];
   if (props.disabled) {
-    buttonStyles.push(styles.disabled);
+    buttonStyles.push(styles._disabledButton);
+    textStyles.push(styles._disabledText);
   }
   buttonStyles.push(props.style);
+  textStyles.push(props.textStyle);
+
   return (
     <TouchableOpacity style={buttonStyles} onPress={props.disabled ? undefined : props.onPress}>
-      <Text style={[styles.text, props.textStyle]}>{props.text}</Text>
+      <BodyText style={textStyles}>{props.text}</BodyText>
     </TouchableOpacity>
   );
 };

@@ -87,10 +87,10 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "co.backbonelabs.Backbone"
+        applicationId "co.backbonelabs.backbone"
         minSdkVersion 18 // Android 4.3, required for BLE
         targetSdkVersion 22
-        versionCode 11
+        versionCode 21
         versionName "1.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -114,10 +114,12 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "API_SERVER_URL", '"http://192.168.1.155:3000"'
+            buildConfigField "String", "API_SERVER_URL", '"http://192.168.1.154:3000"'
+            buildConfigField "String", "DEV_MODE", '"true"'
         }
         release {
             buildConfigField "String", "API_SERVER_URL", '"https://api.gobackbone.com"'
+            buildConfigField "String", "DEV_MODE", '"false"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release

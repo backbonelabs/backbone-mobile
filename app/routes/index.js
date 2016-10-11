@@ -12,6 +12,7 @@ import tutorial from './tutorial';
 import profile from './profile';
 import settings from './settings';
 import errors from './errors';
+import reset from './reset';
 
 export default {
   activityDashboard,
@@ -28,4 +29,5 @@ export default {
   profile,
   settings,
   errors,
+  reset,
 };

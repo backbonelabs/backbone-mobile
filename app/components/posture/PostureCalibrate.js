@@ -77,11 +77,11 @@ export default class PostureCalibrate extends Component {
       <View style={styles.container}>
         <View style={styles.animationContainer}>
           <View style={styles.calibrationImage}>
-          { this.state.isCalibrating &&
-            <Text style={styles.calibrationCountdown}>
-              {this.state.count}
-            </Text>
-          }
+            { this.state.isCalibrating &&
+              <Text style={styles.calibrationCountdown}>
+                {this.state.count}
+              </Text>
+            }
           </View>
           <Animated.View style={this.getScanAnimationStyle()} />
         </View>

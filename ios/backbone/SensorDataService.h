@@ -10,4 +10,5 @@
 - (id)initWithDevice:(MBLMetaWear *)device;
 - (void)registerActivity:(ActivityModule *)activityModule;
 - (void)unregisterActivityByName:(NSString *)activityName;
+- (void)unregisterAllActivities;
 @end

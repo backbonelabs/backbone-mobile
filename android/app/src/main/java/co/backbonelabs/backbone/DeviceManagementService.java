@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -31,9 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import co.backbonelabs.Backbone.util.JSError;
+import co.backbonelabs.backbone.util.JSError;
 
-public class DeviceManagementService extends ReactContextBaseJavaModule {
+public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static final String TAG = "DeviceManagementService";
     public static MetaWearBoard mMWBoard;
     private boolean mScanning;
@@ -41,12 +42,12 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
     private ReactContext mReactContext;
     private BluetoothAdapter mBluetoothAdapter;
 
-    // Stops scanning after 5 seconds
-    private static final long SCAN_PERIOD = 5000;
-
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
+
+        // Listen to the Activity's lifecycle events
+        reactContext.addLifecycleEventListener(this);
     }
 
     @Override
@@ -104,6 +105,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
                                     }
                                 }
                             }
+                            // Close GATT client to release resources
+                            Log.d(TAG, "Closing GATT client");
+                            gatt.close();
                         }
                     };
 
@@ -249,5 +253,22 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
+    }
+
+    @Override
+    public void onHostResume() {
+        // Activity `onResume`
+    }
+
+    @Override
+    public void onHostPause() {
+        // Activity `onPause`
+        // Stop scanning regardless if a scan is in progress or not
+        stopScanForDevices();
+    }
+
+    @Override
+    public void onHostDestroy() {
+        // Activity `onDestroy`
     }
 }
