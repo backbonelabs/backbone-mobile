@@ -6,20 +6,21 @@ import styles from '../styles/text';
 
 const { PropTypes } = React;
 
-const Heading2Text = props => (
-  <Text style={[styles._heading2, props.style]}>{props.children}</Text>
+const HeadingText = props => (
+  <Text style={[styles[`_heading${props.size}`], props.style]}>{props.children}</Text>
 );
 
-Heading2Text.propTypes = {
+HeadingText.propTypes = {
   children: PropTypes.node,
   style: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.arrayOf(PropTypes.object),
   ]),
+  size: PropTypes.oneOf([1, 2, 3]).isRequired,
 };
 
-Heading2Text.defaultProps = {
+HeadingText.defaultProps = {
   style: {},
 };
 
-export default Heading2Text;
+export default HeadingText;
