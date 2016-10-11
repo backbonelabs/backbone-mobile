@@ -60,24 +60,23 @@ class Reset extends Component {
         { this.props.inProgress ?
           <Spinner />
           :
-          <View style={styles.formContainer}>
-            <Input
-              autoCapitalize="none"
-              placeholder="Email"
-              keyboardType="email-address"
-              onChangeText={text => this.setState({ email: text })}
-              onSubmitEditing={this.sendPasswordResetRequest}
-              autoCorrect={false}
-              autoFocus
-              returnKeyType="go"
-            />
-            <Button
-              style={{ marginTop: 5 }}
-              text="Reset Password"
-              onPress={this.sendPasswordResetRequest}
-            />
-          </View>
-
+            <View style={styles.formContainer}>
+              <Input
+                autoCapitalize="none"
+                placeholder="Email"
+                keyboardType="email-address"
+                onChangeText={text => this.setState({ email: text })}
+                onSubmitEditing={this.sendPasswordResetRequest}
+                autoCorrect={false}
+                autoFocus
+                returnKeyType="go"
+              />
+              <Button
+                style={{ marginTop: 5 }}
+                text="Reset Password"
+                onPress={this.sendPasswordResetRequest}
+              />
+            </View>
         }
       </View>
     );
