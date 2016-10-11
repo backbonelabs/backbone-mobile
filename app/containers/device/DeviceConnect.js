@@ -63,7 +63,7 @@ class DeviceConnect extends Component {
     }
   }
 
-  // Check whether there's currently a device assigned to _sharedDevice
+  // Check whether there's a previously saved device
   checkForDevice() {
     DeviceManagementService.checkForDevice((device) => {
       if (device) {
