@@ -3,23 +3,13 @@ import {
   Text,
 } from 'react-native';
 import styles from '../styles/text';
-
-const { PropTypes } = React;
+import reusableDefaults from './utils/reusableDefaults';
 
 const SecondaryText = props => (
   <Text style={[styles._secondary, props.style]}>{props.children}</Text>
 );
 
-SecondaryText.propTypes = {
-  children: PropTypes.node,
-  style: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object),
-  ]),
-};
-
-SecondaryText.defaultProps = {
-  style: {},
-};
+SecondaryText.propTypes = reusableDefaults.propTypes;
+SecondaryText.defaultProps = reusableDefaults.defaultProps;
 
 export default SecondaryText;
