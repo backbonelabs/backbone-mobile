@@ -136,21 +136,20 @@ class Settings extends Component {
                 onPress={this.update}
                 text="Save"
               />
-            </View>
-            <Button
-              disabled={this.state.isPristine}
-              onPress={this.update}
-              text="Save"
-            />
-            <TouchableHighlight
-              style={styles.forget}
-              onPress={() => {
-                this.props.dispatch(deviceActions.forget());
-              }}
-            >
-              <Text>Forget this device</Text>
-            </TouchableHighlight>
-          </ScrollView>
+              <Button
+                disabled={this.state.isPristine}
+                onPress={this.update}
+                text="Save"
+              />
+              <TouchableHighlight
+                style={styles.forget}
+                onPress={() => {
+                  this.props.dispatch(deviceActions.forget());
+                }}
+              >
+                <Text>Forget this device</Text>
+              </TouchableHighlight>
+            </ScrollView>
         }
       </View>
     );
