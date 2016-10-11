@@ -63,41 +63,41 @@ class Login extends Component {
         {this.props.isFetchingAccessToken ?
           <Spinner />
           :
-          <View style={styles.formContainer}>
-            <Input
-              handleRef={ref => (
-                this.emailField = ref
-              )}
-              value={this.state.email}
-              autoCapitalize="none"
-              placeholder="Email"
-              keyboardType="email-address"
-              onChangeText={text => this.setState({ email: text })}
-              onSubmitEditing={() => this.passwordField.focus()}
-              autoCorrect={false}
-              autoFocus
-              returnKeyType="next"
-            />
-            <Input
-              handleRef={ref => (
-                this.passwordField = ref
-              )}
-              value={this.state.password}
-              autoCapitalize="none"
-              placeholder="Password"
-              keyboardType="default"
-              onChangeText={text => this.setState({ password: text })}
-              onSubmitEditing={this.login}
-              autoCorrect={false}
-              secureTextEntry
-              returnKeyType="go"
-            />
-            <Button
-              text="Log in"
-              disabled={this.props.isFetchingAccessToken}
-              onPress={this.login}
-            />
-          </View>
+            <View style={styles.formContainer}>
+              <Input
+                handleRef={ref => (
+                  this.emailField = ref
+                )}
+                value={this.state.email}
+                autoCapitalize="none"
+                placeholder="Email"
+                keyboardType="email-address"
+                onChangeText={text => this.setState({ email: text })}
+                onSubmitEditing={() => this.passwordField.focus()}
+                autoCorrect={false}
+                autoFocus
+                returnKeyType="next"
+              />
+              <Input
+                handleRef={ref => (
+                  this.passwordField = ref
+                )}
+                value={this.state.password}
+                autoCapitalize="none"
+                placeholder="Password"
+                keyboardType="default"
+                onChangeText={text => this.setState({ password: text })}
+                onSubmitEditing={this.login}
+                autoCorrect={false}
+                secureTextEntry
+                returnKeyType="go"
+              />
+              <Button
+                text="Log in"
+                disabled={this.props.isFetchingAccessToken}
+                onPress={this.login}
+              />
+            </View>
         }
       </View>
     );
