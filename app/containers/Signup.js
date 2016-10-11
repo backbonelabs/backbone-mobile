@@ -16,8 +16,8 @@ class Signup extends Component {
     errorMessage: React.PropTypes.string,
     dispatch: React.PropTypes.func,
     confirmationSent: React.PropTypes.bool,
-    isSigningUp: React.PropTypes.bool,
     navigator: React.PropTypes.object,
+    isSigningUp: React.PropTypes.bool,
   };
 
   constructor() {
