@@ -5,9 +5,6 @@ export default EStyleSheet.create({
     flex: 1,
     marginTop: '$totalNavHeight',
   },
-  progress: {
-    flex: 1,
-  },
   deviceName: {
     color: 'white',
     fontSize: '1.25rem',

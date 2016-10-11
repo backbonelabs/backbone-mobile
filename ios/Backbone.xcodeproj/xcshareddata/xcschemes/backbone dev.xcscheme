@@ -91,6 +91,11 @@
             value = "http://192.168.128.103:3000"
             isEnabled = "YES">
          </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DEV_MODE"
+            value = "true"
+            isEnabled = "YES">
+         </EnvironmentVariable>
       </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>

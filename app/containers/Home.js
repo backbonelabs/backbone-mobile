@@ -14,11 +14,18 @@ import styles from '../styles/home';
 import routes from '../routes';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
+import constants from '../utils/constants';
 
 class Home extends Component {
   static propTypes = {
-    accessToken: React.PropTypes.string,
-    isFetchingAccessToken: React.PropTypes.bool,
+    auth: React.PropTypes.shape({
+      accessToken: React.PropTypes.string,
+      isFetchingAccessToken: React.PropTypes.bool,
+    }),
+    app: React.PropTypes.shape({
+      bluetoothState: React.PropTypes.number,
+      config: React.PropTypes.object,
+    }),
     dispatch: React.PropTypes.func,
     navigator: React.PropTypes.shape({
       push: React.PropTypes.func,
@@ -47,34 +54,36 @@ class Home extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isFetchingAccessToken && !nextProps.isFetchingAccessToken) {
+    if (this.props.auth.isFetchingAccessToken && !nextProps.auth.isFetchingAccessToken) {
       // Finished login attempt
-      if (nextProps.errorMessage) {
+      if (nextProps.auth.errorMessage) {
         // Access token is invalid
         // Delete from local device to prevent unnecessary API calls on subsequent app load
         SensitiveInfo.deleteItem('accessToken');
       } else {
         // Successful login, save new access token
-        SensitiveInfo.setItem('accessToken', nextProps.accessToken);
+        SensitiveInfo.setItem('accessToken', nextProps.auth.accessToken);
       }
     }
   }
 
   getMainBody() {
-    const { accessToken } = this.props;
+    const { accessToken } = this.props.auth;
+    const { bluetoothStates } = constants;
 
     return (
       <Button
         onPress={
           () => this.props.navigator.push(accessToken ? routes.device : routes.login)
         }
+        disabled={accessToken && this.props.app.bluetoothState === bluetoothStates.OFF}
         text={accessToken ? 'Connect' : 'Log In'}
       />
     );
   }
 
   render() {
-    const { accessToken } = this.props;
+    const { accessToken, isFetchingAccessToken } = this.props.auth;
 
     return (
       <View style={styles.container}>
@@ -83,18 +92,20 @@ class Home extends Component {
           <Image style={styles.logo} source={logo} />
         </View>
         <View style={styles.body}>
-          {this.state.isInitializing || this.props.isFetchingAccessToken ?
+          {this.state.isInitializing || isFetchingAccessToken ?
             <Spinner /> : this.getMainBody()
           }
         </View>
         <TouchableOpacity
           style={styles.footer}
-          onPress={accessToken ?
-            SensitiveInfo.deleteItem('accessToken') : () => this.props.navigator.push(routes.signup)
-          }
+          onPress={() => (
+            this.props.app.config.DEV_MODE && accessToken ?
+              SensitiveInfo.deleteItem('accessToken') : this.props.navigator.push(routes.signup)
+          )}
         >
           <Text style={styles.footerText}>
-            {accessToken ? 'Delete access token' : 'Don\'t have an account? Sign up'}
+            {this.props.app.config.DEV_MODE && accessToken ?
+              'Delete access token' : 'Don\'t have an account? Sign up'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -103,8 +114,8 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth } = state;
-  return auth;
+  const { auth, app } = state;
+  return { auth, app };
 };
 
 export default connect(mapStateToProps)(Home);

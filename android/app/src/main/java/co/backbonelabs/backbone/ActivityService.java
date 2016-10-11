@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.util.Log;
 
@@ -10,7 +10,7 @@ import com.facebook.react.bridge.ReactMethod;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
-import co.backbonelabs.Backbone.util.JSError;
+import co.backbonelabs.backbone.util.JSError;
 
 public class ActivityService extends ReactContextBaseJavaModule {
     private static final String TAG = "ActivityService";
@@ -64,13 +64,15 @@ public class ActivityService extends ReactContextBaseJavaModule {
     /**
      * React Native components will call this when they need to disable a particular activity module.
      * @param activityName Name of the activity
+     * @param callback Callback that will be invoked after activity is disabled
      */
     @ReactMethod
-    public void disableActivity(String activityName) {
+    public void disableActivity(String activityName, Callback callback) {
         Log.d(TAG, "disableActivity");
         if (activityClassMap.containsKey(activityName)) {
             SensorDataService sensorDataService = SensorDataService.getInstance();
             sensorDataService.unregisterActivity(activityName);
         }
+        callback.invoke();
     }
 }

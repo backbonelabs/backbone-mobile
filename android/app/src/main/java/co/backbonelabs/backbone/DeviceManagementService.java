@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -31,7 +32,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class DeviceManagementService extends ReactContextBaseJavaModule {
+import co.backbonelabs.backbone.util.JSError;
+
+public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static final String TAG = "DeviceManagementService";
     public static MetaWearBoard mMWBoard;
     private boolean mScanning;
@@ -39,12 +42,12 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
     private ReactContext mReactContext;
     private BluetoothAdapter mBluetoothAdapter;
 
-    // Stops scanning after 5 seconds
-    private static final long SCAN_PERIOD = 5000;
-
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
+
+        // Listen to the Activity's lifecycle events
+        reactContext.addLifecycleEventListener(this);
     }
 
     @Override
@@ -102,6 +105,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
                                     }
                                 }
                             }
+                            // Close GATT client to release resources
+                            Log.d(TAG, "Closing GATT client");
+                            gatt.close();
                         }
                     };
 
@@ -144,39 +150,38 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
     public void scanForDevices(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
         if (mScanning) {
-            callback.invoke("A scan has already been initiated");
+            callback.invoke(JSError.make("A scan has already been initiated"));
         } else if (!bluetoothService.getIsEnabled()) {
-            callback.invoke("Bluetooth is not enabled");
+            callback.invoke(JSError.make("Bluetooth is not enabled"));
         } else {
-            mBluetoothAdapter = bluetoothService.getAdapter();
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "Stopping scan");
-                    mScanning = false;
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                }
-            }, SCAN_PERIOD);
-
             mScanning = true;
             deviceCollection = new HashMap<String, BluetoothDevice>();
             Log.d(TAG, "Starting scan");
             UUID[] serviceUuids = new UUID[] {
                     MetaWearBoard.METAWEAR_SERVICE_UUID,
             };
+            mBluetoothAdapter = bluetoothService.getAdapter();
             mBluetoothAdapter.startLeScan(serviceUuids, mLeScanCallback);
             callback.invoke();
         }
     }
 
     @ReactMethod
+    public void stopScanForDevices() {
+        Log.d(TAG, "Stopping scan");
+        mScanning = false;
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+        mBluetoothAdapter = bluetoothService.getAdapter();
+        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+    }
+
+    @ReactMethod
     public void selectDevice(String macAddress, Callback callback) {
         Log.d(TAG, "selectDevice " + macAddress);
+        stopScanForDevices();
         BluetoothDevice device = deviceCollection.get(macAddress);
         if (device == null) {
-            WritableMap error = Arguments.createMap();
-            error.putString("message", "Device not in range");
-            callback.invoke(error);
+            callback.invoke(JSError.make("Device not in range"));
         } else {
             mMWBoard = MainActivity.metaWearServiceBinder.getMetaWearBoard(device);
             callback.invoke();
@@ -232,9 +237,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
         if (mMWBoard == null) {
             callback.invoke();
         } else {
-            WritableMap error = Arguments.createMap();
-            error.putString("message", "Failed to forget device");
-            callback.invoke(error);
+            callback.invoke(JSError.make("Failed to forget device"));
         }
     }
 
@@ -250,5 +253,22 @@ public class DeviceManagementService extends ReactContextBaseJavaModule {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
+    }
+
+    @Override
+    public void onHostResume() {
+        // Activity `onResume`
+    }
+
+    @Override
+    public void onHostPause() {
+        // Activity `onPause`
+        // Stop scanning regardless if a scan is in progress or not
+        stopScanForDevices();
+    }
+
+    @Override
+    public void onHostDestroy() {
+        // Activity `onDestroy`
     }
 }

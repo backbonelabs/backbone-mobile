@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.app.Activity;
 import android.app.Application;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import co.backbonelabs.Backbone.util.Constants;
+import co.backbonelabs.backbone.util.Constants;
 
 public class SensorDataService {
     public static final String INTENT_EXTRA_NAME = "co.backbonelabs.Backbone.sensorData";
@@ -88,10 +88,18 @@ public class SensorDataService {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
+                // App is terminated, perform cleanup tasks
                 Log.d(TAG, "onActivityDestroyed");
+
+                // Stop the foreground service
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
                 stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
                 activity.startService(stopIntent);
+
+                // Stop active sensors
+                if (!activeSensors.isEmpty()) {
+                    stopAllSensors();
+                }
             }
         });
     }
@@ -203,6 +211,11 @@ public class SensorDataService {
     private void toggleSensor(String sensor, boolean enable) {
         Log.d(TAG, "toggleSensor " + sensor + " " + enable);
         try {
+            if (!device.isConnected()) {
+                // Device is not connected, do not attempt to toggle sensor
+                throw new Exception("Device is not connected");
+            }
+
             switch (sensor) {
                 case Constants.SENSOR.ACCELEROMETER:
                     Accelerometer accelerometer = device.getModule(Accelerometer.class);
@@ -213,7 +226,8 @@ public class SensorDataService {
                     }
                     break;
             }
-        } catch (UnsupportedModuleException e) {
+        } catch (Exception e) {
+            // Swallow exceptions to prevent app from crashing
             Log.e(TAG, "Error toggling " + sensor + " sensor", e);
         }
     }

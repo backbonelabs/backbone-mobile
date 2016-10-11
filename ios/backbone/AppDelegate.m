@@ -16,6 +16,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Cancel all prior notifications
+  [application cancelAllLocalNotifications];
+  
   // Register notification types
   UIUserNotificationType types = (UIUserNotificationType) (UIUserNotificationTypeSound | UIUserNotificationTypeAlert);
   UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types
@@ -53,6 +56,11 @@
   NSLog(@"applicationDidEnterBackground");
   // Allow posture module to send local notifications if the app switches to the background
   [PostureModule setShouldSendNotifications:true];
+}
+
+// Handler for application termination
+- (void)applicationWillTerminate:(UIApplication *)application {
+  
 }
 
 @end

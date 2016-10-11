@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -14,10 +14,14 @@ import com.mbientlab.metawear.MetaWearBleService;
 public class MainActivity extends ReactActivity implements ServiceConnection {
     public static MetaWearBleService.LocalBinder metaWearServiceBinder;
     public static Activity currentActivity;
+    private NotificationService notificationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set up NotificationService
+        notificationService = new NotificationService(getApplicationContext());
 
         // Bind the service when the activity is created
         getApplicationContext().bindService(new Intent(this, MetaWearBleService.class),
@@ -40,7 +44,10 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     public void onDestroy() {
         super.onDestroy();
 
-        DeviceManagementService.mMWBoard.disconnect();
+        // Disconnect from device
+        if (DeviceManagementService.mMWBoard != null) {
+            DeviceManagementService.mMWBoard.disconnect();
+        }
 
         // Unbind the service when the activity is destroyed
         getApplicationContext().unbindService(this);
