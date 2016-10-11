@@ -29,6 +29,32 @@ const signupError = error => ({
   error: true,
 });
 
+const checkConfirmationStart = () => ({ type: 'CHECK_CONFIRMATION__START' });
+
+const checkConfirmation = payload => ({
+  type: 'CHECK_CONFIRMATION',
+  payload,
+});
+
+const checkConfirmationError = error => ({
+  type: 'CHECK_CONFIRMATION__ERROR',
+  payload: error,
+  error: true,
+});
+
+const passwordResetStart = () => ({ type: 'PASSWORD_RESET__START' });
+
+const passwordReset = payload => ({
+  type: 'PASSWORD_RESET',
+  payload,
+});
+
+const passwordResetError = error => ({
+  type: 'PASSWORD_RESET__ERROR',
+  payload: error,
+  error: true,
+});
+
 export default {
   login(user) {
     return (dispatch) => {
@@ -67,21 +93,68 @@ export default {
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
       })
-        .then(response => response.json()
-          .then((body) => {
-            if (body.error) {
-              // Error received from API server
-              dispatch(signupError(
-                new Error(body.error)
+        .then((response) => {
+          if (response.ok) {
+            dispatch(signup(response.ok));
+          } else {
+            return response.json()
+              .then(body => (
+                // Error received from API server
+                dispatch(signupError(
+                  new Error(body.error)
+                ))
               ));
-            } else {
-              dispatch(signup(body));
-            }
-          })
-        )
+          }
+        })
         .catch(() => (
           // Network error
           dispatch(signupError(
+            new Error('We are encountering server issues. Please try again later.')
+          ))
+        ));
+    };
+  },
+
+  reset(user) {
+    return (dispatch) => {
+      dispatch(passwordResetStart());
+
+      return Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/auth/reset`,
+        body: JSON.stringify(user),
+      })
+        .then((response) => {
+          if (response.ok) {
+            dispatch(passwordReset(response.ok));
+          } else {
+            return response.json()
+              .then(body => (
+                dispatch(passwordResetError(
+                  new Error(body.error)
+                ))
+              ));
+          }
+        })
+        .catch(() => (
+          // Network error
+          dispatch(passwordResetError(
+            new Error('We are encountering server issues. Please try again later.')
+          ))
+        ));
+    };
+  },
+
+  checkConfirmation(email) {
+    return (dispatch) => {
+      dispatch(checkConfirmationStart());
+
+      return Fetcher.get({
+        url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
+      })
+        .then(response => response.json())
+          .then(body => !body.error && dispatch(checkConfirmation(body)))
+        .catch(() => (
+          dispatch(checkConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));

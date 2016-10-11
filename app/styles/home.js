@@ -15,6 +15,7 @@ export default EStyleSheet.create({
   },
   body: {
     flex: 0.11,
+    alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
   },
@@ -30,7 +31,6 @@ export default EStyleSheet.create({
   },
   footerText: {
     color: 'white',
-    fontSize: '0.75rem',
     textAlign: 'center',
   },
 });

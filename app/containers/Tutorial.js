@@ -102,7 +102,7 @@ export default class Tutorial extends Component {
               />
             </TouchableOpacity>
             :
-            <View style={styles.previousStepButton} />
+              <View style={styles.previousStepButton} />
           }
           { this.displayStepIndicators(this.state.step) }
           { this.state.step < this.props.currentRoute.tutorialSteps.length - 1 ?
@@ -114,7 +114,7 @@ export default class Tutorial extends Component {
               />
             </TouchableOpacity>
             :
-            <View style={styles.nextStepButton} />
+              <View style={styles.nextStepButton} />
           }
         </View>
       </View>

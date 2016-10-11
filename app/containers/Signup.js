@@ -23,7 +23,8 @@ class Signup extends Component {
     }),
     accessToken: PropTypes.string,
     errorMessage: PropTypes.string,
-    isSigningUp: PropTypes.bool,
+    inProgress: PropTypes.bool,
+    confirmationSent: React.PropTypes.bool,
   };
 
   constructor() {
@@ -62,58 +63,58 @@ class Signup extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.props.isSigningUp ?
+        {this.props.inProgress ?
           <Spinner />
           :
-          <View style={styles.formContainer}>
-            <Input
-              handleRef={ref => (
-                this.emailField = ref
-              )}
-              value={this.state.email}
-              autoCapitalize="none"
-              placeholder="Email"
-              keyboardType="email-address"
-              onChangeText={text => this.setState({ email: text })}
-              onSubmitEditing={() => this.passwordField.focus()}
-              autoCorrect={false}
-              autoFocus
-              returnKeyType="next"
-            />
-            <Input
-              handleRef={ref => (
-                this.passwordField = ref
-              )}
-              value={this.state.password}
-              autoCapitalize="none"
-              placeholder="Password"
-              keyboardType="default"
-              onChangeText={text => this.setState({ password: text })}
-              onSubmitEditing={() => this.verifyPasswordField.focus()}
-              autoCorrect={false}
-              secureTextEntry
-              returnKeyType="next"
-            />
-            <Input
-              handleRef={ref => (
-                this.verifyPasswordField = ref
-              )}
-              value={this.state.verifyPassword}
-              autoCapitalize="none"
-              placeholder="Verify Password"
-              keyboardType="default"
-              onChangeText={text => this.setState({ verifyPassword: text })}
-              onSubmitEditing={this.signup}
-              autoCorrect={false}
-              secureTextEntry
-              returnKeyType="go"
-            />
-            <Button
-              text="Sign Up"
-              disabled={this.props.isSigningUp}
-              onPress={this.signup}
-            />
-          </View>
+            <View style={styles.formContainer}>
+              <Input
+                handleRef={ref => (
+                  this.emailField = ref
+                )}
+                value={this.state.email}
+                autoCapitalize="none"
+                placeholder="Email"
+                keyboardType="email-address"
+                onChangeText={text => this.setState({ email: text })}
+                onSubmitEditing={() => this.passwordField.focus()}
+                autoCorrect={false}
+                autoFocus
+                returnKeyType="next"
+              />
+              <Input
+                handleRef={ref => (
+                  this.passwordField = ref
+                )}
+                value={this.state.password}
+                autoCapitalize="none"
+                placeholder="Password"
+                keyboardType="default"
+                onChangeText={text => this.setState({ password: text })}
+                onSubmitEditing={() => this.verifyPasswordField.focus()}
+                autoCorrect={false}
+                secureTextEntry
+                returnKeyType="next"
+              />
+              <Input
+                handleRef={ref => (
+                  this.verifyPasswordField = ref
+                )}
+                value={this.state.verifyPassword}
+                autoCapitalize="none"
+                placeholder="Verify Password"
+                keyboardType="default"
+                onChangeText={text => this.setState({ verifyPassword: text })}
+                onSubmitEditing={this.signup}
+                autoCorrect={false}
+                secureTextEntry
+                returnKeyType="go"
+              />
+              <Button
+                text="Sign Up"
+                disabled={this.props.inProgress}
+                onPress={this.signup}
+              />
+            </View>
         }
       </View>
     );

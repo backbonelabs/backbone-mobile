@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>39</string>
+	<string>41</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -51,6 +51,8 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>FontAwesome.ttf</string>
+		<string>Lato.ttf</string>
+		<string>Lato-Bold.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

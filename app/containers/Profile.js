@@ -137,49 +137,49 @@ class Profile extends Component {
         {this.props.isFetching || this.props.isUpdating ?
           <Spinner />
           :
-          <ScrollView style={styles.innerContainer}>
-            <Text style={{ textAlign: 'center' }}>
-              { !this.props.user.isConfirmed && 'Unconfirmed Email' }
-            </Text>
-            <Input
-              value={this.state.firstName}
-              placeholder="First name*"
-              autoCorrect={false}
-              onChangeText={text => this.updateField('firstName', text)}
-            />
-            <Input
-              value={this.state.lastName}
-              placeholder="Last name*"
-              autoCorrect={false}
-              onChangeText={text => this.updateField('lastName', text)}
-            />
-            <Input
-              value={this.state.email}
-              placeholder="Email"
-              autoCorrect={false}
-              autoCapitalize="none"
-              onChangeText={text => this.updateField('email', text)}
-            />
-            <Input
-              value={this.state.password}
-              placeholder="Password"
-              onChangeText={text => this.updateField('password', text)}
-              autoCorrect={false}
-              secureTextEntry
-            />
-            <Input
-              value={this.state.verifyPassword}
-              placeholder="Verify password"
-              onChangeText={text => this.updateField('verifyPassword', text)}
-              autoCorrect={false}
-              secureTextEntry
-            />
-            <Button
-              disabled={this.state.isPristine || !this.isValid()}
-              onPress={this.update}
-              text="Save"
-            />
-          </ScrollView>
+            <ScrollView style={styles.innerContainer}>
+              <Text style={{ textAlign: 'center' }}>
+                { !this.props.user.isConfirmed && 'Unconfirmed Email' }
+              </Text>
+              <Input
+                value={this.state.firstName}
+                placeholder="First name*"
+                autoCorrect={false}
+                onChangeText={text => this.updateField('firstName', text)}
+              />
+              <Input
+                value={this.state.lastName}
+                placeholder="Last name*"
+                autoCorrect={false}
+                onChangeText={text => this.updateField('lastName', text)}
+              />
+              <Input
+                value={this.state.email}
+                placeholder="Email"
+                autoCorrect={false}
+                autoCapitalize="none"
+                onChangeText={text => this.updateField('email', text)}
+              />
+              <Input
+                value={this.state.password}
+                placeholder="Password"
+                onChangeText={text => this.updateField('password', text)}
+                autoCorrect={false}
+                secureTextEntry
+              />
+              <Input
+                value={this.state.verifyPassword}
+                placeholder="Verify password"
+                onChangeText={text => this.updateField('verifyPassword', text)}
+                autoCorrect={false}
+                secureTextEntry
+              />
+              <Button
+                disabled={this.state.isPristine || !this.isValid()}
+                onPress={this.update}
+                text="Save"
+              />
+            </ScrollView>
         }
       </View>
     );
