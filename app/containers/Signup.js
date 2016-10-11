@@ -24,7 +24,6 @@ class Signup extends Component {
     accessToken: PropTypes.string,
     errorMessage: PropTypes.string,
     inProgress: PropTypes.bool,
-    confirmationSent: React.PropTypes.bool,
   };
 
   constructor() {
@@ -90,7 +89,7 @@ class Signup extends Component {
                 placeholder="Password"
                 keyboardType="default"
                 onChangeText={text => this.setState({ password: text })}
-                onSubmitEditing={() => this.signup}
+                onSubmitEditing={() => this.signup()}
                 autoCorrect={false}
                 secureTextEntry
                 returnKeyType="go"

@@ -1,6 +1,5 @@
 export default (state = {
   accessToken: null,
-  confirmationSent: false,
   passwordResetSent: false,
   inProgress: false,
   errorMessage: null,
@@ -43,7 +42,6 @@ export default (state = {
         inProgress: false,
         userId: action.payload.user._id,
         accessToken: action.payload.accessToken,
-        confirmationSent: action.payload,
       };
     }
     case 'SIGNUP__ERROR': {
