@@ -1,4 +1,4 @@
-package co.backbonelabs.Backbone;
+package co.backbonelabs.backbone;
 
 import android.app.Activity;
 import android.app.Application;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import co.backbonelabs.Backbone.util.Constants;
+import co.backbonelabs.backbone.util.Constants;
 
 public class SensorDataService {
     public static final String INTENT_EXTRA_NAME = "co.backbonelabs.Backbone.sensorData";

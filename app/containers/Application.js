@@ -16,6 +16,7 @@ import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { clone } from 'lodash';
+import appActions from '../actions/app';
 import Menu from '../components/Menu';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -23,7 +24,10 @@ import constants from '../utils/constants';
 
 const { bluetoothStates } = constants;
 
-const { BluetoothService: Bluetooth } = NativeModules;
+const {
+  BluetoothService: Bluetooth,
+  Environment,
+} = NativeModules;
 
 const BluetoothService = new NativeEventEmitter(Bluetooth);
 
@@ -91,6 +95,8 @@ class Application extends Component {
   }
 
   componentWillMount() {
+    this.props.dispatch(appActions.setConfig(Environment));
+
     Bluetooth.getState((error, state) => {
       if (!error) {
         this.props.dispatch({
