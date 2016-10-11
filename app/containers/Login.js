@@ -19,7 +19,7 @@ class Login extends Component {
     accessToken: PropTypes.string,
     errorMessage: PropTypes.string,
     dispatch: PropTypes.func,
-    isFetchingAccessToken: PropTypes.bool,
+    inProgress: PropTypes.bool,
     navigator: PropTypes.object,
   };
 
@@ -62,7 +62,7 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.props.isFetchingAccessToken ?
+        {this.props.inProgress ?
           <Spinner />
           :
             <View style={styles.formContainer}>
@@ -96,7 +96,7 @@ class Login extends Component {
               />
               <Button
                 text="Log in"
-                disabled={this.props.isFetchingAccessToken}
+                disabled={this.props.inProgress}
                 onPress={this.login}
               />
             </View>
