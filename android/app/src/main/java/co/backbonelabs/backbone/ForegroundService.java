@@ -29,7 +29,7 @@ public class ForegroundService extends Service {
             PendingIntent stopPendingIntent = pendingIntent.getService(this, 0, stopIntent, 0);
 
             Notification notification = new Notification.Builder(this)
-                    .setSmallIcon(android.R.drawable.star_on)
+                    .setSmallIcon(R.drawable.ic_stat_notify_logo)
                     .setContentTitle("Backbone")
                     .setTicker("Backbone monitoring in progress")
                     .setContentText("Monitoring in progress")
