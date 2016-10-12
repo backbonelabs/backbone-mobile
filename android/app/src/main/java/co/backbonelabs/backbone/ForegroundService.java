@@ -15,7 +15,7 @@ public class ForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
+        if (intent.getAction().equals(Constants.ACTIONS.STARTFOREGROUND_ACTION)) {
             Log.i(TAG, "Received start foreground intent");
             Intent notificationIntent = new Intent(this, MainActivity.class);
             notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -25,7 +25,7 @@ public class ForegroundService extends Service {
                     notificationIntent, 0);
 
             Intent stopIntent = new Intent(this, ForegroundService.class);
-            stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+            stopIntent.setAction(Constants.ACTIONS.STOPFOREGROUND_ACTION);
             PendingIntent stopPendingIntent = pendingIntent.getService(this, 0, stopIntent, 0);
 
             Notification notification = new Notification.Builder(this)
@@ -37,8 +37,8 @@ public class ForegroundService extends Service {
                     .setOngoing(true)
                     .addAction(android.R.drawable.ic_lock_power_off, "Stop", stopPendingIntent)
                     .build();
-            startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
-        } else if (intent.getAction().equals(Constants.ACTION.STOPFOREGROUND_ACTION)) {
+            startForeground(Constants.NOTIFICATION_IDS.FOREGROUND_SERVICE, notification);
+        } else if (intent.getAction().equals(Constants.ACTIONS.STOPFOREGROUND_ACTION)) {
             Log.i(TAG, "Received stop foreground intent");
             stopForeground(true);
             stopSelf();
