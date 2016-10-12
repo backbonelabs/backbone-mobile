@@ -3,6 +3,7 @@
 #import "SensorDataService.h"
 #import "RCTUtils.h"
 #import "RCTEventDispatcher.h"
+#import "Constants.h"
 
 @implementation ActivityService
 
@@ -46,11 +47,15 @@ RCT_EXPORT_METHOD(enableActivity:(NSString *)activityName callback:(RCTResponseS
 }
 
 // React Native components will call this when they need to disable a particular activity module.
-RCT_EXPORT_METHOD(disableActivity:(NSString *)activityName callback:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(disableActivity:(NSString *)activityName) {
   NSLog(@"disableActivity");
   SensorDataService *sensorDataService = [SensorDataService getSensorDataService];
   [sensorDataService unregisterActivityByName:activityName];
-  callback(@[[NSNull null]]);
+
+  // Emit event to RN
+  [self.bridge.eventDispatcher sendAppEventWithName:@EVENT_ACTIVITY_DISABLED body:@{
+                                                                              @"module": activityName
+                                                                              }];
 }
 
 @end

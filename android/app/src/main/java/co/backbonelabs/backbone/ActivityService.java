@@ -95,28 +95,23 @@ public class ActivityService extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * React Native components will call this when they need to disable a particular activity module.
+     * The ACTIVITY_DISABLED event will be emitted after the module is disabled, and it will include
+     * a module property whose value is the name of the activity.
+     * @param activityName Name of the activity
+     */
+    @ReactMethod
     public void disableActivity(String activityName) {
         Log.d(TAG, "disableActivity");
         if (activityClassMap.containsKey(activityName)) {
             SensorDataService sensorDataService = SensorDataService.getInstance();
             sensorDataService.unregisterActivity(activityName);
 
-            Log.d(TAG, "Emitting DisableActivity event");
+            // Emit event to RN
             WritableMap wm = Arguments.createMap();
             wm.putString("module", activityName);
             EventEmitter.send(mReactContext, Constants.EVENTS.ACTIVITY_DISABLED, wm);
         }
-    }
-
-    /**
-     * React Native components will call this when they need to disable a particular activity module.
-     * @param activityName Name of the activity
-     * @param callback Callback that will be invoked after activity is disabled
-     */
-    @ReactMethod
-    public void disableActivity(String activityName, Callback callback) {
-        Log.d(TAG, "disableActivity");
-        disableActivity(activityName);
-        callback.invoke();
     }
 }

@@ -19,4 +19,6 @@
 #define NOTIFICATION_PERIOD 5
 #define NOTIFICATION_CYCLE 60
 
+#define EVENT_ACTIVITY_DISABLED "ActivityDisabled"
+
 #endif /* Constants_h */
