@@ -9,6 +9,8 @@ Backbone mobile app for iOS and Android
 
 ## Development
 
+First, follow the setup instructions at https://facebook.github.io/react-native/docs/getting-started.html, and then read the additional notes below for each OS.
+
 ### iOS
 
 When developing on your local machine, be sure to use the `backbone dev` scheme in Xcode. You can select this scheme by going to Product > Scheme > backbone dev.
@@ -16,6 +18,8 @@ When developing on your local machine, be sure to use the `backbone dev` scheme 
 The dev scheme has environment variables specific to your local development environment. Be sure to review the environment variables in the scheme. Edit the scheme and in the Run step, and you will find the environment variables under the Arguments tab.
 
 ### Android
+
+Do not enable Instant Run in Android Studio. It will not work with the Gradle plugin. To make sure Instant Run is disabled, go to the Android Studio preferences, and navigate to Build, Execution, Deployment > Instant Run, and make sure the checkbox for the feature is unchecked.
 
 Add the following to `~/.gradle/gradle.properties`:
 
