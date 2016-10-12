@@ -12,8 +12,7 @@
 #import "SensorNotifications.h"
 #import "LocalNotificationManager.h"
 #import "RCTEventDispatcher.h"
-
-#import "Constant.h"
+#import "Constants.h"
 
 @implementation StepModule
 

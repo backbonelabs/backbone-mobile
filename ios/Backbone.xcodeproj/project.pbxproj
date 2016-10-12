@@ -185,7 +185,7 @@
 		697D0FE71DA3DCDC00F6FF13 /* StepModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StepModule.m; path = backbone/StepModule.m; sourceTree = "<group>"; };
 		69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalNotificationManager.h; path = backbone/LocalNotificationManager.h; sourceTree = "<group>"; };
 		69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalNotificationManager.m; path = backbone/LocalNotificationManager.m; sourceTree = "<group>"; };
-		69ABF9E81DA3CA6F00D9B15A /* Constant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constant.h; path = backbone/Constant.h; sourceTree = "<group>"; };
+		69ABF9E81DA3CA6F00D9B15A /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = backbone/Constants.h; sourceTree = "<group>"; };
 		6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -336,7 +336,7 @@
 				697D0FE71DA3DCDC00F6FF13 /* StepModule.m */,
 				69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */,
 				69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */,
-				69ABF9E81DA3CA6F00D9B15A /* Constant.h */,
+				69ABF9E81DA3CA6F00D9B15A /* Constants.h */,
 				669B14D01D50626500DCEFBE /* ActivityService.h */,
 				669B14DC1D50630A00DCEFBE /* ActivityService.m */,
 			);
