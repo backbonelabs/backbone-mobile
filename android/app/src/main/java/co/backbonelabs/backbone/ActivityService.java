@@ -10,13 +10,14 @@ import com.facebook.react.bridge.ReactMethod;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
+import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.JSError;
 
 public class ActivityService extends ReactContextBaseJavaModule {
     private static final String TAG = "ActivityService";
     private static HashMap<String, Class> activityClassMap = new HashMap<String, Class>() {
         {
-            put("posture", PostureModule.class);
+            put(Constants.MODULES.POSTURE, PostureModule.class);
         }
     };
     private ReactApplicationContext mReactContext;

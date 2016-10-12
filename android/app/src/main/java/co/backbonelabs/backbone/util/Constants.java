@@ -11,4 +11,7 @@ public class Constants {
     public interface NOTIFICATION_IDS {
         int FOREGROUND_SERVICE = 101;
     }
+    public interface MODULES {
+        String POSTURE = "posture";
+    }
 }
