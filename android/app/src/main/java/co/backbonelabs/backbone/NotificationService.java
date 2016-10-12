@@ -52,7 +52,7 @@ public class NotificationService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mContext)
-                .setSmallIcon(R.drawable.logo)
+                .setSmallIcon(R.drawable.ic_stat_notify_logo)
                 .setAutoCancel(true)
                 .setVibrate(vibrationPattern);
 
