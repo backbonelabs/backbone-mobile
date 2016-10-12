@@ -53,15 +53,13 @@ class PostureMonitor extends Component {
           const { settings } = this.props.user;
           // Attach listener
           this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
-            // Find absolute value of difference between controlDistance and currentDistance
-            const absoluteDistance = Math.abs(event.controlDistance - event.currentDistance);
+            const { currentDistance, slouchTime } = event;
 
-            // User is slouching if absoluteDistance is greater than or equal to threshold
-            const isSlouching = (absoluteDistance >= settings.postureThreshold);
+            // User is slouching if currentDistance is greater than or equal to threshold
+            const isSlouching = (currentDistance >= settings.postureThreshold);
 
             // Check if user slouch time is over slouch time threshold
-            const isOverSlouchTimeThreshold = (event.slouchTime >= settings.slouchTimeThreshold);
-
+            const isOverSlouchTimeThreshold = (slouchTime >= settings.slouchTimeThreshold);
             // If user is slouching and phone vibration is set to true, then vibrate phone
             if (isSlouching && settings.phoneVibration && isOverSlouchTimeThreshold) {
               /**

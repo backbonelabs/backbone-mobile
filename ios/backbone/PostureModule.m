@@ -69,9 +69,11 @@ static BOOL shouldSendNotifications;
     
     // Check if user has been slouching for longer than threshold
     if (self.slouchTime > self.slouchTimeThreshold) {
+      // Emit posture data event before time variables are cleared
+      [self emitPostureData];
       NSLog(@"BZZT!");
       MBLMetaWear *device = [DeviceManagementService getDevice];
-      [device.hapticBuzzer startHapticWithDutyCycleAsync:255 pulseWidth:500 completion:nil];
+      [device.hapticBuzzer startHapticWithDutyCycleAsync:248 pulseWidth:500 completion:nil];
       // Check if a notification should be posted
       if (shouldSendNotifications) {
         // Post local notification to phone
@@ -91,7 +93,7 @@ static BOOL shouldSendNotifications;
     self.time = 0;
     self.slouchTime = 0;
   }
-
+  
   [self emitPostureData];
 }
 
