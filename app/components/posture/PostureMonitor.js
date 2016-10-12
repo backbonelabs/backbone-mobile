@@ -34,16 +34,32 @@ class PostureMonitor extends Component {
       monitoring: null,
     };
     this.postureListener = null;
+    this.activityDisabledListener = null;
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
     this.disablePostureActivity = this.disablePostureActivity.bind(this);
   }
 
   componentWillMount() {
     this.enablePostureActivity();
+
+    // Register listener for when the posture activity is disabled
+    this.activityDisabledListener = NativeAppEventEmitter.addListener('ActivityDisabled', event => {
+      if (event.module === activityName) {
+        this.setState({ monitoring: false }, () => {
+          // Remove the posture event listener
+          if (this.postureListener && isFunction(this.postureListener.remove)) {
+            this.postureListener.remove();
+          }
+        });
+      }
+    });
   }
 
   componentWillUnmount() {
     this.disablePostureActivity();
+    if (this.activityDisabledListener && isFunction(this.activityDisabledListener.remove)) {
+      this.activityDisabledListener.remove();
+    }
   }
 
   enablePostureActivity() {
@@ -80,12 +96,7 @@ class PostureMonitor extends Component {
   }
 
   disablePostureActivity() {
-    // Disable activity, set monitoring to false, and remove listener
-    ActivityService.disableActivity(activityName, () => (
-      this.setState({
-        monitoring: false,
-      }, () => isFunction(this.postureListener.remove) && this.postureListener.remove())
-    ));
+    ActivityService.disableActivity(activityName);
   }
 
   render() {

@@ -1,13 +1,13 @@
 //
-//  Constant.h
+//  Constants.h
 //  Backbone
 //
 //  Created by Eko Mirhard on 10/1/16.
 //  Copyright © 2016 Backbone Labs, Inc. All rights reserved.
 //
 
-#ifndef Constant_h
-#define Constant_h
+#ifndef Constants_h
+#define Constants_h
 
 #define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
 #define TIME_STAMP [[NSDate date] timeIntervalSince1970]
@@ -19,4 +19,6 @@
 #define NOTIFICATION_PERIOD 5
 #define NOTIFICATION_CYCLE 60
 
-#endif /* Constant_h */
+#define EVENT_ACTIVITY_DISABLED "ActivityDisabled"
+
+#endif /* Constants_h */

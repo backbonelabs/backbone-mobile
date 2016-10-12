@@ -3,8 +3,7 @@
 #import "ActivityModule.h"
 #import "SensorNotifications.h"
 #import "LocalNotificationManager.h"
-
-#import "Constant.h"
+#import "Constants.h"
 
 /**
  SensorDataService manages which device sensors to listen to based on which ActivityModules

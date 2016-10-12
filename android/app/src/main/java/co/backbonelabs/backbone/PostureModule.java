@@ -28,8 +28,8 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
 
     public PostureModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        name = "posture";
-        sensor = Constants.SENSOR.ACCELEROMETER;
+        name = Constants.MODULES.POSTURE;
+        sensor = Constants.SENSORS.ACCELEROMETER;
         notificationName = "Accelerometer";
         calibrated = false;
         tilt = 0;

@@ -7,8 +7,7 @@
 //
 
 #import "LocalNotificationManager.h"
-
-#import "Constant.h"
+#import "Constants.h"
 
 @implementation LocalNotificationManager
 

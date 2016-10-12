@@ -1,14 +1,20 @@
 package co.backbonelabs.backbone.util;
 
 public class Constants {
-    public interface SENSOR {
-        public static String ACCELEROMETER = "ACCELEROMETER";
+    public interface SENSORS {
+        String ACCELEROMETER = "ACCELEROMETER";
     }
-    public interface ACTION {
-        public static String STARTFOREGROUND_ACTION = "co.backbonelabs.backbone.action.startForeground";
-        public static String STOPFOREGROUND_ACTION = "co.backbonelabs.backbone.action.stopForeground";
+    public interface ACTIONS {
+        String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.action.startPostureForegroundService";
+        String STOP_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.action.stopPostureForegroundService";
     }
-    public interface NOTIFICATION_ID {
-        public static int FOREGROUND_SERVICE = 101;
+    public interface NOTIFICATION_IDS {
+        int FOREGROUND_SERVICE = 101;
+    }
+    public interface MODULES {
+        String POSTURE = "posture";
+    }
+    public interface EVENTS {
+        String ACTIVITY_DISABLED = "ActivityDisabled";
     }
 }
