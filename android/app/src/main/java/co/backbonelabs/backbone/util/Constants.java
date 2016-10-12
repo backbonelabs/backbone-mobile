@@ -14,4 +14,7 @@ public class Constants {
     public interface MODULES {
         String POSTURE = "posture";
     }
+    public interface EVENTS {
+        String ACTIVITY_DISABLED = "ActivityDisabled";
+    }
 }

@@ -2,15 +2,18 @@ package co.backbonelabs.backbone;
 
 import android.util.Log;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.EventEmitter;
 import co.backbonelabs.backbone.util.JSError;
 
 /**
@@ -97,6 +100,11 @@ public class ActivityService extends ReactContextBaseJavaModule {
         if (activityClassMap.containsKey(activityName)) {
             SensorDataService sensorDataService = SensorDataService.getInstance();
             sensorDataService.unregisterActivity(activityName);
+
+            Log.d(TAG, "Emitting DisableActivity event");
+            WritableMap wm = Arguments.createMap();
+            wm.putString("module", activityName);
+            EventEmitter.send(mReactContext, Constants.EVENTS.ACTIVITY_DISABLED, wm);
         }
     }
 
