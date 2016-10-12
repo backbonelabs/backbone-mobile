@@ -26,7 +26,6 @@ static BOOL shouldSendNotifications;
   self.time = 0;
   self.slouchTime = 0;
   self.slouchTimeThreshold = 5;
-//  self.tiltThreshold = 10;
   return self;
 }
 
@@ -35,87 +34,44 @@ static BOOL shouldSendNotifications;
   NSLog(@"Start PostureModule notify");
   NSDictionary *data = notification.userInfo;
   [self calculatePostureMetrics:data];
-//  [self handleTilt];
   [self handleDistance];
 }
 
 - (void)calculatePostureMetrics:(NSDictionary *)data {
-//  double x = [[data objectForKey:@"x"] doubleValue];
   double y = [[data objectForKey:@"y"] doubleValue];
   double z = [[data objectForKey:@"z"] doubleValue];
-//  self.currentAngle = RADIANS_TO_DEGREES(atan2(x, z));
-  self.currentDistance = sqrt(pow(z, 2) + pow(y, 2));
   
   if (!self.calibrated) {
-    // set baseline metrics
-//    self.controlAngle = self.currentAngle;
-    self.controlDistance = self.currentDistance;
+    // Set baseline metrics
+    self.controlY = y;
+    self.controlZ = z;
     self.calibrated = true;
+  } else {
+    // Calculate difference between control and current y & z axes
+    // Use the Pythagorean Theorem to calculate current distance
+    self.currentDistance = sqrt(pow((self.controlZ - z), 2) + pow((self.controlY - y), 2));
+    NSLog(@"currentDistance %f", self.currentDistance);
+    [self handleDistance];
   }
-//  else {
-//    // calculate tilt
-//    // tilt will be positive if leaning forward, negative if leaning backward
-//    
-//    // check if current angle is in the upper or lower quadrants based on atan2
-//    if (self.currentAngle >= 0) {
-//      // current angle is in the upper quadrants
-//      if (self.currentAngle >= self.controlAngle) {
-//        // leaned back
-//        self.tilt = -(self.currentAngle - self.controlAngle);
-//      } else {
-//        // leaned forward
-//        self.tilt = self.controlAngle - self.currentAngle;
-//      }
-//    } else {
-//      // current angle is in the lower quadrants
-//      if (self.currentAngle >= (self.controlAngle - 180)) {
-//        // leaned forward between 90 and 180 degrees
-//        self.tilt = self.controlAngle + fabs(self.currentAngle);
-//      } else {
-//        // leaned backward between 90 and 180 degrees
-//        self.tilt = self.controlAngle - self.currentAngle - 360;
-//      }
-//    }
-//  }
 }
 
-//- (void)handleTilt {
-//  NSLog(@"Tilt is: %f", self.tilt);
-//  if (self.tilt > self.tiltThreshold) {
-//    MBLMetaWear *device = [DeviceManagementService getDevice];
-//    [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:5];
-//    
-//    if (shouldSendNotifications) {
-//      NSLog(@"Sending posture local notification");
-//      UILocalNotification *localNotif = [[UILocalNotification alloc] init];
-//      if (localNotif) {
-//        localNotif.alertBody = NSLocalizedString(@"Your posture is not optimal!", nil);
-//        localNotif.soundName = UILocalNotificationDefaultSoundName;
-//        localNotif.userInfo = @{
-//                                @"module": self.name
-//                                };
-//        
-//        [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
-//        
-//        // Disable additional notifications until the next time the app goes to the background
-//        shouldSendNotifications = false;
-//      }
-//    }
-//  }
-//  [self.bridge.eventDispatcher sendAppEventWithName:@"PostureTilt" body:@{@"tilt": [NSNumber numberWithDouble:self.tilt]}];
-//}
-
 - (void)handleDistance {
-  NSLog(@"Control distance: %f, current distance: %f, slouch time: %f", self.controlDistance, self.currentDistance, self.slouchTime);
-  // log distance if it exceeds the threshold
-  if (fabs(self.controlDistance - self.currentDistance) >= self.distanceThreshold) {
+  // Check whether distance exceeds the distance threshold
+  if (self.currentDistance >= self.distanceThreshold) {
+    NSLog(@"Slouching for... %f", self.slouchTime);
+    // Store timestamp of when slouching was first detected
     if (!self.time) {
       self.time = [[NSDate date] timeIntervalSince1970];
     } else {
+      // Calculate time elapsed since slouching was first detected
       self.slouchTime = [[NSDate date] timeIntervalSince1970] - self.time;
     }
     
+    // Check if user has been slouching for longer than threshold
     if (self.slouchTime > self.slouchTimeThreshold) {
+      NSLog(@"BZZT!");
+      MBLMetaWear *device = [DeviceManagementService getDevice];
+      [device.hapticBuzzer startHapticWithDutyCycleAsync:255 pulseWidth:500 completion:nil];
       // Check if a notification should be posted
       if (shouldSendNotifications) {
         // Post local notification to phone
@@ -125,13 +81,13 @@ static BOOL shouldSendNotifications;
           shouldSendNotifications = NO;
         }
       }
-
-      MBLMetaWear *device = [DeviceManagementService getDevice];
-      [device.hapticBuzzer startHapticWithDutyCycleAsync:255 pulseWidth:500 completion:nil];
+      
+      // Reset time variables, in order to calculate time again
       self.time = 0;
       self.slouchTime = 0;
     }
   } else {
+    // User stopped slouching, reset time variables
     self.time = 0;
     self.slouchTime = 0;
   }
@@ -142,7 +98,6 @@ static BOOL shouldSendNotifications;
 - (void)emitPostureData {
   [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
                                                                               @"currentDistance": [NSNumber numberWithDouble:self.currentDistance],
-                                                                              @"controlDistance": [NSNumber numberWithDouble:self.controlDistance],
                                                                               @"slouchTime": [NSNumber numberWithDouble: self.slouchTime]
                                                                               }];
 }
