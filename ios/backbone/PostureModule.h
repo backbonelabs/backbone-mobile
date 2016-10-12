@@ -2,7 +2,6 @@
 
 @interface PostureModule : ActivityModule
 @property BOOL calibrated;
-@property BOOL isIncrementing;
 @property double controlY;
 @property double controlZ;
 @property double currentDistance;

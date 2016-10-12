@@ -21,7 +21,6 @@ static BOOL shouldSendNotifications;
   self.notificationName = AccelerometerNotification;
   self.sensor = @"accelerometer";
   self.calibrated = false;
-  self.isIncrementing = false;
   self.distanceThreshold = 0.20;
   self.time = 0;
   self.slouchTime = 0;
