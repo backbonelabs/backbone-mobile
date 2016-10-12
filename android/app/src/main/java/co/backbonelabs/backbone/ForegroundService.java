@@ -15,8 +15,8 @@ public class ForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals(Constants.ACTIONS.STARTFOREGROUND_ACTION)) {
-            Log.i(TAG, "Received start foreground intent");
+        if (intent.getAction().equals(Constants.ACTIONS.START_POSTURE_FOREGROUND_SERVICE)) {
+            Log.i(TAG, "Received start posture foreground intent");
             Intent notificationIntent = new Intent(this, MainActivity.class);
             notificationIntent.setAction(Intent.ACTION_MAIN);
             notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -25,21 +25,21 @@ public class ForegroundService extends Service {
                     notificationIntent, 0);
 
             Intent stopIntent = new Intent(this, ForegroundService.class);
-            stopIntent.setAction(Constants.ACTIONS.STOPFOREGROUND_ACTION);
+            stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
             PendingIntent stopPendingIntent = pendingIntent.getService(this, 0, stopIntent, 0);
 
             Notification notification = new Notification.Builder(this)
                     .setSmallIcon(R.drawable.ic_stat_notify_logo)
                     .setContentTitle("Backbone")
-                    .setTicker("Backbone monitoring in progress")
-                    .setContentText("Monitoring in progress")
+                    .setTicker("Backbone posture monitoring in progress")
+                    .setContentText("Posture monitoring in progress")
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .addAction(android.R.drawable.ic_lock_power_off, "Stop", stopPendingIntent)
                     .build();
             startForeground(Constants.NOTIFICATION_IDS.FOREGROUND_SERVICE, notification);
-        } else if (intent.getAction().equals(Constants.ACTIONS.STOPFOREGROUND_ACTION)) {
-            Log.i(TAG, "Received stop foreground intent");
+        } else if (intent.getAction().equals(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE)) {
+            Log.i(TAG, "Received stop posture foreground intent");
             stopForeground(true);
             stopSelf();
         }

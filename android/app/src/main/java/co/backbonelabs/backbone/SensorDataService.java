@@ -61,7 +61,7 @@ public class SensorDataService {
                 Log.d(TAG, "onActivityResume");
                 // Stop foreground service
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
-                stopIntent.setAction(Constants.ACTIONS.STOPFOREGROUND_ACTION);
+                stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
                 activity.startService(stopIntent);
             }
 
@@ -71,7 +71,7 @@ public class SensorDataService {
                 if (!activeSensors.isEmpty()) {
                     // There are active sensors, start foreground service to continue listening
                     Intent startIntent = new Intent(activity, ForegroundService.class);
-                    startIntent.setAction(Constants.ACTIONS.STARTFOREGROUND_ACTION);
+                    startIntent.setAction(Constants.ACTIONS.START_POSTURE_FOREGROUND_SERVICE);
                     activity.startService(startIntent);
                 }
             }
@@ -93,7 +93,7 @@ public class SensorDataService {
 
                 // Stop the foreground service
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
-                stopIntent.setAction(Constants.ACTIONS.STOPFOREGROUND_ACTION);
+                stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
                 activity.startService(stopIntent);
 
                 // Stop active sensors
