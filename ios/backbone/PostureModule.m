@@ -4,8 +4,10 @@
 #import "SensorNotifications.h"
 #import "LocalNotificationManager.h"
 #import "RCTEventDispatcher.h"
-
 #import "Constant.h"
+
+#define RADIANS_TO_DEGREES(radians) ((radians) * (180.0 / M_PI))
+#define TILT_TO_AXIS(tilt) ((1.0 / 90.0) * (tilt))
 
 @implementation PostureModule
 
@@ -26,7 +28,6 @@ static BOOL shouldSendNotifications;
   self.time = 0;
   self.slouchTime = 0;
   self.slouchTimeThreshold = 5;
-//  self.tiltThreshold = 10;
   return self;
 }
 
@@ -35,86 +36,84 @@ static BOOL shouldSendNotifications;
   NSLog(@"Start PostureModule notify");
   NSDictionary *data = notification.userInfo;
   [self calculatePostureMetrics:data];
-//  [self handleTilt];
-  [self handleDistance];
 }
 
 - (void)calculatePostureMetrics:(NSDictionary *)data {
-//  double x = [[data objectForKey:@"x"] doubleValue];
+  double x = [[data objectForKey:@"x"] doubleValue];
   double y = [[data objectForKey:@"y"] doubleValue];
   double z = [[data objectForKey:@"z"] doubleValue];
-//  self.currentAngle = RADIANS_TO_DEGREES(atan2(x, z));
-  self.currentDistance = sqrt(pow(z, 2) + pow(y, 2));
-  
+
+  double currentAngleXY = RADIANS_TO_DEGREES(atan2(x, y));
+  double currentAngleXZ = RADIANS_TO_DEGREES(atan2(x, z));
+
   if (!self.calibrated) {
-    // set baseline metrics
-//    self.controlAngle = self.currentAngle;
-    self.controlDistance = self.currentDistance;
+    // Set static angles for XY & XZ axes
+    self.controlAngleXZ = currentAngleXZ;
+    self.controlAngleXY = currentAngleXY;
+    NSLog(@"CONTROL ANGLE XY %f & XZ %f", currentAngleXY, currentAngleXZ);
+
+    // Old method of setting static distance with Z & Y axes
+    self.controlDistanceOld = sqrt(pow(z, 2) + pow(y, 2));
+    NSLog(@"CONTROL DISTANCE OLD %f", self.controlDistanceOld);
+
     self.calibrated = true;
   }
-//  else {
-//    // calculate tilt
-//    // tilt will be positive if leaning forward, negative if leaning backward
-//    
-//    // check if current angle is in the upper or lower quadrants based on atan2
-//    if (self.currentAngle >= 0) {
-//      // current angle is in the upper quadrants
-//      if (self.currentAngle >= self.controlAngle) {
-//        // leaned back
-//        self.tilt = -(self.currentAngle - self.controlAngle);
-//      } else {
-//        // leaned forward
-//        self.tilt = self.controlAngle - self.currentAngle;
-//      }
-//    } else {
-//      // current angle is in the lower quadrants
-//      if (self.currentAngle >= (self.controlAngle - 180)) {
-//        // leaned forward between 90 and 180 degrees
-//        self.tilt = self.controlAngle + fabs(self.currentAngle);
-//      } else {
-//        // leaned backward between 90 and 180 degrees
-//        self.tilt = self.controlAngle - self.currentAngle - 360;
-//      }
-//    }
-//  }
+
+  // Set current angle difference for XY & XZ axes
+  self.differenceAngleXY = self.controlAngleXY - currentAngleXY;
+  self.differenceAngleXZ = self.controlAngleXZ - currentAngleXZ;
+
+  // Find distance using difference in static and current XY & XZ angles
+  self.currentDistance = sqrt(pow([self tiltToAxis:self.differenceAngleXZ], 2) + pow([self tiltToAxis:self.differenceAngleXY], 2));
+
+  // Old method of setting current distance with Z & Y axes
+  self.currentDistanceOld = sqrt(pow(z, 2) + pow(y, 2));
+  NSLog(@"CURRENT DISTANCE %f & DISTANCE OLD %f", self.currentDistance, fabs(self.controlDistanceOld - self.currentDistanceOld));
+
+//  NSLog(@"NEW DIFF %f", self.currentDistance);
+//  NSLog(@"OLD DIFF %f", fabs(self.controlDistanceOld - self.currentDistanceOld));
+
+  [self handleDistance];
 }
 
-//- (void)handleTilt {
-//  NSLog(@"Tilt is: %f", self.tilt);
-//  if (self.tilt > self.tiltThreshold) {
-//    MBLMetaWear *device = [DeviceManagementService getDevice];
-//    [device.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:5];
-//    
-//    if (shouldSendNotifications) {
-//      NSLog(@"Sending posture local notification");
-//      UILocalNotification *localNotif = [[UILocalNotification alloc] init];
-//      if (localNotif) {
-//        localNotif.alertBody = NSLocalizedString(@"Your posture is not optimal!", nil);
-//        localNotif.soundName = UILocalNotificationDefaultSoundName;
-//        localNotif.userInfo = @{
-//                                @"module": self.name
-//                                };
-//        
-//        [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
-//        
-//        // Disable additional notifications until the next time the app goes to the background
-//        shouldSendNotifications = false;
-//      }
-//    }
-//  }
-//  [self.bridge.eventDispatcher sendAppEventWithName:@"PostureTilt" body:@{@"tilt": [NSNumber numberWithDouble:self.tilt]}];
-//}
+/**
+ * Translate tilt (difference between control and current) into an
+ * axis value between 0 and 1. 0 = 0 degrees and 1 = 90 degrees.
+ */
+- (double)tiltToAxis:(double)tilt {
+  double axis;
+
+  // Tilt is in 3rd quadrant
+  if (tilt > 180) {
+    axis = TILT_TO_AXIS((tilt - 180));
+  }
+
+  // Tilt is in 2nd quadrant
+  else if (tilt > 90) {
+    axis = TILT_TO_AXIS((90 - fmod(tilt, 90)));
+  }
+
+  // Tilt is in 1st or 4th quadrant
+  else {
+    axis = TILT_TO_AXIS((fabs(tilt)));
+  }
+//  NSLog(@"CONTROL XY %f & XZ %f", self.controlAngleXY, self.controlAngleXZ);
+//  NSLog(@"DIFFERENCE XY %f & XZ %f", self.differenceAngleXY, self.differenceAngleXZ);
+//  NSLog(@"AXIS %f", axis);
+  return axis;
+}
 
 - (void)handleDistance {
-  NSLog(@"Control distance: %f, current distance: %f, slouch time: %f", self.controlDistance, self.currentDistance, self.slouchTime);
-  // log distance if it exceeds the threshold
-  if (fabs(self.controlDistance - self.currentDistance) >= self.distanceThreshold) {
+
+  // Log distance if it exceeds the threshold
+  if (self.currentDistance > self.distanceThreshold) {
     if (!self.time) {
       self.time = [[NSDate date] timeIntervalSince1970];
     } else {
       self.slouchTime = [[NSDate date] timeIntervalSince1970] - self.time;
+      NSLog(@"Slouch time %f", self.slouchTime);
     }
-    
+
     if (self.slouchTime > self.slouchTimeThreshold) {
       // Check if a notification should be posted
       if (shouldSendNotifications) {
@@ -125,7 +124,6 @@ static BOOL shouldSendNotifications;
           shouldSendNotifications = NO;
         }
       }
-
       MBLMetaWear *device = [DeviceManagementService getDevice];
       [device.hapticBuzzer startHapticWithDutyCycleAsync:255 pulseWidth:500 completion:nil];
       self.time = 0;
@@ -142,7 +140,6 @@ static BOOL shouldSendNotifications;
 - (void)emitPostureData {
   [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
                                                                               @"currentDistance": [NSNumber numberWithDouble:self.currentDistance],
-                                                                              @"controlDistance": [NSNumber numberWithDouble:self.controlDistance],
                                                                               @"slouchTime": [NSNumber numberWithDouble: self.slouchTime]
                                                                               }];
 }
