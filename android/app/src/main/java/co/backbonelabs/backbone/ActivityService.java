@@ -13,8 +13,13 @@ import java.util.HashMap;
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.JSError;
 
+/**
+ * Interface for enabling and disabling activities.
+ * This is a singleton. Use getInstance() to retrieve the singleton instance.
+ */
 public class ActivityService extends ReactContextBaseJavaModule {
     private static final String TAG = "ActivityService";
+    private static ActivityService instance = null;
     private static HashMap<String, Class> activityClassMap = new HashMap<String, Class>() {
         {
             put(Constants.MODULES.POSTURE, PostureModule.class);
@@ -22,7 +27,32 @@ public class ActivityService extends ReactContextBaseJavaModule {
     };
     private ReactApplicationContext mReactContext;
 
-    public ActivityService(ReactApplicationContext reactContext) {
+    /**
+     * Returns the singleton instance
+     * @return The singleton ActivityService instance
+     */
+    public static ActivityService getInstance() {
+        return instance;
+    }
+
+    /**
+     * Instantiates the singleton instance if one doesn't already exist
+     * and returns the singleton instance.
+     * @param reactContext The ReactApplicationContext
+     * @return The singleton ActivityService instance
+     */
+    public static ActivityService getInstance(ReactApplicationContext reactContext) {
+        if (instance == null) {
+            instance = new ActivityService(reactContext);
+        }
+        return instance;
+    }
+
+    /**
+     * Private constructor
+     * @param reactContext
+     */
+    private ActivityService(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
     }
@@ -62,6 +92,14 @@ public class ActivityService extends ReactContextBaseJavaModule {
         }
     }
 
+    public void disableActivity(String activityName) {
+        Log.d(TAG, "disableActivity");
+        if (activityClassMap.containsKey(activityName)) {
+            SensorDataService sensorDataService = SensorDataService.getInstance();
+            sensorDataService.unregisterActivity(activityName);
+        }
+    }
+
     /**
      * React Native components will call this when they need to disable a particular activity module.
      * @param activityName Name of the activity
@@ -70,10 +108,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
     @ReactMethod
     public void disableActivity(String activityName, Callback callback) {
         Log.d(TAG, "disableActivity");
-        if (activityClassMap.containsKey(activityName)) {
-            SensorDataService sensorDataService = SensorDataService.getInstance();
-            sensorDataService.unregisterActivity(activityName);
-        }
+        disableActivity(activityName);
         callback.invoke();
     }
 }

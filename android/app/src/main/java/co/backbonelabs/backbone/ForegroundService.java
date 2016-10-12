@@ -40,6 +40,7 @@ public class ForegroundService extends Service {
             startForeground(Constants.NOTIFICATION_IDS.FOREGROUND_SERVICE, notification);
         } else if (intent.getAction().equals(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE)) {
             Log.i(TAG, "Received stop posture foreground intent");
+            ActivityService.getInstance().disableActivity(Constants.MODULES.POSTURE);
             stopForeground(true);
             stopSelf();
         }
