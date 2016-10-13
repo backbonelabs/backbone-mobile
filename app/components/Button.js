@@ -22,12 +22,14 @@ const Button = (props) => {
   );
 };
 
+const { PropTypes } = React;
+
 Button.propTypes = {
-  disabled: React.PropTypes.bool,
-  onPress: React.PropTypes.func,
-  style: React.PropTypes.object,
-  text: React.PropTypes.string.isRequired,
-  textStyle: React.PropTypes.object,
+  disabled: PropTypes.bool,
+  onPress: PropTypes.func,
+  style: PropTypes.object,
+  text: PropTypes.string.isRequired,
+  textStyle: PropTypes.object,
 };
 
 Button.defaultProps = {

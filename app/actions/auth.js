@@ -29,19 +29,6 @@ const signupError = error => ({
   error: true,
 });
 
-const checkConfirmationStart = () => ({ type: 'CHECK_CONFIRMATION__START' });
-
-const checkConfirmation = payload => ({
-  type: 'CHECK_CONFIRMATION',
-  payload,
-});
-
-const checkConfirmationError = error => ({
-  type: 'CHECK_CONFIRMATION__ERROR',
-  payload: error,
-  error: true,
-});
-
 const passwordResetStart = () => ({ type: 'PASSWORD_RESET__START' });
 
 const passwordReset = payload => ({
@@ -93,19 +80,18 @@ export default {
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
       })
-        .then((response) => {
-          if (response.ok) {
-            dispatch(signup(response.ok));
-          } else {
-            return response.json()
-              .then(body => (
-                // Error received from API server
-                dispatch(signupError(
-                  new Error(body.error)
-                ))
+        .then((response) => response.json()
+          .then(body => {
+            // Error received from API server
+            if (body.error) {
+              dispatch(signupError(
+                new Error(body.error)
               ));
-          }
-        })
+            } else {
+              dispatch(signup(body));
+            }
+          })
+        )
         .catch(() => (
           // Network error
           dispatch(signupError(
@@ -138,23 +124,6 @@ export default {
         .catch(() => (
           // Network error
           dispatch(passwordResetError(
-            new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
-    };
-  },
-
-  checkConfirmation(email) {
-    return (dispatch) => {
-      dispatch(checkConfirmationStart());
-
-      return Fetcher.get({
-        url: `${Environment.API_SERVER_URL}/users/confirm/${email}`,
-      })
-        .then(response => response.json())
-          .then(body => !body.error && dispatch(checkConfirmation(body)))
-        .catch(() => (
-          dispatch(checkConfirmationError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));

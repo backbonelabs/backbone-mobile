@@ -16,19 +16,21 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import constants from '../utils/constants';
 
+const { PropTypes } = React;
+
 class Home extends Component {
   static propTypes = {
-    auth: React.PropTypes.shape({
-      accessToken: React.PropTypes.string,
-      isFetchingAccessToken: React.PropTypes.bool,
+    auth: PropTypes.shape({
+      accessToken: PropTypes.string,
+      inProgress: PropTypes.bool,
     }),
-    app: React.PropTypes.shape({
-      bluetoothState: React.PropTypes.number,
-      config: React.PropTypes.object,
+    app: PropTypes.shape({
+      bluetoothState: PropTypes.number,
+      config: PropTypes.object,
     }),
-    dispatch: React.PropTypes.func,
-    navigator: React.PropTypes.shape({
-      push: React.PropTypes.func,
+    dispatch: PropTypes.func,
+    navigator: PropTypes.shape({
+      push: PropTypes.func,
     }),
   };
 
@@ -54,7 +56,7 @@ class Home extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.auth.isFetchingAccessToken && !nextProps.auth.isFetchingAccessToken) {
+    if (this.props.auth.inProgress && !nextProps.auth.inProgress) {
       // Finished login attempt
       if (nextProps.auth.errorMessage) {
         // Access token is invalid
@@ -83,7 +85,7 @@ class Home extends Component {
   }
 
   render() {
-    const { accessToken, isFetchingAccessToken } = this.props.auth;
+    const { accessToken, inProgress } = this.props.auth;
 
     return (
       <View style={styles.container}>
@@ -92,7 +94,7 @@ class Home extends Component {
           <Image style={styles.logo} source={logo} />
         </View>
         <View style={styles.body}>
-          {this.state.isInitializing || isFetchingAccessToken ?
+          {this.state.isInitializing || inProgress ?
             <Spinner /> : this.getMainBody()
           }
         </View>

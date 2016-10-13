@@ -10,14 +10,21 @@ import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
+import SensitiveInfo from '../utils/SensitiveInfo';
+import constants from '../utils/constants';
+
+const { accessTokenStorageKey } = constants;
+const { PropTypes } = React;
 
 class Signup extends Component {
   static propTypes = {
-    errorMessage: React.PropTypes.string,
-    dispatch: React.PropTypes.func,
-    confirmationSent: React.PropTypes.bool,
-    navigator: React.PropTypes.object,
-    isSigningUp: React.PropTypes.bool,
+    dispatch: PropTypes.func,
+    navigator: PropTypes.shape({
+      replace: PropTypes.func,
+    }),
+    accessToken: PropTypes.string,
+    errorMessage: PropTypes.string,
+    inProgress: PropTypes.bool,
   };
 
   constructor() {
@@ -25,15 +32,15 @@ class Signup extends Component {
     this.state = {
       email: '',
       password: '',
-      verifyPassword: '',
     };
     this.signup = this.signup.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.confirmationSent && nextProps.confirmationSent) {
-      const { email } = this.state;
-      this.props.navigator.replace(Object.assign({}, routes.confirm, { email }));
+    if (!this.props.accessToken && nextProps.accessToken) {
+      this.saveAccessToken(nextProps.accessToken);
+
+      this.props.navigator.replace(routes.device);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
     }
@@ -43,18 +50,20 @@ class Signup extends Component {
     if (!this.state.email || !this.state.password) {
       // Show alert if email or password is missing
       Alert.alert('Missing fields', `${this.state.email ? 'Password' : 'Email'} is required`);
-    } else if (!this.state.verifyPassword) {
-      Alert.alert('Missing fields', 'Please verify your password');
     } else {
-      const { email, password, verifyPassword } = this.state;
-      this.props.dispatch(authActions.signup({ email, password, verifyPassword }));
+      const { email, password } = this.state;
+      this.props.dispatch(authActions.signup({ email, password }));
     }
+  }
+
+  saveAccessToken(accessToken) {
+    SensitiveInfo.setItem(accessTokenStorageKey, accessToken);
   }
 
   render() {
     return (
       <View style={styles.container}>
-        {this.props.isSigningUp ?
+        {this.props.inProgress ?
           <Spinner />
           :
             <View style={styles.formContainer}>
@@ -81,20 +90,6 @@ class Signup extends Component {
                 placeholder="Password"
                 keyboardType="default"
                 onChangeText={text => this.setState({ password: text })}
-                onSubmitEditing={() => this.verifyPasswordField.focus()}
-                autoCorrect={false}
-                secureTextEntry
-                returnKeyType="next"
-              />
-              <Input
-                handleRef={ref => (
-                  this.verifyPasswordField = ref
-                )}
-                value={this.state.verifyPassword}
-                autoCapitalize="none"
-                placeholder="Verify Password"
-                keyboardType="default"
-                onChangeText={text => this.setState({ verifyPassword: text })}
                 onSubmitEditing={this.signup}
                 autoCorrect={false}
                 secureTextEntry
@@ -102,7 +97,7 @@ class Signup extends Component {
               />
               <Button
                 text="Sign Up"
-                disabled={this.props.isSigningUp}
+                disabled={this.props.inProgress}
                 onPress={this.signup}
               />
             </View>

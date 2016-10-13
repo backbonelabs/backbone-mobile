@@ -3,6 +3,7 @@ import {
   Alert,
   ScrollView,
   View,
+  Text,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { get, isEmpty, isEqual, pick } from 'lodash';
@@ -25,6 +26,7 @@ class Profile extends Component {
       email: PropTypes.string,
       firstName: PropTypes.string,
       lastName: PropTypes.string,
+      isConfirmed: PropTypes.bool,
     }),
   };
 
@@ -136,6 +138,9 @@ class Profile extends Component {
           <Spinner />
           :
             <ScrollView style={styles.innerContainer}>
+              <Text style={{ textAlign: 'center' }}>
+                { !this.props.user.isConfirmed && 'Unconfirmed Email' }
+              </Text>
               <Input
                 value={this.state.firstName}
                 placeholder="First name*"
