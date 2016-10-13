@@ -58,7 +58,10 @@ sh buildVersion.sh
 
 ### Android
 
-Manually increment the build version by updating the `versionCode` property in `android/app/build.gradle`.
+1. Switch to the `master` branch and pull down the latest `master`
+2. Manually increment the build version by updating the `versionCode` property in `android/app/build.gradle`
+3. Commit the change to version control with a commit message of "Android build X" where X is the new build version
+4. Push the commit to the repo's `master`
 
 ## Deployment
 
