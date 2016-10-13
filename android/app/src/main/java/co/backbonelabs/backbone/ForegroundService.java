@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -36,15 +38,20 @@ public class ForegroundService extends Service {
                 PendingIntent stopPostureActivity = launchApp.getService(this, 0, stopIntent, 0);
 
                 // Create a notification with the two intents
-                Notification notification = new Notification.Builder(this)
+                Notification.Builder notificationBuilder = new Notification.Builder(this)
                         .setSmallIcon(R.drawable.ic_stat_notify_logo)
                         .setContentTitle("Backbone")
                         .setTicker("Backbone posture monitoring in progress")
                         .setContentText("Posture monitoring in progress")
                         .setContentIntent(launchApp)
                         .setOngoing(true)
-                        .addAction(android.R.drawable.ic_lock_power_off, "Stop", stopPostureActivity)
-                        .build();
+                        .addAction(android.R.drawable.ic_lock_power_off, "Stop", stopPostureActivity);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    // Set background color of the small icon if OS is Lollipop (5.0) or higher
+                    notificationBuilder.setColor(Color.rgb(237, 28, 36));
+                }
+                Notification notification = notificationBuilder.build();
 
                 // Start the foreground service with the notification
                 startForeground(Constants.NOTIFICATION_IDS.FOREGROUND_SERVICE, notification);

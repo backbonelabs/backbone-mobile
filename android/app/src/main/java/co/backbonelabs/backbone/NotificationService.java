@@ -4,6 +4,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 public class NotificationService {
@@ -55,6 +57,11 @@ public class NotificationService {
                 .setSmallIcon(R.drawable.ic_stat_notify_logo)
                 .setAutoCancel(true)
                 .setVibrate(vibrationPattern);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Set background color of the small icon if OS is Lollipop (5.0) or higher
+            mBuilder.setColor(Color.rgb(237, 28, 36));
+        }
 
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
