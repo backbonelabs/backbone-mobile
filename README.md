@@ -13,9 +13,9 @@ First, follow the setup instructions at https://facebook.github.io/react-native/
 
 ### iOS
 
-When developing on your local machine, be sure to use the `backbone dev` scheme in Xcode. You can select this scheme by going to Product > Scheme > backbone dev.
+Before developing on your local machine, make a copy of the `backbone dev` scheme in Xcode. You can duplicate this scheme by going to Product > Scheme > Manage Schemes. You can name your duplicate scheme whatever you want, but make sure the Shared checkbox is not checked so that it will not be included in the project (since this scheme will be specific to your machine).
 
-The dev scheme has environment variables specific to your local development environment. Be sure to review the environment variables in the scheme. Edit the scheme and in the Run step, and you will find the environment variables under the Arguments tab.
+You can use your custom scheme when running the app on your machine. Be sure to review the environment variables in the scheme. Edit the scheme, and in the Run step, and you will find the environment variables under the Arguments tab. You will most likely need to change the `API_SERVER_URL` value to the IP address that matches your machine (or where ever you are running the API server from).
 
 ### Android
 
@@ -31,6 +31,8 @@ BACKBONE_RELEASE_KEY_PASSWORD=
 ```
 
 Ask another dev for the keystore file and the store and key passwords, and fill in the passwords for the last two lines. Place the keystore file in the `android/app` folder of the project.
+
+Similar to iOS, you can define environment variables specific to your machine when building/running the app. These variables are located in `android/app/build.gradle` under the `android.buildTypes.debug` property. You will most likely need to change the `API_SERVER_URL` value to the IP address that matches your machine (or where ever you are running the API server from).
 
 ## Versioning
 
