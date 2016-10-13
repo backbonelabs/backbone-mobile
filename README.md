@@ -5,7 +5,7 @@ Backbone mobile app for iOS and Android
 
 ## Requirements
 
-- Node.js 6.3.1
+- Node.js 6.2.2 (This is currently the highest Node.js version supported by AWS)
 
 ## Development
 
