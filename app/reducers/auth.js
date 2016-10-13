@@ -73,26 +73,6 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
-    case 'CHECK_CONFIRMATION__START': {
-      return {
-        ...state,
-        errorMessage: null,
-      };
-    }
-    case 'CHECK_CONFIRMATION': {
-      return {
-        ...state,
-        errorMessage: null,
-        accessToken: action.payload.accessToken,
-        userId: action.payload._id,
-      };
-    }
-    case 'CHECK_CONFIRMATION__ERROR': {
-      return {
-        ...state,
-        errorMessage: action.payload.message,
-      };
-    }
     default:
       return state;
   }
