@@ -13,4 +13,12 @@ export default EStyleSheet.create({
     marginTop: '0.5rem',
     fontSize: '0.5rem',
   },
+  spinner: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  spinnerText: {
+    marginTop: '0.5rem',
+    textAlign: 'center',
+  },
 });

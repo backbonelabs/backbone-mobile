@@ -188,8 +188,8 @@ class Application extends Component {
         type="displace"
         content={<Menu
           menuItems={[
-            routes.activity.activityDashboard,
-            routes.posture.postureDashboard,
+            routes.activityDashboard,
+            routes.postureDashboard,
             routes.profile,
             routes.settings,
           ]}

@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import styles from '../../styles/posture/postureCalibrate';
 import Button from '../Button';
-import postureRoutes from '../../routes/posture';
+import routes from '../../routes';
 
 const { width } = Dimensions.get('window');
 
@@ -54,7 +54,7 @@ export default class PostureCalibrate extends Component {
         if (this.state.count) {
           this.scanAnimation(this.state.count);
         } else {
-          this.props.navigator.push(postureRoutes.postureMonitor);
+          this.props.navigator.push(routes.postureMonitor);
         }
       });
     }
