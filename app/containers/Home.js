@@ -24,9 +24,9 @@ class Home extends Component {
       accessToken: PropTypes.string,
       inProgress: PropTypes.bool,
     }),
-    app: React.PropTypes.shape({
-      bluetoothState: React.PropTypes.number,
-      config: React.PropTypes.object,
+    app: PropTypes.shape({
+      bluetoothState: PropTypes.number,
+      config: PropTypes.object,
     }),
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
