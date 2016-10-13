@@ -11,8 +11,9 @@ import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
 import SensitiveInfo from '../utils/SensitiveInfo';
-import { accessTokenStorageKey } from '../utils/constants';
+import constants from '../utils/constants';
 
+const { accessTokenStorageKey } = constants;
 const { PropTypes } = React;
 
 class Signup extends Component {
@@ -89,7 +90,7 @@ class Signup extends Component {
                 placeholder="Password"
                 keyboardType="default"
                 onChangeText={text => this.setState({ password: text })}
-                onSubmitEditing={() => this.signup()}
+                onSubmitEditing={this.signup}
                 autoCorrect={false}
                 secureTextEntry
                 returnKeyType="go"
