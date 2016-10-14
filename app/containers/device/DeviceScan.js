@@ -32,6 +32,7 @@ class DeviceScan extends Component {
 
   // Begin scanning for hardware devices in the vicinity
   componentWillMount() {
+    // Native module listener will constantly update deviceList
     NativeAppEventEmitter.addListener('DevicesFound', deviceList => this.setState({ deviceList }));
 
     DeviceManagementService.scanForDevices(error => {
@@ -48,13 +49,13 @@ class DeviceScan extends Component {
     DeviceManagementService.stopScanForDevices();
   }
 
-  // Calls selectDevice action with the deviceData identifier
-  // in order to specify which device to connect to
+  // Saves the selected device and attempts to connect to it
   selectDevice(deviceData) {
     DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
       if (error) {
         // Do something about the select device error
       } else {
+        // Navigate to DeviceConnect where it'll attempt to connect
         this.props.navigator.replace(routes.deviceConnect);
       }
     });
@@ -62,6 +63,7 @@ class DeviceScan extends Component {
 
   // Formats row data and displays it in a component
   formatDeviceRow(rowData) {
+    // Pressing on a row will select device and attempt connect
     return (
       <View onPress={() => this.selectDevice(rowData)}>
         <Text style={styles.deviceName}>{rowData.name}</Text>
@@ -75,7 +77,7 @@ class DeviceScan extends Component {
       <View style={styles.container}>
         <Spinner />
         <List
-          dataBlob={this.state.deviceList || []}
+          dataBlob={this.state.deviceList}
           formatRowData={this.formatDeviceRow}
           onPressRow={this.selectDevice}
         />

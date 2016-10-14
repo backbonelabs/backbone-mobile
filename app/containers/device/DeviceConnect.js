@@ -11,8 +11,9 @@ import appActions from '../../actions/app.js';
 import styles from '../../styles/device';
 import Spinner from '../../components/Spinner';
 
-const { PropTypes } = React;
 const { DeviceManagementService } = NativeModules;
+
+const { PropTypes } = React;
 
 class DeviceConnect extends Component {
   static propTypes = {
@@ -30,6 +31,7 @@ class DeviceConnect extends Component {
   };
 
   constructor() {
+    // Not doing much in constructor, but need component lifecycle methods
     super();
     this.state = {};
   }
@@ -49,7 +51,7 @@ class DeviceConnect extends Component {
 
   componentWillReceiveProps(nextProps) {
     // If connectionStatus is true, then alert the user that
-    // the device is successfully connected to their smartphone
+    // the device has successfully connected to their smartphone
     if (!this.props.connectionStatus && nextProps.connectionStatus) {
       Alert.alert('Success', nextProps.connectionStatus.message, [{
         text: 'Continue',
