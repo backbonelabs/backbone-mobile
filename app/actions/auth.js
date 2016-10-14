@@ -1,4 +1,5 @@
 import { NativeModules } from 'react-native';
+import Mixpanel from 'react-native-mixpanel';
 import Fetcher from '../utils/Fetcher';
 
 const { Environment } = NativeModules;
@@ -59,6 +60,9 @@ export default {
                 new Error(body.error)
               ));
             } else {
+              // Identify user for Mixpanel tracking
+              Mixpanel.identify(body._id);
+              Mixpanel.set('$email', body.email);
               dispatch(login(body));
             }
           })
@@ -88,6 +92,10 @@ export default {
                 new Error(body.error)
               ));
             } else {
+              // Identify user for Mixpanel tracking
+              Mixpanel.identify(body.user._id);
+              Mixpanel.set('$email', body.user.email);
+              Mixpanel.track('signup');
               dispatch(signup(body));
             }
           })
