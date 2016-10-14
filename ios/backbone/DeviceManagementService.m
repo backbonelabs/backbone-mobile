@@ -33,6 +33,8 @@ RCT_EXPORT_METHOD(getSavedDevice:(RCTResponseSenderBlock)callback) {
       NSLog(@"No saved device found");
       _remembered = NO;
     }
+    // Check whether a _sharedDevice is nil, instead of checking
+    // whether we have a remembered device.
     callback(@[[NSNumber numberWithBool:_sharedDevice != nil]]);
     return nil;
   }];
