@@ -30,6 +30,28 @@ export default (state = {
         config: transformedConfig,
       };
     }
+    case 'CONNECT__START': {
+      return {
+        ...state,
+        inProgress: true,
+        connectionStatus: null,
+        errorMessage: null,
+      };
+    }
+    case 'CONNECT': {
+      return {
+        ...state,
+        inProgress: false,
+        connectionStatus: action.payload,
+      };
+    }
+    case 'CONNECT__ERROR': {
+      return {
+        ...state,
+        inProgress: false,
+        errorMessage: action.error.message,
+      };
+    }
     default:
       return state;
   }
