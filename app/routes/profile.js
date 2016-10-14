@@ -5,4 +5,5 @@ export default {
   title: 'Profile',
   component: Profile,
   showMenu: true,
+  showTabBar: true,
 };

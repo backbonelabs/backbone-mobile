@@ -5,4 +5,5 @@ export default {
   title: 'Activity Dashboard',
   component: ActivityDashboard,
   showMenu: true,
+  showTabBar: true,
 };

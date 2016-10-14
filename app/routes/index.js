@@ -3,7 +3,9 @@ import device from './device';
 import home from './home';
 import login from './login';
 import signup from './signup';
-import posture from './posture';
+import postureDashboard from './posture/postureDashboard';
+import postureCalibrate from './posture/postureCalibrate';
+import postureMonitor from './posture/postureMonitor';
 import tutorial from './tutorial';
 import profile from './profile';
 import settings from './settings';
@@ -16,7 +18,9 @@ export default {
   home,
   login,
   signup,
-  posture,
+  postureDashboard,
+  postureCalibrate,
+  postureMonitor,
   tutorial,
   profile,
   settings,
