@@ -14,7 +14,7 @@ const connectError = error => ({
   error,
 });
 
-async function connectEventListener(dispatch) {
+function connectEventListener(dispatch) {
   const eventListener = NativeAppEventEmitter.once('ConnectionStatus', status => {
     if (status.isConnected) {
       dispatch(connect(status));
@@ -37,8 +37,8 @@ export default {
     return (dispatch) => {
       dispatch(connectStart());
 
-      return connectEventListener(dispatch)
-      .then(DeviceManagementService.connectToDevice());
+      return Promise.resolve(connectEventListener(dispatch))
+      .then(DeviceManagementService.connectToDevice);
     };
   },
 };
