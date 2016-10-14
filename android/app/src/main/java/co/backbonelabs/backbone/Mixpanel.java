@@ -191,16 +191,6 @@ public class Mixpanel extends ReactContextBaseJavaModule implements LifecycleEve
     }
 
     /**
-     * Set a single property on a user
-     * @param key The name of the property
-     * @param value The value of the property
-     */
-    @ReactMethod
-    public void set(final String key, final String value) {
-        mixpanel.getPeople().set(key, value);
-    }
-
-    /**
      * Set a collection of properties on a user all at once
      * @param properties Key-value pair of property names and values
      */
