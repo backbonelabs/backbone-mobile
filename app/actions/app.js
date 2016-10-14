@@ -14,16 +14,14 @@ const connectError = error => ({
   error,
 });
 
-function connectEventListener(dispatch) {
-  const eventListener = NativeAppEventEmitter.once('ConnectionStatus', status => {
+function setConnectEventListener(dispatch) {
+  NativeAppEventEmitter.once('ConnectionStatus', status => {
     if (status.isConnected) {
       dispatch(connect(status));
     } else {
       dispatch(connectError(status));
     }
   });
-
-  return eventListener;
 }
 
 export default {
@@ -36,7 +34,7 @@ export default {
   connect() {
     return (dispatch) => {
       dispatch(connectStart());
-      connectEventListener(dispatch);
+      setConnectEventListener(dispatch);
       DeviceManagementService.connectToDevice();
     };
   },
