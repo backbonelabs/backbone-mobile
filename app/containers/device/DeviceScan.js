@@ -3,11 +3,9 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Alert,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
-import { connect } from 'react-redux';
 import List from '../List';
 import Spinner from '../../components/Spinner';
 import styles from '../../styles/device';
@@ -20,11 +18,7 @@ class DeviceScan extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
-      pop: PropTypes.func,
     }),
-    dispatch: PropTypes.func,
-    inProgress: PropTypes.bool,
-    errorMessage: PropTypes.string,
   };
 
 
@@ -45,17 +39,6 @@ class DeviceScan extends Component {
         this.deviceError(error);
       }
     });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // Check for error message
-    if (!this.props.errorMessage && nextProps.errorMessage) {
-      Alert.alert(
-        'Error',
-        nextProps.errorMessage,
-        [{ text: 'OK', onPress: () => this.props.navigator.pop() }]
-      );
-    }
   }
 
   componentWillUnmount() {
@@ -101,9 +84,4 @@ class DeviceScan extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const { app } = state;
-  return app;
-};
-
-export default connect(mapStateToProps)(DeviceScan);
+export default DeviceScan;
