@@ -3,8 +3,8 @@ import { isString, mapValues } from 'lodash';
 export default (state = {
   bluetoothState: null,
   config: {},
-  connectionStatus: {},
   inProgress: false,
+  connectionStatus: null,
   errorMessage: null,
 }, action) => {
   switch (action.type) {

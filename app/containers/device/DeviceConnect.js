@@ -18,7 +18,6 @@ class DeviceConnect extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
-      pop: PropTypes.func,
       popToTop: PropTypes.func,
     }),
     connectionStatus: PropTypes.shape({

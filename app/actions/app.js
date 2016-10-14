@@ -36,9 +36,8 @@ export default {
   connect() {
     return (dispatch) => {
       dispatch(connectStart());
-
-      return Promise.resolve(connectEventListener(dispatch))
-      .then(DeviceManagementService.connectToDevice);
+      connectEventListener(dispatch);
+      DeviceManagementService.connectToDevice();
     };
   },
 };
