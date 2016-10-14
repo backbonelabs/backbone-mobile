@@ -86,6 +86,7 @@ class Application extends Component {
 
     this.state = {
       drawerIsOpen: false,
+      selectedTabBar: 0,
     };
 
     this.configureScene = this.configureScene.bind(this);
@@ -162,6 +163,24 @@ class Application extends Component {
 
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
+    const tabBarRoutes = [
+      {
+        name: 'Dashboard',
+        routeName: 'postureDashboard',
+        iconName: 'circle-o',
+      },
+      {
+        name: 'Session',
+        routeName: 'postureDashboard',
+        iconName: 'circle-o',
+      },
+      {
+        name: 'Settings',
+        routeName: 'settings',
+        iconName: 'circle-o',
+      },
+    ];
+
 
     // Alter the push method on the navigator object to include a timestamp for
     // each route in the route stack so that each route in the stack is unique.
@@ -174,10 +193,41 @@ class Application extends Component {
       };
     }
 
+    const TabBar = (
+      <View style={styles.tabBar}>
+        {
+          tabBarRoutes.map((value, key) => {
+            const tabBarItemColor = this.state.selectedTabBar === key ?
+            styles._activeTabBarItem.color : styles._inactiveTabBarItem.color;
+
+            return (
+              <TouchableOpacity
+                key={key}
+                style={styles.tabBarItem}
+                onPress={() => {
+                  this.setState({
+                    selectedTabBar: key,
+                  }, this.navigator.replace(routes[value.routeName]));
+                }}
+              >
+                <Icon
+                  name="circle"
+                  size={30}
+                  color={tabBarItemColor}
+                />
+                <Text style={{ color: tabBarItemColor }}>{ value.name }</Text>
+              </TouchableOpacity>
+            );
+          })
+        }
+      </View>
+    );
+
     return (
       <View style={{ flex: 1 }}>
         <StatusBar />
         <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
+        { route.showTabBar && TabBar }
       </View>
     );
   }
@@ -189,7 +239,7 @@ class Application extends Component {
         content={<Menu
           menuItems={[
             routes.activity.activityDashboard,
-            routes.posture.postureDashboard,
+            routes.postureDashboard,
             routes.profile,
             routes.settings,
           ]}
