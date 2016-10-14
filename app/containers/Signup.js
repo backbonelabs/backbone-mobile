@@ -40,7 +40,7 @@ class Signup extends Component {
     if (!this.props.accessToken && nextProps.accessToken) {
       this.saveAccessToken(nextProps.accessToken);
 
-      this.props.navigator.replace(routes.device);
+      this.props.navigator.replace(routes.deviceConnect);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
     }
