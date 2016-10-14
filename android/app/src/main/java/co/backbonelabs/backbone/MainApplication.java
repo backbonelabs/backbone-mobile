@@ -7,7 +7,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
-import com.kevinejohn.RNMixpanel.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +22,6 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-        new RNMixpanel(),
         new MainReactPackage(),
         new RNSensitiveInfoPackage(),
         new BackbonePackage()

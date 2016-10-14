@@ -10,6 +10,7 @@ import android.os.IBinder;
 
 import com.facebook.react.ReactActivity;
 import com.mbientlab.metawear.MetaWearBleService;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 public class MainActivity extends ReactActivity implements ServiceConnection {
     public static MetaWearBleService.LocalBinder metaWearServiceBinder;
