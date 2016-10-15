@@ -18,13 +18,13 @@ export default EStyleSheet.create({
     marginTop: '0.65rem',
   },
   tabBar: {
+    width: 375,
+    height: 59,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
     borderTopWidth: 1,
     borderColor: '#DDDDDD',
-    width: 375,
-    height: 59,
   },
   tabBarItem: {
     alignItems: 'center',
