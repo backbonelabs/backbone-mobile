@@ -163,6 +163,7 @@ class Application extends Component {
 
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
+    // Tab bar component data
     const tabBarRoutes = [
       {
         name: 'Session',
@@ -191,8 +192,10 @@ class Application extends Component {
     const TabBar = (
       <View style={styles.tabBar}>
         {
+          // Iterate through tabBarRoutes and set tab bar item info
           tabBarRoutes.map((value, key) => {
-            const tabBarItemColor = this.state.selectedTabBar === key ?
+            // Set icon to active color if route name matches tab bar name
+            const tabBarItemColor = route.name === value.routeName ?
             styles._activeTabBarItem.color : styles._inactiveTabBarItem.color;
 
             return (

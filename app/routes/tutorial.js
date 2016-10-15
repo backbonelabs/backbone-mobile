@@ -5,5 +5,4 @@ export default {
   title: 'Tutorial',
   component: Tutorial,
   showBackButton: true,
-  showTabBar: true,
 };
