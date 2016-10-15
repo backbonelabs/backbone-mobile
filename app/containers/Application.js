@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Mixpanel from 'react-native-mixpanel';
 import { clone } from 'lodash';
 import appActions from '../actions/app';
 import Menu from '../components/Menu';
@@ -96,9 +95,6 @@ class Application extends Component {
   }
 
   componentWillMount() {
-    // Initiate Mixpanel
-    Mixpanel.sharedInstanceWithToken(Environment.MIXPANEL_TOKEN);
-
     this.props.dispatch(appActions.setConfig(Environment));
 
     Bluetooth.getState((error, state) => {
