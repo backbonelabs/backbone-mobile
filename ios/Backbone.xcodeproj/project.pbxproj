@@ -33,7 +33,6 @@
 		669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DC1D50630A00DCEFBE /* ActivityService.m */; };
 		669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DE1D51053F00DCEFBE /* PostureModule.m */; };
 		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
-		66CAF1A11DB0AB98008971D7 /* libRNMixpanel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66CAF19F1DB0AB82008971D7 /* libRNMixpanel.a */; };
 		66F9187A1DA9F82B00649391 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918781DA9F82B00649391 /* Lato-Bold.ttf */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
 		697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 697D0FE71DA3DCDC00F6FF13 /* StepModule.m */; };
@@ -121,13 +120,6 @@
 			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
 			remoteInfo = RNSensitiveInfo;
 		};
-		66CAF19E1DB0AB82008971D7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 66CAF18F1DB0AB82008971D7 /* RNMixpanel.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = FDC64AF01BF1690D0044C1B4;
-			remoteInfo = RNMixpanel;
-		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -187,7 +179,6 @@
 		669B14E01D51066300DCEFBE /* PostureModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PostureModule.h; path = backbone/PostureModule.h; sourceTree = "<group>"; };
 		669B15191D51439E00DCEFBE /* SensorNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SensorNotifications.h; path = backbone/SensorNotifications.h; sourceTree = "<group>"; };
 		669B151C1D51458700DCEFBE /* SensorNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorNotifications.m; path = backbone/SensorNotifications.m; sourceTree = "<group>"; };
-		66CAF18F1DB0AB82008971D7 /* RNMixpanel.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNMixpanel.xcodeproj; path = "../node_modules/react-native-mixpanel/RNMixpanel.xcodeproj"; sourceTree = "<group>"; };
 		66F918781DA9F82B00649391 /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../android/app/src/main/assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
 		66F918791DA9F82B00649391 /* Lato.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Lato.ttf; path = ../android/app/src/main/assets/fonts/Lato.ttf; sourceTree = "<group>"; };
 		697D0FE61DA3DCDC00F6FF13 /* StepModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StepModule.h; path = backbone/StepModule.h; sourceTree = "<group>"; };
@@ -223,7 +214,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66CAF1A11DB0AB98008971D7 /* libRNMixpanel.a in Frameworks */,
 				44970BBB1D2AC74B00351480 /* libART.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -396,14 +386,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		66CAF1901DB0AB82008971D7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				66CAF19F1DB0AB82008971D7 /* libRNMixpanel.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		66F918731DA9ECD600649391 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -424,7 +406,6 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				66CAF18F1DB0AB82008971D7 /* RNMixpanel.xcodeproj */,
 				44970BAB1D2AC74400351480 /* ART.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -622,10 +603,6 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
-					ProductGroup = 66CAF1901DB0AB82008971D7 /* Products */;
-					ProjectRef = 66CAF18F1DB0AB82008971D7 /* RNMixpanel.xcodeproj */;
-				},
-				{
 					ProductGroup = 665DFF591D64133C003B4449 /* Products */;
 					ProjectRef = A8DEF1D880EB4E44A485BA5A /* RNSensitiveInfo.xcodeproj */;
 				},
@@ -707,13 +684,6 @@
 			fileType = archive.ar;
 			path = libRNSensitiveInfo.a;
 			remoteRef = 665DFF671D64133C003B4449 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		66CAF19F1DB0AB82008971D7 /* libRNMixpanel.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNMixpanel.a;
-			remoteRef = 66CAF19E1DB0AB82008971D7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {

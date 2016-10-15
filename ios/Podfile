@@ -8,7 +8,6 @@ target 'Backbone' do
 
   # Pods for Backbone
   pod 'Metawear-iOSAPI'
-  pod 'Mixpanel'
 
   target 'BackboneTests' do
     inherit! :search_paths
