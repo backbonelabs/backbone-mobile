@@ -86,7 +86,6 @@ class Application extends Component {
 
     this.state = {
       drawerIsOpen: false,
-      selectedTabBar: 0,
     };
 
     this.configureScene = this.configureScene.bind(this);
@@ -202,11 +201,7 @@ class Application extends Component {
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
-                onPress={() => {
-                  this.setState({
-                    selectedTabBar: key,
-                  }, this.navigator.replace(routes[value.routeName]));
-                }}
+                onPress={() => this.navigator.replace(routes[value.routeName])}
               >
                 <Icon
                   name="circle"
