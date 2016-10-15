@@ -165,11 +165,6 @@ class Application extends Component {
     const { component: RouteComponent } = route;
     const tabBarRoutes = [
       {
-        name: 'Dashboard',
-        routeName: 'postureDashboard',
-        iconName: 'circle-o',
-      },
-      {
         name: 'Session',
         routeName: 'postureDashboard',
         iconName: 'circle-o',
