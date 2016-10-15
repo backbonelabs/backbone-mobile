@@ -11,6 +11,7 @@
 #import "PostureModule.h"
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
+#import "Mixpanel/Mixpanel.h"
 
 @implementation AppDelegate
 
@@ -25,6 +26,13 @@
                                                                                        categories:nil];
   [application registerUserNotificationSettings:notificationSettings];
 
+  NSDictionary *environment = [[NSProcessInfo processInfo] environment];
+  NSString *token = [environment valueForKey:@"MIXPANEL_TOKEN"];
+  NSLog(@"mixpanel token %@", token);
+  
+  // Generate singleton instance of the Mixpanel API
+  [Mixpanel sharedInstanceWithToken:token];
+  
   // Launch React Native app
   NSURL *jsCodeLocation;
 
