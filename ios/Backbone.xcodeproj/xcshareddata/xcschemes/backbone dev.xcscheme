@@ -92,6 +92,11 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
+            key = "MIXPANEL_TOKEN"
+            value = "REPLACE ME"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "DEV_MODE"
             value = "true"
             isEnabled = "YES">

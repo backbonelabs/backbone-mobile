@@ -21,6 +21,7 @@ public class EnvironmentModule extends ReactContextBaseJavaModule {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("API_SERVER_URL", BuildConfig.API_SERVER_URL);
         constants.put("DEV_MODE", BuildConfig.DEV_MODE);
+        constants.put("MIXPANEL_TOKEN", BuildConfig.MIXPANEL_TOKEN);
         return constants;
     }
 }

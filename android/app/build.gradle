@@ -82,6 +82,15 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
+Properties localProperties = new Properties()
+localProperties.load(project.file("local.properties").newDataInputStream())
+def API_SERVER_URL = localProperties.getProperty("API_SERVER_URL")
+def MIXPANEL_TOKEN = localProperties.getProperty("MIXPANEL_TOKEN")
+def RELEASE_STORE_FILE = localProperties.getProperty("RELEASE_STORE_FILE")
+def RELEASE_KEY_ALIAS = localProperties.getProperty("RELEASE_KEY_ALIAS")
+def RELEASE_STORE_PASSWORD = localProperties.getProperty("RELEASE_STORE_PASSWORD")
+def RELEASE_KEY_PASSWORD = localProperties.getProperty("RELEASE_KEY_PASSWORD")
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
@@ -98,10 +107,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(BACKBONE_RELEASE_STORE_FILE)
-            storePassword BACKBONE_RELEASE_STORE_PASSWORD
-            keyAlias BACKBONE_RELEASE_KEY_ALIAS
-            keyPassword BACKBONE_RELEASE_KEY_PASSWORD
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
         }
     }
     splits {
@@ -114,12 +123,14 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "API_SERVER_URL", '"http://192.168.1.154:3000"'
+            buildConfigField "String", "API_SERVER_URL", API_SERVER_URL
             buildConfigField "String", "DEV_MODE", '"true"'
+            buildConfigField "String", "MIXPANEL_TOKEN", MIXPANEL_TOKEN
         }
         release {
             buildConfigField "String", "API_SERVER_URL", '"https://api.gobackbone.com"'
             buildConfigField "String", "DEV_MODE", '"false"'
+            buildConfigField "String", "MIXPANEL_TOKEN", MIXPANEL_TOKEN
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
@@ -146,6 +157,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile "com.mbientlab:metawear:2.6.0"
+    compile "com.mixpanel.android:mixpanel-android:4.+"
 }
 
 // Run this once to be able to run the application with BUCK

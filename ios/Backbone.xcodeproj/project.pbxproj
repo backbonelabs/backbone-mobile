@@ -29,6 +29,7 @@
 		54B3C7A82E534518AA08CE57 /* libRNSensitiveInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8A4554BED5149C3AFC4FB96 /* libRNSensitiveInfo.a */; };
 		6602D6981D50295300DF3369 /* SensorDataService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6971D50295300DF3369 /* SensorDataService.m */; };
 		6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6991D502EA800DF3369 /* ActivityModule.m */; };
+		6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */; };
 		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
 		669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DC1D50630A00DCEFBE /* ActivityService.m */; };
 		669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DE1D51053F00DCEFBE /* PostureModule.m */; };
@@ -171,6 +172,8 @@
 		6602D6961D50255D00DF3369 /* ActivityModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityModule.h; path = backbone/ActivityModule.h; sourceTree = "<group>"; };
 		6602D6971D50295300DF3369 /* SensorDataService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorDataService.m; path = backbone/SensorDataService.m; sourceTree = "<group>"; };
 		6602D6991D502EA800DF3369 /* ActivityModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityModule.m; path = backbone/ActivityModule.m; sourceTree = "<group>"; };
+		6625BB7D1DB1E5E3009B4941 /* MixpanelModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MixpanelModule.h; path = backbone/MixpanelModule.h; sourceTree = "<group>"; };
+		6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MixpanelModule.m; path = backbone/MixpanelModule.m; sourceTree = "<group>"; };
 		667641251D63B8F900D45761 /* Environment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Environment.h; path = backbone/Environment.h; sourceTree = "<group>"; };
 		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
 		669B14D01D50626500DCEFBE /* ActivityService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityService.h; path = backbone/ActivityService.h; sourceTree = "<group>"; };
@@ -320,6 +323,8 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				667641251D63B8F900D45761 /* Environment.h */,
 				667641261D63B90800D45761 /* Environment.m */,
+				6625BB7D1DB1E5E3009B4941 /* MixpanelModule.h */,
+				6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */,
 				4457C4AF1D60273200F05D92 /* BluetoothService.h */,
 				4457C4B01D60273200F05D92 /* BluetoothService.m */,
 				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
@@ -897,6 +902,7 @@
 				697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */,
 				669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */,
 				69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */,
+				6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */,
 				669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */,
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
 				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
