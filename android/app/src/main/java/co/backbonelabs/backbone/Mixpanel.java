@@ -131,21 +131,21 @@ public class Mixpanel extends ReactContextBaseJavaModule implements LifecycleEve
 
     /**
      * Create an alias for linking a user ID to the current ID
-     * @param new_id New ID to link to current ID
+     * @param newId New ID to link to current ID
      */
     @ReactMethod
-    public void createAlias(final String new_id) {
-        mixpanel.alias(new_id, mixpanel.getDistinctId());
+    public void createAlias(final String newId) {
+        mixpanel.alias(newId, mixpanel.getDistinctId());
     }
 
     /**
      * Associate future calls to track(String) with the user identified by the given distinct ID
-     * @param user_id A unique identifier for the user
+     * @param userId A unique identifier for the user
      */
     @ReactMethod
-    public void identify(final String user_id) {
-        mixpanel.identify(user_id);
-        mixpanel.getPeople().identify(user_id);
+    public void identify(final String userId) {
+        mixpanel.identify(userId);
+        mixpanel.getPeople().identify(userId);
     }
 
     /**
