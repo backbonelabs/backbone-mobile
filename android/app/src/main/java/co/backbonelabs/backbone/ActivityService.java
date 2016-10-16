@@ -26,6 +26,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
     private static HashMap<String, Class> activityClassMap = new HashMap<String, Class>() {
         {
             put(Constants.MODULES.POSTURE, PostureModule.class);
+            put(Constants.MODULES.STEP, StepModule.class);
         }
     };
     private ReactApplicationContext mReactContext;

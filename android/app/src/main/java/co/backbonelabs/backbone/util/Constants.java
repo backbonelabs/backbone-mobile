@@ -3,6 +3,7 @@ package co.backbonelabs.backbone.util;
 public class Constants {
     public interface SENSORS {
         String ACCELEROMETER = "ACCELEROMETER";
+        String BMI160ACCELEROMETER = "BMI160ACCELEROMETER";
     }
     public interface ACTIONS {
         String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.action.startPostureForegroundService";
@@ -14,6 +15,7 @@ public class Constants {
     }
     public interface MODULES {
         String POSTURE = "posture";
+        String STEP = "step";
     }
     public interface EVENTS {
         String ACTIVITY_DISABLED = "ActivityDisabled";
