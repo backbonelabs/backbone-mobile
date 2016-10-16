@@ -14,4 +14,10 @@ export default {
     DISCONNECTING: 8,
     TURNING_OFF: 9,
   },
+  deviceStatuses: {
+    DISCONNECTED: 0,
+    CONNECTING: 1,
+    CONNECTED: 2,
+    DISCONNECTING: 3,
+  },
 };
