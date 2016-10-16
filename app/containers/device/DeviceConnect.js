@@ -10,6 +10,7 @@ import routes from '../../routes';
 import appActions from '../../actions/app.js';
 import styles from '../../styles/device';
 import Spinner from '../../components/Spinner';
+import constants from '../../utils/constants';
 
 const { DeviceManagementService } = NativeModules;
 
@@ -21,10 +22,7 @@ class DeviceConnect extends Component {
       replace: PropTypes.func,
       popToTop: PropTypes.func,
     }),
-    connectionStatus: PropTypes.shape({
-      isConnected: PropTypes.number,
-      message: PropTypes.string,
-    }),
+    isConnected: PropTypes.bool,
     dispatch: PropTypes.func,
     inProgress: PropTypes.bool,
     errorMessage: PropTypes.string,
@@ -39,8 +37,7 @@ class DeviceConnect extends Component {
   componentWillMount() {
     // Check current connection status with Backbone device
     DeviceManagementService.getDeviceStatus((status) => {
-      // Status code 2 means that it's currently connected
-      if (status === 2) {
+      if (status === constants.deviceStatuses.CONNECTED) {
         // Replace scene in nav stack, since user can't go back
         this.props.navigator.replace(routes.posture.postureDashboard);
       } else {
@@ -50,16 +47,16 @@ class DeviceConnect extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // If connectionStatus is true, then alert the user that
+    // If isConnected is true, then alert the user that
     // the device has successfully connected to their smartphone
-    if (!this.props.connectionStatus && nextProps.connectionStatus) {
-      Alert.alert('Success', nextProps.connectionStatus.message, [{
+    if (!this.props.isConnected && nextProps.isConnected) {
+      Alert.alert('Success', 'Connected', [{
         text: 'Continue',
         onPress: () => this.props.navigator.replace(routes.posture.postureDashboard),
       }]);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // On a failed attempt to connect, send them to the
-      // Errors scene with the connectionStatus error message
+      // Errors scene with the error message
       this.deviceError(nextProps.errorMessage);
     }
   }
@@ -77,8 +74,8 @@ class DeviceConnect extends Component {
     });
   }
 
-  // Handle connectionStatus error message and allows user to perform
-  // actions such as retrying a connection attempt or forgetting device
+  // Handle error message and allows user to perform actions
+  // such as retrying a connection attempt and forgetting device
   deviceError(errorMessage) {
     this.props.navigator.replace(
       Object.assign({}, routes.errors, {

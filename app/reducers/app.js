@@ -4,7 +4,7 @@ export default (state = {
   bluetoothState: null,
   config: {},
   inProgress: false,
-  connectionStatus: null,
+  isConnected: false,
   errorMessage: null,
 }, action) => {
   switch (action.type) {
@@ -37,7 +37,7 @@ export default (state = {
       return {
         ...state,
         inProgress: true,
-        connectionStatus: null,
+        isConnected: false,
         errorMessage: null,
       };
     }
@@ -45,7 +45,7 @@ export default (state = {
       return {
         ...state,
         inProgress: false,
-        connectionStatus: action.payload,
+        isConnected: action.payload.isConnected,
       };
     }
     case 'CONNECT__ERROR': {
