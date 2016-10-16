@@ -132,6 +132,9 @@ public class SensorDataService {
                         // Set sampling range to 2G
                         accelerometer.setAxisSamplingRange(Bmi160Accelerometer.AccRange.AR_2G.scale());
 
+                        // Enable axis sampling
+                        accelerometer.enableAxisSampling();
+
                         // Set up route data
                         accelerometer.routeData()
                                 .fromAxes()
@@ -159,6 +162,8 @@ public class SensorDataService {
                                         });
                                     }
                                 });
+
+                        accelerometer.start();
 
                         activeSensors.add(activityModule.getSensor());
                     } catch (UnsupportedModuleException e) {
