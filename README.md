@@ -17,22 +17,26 @@ Before developing on your local machine, make a copy of the `backbone dev` schem
 
 You can use your custom scheme when running the app on your machine. Be sure to review the environment variables in the scheme. Edit the scheme, and in the Run step, and you will find the environment variables under the Arguments tab. You will most likely need to change the `API_SERVER_URL` value to the IP address that matches your machine (or where ever you are running the API server from).
 
+Ask another dev for the `MIXPANEL_TOKEN` value.
+
 ### Android
 
 Do not enable Instant Run in Android Studio. It will not work with the Gradle plugin. To make sure Instant Run is disabled, go to the Android Studio preferences, and navigate to Build, Execution, Deployment > Instant Run, and make sure the checkbox for the feature is unchecked.
 
-Add the following to `~/.gradle/gradle.properties`:
+Sensitive build/environment variables are maintained in `android/app/local.properties` (create the file if it doesn't exist). At the minimum, have the following in the properties file:
 
 ```
-BACKBONE_RELEASE_STORE_FILE=backbone-release-key.keystore
-BACKBONE_RELEASE_KEY_ALIAS=backboneAndroidSigningKey
-BACKBONE_RELEASE_STORE_PASSWORD=
-BACKBONE_RELEASE_KEY_PASSWORD=
+API_SERVER_URL="http://XXX.XXX.XXX.XXX:XXXX"
+RELEASE_STORE_FILE="backbone-release-key.keystore"
+RELEASE_KEY_ALIAS="backboneAndroidSigningKey"
+RELEASE_STORE_PASSWORD=
+RELEASE_KEY_PASSWORD=
+MIXPANEL_TOKEN=
 ```
 
-Ask another dev for the keystore file and the store and key passwords, and fill in the passwords for the last two lines. Place the keystore file in the `android/app` folder of the project.
+Fill in the `API_SERVER_URL` value with the IP address of your dev API server, e.g., http://192.168.1.1:3000. Ask another dev for the actual keystore file (backbone-release-key.keystore)—which you would place in the `android/app` folder—and the values for `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_PASSWORD`, and `MIXPANEL_TOKEN`. Make sure you wrap these values with double quotes to ensure they are treated as strings.
 
-Similar to iOS, you can define environment variables specific to your machine when building/running the app. These variables are located in `android/app/build.gradle` under the `android.buildTypes.debug` property. You will most likely need to change the `API_SERVER_URL` value to the IP address that matches your machine (or where ever you are running the API server from).
+Similar to iOS, you can define environment variables specific to your machine when building/running the app. These variables are located in `android/app/build.gradle` under the `android.buildTypes.debug` property.
 
 ## Versioning
 
