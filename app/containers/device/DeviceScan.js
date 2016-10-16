@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Alert,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
@@ -18,6 +19,7 @@ class DeviceScan extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
+      popToTop: PropTypes.func,
     }),
   };
 
@@ -26,6 +28,7 @@ class DeviceScan extends Component {
     super();
     this.state = {
       deviceList: [],
+      inProgress: false,
     };
     this.selectDevice = this.selectDevice.bind(this);
   }
@@ -37,7 +40,12 @@ class DeviceScan extends Component {
 
     DeviceManagementService.scanForDevices(error => {
       if (error) {
-        this.deviceError(error);
+        Alert.alert('Error', 'Unable to scan for devices', [{
+          text: 'Try Again',
+          onPress: this.props.navigator.popToTop,
+        }]);
+      } else {
+        this.setState({ inProgress: true });
       }
     });
   }
@@ -75,7 +83,7 @@ class DeviceScan extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Spinner />
+        { this.state.inProgress && <Spinner /> }
         <List
           dataBlob={this.state.deviceList}
           formatRowData={this.formatDeviceRow}
