@@ -57,10 +57,10 @@ RCT_EXPORT_METHOD(connectToDevice) {
         [_sharedDevice rememberDevice];
       }
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-      [self deviceConnectionStatus:@{@"isConnected": @true, @"message": @"Connected!"}];
+      [self deviceConnectionStatus:@{@"isConnected": @YES}];
     }
   }];
-  
+
   [self checkConnectTimeout];
 }
 
@@ -81,7 +81,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
     // Bluetooth is enabled, continue with scan
     _deviceCollection = [NSMutableDictionary new];
     NSMutableArray *deviceList = [NSMutableArray new];
-    
+
     [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *__nonnull array) {
       if ([deviceList count]) {
         [deviceList removeAllObjects];
@@ -97,6 +97,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
       }
       [self devicesFound:deviceList];
     }];
+    callback(@[[NSNull null]]);
   } else {
     // Bluetooth is disabled
     callback(@[RCTMakeError(@"Bluetooth is not enabled", nil, nil)]);
