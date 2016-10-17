@@ -11,7 +11,6 @@ static MBLMetaWear *_sharedDevice;
 static MBLMetaWearManager *_manager;
 static BOOL _remembered;
 static NSMutableDictionary *_deviceCollection;
-static int _scanCount;
 
 + (MBLMetaWear *)getDevice {
   return _sharedDevice;
@@ -34,7 +33,9 @@ RCT_EXPORT_METHOD(getSavedDevice:(RCTResponseSenderBlock)callback) {
       NSLog(@"No saved device found");
       _remembered = NO;
     }
-    callback(@[[NSNumber numberWithBool:_remembered]]);
+    // Check whether a _sharedDevice is nil, instead of checking
+    // whether we have a remembered device.
+    callback(@[[NSNumber numberWithBool:_sharedDevice != nil]]);
     return nil;
   }];
 }
@@ -56,10 +57,10 @@ RCT_EXPORT_METHOD(connectToDevice) {
         [_sharedDevice rememberDevice];
       }
       [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
-      [self deviceConnectionStatus:@{}];
+      [self deviceConnectionStatus:@{@"isConnected": @YES}];
     }
   }];
-  
+
   [self checkConnectTimeout];
 }
 
@@ -80,7 +81,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
     // Bluetooth is enabled, continue with scan
     _deviceCollection = [NSMutableDictionary new];
     NSMutableArray *deviceList = [NSMutableArray new];
-    
+
     [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *__nonnull array) {
       if ([deviceList count]) {
         [deviceList removeAllObjects];
@@ -96,6 +97,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
       }
       [self devicesFound:deviceList];
     }];
+    callback(@[[NSNull null]]);
   } else {
     // Bluetooth is disabled
     callback(@[RCTMakeError(@"Bluetooth is not enabled", nil, nil)]);
@@ -114,12 +116,13 @@ RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   NSLog(@"forget device");
   [_sharedDevice disconnectWithHandler:^(NSError * _Nullable error) {
-    [_sharedDevice forgetDevice];
-    _sharedDevice = nil;
-    if (_sharedDevice) {
-      NSDictionary *makeError = RCTMakeError(@"Failed to forget device", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
+    if (error) {
+      NSDictionary *makeError = RCTMakeError(@"Failed to disconnect with device", nil, nil);
       callback(@[makeError]);
     } else {
+      [_sharedDevice forgetDevice];
+      _sharedDevice = nil;
+      _remembered = NO;
       callback(@[[NSNull null]]);
     }
   }];
@@ -129,7 +132,7 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if (_sharedDevice.state != MBLConnectionStateConnected) {
       NSLog(@"Connection timeout");
-      NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered]});
+      NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered] });
       [self deviceConnectionStatus:makeError];
     }
   });

@@ -1,5 +1,6 @@
 import activity from './activity';
-import device from './device';
+import deviceConnect from './device/deviceConnect';
+import deviceScan from './device/deviceScan';
 import home from './home';
 import login from './login';
 import signup from './signup';
@@ -12,7 +13,8 @@ import reset from './reset';
 
 export default {
   activity,
-  device,
+  deviceConnect,
+  deviceScan,
   home,
   login,
   signup,

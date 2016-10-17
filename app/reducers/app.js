@@ -3,6 +3,9 @@ import { isString, mapValues } from 'lodash';
 export default (state = {
   bluetoothState: null,
   config: {},
+  inProgress: false,
+  isConnected: false,
+  errorMessage: null,
 }, action) => {
   switch (action.type) {
     case 'UPDATE_BLUETOOTH_STATE': {
@@ -28,6 +31,28 @@ export default (state = {
       return {
         ...state,
         config: transformedConfig,
+      };
+    }
+    case 'CONNECT__START': {
+      return {
+        ...state,
+        inProgress: true,
+        isConnected: false,
+        errorMessage: null,
+      };
+    }
+    case 'CONNECT': {
+      return {
+        ...state,
+        inProgress: false,
+        isConnected: action.payload.isConnected,
+      };
+    }
+    case 'CONNECT__ERROR': {
+      return {
+        ...state,
+        inProgress: false,
+        errorMessage: action.error.message,
       };
     }
     default:

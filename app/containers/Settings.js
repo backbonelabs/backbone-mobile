@@ -15,7 +15,6 @@ import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
 import styles from '../styles/settings';
-import routes from '../routes';
 
 const { PropTypes } = React;
 
@@ -24,8 +23,8 @@ const { DeviceManagementService } = NativeModules;
 class Settings extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
-      resetTo: PropTypes.func,
       replace: PropTypes.func,
+      popToTop: PropTypes.func,
     }),
     dispatch: PropTypes.func,
     errorMessage: PropTypes.string,
@@ -146,7 +145,7 @@ class Settings extends Component {
                     if (error) {
                       // Placeholder until Rocio finalizes flow
                     } else {
-                      this.props.navigator.resetTo(routes.device);
+                      this.props.navigator.popToTop();
                     }
                   })
                 )}
