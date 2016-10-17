@@ -13,4 +13,5 @@ export default {
     )),
     iconName: 'question-circle-o',
   },
+  showTabBar: true,
 };

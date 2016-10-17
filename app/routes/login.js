@@ -5,4 +5,5 @@ export default {
   title: 'Log In',
   component: Login,
   showBackButton: true,
+  showTabBar: false,
 };

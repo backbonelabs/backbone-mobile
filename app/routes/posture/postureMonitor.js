@@ -4,4 +4,5 @@ export default {
   name: 'postureMonitor',
   component: PostureMonitor,
   showMenu: true,
+  showTabBar: true,
 };
