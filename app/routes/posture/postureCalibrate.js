@@ -5,4 +5,5 @@ export default {
   title: 'Calibrate Posture',
   component: PostureCalibrate,
   showBackButton: true,
+  showTabBar: true,
 };
