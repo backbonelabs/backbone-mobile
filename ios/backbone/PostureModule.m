@@ -29,7 +29,7 @@ static BOOL shouldSendNotifications;
 
 - (void)notify:(NSNotification *)notification {
   [super notify:notification];
-  NSLog(@"Start PostureModule notify");
+  DLog(@"Start PostureModule notify");
   NSDictionary *data = notification.userInfo;
   [self calculatePostureMetrics:data];
   [self handleDistance];
@@ -48,7 +48,7 @@ static BOOL shouldSendNotifications;
     // Calculate difference between control and current y & z axes
     // Use the Pythagorean Theorem to calculate current distance
     self.currentDistance = sqrt(pow((self.controlZ - z), 2) + pow((self.controlY - y), 2));
-    NSLog(@"currentDistance %f", self.currentDistance);
+    DLog(@"currentDistance %f", self.currentDistance);
     [self handleDistance];
   }
 }
@@ -56,7 +56,7 @@ static BOOL shouldSendNotifications;
 - (void)handleDistance {
   // Check whether distance exceeds the distance threshold
   if (self.currentDistance >= self.distanceThreshold) {
-    NSLog(@"Slouching for... %f", self.slouchTime);
+    DLog(@"Slouching for... %f", self.slouchTime);
     // Store timestamp of when slouching was first detected
     if (!self.time) {
       self.time = [[NSDate date] timeIntervalSince1970];
@@ -69,13 +69,13 @@ static BOOL shouldSendNotifications;
     if (self.slouchTime > self.slouchTimeThreshold) {
       // Emit posture data event before time variables are cleared
       [self emitPostureData];
-      NSLog(@"BZZT!");
+      DLog(@"BZZT!");
       MBLMetaWear *device = [DeviceManagementService getDevice];
       [device.hapticBuzzer startHapticWithDutyCycleAsync:248 pulseWidth:500 completion:nil];
       // Check if a notification should be posted
       if (shouldSendNotifications) {
         // Post local notification to phone
-        NSLog(@"Sending posture local notification");
+        DLog(@"Sending posture local notification");
         if ([LocalNotificationManager scheduleNotification:self.name]) {
           // Disable additional notifications until the next time the app goes to the background
           shouldSendNotifications = NO;

@@ -26,11 +26,11 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(getSavedDevice:(RCTResponseSenderBlock)callback) {
   [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
     if ([task.result count]) {
-      NSLog(@"Found a saved device");
+      DLog(@"Found a saved device");
       _remembered = YES;
       _sharedDevice = task.result[0];
     } else {
-      NSLog(@"No saved device found");
+      DLog(@"No saved device found");
       _remembered = NO;
     }
     // Check whether a _sharedDevice is nil, instead of checking
@@ -41,7 +41,7 @@ RCT_EXPORT_METHOD(getSavedDevice:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(connectToDevice) {
-  NSLog(@"Attempting to connect to %@", _sharedDevice);
+  DLog(@"Attempting to connect to %@", _sharedDevice);
   [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
     if (error) {
       NSDictionary *makeError = RCTMakeError(@"Failed to connect to device", nil, @{
@@ -76,7 +76,7 @@ RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)call
 }
 
 RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
-  NSLog(@"Scanning for devices");
+  DLog(@"Scanning for devices");
   if ([BluetoothService getIsEnabled]) {
     // Bluetooth is enabled, continue with scan
     _deviceCollection = [NSMutableDictionary new];
@@ -105,7 +105,7 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(stopScanForDevices) {
-  NSLog(@"Stopping device scan");
+  DLog(@"Stopping device scan");
   [_manager stopScanForMetaWears];
 }
 
@@ -114,7 +114,7 @@ RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
-  NSLog(@"forget device");
+  DLog(@"forget device");
   [_sharedDevice disconnectWithHandler:^(NSError * _Nullable error) {
     if (error) {
       NSDictionary *makeError = RCTMakeError(@"Failed to disconnect with device", nil, nil);
@@ -131,7 +131,7 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
 - (void)checkConnectTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if (_sharedDevice.state != MBLConnectionStateConnected) {
-      NSLog(@"Connection timeout");
+      DLog(@"Connection timeout");
       NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered] });
       [self deviceConnectionStatus:makeError];
     }
