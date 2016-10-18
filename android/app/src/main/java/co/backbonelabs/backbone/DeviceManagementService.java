@@ -37,15 +37,15 @@ import co.backbonelabs.backbone.util.JSError;
 
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static final String TAG = "DeviceManagementService";
-    public static MetaWearBoard mMWBoard;
-    private boolean mScanning;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-    private ReactContext mReactContext;
-    private BluetoothAdapter mBluetoothAdapter;
+    public static MetaWearBoard mwBoard;
+    private boolean scanning;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private ReactContext reactContext;
+    private BluetoothAdapter bluetoothAdapter;
 
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
-        mReactContext = reactContext;
+        this.reactContext = reactContext;
 
         // Listen to the Activity's lifecycle events
         reactContext.addLifecycleEventListener(this);
@@ -134,7 +134,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                     }
 
                     // Emit device array to JS
-                    sendEvent(mReactContext, "DevicesFound", deviceList);
+                    sendEvent(reactContext, "DevicesFound", deviceList);
 
                 }
             });
@@ -143,25 +143,25 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void getSavedDevice(Callback callback) {
-        callback.invoke(mMWBoard != null);
+        callback.invoke(mwBoard != null);
     }
 
     @ReactMethod
     public void scanForDevices(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
-        if (mScanning) {
+        if (scanning) {
             callback.invoke(JSError.make("A scan has already been initiated"));
         } else if (!bluetoothService.getIsEnabled()) {
             callback.invoke(JSError.make("Bluetooth is not enabled"));
         } else {
-            mScanning = true;
+            scanning = true;
             deviceCollection = new HashMap<String, BluetoothDevice>();
             Log.d(TAG, "Starting scan");
             UUID[] serviceUuids = new UUID[] {
                     MetaWearBoard.METAWEAR_SERVICE_UUID,
             };
-            mBluetoothAdapter = bluetoothService.getAdapter();
-            mBluetoothAdapter.startLeScan(serviceUuids, mLeScanCallback);
+            bluetoothAdapter = bluetoothService.getAdapter();
+            bluetoothAdapter.startLeScan(serviceUuids, mLeScanCallback);
             callback.invoke();
         }
     }
@@ -169,10 +169,10 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     @ReactMethod
     public void stopScanForDevices() {
         Log.d(TAG, "Stopping scan");
-        mScanning = false;
+        scanning = false;
         BluetoothService bluetoothService = BluetoothService.getInstance();
-        mBluetoothAdapter = bluetoothService.getAdapter();
-        mBluetoothAdapter.stopLeScan(mLeScanCallback);
+        bluetoothAdapter = bluetoothService.getAdapter();
+        bluetoothAdapter.stopLeScan(mLeScanCallback);
     }
 
     @ReactMethod
@@ -183,7 +183,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         if (device == null) {
             callback.invoke(JSError.make("Device not in range"));
         } else {
-            mMWBoard = MainActivity.metaWearServiceBinder.getMetaWearBoard(device);
+            mwBoard = MainActivity.metaWearServiceBinder.getMetaWearBoard(device);
             callback.invoke();
         }
     }
@@ -195,7 +195,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             WritableMap wm = Arguments.createMap();
             wm.putBoolean("isConnected", true);
             wm.putNull("message");
-            sendEvent(mReactContext, "ConnectionStatus", wm);
+            sendEvent(reactContext, "ConnectionStatus", wm);
         }
 
         @Override
@@ -204,7 +204,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             WritableMap wm = Arguments.createMap();
             wm.putBoolean("isConnected", false);
             wm.putNull("message");
-            sendEvent(mReactContext, "ConnectionStatus", wm);
+            sendEvent(reactContext, "ConnectionStatus", wm);
         }
 
         @Override
@@ -213,21 +213,21 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             WritableMap wm = Arguments.createMap();
             wm.putBoolean("isConnected", false);
             wm.putString("message", "Device took too long to connect");
-            sendEvent(mReactContext, "ConnectionStatus", wm);
+            sendEvent(reactContext, "ConnectionStatus", wm);
         }
     };
 
     @ReactMethod
     public void connectToDevice() {
         Log.d(TAG, "connectToDevice");
-        mMWBoard.setConnectionStateHandler(stateHandler);
-        mMWBoard.connect();
+        mwBoard.setConnectionStateHandler(stateHandler);
+        mwBoard.connect();
     }
 
     @ReactMethod
     public void getDeviceStatus(Callback callback) {
-        if (mMWBoard != null) {
-            callback.invoke(mMWBoard.isConnected() ? Constants.DEVICE_STATUSES.CONNECTED : Constants.DEVICE_STATUSES.DISCONNECTED);
+        if (mwBoard != null) {
+            callback.invoke(mwBoard.isConnected() ? Constants.DEVICE_STATUSES.CONNECTED : Constants.DEVICE_STATUSES.DISCONNECTED);
         } else {
             callback.invoke(Constants.DEVICE_STATUSES.DISCONNECTED);
         }
@@ -235,9 +235,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void forgetDevice(Callback callback) {
-        if (mMWBoard != null) {
-            mMWBoard.disconnect();
-            mMWBoard = null;
+        if (mwBoard != null) {
+            mwBoard.disconnect();
+            mwBoard = null;
             callback.invoke();
         } else {
             callback.invoke(JSError.make("Currently not connected to a device"));

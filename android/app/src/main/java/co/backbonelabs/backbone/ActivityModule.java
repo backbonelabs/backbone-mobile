@@ -6,10 +6,10 @@ public abstract class ActivityModule<V> {
     protected String name;
     protected String sensor;
     protected String notificationName;
-    protected ReactApplicationContext mReactContext;
+    protected ReactApplicationContext reactContext;
 
     public ActivityModule(ReactApplicationContext reactContext) {
-        mReactContext = reactContext;
+        this.reactContext = reactContext;
     }
 
     public String getName() {

@@ -10,7 +10,6 @@ import android.os.IBinder;
 
 import com.facebook.react.ReactActivity;
 import com.mbientlab.metawear.MetaWearBleService;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 public class MainActivity extends ReactActivity implements ServiceConnection {
     public static MetaWearBleService.LocalBinder metaWearServiceBinder;
@@ -46,8 +45,8 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
         super.onDestroy();
 
         // Disconnect from device
-        if (DeviceManagementService.mMWBoard != null) {
-            DeviceManagementService.mMWBoard.disconnect();
+        if (DeviceManagementService.mwBoard != null) {
+            DeviceManagementService.mwBoard.disconnect();
         }
 
         // Unbind the service when the activity is destroyed
