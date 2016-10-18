@@ -193,15 +193,19 @@ class Application extends Component {
         {
           // Iterate through tabBarRoutes and set tab bar item info
           tabBarRoutes.map((value, key) => {
-            // Set icon to active color if route name matches tab bar name
-            const tabBarItemColor = route.name === value.routeName ?
+            // Check if current route matches tab bar route
+            const isSameRoute = route.name === value.routeName;
+            // Set icon to active color if current route matches tab bar route
+            const tabBarItemColor = isSameRoute ?
             styles._activeTabBarItem.color : styles._inactiveTabBarItem.color;
 
             return (
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
-                onPress={() => this.navigator.replace(routes[value.routeName])}
+                onPress={() => (
+                  isSameRoute ? undefined : this.navigator.push(routes[value.routeName])
+                )}
               >
                 <Icon
                   name="circle"
