@@ -4,4 +4,5 @@ export default {
   name: 'errors',
   title: 'Error',
   component: Errors,
+  showTabBar: false,
 };

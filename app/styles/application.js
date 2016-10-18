@@ -17,4 +17,22 @@ export default EStyleSheet.create({
   titleText: {
     marginTop: '0.65rem',
   },
+  tabBar: {
+    height: 59,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    borderTopWidth: 1,
+    borderColor: '#DDDDDD',
+  },
+  tabBarItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeTabBarItem: {
+    color: '$primaryColor',
+  },
+  inactiveTabBarItem: {
+    color: '$disabledColor',
+  },
 });

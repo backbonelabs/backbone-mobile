@@ -39,7 +39,7 @@ class DeviceConnect extends Component {
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === constants.deviceStatuses.CONNECTED) {
         // Replace scene in nav stack, since user can't go back
-        this.props.navigator.replace(routes.posture.postureDashboard);
+        this.props.navigator.replace(routes.postureDashboard);
       } else {
         this.getSavedDevice();
       }
@@ -52,7 +52,7 @@ class DeviceConnect extends Component {
     if (!this.props.isConnected && nextProps.isConnected) {
       Alert.alert('Success', 'Connected', [{
         text: 'Continue',
-        onPress: () => this.props.navigator.replace(routes.posture.postureDashboard),
+        onPress: () => this.props.navigator.replace(routes.postureDashboard),
       }]);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // On a failed attempt to connect, send them to the
