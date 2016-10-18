@@ -126,8 +126,8 @@ public class SensorDataService {
                     try {
                         Accelerometer accelerometer = device.getModule(Accelerometer.class);
 
-                        // Set sampling frequency to 3.125Hz
-                        accelerometer.setOutputDataRate(Bmi160Accelerometer.OutputDataRate.ODR_3_125_HZ.frequency());
+                        // Set sampling frequency to 25Hz, as the Step Detection won't work below this value, at least on my Samsung J5
+                        accelerometer.setOutputDataRate(Bmi160Accelerometer.OutputDataRate.ODR_25_HZ.frequency());
 
                         // Set sampling range to 2G
                         accelerometer.setAxisSamplingRange(Bmi160Accelerometer.AccRange.AR_2G.scale());
@@ -163,10 +163,47 @@ public class SensorDataService {
                                     }
                                 });
 
-                        // Start the accelerometer activity stream
                         accelerometer.start();
 
+                        activeSensors.add(activityModule.getSensor());
+                    } catch (UnsupportedModuleException e) {
+                        Log.e(TAG, "Module not present", e);
+                        activeActivities.remove(activityModule);
+                    }
+                    break;
+                case Constants.SENSORS.BMI160ACCELEROMETER:
+                    Log.d(TAG, "Enabling accelerometer");
+                    try {
+                        LocalNotificationManager.cancelScheduledNotification(activityModule.name);
+
+                        LocalNotificationManager.scheduleNotification(activityModule.name);
+
+                        Bmi160Accelerometer bmi160Accelerometer = device.getModule(Bmi160Accelerometer.class);
+
+                        bmi160Accelerometer.enableStepDetection();
+
+                        bmi160Accelerometer.routeData().fromStepDetection().stream("step_detector").commit()
+                                .onComplete(new AsyncOperation.CompletionHandler<RouteManager>() {
+                                    @Override
+                                    public void success(RouteManager result) {
+                                        Log.d(TAG, "Sub Step");
+                                        result.subscribe("step_detector", new RouteManager.MessageHandler() {
+                                            @Override
+                                            public void process(Message msg) {
+                                                Log.i(TAG, "Step Up " + String.valueOf(System.currentTimeMillis() / 1000L));
+                                                Intent intent = new Intent(activityModule.getNotificationName());
+                                                LocalBroadcastManager.getInstance(MainActivity.currentActivity)
+                                                        .sendBroadcast(intent);
+                                            }
+                                        });
+                                    }
+                                });
+
+                        bmi160Accelerometer.configureStepDetection().setSensitivity(Bmi160Accelerometer.StepSensitivity.ROBUST).commit();
+
                         // Add the sensor to the set of active sensors
+                        bmi160Accelerometer.start();
+
                         activeSensors.add(activityModule.getSensor());
                     } catch (UnsupportedModuleException e) {
                         Log.e(TAG, "Module not present", e);
@@ -223,6 +260,16 @@ public class SensorDataService {
                         accelerometer.start();
                     } else {
                         accelerometer.stop();
+                    }
+                    break;
+                case Constants.SENSORS.BMI160ACCELEROMETER:
+                    LocalNotificationManager.cancelScheduledNotification(Constants.MODULES.STEP);
+
+                    Bmi160Accelerometer bmi160Accelerometer = device.getModule(Bmi160Accelerometer.class);
+                    if (enable) {
+                        bmi160Accelerometer.start();
+                    } else {
+                        bmi160Accelerometer.stop();
                     }
                     break;
             }

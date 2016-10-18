@@ -15,6 +15,7 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     public static MetaWearBleService.LocalBinder metaWearServiceBinder;
     public static Activity currentActivity;
     private NotificationService notificationService;
+    private LocalNotificationManager localNotificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,7 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
 
         // Set up NotificationService
         notificationService = new NotificationService(getApplicationContext());
+        localNotificationManager = new LocalNotificationManager(getApplicationContext());
 
         // Bind the service when the activity is created
         getApplicationContext().bindService(new Intent(this, MetaWearBleService.class),
