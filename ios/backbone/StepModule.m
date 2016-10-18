@@ -35,7 +35,7 @@ static BOOL shouldSendNotifications;
 
 - (void)notify:(NSNotification *)notification {
   [super notify:notification];
-  NSLog(@"Start StepModule notify");
+  DLog(@"Start StepModule notify");
   [self checkIdleTime];
 }
 
