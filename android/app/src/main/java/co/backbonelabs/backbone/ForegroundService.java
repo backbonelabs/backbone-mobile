@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import co.backbonelabs.backbone.util.Constants;
+import timber.log.Timber;
 
 public class ForegroundService extends Service {
     private static final String TAG = "ForegroundService";
@@ -20,7 +21,7 @@ public class ForegroundService extends Service {
         // Determine which action to process
         switch (intent.getAction()) {
             case Constants.ACTIONS.START_POSTURE_FOREGROUND_SERVICE:
-                Log.d(TAG, "Received start posture foreground intent");
+                Timber.d("Received start posture foreground intent");
                 // Create an intent to launch the app
                 Intent notificationIntent = new Intent(this, MainActivity.class);
                 notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -57,13 +58,13 @@ public class ForegroundService extends Service {
                 startForeground(Constants.NOTIFICATION_IDS.FOREGROUND_SERVICE, notification);
                 break;
             case Constants.ACTIONS.STOP_POSTURE_ACTIVITY:
-                Log.d(TAG, "Received stop posture intent");
+                Timber.d("Received stop posture intent");
                 // Disable posture activity
                 ActivityService.getInstance().disableActivity(Constants.MODULES.POSTURE);
 
                 // No break here because we want to process the next case of stopping the service
             case Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE:
-                Log.d(TAG, "Received stop posture foreground intent");
+                Timber.d("Received stop posture foreground intent");
                 // Remove service from foreground
                 stopForeground(true);
 
@@ -80,7 +81,7 @@ public class ForegroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
+        Timber.d("onDestroy");
     }
 
     @Nullable

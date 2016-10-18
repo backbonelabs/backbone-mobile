@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.EventEmitter;
+import timber.log.Timber;
 
 public class PostureModule extends ActivityModule<HashMap<String, Float>> {
     private static final String TAG = "PostureModule";
@@ -42,7 +43,7 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
         @Override
         public void onReceive(Context context, Intent intent) {
             HashMap<String, Float> data = (HashMap<String, Float>) intent.getSerializableExtra(SensorDataService.INTENT_EXTRA_NAME);
-            Log.d(TAG, "PostureModule received data: " + data.toString());
+            Timber.d("PostureModule received data: " + data.toString());
             process(data);
         }
     };
@@ -93,7 +94,7 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
 
         if (ledModule != null) {
             if (Math.abs(tilt) > tiltThreshold && !isLedBlinking) {
-                Log.d(TAG, "Blink LED");
+                Timber.d("Blink LED");
                 ledModule
                         .configureColorChannel(Led.ColorChannel.GREEN)
                         .setHighTime((short) 50)
@@ -113,7 +114,7 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
     }
 
     private void emitTilt() {
-        Log.d(TAG, "emitTilt " + tilt);
+        Timber.d("emitTilt " + tilt);
         WritableMap wm = Arguments.createMap();
         wm.putDouble("tilt", tilt);
         EventEmitter.send(reactContext, "PostureTilt", wm);
