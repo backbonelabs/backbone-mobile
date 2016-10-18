@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.JSError;
 
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
@@ -142,8 +143,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void getSavedDevice(Callback callback) {
-        // MetaWear's Android API does not provide a way to save/remember a device like in iOS
-        callback.invoke();
+        callback.invoke(mMWBoard != null);
     }
 
     @ReactMethod
@@ -212,7 +212,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             Log.e(TAG, "MetaWearBoard error connecting", error);
             WritableMap wm = Arguments.createMap();
             wm.putBoolean("isConnected", false);
-            wm.putString("message", error.getMessage());
+            wm.putString("message", "Device took too long to connect");
             sendEvent(mReactContext, "ConnectionStatus", wm);
         }
     };
@@ -226,18 +226,21 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void getDeviceStatus(Callback callback) {
-        // MetaWear's Android library does not have a way to access the device's connection status
-        // so we just return 0 all the time to simulate a Disconnected state
-        callback.invoke(0);
+        if (mMWBoard != null) {
+            callback.invoke(mMWBoard.isConnected() ? Constants.DEVICE_STATUSES.CONNECTED : Constants.DEVICE_STATUSES.DISCONNECTED);
+        } else {
+            callback.invoke(Constants.DEVICE_STATUSES.DISCONNECTED);
+        }
     }
 
     @ReactMethod
     public void forgetDevice(Callback callback) {
-        mMWBoard = null;
-        if (mMWBoard == null) {
+        if (mMWBoard != null) {
+            mMWBoard.disconnect();
+            mMWBoard = null;
             callback.invoke();
         } else {
-            callback.invoke(JSError.make("Failed to forget device"));
+            callback.invoke(JSError.make("Currently not connected to a device"));
         }
     }
 

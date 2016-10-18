@@ -18,4 +18,10 @@ public class Constants {
     public interface EVENTS {
         String ACTIVITY_DISABLED = "ActivityDisabled";
     }
+    public interface DEVICE_STATUSES {
+        int DISCONNECTED = 0;
+        int CONNECTING = 1;
+        int CONNECTED = 2;
+        int DISCONNECTING = 3;
+    }
 }
