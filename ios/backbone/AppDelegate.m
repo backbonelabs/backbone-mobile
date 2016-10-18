@@ -27,11 +27,9 @@
   [application registerUserNotificationSettings:notificationSettings];
 
   NSDictionary *environment = [[NSProcessInfo processInfo] environment];
-  NSString *token = [environment valueForKey:@"MIXPANEL_TOKEN"];
-  DLog(@"mixpanel token %@", token);
   
   // Generate singleton instance of the Mixpanel API
-  [Mixpanel sharedInstanceWithToken:token];
+  [Mixpanel sharedInstanceWithToken:[environment valueForKey:@"MIXPANEL_TOKEN"]];
   
   // Launch React Native app
   NSURL *jsCodeLocation;
