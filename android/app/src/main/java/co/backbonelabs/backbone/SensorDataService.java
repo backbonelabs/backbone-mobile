@@ -26,7 +26,7 @@ public class SensorDataService {
     public static final String INTENT_EXTRA_NAME = "co.backbonelabs.Backbone.sensorData";
     private static final String TAG = "SensorDataService";
     private static SensorDataService instance = null;
-    private MetaWearBoard device = DeviceManagementService.mMWBoard;
+    private MetaWearBoard device = DeviceManagementService.mwBoard;
     private HashSet<ActivityModule> activeActivities = new HashSet<ActivityModule>();
     private HashSet<String> activeSensors = new HashSet<String>();
 

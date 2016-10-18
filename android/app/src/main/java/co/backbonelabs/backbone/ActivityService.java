@@ -28,7 +28,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
             put(Constants.MODULES.POSTURE, PostureModule.class);
         }
     };
-    private ReactApplicationContext mReactContext;
+    private ReactApplicationContext reactContext;
 
     /**
      * Returns the singleton instance
@@ -57,7 +57,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
      */
     private ActivityService(ReactApplicationContext reactContext) {
         super(reactContext);
-        mReactContext = reactContext;
+        this.reactContext = reactContext;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
             Class<ActivityModule> _class = activityClassMap.get(activityName);
             try {
                 Constructor<?> constructor = _class.getConstructor(ReactApplicationContext.class);
-                ActivityModule activityModule = (ActivityModule) constructor.newInstance(mReactContext);
+                ActivityModule activityModule = (ActivityModule) constructor.newInstance(reactContext);
                 Log.d(TAG, "Instantiated " + activityModule.getClass().getName() + " activity");
 
                 SensorDataService sensorDataService = SensorDataService.getInstance();
@@ -111,7 +111,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
             // Emit event to RN
             WritableMap wm = Arguments.createMap();
             wm.putString("module", activityName);
-            EventEmitter.send(mReactContext, Constants.EVENTS.ACTIVITY_DISABLED, wm);
+            EventEmitter.send(reactContext, Constants.EVENTS.ACTIVITY_DISABLED, wm);
         }
     }
 }

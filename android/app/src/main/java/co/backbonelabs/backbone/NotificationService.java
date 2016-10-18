@@ -9,10 +9,10 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 public class NotificationService {
-    private static Context mContext;
+    private static Context context;
 
     public NotificationService(Context context) {
-        mContext = context;
+        NotificationService.context = context;
     }
 
     /**
@@ -35,13 +35,13 @@ public class NotificationService {
      * @param text The second line of text in the notification
      */
     public static void sendNotification(int id, String title, String text) {
-        NotificationCompat.Builder mBuilder = createBuilderTemplate()
+        NotificationCompat.Builder builder = createBuilderTemplate()
                 .setContentTitle(title)
                 .setContentText(text);
 
         NotificationManager mNotificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(id, mBuilder.build());
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(id, builder.build());
     }
 
     /**
@@ -52,27 +52,27 @@ public class NotificationService {
     private static NotificationCompat.Builder createBuilderTemplate() {
         long[] vibrationPattern = {0, 500};
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_stat_notify_logo)
                 .setAutoCancel(true)
                 .setVibrate(vibrationPattern);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Set background color of the small icon if OS is Lollipop (5.0) or higher
-            mBuilder.setColor(Color.rgb(237, 28, 36));
+            builder.setColor(Color.rgb(237, 28, 36));
         }
 
-        Intent notificationIntent = new Intent(mContext, MainActivity.class);
+        Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0,
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 notificationIntent, 0);
 
-        mBuilder.setContentIntent(pendingIntent);
+        builder.setContentIntent(pendingIntent);
 
-        return mBuilder;
+        return builder;
     }
 }

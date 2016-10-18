@@ -89,7 +89,7 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
     }
 
     private void handleTilt() {
-        Led ledModule = DeviceManagementService.mMWBoard.lookupModule(Led.class);
+        Led ledModule = DeviceManagementService.mwBoard.lookupModule(Led.class);
 
         if (ledModule != null) {
             if (Math.abs(tilt) > tiltThreshold && !isLedBlinking) {
@@ -116,6 +116,6 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
         Log.d(TAG, "emitTilt " + tilt);
         WritableMap wm = Arguments.createMap();
         wm.putDouble("tilt", tilt);
-        EventEmitter.send(mReactContext, "PostureTilt", wm);
+        EventEmitter.send(reactContext, "PostureTilt", wm);
     }
 }

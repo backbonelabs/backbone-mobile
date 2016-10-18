@@ -52,10 +52,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         }
     };
 
-    private ReactContext mReactContext;
-    private BluetoothAdapter mBluetoothAdapter;
+    private ReactContext reactContext;
+    private BluetoothAdapter bluetoothAdapter;
 
-    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
@@ -63,19 +63,19 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                 state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("state", bluetoothStateMap.get(state, -1));
-                sendEvent(mReactContext, "BluetoothState", wm);
+                sendEvent(reactContext, "BluetoothState", wm);
             }
         }
     };
 
     private BluetoothService(ReactApplicationContext reactContext) {
         super(reactContext);
-        mReactContext = reactContext;
+        this.reactContext = reactContext;
 
         // Listen to the Activity's lifecycle events
         reactContext.addLifecycleEventListener(this);
 
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
     /**
@@ -83,7 +83,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
      * @return The default BluetoothAdapter
      */
     public BluetoothAdapter getAdapter() {
-        return mBluetoothAdapter;
+        return bluetoothAdapter;
     }
 
     /**
@@ -91,7 +91,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
      * @return True/false indicating whether Bluetooth is enabled
      */
     public boolean getIsEnabled() {
-        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
+        return bluetoothAdapter != null && bluetoothAdapter.isEnabled();
     }
 
     /**
@@ -143,14 +143,14 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         // Activity `onResume`
         Log.d(TAG, "onHostResume");
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        mReactContext.registerReceiver(mBroadcastReceiver, filter);
+        reactContext.registerReceiver(broadcastReceiver, filter);
     }
 
     @Override
     public void onHostPause() {
         // Activity `onPause`
         Log.d(TAG, "onHostPause");
-        mReactContext.unregisterReceiver(mBroadcastReceiver);
+        reactContext.unregisterReceiver(broadcastReceiver);
     }
 
     @Override
