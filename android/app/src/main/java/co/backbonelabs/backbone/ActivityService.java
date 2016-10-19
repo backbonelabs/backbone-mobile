@@ -1,7 +1,5 @@
 package co.backbonelabs.backbone;
 
-import android.util.Log;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -22,7 +20,6 @@ import timber.log.Timber;
  * This is a singleton. Use getInstance() to retrieve the singleton instance.
  */
 public class ActivityService extends ReactContextBaseJavaModule {
-    private static final String TAG = "ActivityService";
     private static ActivityService instance = null;
     private static HashMap<String, Class> activityClassMap = new HashMap<String, Class>() {
         {

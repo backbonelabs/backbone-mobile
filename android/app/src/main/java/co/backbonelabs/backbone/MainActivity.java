@@ -22,6 +22,7 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Enable Timber logging only on debug mode
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }

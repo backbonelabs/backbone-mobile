@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.facebook.react.bridge.Arguments;
@@ -27,7 +26,6 @@ import timber.log.Timber;
 
 public class BluetoothService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static BluetoothService instance = null;
-    private static final String TAG = "BluetoothService";
     private int state;
 
     public static BluetoothService getInstance() {

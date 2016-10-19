@@ -8,14 +8,11 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import co.backbonelabs.backbone.util.Constants;
 import timber.log.Timber;
 
 public class ForegroundService extends Service {
-    private static final String TAG = "ForegroundService";
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Determine which action to process

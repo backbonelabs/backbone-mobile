@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -19,7 +18,6 @@ import co.backbonelabs.backbone.util.EventEmitter;
 import timber.log.Timber;
 
 public class PostureModule extends ActivityModule<HashMap<String, Float>> {
-    private static final String TAG = "PostureModule";
     private boolean calibrated;
     private double controlAngle;
     private double controlDistance;
