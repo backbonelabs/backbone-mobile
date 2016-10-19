@@ -79,7 +79,7 @@ export default {
   updateUser(user) {
     const {
       _id,
-      ...userUpdateFields,
+      ...userUpdateFields
     } = user;
 
     return (dispatch, getState) => {
@@ -117,7 +117,7 @@ export default {
   updateUserSettings(user) {
     const {
       _id,
-      ...userSettingsUpdateFields,
+      ...userSettingsUpdateFields
     } = user;
 
     const {
