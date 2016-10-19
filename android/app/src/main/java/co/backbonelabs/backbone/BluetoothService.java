@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.facebook.react.bridge.Arguments;
@@ -23,9 +22,10 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.MissingFormatArgumentException;
 
+import timber.log.Timber;
+
 public class BluetoothService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static BluetoothService instance = null;
-    private static final String TAG = "BluetoothService";
     private int state;
 
     public static BluetoothService getInstance() {
@@ -132,7 +132,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-        Log.d(TAG, "sendEvent");
+        Timber.d("sendEvent");
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
@@ -141,7 +141,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     @Override
     public void onHostResume() {
         // Activity `onResume`
-        Log.d(TAG, "onHostResume");
+        Timber.d("onHostResume");
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         reactContext.registerReceiver(broadcastReceiver, filter);
     }
@@ -149,7 +149,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     @Override
     public void onHostPause() {
         // Activity `onPause`
-        Log.d(TAG, "onHostPause");
+        Timber.d("onHostPause");
         reactContext.unregisterReceiver(broadcastReceiver);
     }
 
