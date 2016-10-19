@@ -24,7 +24,7 @@ public class Mixpanel extends ReactContextBaseJavaModule implements LifecycleEve
     public Mixpanel(ReactApplicationContext reactContext) {
         super(reactContext);
         String projectToken = BuildConfig.MIXPANEL_TOKEN;
-        mixpanel = MixpanelAPI.getInstance(reactContext.getCurrentActivity(), projectToken);
+        mixpanel = MixpanelAPI.getInstance(MainActivity.currentActivity, projectToken);
     }
 
     /**
