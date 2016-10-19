@@ -63,7 +63,7 @@
  @param activityModule An ActivityModule to register to the list of active activities
  */
 - (void)registerActivity:(ActivityModule *)activityModule {
-  NSLog(@"registerActivity");
+  DLog(@"registerActivity");
   SensorDataService *sensorDataService = [SensorDataService getSensorDataService];
 
   // Add activity to list of active activities
@@ -80,7 +80,7 @@
     // the sensor data transformed into a NSDictionary
     if ([activityModule.sensor isEqualToString:@"accelerometer"]) {
       // accelerometer
-      NSLog(@"Enabling accelerometer");
+      DLog(@"Enabling accelerometer");
       MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
       accelerometerBMI160.sampleFrequency = 1.56;
       [accelerometerBMI160.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
@@ -97,7 +97,7 @@
     }
     else if ([activityModule.sensor isEqualToString:@"accelerometerBMI160"]) {
       // accelerometer
-      NSLog(@"Enabling accelerometerBMI160");
+      DLog(@"Enabling accelerometerBMI160");
       [[UIApplication sharedApplication] cancelAllLocalNotifications];
       
       if ([LocalNotificationManager scheduleNotification:activityModule.name]) {
@@ -123,7 +123,7 @@
  @param activityName Name of the ActivityModule to unregister
  */
 - (void)unregisterActivityByName:(NSString *)activityName {
-  NSLog(@"unregisterActivityByName");
+  DLog(@"unregisterActivityByName");
   SensorDataService *sensorDataService = [SensorDataService getSensorDataService];
   NSPredicate *isNotActivityName = [NSPredicate predicateWithBlock:^BOOL(ActivityModule * _Nonnull activity, NSDictionary<NSString *,id> * _Nullable bindings) {
     if ([activity.name isEqualToString:activityName]) {
@@ -163,16 +163,16 @@
       // There is a sensor that is no longer used by any of the active activity modules
       if ([listeningToSensor isEqualToString:@"accelerometer"]) {
         // Stop notifications on accelerometer
-        NSLog(@"Disabling notifications on accelerometer");
+        DLog(@"Disabling notifications on accelerometer");
         [sensorDataService.device.accelerometer.dataReadyEvent stopNotificationsAsync];
       }
       else if ([listeningToSensor isEqualToString:@"gyro"]) {
         // Stop notifications on gyroscope
-        NSLog(@"Disabling notifications on gyroscope");
+        DLog(@"Disabling notifications on gyroscope");
         [sensorDataService.device.gyro.dataReadyEvent stopNotificationsAsync];
       }
       else if ([listeningToSensor isEqualToString:@"accelerometerBMI160"]) {
-        NSLog(@"Disabling notifications on accelerometerBMI160");
+        DLog(@"Disabling notifications on accelerometerBMI160");
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
         
         MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
@@ -191,7 +191,7 @@
  from all active sensors
  */
 - (void)unregisterAllActivities {
-  NSLog(@"unregisterAllActivities");
+  DLog(@"unregisterAllActivities");
   SensorDataService *sensorDataService = [SensorDataService getSensorDataService];
   
   NSMutableSet *activeActivityNames = [[NSMutableSet alloc] init];

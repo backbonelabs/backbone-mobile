@@ -189,6 +189,7 @@
 		69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalNotificationManager.h; path = backbone/LocalNotificationManager.h; sourceTree = "<group>"; };
 		69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalNotificationManager.m; path = backbone/LocalNotificationManager.m; sourceTree = "<group>"; };
 		69ABF9E81DA3CA6F00D9B15A /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = backbone/Constants.h; sourceTree = "<group>"; };
+		69FCAED01DB67B8E007712A4 /* Backbone-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Backbone-Prefix.pch"; path = "backbone/Backbone-Prefix.pch"; sourceTree = "<group>"; };
 		6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -320,6 +321,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
+				69FCAED01DB67B8E007712A4 /* Backbone-Prefix.pch */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				667641251D63B8F900D45761 /* Environment.h */,
 				667641261D63B90800D45761 /* Environment.m */,
@@ -990,7 +992,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 48;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
@@ -998,6 +1000,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Metawear-iOSAPI",
 				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/Backbone-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -1027,13 +1031,15 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 48;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/Metawear-iOSAPI",
 				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/Backbone-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,

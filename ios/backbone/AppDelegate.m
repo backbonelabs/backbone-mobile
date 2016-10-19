@@ -27,11 +27,9 @@
   [application registerUserNotificationSettings:notificationSettings];
 
   NSDictionary *environment = [[NSProcessInfo processInfo] environment];
-  NSString *token = [environment valueForKey:@"MIXPANEL_TOKEN"];
-  NSLog(@"mixpanel token %@", token);
   
   // Generate singleton instance of the Mixpanel API
-  [Mixpanel sharedInstanceWithToken:token];
+  [Mixpanel sharedInstanceWithToken:[environment valueForKey:@"MIXPANEL_TOKEN"]];
   
   // Launch React Native app
   NSURL *jsCodeLocation;
@@ -54,14 +52,14 @@
 
 // Handler for when the app is active in the foreground
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-  NSLog(@"applicationDidBecomeActive");
+  DLog(@"applicationDidBecomeActive");
   // Prevent posture module from sending local notifications if the app is in the foreground
   [PostureModule setShouldSendNotifications:false];
 }
 
 // Handler for when the app is in the background
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-  NSLog(@"applicationDidEnterBackground");
+  DLog(@"applicationDidEnterBackground");
   // Allow posture module to send local notifications if the app switches to the background
   [PostureModule setShouldSendNotifications:true];
 }

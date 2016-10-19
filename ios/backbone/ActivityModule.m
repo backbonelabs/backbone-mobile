@@ -12,7 +12,7 @@
  Adds the ActivityModule as an observer to notifications matching self.notificationName
  */
 - (void)startListening {
-  NSLog(@"Adding %@ as an observer", NSStringFromClass([self class]));
+  DLog(@"Adding %@ as an observer", NSStringFromClass([self class]));
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(notify:)
                                                name:self.notificationName
@@ -23,7 +23,7 @@
  Removes the ActivityModule as an observer from notifications matching self.notificationName
  */
 - (void)stopListening {
-  NSLog(@"Removing %@ as an observer", NSStringFromClass([self class]));
+  DLog(@"Removing %@ as an observer", NSStringFromClass([self class]));
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -32,7 +32,7 @@
  data by each activity will be placed here.
  */
 - (void)notify:(NSNotification *)notification {
-  NSLog(@"%@ received notification", NSStringFromClass([self class]));
+  DLog(@"%@ received notification", NSStringFromClass([self class]));
 }
 
 - (void)dealloc {

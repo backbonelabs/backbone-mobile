@@ -65,12 +65,12 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   
   switch (_state) {
     case CBCentralManagerStatePoweredOff: {
-      NSLog(@"Bluetooth is OFF");
+      DLog(@"Bluetooth is OFF");
       [[UIApplication sharedApplication] cancelAllLocalNotifications];
     }
       break;
     case CBCentralManagerStatePoweredOn: {
-      NSLog(@"Bluetooth is ON");
+      DLog(@"Bluetooth is ON");
       [[UIApplication sharedApplication] cancelAllLocalNotifications];
     }
     default:
@@ -83,7 +83,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 }
 
 -(void)emitCentralState {
-  NSLog(@"Emitting central state: %i", _state);
+  DLog(@"Emitting central state: %i", _state);
   NSDictionary *stateUpdate = @{
                                 @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]
                                 };
@@ -109,7 +109,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 
 // Handler for application termination
 - (void)applicationWillTerminate:(NSNotification *)notification {
-  NSLog(@"Application Will Terminate");
+  DLog(@"Application Will Terminate");
   // Cancel all prior notifications before termination
   [[UIApplication sharedApplication] cancelAllLocalNotifications];
   
