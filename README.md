@@ -27,8 +27,8 @@ Sensitive build/environment variables are maintained in `android/app/local.prope
 
 ```
 API_SERVER_URL="http://XXX.XXX.XXX.XXX:XXXX"
-RELEASE_STORE_FILE="backbone-release-key.keystore"
-RELEASE_KEY_ALIAS="backboneAndroidSigningKey"
+RELEASE_STORE_FILE=backbone-release-key.keystore
+RELEASE_KEY_ALIAS=backboneAndroidSigningKey
 RELEASE_STORE_PASSWORD=
 RELEASE_KEY_PASSWORD=
 MIXPANEL_TOKEN=
