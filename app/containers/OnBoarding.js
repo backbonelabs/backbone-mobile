@@ -6,7 +6,7 @@ import {
   PushNotificationIOS,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import OnboardingFlow from './onboardingFlow';
+import OnboardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 
 const { width } = Dimensions.get('window');

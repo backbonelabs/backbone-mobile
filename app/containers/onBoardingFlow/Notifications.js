@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
-import styles from '../../styles/onboarding/notifications';
+import styles from '../../styles/onBoarding/notifications';
 import HeadingText from '../../components/HeadingText';
 import SecondaryText from '../../components/SecondaryText';
 
