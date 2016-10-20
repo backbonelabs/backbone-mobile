@@ -10,7 +10,7 @@ import SecondaryText from '../components/SecondaryText';
 import Button from '../components/Button';
 import logo from '../images/logo.png';
 import bg from '../images/bg.jpg';
-import styles from '../styles/home';
+import styles from '../styles/welcome';
 import routes from '../routes';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
@@ -18,7 +18,7 @@ import constants from '../utils/constants';
 
 const { PropTypes } = React;
 
-class Home extends Component {
+class Welcome extends Component {
   static propTypes = {
     auth: PropTypes.shape({
       accessToken: PropTypes.string,
@@ -120,4 +120,4 @@ const mapStateToProps = (state) => {
   return { auth, app };
 };
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(Welcome);

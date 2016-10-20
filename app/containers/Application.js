@@ -250,7 +250,7 @@ class Application extends Component {
         <Navigator
           navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={routes.home}
+          initialRoute={routes.welcome}
           renderScene={this.renderScene}
         />
       </Drawer>
