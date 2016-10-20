@@ -50,7 +50,7 @@ export default class Onboarding extends Component {
   }
 
   // Animates transition from one onboarding step to another
-  animationSequence() {
+  stepTransitionAnimation() {
     Animated.spring(this.state.animatedValues, {
       tension: 10,
       toValue: {
@@ -77,7 +77,7 @@ export default class Onboarding extends Component {
     this.setState({
       step: this.state.step - 1,
       valueX: this.state.valueX + width,
-    }, this.animationSequence);
+    }, this.stepTransitionAnimation);
   }
 
   // Transitions to next onboarding step
@@ -85,7 +85,7 @@ export default class Onboarding extends Component {
     this.setState({
       step: this.state.step + 1,
       valueX: this.state.valueX - width,
-    }, this.animationSequence);
+    }, this.stepTransitionAnimation);
   }
 
   // Store onboarding data all at once

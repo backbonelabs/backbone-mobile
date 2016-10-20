@@ -12,15 +12,15 @@ import SecondaryText from '../../components/SecondaryText';
 
 const Notifications = props => (
   <View key={props.key} onPress={props.onPress} style={styles.container}>
-    <View style={styles.headerTextView}>
+    <View style={styles.headerTextContainer}>
       <HeadingText size={3}>Get Reminders</HeadingText>
     </View>
-    <View style={styles.subTextView}>
+    <View style={styles.subTextContainer}>
       <SecondaryText style={styles._subText}>
         Notifications are a quick and easy way to be notified whenever you slouch!
       </SecondaryText>
     </View>
-    <View style={styles.primaryButtonView}>
+    <View style={styles.primaryButtonContainer}>
       <TouchableOpacity
         style={styles.primaryButton}
         onPress={() => Linking.openURL('app-settings:')}
@@ -28,7 +28,7 @@ const Notifications = props => (
         <Text style={styles.primaryButtonText}>ENABLE NOTIFICATIONS</Text>
       </TouchableOpacity>
     </View>
-    <View style={styles.secondaryButtonView}>
+    <View style={styles.secondaryButtonContainer}>
       <TouchableOpacity
         style={styles.secondaryButton}
         onPress={props.onPress}

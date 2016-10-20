@@ -35,18 +35,4 @@ export default EStyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
-  secondaryButtonContainer: {
-    flex: 0.15,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  secondaryButton: {
-    width: '25%',
-    height: 35,
-    justifyContent: 'center',
-  },
-  secondaryButtonText: {
-    color: 'gray',
-    textAlign: 'center',
-  },
 });
