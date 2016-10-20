@@ -34,6 +34,7 @@ import java.util.UUID;
 
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.JSError;
+import timber.log.Timber;
 
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static final String TAG = "DeviceManagementService";
@@ -75,21 +76,21 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                         @Override
                         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                             final String macAddress = gatt.getDevice().getAddress();
-                            Log.d(TAG, macAddress + " onServicesDiscovered status: " + status);
+                            Timber.d(macAddress + " onServicesDiscovered status: " + status);
                             if (status == BluetoothGatt.GATT_SUCCESS) {
-                                Log.d(TAG, macAddress + " GATT_SUCCESS");
+                                Timber.d(macAddress + " GATT_SUCCESS");
                                 List<BluetoothGattService> services = gatt.getServices();
                                 for (BluetoothGattService service : services) {
                                     UUID serviceUuid = service.getUuid();
-                                    Log.d(TAG, macAddress + " uuid: " + serviceUuid);
+                                    Timber.d(macAddress + " uuid: " + serviceUuid);
                                     if (serviceUuid.equals(MetaWearBoard.METAWEAR_SERVICE_UUID)) {
                                         // This is a MetaWear board
-                                        Log.d(TAG, "Found MetaWear board");
-                                        Log.d(TAG, macAddress + " service: " + serviceUuid + " service type: " + service.getType());
+                                        Timber.d("Found MetaWear board");
+                                        Timber.d(macAddress + " service: " + serviceUuid + " service type: " + service.getType());
 
                                         List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
                                         for (BluetoothGattCharacteristic characteristic : characteristics) {
-                                            Log.d(TAG, macAddress + " service: " + service.getUuid() + " characteristic: " + characteristic.getUuid());
+                                            Timber.d(macAddress + " service: " + service.getUuid() + " characteristic: " + characteristic.getUuid());
 
                                             List<BluetoothGattDescriptor> descriptors = characteristic.getDescriptors();
                                             for (BluetoothGattDescriptor descriptor : descriptors) {
@@ -99,7 +100,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                                                     for (byte descriptorValue : descriptorValues) {
                                                         dv = dv + descriptorValue + " :: ";
                                                     }
-                                                    Log.d(TAG, "characteristic: " + characteristic.getUuid() + " descriptor: " + descriptor.getUuid() + " value: " + dv);
+                                                    Timber.d("characteristic: " + characteristic.getUuid() + " descriptor: " + descriptor.getUuid() + " value: " + dv);
                                                 }
                                             }
                                         }
@@ -107,7 +108,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                                 }
                             }
                             // Close GATT client to release resources
-                            Log.d(TAG, "Closing GATT client");
+                            Timber.d("Closing GATT client");
                             gatt.close();
                         }
                     };
@@ -156,7 +157,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         } else {
             scanning = true;
             deviceCollection = new HashMap<String, BluetoothDevice>();
-            Log.d(TAG, "Starting scan");
+            Timber.d("Starting scan");
             UUID[] serviceUuids = new UUID[] {
                     MetaWearBoard.METAWEAR_SERVICE_UUID,
             };
@@ -168,7 +169,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void stopScanForDevices() {
-        Log.d(TAG, "Stopping scan");
+        Timber.d("Stopping scan");
         scanning = false;
         BluetoothService bluetoothService = BluetoothService.getInstance();
         bluetoothAdapter = bluetoothService.getAdapter();
@@ -177,7 +178,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void selectDevice(String macAddress, Callback callback) {
-        Log.d(TAG, "selectDevice " + macAddress);
+        Timber.d("selectDevice " + macAddress);
         stopScanForDevices();
         BluetoothDevice device = deviceCollection.get(macAddress);
         if (device == null) {
@@ -191,7 +192,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     private final ConnectionStateHandler stateHandler = new ConnectionStateHandler() {
         @Override
         public void connected() {
-            Log.d(TAG, "MetaWearBoard connected");
+            Timber.d("MetaWearBoard connected");
             WritableMap wm = Arguments.createMap();
             wm.putBoolean("isConnected", true);
             wm.putNull("message");
@@ -200,7 +201,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
         @Override
         public void disconnected() {
-            Log.d(TAG, "MetaWearBoard disconnected");
+            Timber.d("MetaWearBoard disconnected");
             WritableMap wm = Arguments.createMap();
             wm.putBoolean("isConnected", false);
             wm.putNull("message");
@@ -219,7 +220,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void connectToDevice() {
-        Log.d(TAG, "connectToDevice");
+        Timber.d("connectToDevice");
         mwBoard.setConnectionStateHandler(stateHandler);
         mwBoard.connect();
     }
@@ -245,14 +246,14 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-        Log.d(TAG, "sendEvent " + eventName);
+        Timber.d("sendEvent " + eventName);
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableArray params) {
-        Log.d(TAG, "sendEvent " + eventName);
+        Timber.d("sendEvent " + eventName);
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);

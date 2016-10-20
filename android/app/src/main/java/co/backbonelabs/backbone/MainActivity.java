@@ -11,6 +11,8 @@ import android.os.IBinder;
 import com.facebook.react.ReactActivity;
 import com.mbientlab.metawear.MetaWearBleService;
 
+import timber.log.Timber;
+
 public class MainActivity extends ReactActivity implements ServiceConnection {
     public static MetaWearBleService.LocalBinder metaWearServiceBinder;
     public static Activity currentActivity;
@@ -19,6 +21,11 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable Timber logging only on debug mode
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
 
         // Set up NotificationService
         notificationService = new NotificationService(getApplicationContext());
