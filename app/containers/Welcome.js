@@ -6,15 +6,15 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
+import HeadingText from '../components/HeadingText';
+import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Button from '../components/Button';
 import logo from '../images/logo.png';
-import bg from '../images/bg.jpg';
 import styles from '../styles/welcome';
 import routes from '../routes';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
-import constants from '../utils/constants';
 
 const { PropTypes } = React;
 
@@ -69,47 +69,40 @@ class Welcome extends Component {
     }
   }
 
-  getMainBody() {
-    const { accessToken } = this.props.auth;
-    const { bluetoothStates } = constants;
-
-    return (
-      <Button
-        onPress={
-          () => this.props.navigator.push(accessToken ? routes.deviceConnect : routes.login)
-        }
-        disabled={accessToken && this.props.app.bluetoothState === bluetoothStates.OFF}
-        text={accessToken ? 'Connect' : 'Log In'}
-      />
-    );
-  }
-
   render() {
     const { accessToken, inProgress } = this.props.auth;
 
     return (
       <View style={styles.container}>
-        <Image style={styles.background} source={bg} />
-        <View style={styles.header}>
-          <Image style={styles.logo} source={logo} />
-        </View>
         <View style={styles.body}>
+          <Image source={logo} style={styles.logo} />
+          <HeadingText size={1}>Welcome to Backbone</HeadingText>
+          <BodyText>Lorem ipsum dolor sit amet, consectetur adipiscing elit</BodyText>
+        </View>
+        <View style={styles.footer}>
           {this.state.isInitializing || inProgress ?
-            <Spinner /> : this.getMainBody()
+            <Spinner />
+            : (
+              <View style={styles.CTAContainer}>
+                <Button
+                  onPress={() => this.props.navigator.push(routes.login)}
+                  text="Log In"
+                />
+                <Button
+                  onPress={() => this.props.navigator.push(routes.signup)}
+                  text="Sign Up"
+                />
+              </View>
+            )
+          }
+          {this.props.app.config.DEV_MODE && accessToken &&
+            <TouchableOpacity
+              onPress={() => SensitiveInfo.deleteItem('accessToken')}
+            >
+              <SecondaryText>Delete access token</SecondaryText>
+            </TouchableOpacity>
           }
         </View>
-        <TouchableOpacity
-          style={styles.footer}
-          onPress={() => (
-            this.props.app.config.DEV_MODE && accessToken ?
-              SensitiveInfo.deleteItem('accessToken') : this.props.navigator.push(routes.signup)
-          )}
-        >
-          <SecondaryText style={styles._footerText}>
-            {this.props.app.config.DEV_MODE && accessToken ?
-              'Delete access token' : 'Don\'t have an account? Sign up'}
-          </SecondaryText>
-        </TouchableOpacity>
       </View>
     );
   }
