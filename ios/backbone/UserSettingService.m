@@ -41,7 +41,7 @@ RCT_EXPORT_METHOD(updateUserSetting:(NSDictionary*)settingDict callback:(RCTResp
     // The second parameter is used to define default value on empty keys
     DLog(@"Setting[Name]: %@", [preference objectForKey:@"name"]);
     DLog(@"Setting[Sensitivity]: %d", [[preference objectForKey:@"sensitivity"] intValue]);
-    DLog(@"Setting[ShouldNotify]: %@", ([[preference objectForKey:@"sensitivity"] boolValue] ? @"ON" : @"OFF"));
+    DLog(@"Setting[ShouldNotify]: %@", ([[preference objectForKey:@"shouldNotify"] boolValue] ? @"ON" : @"OFF"));
     
     callback(@[[NSNull null]]);
   } @catch (NSException *exception) {
