@@ -3,14 +3,15 @@ import {
   View,
   Animated,
   Dimensions,
+  PushNotificationIOS,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import OnBoardingFlow from './onBoardingFlow';
+import OnboardingFlow from './onboardingFlow';
 import styles from '../styles/onboarding';
 
 const { width } = Dimensions.get('window');
 
-export default class OnBoarding extends Component {
+export default class Onboarding extends Component {
   constructor() {
     super();
     this.state = {
@@ -22,13 +23,33 @@ export default class OnBoarding extends Component {
     this.previousStep = this.previousStep.bind(this);
   }
 
+  componentWillMount() {
+    // Check push notification settings
+    PushNotificationIOS.checkPermissions(permissions => {
+      // If push notifications are already enabled, go to next step
+      if (permissions.alert) {
+        this.nextStep();
+      } else {
+        // Set listener for user enabling push notifications
+        PushNotificationIOS.addEventListener('register', this.nextStep);
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    // Remove notifications event listener to prevent memory leaks
+    PushNotificationIOS.removeEventListener('register');
+  }
+
+  // Returns an array with multiple style objects
   getStepStyle() {
     return [
-      styles.stepContainer,
+      styles.onBoardingFlowContainer,
       { transform: this.state.animatedValues.getTranslateTransform() },
     ];
   }
 
+  // Animates transition from one onboarding step to another
   animationSequence() {
     Animated.spring(this.state.animatedValues, {
       tension: 10,
@@ -39,23 +60,19 @@ export default class OnBoarding extends Component {
     }).start();
   }
 
-  selectStep(selection) {
-    this.setState({
-      step: selection,
-      valueX: -width * selection,
-    }, this.animationSequence);
-  }
-
-  loadOnBoardingFlow() {
-    const steps = OnBoardingFlow.map((step, i) => (
+  // Combines the separate onboarding step components into one
+  loadOnboardingFlow() {
+    const steps = OnboardingFlow.map((step, i) => (
       step({
         key: i,
-        onPress: i === OnBoardingFlow.length - 1 ? this.saveData : this.nextStep,
+        onPress: i === OnboardingFlow.length - 1 ? this.saveData : this.nextStep,
+        currentStep: this.state.step,
       })
     ));
     return <Animated.View style={this.getStepStyle()}>{steps}</Animated.View>;
   }
 
+  // Transitions back to previous onboarding step
   previousStep() {
     this.setState({
       step: this.state.step - 1,
@@ -63,24 +80,24 @@ export default class OnBoarding extends Component {
     }, this.animationSequence);
   }
 
+  // Transitions to next onboarding step
   nextStep() {
-    console.log('next step');
     this.setState({
       step: this.state.step + 1,
       valueX: this.state.valueX - width,
     }, this.animationSequence);
   }
 
+  // Store onboarding data all at once
   saveData() {
     // Do something here
-    console.log('saving data');
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.progressCircleView}>
-          { OnBoardingFlow.map((value, key) => (
+        <View style={styles.progressCircleContainer}>
+          { OnboardingFlow.map((value, key) => (
             <View key={key}>
               <Icon
                 name={this.state.step > key ? 'check-circle' : 'circle-o'}
@@ -90,7 +107,7 @@ export default class OnBoarding extends Component {
             </View>
           )) }
         </View>
-        { this.loadOnBoardingFlow() }
+        { this.loadOnboardingFlow() }
       </View>
     );
   }
