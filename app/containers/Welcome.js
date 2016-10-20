@@ -31,6 +31,7 @@ class Welcome extends Component {
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       push: PropTypes.func,
+      replace: PropTypes.func,
     }),
   };
 
@@ -65,6 +66,9 @@ class Welcome extends Component {
       } else {
         // Successful login, save new access token
         SensitiveInfo.setItem('accessToken', nextProps.auth.accessToken);
+
+        // Navigate to Home
+        this.props.navigator.replace(routes.home);
       }
     }
   }
