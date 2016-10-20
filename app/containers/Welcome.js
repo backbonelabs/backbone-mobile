@@ -25,7 +25,6 @@ class Welcome extends Component {
       inProgress: PropTypes.bool,
     }),
     app: PropTypes.shape({
-      bluetoothState: PropTypes.number,
       config: PropTypes.object,
     }),
     dispatch: PropTypes.func,
@@ -51,9 +50,7 @@ class Welcome extends Component {
         // There is a saved access token
         // Attempt to log in using the access token
         accessToken && this.props.dispatch(authActions.login({ accessToken }))
-      )
-      .then(() => this.setState({ isInitializing: false }))
-      .catch(() => this.setState({ isInitializing: false }));
+      );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -74,8 +71,6 @@ class Welcome extends Component {
   }
 
   render() {
-    const { accessToken, inProgress } = this.props.auth;
-
     return (
       <View style={styles.container}>
         <View style={styles.body}>
@@ -84,22 +79,19 @@ class Welcome extends Component {
           <BodyText>Lorem ipsum dolor sit amet, consectetur adipiscing elit</BodyText>
         </View>
         <View style={styles.footer}>
-          {this.state.isInitializing || inProgress ?
-            <Spinner />
-            : (
-              <View style={styles.CTAContainer}>
-                <Button
-                  onPress={() => this.props.navigator.push(routes.login)}
-                  text="Log In"
-                />
-                <Button
-                  onPress={() => this.props.navigator.push(routes.signup)}
-                  text="Sign Up"
-                />
-              </View>
-            )
-          }
-          {this.props.app.config.DEV_MODE && accessToken &&
+          {this.props.auth.inProgress ? <Spinner /> : (
+            <View style={styles.CTAContainer}>
+              <Button
+                onPress={() => this.props.navigator.push(routes.login)}
+                text="Log In"
+              />
+              <Button
+                onPress={() => this.props.navigator.push(routes.signup)}
+                text="Sign Up"
+              />
+            </View>
+          )}
+          {this.props.app.config.DEV_MODE &&
             <TouchableOpacity
               onPress={() => SensitiveInfo.deleteItem('accessToken')}
             >
