@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import co.backbonelabs.backbone.util.Constants;
+import timber.log.Timber;
 
 public class SensorDataService {
     public static final String INTENT_EXTRA_NAME = "co.backbonelabs.Backbone.sensorData";
@@ -58,7 +59,7 @@ public class SensorDataService {
 
             @Override
             public void onActivityResumed(Activity activity) {
-                Log.d(TAG, "onActivityResume");
+                Timber.d("onActivityResume");
                 // Stop foreground service
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
                 stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
@@ -67,7 +68,7 @@ public class SensorDataService {
 
             @Override
             public void onActivityPaused(Activity activity) {
-                Log.d(TAG, "onActivityPaused");
+                Timber.d("onActivityPaused");
                 if (!activeSensors.isEmpty()) {
                     // There are active sensors, start foreground service to continue listening
                     Intent startIntent = new Intent(activity, ForegroundService.class);
@@ -89,7 +90,7 @@ public class SensorDataService {
             @Override
             public void onActivityDestroyed(Activity activity) {
                 // App is terminated, perform cleanup tasks
-                Log.d(TAG, "onActivityDestroyed");
+                Timber.d("onActivityDestroyed");
 
                 // Stop the foreground service
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
@@ -110,7 +111,7 @@ public class SensorDataService {
      * @param activityModule An ActivityModule to register to the collection of active activities
      */
     public void registerActivity(final ActivityModule activityModule) {
-        Log.d(TAG, "registerActivity");
+        Timber.d("registerActivity");
 
         // Add activity to the collection of active activities
         activeActivities.add(activityModule);
@@ -122,7 +123,7 @@ public class SensorDataService {
 
             switch (activityModule.getSensor()) {
                 case Constants.SENSORS.ACCELEROMETER:
-                    Log.d(TAG, "Enabling accelerometer");
+                    Timber.d("Enabling accelerometer");
                     try {
                         Accelerometer accelerometer = device.getModule(Accelerometer.class);
 
@@ -147,7 +148,7 @@ public class SensorDataService {
                                             @Override
                                             public void process(Message msg) {
                                                 CartesianFloat axes = msg.getData(CartesianFloat.class);
-                                                Log.d(TAG, "axes data: " + axes.toString());
+                                                Timber.d("axes data: " + axes.toString());
 
                                                 HashMap<String, Float> data = new HashMap<String, Float>();
                                                 data.put("x", axes.x());
@@ -178,7 +179,7 @@ public class SensorDataService {
     }
 
     public void unregisterActivity(String activityName) {
-        Log.d(TAG, "unregisterActivity " + activityName);
+        Timber.d("unregisterActivity " + activityName);
 
         // Remove the corresponding ActivityModule from activeActivities
         Iterator<ActivityModule> activeActivitiesIterator = activeActivities.iterator();
@@ -209,7 +210,7 @@ public class SensorDataService {
     }
 
     private void toggleSensor(String sensor, boolean enable) {
-        Log.d(TAG, "toggleSensor " + sensor + " " + enable);
+        Timber.d("toggleSensor " + sensor + " " + enable);
         try {
             if (!device.isConnected()) {
                 // Device is not connected, do not attempt to toggle sensor
@@ -233,7 +234,7 @@ public class SensorDataService {
     }
 
     private void startAllSensors() {
-        Log.d(TAG, "startAllSensors");
+        Timber.d("startAllSensors");
         Iterator<String> iterator = activeSensors.iterator();
         if (iterator.hasNext()) {
             String sensor = iterator.next();
@@ -242,7 +243,7 @@ public class SensorDataService {
     }
 
     private void stopAllSensors() {
-        Log.d(TAG, "stopAllSensors");
+        Timber.d("stopAllSensors");
         Iterator<String> iterator = activeSensors.iterator();
         if (iterator.hasNext()) {
             String sensor = iterator.next();

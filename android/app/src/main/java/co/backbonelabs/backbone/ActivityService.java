@@ -1,7 +1,5 @@
 package co.backbonelabs.backbone;
 
-import android.util.Log;
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -15,13 +13,13 @@ import java.util.HashMap;
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.EventEmitter;
 import co.backbonelabs.backbone.util.JSError;
+import timber.log.Timber;
 
 /**
  * Interface for enabling and disabling activities.
  * This is a singleton. Use getInstance() to retrieve the singleton instance.
  */
 public class ActivityService extends ReactContextBaseJavaModule {
-    private static final String TAG = "ActivityService";
     private static ActivityService instance = null;
     private static HashMap<String, Class> activityClassMap = new HashMap<String, Class>() {
         {
@@ -73,7 +71,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void enableActivity(String activityName, Callback callback) {
-        Log.d(TAG, "enableActivity");
+        Timber.d("enableActivity");
         if (!activityClassMap.containsKey(activityName)) {
             callback.invoke(JSError.make("Invalid activity module"));
         } else {
@@ -83,7 +81,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
             try {
                 Constructor<?> constructor = _class.getConstructor(ReactApplicationContext.class);
                 ActivityModule activityModule = (ActivityModule) constructor.newInstance(reactContext);
-                Log.d(TAG, "Instantiated " + activityModule.getClass().getName() + " activity");
+                Timber.d("Instantiated " + activityModule.getClass().getName() + " activity");
 
                 SensorDataService sensorDataService = SensorDataService.getInstance();
                 sensorDataService.registerActivity(activityModule);
@@ -103,7 +101,7 @@ public class ActivityService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void disableActivity(String activityName) {
-        Log.d(TAG, "disableActivity");
+        Timber.d("disableActivity");
         if (activityClassMap.containsKey(activityName)) {
             SensorDataService sensorDataService = SensorDataService.getInstance();
             sensorDataService.unregisterActivity(activityName);
