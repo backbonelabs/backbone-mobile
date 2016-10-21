@@ -15,38 +15,15 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Interface for interacting with the local user setting via SharedPreferences
- * This is a singleton. Use getInstance() to retrieve the singleton instance.
  */
 public class UserSettingService extends ReactContextBaseJavaModule {
-    private static UserSettingService instance = null;
     private static final String SETTING_ID = "UserSetting";
 
     /**
-     * Returns the singleton instance
-     * @return The singleton UserSettingService instance
-     */
-    public static UserSettingService getInstance() {
-        return instance;
-    }
-
-    /**
-     * Instantiates the singleton instance if one doesn't already exist
-     * and returns the singleton instance.
-     * @param reactContext The ReactApplicationContext
-     * @return The singleton UserSettingService instance
-     */
-    public static UserSettingService getInstance(ReactApplicationContext reactContext) {
-        if (instance == null) {
-            instance = new UserSettingService(reactContext);
-        }
-        return instance;
-    }
-
-    /**
-     * Private constructor
+     * Public constructor
      * @param reactContext
      */
-    private UserSettingService(ReactApplicationContext reactContext) {
+    public UserSettingService(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
@@ -94,7 +71,7 @@ public class UserSettingService extends ReactContextBaseJavaModule {
             // Testing applied setting
             // The second parameter is used to define default value on empty keys
             Timber.d("Setting[Name]: %s", preference.getString("name", "Nameless"));
-            Timber.d("Setting[Sensitivity]: %d", preference.getInt("Sensitivity", 100));
+            Timber.d("Setting[Sensitivity]: %d", preference.getInt("sensitivity", 100));
             Timber.d("Setting[ShouldNotify]: %s", (preference.getBoolean("shouldNotify", true) ? "ON" : "OFF"));
 
             callback.invoke();
