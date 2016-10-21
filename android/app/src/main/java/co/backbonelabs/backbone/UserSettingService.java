@@ -20,7 +20,6 @@ import static android.content.Context.MODE_PRIVATE;
 public class UserSettingService extends ReactContextBaseJavaModule {
     private static UserSettingService instance = null;
     private static final String SETTING_ID = "UserSetting";
-    private ReactApplicationContext reactContext;
 
     /**
      * Returns the singleton instance
@@ -49,7 +48,6 @@ public class UserSettingService extends ReactContextBaseJavaModule {
      */
     private UserSettingService(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.reactContext = reactContext;
     }
 
     @Override
@@ -73,10 +71,25 @@ public class UserSettingService extends ReactContextBaseJavaModule {
 
         try {
             // For now, as a placeholder, I set 3 fields, each with different data type for testing
-            editor.putString("name", settingMap.getString("name"));
-            editor.putInt("sensitivity", settingMap.getInt("sensitivity"));
-            editor.putBoolean("shouldNotify", settingMap.getBoolean("shouldNotify"));
-            editor.commit();
+            boolean hasUpdate = false;
+
+            if (settingMap.hasKey("name")) {
+                editor.putString("name", settingMap.getString("name"));
+                hasUpdate = true;
+            }
+
+            if (settingMap.hasKey("sensitivity")) {
+                editor.putInt("sensitivity", settingMap.getInt("sensitivity"));
+                hasUpdate = true;
+            }
+
+            if (settingMap.hasKey("shouldNotify")) {
+                editor.putBoolean("shouldNotify", settingMap.getBoolean("shouldNotify"));
+                hasUpdate = true;
+            }
+
+            // Update when needed
+            if (hasUpdate) editor.commit();
 
             // Testing applied setting
             // The second parameter is used to define default value on empty keys
