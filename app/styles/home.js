@@ -1,6 +1,10 @@
+import { Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
+  $carouselItemWidth: 150,
+  $carouselItemAvatarWidth: '$carouselItemWidth - 10',
+  $sliderWidth: Dimensions.get('window').width,
   container: {
     flex: 1,
     marginTop: '$totalNavHeight',
@@ -12,14 +16,19 @@ export default EStyleSheet.create({
   },
   sessionContainer: {
     alignItems: 'center',
-    marginLeft: 10,
-    marginRight: 10,
   },
-  sessionAvatar: {
+  sessionIcon: {
     backgroundColor: 'red',
-    borderRadius: 75,
-    width: 150,
-    height: 150,
+    borderRadius: '$carouselItemAvatarWidth * 0.5',
+    width: '$carouselItemAvatarWidth',
+    height: '$carouselItemAvatarWidth',
+  },
+  carouselItemContainer: {
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  carousel: {
+    width: '$carouselItemWidth',
   },
   footer: {
     alignItems: 'center',

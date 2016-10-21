@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import {
-  View,
-  ScrollView,
-} from 'react-native';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
+import Carousel from 'react-native-snap-carousel';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import Button from '../components/Button';
@@ -32,6 +30,16 @@ class Home extends Component {
     this.state = {};
   }
 
+  renderItem(session) {
+    return (
+      <View key={session.title} style={styles.sessionContainer}>
+        <View style={styles.sessionIcon} />
+        <BodyText>{session.title}</BodyText>
+        { isFinite(session.duration) ? <BodyText>{session.duration} mins</BodyText> : null }
+      </View>
+    );
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -40,15 +48,16 @@ class Home extends Component {
           <HeadingText size={1}>CHOOSE YOUR GOAL</HeadingText>
         </View>
         <View>
-          <ScrollView horizontal>
-            {sessions.map((session) => (
-              <View key={session.title} style={styles.sessionContainer}>
-                <View style={styles.sessionAvatar} />
-                <BodyText>{session.title}</BodyText>
-                { isFinite(session.duration) ? <BodyText>{session.duration} mins</BodyText> : null }
-              </View>
-            ))}
-          </ScrollView>
+          <Carousel
+            items={sessions}
+            renderItem={this.renderItem}
+            snapOnAndroid
+            sliderWidth={styles.$sliderWidth}
+            itemWidth={styles.$carouselItemWidth}
+            slideStyle={styles.carousel}
+            inactiveSlideScale={0.8}
+            contentContainerCustomStyle={styles.carouselItemContainer}
+          />
         </View>
         <View>
           <Button onPress={() => this.props.navigator.push(routes.postureDashboard)} text="Start" />
