@@ -33,9 +33,17 @@ RCT_EXPORT_METHOD(updateUserSetting:(NSDictionary*)settingDict callback:(RCTResp
   
   @try {
     // For now, as a placeholder, I set 3 fields, each with different data type for testing
-    [preference setObject:settingDict[@"name"] forKey:@"name"];
-    [preference setInteger:[settingDict[@"sensitivity"] intValue] forKey:@"sensitivity"];
-    [preference setBool:[settingDict[@"shouldNotify"] boolValue] forKey:@"shouldNotify"];
+    if ([settingDict objectForKey:@"name"] != nil) {
+      [preference setObject:settingDict[@"name"] forKey:@"name"];
+    }
+    
+    if ([settingDict objectForKey:@"sensitivity"] != nil) {
+      [preference setInteger:[settingDict[@"sensitivity"] intValue] forKey:@"sensitivity"];
+    }
+    
+    if ([settingDict objectForKey:@"shouldNotify"] != nil) {
+      [preference setBool:[settingDict[@"shouldNotify"] boolValue] forKey:@"shouldNotify"];
+    }
     
     // Testing applied setting
     // The second parameter is used to define default value on empty keys
