@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Animated,
-  Dimensions,
 } from 'react-native';
 import { clone } from 'lodash';
 import styles from '../../styles/posture/postureCalibrate';
