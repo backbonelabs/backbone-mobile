@@ -1,10 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-const textDefaults = {
-  flex: 0.5,
-  alignItems: 'center',
-};
-
 export default EStyleSheet.create({
   container: {
     flex: 1,
