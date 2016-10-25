@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
+  Image,
   Animated,
-  Dimensions,
 } from 'react-native';
+import { clone } from 'lodash';
 import styles from '../../styles/posture/postureCalibrate';
-import Button from '../Button';
-import postureRoutes from '../../routes/posture';
+import routes from '../../routes';
+import HeadingText from '../HeadingText';
+import SecondaryText from '../SecondaryText';
 
 const { PropTypes } = React;
-const { width } = Dimensions.get('window');
+const calibrationImage = require('../../images/calibration/sittingExample.png');
 
 export default class PostureCalibrate extends Component {
   static propTypes = {
@@ -20,74 +21,90 @@ export default class PostureCalibrate extends Component {
   constructor() {
     super();
     this.state = {
-      count: 5,
-      isCalibrating: false,
-      animatedValues: new Animated.ValueXY(),
+      count: 0,
+      fadeAnim: [new Animated.Value(1)],
     };
 
-    this.startCalibration = this.startCalibration.bind(this);
-    this.stopCalibration = this.stopCalibration.bind(this);
-    this.countdownHandler = this.countdownHandler.bind(this);
+    this.calibrationAnimation = this.calibrationAnimation.bind(this);
+    this.calibrationAnimationHandler = this.calibrationAnimationHandler.bind(this);
   }
 
-  getScanAnimationStyle() {
-    return [
-      styles.calibrationScanAnimation,
-      { transform: this.state.animatedValues.getTranslateTransform() },
-    ];
+  componentWillMount() {
+    this.calibrationAnimation();
   }
 
-  startCalibration() {
-    this.setState({ isCalibrating: true }, () => this.scanAnimation(this.state.count));
+  /**
+   * Animates and reduces the opacity of the calibration circles.
+   * @param {Number}  index  Key of calibration circle. Used for
+   *                         reducing the value of the appropriate
+   *                         fadeAnim array item.
+   */
+  calibrationAnimation(index) {
+    // Use Animated timing function in order to perform opacity
+    // fade animation over the span of 1 second.
+    Animated.timing(
+      this.state.fadeAnim[index || 0],
+      {
+        duration: 1000,
+        toValue: 0.4,
+      }
+    ).start(this.calibrationAnimationHandler);
   }
 
-  stopCalibration() {
+  /**
+   * Handles post-animation calibration logic
+   */
+  calibrationAnimationHandler() {
+    // Add new Animated value in order to properly animate
+    // fading opacity for next calibration circle
+    const fadeAnimClone = clone(this.state.fadeAnim);
+    fadeAnimClone.push(new Animated.Value(1));
+
     this.setState({
-      count: 5,
-      isCalibrating: false,
-      animatedValues: new Animated.ValueXY(),
+      count: ++this.state.count,
+      fadeAnim: fadeAnimClone,
+    }, () => {
+      // If calibration is over, send to session monitoring
+      if (this.state.count > 5) {
+        this.props.navigator.push(routes.postureMonitor);
+      } else {
+        this.calibrationAnimation(this.state.count);
+      }
     });
   }
 
-  countdownHandler() {
-    if (this.state.isCalibrating) {
-      this.setState({ count: this.state.count - 1 }, () => {
-        if (this.state.count) {
-          this.scanAnimation(this.state.count);
-        } else {
-          this.props.navigator.push(postureRoutes.postureMonitor);
-        }
-      });
-    }
-  }
-
-  scanAnimation(count) {
-    const valueX = count % 2 ? -1.02 * width : 0;
-
-    Animated.timing(this.state.animatedValues, {
-      duration: 1000,
-      toValue: { x: valueX, y: 0 },
-    }).start(this.countdownHandler);
-  }
-
   render() {
-    const buttonText = this.state.isCalibrating ? 'Stop' : 'Calibrate';
-    const onPressHandler = this.state.isCalibrating ? this.stopCalibration : this.startCalibration;
-
     return (
       <View style={styles.container}>
-        <View style={styles.animationContainer}>
-          <View style={styles.calibrationImage}>
-            { this.state.isCalibrating &&
-              <Text style={styles.calibrationCountdown}>
-                {this.state.count}
-              </Text>
-            }
+        <View style={styles.textContainer}>
+          <View style={styles.headingText}>
+            <HeadingText size={3}>
+              Get Ready
+            </HeadingText>
           </View>
-          <Animated.View style={this.getScanAnimationStyle()} />
+          <View style={styles.secondaryText}>
+            <SecondaryText style={{ textAlign: 'center' }}>
+              Sit/Stand your straightest for 5 seconds! We're calibrating Backbone to your best
+              posture.
+            </SecondaryText>
+          </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <Button text={buttonText} onPress={onPressHandler} />
+        <View style={styles.image}>
+          <Image source={calibrationImage} />
+        </View>
+        <View style={styles.calibrationCircleContainer}>
+          {
+            // Create 5 circles to represent calibration countdown
+            ([...Array(5).keys()]).map((value, key) =>
+              <Animated.View
+                key={key}
+                style={[
+                  styles.calibrationCircle,
+                  this.state.count >= key && { opacity: this.state.fadeAnim[key] },
+                ]}
+              />
+            )
+          }
         </View>
       </View>
     );
