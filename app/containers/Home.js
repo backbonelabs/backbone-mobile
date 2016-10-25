@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
+  Text,
   TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -109,6 +110,12 @@ class Home extends Component {
             {this.props.app.config.DEV_MODE && accessToken ?
               'Delete access token' : 'Don\'t have an account? Sign up'}
           </SecondaryText>
+          <TouchableOpacity
+            style={styles.footer}
+            onPress={() => this.props.navigator.push(routes.textTester)}
+          >
+            <Text style={styles.footerText}>Text Tester</Text>
+          </TouchableOpacity>
         </TouchableOpacity>
       </View>
     );

@@ -12,6 +12,7 @@ import profile from './profile';
 import settings from './settings';
 import errors from './errors';
 import reset from './reset';
+import textTester from './textTester';
 
 export default {
   activity,
@@ -28,4 +29,5 @@ export default {
   settings,
   errors,
   reset,
+  textTester,
 };
