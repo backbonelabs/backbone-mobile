@@ -31,7 +31,7 @@ const Input = (props) => {
   const Icon = iconMap[iconFont];
 
   const inputField = (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <View style={styles.container}>
       <TextInput
         ref={ref => handleRef(ref)}
         style={inputStyles}

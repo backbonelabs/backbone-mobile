@@ -4,6 +4,10 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 export default EStyleSheet.create({
   $placeholderTextColor: '#A9A9A9',
   $color: '#231F20',
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   inputField: {
     color: '$color',
     fontSize: '1rem',
