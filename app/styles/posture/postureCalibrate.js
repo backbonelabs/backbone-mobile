@@ -1,5 +1,10 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 
+const textDefaults = {
+  flex: 0.5,
+  alignItems: 'center',
+};
+
 export default EStyleSheet.create({
   container: {
     flex: 1,
@@ -9,16 +14,8 @@ export default EStyleSheet.create({
     width: '75%',
     alignSelf: 'center',
   },
-  headingText: {
-    flex: 0.5,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  },
-  secondaryText: {
-    flex: 0.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  headingText: Object.assign({}, textDefaults, { justifyContent: 'flex-end' }),
+  secondaryText: Object.assign({}, textDefaults, { justifyContent: 'center' }),
   calibrationCircleContainer: {
     flex: 0.2,
     width: '60%',
