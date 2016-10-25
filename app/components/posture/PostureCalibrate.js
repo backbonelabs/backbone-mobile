@@ -3,11 +3,12 @@ import {
   View,
   Image,
   Animated,
+  Dimensions,
 } from 'react-native';
 import { clone } from 'lodash';
 import styles from '../../styles/posture/postureCalibrate';
 import routes from '../../routes';
-import HeadingText from '../HeadingText';
+import BodyText from '../BodyText';
 import SecondaryText from '../SecondaryText';
 
 const { PropTypes } = React;
@@ -30,7 +31,7 @@ export default class PostureCalibrate extends Component {
   }
 
   componentWillMount() {
-    this.calibrationAnimation();
+    // this.calibrationAnimation();
   }
 
   /**
@@ -78,14 +79,13 @@ export default class PostureCalibrate extends Component {
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <View style={styles.headingText}>
-            <HeadingText size={3}>
+            <BodyText>
               Get Ready
-            </HeadingText>
+            </BodyText>
           </View>
           <View style={styles.secondaryText}>
             <SecondaryText style={{ textAlign: 'center' }}>
-              Sit/Stand your straightest for 5 seconds! We're calibrating Backbone to your best
-              posture.
+              Sit or stand up straight while Backbone calibrates
             </SecondaryText>
           </View>
         </View>
