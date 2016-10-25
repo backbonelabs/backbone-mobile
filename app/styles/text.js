@@ -9,7 +9,7 @@ export default EStyleSheet.create({
   secondary: {
     color: '$secondaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 16,
+    fontSize: 14,
   },
   heading1: {
     color: '$primaryFontColor',
