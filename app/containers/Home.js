@@ -112,7 +112,7 @@ class Home extends Component {
           </SecondaryText>
           <TouchableOpacity
             style={styles.footer}
-            onPress={() => this.props.navigator.push(routes.textTester)}
+            onPress={() => this.props.navigator.push(routes.fontTester)}
           >
             <Text style={styles.footerText}>Text Tester</Text>
           </TouchableOpacity>

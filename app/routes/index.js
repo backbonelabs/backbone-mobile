@@ -12,7 +12,7 @@ import profile from './profile';
 import settings from './settings';
 import errors from './errors';
 import reset from './reset';
-import textTester from './textTester';
+import fontTester from './fontTester';
 
 export default {
   activity,
@@ -29,5 +29,5 @@ export default {
   settings,
   errors,
   reset,
-  textTester,
+  fontTester,
 };
