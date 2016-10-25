@@ -6,21 +6,34 @@ import {
   PushNotificationIOS,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import OnboardingFlow from './onBoardingFlow';
+import OnBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 
 const { width } = Dimensions.get('window');
+const { PropTypes } = React;
 
-export default class Onboarding extends Component {
+export default class OnBoarding extends Component {
+  static propTypes = {
+    navigator: PropTypes.object,
+  }
+
   constructor() {
     super();
     this.state = {
       step: 0,
       valueX: 0,
       animatedValues: new Animated.ValueXY(),
+      birthdate: new Date(),
+      gender: null,
+      weight: null,
+      height: null,
+      pickerType: null,
     };
     this.nextStep = this.nextStep.bind(this);
+    this.selectGender = this.selectGender.bind(this);
     this.previousStep = this.previousStep.bind(this);
+    this.setPickerType = this.setPickerType.bind(this);
+    this.updateBirthdate = this.updateBirthdate.bind(this);
   }
 
   componentWillMount() {
@@ -61,12 +74,19 @@ export default class Onboarding extends Component {
   }
 
   // Combines the separate onboarding step components into one
-  loadOnboardingFlow() {
-    const steps = OnboardingFlow.map((step, i) => (
+  loadOnBoardingFlow() {
+    const steps = OnBoardingFlow.map((step, i) => (
       step({
         key: i,
-        onPress: i === OnboardingFlow.length - 1 ? this.saveData : this.nextStep,
+        onPress: i === OnBoardingFlow.length - 1 ? this.saveData : this.nextStep,
         currentStep: this.state.step,
+        gender: this.state.gender,
+        pickerType: this.state.pickerType,
+        setPickerType: this.setPickerType,
+        selectGender: this.selectGender,
+        birthdate: this.state.birthdate,
+        updateBirthdate: this.updateBirthdate,
+        navigator: this.props.navigator,
       })
     ));
     return <Animated.View style={this.getStepStyle()}>{steps}</Animated.View>;
@@ -93,11 +113,26 @@ export default class Onboarding extends Component {
     // Do something here
   }
 
+  selectGender(gender) {
+    const genderData = this.state.gender ? null : gender;
+    this.setState({ gender: genderData });
+  }
+
+  updateBirthdate(date) {
+    this.setState({ birthdate: date });
+  }
+
+  setPickerType(info) {
+    this.setState({
+      pickerType: info,
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.progressCircleContainer}>
-          { OnboardingFlow.map((value, key) => (
+          { OnBoardingFlow.map((value, key) => (
             <View key={key}>
               <Icon
                 name={this.state.step > key ? 'check-circle' : 'circle-o'}
@@ -107,7 +142,7 @@ export default class Onboarding extends Component {
             </View>
           )) }
         </View>
-        { this.loadOnboardingFlow() }
+        { this.loadOnBoardingFlow() }
       </View>
     );
   }

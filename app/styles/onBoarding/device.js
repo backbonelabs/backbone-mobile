@@ -6,22 +6,26 @@ export default EStyleSheet.create({
   },
   headerTextContainer: {
     flex: 0.35,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   subTextContainer: {
-    flex: 0.20,
+    flex: 0.10,
     width: '75%',
     alignSelf: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   subText: {
     textAlign: 'center',
   },
-  primaryButtonContainer: {
-    flex: 0.2,
-    alignItems: 'center',
+  imageContainer: {
+    flex: 0.25,
     justifyContent: 'center',
+  },
+  primaryButtonContainer: {
+    flex: 0.3,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   primaryButton: {
     height: 50,

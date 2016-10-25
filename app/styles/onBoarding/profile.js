@@ -4,35 +4,84 @@ export default EStyleSheet.create({
   container: {
     width: '100%',
   },
-  headerTextContainer: {
-    flex: 0.35,
-    justifyContent: 'center',
+  textContainer: {
+    flex: 0.15,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(0,0,0,0.25)',
   },
-  subTextContainer: {
-    flex: 0.20,
-    width: '75%',
-    alignSelf: 'center',
-    justifyContent: 'flex-start',
-  },
-  subText: {
+  text: {
+    flex: 0.5,
     textAlign: 'center',
   },
-  primaryButtonContainer: {
-    flex: 0.2,
+  genderSelectionContainer: {
+    flex: 0.15,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  gender: {
+    margin: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.75)',
+  },
+  genderText: {
+    textAlign: 'center',
+  },
+  profileInfoContainer: {
+    flex: 0.35,
+    width: '80%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  birthdate: {
+    flex: 0.33,
+    borderColor: 'black',
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopRightRadius: 4,
+    borderTopLeftRadius: 4,
+    justifyContent: 'center',
+  },
+  height: {
+    flex: 0.33,
+    borderWidth: 1,
+    borderColor: 'black',
+    justifyContent: 'center',
+  },
+  weight: {
+    flex: 0.33,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    borderBottomRightRadius: 4,
+    borderBottomLeftRadius: 4,
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    flex: 0.35,
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
   primaryButton: {
     height: 50,
     width: '80%',
-    backgroundColor: '$primaryColor',
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 4,
+    backgroundColor: '$primaryColor',
   },
   primaryButtonText: {
     color: 'white',
+    textAlign: 'center',
+  },
+  pickerToggleText: {
+    fontSize: 16,
+    color: 'red',
     textAlign: 'center',
   },
 });

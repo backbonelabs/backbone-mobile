@@ -19,8 +19,8 @@ const Device = props => (
         [ CONNECT INSTRUCTIONS ]
       </SecondaryText>
     </View>
-    <View>
-      <Text style={styles.primaryButtonText}>[ BACKBONE DEVICE IMAGE ]</Text>
+    <View style={styles.imageContainer}>
+      <Text style={{ textAlign: 'center' }}>[ BACKBONE DEVICE IMAGE ]</Text>
     </View>
     <View style={styles.primaryButtonContainer}>
       <TouchableOpacity style={styles.primaryButton} onPress={props.onPress}>
