@@ -9,21 +9,21 @@ export default EStyleSheet.create({
   secondary: {
     color: '$secondaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 13,
+    fontSize: 16,
   },
   heading1: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 28,
+    fontSize: 24,
   },
   heading2: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 22,
+    fontSize: 20,
   },
   heading3: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 20,
+    fontSize: 18,
   },
 });
