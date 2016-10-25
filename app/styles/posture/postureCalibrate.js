@@ -3,28 +3,39 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '$totalNavHeight',
   },
-  animationContainer: {
-    flex: 0.7,
-    flexDirection: 'row',
+  textContainer: {
+    flex: 0.3,
+    width: '75%',
+    alignSelf: 'center',
   },
-  calibrationCountdown: {
-    color: 'white',
-    fontSize: '10rem',
-    textAlign: 'center',
+  headingText: {
+    flex: 0.5,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
-  calibrationImage: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+  secondaryText: {
+    flex: 0.5,
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  calibrationScanAnimation: {
-    width: 5,
-    backgroundColor: 'rgba(144,178,71,1)',
-    marginRight: '-2%',
+  calibrationCircleContainer: {
+    flex: 0.2,
+    width: '60%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
-  buttonContainer: {
-    flex: 0.3,
+  calibrationCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'red',
+  },
+  image: {
+    flex: 0.4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
