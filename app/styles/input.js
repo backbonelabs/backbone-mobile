@@ -3,8 +3,9 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
   $placeholderTextColor: '#A9A9A9',
+  $color: '#231F20',
   inputField: {
-    color: '#231F20',
+    color: '$color',
     fontSize: '1rem',
     ...Platform.select({
       ios: {
@@ -17,6 +18,10 @@ export default EStyleSheet.create({
     height: 39,
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  icon: {
+    color: '$color',
+    right: 20,
   },
   disabled: {
     color: '$disabledColor',
