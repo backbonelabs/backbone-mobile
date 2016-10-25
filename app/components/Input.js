@@ -1,7 +1,9 @@
 import React from 'react';
-import { TextInput, Platform, ScrollView, View } from 'react-native';
+import { TextInput, Platform, TouchableWithoutFeedback, View } from 'react-native';
 import { omit } from 'lodash';
 import styles from '../styles/input';
+
+const { State: TextInputState } = TextInput;
 
 const Input = (props) => {
   const {
@@ -20,24 +22,27 @@ const Input = (props) => {
     <TextInput
       ref={ref => handleRef(ref)}
       style={inputStyles}
+      placeholderTextColor={styles._$placeholderTextColor}
       {...remainingProps}
     />
   );
 
   if (Platform.OS === 'ios') {
-    // For iOS, the ScrollView allows the keyboard to be
-    // hidden when the user taps outside the input field.
-    // In addition, the TextInput must be wrapped with a View
-    // to properly show borders and have margins added.
+    // For iOS, the input field has to be wrapped in TouchableWithoutFeedback
+    // and View to allow the keyboard to be hidden when the user taps outside
+    // the input field
     return (
-      <ScrollView scrollEnabled={false} keyboardShouldPersistTaps={false}>
-        <View style={styles.inputFieldContainer}>{inputField}</View>
-      </ScrollView>
+      <TouchableWithoutFeedback
+        onPress={() => (
+          TextInputState.blurTextInput(TextInputState.currentlyFocusedField())
+        )}
+      >
+        <View>{inputField}</View>
+      </TouchableWithoutFeedback>
     );
   }
 
-  // For Android, the keyboard is hidden when using the back button,
-  // and a bottom border and margins are added automatically
+  // For Android, the keyboard is hidden when using the back button
   return inputField;
 };
 
