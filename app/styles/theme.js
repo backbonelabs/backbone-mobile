@@ -7,13 +7,14 @@ const iconButtonSize = 1.5 * iconSize;
 
 const primaryColor = '#ED1C24';
 const primaryFont = 'Lato';
-const primaryFontBold = 'Lato-Bold';
+const primaryFontColor = '#231F20';
+const secondaryFontColor = '#A9A9A9';
 
 export default {
   primaryColor,
   primaryFont,
-  primaryFontBold,
-  navIconColor: '#FFFFFF',
+  primaryFontColor,
+  secondaryFontColor,
   disabledColor: '#ccc',
   iconSize,
   iconButtonSize,

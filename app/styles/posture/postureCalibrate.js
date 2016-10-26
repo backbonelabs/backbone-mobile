@@ -1,30 +1,46 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../../utils/relativeDimensions';
+
+const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '$totalNavHeight',
   },
-  animationContainer: {
-    flex: 0.7,
-    flexDirection: 'row',
+  textContainer: {
+    flex: 0.33,
+    width: '75%',
+    alignSelf: 'center',
   },
-  calibrationCountdown: {
-    color: 'white',
-    fontSize: '10rem',
-    textAlign: 'center',
+  headingText: {
+    flex: 0.6,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
-  calibrationImage: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+  secondaryText: {
+    flex: 0.4,
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  calibrationScanAnimation: {
-    width: 5,
-    backgroundColor: 'rgba(144,178,71,1)',
-    marginRight: '-2%',
+  calibrationCircleContainer: {
+    flex: 0.2,
+    width: '44%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
-  buttonContainer: {
-    flex: 0.3,
+  calibrationCircle: {
+    width: 25 * widthDifference,
+    height: 25 * heightDifference,
+    borderRadius: 12.5,
+    backgroundColor: '$primaryColor',
+  },
+  imageContainer: {
+    flex: 0.47,
+    alignItems: 'center',
+  },
+  image: {
+    width: 133 * widthDifference,
+    height: 280 * heightDifference,
   },
 });
