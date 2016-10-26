@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Animated,
-  Dimensions,
 } from 'react-native';
 import styles from '../../styles/posture/postureCalibrate';
 import routes from '../../routes';
@@ -12,10 +11,6 @@ import BodyText from '../BodyText';
 import calibrationImage from '../../images/calibration/sittingExample.png';
 
 const { PropTypes } = React;
-const { width, height } = Dimensions.get('window');
-
-const widthDifference = width / 375;
-const heightDifference = height / 667;
 
 export default class PostureCalibrate extends Component {
   static propTypes = {
@@ -34,7 +29,7 @@ export default class PostureCalibrate extends Component {
   }
 
   componentWillMount() {
-    // this.calibrationAnimation();
+    this.calibrationAnimation();
   }
 
   /**
@@ -92,10 +87,10 @@ export default class PostureCalibrate extends Component {
             </BodyText>
           </View>
         </View>
-        <View style={styles.image}>
+        <View style={styles.imageContainer}>
           <Image
             source={calibrationImage}
-            style={{ width: 133 * widthDifference, height: 280 * heightDifference }}
+            style={styles.image}
           />
         </View>
         <View style={styles.calibrationCircleContainer}>

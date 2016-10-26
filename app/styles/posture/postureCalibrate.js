@@ -1,4 +1,9 @@
+import { Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+
+const { width, height } = Dimensions.get('window');
+const widthDifference = width / 375;
+const heightDifference = height / 667;
 
 export default EStyleSheet.create({
   container: {
@@ -27,13 +32,17 @@ export default EStyleSheet.create({
     justifyContent: 'space-around',
   },
   calibrationCircle: {
-    width: 25,
-    height: 25,
+    width: 25 * widthDifference,
+    height: 25 * heightDifference,
     borderRadius: 12.5,
     backgroundColor: '$primaryColor',
   },
-  image: {
+  imageContainer: {
     flex: 0.47,
     alignItems: 'center',
+  },
+  image: {
+    width: 133 * widthDifference,
+    height: 280 * heightDifference,
   },
 });
