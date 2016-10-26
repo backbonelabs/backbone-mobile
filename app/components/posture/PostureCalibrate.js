@@ -34,7 +34,7 @@ export default class PostureCalibrate extends Component {
   }
 
   componentWillMount() {
-    this.calibrationAnimation();
+    // this.calibrationAnimation();
   }
 
   /**
@@ -95,8 +95,7 @@ export default class PostureCalibrate extends Component {
         <View style={styles.image}>
           <Image
             source={calibrationImage}
-            width={133 * widthDifference}
-            height={280 * heightDifference}
+            style={{ width: 133 * widthDifference, height: 280 * heightDifference }}
           />
         </View>
         <View style={styles.calibrationCircleContainer}>
