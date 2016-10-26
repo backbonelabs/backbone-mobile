@@ -1,9 +1,7 @@
 import React from 'react';
-import { TextInput, Platform, TouchableWithoutFeedback, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/input';
-
-const { State: TextInputState } = TextInput;
 
 // This is a map of font names to modules.
 // To use other fonts supported by react-native-vector-icons,
@@ -30,7 +28,7 @@ const Input = (props) => {
 
   const Icon = iconMap[iconFont];
 
-  const inputField = (
+  return (
     <View style={styles.container}>
       <TextInput
         ref={ref => handleRef(ref)}
@@ -43,24 +41,6 @@ const Input = (props) => {
         : null}
     </View>
   );
-
-  if (Platform.OS === 'ios') {
-    // For iOS, the input field has to be wrapped in TouchableWithoutFeedback
-    // and View to allow the keyboard to be hidden when the user taps outside
-    // the input field
-    return (
-      <TouchableWithoutFeedback
-        onPress={() => (
-          TextInputState.blurTextInput(TextInputState.currentlyFocusedField())
-        )}
-      >
-        {inputField}
-      </TouchableWithoutFeedback>
-    );
-  }
-
-  // For Android, the keyboard is hidden when using the back button
-  return inputField;
 };
 
 const { PropTypes } = React;
