@@ -10,6 +10,7 @@ import {
   NativeEventEmitter,
   Platform,
   TouchableOpacity,
+  BackAndroid,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
@@ -97,6 +98,20 @@ class Application extends Component {
   componentWillMount() {
     this.props.dispatch(appActions.setConfig(Environment));
 
+    // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
+    if (Platform.OS === 'android') {
+      BackAndroid.addEventListener('hardwareBackPress', () => {
+        if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
+          // There are subsequent routes after the initial route,
+          // so pop the route stack to navigate one scene back
+          this.navigator.pop();
+          return true;
+        }
+        // There are no routes to pop, exit app
+        return false;
+      });
+    }
+
     Bluetooth.getState((error, state) => {
       if (!error) {
         this.props.dispatch({
@@ -175,7 +190,6 @@ class Application extends Component {
         iconName: 'circle-o',
       },
     ];
-
 
     // Alter the push method on the navigator object to include a timestamp for
     // each route in the route stack so that each route in the stack is unique.

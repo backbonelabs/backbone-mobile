@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {
   Alert,
   View,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
@@ -60,48 +62,52 @@ class Login extends Component {
   }
 
   render() {
+    // The main View is composed in the TouchableWithoutFeedback to allow
+    // the keyboard to be closed when tapping outside of an input field
     return (
-      <View style={styles.container}>
-        {this.props.inProgress ?
-          <Spinner />
-          :
-            <View style={styles.formContainer}>
-              <Input
-                handleRef={ref => (
-                  this.emailField = ref
-                )}
-                value={this.state.email}
-                autoCapitalize="none"
-                placeholder="Email"
-                keyboardType="email-address"
-                onChangeText={text => this.setState({ email: text })}
-                onSubmitEditing={() => this.passwordField.focus()}
-                autoCorrect={false}
-                autoFocus
-                returnKeyType="next"
-              />
-              <Input
-                handleRef={ref => (
-                  this.passwordField = ref
-                )}
-                value={this.state.password}
-                autoCapitalize="none"
-                placeholder="Password"
-                keyboardType="default"
-                onChangeText={text => this.setState({ password: text })}
-                onSubmitEditing={this.login}
-                autoCorrect={false}
-                secureTextEntry
-                returnKeyType="go"
-              />
-              <Button
-                text="Log in"
-                disabled={this.props.inProgress}
-                onPress={this.login}
-              />
-            </View>
-        }
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          {this.props.inProgress ?
+            <Spinner />
+            :
+              <View style={styles.formContainer}>
+                <Input
+                  handleRef={ref => (
+                    this.emailField = ref
+                  )}
+                  value={this.state.email}
+                  autoCapitalize="none"
+                  placeholder="Email"
+                  keyboardType="email-address"
+                  onChangeText={text => this.setState({ email: text })}
+                  onSubmitEditing={() => this.passwordField.focus()}
+                  autoCorrect={false}
+                  autoFocus
+                  returnKeyType="next"
+                />
+                <Input
+                  handleRef={ref => (
+                    this.passwordField = ref
+                  )}
+                  value={this.state.password}
+                  autoCapitalize="none"
+                  placeholder="Password"
+                  keyboardType="default"
+                  onChangeText={text => this.setState({ password: text })}
+                  onSubmitEditing={this.login}
+                  autoCorrect={false}
+                  secureTextEntry
+                  returnKeyType="go"
+                />
+                <Button
+                  text="Log in"
+                  disabled={this.props.inProgress}
+                  onPress={this.login}
+                />
+              </View>
+          }
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
