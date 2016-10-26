@@ -2,23 +2,28 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
   body: {
+    color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: 16,
   },
   secondary: {
+    color: '$secondaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 13,
+    fontSize: 14,
   },
   heading1: {
-    fontFamily: '$primaryFontBold',
-    fontSize: 28,
+    color: '$primaryFontColor',
+    fontFamily: '$primaryFont',
+    fontSize: 24,
   },
   heading2: {
-    fontFamily: '$primaryFontBold',
-    fontSize: 22,
+    color: '$primaryFontColor',
+    fontFamily: '$primaryFont',
+    fontSize: 20,
   },
   heading3: {
-    fontFamily: '$primaryFontBold',
-    fontSize: 20,
+    color: '$primaryFontColor',
+    fontFamily: '$primaryFont',
+    fontSize: 18,
   },
 });
