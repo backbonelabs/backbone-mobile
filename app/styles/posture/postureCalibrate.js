@@ -6,7 +6,7 @@ export default EStyleSheet.create({
   },
   textContainer: {
     flex: 0.33,
-    width: '65%',
+    width: '75%',
     alignSelf: 'center',
   },
   headingText: {
@@ -30,7 +30,7 @@ export default EStyleSheet.create({
     width: 25,
     height: 25,
     borderRadius: 12.5,
-    backgroundColor: 'red',
+    backgroundColor: '$primaryColor',
   },
   image: {
     flex: 0.47,

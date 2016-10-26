@@ -3,15 +3,19 @@ import {
   View,
   Image,
   Animated,
+  Dimensions,
 } from 'react-native';
-import { clone } from 'lodash';
 import styles from '../../styles/posture/postureCalibrate';
 import routes from '../../routes';
+import HeadingText from '../HeadingText';
 import BodyText from '../BodyText';
-import SecondaryText from '../SecondaryText';
+import calibrationImage from '../../images/calibration/sittingExample.png';
 
 const { PropTypes } = React;
-const calibrationImage = require('../../images/calibration/sittingExample.png');
+const { width, height } = Dimensions.get('window');
+
+const widthDifference = width / 375;
+const heightDifference = height / 667;
 
 export default class PostureCalibrate extends Component {
   static propTypes = {
@@ -30,7 +34,7 @@ export default class PostureCalibrate extends Component {
   }
 
   componentWillMount() {
-    // this.calibrationAnimation();
+    this.calibrationAnimation();
   }
 
   /**
@@ -57,15 +61,15 @@ export default class PostureCalibrate extends Component {
   calibrationAnimationHandler() {
     // Add new Animated value in order to properly animate
     // fading opacity for next calibration circle
-    const fadeAnimClone = clone(this.state.fadeAnim);
+    const fadeAnimClone = [...this.state.fadeAnim];
     fadeAnimClone.push(new Animated.Value(1));
 
     this.setState({
-      count: ++this.state.count,
+      count: this.state.count + 1,
       fadeAnim: fadeAnimClone,
     }, () => {
       // If calibration is over, send to session monitoring
-      if (this.state.count > 5) {
+      if (this.state.count >= 5) {
         this.props.navigator.push(routes.postureMonitor);
       } else {
         this.calibrationAnimation(this.state.count);
@@ -78,18 +82,22 @@ export default class PostureCalibrate extends Component {
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <View style={styles.headingText}>
-            <BodyText>
+            <HeadingText size={3}>
               Get Ready
-            </BodyText>
+            </HeadingText>
           </View>
           <View style={styles.secondaryText}>
-            <SecondaryText style={{ textAlign: 'center' }}>
+            <BodyText style={{ textAlign: 'center' }}>
               Sit or stand up straight while Backbone calibrates
-            </SecondaryText>
+            </BodyText>
           </View>
         </View>
         <View style={styles.image}>
-          <Image source={calibrationImage} />
+          <Image
+            source={calibrationImage}
+            width={133 * widthDifference}
+            height={280 * heightDifference}
+          />
         </View>
         <View style={styles.calibrationCircleContainer}>
           {
