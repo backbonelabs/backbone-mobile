@@ -9,13 +9,18 @@ const primaryColor = '#ED1C24';
 const primaryFont = 'Lato';
 const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
+const disabledPrimaryFontColor = 'rgba(255, 255, 255, 0.4)';
+const disabledSecondaryFontColor = 'rgba(237, 29, 35, 0.4)';
+const pressedButtonFontColor = 'rgba(134, 25, 28, 0.4)';
 
 export default {
   primaryColor,
   primaryFont,
   primaryFontColor,
   secondaryFontColor,
-  navIconColor: '#FFFFFF',
+  disabledPrimaryFontColor,
+  disabledSecondaryFontColor,
+  pressedButtonFontColor,
   disabledColor: '#ccc',
   iconSize,
   iconButtonSize,
