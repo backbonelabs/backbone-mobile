@@ -4,6 +4,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $headingColor: '#231F20',
   container: {
     flex: 1,
     alignItems: 'center',
@@ -32,10 +33,9 @@ export default EStyleSheet.create({
   },
   loginHeading: {
     width: 350 * widthDifference,
-    height: 27 * heightDifference,
     textAlign: 'center',
     fontSize: '1.375rem',
-    color: '#231F20',
+    color: '$headingColor',
   },
   emailInput: {
     width: 340 * widthDifference,
@@ -48,7 +48,7 @@ export default EStyleSheet.create({
   },
   backButton: {
     alignSelf: 'center',
-    marginBottom: 26 * heightDifference,
+    marginBottom: 27 * heightDifference,
   },
   loginButton: {
     alignSelf: 'center',
@@ -64,7 +64,29 @@ export default EStyleSheet.create({
     color: '#A9A9A9',
     fontSize: '.75rem',
     textAlign: 'center',
-    marginLeft: 100 * widthDifference,
-    marginRight: 98 * heightDifference,
+  },
+  resetSubHeading: {
+    marginTop: 26 * heightDifference,
+    width: 374 * widthDifference,
+    color: '$headingColor',
+    fontSize: '1rem',
+    textAlign: 'center',
+    alignSelf: 'center',
+  },
+  resetInput: {
+    width: 340 * widthDifference,
+    marginTop: 43 * heightDifference,
+    marginBottom: 144 * heightDifference,
+  },
+  resetButton: {
+    alignSelf: 'center',
+    marginBottom: 7 * heightDifference,
+  },
+  nevermindWrapper: {
+    marginTop: 8 * heightDifference,
+    marginBottom: 94 * heightDifference,
+    width: 350 * widthDifference,
+    height: 16 * heightDifference,
+    alignSelf: 'center',
   },
 });

@@ -56,7 +56,7 @@ class Button extends Component {
     if (this.props.buttonType === 'mainCtsBtn') {
       buttonType = (
         <TouchableHighlight
-          activeOpacity={.4}
+          activeOpacity={0.4}
           style={this.state.pressStatus ? buttonActive : buttonStyles}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
@@ -68,7 +68,7 @@ class Button extends Component {
     } else if (this.props.buttonType === 'secondaryBtn') {
       buttonType = (
         <TouchableHighlight
-          activeOpacity={.4}
+          activeOpacity={0.4}
           style={this.state.pressStatus ? secondaryActive : secondaryStyles}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}

@@ -118,7 +118,7 @@ class Login extends Component {
                 <View style={styles._forgotPasswordWrapper}>
                   <TouchableOpacity
                     onPress={() => this.props.navigator.push(routes.reset)}
-                    activeOpacity={.4}
+                    activeOpacity={0.4}
                   >
                     <SecondaryText style={styles._forgotPassword} >
                       Forgot your password?
