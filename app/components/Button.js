@@ -51,6 +51,7 @@ class Button extends Component {
     const secondaryStyles = [buttonStyles, styles._secondaryBtn];
     const secondaryActive = [buttonStyles, styles._secondaryActive];
     const secondaryTextStyles = [styles._text, styles._secondaryTextStyles];
+    const secondaryTextActive = [styles._text, styles._secondaryTextActive];
 
     if (this.props.buttonType === 'mainCtsBtn') {
       buttonType = (
@@ -73,7 +74,9 @@ class Button extends Component {
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
         >
-          <BodyText style={secondaryTextStyles}>{this.props.text}</BodyText>
+          <BodyText style={this.state.pressStatus ? secondaryTextActive : secondaryTextStyles}>
+            {this.props.text}
+          </BodyText>
         </TouchableHighlight>
       );
     } else {

@@ -1,19 +1,16 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   button: {
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
-    minWidth: 150,
-    maxWidth: 225,
-    width: 150,
-    height: 40,
-    paddingTop: 10,
-    paddingRight: 20,
-    paddingBottom: 11,
-    paddingLeft: 20,
+    width: 150 * widthDifference,
+    height: 40 * heightDifference,
     borderRadius: 5,
   },
   buttonActive: {

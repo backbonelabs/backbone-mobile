@@ -78,6 +78,7 @@ class Home extends Component {
         onPress={
           () => this.props.navigator.push(accessToken ? routes.deviceConnect : routes.login)
         }
+        buttonType="mainCtsBtn"
         disabled={accessToken && this.props.app.bluetoothState === bluetoothStates.OFF}
         text={accessToken ? 'Connect' : 'Log In'}
       />
