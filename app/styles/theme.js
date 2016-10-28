@@ -9,12 +9,14 @@ const primaryColor = '#ED1C24';
 const primaryFont = 'Lato';
 const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
+const activeBorderColor = '#85181C';
 
 export default {
   primaryColor,
   primaryFont,
   primaryFontColor,
   secondaryFontColor,
+  activeBorderColor,
   disabledColor: '#ccc',
   iconSize,
   iconButtonSize,
