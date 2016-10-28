@@ -4,49 +4,26 @@ export default EStyleSheet.create({
   container: {
     width: '100%',
   },
-  headerTextContainer: {
+  imageContainer: {
     flex: 0.35,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTextContainer: {
+    flex: 0.1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   subTextContainer: {
-    flex: 0.20,
-    width: '75%',
+    flex: 0.22,
+    width: '65%',
     alignSelf: 'center',
     justifyContent: 'flex-start',
   },
   subText: {
     textAlign: 'center',
   },
-  primaryButtonContainer: {
-    flex: 0.2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  primaryButton: {
-    height: 50,
-    width: '80%',
-    backgroundColor: '$primaryColor',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-  },
-  primaryButtonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  secondaryButtonContainer: {
-    flex: 0.15,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  secondaryButton: {
-    width: '25%',
-    height: 35,
-    justifyContent: 'center',
-  },
-  secondaryButtonText: {
-    color: 'gray',
-    textAlign: 'center',
+  buttonContainer: {
+    flex: 0.27,
   },
 });
