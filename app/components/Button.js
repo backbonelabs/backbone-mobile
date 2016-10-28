@@ -15,7 +15,7 @@ class Button extends Component {
     style: PropTypes.object,
     text: PropTypes.string.isRequired,
     textStyle: PropTypes.object,
-    buttonType: PropTypes.string,
+    primary: PropTypes.bool,
     pressStatus: PropTypes.bool,
     onHideUnderlay: PropTypes.func,
     onShowUnderlay: PropTypes.func,
@@ -53,7 +53,7 @@ class Button extends Component {
     const secondaryTextStyles = [styles._text, styles._secondaryTextStyles];
     const secondaryTextActive = [styles._text, styles._secondaryTextActive];
 
-    if (this.props.buttonType === 'mainCtsBtn') {
+    if (this.props.primary) {
       buttonType = (
         <TouchableHighlight
           activeOpacity={0.4}
@@ -65,7 +65,7 @@ class Button extends Component {
           <BodyText style={textStyles}>{this.props.text}</BodyText>
         </TouchableHighlight>
       );
-    } else if (this.props.buttonType === 'secondaryBtn') {
+    } else {
       buttonType = (
         <TouchableHighlight
           activeOpacity={0.4}
@@ -79,8 +79,6 @@ class Button extends Component {
           </BodyText>
         </TouchableHighlight>
       );
-    } else {
-      buttonType = null;
     }
 
     if (this.props.disabled) {

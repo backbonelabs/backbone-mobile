@@ -17,7 +17,7 @@ import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
-import BackBoneLogo from '../images/thinLogo.png';
+import BackBoneLogo from '../images/bblogo.png';
 
 class Login extends Component {
   static propTypes = {
@@ -111,7 +111,7 @@ class Login extends Component {
                 <Button
                   style={styles._loginButton}
                   text="LOGIN"
-                  buttonType="mainCtsBtn"
+                  primary
                   disabled={this.props.inProgress}
                   onPress={this.login}
                 />
@@ -120,7 +120,7 @@ class Login extends Component {
                     onPress={() => this.props.navigator.push(routes.reset)}
                     activeOpacity={0.4}
                   >
-                    <SecondaryText style={styles._forgotPassword} >
+                    <SecondaryText style={styles._forgotPassword}>
                       Forgot your password?
                     </SecondaryText>
                   </TouchableOpacity>
@@ -128,9 +128,8 @@ class Login extends Component {
                 <Button
                   style={styles._backButton}
                   text="BACK"
-                  buttonType="secondaryBtn"
                   disabled={this.props.inProgress}
-                  onPress={() => this.props.navigator.pop()}
+                  onPress={this.props.navigator.pop}
                 />
               </View>
           }

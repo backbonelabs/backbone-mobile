@@ -15,7 +15,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import styles from '../styles/auth';
 import Spinner from '../components/Spinner';
-import BackBoneLogo from '../images/thinLogo.png';
+import BackBoneLogo from '../images/bblogo.png';
 import SecondaryText from '../components/SecondaryText';
 
 class Reset extends Component {
@@ -84,17 +84,17 @@ class Reset extends Component {
                   returnKeyType="go"
                 />
                 <Button
-                  buttonType="mainCtsBtn"
+                  primary
                   style={styles._resetButton}
                   text="RESET"
                   onPress={this.sendPasswordResetRequest}
                 />
                 <View style={styles._nevermindWrapper}>
                   <TouchableOpacity
-                    onPress={() => this.props.navigator.pop()}
+                    onPress={this.props.navigator.pop}
                     activeOpacity={0.4}
                   >
-                    <SecondaryText style={styles._forgotPassword} >
+                    <SecondaryText style={styles._forgotPassword}>
                       Nevermind! Take me back to login
                     </SecondaryText>
                   </TouchableOpacity>
