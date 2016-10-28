@@ -64,7 +64,7 @@ const ProfileGender = props => {
           onChangeText={text => { nickname = text; }}
           onEndEditing={() => {
             console.log('blurred');
-            props.updateField('nickname', nickname)
+            props.updateField('nickname', nickname);
           }}
           iconFont={props.nickname ? 'FontAwesome' : ''}
           iconRightName={props.nickname ? 'check' : ''}

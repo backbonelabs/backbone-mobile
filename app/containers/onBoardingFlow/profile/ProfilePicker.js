@@ -20,7 +20,13 @@ const populatePickerItems = (type, maxValue, props) => (
   >
     { [...Array(maxValue).keys()].map(value => {
       const pickerData = `${value + 1}${props[`${type}Metric`]}`;
-      return <PickerItem key={`pickerItemKey-${uniqueId()}`} value={pickerData} label={`${value + 1}`} />;
+      return (
+        <PickerItem
+          key={`pickerItemKey-${uniqueId()}`}
+          value={pickerData}
+          label={`${value + 1}`}
+        />
+      );
     }) }
   </Picker>
 );
