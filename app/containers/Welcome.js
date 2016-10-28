@@ -10,7 +10,7 @@ import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Button from '../components/Button';
-import logo from '../images/logo.png';
+import logo from '../images/bblogo.png';
 import styles from '../styles/welcome';
 import routes from '../routes';
 import SensitiveInfo from '../utils/SensitiveInfo';
@@ -74,14 +74,21 @@ class Welcome extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.body}>
-          <Image source={logo} style={styles.logo} />
-          <HeadingText size={1}>Welcome to Backbone</HeadingText>
-          <BodyText>Lorem ipsum dolor sit amet, consectetur adipiscing elit</BodyText>
+          <Image source={logo} />
+          <View style={styles.heading}>
+            <HeadingText size={1} style={styles._text}>Welcome to Backbone</HeadingText>
+          </View>
+          <View style={styles.caption}>
+            <BodyText style={styles._text}>
+              Feel and look your strongest with better posture
+            </BodyText>
+          </View>
         </View>
         <View style={styles.footer}>
           {this.props.auth.inProgress ? <Spinner /> : (
             <View style={styles.CTAContainer}>
               <Button
+                primary
                 onPress={() => this.props.navigator.push(routes.login)}
                 text="Log In"
               />
@@ -92,11 +99,13 @@ class Welcome extends Component {
             </View>
           )}
           {this.props.app.config.DEV_MODE &&
-            <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem('accessToken')}
-            >
-              <SecondaryText>Delete access token</SecondaryText>
-            </TouchableOpacity>
+            <View style={{ marginTop: 5 }}>
+              <TouchableOpacity
+                onPress={() => SensitiveInfo.deleteItem('accessToken')}
+              >
+                <SecondaryText>Delete access token</SecondaryText>
+              </TouchableOpacity>
+            </View>
           }
         </View>
       </View>
