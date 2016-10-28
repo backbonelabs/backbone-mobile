@@ -46,27 +46,18 @@ class Home extends Component {
     // is a stored access token. An access token would have been saved
     // on a previously successful login.
     SensitiveInfo.getItem('accessToken')
-      .then(accessToken =>
+      .then(accessToken => {
         // There is a saved access token
-        // Attempt to log in using the access token
-        accessToken && this.props.dispatch(authActions.login({ accessToken }))
-      )
-      .then(() => this.setState({ isInitializing: false }))
-      .catch(() => this.setState({ isInitializing: false }));
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.auth.inProgress && !nextProps.auth.inProgress) {
-      // Finished login attempt
-      if (nextProps.auth.errorMessage) {
-        // Access token is invalid
-        // Delete from local device to prevent unnecessary API calls on subsequent app load
-        SensitiveInfo.deleteItem('accessToken');
-      } else {
-        // Successful login, save new access token
-        SensitiveInfo.setItem('accessToken', nextProps.auth.accessToken);
-      }
-    }
+        // Redirect user to dashboard
+        if (accessToken) {
+          this.props.dispatch(authActions.setAccessToken(accessToken));
+          this.props.navigator.push(routes.postureDashboard);
+        }
+        this.setState({ isInitializing: false });
+      })
+      .catch(() => {
+        this.setState({ isInitializing: false });
+      });
   }
 
   getMainBody() {
@@ -86,7 +77,6 @@ class Home extends Component {
 
   render() {
     const { accessToken, inProgress } = this.props.auth;
-
     return (
       <View style={styles.container}>
         <Image style={styles.background} source={bg} />
