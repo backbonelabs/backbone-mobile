@@ -1,16 +1,17 @@
 import React from 'react';
-
 import {
   View,
   Text,
-  TouchableOpacity,
 } from 'react-native';
+import Button from '../../components/Button';
+import styles from '../../styles/onBoarding/device';
 import HeadingText from '../../components/HeadingText';
 import SecondaryText from '../../components/SecondaryText';
-import styles from '../../styles/onBoarding/device';
+
+const { PropTypes } = React;
 
 const Device = props => (
-  <View key={props.key} onPress={props.onPress} style={styles.container}>
+  <View key={props.key} style={styles.container}>
     <View style={styles.headerTextContainer}>
       <HeadingText size={3}>Connect Your Backbone</HeadingText>
     </View>
@@ -23,19 +24,21 @@ const Device = props => (
       <Text style={{ textAlign: 'center' }}>[ BACKBONE DEVICE IMAGE ]</Text>
     </View>
     <View style={styles.primaryButtonContainer}>
-      <TouchableOpacity style={styles.primaryButton} onPress={props.onPress}>
-        <Text style={styles.primaryButtonText}>NEXT</Text>
-      </TouchableOpacity>
+      <Button text="NEXT" />
     </View>
   </View>
 );
 
-const { PropTypes } = React;
-
 Device.propTypes = {
   key: PropTypes.number,
-  onPress: PropTypes.func,
-  currentStep: PropTypes.number,
+  navigator: PropTypes.shape({
+    replace: PropTypes.func,
+    popToTop: PropTypes.func,
+  }),
+  isConnected: PropTypes.bool,
+  dispatch: PropTypes.func,
+  inProgress: PropTypes.bool,
+  errorMessage: PropTypes.string,
 };
 
 export default Device;

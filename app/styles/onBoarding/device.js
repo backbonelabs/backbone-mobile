@@ -24,8 +24,6 @@ export default EStyleSheet.create({
   },
   primaryButtonContainer: {
     flex: 0.3,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
   },
   primaryButton: {
     height: 50,
