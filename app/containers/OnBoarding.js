@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import {
   View,
   Animated,
+  Keyboard,
   Dimensions,
+  TouchableWithoutFeedback,
   PushNotificationIOS,
 } from 'react-native';
+import { uniqueId } from 'lodash';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import OnBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
@@ -23,17 +26,21 @@ export default class OnBoarding extends Component {
       step: 0,
       valueX: 0,
       animatedValues: new Animated.ValueXY(),
-      birthdate: new Date(),
+      nickname: null,
+      birthdate: null,
       gender: null,
       weight: null,
       height: null,
       pickerType: null,
+      weightMetric: 'lbs',
+      heightMetric: 'ft in',
+      notificationPermissions: false,
     };
     this.nextStep = this.nextStep.bind(this);
-    this.selectGender = this.selectGender.bind(this);
     this.previousStep = this.previousStep.bind(this);
+    this.selectGender = this.selectGender.bind(this);
     this.setPickerType = this.setPickerType.bind(this);
-    this.updateBirthdate = this.updateBirthdate.bind(this);
+    this.updateField = this.updateField.bind(this);
   }
 
   componentWillMount() {
@@ -41,10 +48,16 @@ export default class OnBoarding extends Component {
     PushNotificationIOS.checkPermissions(permissions => {
       // If push notifications are already enabled, go to next step
       if (permissions.alert) {
-        this.nextStep();
+        this.setState({
+          notificationPermissions: true,
+        });
       } else {
         // Set listener for user enabling push notifications
-        PushNotificationIOS.addEventListener('register', this.nextStep);
+        PushNotificationIOS.addEventListener('register', () => (
+          this.setState({
+            notificationPermissions: true,
+          })
+        ));
       }
     });
   }
@@ -62,31 +75,27 @@ export default class OnBoarding extends Component {
     ];
   }
 
-  // Animates transition from one onboarding step to another
-  stepTransitionAnimation() {
-    Animated.spring(this.state.animatedValues, {
-      tension: 10,
-      toValue: {
-        x: this.state.valueX,
-        y: 0,
-      },
-    }).start();
+  setPickerType(info) {
+    Keyboard.dismiss();
+
+    this.setState({
+      pickerType: info || null,
+    });
   }
 
   // Combines the separate onboarding step components into one
   loadOnBoardingFlow() {
     const steps = OnBoardingFlow.map((step, i) => (
       step({
-        key: i,
+        key: `onboardingFlowKey-${uniqueId()}`,
         onPress: i === OnBoardingFlow.length - 1 ? this.saveData : this.nextStep,
-        currentStep: this.state.step,
-        gender: this.state.gender,
-        pickerType: this.state.pickerType,
-        setPickerType: this.setPickerType,
-        selectGender: this.selectGender,
-        birthdate: this.state.birthdate,
-        updateBirthdate: this.updateBirthdate,
         navigator: this.props.navigator,
+        ...this.state,
+        nextStep: this.nextStep,
+        previousStep: this.previousStep,
+        selectGender: this.selectGender,
+        setPickerType: this.setPickerType,
+        updateField: this.updateField,
       })
     ));
     return <Animated.View style={this.getStepStyle()}>{steps}</Animated.View>;
@@ -118,31 +127,37 @@ export default class OnBoarding extends Component {
     this.setState({ gender: genderData });
   }
 
-  updateBirthdate(date) {
-    this.setState({ birthdate: date });
+  updateField(field, value) {
+    this.setState({ [field]: value });
   }
 
-  setPickerType(info) {
-    this.setState({
-      pickerType: info,
-    });
+  // Animates transition from one onboarding step to another
+  stepTransitionAnimation() {
+    Animated.spring(this.state.animatedValues, {
+      tension: 10,
+      toValue: {
+        x: this.state.valueX,
+        y: 0,
+      },
+    }).start();
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.progressCircleContainer}>
+        <View style={styles.progressBarContainer}>
           { OnBoardingFlow.map((value, key) => (
-            <View key={key}>
-              <Icon
-                name={this.state.step > key ? 'check-circle' : 'circle-o'}
-                size={40}
-                color="red"
-              />
-            </View>
+            <Icon
+              key={`progressIconKey-${uniqueId()}`}
+              name={this.state.step > key ? 'check-square-o' : 'square-o'}
+              size={44}
+              color={styles._progressIcon.backgroundColor}
+            />
           )) }
         </View>
-        { this.loadOnBoardingFlow() }
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          { this.loadOnBoardingFlow() }
+        </TouchableWithoutFeedback>
       </View>
     );
   }

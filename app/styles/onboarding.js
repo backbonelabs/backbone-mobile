@@ -5,24 +5,24 @@ export default EStyleSheet.create({
     flex: 1,
     marginTop: 23,
   },
-  progressCircleContainer: {
-    flex: 0.1,
+  progressBarContainer: {
+    flex: 0.15,
     width: '50%',
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  progressCircle: {
+  progressIcon: {
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: 'red',
+    backgroundColor: '$primaryColor',
     alignItems: 'center',
     justifyContent: 'center',
   },
   onBoardingFlowContainer: {
-    flex: 0.9,
+    flex: 0.85,
     flexDirection: 'row',
   },
 });

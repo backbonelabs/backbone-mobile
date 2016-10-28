@@ -1,5 +1,5 @@
 import Notifications from './Notifications';
-import Device from './Device';
 import Profile from './Profile';
+import Device from './Device';
 
-export default [Notifications, Device, Profile];
+export default [Notifications, Profile, Device];
