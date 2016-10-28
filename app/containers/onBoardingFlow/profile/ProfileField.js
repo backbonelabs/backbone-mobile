@@ -1,45 +1,66 @@
 import React from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
 } from 'react-native';
 import { map, uniqueId } from 'lodash';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../../styles/onBoarding/profile';
+import BodyText from '../../../components/BodyText';
+import SecondaryText from '../../../components/SecondaryText';
 
 const { PropTypes } = React;
+const monthList = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 const ProfileField = props => {
   const { height, weight, birthdate: b } = props;
-  const dateString = `${b.getMonth() + 1}-${b.getDate()}-${b.getFullYear()}`;
+  const dateString = b ? `${monthList[b.getMonth()]} ${b.getDate()}, ${b.getFullYear()}` : '';
   const formattedProfile = { birthdate: dateString, height, weight };
 
   return (
-    <View style={styles.profileInfoContainer}>
+    <View style={styles.profileFieldContainer}>
       { map(formattedProfile, (value, key) => (
         <TouchableOpacity
-          key={`${value}-${uniqueId()}`}
-          style={styles.profileInfoField}
+          key={`profileFieldKey-${uniqueId()}`}
+          style={styles.profileField}
           onPress={() => props.setPickerType(key)}
         >
-          <Text style={{ marginLeft: 15 }}>
-            {`${key.charAt(0).toUpperCase()}${key.slice(1)}`}
-          </Text>
-          <Text style={{ marginRight: 15 }}>{value}</Text>
+          { value ?
+            <View style={styles.completedProfileField}>
+              <BodyText>{ value }</BodyText>
+              <Icon
+                name={'check'}
+                color={styles._profileFieldIcon.color}
+                size={16}
+              />
+            </View>
+          :
+            <SecondaryText>{`${key.charAt(0).toUpperCase()}${key.slice(1)}`}</SecondaryText>
+          }
         </TouchableOpacity>
       )) }
     </View>
-  );
+    );
 };
 
 ProfileField.propTypes = {
   setPickerType: PropTypes.func,
-  pickerType: PropTypes.string,
   birthdate: PropTypes.object,
   weight: PropTypes.string,
-  weightMetric: PropTypes.string,
   height: PropTypes.string,
-  heightMetric: PropTypes.string,
 };
 
 export default ProfileField;

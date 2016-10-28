@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default EStyleSheet.create({
@@ -5,83 +6,103 @@ export default EStyleSheet.create({
     width: '100%',
   },
   textContainer: {
-    flex: 0.15,
+    flex: 0.08,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0.25)',
+    justifyContent: 'center',
   },
   text: {
-    flex: 0.5,
     textAlign: 'center',
   },
   genderSelectionContainer: {
-    flex: 0.15,
+    flex: 0.17,
+    width: '75%',
+    alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   gender: {
-    margin: 20,
+    margin: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.75)',
   },
   genderText: {
+    marginTop: 5,
     textAlign: 'center',
   },
-  profileInfoContainer: {
-    flex: 0.35,
-    width: '80%',
+  nicknameInput: {
+    width: '41%',
+    height: 50,
+  },
+  profileFieldContainer: {
+    flex: 0.33,
     alignSelf: 'center',
-    justifyContent: 'center',
-  },
-  birthdate: {
-    flex: 0.33,
-    borderColor: 'black',
-    borderTopWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderTopRightRadius: 4,
-    borderTopLeftRadius: 4,
-    justifyContent: 'center',
-  },
-  height: {
-    flex: 0.33,
-    borderWidth: 1,
-    borderColor: 'black',
-    justifyContent: 'center',
-  },
-  weight: {
-    flex: 0.33,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: 'black',
-    borderBottomRightRadius: 4,
-    borderBottomLeftRadius: 4,
-    justifyContent: 'center',
-  },
-  buttonContainer: {
-    flex: 0.35,
-    alignItems: 'center',
     justifyContent: 'space-around',
   },
-  primaryButton: {
-    height: 50,
-    width: '80%',
-    borderRadius: 4,
-    alignItems: 'center',
+  profileField: {
+    height: '7%',
+    width: '65%',
+    ...Platform.select({
+      ios: {
+        borderColor: '#979797',
+        borderWidth: 1,
+        borderRadius: 5,
+      },
+    }),
+    paddingLeft: 15,
+    borderColor: '#979797',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    backgroundColor: '$primaryColor',
   },
-  primaryButtonText: {
-    color: 'white',
+  completedProfileField: {
+    width: '58%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  profileFieldIcon: {
+    color: '#231F20',
+  },
+  buttonContainer: {
+    flex: 0.42,
+    justifyContent: 'center',
+  },
+  secondaryButton: {
+    borderColor: '$primaryColor',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: 'white',
+  },
+  secondaryButtonText: {
+    color: '$primaryColor',
     textAlign: 'center',
   },
-  pickerToggleText: {
-    fontSize: 16,
-    color: 'red',
-    textAlign: 'center',
+  profilePickerContainer: {
+    flex: 0.42,
+    justifyContent: 'flex-end',
+  },
+  profilePicker: {
+    marginTop: 10,
+    marginBottom: -15,
+    flexDirection: 'row',
+  },
+  profilePickerHeader: {
+    height: 40,
+    marginBottom: -26,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  profilePickerItems: {
+    flex: 0.65,
+  },
+  profilePickerMetric: {
+    flex: 0.35,
+  },
+  profilePickerHeaderButton: {
+    flex: 1,
+    padding: 15,
+    marginRight: 5,
+    justifyContent: 'center',
   },
 });

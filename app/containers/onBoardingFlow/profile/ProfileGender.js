@@ -1,13 +1,13 @@
 import React from 'react';
 import {
   View,
-  Text,
   Image,
   TouchableOpacity,
 } from 'react-native';
 import { uniqueId } from 'lodash';
 import styles from '../../../styles/onBoarding/profile';
 import Input from '../../../components/Input';
+import SecondaryText from '../../../components/SecondaryText';
 import maleIcon from '../../../images/profile/male.png';
 import maleSelectedIcon from '../../../images/profile/maleSelected.png';
 import femaleIcon from '../../../images/profile/female.png';
@@ -23,36 +23,63 @@ const genderImageMap = {
 
 const { PropTypes } = React;
 
-const ProfileGender = props => (
-  <View style={styles.genderSelectionContainer}>
-    { genders.map(value => {
-      let returnedComponent;
+const ProfileGender = props => {
+  let nickname = '';
 
-      if (props.gender && value !== props.gender) {
-        returnedComponent = null;
-      } else {
-        returnedComponent = (
-          <TouchableOpacity
-            key={uniqueId()}
-            style={styles.gender}
-            onPress={() => props.selectGender(value)}
-          >
-            <Image source={genderImageMap[value === props.gender ? `${value}Selected` : value]} />
-            <Text style={styles.genderText}>
-              {value}
-            </Text>
-          </TouchableOpacity>
-        );
+  return (
+    <View style={styles.genderSelectionContainer}>
+      { genders.map(value => {
+        let returnedComponent;
+
+        if (props.gender && value !== props.gender) {
+          returnedComponent = null;
+        } else {
+          returnedComponent = (
+            <TouchableOpacity
+              key={`genderKey-${uniqueId()}`}
+              style={styles.gender}
+              onPress={() => props.selectGender(value)}
+            >
+              <Image source={genderImageMap[value === props.gender ? `${value}Selected` : value]} />
+              <SecondaryText style={styles._genderText}>
+                { value === props.gender ?
+                  'Change'
+                  :
+                  `${value.charAt(0).toUpperCase()}${value.slice(1)}`
+                }
+              </SecondaryText>
+            </TouchableOpacity>
+          );
+        }
+        return returnedComponent;
+      }) }
+      { props.gender &&
+        <Input
+          style={styles._nicknameInput}
+          defaultValue={props.nickname}
+          placeholder="Nickname"
+          autoCorrect={false}
+          autoCapitalize="none"
+          keyboardType="default"
+          onChangeText={text => { nickname = text; }}
+          onEndEditing={() => {
+            console.log('blurred');
+            props.updateField('nickname', nickname)
+          }}
+          iconFont={props.nickname ? 'FontAwesome' : ''}
+          iconRightName={props.nickname ? 'check' : ''}
+        />
       }
-      return returnedComponent;
-    }) }
-    { props.gender && <Input defaultValue="" placeholder="Nickname" /> }
-  </View>
-);
+    </View>
+  );
+};
 
 ProfileGender.propTypes = {
   gender: PropTypes.string,
   selectGender: PropTypes.func,
+  updateField: PropTypes.func,
+  nickname: PropTypes.string,
+  setPickerType: PropTypes.func,
 };
 
 export default ProfileGender;
