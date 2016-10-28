@@ -31,7 +31,6 @@ export default EStyleSheet.create({
     paddingLeft: 11,
   },
   loginHeading: {
-    width: 350 * widthDifference,
     textAlign: 'center',
   },
   emailInput: {
@@ -62,7 +61,6 @@ export default EStyleSheet.create({
   },
   resetSubHeading: {
     marginTop: 26 * heightDifference,
-    width: 374 * widthDifference,
     textAlign: 'center',
     alignSelf: 'center',
   },
@@ -76,7 +74,6 @@ export default EStyleSheet.create({
     marginBottom: 7 * heightDifference,
   },
   nevermindWrapper: {
-    marginTop: 8 * heightDifference,
     marginBottom: 94 * heightDifference,
     width: 350 * widthDifference,
     height: 16 * heightDifference,

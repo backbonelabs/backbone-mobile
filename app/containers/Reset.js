@@ -4,7 +4,6 @@ import {
   View,
   Alert,
   Image,
-  Text,
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
@@ -14,11 +13,11 @@ import authActions from '../actions/auth';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import styles from '../styles/auth';
-import textStyles from '../styles/text';
 import Spinner from '../components/Spinner';
 import BackBoneLogo from '../images/bblogo.png';
 import SecondaryText from '../components/SecondaryText';
 import HeadingText from '../components/HeadingText';
+import BodyText from '../components/BodyText';
 
 class Reset extends Component {
 
@@ -73,7 +72,7 @@ class Reset extends Component {
                   <Image style={styles.backBoneLogo} source={BackBoneLogo} />
                 </View>
                 <HeadingText size={2} style={styles._loginHeading}>No problem!</HeadingText>
-                <Text style={[styles._resetSubHeading, textStyles._body]}>What's your email?</Text>
+                <BodyText style={styles._resetSubHeading}>What's your email?</BodyText>
                 <Input
                   style={styles._resetInput}
                   autoCapitalize="none"
@@ -96,7 +95,7 @@ class Reset extends Component {
                     onPress={this.props.navigator.pop}
                     activeOpacity={0.4}
                   >
-                    <SecondaryText style={[styles._forgotPassword, textStyles._secondary]}>
+                    <SecondaryText style={styles._forgotPassword}>
                       Nevermind! Take me back to login
                     </SecondaryText>
                   </TouchableOpacity>

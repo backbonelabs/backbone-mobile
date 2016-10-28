@@ -13,7 +13,6 @@ import Input from '../components/Input';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
-import textStyles from '../styles/text';
 import routes from '../routes';
 import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
@@ -121,7 +120,7 @@ class Login extends Component {
                     onPress={() => this.props.navigator.push(routes.reset)}
                     activeOpacity={0.4}
                   >
-                    <SecondaryText style={[styles._forgotPassword, textStyles._secondary]}>
+                    <SecondaryText style={styles._forgotPassword}>
                       Forgot your password?
                     </SecondaryText>
                   </TouchableOpacity>

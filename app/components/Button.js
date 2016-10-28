@@ -19,7 +19,7 @@ class Button extends Component {
     pressStatus: PropTypes.bool,
     onHideUnderlay: PropTypes.func,
     onShowUnderlay: PropTypes.func,
-  }
+  };
 
   static defaultProps = {
     style: {},
