@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   View,
+  Image,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Keyboard,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -13,8 +15,9 @@ import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
-
-const { PropTypes } = React;
+import SecondaryText from '../components/SecondaryText';
+import BackBoneLogo from '../images/bblogo.png';
+import HeadingText from '../components/HeadingText';
 
 class Login extends Component {
   static propTypes = {
@@ -66,12 +69,17 @@ class Login extends Component {
     // the keyboard to be closed when tapping outside of an input field
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
+        <View style={styles._container}>
           {this.props.inProgress ?
             <Spinner />
             :
               <View style={styles.formContainer}>
+                <View style={styles.backBoneLogoWrapper}>
+                  <Image style={styles.backBoneLogo} source={BackBoneLogo} />
+                </View>
+                <HeadingText size={2} style={styles._loginHeading}>Welcome back!</HeadingText>
                 <Input
+                  style={styles._emailInput}
                   handleRef={ref => (
                     this.emailField = ref
                   )}
@@ -86,6 +94,7 @@ class Login extends Component {
                   returnKeyType="next"
                 />
                 <Input
+                  style={styles._passwordInput}
                   handleRef={ref => (
                     this.passwordField = ref
                   )}
@@ -100,9 +109,27 @@ class Login extends Component {
                   returnKeyType="go"
                 />
                 <Button
-                  text="Log in"
+                  style={styles._loginButton}
+                  text="LOGIN"
+                  primary
                   disabled={this.props.inProgress}
                   onPress={this.login}
+                />
+                <View style={styles.forgotPasswordWrapper}>
+                  <TouchableOpacity
+                    onPress={() => this.props.navigator.push(routes.reset)}
+                    activeOpacity={0.4}
+                  >
+                    <SecondaryText style={styles._forgotPassword}>
+                      Forgot your password?
+                    </SecondaryText>
+                  </TouchableOpacity>
+                </View>
+                <Button
+                  style={styles._backButton}
+                  text="BACK"
+                  disabled={this.props.inProgress}
+                  onPress={this.props.navigator.pop}
                 />
               </View>
           }
