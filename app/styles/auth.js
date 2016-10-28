@@ -4,7 +4,6 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $headingColor: '#231F20',
   container: {
     flex: 1,
     alignItems: 'center',
@@ -34,8 +33,6 @@ export default EStyleSheet.create({
   loginHeading: {
     width: 350 * widthDifference,
     textAlign: 'center',
-    fontSize: '1.375rem',
-    color: '$headingColor',
   },
   emailInput: {
     width: 340 * widthDifference,
@@ -61,15 +58,11 @@ export default EStyleSheet.create({
     alignSelf: 'center',
   },
   forgotPassword: {
-    color: '#A9A9A9',
-    fontSize: '.75rem',
     textAlign: 'center',
   },
   resetSubHeading: {
     marginTop: 26 * heightDifference,
     width: 374 * widthDifference,
-    color: '$headingColor',
-    fontSize: '1rem',
     textAlign: 'center',
     alignSelf: 'center',
   },

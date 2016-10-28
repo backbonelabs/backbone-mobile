@@ -13,24 +13,21 @@ export default EStyleSheet.create({
     height: 40 * heightDifference,
     borderRadius: 5,
   },
-  buttonActive: {
-    backgroundColor: '#85181C',
-  },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '$primaryColor',
   },
   secondaryActive: {
-    borderColor: '#85181C',
+    borderColor: '$activeBorderColor',
     borderWidth: 1,
     backgroundColor: '#FFF',
   },
   secondaryTextStyles: {
-    color: '#ED1C24',
+    color: '$primaryColor',
   },
   secondaryTextActive: {
-    color: '#85181C',
+    color: '$activeBorderColor',
   },
   disabledButton: {
     backgroundColor: () => (
@@ -48,7 +45,7 @@ export default EStyleSheet.create({
     ),
   },
   text: {
-    color: 'white',
+    color: '#FFFFFF',
     textAlign: 'center',
   },
   disabledText: {

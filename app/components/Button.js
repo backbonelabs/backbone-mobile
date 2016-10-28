@@ -46,10 +46,9 @@ class Button extends Component {
   render() {
     let buttonType;
     const textStyles = [styles._text];
-    const buttonStyles = [styles._button];
-    const buttonActive = [buttonStyles, styles._buttonActive];
-    const secondaryStyles = [buttonStyles, styles._secondaryBtn];
-    const secondaryActive = [buttonStyles, styles._secondaryActive];
+    const buttonStyles = [styles.button];
+    const secondaryStyles = [buttonStyles, styles.secondaryBtn];
+    const secondaryActive = [buttonStyles, styles.secondaryActive];
     const secondaryTextStyles = [styles._text, styles._secondaryTextStyles];
     const secondaryTextActive = [styles._text, styles._secondaryTextActive];
 
@@ -57,7 +56,8 @@ class Button extends Component {
       buttonType = (
         <TouchableHighlight
           activeOpacity={0.4}
-          style={this.state.pressStatus ? buttonActive : buttonStyles}
+          underlayColor={'#85181C'}
+          style={buttonStyles}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
@@ -82,9 +82,9 @@ class Button extends Component {
     }
 
     if (this.props.disabled) {
-      buttonStyles.push(styles._disabledButton);
+      buttonStyles.push(styles.disabledButton);
       textStyles.push(styles._disabledText);
-      secondaryStyles.push(styles._disabledSecondaryBorder);
+      secondaryStyles.push(styles.disabledSecondaryBorder);
       secondaryTextStyles.push(styles._disabledSecondaryText);
     }
     buttonStyles.push(this.props.style);

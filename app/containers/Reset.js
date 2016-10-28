@@ -14,9 +14,11 @@ import authActions from '../actions/auth';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import styles from '../styles/auth';
+import textStyles from '../styles/text';
 import Spinner from '../components/Spinner';
 import BackBoneLogo from '../images/bblogo.png';
 import SecondaryText from '../components/SecondaryText';
+import HeadingText from '../components/HeadingText';
 
 class Reset extends Component {
 
@@ -66,12 +68,12 @@ class Reset extends Component {
           { this.props.inProgress ?
             <Spinner />
             :
-              <View style={styles._formContainer}>
-                <View style={styles._backBoneLogoWrapper}>
-                  <Image style={styles._backBoneLogo} source={BackBoneLogo} />
+              <View style={styles.formContainer}>
+                <View style={styles.backBoneLogoWrapper}>
+                  <Image style={styles.backBoneLogo} source={BackBoneLogo} />
                 </View>
-                <Text style={styles._loginHeading}>No problem!</Text>
-                <Text style={styles._resetSubHeading}>What's your email?</Text>
+                <HeadingText size={2} style={styles._loginHeading}>No problem!</HeadingText>
+                <Text style={[styles._resetSubHeading, textStyles._body]}>What's your email?</Text>
                 <Input
                   style={styles._resetInput}
                   autoCapitalize="none"
@@ -89,12 +91,12 @@ class Reset extends Component {
                   text="RESET"
                   onPress={this.sendPasswordResetRequest}
                 />
-                <View style={styles._nevermindWrapper}>
+                <View style={styles.nevermindWrapper}>
                   <TouchableOpacity
                     onPress={this.props.navigator.pop}
                     activeOpacity={0.4}
                   >
-                    <SecondaryText style={styles._forgotPassword}>
+                    <SecondaryText style={[styles._forgotPassword, textStyles._secondary]}>
                       Nevermind! Take me back to login
                     </SecondaryText>
                   </TouchableOpacity>

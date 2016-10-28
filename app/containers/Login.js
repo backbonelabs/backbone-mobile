@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   View,
-  Text,
   Image,
   TouchableWithoutFeedback,
   TouchableOpacity,
@@ -14,10 +13,12 @@ import Input from '../components/Input';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
+import textStyles from '../styles/text';
 import routes from '../routes';
 import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
 import BackBoneLogo from '../images/bblogo.png';
+import HeadingText from '../components/HeadingText';
 
 class Login extends Component {
   static propTypes = {
@@ -73,11 +74,11 @@ class Login extends Component {
           {this.props.inProgress ?
             <Spinner />
             :
-              <View style={styles._formContainer}>
-                <View style={styles._backBoneLogoWrapper}>
-                  <Image style={styles._backBoneLogo} source={BackBoneLogo} />
+              <View style={styles.formContainer}>
+                <View style={styles.backBoneLogoWrapper}>
+                  <Image style={styles.backBoneLogo} source={BackBoneLogo} />
                 </View>
-                <Text style={styles._loginHeading}>Welcome back!</Text>
+                <HeadingText size={2} style={styles._loginHeading}>Welcome back!</HeadingText>
                 <Input
                   style={styles._emailInput}
                   handleRef={ref => (
@@ -115,12 +116,12 @@ class Login extends Component {
                   disabled={this.props.inProgress}
                   onPress={this.login}
                 />
-                <View style={styles._forgotPasswordWrapper}>
+                <View style={styles.forgotPasswordWrapper}>
                   <TouchableOpacity
                     onPress={() => this.props.navigator.push(routes.reset)}
                     activeOpacity={0.4}
                   >
-                    <SecondaryText style={styles._forgotPassword}>
+                    <SecondaryText style={[styles._forgotPassword, textStyles._secondary]}>
                       Forgot your password?
                     </SecondaryText>
                   </TouchableOpacity>
