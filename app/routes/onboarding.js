@@ -1,6 +1,6 @@
-import Onboarding from '../containers/Onboarding';
+import OnBoarding from '../containers/OnBoarding';
 
 export default {
   name: 'onboarding',
-  component: Onboarding,
+  component: OnBoarding,
 };

@@ -10,7 +10,7 @@ import {
 import { connect } from 'react-redux';
 import { pick, uniqueId } from 'lodash';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import OnboardingFlow from './onboardingFlow';
+import OnBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 import userActions from '../actions/user';
 
@@ -97,8 +97,8 @@ class Onboarding extends Component {
   }
 
   // Combines the separate onboarding step components into one
-  loadOnboardingFlow() {
-    const steps = OnboardingFlow.map((step, i) => (
+  loadOnBoardingFlow() {
+    const steps = OnBoardingFlow.map((step, i) => (
       step({
         key: `${i}`,
         navigator: this.props.navigator,
@@ -167,7 +167,7 @@ class Onboarding extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.progressBarContainer}>
-          { OnboardingFlow.map((value, key) => (
+          { OnBoardingFlow.map((value, key) => (
             <Icon
               key={`progressIconKey-${uniqueId()}`}
               name={this.state.step > key ? 'check-square-o' : 'square-o'}
@@ -177,7 +177,7 @@ class Onboarding extends Component {
           )) }
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          { this.loadOnboardingFlow() }
+          { this.loadOnBoardingFlow() }
         </TouchableWithoutFeedback>
       </View>
     );
