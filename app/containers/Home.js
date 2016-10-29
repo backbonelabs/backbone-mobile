@@ -44,8 +44,8 @@ class Home extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <HeadingText size={1}>{this.props.user.firstName}</HeadingText>
-          <HeadingText size={1}>CHOOSE YOUR GOAL</HeadingText>
+          <HeadingText size={2}>{this.props.user.firstName}</HeadingText>
+          <HeadingText size={2}>Choose your goal</HeadingText>
         </View>
         <View>
           <Carousel
