@@ -1,6 +1,7 @@
 export default {
   storageNamespace: 'backbone',
   accessTokenStorageKey: 'accessToken',
+  userStorageKey: 'user',
   bluetoothStates: {
     UNKNOWN: -1,
     UNSUPPORTED: 0,
