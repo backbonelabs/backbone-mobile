@@ -67,7 +67,7 @@ class Home extends Component {
             />
           </View>
           <Button
-            text="Start"
+            text="START"
             primary
             style={styles._startButton}
             onPress={() => this.props.navigator.push(routes.postureDashboard)}
