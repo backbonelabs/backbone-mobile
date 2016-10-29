@@ -79,4 +79,30 @@ export default EStyleSheet.create({
     height: 16 * heightDifference,
     alignSelf: 'center',
   },
+  signupHeading: {
+    marginTop: 6 * heightDifference,
+    width: 375 * widthDifference,
+    fontSize: 14,
+  },
+  signupEmail: {
+    width: 340 * widthDifference,
+  },
+  signupPassword: {
+    width: 340 * widthDifference,
+  },
+  signupBtn: {
+    alignSelf: 'center',
+  },
+  signupBackBtn: {
+    alignSelf: 'center',
+    marginTop: 19 * heightDifference,
+    marginBottom: 51 * heightDifference,
+  },
+  signupEmailContainer: {
+    marginTop: 59 * heightDifference,
+    marginBottom: 34 * heightDifference,
+  },
+  signupPasswordContainer: {
+    marginBottom: 105 * heightDifference,
+  },
 });
