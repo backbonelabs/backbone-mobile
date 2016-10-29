@@ -27,6 +27,7 @@ class Home extends Component {
       bluetoothState: PropTypes.number,
       config: PropTypes.object,
     }),
+    user: PropTypes.object,
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       push: PropTypes.func,
@@ -45,12 +46,31 @@ class Home extends Component {
     // is a stored access token. An access token would have been saved
     // on a previously successful login.
     SensitiveInfo.getItem('accessToken')
-      .then(accessToken => {
-        // There is a saved access token
-        // Redirect user to dashboard
+      .then((accessToken) => {
         if (accessToken) {
+          // There is a saved access token
+          // Dispatch access token to app store
           this.props.dispatch(authActions.setAccessToken(accessToken));
-          this.props.navigator.push(routes.postureDashboard);
+
+          // Check if there is already a user profile in the app store
+          if (!this.props.user) {
+            // There is no user profile in the app store, so check local storage
+            return SensitiveInfo.getItem(constants.userStorageKey)
+              .then((user) => {
+                if (user) {
+                  // There is a user profile in local storage
+                  // Dispatch user profile to app store
+                  this.props.dispatch({
+                    type: 'FETCH_USER',
+                    payload: user,
+                  });
+
+                  // Redirect user to dashboard
+                  this.props.navigator.push(routes.postureDashboard);
+                }
+                this.setState({ isInitializing: false });
+              });
+          }
         }
         this.setState({ isInitializing: false });
       })
@@ -60,17 +80,17 @@ class Home extends Component {
   }
 
   getMainBody() {
-    const { accessToken } = this.props.auth;
+    const hasValidData = this.props.auth.accessToken && this.props.user;
     const { bluetoothStates } = constants;
 
     return (
       <Button
         onPress={
-          () => this.props.navigator.push(accessToken ? routes.deviceConnect : routes.login)
+          () => this.props.navigator.push(hasValidData ? routes.deviceConnect : routes.login)
         }
         primary
-        disabled={accessToken && this.props.app.bluetoothState === bluetoothStates.OFF}
-        text={accessToken ? 'Connect' : 'Log In'}
+        disabled={hasValidData && this.props.app.bluetoothState === bluetoothStates.OFF}
+        text={hasValidData ? 'Connect' : 'Log In'}
       />
     );
   }
@@ -106,8 +126,9 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth, app } = state;
-  return { auth, app };
+  const { auth, app, user: userReducer } = state;
+  const { user } = userReducer;
+  return { auth, app, user };
 };
 
 export default connect(mapStateToProps)(Home);
