@@ -1,41 +1,42 @@
-import { Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { widthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $carouselItemWidth: 150,
-  $carouselItemAvatarWidth: '$carouselItemWidth - 10',
-  $sliderWidth: Dimensions.get('window').width,
+  $itemWidth: 130 * 1.5 * widthDifference,
+  $sliderWidth: '$screenWidth',
   container: {
     flex: 1,
     marginTop: '$totalNavHeight',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
   header: {
+    flex: 0.1,
     alignItems: 'center',
   },
-  sessionContainer: {
+  body: {
+    flex: 0.5,
+    justifyContent: 'space-around',
+  },
+  startButton: {
+    alignSelf: 'center',
+  },
+  carouselContainer: {
+    height: 150,
+  },
+  carouselItem: {
     alignItems: 'center',
-  },
-  sessionIcon: {
-    backgroundColor: 'red',
-    borderRadius: '$carouselItemAvatarWidth * 0.5',
-    width: '$carouselItemAvatarWidth',
-    height: '$carouselItemAvatarWidth',
-  },
-  carouselItemContainer: {
-    paddingTop: 5,
-    paddingBottom: 5,
-  },
-  carousel: {
-    width: '$carouselItemWidth',
+    justifyContent: 'center',
+    width: '$itemWidth',
   },
   footer: {
+    flex: 0.25,
+    alignItems: 'center',
+  },
+  dailyStreakContainer: {
     alignItems: 'center',
   },
   streakCounter: {
-    borderWidth: 1,
-    borderRadius: 32,
-    padding: 10,
+    marginTop: -67,
   },
 });

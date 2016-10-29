@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import {
+  View,
+  Image,
+} from 'react-native';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import HeadingText from '../components/HeadingText';
@@ -7,14 +10,20 @@ import BodyText from '../components/BodyText';
 import Button from '../components/Button';
 import routes from '../routes';
 import styles from '../styles/home';
+import Icon5Min from '../images/session/5min.png';
+import Icon10Min from '../images/session/10min.png';
+import Icon15Min from '../images/session/15min.png';
+import Icon20Min from '../images/session/20min.png';
+import IconUnlimited from '../images/session/unlimited.png';
+import DailyStreakBanner from '../images/session/dailyStreakBanner.png';
 
 const { PropTypes } = React;
 const sessions = [
-  { title: 'Beginner', duration: 5 },
-  { title: 'Intermediate', duration: 10 },
-  { title: 'Pro', duration: 15 },
-  { title: 'Master', duration: 20 },
-  { title: 'Invincible', duration: Infinity },
+  { id: '5min', icon: Icon5Min },
+  { id: '10min', icon: Icon10Min },
+  { id: '15min', icon: Icon15Min },
+  { id: '20min', icon: Icon20Min },
+  { id: 'unlimited', icon: IconUnlimited },
 ];
 
 class Home extends Component {
@@ -32,10 +41,8 @@ class Home extends Component {
 
   renderItem(session) {
     return (
-      <View key={session.title} style={styles.sessionContainer}>
-        <View style={styles.sessionIcon} />
-        <BodyText>{session.title}</BodyText>
-        { isFinite(session.duration) ? <BodyText>{session.duration} mins</BodyText> : null }
+      <View key={session.id}>
+        <Image source={session.icon} />
       </View>
     );
   }
@@ -47,24 +54,31 @@ class Home extends Component {
           <HeadingText size={2}>{this.props.user.firstName}</HeadingText>
           <HeadingText size={2}>Choose your goal</HeadingText>
         </View>
-        <View>
-          <Carousel
-            items={sessions}
-            renderItem={this.renderItem}
-            snapOnAndroid
-            sliderWidth={styles.$sliderWidth}
-            itemWidth={styles.$carouselItemWidth}
-            slideStyle={styles.carousel}
-            inactiveSlideScale={0.8}
-            contentContainerCustomStyle={styles.carouselItemContainer}
+        <View style={styles.body}>
+          <View style={styles.carouselContainer}>
+            <Carousel
+              items={sessions}
+              renderItem={this.renderItem}
+              snapOnAndroid
+              sliderWidth={styles.$sliderWidth}
+              itemWidth={styles.$itemWidth}
+              slideStyle={styles.carouselItem}
+              inactiveSlideScale={0.8}
+            />
+          </View>
+          <Button
+            text="Start"
+            primary
+            style={styles._startButton}
+            onPress={() => this.props.navigator.push(routes.postureDashboard)}
           />
         </View>
-        <View>
-          <Button onPress={() => this.props.navigator.push(routes.postureDashboard)} text="Start" />
-        </View>
         <View style={styles.footer}>
-          <View style={styles.streakCounter}><BodyText>100</BodyText></View>
-          <BodyText>Daily Streak</BodyText>
+          <BodyText>DAILY STREAK</BodyText>
+          <View style={styles.dailyStreakContainer}>
+            <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
+            <BodyText style={styles._streakCounter}>{this.props.user.dailyStreak || 0}</BodyText>
+          </View>
         </View>
       </View>
     );
