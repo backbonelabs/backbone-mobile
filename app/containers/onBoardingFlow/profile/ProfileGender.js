@@ -35,7 +35,7 @@ const ProfileGender = props => (
           <TouchableOpacity
             key={`genderKey-${uniqueId()}`}
             style={styles.gender}
-            onPress={() => props.selectGender(value)}
+            onPress={() => props.updateField('gender', props.gender ? null : value)}
           >
             <Image source={genderImageMap[value === props.gender ? `${value}Selected` : value]} />
             <SecondaryText style={styles._genderText}>
@@ -68,7 +68,6 @@ const ProfileGender = props => (
 
 ProfileGender.propTypes = {
   gender: PropTypes.string,
-  selectGender: PropTypes.func,
   updateField: PropTypes.func,
   nickname: PropTypes.string,
   setPickerType: PropTypes.func,

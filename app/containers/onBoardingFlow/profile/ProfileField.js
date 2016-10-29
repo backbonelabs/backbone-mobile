@@ -28,7 +28,7 @@ const monthList = [
 const ProfileField = props => {
   const { height, weight, birthdate: b } = props;
   const dateString = b ? `${monthList[b.getMonth()]} ${b.getDate()}, ${b.getFullYear()}` : '';
-  const formattedProfile = { birthdate: dateString, height, weight };
+  const formattedProfile = { birthdate: dateString, height: height.value, weight: weight.value };
 
   return (
     <View style={styles.profileFieldContainer}>
@@ -59,8 +59,8 @@ const ProfileField = props => {
 ProfileField.propTypes = {
   setPickerType: PropTypes.func,
   birthdate: PropTypes.object,
-  weight: PropTypes.string,
-  height: PropTypes.string,
+  weight: PropTypes.object,
+  height: PropTypes.object,
 };
 
 export default ProfileField;

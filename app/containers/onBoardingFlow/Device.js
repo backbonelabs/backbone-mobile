@@ -1,30 +1,36 @@
 import React from 'react';
 import {
   View,
-  Text,
+  Image,
 } from 'react-native';
 import Button from '../../components/Button';
 import styles from '../../styles/onboarding/device';
 import HeadingText from '../../components/HeadingText';
-import SecondaryText from '../../components/SecondaryText';
+import sensor from '../../images/onboarding/sensor.png';
+import routes from '../../routes';
 
 const { PropTypes } = React;
 
 const Device = props => (
   <View key={props.key} style={styles.container}>
     <View style={styles.headerTextContainer}>
-      <HeadingText size={3}>Connect Your Backbone</HeadingText>
-    </View>
-    <View style={styles.subTextContainer}>
-      <SecondaryText style={styles._subText}>
-        [ CONNECT INSTRUCTIONS ]
-      </SecondaryText>
+      <HeadingText size={2}>Connect Your Backbone</HeadingText>
     </View>
     <View style={styles.imageContainer}>
-      <Text style={{ textAlign: 'center' }}>[ BACKBONE DEVICE IMAGE ]</Text>
+      <Image source={sensor} />
     </View>
-    <View style={styles.primaryButtonContainer}>
-      <Button text="NEXT" />
+    <View style={styles.buttonContainer}>
+      <View style={{ alignItems: 'center' }}>
+        <Button text="CONNECT" onPress={() => props.navigator.push(routes.deviceConnect)} />
+      </View>
+      <View style={{ alignItems: 'center', paddingTop: 15 }}>
+        <Button
+          style={styles._secondaryButton}
+          text="BACK"
+          textStyle={styles._secondaryButtonText}
+          onPress={props.previousStep}
+        />
+      </View>
     </View>
   </View>
 );
@@ -32,13 +38,13 @@ const Device = props => (
 Device.propTypes = {
   key: PropTypes.number,
   navigator: PropTypes.shape({
-    replace: PropTypes.func,
-    popToTop: PropTypes.func,
+    push: PropTypes.func,
   }),
   isConnected: PropTypes.bool,
   dispatch: PropTypes.func,
   inProgress: PropTypes.bool,
   errorMessage: PropTypes.string,
+  previousStep: PropTypes.func,
 };
 
 export default Device;

@@ -15,11 +15,13 @@ const { PropTypes } = React;
 const populatePickerItems = (type, maxValue, props) => (
   <Picker
     style={styles.profilePickerItems}
-    selectedValue={props[type]}
-    onValueChange={value => props.updateField(type, value)}
+    selectedValue={props[type].value}
+    onValueChange={value => (
+      props.updateField(type, Object.assign({}, props[type], { value }))
+    )}
   >
     { [...Array(maxValue).keys()].map(value => {
-      const pickerData = `${value + 1}${props[`${type}Metric`]}`;
+      const pickerData = `${value + 1}${props[`${type}`].type}`;
       return (
         <PickerItem
           key={`pickerItemKey-${uniqueId()}`}
@@ -58,11 +60,13 @@ const ProfilePicker = (props) => (
         case 'height':
           return (
             <View style={styles.profilePicker}>
-              { props.heightMetric === 'ft in' ?
+              { props.height.type === 'ft in' ?
                 <Picker
                   style={styles.profilePickerItems}
-                  selectedValue={props.height}
-                  onValueChange={height => props.updateField('height', height)}
+                  selectedValue={props.height.value}
+                  onValueChange={value => (
+                    props.updateField('height', Object.assign({}, props.height, { value }))
+                  )}
                 >
                   { [...Array(6).keys()].map(feet => (
                     [...Array(10).keys()].map(inches => {
@@ -82,10 +86,10 @@ const ProfilePicker = (props) => (
               }
               <View style={styles.profilePickerMetric}>
                 <Picker
-                  selectedValue={props.heightMetric}
-                  onValueChange={
-                    heightMetric => props.updateField('heightMetric', heightMetric)
-                  }
+                  selectedValue={props.height.type}
+                  onValueChange={type => (
+                    props.updateField('height', Object.assign({}, props.height, { type }))
+                  )}
                 >
                   { ['ft in', 'cm'].map(value => (
                     <PickerItem key={`heightMetricKey-${uniqueId()}`} value={value} label={value} />
@@ -102,10 +106,10 @@ const ProfilePicker = (props) => (
               </View>
               <View style={styles.profilePickerMetric}>
                 <Picker
-                  selectedValue={props.weightMetric}
-                  onValueChange={
-                    weightMetric => props.updateField('weightMetric', weightMetric)
-                  }
+                  selectedValue={props.weight.type}
+                  onValueChange={type => (
+                    props.updateField('weight', Object.assign({}, props.weight, { type }))
+                  )}
                 >
                   { ['lbs', 'kg'].map(value => (
                     <PickerItem
@@ -126,14 +130,12 @@ const ProfilePicker = (props) => (
 );
 
 ProfilePicker.propTypes = {
-  height: PropTypes.string,
-  weight: PropTypes.string,
+  height: PropTypes.object,
+  weight: PropTypes.object,
   birthdate: PropTypes.object,
   updateField: PropTypes.func,
   pickerType: PropTypes.string,
   setPickerType: PropTypes.func,
-  weightMetric: PropTypes.string,
-  heightMetric: PropTypes.string,
 };
 
 export default ProfilePicker;

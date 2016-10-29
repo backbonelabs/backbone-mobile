@@ -7,18 +7,25 @@ import {
   TouchableWithoutFeedback,
   PushNotificationIOS,
 } from 'react-native';
-import { uniqueId } from 'lodash';
+import { connect } from 'react-redux';
+import { pick, uniqueId } from 'lodash';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import OnboardingFlow from './onboardingFlow';
 import styles from '../styles/onboarding';
+import userActions from '../actions/user';
 
 const { width } = Dimensions.get('window');
 const { PropTypes } = React;
 
-export default class Onboarding extends Component {
+class Onboarding extends Component {
   static propTypes = {
     navigator: PropTypes.object,
-  }
+    dispatch: PropTypes.func,
+    user: PropTypes.shape({
+      _id: PropTypes.string,
+    }),
+    isUpdating: PropTypes.bool,
+  };
 
   constructor() {
     super();
@@ -29,16 +36,21 @@ export default class Onboarding extends Component {
       nickname: null,
       birthdate: null,
       gender: null,
-      weight: null,
-      height: null,
+      weight: {
+        value: '',
+        type: 'lbs',
+      },
+      height: {
+        value: '',
+        type: 'ft in',
+      },
       pickerType: null,
-      weightMetric: 'lbs',
-      heightMetric: 'ft in',
-      notificationPermissions: false,
+      hasOnboarded: false,
+      notificationEnabled: false,
     };
+    this.saveData = this.saveData.bind(this);
     this.nextStep = this.nextStep.bind(this);
     this.previousStep = this.previousStep.bind(this);
-    this.selectGender = this.selectGender.bind(this);
     this.setPickerType = this.setPickerType.bind(this);
     this.updateField = this.updateField.bind(this);
   }
@@ -48,18 +60,20 @@ export default class Onboarding extends Component {
     PushNotificationIOS.checkPermissions(permissions => {
       // If push notifications are already enabled, go to next step
       if (permissions.alert) {
-        this.setState({
-          notificationPermissions: true,
-        });
+        this.updateField('notificationEnabled', true);
       } else {
         // Set listener for user enabling push notifications
-        PushNotificationIOS.addEventListener('register', () => (
-          this.setState({
-            notificationPermissions: true,
-          })
-        ));
+        PushNotificationIOS.addEventListener('register', () => {
+          this.updateField('notificationEnabled', true);
+        });
       }
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.isUpdating && !nextProps.isUpdating) {
+      this.nextStep();
+    }
   }
 
   componentWillUnmount() {
@@ -87,13 +101,13 @@ export default class Onboarding extends Component {
   loadOnboardingFlow() {
     const steps = OnboardingFlow.map((step, i) => (
       step({
-        key: `${step}-${i}`,
-        onPress: i === OnboardingFlow.length - 1 ? this.saveData : this.nextStep,
+        key: `${i}`,
         navigator: this.props.navigator,
+        isUpdating: this.props.isUpdating,
         ...this.state,
+        saveData: this.saveData,
         nextStep: this.nextStep,
         previousStep: this.previousStep,
-        selectGender: this.selectGender,
         setPickerType: this.setPickerType,
         updateField: this.updateField,
       })
@@ -119,12 +133,20 @@ export default class Onboarding extends Component {
 
   // Store onboarding data all at once
   saveData() {
-    // Do something here
-  }
+    this.setState({ hasOnboarded: true }, () => {
+      const profileData = pick(this.state, [
+        'nickname',
+        'gender',
+        'weight',
+        'height',
+        'hasOnboarded',
+      ]);
 
-  selectGender(gender) {
-    const genderData = this.state.gender ? null : gender;
-    this.setState({ gender: genderData });
+      this.props.dispatch(userActions.updateUser({
+        _id: this.props.user._id,
+        ...profileData,
+      }));
+    });
   }
 
   updateField(field, value) {
@@ -145,7 +167,7 @@ export default class Onboarding extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.progressbarContainer}>
+        <View style={styles.progressBarContainer}>
           { OnboardingFlow.map((value, key) => (
             <Icon
               key={`progressIconKey-${uniqueId()}`}
@@ -162,3 +184,10 @@ export default class Onboarding extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { user } = state;
+  return user;
+};
+
+export default connect(mapStateToProps)(Onboarding);

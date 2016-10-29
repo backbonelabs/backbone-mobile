@@ -4,6 +4,7 @@ import {
   View,
 } from 'react-native';
 import HeadingText from '../../components/HeadingText';
+import Spinner from '../../components/Spinner';
 import styles from '../../styles/onboarding/profile';
 import Button from '../../components/Button';
 import ProfileGender from './profile/ProfileGender';
@@ -19,7 +20,6 @@ const Profile = props => (
       setPickerType={props.setPickerType}
       nickname={props.nickname}
       gender={props.gender}
-      selectGender={props.selectGender}
       updateField={props.updateField}
     />
     <ProfileField
@@ -36,16 +36,18 @@ const Profile = props => (
         setPickerType={props.setPickerType}
         pickerType={props.pickerType}
         updateField={props.updateField}
-        heightMetric={props.heightMetric}
-        weightMetric={props.weightMetric}
       /> : (
         <View style={styles.buttonContainer}>
           <View style={{ alignItems: 'center' }}>
-            <Button
-              text="NEXT"
-              onPress={props.nextStep}
-              disabled={!props.nickname || !props.gender || !props.height || !props.weight}
-            />
+            { props.isUpdating ?
+              <Spinner />
+              :
+                <Button
+                  text="SAVE"
+                  onPress={props.saveData}
+                  disabled={!props.nickname || !props.gender || !props.height || !props.weight}
+                />
+            }
           </View>
           <View style={{ alignItems: 'center', paddingTop: 15 }}>
             <Button
@@ -72,12 +74,12 @@ Profile.propTypes = {
   selectGender: PropTypes.func,
   setPickerType: PropTypes.func,
   birthdate: PropTypes.object,
-  height: PropTypes.string,
-  weight: PropTypes.weight,
-  heightMetric: PropTypes.string,
-  weightMetric: PropTypes.string,
+  height: PropTypes.object,
+  weight: PropTypes.object,
   clearPickerType: PropTypes.func,
   updateField: PropTypes.func,
+  saveData: PropTypes.func,
+  isUpdating: PropTypes.bool,
 };
 
 export default Profile;

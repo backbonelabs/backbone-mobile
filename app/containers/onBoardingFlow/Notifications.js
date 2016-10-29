@@ -26,14 +26,14 @@ const Notifications = props => (
     </View>
     <View style={styles.buttonContainer}>
       <View style={{ alignItems: 'center' }}>
-        { props.notificationsEnabled ?
-          <Button
-            style={styles._button}
-            onPress={() => Linking.openURL('app-settings:')}
-            text="ENABLE"
-          />
+        { props.notificationEnabled ?
+          <Button style={styles._button} text="ENABLE" disabled />
           :
-            <Button style={styles._button} text="ENABLE" disabled />
+            <Button
+              style={styles._button}
+              onPress={() => Linking.openURL('app-settings:')}
+              text="ENABLE"
+            />
         }
       </View>
       <View style={{ paddingTop: 15, alignItems: 'center' }}>
@@ -48,7 +48,7 @@ const Notifications = props => (
               backgroundColor: 'white',
             }
           )}
-          text={props.notificationsEnabled ? 'NOT NOW' : 'NEXT'}
+          text={props.notificationEnabled ? 'NEXT' : 'NOT NOW'}
           textStyle={{ color: 'red' }}
           onPress={props.nextStep}
         />
@@ -64,7 +64,7 @@ Notifications.propTypes = {
   onPress: PropTypes.func,
   currentStep: PropTypes.number,
   nextStep: PropTypes.func,
-  notificationsEnabled: PropTypes.bool,
+  notificationEnabled: PropTypes.bool,
 };
 
 export default Notifications;
