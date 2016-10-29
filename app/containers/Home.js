@@ -126,8 +126,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth, app, user: userReducer } = state;
-  const { user } = userReducer;
+  const { auth, app, user: { user } } = state;
   return { auth, app, user };
 };
 
