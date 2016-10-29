@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { clone } from 'lodash';
 import appActions from '../actions/app';
 import Menu from '../components/Menu';
+import HeadingText from '../components/HeadingText';
 import routes from '../routes';
 import styles from '../styles/application';
 import constants from '../utils/constants';
@@ -82,7 +83,7 @@ class Application extends Component {
           />
         </TouchableOpacity>
       ),
-      Title: route => route.title && <Text style={styles.titleText}>{route.title}</Text>,
+      Title: route => route.title && <HeadingText size={3}>{route.title}</HeadingText>,
     };
 
     this.state = {
