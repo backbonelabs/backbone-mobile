@@ -22,7 +22,6 @@ class Home extends Component {
   static propTypes = {
     auth: PropTypes.shape({
       accessToken: PropTypes.string,
-      inProgress: PropTypes.bool,
     }),
     app: PropTypes.shape({
       bluetoothState: PropTypes.number,
@@ -76,7 +75,7 @@ class Home extends Component {
   }
 
   render() {
-    const { accessToken, inProgress } = this.props.auth;
+    const { accessToken } = this.props.auth;
     return (
       <View style={styles.container}>
         <Image style={styles.background} source={bg} />
@@ -84,7 +83,7 @@ class Home extends Component {
           <Image style={styles.logo} source={logo} />
         </View>
         <View style={styles.body}>
-          {this.state.isInitializing || inProgress ?
+          {this.state.isInitializing ?
             <Spinner /> : this.getMainBody()
           }
         </View>

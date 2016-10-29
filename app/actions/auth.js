@@ -43,7 +43,7 @@ const passwordResetError = error => ({
 });
 
 const setAccessToken = token => ({
-  type: 'SET_ACCESSTOKEN',
+  type: 'SET_ACCESS_TOKEN',
   payload: token,
 });
 
