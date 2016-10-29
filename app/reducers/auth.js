@@ -75,6 +75,12 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
+    case 'SET_ACCESS_TOKEN': {
+      return {
+        ...state,
+        accessToken: action.payload,
+      };
+    }
     default:
       return state;
   }
