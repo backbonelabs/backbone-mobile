@@ -87,7 +87,7 @@ export default class OnBoarding extends Component {
   loadOnBoardingFlow() {
     const steps = OnBoardingFlow.map((step, i) => (
       step({
-        key: `onboardingFlowKey-${uniqueId()}`,
+        key: `${step}-${i}`,
         onPress: i === OnBoardingFlow.length - 1 ? this.saveData : this.nextStep,
         navigator: this.props.navigator,
         ...this.state,

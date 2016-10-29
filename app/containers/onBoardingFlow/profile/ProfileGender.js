@@ -23,56 +23,48 @@ const genderImageMap = {
 
 const { PropTypes } = React;
 
-const ProfileGender = props => {
-  let nickname = '';
+const ProfileGender = props => (
+  <View style={styles.genderSelectionContainer}>
+    { genders.map(value => {
+      let returnedComponent;
 
-  return (
-    <View style={styles.genderSelectionContainer}>
-      { genders.map(value => {
-        let returnedComponent;
-
-        if (props.gender && value !== props.gender) {
-          returnedComponent = null;
-        } else {
-          returnedComponent = (
-            <TouchableOpacity
-              key={`genderKey-${uniqueId()}`}
-              style={styles.gender}
-              onPress={() => props.selectGender(value)}
-            >
-              <Image source={genderImageMap[value === props.gender ? `${value}Selected` : value]} />
-              <SecondaryText style={styles._genderText}>
-                { value === props.gender ?
-                  'Change'
-                  :
-                  `${value.charAt(0).toUpperCase()}${value.slice(1)}`
-                }
-              </SecondaryText>
-            </TouchableOpacity>
-          );
-        }
-        return returnedComponent;
-      }) }
-      { props.gender &&
-        <Input
-          style={styles._nicknameInput}
-          defaultValue={props.nickname}
-          placeholder="Nickname"
-          autoCorrect={false}
-          autoCapitalize="none"
-          keyboardType="default"
-          onChangeText={text => { nickname = text; }}
-          onEndEditing={() => {
-            console.log('blurred');
-            props.updateField('nickname', nickname);
-          }}
-          iconFont={props.nickname ? 'FontAwesome' : ''}
-          iconRightName={props.nickname ? 'check' : ''}
-        />
+      if (props.gender && value !== props.gender) {
+        returnedComponent = null;
+      } else {
+        returnedComponent = (
+          <TouchableOpacity
+            key={`genderKey-${uniqueId()}`}
+            style={styles.gender}
+            onPress={() => props.selectGender(value)}
+          >
+            <Image source={genderImageMap[value === props.gender ? `${value}Selected` : value]} />
+            <SecondaryText style={styles._genderText}>
+              { value === props.gender ?
+                'Change'
+                :
+                `${value.charAt(0).toUpperCase()}${value.slice(1)}`
+              }
+            </SecondaryText>
+          </TouchableOpacity>
+        );
       }
-    </View>
-  );
-};
+      return returnedComponent;
+    }) }
+    { props.gender &&
+      <Input
+        style={styles._nicknameInput}
+        defaultValue={props.nickname}
+        placeholder="Nickname"
+        autoCorrect={false}
+        autoCapitalize="none"
+        keyboardType="default"
+        onChangeText={text => props.updateField('nickname', text)}
+        iconFont={props.nickname ? 'FontAwesome' : ''}
+        iconRightName={props.nickname ? 'check' : ''}
+      />
+    }
+  </View>
+);
 
 ProfileGender.propTypes = {
   gender: PropTypes.string,
