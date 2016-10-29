@@ -46,11 +46,18 @@ class Welcome extends Component {
     // is a stored access token. An access token would have been saved
     // on a previously successful login.
     SensitiveInfo.getItem('accessToken')
-      .then(accessToken =>
+      .then(accessToken => {
         // There is a saved access token
-        // Attempt to log in using the access token
-        accessToken && this.props.dispatch(authActions.login({ accessToken }))
-      );
+        // Redirect user to session dashboard
+        if (accessToken) {
+          this.props.dispatch(authActions.setAccessToken(accessToken));
+          this.props.navigator.push(routes.home);
+        }
+        this.setState({ isInitializing: false });
+      })
+      .catch(() => {
+        this.setState({ isInitializing: false });
+      });
   }
 
   componentWillReceiveProps(nextProps) {
