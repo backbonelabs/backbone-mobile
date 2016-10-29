@@ -5,11 +5,11 @@ import {
   Image,
   Linking,
 } from 'react-native';
-import styles from '../../styles/onBoarding/notifications';
+import styles from '../../styles/onboarding/notifications';
 import Button from '../../components/Button';
 import HeadingText from '../../components/HeadingText';
 import SecondaryText from '../../components/SecondaryText';
-import progressChart from '../../images/profile/progressChart.png';
+import progressChart from '../../images/onboarding/progressChart.png';
 
 const Notifications = props => (
   <View key={props.key} onPress={props.onPress} style={styles.container}>

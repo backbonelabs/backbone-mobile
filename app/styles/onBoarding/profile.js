@@ -8,7 +8,7 @@ export default EStyleSheet.create({
   textContainer: {
     flex: 0.08,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   text: {
     textAlign: 'center',

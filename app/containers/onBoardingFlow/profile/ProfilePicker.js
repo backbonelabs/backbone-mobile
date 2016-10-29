@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { uniqueId } from 'lodash';
-import styles from '../../../styles/onBoarding/profile';
+import styles from '../../../styles/onboarding/profile';
 
 const PickerItem = Picker.Item;
 const { PropTypes } = React;

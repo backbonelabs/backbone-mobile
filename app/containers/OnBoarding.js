@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import { uniqueId } from 'lodash';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import OnBoardingFlow from './onBoardingFlow';
+import OnboardingFlow from './onboardingFlow';
 import styles from '../styles/onboarding';
 
 const { width } = Dimensions.get('window');
 const { PropTypes } = React;
 
-export default class OnBoarding extends Component {
+export default class Onboarding extends Component {
   static propTypes = {
     navigator: PropTypes.object,
   }
@@ -70,7 +70,7 @@ export default class OnBoarding extends Component {
   // Returns an array with multiple style objects
   getStepStyle() {
     return [
-      styles.onBoardingFlowContainer,
+      styles.onboardingFlowContainer,
       { transform: this.state.animatedValues.getTranslateTransform() },
     ];
   }
@@ -84,11 +84,11 @@ export default class OnBoarding extends Component {
   }
 
   // Combines the separate onboarding step components into one
-  loadOnBoardingFlow() {
-    const steps = OnBoardingFlow.map((step, i) => (
+  loadOnboardingFlow() {
+    const steps = OnboardingFlow.map((step, i) => (
       step({
         key: `${step}-${i}`,
-        onPress: i === OnBoardingFlow.length - 1 ? this.saveData : this.nextStep,
+        onPress: i === OnboardingFlow.length - 1 ? this.saveData : this.nextStep,
         navigator: this.props.navigator,
         ...this.state,
         nextStep: this.nextStep,
@@ -145,8 +145,8 @@ export default class OnBoarding extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.progressBarContainer}>
-          { OnBoardingFlow.map((value, key) => (
+        <View style={styles.progressbarContainer}>
+          { OnboardingFlow.map((value, key) => (
             <Icon
               key={`progressIconKey-${uniqueId()}`}
               name={this.state.step > key ? 'check-square-o' : 'square-o'}
@@ -156,7 +156,7 @@ export default class OnBoarding extends Component {
           )) }
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          { this.loadOnBoardingFlow() }
+          { this.loadOnboardingFlow() }
         </TouchableWithoutFeedback>
       </View>
     );

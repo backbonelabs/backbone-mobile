@@ -4,7 +4,7 @@ import {
   Text,
 } from 'react-native';
 import Button from '../../components/Button';
-import styles from '../../styles/onBoarding/device';
+import styles from '../../styles/onboarding/device';
 import HeadingText from '../../components/HeadingText';
 import SecondaryText from '../../components/SecondaryText';
 

@@ -4,7 +4,7 @@ import {
   View,
 } from 'react-native';
 import HeadingText from '../../components/HeadingText';
-import styles from '../../styles/onBoarding/profile';
+import styles from '../../styles/onboarding/profile';
 import Button from '../../components/Button';
 import ProfileGender from './profile/ProfileGender';
 import ProfileField from './profile/ProfileField';

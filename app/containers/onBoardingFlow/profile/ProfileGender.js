@@ -5,13 +5,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { uniqueId } from 'lodash';
-import styles from '../../../styles/onBoarding/profile';
+import styles from '../../../styles/onboarding/profile';
 import Input from '../../../components/Input';
 import SecondaryText from '../../../components/SecondaryText';
-import maleIcon from '../../../images/profile/male.png';
-import maleSelectedIcon from '../../../images/profile/maleSelected.png';
-import femaleIcon from '../../../images/profile/female.png';
-import femaleSelectedIcon from '../../../images/profile/femaleSelected.png';
+import maleIcon from '../../../images/onboarding/male.png';
+import maleSelectedIcon from '../../../images/onboarding/maleSelected.png';
+import femaleIcon from '../../../images/onboarding/female.png';
+import femaleSelectedIcon from '../../../images/onboarding/femaleSelected.png';
 
 const genders = ['female', 'male'];
 const genderImageMap = {

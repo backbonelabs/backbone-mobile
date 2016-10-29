@@ -21,7 +21,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  onBoardingFlowContainer: {
+  onboardingFlowContainer: {
     flex: 0.85,
     flexDirection: 'row',
   },

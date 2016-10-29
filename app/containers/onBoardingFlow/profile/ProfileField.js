@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { map, uniqueId } from 'lodash';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from '../../../styles/onBoarding/profile';
+import styles from '../../../styles/onboarding/profile';
 import BodyText from '../../../components/BodyText';
 import SecondaryText from '../../../components/SecondaryText';
 
