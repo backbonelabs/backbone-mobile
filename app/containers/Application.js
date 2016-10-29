@@ -182,7 +182,7 @@ class Application extends Component {
     const tabBarRoutes = [
       {
         name: 'Session',
-        routeName: 'postureDashboard',
+        routeName: 'home',
         iconName: 'circle-o',
       },
       {
