@@ -23,6 +23,7 @@ class Login extends Component {
     dispatch: PropTypes.func,
     inProgress: PropTypes.bool,
     navigator: PropTypes.object,
+    hasOnboard: PropTypes.bool,
   };
 
   constructor() {
@@ -39,8 +40,13 @@ class Login extends Component {
       // User successfully authenticated, save access token to local device
       this.saveAccessToken(nextProps.accessToken);
 
-      // Redirect for device connect
-      this.props.navigator.replace(routes.deviceConnect);
+      // User has already gone through onboarding, redirect for device connect
+      if (nextProps.hasOnboarded) {
+        this.props.navigator.replace(routes.deviceConnect);
+      } else {
+        // User hasn't yet completed onboarding process
+        this.props.navigator.push(routes.onboarding);
+      }
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', nextProps.errorMessage);
