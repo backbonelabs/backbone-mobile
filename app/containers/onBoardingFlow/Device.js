@@ -20,12 +20,16 @@ const Device = props => (
       <Image source={sensor} />
     </View>
     <View style={styles.buttonContainer}>
-      <View style={styles.primaryButtonContainer}>
-        <Button text="CONNECT" onPress={() => props.navigator.push(routes.deviceConnect)} />
-      </View>
-      <View style={styles.secondaryButtonContainer}>
+      <View>
         <Button
-          style={styles._secondaryButton}
+          style={{ alignSelf: 'center' }}
+          text="CONNECT"
+          onPress={() => props.navigator.push(routes.deviceConnect)}
+        />
+      </View>
+      <View style={{ paddingTop: 15 }}>
+        <Button
+          style={{ alignSelf: 'center' }}
           text="BACK"
           textStyle={styles._secondaryButtonText}
           onPress={props.previousStep}

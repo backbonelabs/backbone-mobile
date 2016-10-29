@@ -25,16 +25,17 @@ const Notifications = props => (
       </SecondaryText>
     </View>
     <View style={styles.buttonContainer}>
-      <View style={styles.primaryButtonContainer}>
+      <View>
         <Button
+          style={{ alignSelf: 'center' }}
           onPress={() => Linking.openURL('app-settings:')}
           text="ENABLE"
           disabled={props.notificationsEnabled}
         />
       </View>
-      <View style={styles.secondaryButtonContainer}>
+      <View style={{ paddingTop: 15 }}>
         <Button
-          style={styles._secondaryButton}
+          style={{ alignSelf: 'center' }}
           text={props.notificationsEnabled ? 'NEXT' : 'NOT NOW'}
           textStyle={styles._secondaryButtonText}
           onPress={props.nextStep}

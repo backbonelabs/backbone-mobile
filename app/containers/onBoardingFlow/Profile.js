@@ -38,20 +38,21 @@ const Profile = props => (
         updateField={props.updateField}
       /> : (
         <View style={styles.buttonContainer}>
-          <View style={styles.primaryButtonContainer}>
+          <View>
             { props.isUpdating ?
               <Spinner />
               :
                 <Button
+                  style={{ alignSelf: 'center' }}
                   text="SAVE"
                   onPress={props.saveData}
                   disabled={!props.nickname || !props.gender || !props.height || !props.weight}
                 />
             }
           </View>
-          <View style={styles.secondaryButtonContainer}>
+          <View style={{ paddingTop: 15 }}>
             <Button
-              style={styles._secondaryButton}
+              style={{ alignSelf: 'center' }}
               text="BACK"
               textStyle={styles._secondaryButtonText}
               onPress={props.previousStep}

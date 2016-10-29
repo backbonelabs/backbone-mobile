@@ -26,8 +26,11 @@ const monthList = [
 ];
 
 const ProfileField = props => {
-  const { height, weight, birthdate: b } = props;
-  const dateString = b ? `${monthList[b.getMonth()]} ${b.getDate()}, ${b.getFullYear()}` : '';
+  const { height, weight, birthdate } = props;
+  const dateString = birthdate ?
+  `${monthList[birthdate.getMonth()]} ${birthdate.getDate()}, ${birthdate.getFullYear()}`
+  :
+  '';
   const formattedProfile = { birthdate: dateString, height: height.value, weight: weight.value };
 
   return (
