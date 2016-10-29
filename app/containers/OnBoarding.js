@@ -4,8 +4,8 @@ import {
   Animated,
   Keyboard,
   Dimensions,
-  TouchableWithoutFeedback,
   PushNotificationIOS,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { pick, uniqueId } from 'lodash';
@@ -15,6 +15,7 @@ import styles from '../styles/onboarding';
 import userActions from '../actions/user';
 
 const { width } = Dimensions.get('window');
+
 const { PropTypes } = React;
 
 class Onboarding extends Component {
@@ -46,7 +47,7 @@ class Onboarding extends Component {
       },
       pickerType: null,
       hasOnboarded: false,
-      notificationEnabled: false,
+      notificationsEnabled: false,
     };
     this.saveData = this.saveData.bind(this);
     this.nextStep = this.nextStep.bind(this);
@@ -60,11 +61,11 @@ class Onboarding extends Component {
     PushNotificationIOS.checkPermissions(permissions => {
       // If push notifications are already enabled, go to next step
       if (permissions.alert) {
-        this.updateField('notificationEnabled', true);
+        this.updateField('notificationsEnabled', true);
       } else {
         // Set listener for user enabling push notifications
         PushNotificationIOS.addEventListener('register', () => {
-          this.updateField('notificationEnabled', true);
+          this.updateField('notificationsEnabled', true);
         });
       }
     });
@@ -92,9 +93,7 @@ class Onboarding extends Component {
   setPickerType(info) {
     Keyboard.dismiss();
 
-    this.setState({
-      pickerType: info || null,
-    });
+    this.setState({ pickerType: info || null });
   }
 
   // Combines the separate onboarding step components into one
@@ -104,12 +103,12 @@ class Onboarding extends Component {
         key: `${i}`,
         navigator: this.props.navigator,
         isUpdating: this.props.isUpdating,
-        ...this.state,
         saveData: this.saveData,
         nextStep: this.nextStep,
         previousStep: this.previousStep,
         setPickerType: this.setPickerType,
         updateField: this.updateField,
+        ...this.state,
       })
     ));
     return <Animated.View style={this.getStepStyle()}>{steps}</Animated.View>;

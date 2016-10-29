@@ -43,11 +43,11 @@ class Login extends Component {
       // User successfully authenticated, save access token to local device
       this.saveAccessToken(nextProps.accessToken);
 
-      // User has already gone through onboarding, redirect for device connect
+      // User has already gone through onboarding
       if (nextProps.hasOnboarded) {
         this.props.navigator.replace(routes.deviceConnect);
       } else {
-        // User hasn't yet completed onboarding process
+        // User hasn't completed onboarding process
         this.props.navigator.push(routes.onboarding);
       }
     } else if (!this.props.errorMessage && nextProps.errorMessage) {

@@ -18,6 +18,13 @@ export default EStyleSheet.create({
     flex: 0.45,
     justifyContent: 'center',
   },
+  primaryButtonContainer: {
+    alignItems: 'center',
+  },
+  secondaryButtonContainer: {
+    alignItems: 'center',
+    paddingTop: 15,
+  },
   secondaryButton: {
     borderColor: '$primaryColor',
     borderWidth: 1,

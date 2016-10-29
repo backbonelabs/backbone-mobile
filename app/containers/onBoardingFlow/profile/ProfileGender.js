@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { uniqueId } from 'lodash';
-import styles from '../../../styles/onboarding/profile';
+import styles from '../../../styles/onBoarding/profile';
 import Input from '../../../components/Input';
 import SecondaryText from '../../../components/SecondaryText';
 import maleIcon from '../../../images/onboarding/male.png';
@@ -70,7 +70,6 @@ ProfileGender.propTypes = {
   gender: PropTypes.string,
   updateField: PropTypes.func,
   nickname: PropTypes.string,
-  setPickerType: PropTypes.func,
 };
 
 export default ProfileGender;

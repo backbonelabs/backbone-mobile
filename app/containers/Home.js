@@ -66,7 +66,7 @@ class Home extends Component {
     return (
       <Button
         onPress={
-          () => this.props.navigator.push(routes.onboarding)
+          () => this.props.navigator.push(accessToken ? routes.deviceConnect : routes.login)
         }
         primary
         disabled={accessToken && this.props.app.bluetoothState === bluetoothStates.OFF}

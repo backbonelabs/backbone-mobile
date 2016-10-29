@@ -67,6 +67,13 @@ export default EStyleSheet.create({
     flex: 0.42,
     justifyContent: 'center',
   },
+  primaryButtonContainer: {
+    alignItems: 'center',
+  },
+  secondaryButtonContainer: {
+    alignItems: 'center',
+    paddingTop: 15,
+  },
   secondaryButton: {
     borderColor: '$primaryColor',
     borderWidth: 1,
@@ -81,6 +88,10 @@ export default EStyleSheet.create({
     flex: 0.42,
     justifyContent: 'flex-end',
   },
+  datePicker: {
+    marginTop: 10,
+    marginBottom: -15,
+  },
   profilePicker: {
     marginTop: 10,
     marginBottom: -15,
@@ -89,9 +100,12 @@ export default EStyleSheet.create({
   profilePickerHeader: {
     height: 40,
     marginBottom: -26,
-    backgroundColor: 'red',
+    backgroundColor: '$primaryColor',
     justifyContent: 'center',
     alignItems: 'flex-end',
+  },
+  profilePickerHeaderText: {
+    color: 'white',
   },
   profilePickerItems: {
     flex: 0.65,

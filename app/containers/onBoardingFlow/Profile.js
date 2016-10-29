@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import HeadingText from '../../components/HeadingText';
 import Spinner from '../../components/Spinner';
-import styles from '../../styles/onboarding/profile';
+import styles from '../../styles/onBoarding/profile';
 import Button from '../../components/Button';
 import ProfileGender from './profile/ProfileGender';
 import ProfileField from './profile/ProfileField';
@@ -38,7 +38,7 @@ const Profile = props => (
         updateField={props.updateField}
       /> : (
         <View style={styles.buttonContainer}>
-          <View style={{ alignItems: 'center' }}>
+          <View style={styles.primaryButtonContainer}>
             { props.isUpdating ?
               <Spinner />
               :
@@ -49,7 +49,7 @@ const Profile = props => (
                 />
             }
           </View>
-          <View style={{ alignItems: 'center', paddingTop: 15 }}>
+          <View style={styles.secondaryButtonContainer}>
             <Button
               style={styles._secondaryButton}
               text="BACK"
@@ -66,17 +66,14 @@ const { PropTypes } = React;
 
 Profile.propTypes = {
   key: PropTypes.number,
-  nextStep: PropTypes.func,
   previousStep: PropTypes.func,
   pickerType: PropTypes.string,
   nickname: PropTypes.string,
   gender: PropTypes.string,
-  selectGender: PropTypes.func,
   setPickerType: PropTypes.func,
   birthdate: PropTypes.object,
   height: PropTypes.object,
   weight: PropTypes.object,
-  clearPickerType: PropTypes.func,
   updateField: PropTypes.func,
   saveData: PropTypes.func,
   isUpdating: PropTypes.bool,

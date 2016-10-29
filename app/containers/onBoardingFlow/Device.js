@@ -4,7 +4,7 @@ import {
   Image,
 } from 'react-native';
 import Button from '../../components/Button';
-import styles from '../../styles/onboarding/device';
+import styles from '../../styles/onBoarding/device';
 import HeadingText from '../../components/HeadingText';
 import sensor from '../../images/onboarding/sensor.png';
 import routes from '../../routes';
@@ -20,10 +20,10 @@ const Device = props => (
       <Image source={sensor} />
     </View>
     <View style={styles.buttonContainer}>
-      <View style={{ alignItems: 'center' }}>
+      <View style={styles.primaryButtonContainer}>
         <Button text="CONNECT" onPress={() => props.navigator.push(routes.deviceConnect)} />
       </View>
-      <View style={{ alignItems: 'center', paddingTop: 15 }}>
+      <View style={styles.secondaryButtonContainer}>
         <Button
           style={styles._secondaryButton}
           text="BACK"
@@ -40,10 +40,6 @@ Device.propTypes = {
   navigator: PropTypes.shape({
     push: PropTypes.func,
   }),
-  isConnected: PropTypes.bool,
-  dispatch: PropTypes.func,
-  inProgress: PropTypes.bool,
-  errorMessage: PropTypes.string,
   previousStep: PropTypes.func,
 };
 

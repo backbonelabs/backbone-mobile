@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { uniqueId } from 'lodash';
-import styles from '../../../styles/onboarding/profile';
+import styles from '../../../styles/onBoarding/profile';
 
 const PickerItem = Picker.Item;
 const { PropTypes } = React;
@@ -43,7 +43,7 @@ const ProfilePicker = (props) => (
           props.setPickerType()
         )}
       >
-        <Text style={{ color: 'white' }}>Save</Text>
+        <Text style={styles.profilePickerHeaderText}>Save</Text>
       </TouchableOpacity>
     </View>
     { (() => {
@@ -51,7 +51,7 @@ const ProfilePicker = (props) => (
         case 'birthdate':
           return (
             <DatePickerIOS
-              style={{ marginTop: 10, marginBottom: -15 }}
+              style={styles.datePicker}
               date={props.birthdate || new Date()}
               mode="date"
               onDateChange={date => props.updateField('birthdate', date)}

@@ -5,14 +5,14 @@ import {
   Image,
   Linking,
 } from 'react-native';
-import styles from '../../styles/onboarding/notifications';
+import styles from '../../styles/onBoarding/notifications';
 import Button from '../../components/Button';
 import HeadingText from '../../components/HeadingText';
 import SecondaryText from '../../components/SecondaryText';
 import progressChart from '../../images/onboarding/progressChart.png';
 
 const Notifications = props => (
-  <View key={props.key} onPress={props.onPress} style={styles.container}>
+  <View key={props.key} style={styles.container}>
     <View style={styles.imageContainer}>
       <Image source={progressChart} />
     </View>
@@ -25,31 +25,18 @@ const Notifications = props => (
       </SecondaryText>
     </View>
     <View style={styles.buttonContainer}>
-      <View style={{ alignItems: 'center' }}>
-        { props.notificationEnabled ?
-          <Button style={styles._button} text="ENABLE" disabled />
-          :
-            <Button
-              style={styles._button}
-              onPress={() => Linking.openURL('app-settings:')}
-              text="ENABLE"
-            />
-        }
-      </View>
-      <View style={{ paddingTop: 15, alignItems: 'center' }}>
+      <View style={styles.primaryButtonContainer}>
         <Button
-          style={Object.assign(
-            {},
-            styles._button,
-            {
-              borderWidth: 1,
-              borderRadius: 5,
-              borderColor: 'red',
-              backgroundColor: 'white',
-            }
-          )}
-          text={props.notificationEnabled ? 'NEXT' : 'NOT NOW'}
-          textStyle={{ color: 'red' }}
+          onPress={() => Linking.openURL('app-settings:')}
+          text="ENABLE"
+          disabled={props.notificationsEnabled}
+        />
+      </View>
+      <View style={styles.secondaryButtonContainer}>
+        <Button
+          style={styles._secondaryButton}
+          text={props.notificationsEnabled ? 'NEXT' : 'NOT NOW'}
+          textStyle={styles._secondaryButtonText}
           onPress={props.nextStep}
         />
       </View>
@@ -61,10 +48,8 @@ const { PropTypes } = React;
 
 Notifications.propTypes = {
   key: PropTypes.number,
-  onPress: PropTypes.func,
-  currentStep: PropTypes.number,
   nextStep: PropTypes.func,
-  notificationEnabled: PropTypes.bool,
+  notificationsEnabled: PropTypes.bool,
 };
 
 export default Notifications;
