@@ -18,13 +18,17 @@ import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
 import BackBoneLogo from '../images/bblogo.png';
 import HeadingText from '../components/HeadingText';
+import constants from '../utils/constants';
 
 class Login extends Component {
   static propTypes = {
-    accessToken: PropTypes.string,
-    errorMessage: PropTypes.string,
+    auth: PropTypes.shape({
+      accessToken: PropTypes.string,
+      errorMessage: PropTypes.string,
+      inProgress: PropTypes.bool,
+    }),
+    user: PropTypes.object,
     dispatch: PropTypes.func,
-    inProgress: PropTypes.bool,
     navigator: PropTypes.object,
   };
 
@@ -38,20 +42,18 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.accessToken && nextProps.accessToken) {
+    const newAccessToken = nextProps.auth.accessToken;
+    if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User successfully authenticated, save access token to local device
-      this.saveAccessToken(nextProps.accessToken);
+      SensitiveInfo.setItem(constants.accessTokenStorageKey, newAccessToken);
+      SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
 
       // Redirect for device connect
-      this.props.navigator.replace(routes.home);
-    } else if (!this.props.errorMessage && nextProps.errorMessage) {
+      this.props.navigator.replace(routes.deviceConnect);
+    } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
       // Authentication error
-      Alert.alert('Authentication Error', nextProps.errorMessage);
+      Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
-  }
-
-  saveAccessToken(accessToken) {
-    SensitiveInfo.setItem('accessToken', accessToken);
   }
 
   login() {
@@ -65,12 +67,14 @@ class Login extends Component {
   }
 
   render() {
+    const { inProgress } = this.props.auth;
+
     // The main View is composed in the TouchableWithoutFeedback to allow
     // the keyboard to be closed when tapping outside of an input field
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles._container}>
-          {this.props.inProgress ?
+          {inProgress ?
             <Spinner />
             :
               <View style={styles.formContainer}>
@@ -112,7 +116,7 @@ class Login extends Component {
                   style={styles._loginButton}
                   text="LOGIN"
                   primary
-                  disabled={this.props.inProgress}
+                  disabled={inProgress}
                   onPress={this.login}
                 />
                 <View style={styles.forgotPasswordWrapper}>
@@ -128,7 +132,7 @@ class Login extends Component {
                 <Button
                   style={styles._backButton}
                   text="BACK"
-                  disabled={this.props.inProgress}
+                  disabled={inProgress}
                   onPress={this.props.navigator.pop}
                 />
               </View>
@@ -140,8 +144,8 @@ class Login extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth } = state;
-  return auth;
+  const { auth, user: { user } } = state;
+  return { auth, user };
 };
 
 export default connect(mapStateToProps)(Login);

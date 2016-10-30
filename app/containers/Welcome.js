@@ -2,31 +2,24 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
-import SecondaryText from '../components/SecondaryText';
 import Button from '../components/Button';
 import logo from '../images/bblogo.png';
 import styles from '../styles/welcome';
 import routes from '../routes';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
+import constants from '../utils/constants';
 
 const { PropTypes } = React;
 
 class Welcome extends Component {
   static propTypes = {
-    auth: PropTypes.shape({
-      accessToken: PropTypes.string,
-      inProgress: PropTypes.bool,
-    }),
-    app: PropTypes.shape({
-      config: PropTypes.object,
-    }),
+    user: PropTypes.object,
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       push: PropTypes.func,
@@ -39,42 +32,55 @@ class Welcome extends Component {
     this.state = {
       isInitializing: true,
     };
+    this._completeInitialization = this._completeInitialization.bind(this);
   }
 
   componentWillMount() {
     // This is the initialization process where we check if there
     // is a stored access token. An access token would have been saved
     // on a previously successful login.
-    SensitiveInfo.getItem('accessToken')
-      .then(accessToken => {
-        // There is a saved access token
-        // Redirect user to session dashboard
+    SensitiveInfo.getItem(constants.accessTokenStorageKey)
+      .then((accessToken) => {
         if (accessToken) {
+          // There is a saved access token
+          // Dispatch access token to app store
           this.props.dispatch(authActions.setAccessToken(accessToken));
-          this.props.navigator.push(routes.home);
+
+          // Check if there is already a user profile in the app store
+          if (this.props.user) {
+            // There is a user profile in the app store
+            // Redirect user to dashboard
+            this.props.navigator.replace(routes.home);
+          } else {
+            // There is no user profile in the app store, so check local storage
+            return SensitiveInfo.getItem(constants.userStorageKey)
+              .then((user) => {
+                if (user) {
+                  // There is a user profile in local storage
+                  // Dispatch user profile to app store
+                  this.props.dispatch({
+                    type: 'FETCH_USER',
+                    payload: user,
+                  });
+
+                  // Redirect user to dashboard
+                  this.props.navigator.replace(routes.home);
+                } else {
+                  this._completeInitialization();
+                }
+              });
+          }
+        } else {
+          this._completeInitialization();
         }
-        this.setState({ isInitializing: false });
       })
       .catch(() => {
-        this.setState({ isInitializing: false });
+        this._completeInitialization();
       });
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.auth.inProgress && !nextProps.auth.inProgress) {
-      // Finished login attempt
-      if (nextProps.auth.errorMessage) {
-        // Access token is invalid
-        // Delete from local device to prevent unnecessary API calls on subsequent app load
-        SensitiveInfo.deleteItem('accessToken');
-      } else {
-        // Successful login, save new access token
-        SensitiveInfo.setItem('accessToken', nextProps.auth.accessToken);
-
-        // Navigate to Home
-        this.props.navigator.replace(routes.home);
-      }
-    }
+  _completeInitialization() {
+    this.setState({ isInitializing: false });
   }
 
   render() {
@@ -92,7 +98,7 @@ class Welcome extends Component {
           </View>
         </View>
         <View style={styles.footer}>
-          {this.props.auth.inProgress ? <Spinner /> : (
+          {this.state.isInitializing ? <Spinner /> : (
             <View style={styles.CTAContainer}>
               <Button
                 primary
@@ -105,15 +111,6 @@ class Welcome extends Component {
               />
             </View>
           )}
-          {this.props.app.config.DEV_MODE &&
-            <View style={{ marginTop: 5 }}>
-              <TouchableOpacity
-                onPress={() => SensitiveInfo.deleteItem('accessToken')}
-              >
-                <SecondaryText>Delete access token</SecondaryText>
-              </TouchableOpacity>
-            </View>
-          }
         </View>
       </View>
     );
@@ -121,8 +118,8 @@ class Welcome extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth, app } = state;
-  return { auth, app };
+  const { user: { user } } = state;
+  return { user };
 };
 
 export default connect(mapStateToProps)(Welcome);
