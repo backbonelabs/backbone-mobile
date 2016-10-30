@@ -69,7 +69,7 @@ class Reset extends Component {
             :
               <View style={styles.formContainer}>
                 <View style={styles.backBoneLogoWrapper}>
-                  <Image style={styles.backBoneLogo} source={BackBoneLogo} />
+                  <Image source={BackBoneLogo} />
                 </View>
                 <HeadingText size={2} style={styles._loginHeading}>No problem!</HeadingText>
                 <BodyText style={styles._resetSubHeading}>What's your email?</BodyText>
