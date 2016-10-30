@@ -50,7 +50,7 @@ class Welcome extends Component {
           if (this.props.user) {
             // There is a user profile in the app store
             // Redirect user to dashboard
-            this.props.navigator.replace(routes.home);
+            this.props.navigator.replace(routes.postureDashboard);
           } else {
             // There is no user profile in the app store, so check local storage
             return SensitiveInfo.getItem(constants.userStorageKey)
@@ -64,7 +64,7 @@ class Welcome extends Component {
                   });
 
                   // Redirect user to dashboard
-                  this.props.navigator.replace(routes.home);
+                  this.props.navigator.replace(routes.postureDashboard);
                 } else {
                   this._completeInitialization();
                 }
