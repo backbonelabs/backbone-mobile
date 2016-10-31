@@ -20,12 +20,13 @@ export default EStyleSheet.create({
     }),
     width: 235,
     height: 39,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 10,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   icon: {
     color: '$color',
-    right: 20,
   },
   disabled: {
     color: '$disabledColor',

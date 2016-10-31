@@ -35,10 +35,11 @@ const Input = (props) => {
         style={inputStyles}
         placeholderTextColor={styles._$placeholderTextColor}
         {...remainingProps}
-      />
-      {Icon && iconRightName ?
-        <Icon name={iconRightName} color={styles._icon.color} size={16} style={styles.icon} />
-        : null}
+      >
+        {Icon && iconRightName && (
+          <Icon name={iconRightName} color={styles._icon.color} size={16} style={styles.icon} />
+        ) }
+      </TextInput>
     </View>
   );
 };
