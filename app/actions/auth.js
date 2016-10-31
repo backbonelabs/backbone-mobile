@@ -42,6 +42,11 @@ const passwordResetError = error => ({
   error: true,
 });
 
+const setAccessToken = token => ({
+  type: 'SET_ACCESS_TOKEN',
+  payload: token,
+});
+
 export default {
   login(user) {
     return (dispatch) => {
@@ -136,4 +141,5 @@ export default {
         ));
     };
   },
+  setAccessToken,
 };
