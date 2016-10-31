@@ -96,8 +96,6 @@ class Login extends Component {
                   autoCorrect={false}
                   autoFocus
                   returnKeyType="next"
-                  iconFont="FontAwesome"
-                  iconRightName="check"
                 />
                 <Input
                   style={styles._passwordInput}
