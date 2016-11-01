@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -9,7 +9,6 @@ import styles from '../../../styles/onBoarding/profile';
 import BodyText from '../../../components/BodyText';
 import SecondaryText from '../../../components/SecondaryText';
 
-const { PropTypes } = React;
 const monthList = [
   'January',
   'February',
@@ -25,13 +24,13 @@ const monthList = [
   'December',
 ];
 
-const ProfileField = props => {
+const ProfileBody = props => {
   const { height, weight, birthdate } = props;
   const dateString = birthdate ?
   `${monthList[birthdate.getMonth()]} ${birthdate.getDate()}, ${birthdate.getFullYear()}`
   :
   '';
-  const formattedProfile = { birthdate: dateString, height: height.value, weight: weight.value };
+  const formattedProfile = { birthdate: dateString, height: height.label, weight: weight.label };
 
   return (
     <View style={styles.profileFieldContainer}>
@@ -59,11 +58,11 @@ const ProfileField = props => {
     );
 };
 
-ProfileField.propTypes = {
+ProfileBody.propTypes = {
   setPickerType: PropTypes.func,
   birthdate: PropTypes.object,
-  weight: PropTypes.object,
   height: PropTypes.object,
+  weight: PropTypes.object,
 };
 
-export default ProfileField;
+export default ProfileBody;
