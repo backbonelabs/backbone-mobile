@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Animated,
   Keyboard,
+  Platform,
   Dimensions,
   PushNotificationIOS,
   TouchableWithoutFeedback,
@@ -16,9 +17,7 @@ import userActions from '../actions/user';
 
 const { width } = Dimensions.get('window');
 
-const { PropTypes } = React;
-
-class Onboarding extends Component {
+class OnBoarding extends Component {
   static propTypes = {
     navigator: PropTypes.object,
     dispatch: PropTypes.func,
@@ -37,13 +36,15 @@ class Onboarding extends Component {
       nickname: null,
       birthdate: null,
       gender: null,
-      weight: {
-        value: '',
-        type: 'lbs',
-      },
       height: {
-        value: '',
+        value: null,
         type: 'ft in',
+        label: '',
+      },
+      weight: {
+        value: null,
+        type: 'lbs',
+        label: '',
       },
       pickerType: null,
       hasOnboarded: false,
@@ -57,18 +58,21 @@ class Onboarding extends Component {
   }
 
   componentWillMount() {
-    // Check push notification settings
-    PushNotificationIOS.checkPermissions(permissions => {
-      // If push notifications are already enabled, go to next step
-      if (permissions.alert) {
-        this.updateField('notificationsEnabled', true);
-      } else {
-        // Set listener for user enabling push notifications
-        PushNotificationIOS.addEventListener('register', () => {
+    // Only to be run on iOS devices
+    if (Platform.OS === 'ios') {
+      // Check push notification settings
+      PushNotificationIOS.checkPermissions(permissions => {
+        // If push notifications are already enabled, go to next step
+        if (permissions.alert) {
           this.updateField('notificationsEnabled', true);
-        });
-      }
-    });
+        } else {
+          // Set listener for user enabling push notifications
+          PushNotificationIOS.addEventListener('register', () => {
+            this.updateField('notificationsEnabled', true);
+          });
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -136,10 +140,12 @@ class Onboarding extends Component {
       const profileData = pick(this.state, [
         'nickname',
         'gender',
-        'weight',
-        'height',
         'hasOnboarded',
       ]);
+
+      // Only store weight/height values on backend
+      profileData.weight = this.state.weight.value;
+      profileData.height = this.state.height.value;
 
       this.props.dispatch(userActions.updateUser({
         _id: this.props.user._id,
@@ -189,4 +195,4 @@ const mapStateToProps = (state) => {
   return user;
 };
 
-export default connect(mapStateToProps)(Onboarding);
+export default connect(mapStateToProps)(OnBoarding);
