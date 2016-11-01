@@ -52,15 +52,15 @@
 }
 
 // Required to register for notifications
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
-{
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+  DLog(@"didRegisterUserNotificationSettings");
   [RCTPushNotificationManager didRegisterUserNotificationSettings:notificationSettings];
 }
 
 // Required for the register event.
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-{
-  NSLog(@"didRegisterForRemoteNotificationsWithDeviceToken");
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  DLog(@"didRegisterForRemoteNotificationsWithDeviceToken");
+  DLog(@"deviceToken: %@", deviceToken);
   [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
