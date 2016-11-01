@@ -21,4 +21,18 @@ export default {
     CONNECTED: 2,
     DISCONNECTING: 3,
   },
+  gender: {
+    male: 1,
+    female: 2,
+  },
+  height: {
+    pickerItems: [...Array(95).keys()],
+    conversionTypes: ['ft in', 'cm'],
+    cmConversion: 2.5,
+  },
+  weight: {
+    pickerItems: [...Array(1000).keys()],
+    conversionTypes: ['lbs', 'kg'],
+    kgConversion: 0.5,
+  },
 };
