@@ -27,10 +27,11 @@ class Login extends Component {
       errorMessage: PropTypes.string,
       inProgress: PropTypes.bool,
     }),
-    user: PropTypes.object,
+    user: PropTypes.shape({
+      hasOnboarded: PropTypes.bool,
+    }),
     dispatch: PropTypes.func,
     navigator: PropTypes.object,
-    hasOnboard: PropTypes.bool,
   };
 
   constructor() {
@@ -50,11 +51,11 @@ class Login extends Component {
       SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
 
       // User has already gone through onboarding
-      if (nextProps.hasOnboarded) {
+      if (nextProps.user.hasOnboarded) {
         this.props.navigator.replace(routes.deviceConnect);
       } else {
         // User hasn't completed onboarding process
-        this.props.navigator.push(routes.onboarding);
+        this.props.navigator.replace(routes.onboarding);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
       // Authentication error

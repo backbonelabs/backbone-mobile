@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React, { PropTypes } from 'react';
 import {
   View,
 } from 'react-native';
@@ -8,7 +7,7 @@ import Spinner from '../../components/Spinner';
 import styles from '../../styles/onBoarding/profile';
 import Button from '../../components/Button';
 import ProfileGender from './profile/ProfileGender';
-import ProfileField from './profile/ProfileField';
+import ProfileBody from './profile/ProfileBody';
 import ProfilePicker from './profile/ProfilePicker';
 
 const Profile = props => (
@@ -22,7 +21,7 @@ const Profile = props => (
       gender={props.gender}
       updateField={props.updateField}
     />
-    <ProfileField
+    <ProfileBody
       setPickerType={props.setPickerType}
       birthdate={props.birthdate}
       height={props.height}
@@ -38,39 +37,34 @@ const Profile = props => (
         updateField={props.updateField}
       /> : (
         <View style={styles.buttonContainer}>
-          <View>
-            { props.isUpdating ?
-              <Spinner />
-              :
-                <Button
-                  style={{ alignSelf: 'center' }}
-                  text="SAVE"
-                  onPress={props.saveData}
-                  disabled={!props.nickname || !props.gender || !props.height || !props.weight}
-                />
-            }
-          </View>
-          <View style={{ paddingTop: 15 }}>
-            <Button
-              style={{ alignSelf: 'center' }}
-              text="BACK"
-              textStyle={styles._secondaryButtonText}
-              onPress={props.previousStep}
-            />
-          </View>
+          { props.isUpdating ?
+            <Spinner />
+            :
+              <Button
+                primary
+                style={{ alignSelf: 'center' }}
+                text="SAVE"
+                onPress={props.saveData}
+                disabled={!props.nickname || !props.gender || !props.height || !props.weight}
+              />
+          }
+          <Button
+            style={{ alignSelf: 'center', marginTop: 15 }}
+            text="BACK"
+            textStyle={styles._secondaryButtonText}
+            onPress={props.previousStep}
+          />
         </View>
     ) }
   </View>
 );
-
-const { PropTypes } = React;
 
 Profile.propTypes = {
   key: PropTypes.number,
   previousStep: PropTypes.func,
   pickerType: PropTypes.string,
   nickname: PropTypes.string,
-  gender: PropTypes.string,
+  gender: PropTypes.number,
   setPickerType: PropTypes.func,
   birthdate: PropTypes.object,
   height: PropTypes.object,

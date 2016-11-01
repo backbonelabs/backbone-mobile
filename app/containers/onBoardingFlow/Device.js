@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import {
   View,
   Image,
@@ -9,8 +9,6 @@ import HeadingText from '../../components/HeadingText';
 import sensor from '../../images/onboarding/sensor.png';
 import routes from '../../routes';
 
-const { PropTypes } = React;
-
 const Device = props => (
   <View key={props.key} style={styles.container}>
     <View style={styles.headerTextContainer}>
@@ -20,21 +18,18 @@ const Device = props => (
       <Image source={sensor} />
     </View>
     <View style={styles.buttonContainer}>
-      <View>
-        <Button
-          style={{ alignSelf: 'center' }}
-          text="CONNECT"
-          onPress={() => props.navigator.push(routes.deviceConnect)}
-        />
-      </View>
-      <View style={{ paddingTop: 15 }}>
-        <Button
-          style={{ alignSelf: 'center' }}
-          text="BACK"
-          textStyle={styles._secondaryButtonText}
-          onPress={props.previousStep}
-        />
-      </View>
+      <Button
+        primary
+        style={{ alignSelf: 'center' }}
+        text="CONNECT"
+        onPress={() => props.navigator.push(routes.deviceConnect)}
+      />
+      <Button
+        style={{ alignSelf: 'center', marginTop: 15 }}
+        text="BACK"
+        textStyle={styles._secondaryButtonText}
+        onPress={props.previousStep}
+      />
     </View>
   </View>
 );
