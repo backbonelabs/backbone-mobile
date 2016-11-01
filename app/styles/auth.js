@@ -81,13 +81,10 @@ export default EStyleSheet.create({
   },
   signupHeading: {
     marginTop: 6 * heightDifference,
-    width: 375 * widthDifference,
-    fontSize: 14,
+    alignSelf: 'center',
+    textAlign: 'center',
   },
-  signupEmail: {
-    width: 340 * widthDifference,
-  },
-  signupPassword: {
+  signupInput: {
     width: 340 * widthDifference,
   },
   signupBtn: {
@@ -101,8 +98,13 @@ export default EStyleSheet.create({
   signupEmailContainer: {
     marginTop: 59 * heightDifference,
     marginBottom: 34 * heightDifference,
+    alignItems: 'center',
   },
   signupPasswordContainer: {
-    marginBottom: 105 * heightDifference,
+    marginBottom: 85 * heightDifference,
+    alignItems: 'center',
+  },
+  warning: {
+    color: '$primaryColor',
   },
 });
