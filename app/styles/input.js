@@ -26,7 +26,8 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    color: '$color',
+    position: 'relative',
+    right: 20,
   },
   disabled: {
     color: '$disabledColor',
