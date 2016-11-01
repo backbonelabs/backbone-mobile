@@ -61,25 +61,29 @@ class Signup extends Component {
 
   onEmailChange(email) {
     const testEmail = emailRegex.test(email);
-    this.setState({ email });
+    // the following two if statements test the validity of an email that is pasted
+    // one setState is called each time this function runs
+    if (this.state.emailPristine && !testEmail) {
+      return this.setState({ emailPristine: false, validEmail: false, email });
+    }
 
-    if (this.state.emailPristine) {
-      this.setState({ emailPristine: false });
+    if (this.state.emailPristine && testEmail) {
+      return this.setState({ emailPristine: false, validEmail: true, email });
     }
 
     if (testEmail) {
-      return this.setState({ validEmail: true });
+      return this.setState({ validEmail: true, email });
     }
 
-    return this.setState({ validEmail: false });
+    return this.setState({ validEmail: false, email });
   }
 
   onPasswordChange(password) {
     if (this.state.passwordPristine) {
-      this.setState({ passwordPristine: false });
+      return this.setState({ passwordPristine: false, password });
     }
 
-    this.setState({ password });
+    return this.setState({ password });
   }
 
   saveAccessToken(accessToken) {
@@ -94,9 +98,16 @@ class Signup extends Component {
   render() {
     const { email, password, validEmail, emailPristine, passwordPristine } = this.state;
     const validPassword = password.length >= 8;
-    const emailCross = (!emailPristine && !validEmail) ? 'close' : null;
-    const passwordCross = (!passwordPristine && !validPassword) ? 'close' : null;
-    const passwordWarning = (!passwordPristine && !validPassword) ? 'Password must be at least 8 characters' : '';
+    let passwordWarning;
+    const emailIconProps = {};
+    const passwordIconProps = {};
+    if (!emailPristine) {
+      emailIconProps.iconRightName = validEmail ? 'check' : 'close';
+    }
+    if (!passwordPristine) {
+      passwordIconProps.iconRightName = validPassword ? 'check' : 'close';
+      passwordWarning = validPassword ? '' : 'Password must be at least 8 characters';
+    }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -125,7 +136,7 @@ class Signup extends Component {
                     autoCorrect={false}
                     autoFocus
                     returnKeyType="next"
-                    iconRightName={(!emailPristine && validEmail) ? 'check' : emailCross}
+                    {...emailIconProps}
                   />
                 </View>
                 <View style={styles.signupPasswordContainer}>
@@ -143,10 +154,10 @@ class Signup extends Component {
                     autoCorrect={false}
                     secureTextEntry
                     returnKeyType="go"
-                    iconRightName={(!passwordPristine && validPassword) ? 'check' : passwordCross}
+                    {...passwordIconProps}
                   />
                   <BodyText style={styles._warning}>
-                    { (!passwordPristine && validPassword) ? '' : passwordWarning }
+                    {passwordWarning}
                   </BodyText>
                 </View>
                 <Button
