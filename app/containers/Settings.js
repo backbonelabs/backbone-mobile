@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Text,
@@ -20,8 +20,6 @@ import userActions from '../actions/user';
 import styles from '../styles/settings';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
-
-const { PropTypes } = React;
 
 const { DeviceManagementService } = NativeModules;
 

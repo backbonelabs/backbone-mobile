@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
@@ -14,8 +14,6 @@ import routes from '../routes';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import constants from '../utils/constants';
-
-const { PropTypes } = React;
 
 class Welcome extends Component {
   static propTypes = {
