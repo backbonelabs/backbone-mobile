@@ -49,7 +49,7 @@ Input.propTypes = {
   editable: PropTypes.bool,
   handleRef: PropTypes.func,
   style: PropTypes.object,
-  iconFont: PropTypes.oneOf(['', 'FontAwesome']),
+  iconFont: PropTypes.oneOf(['FontAwesome']),
   iconRightName: PropTypes.string, // maps to a font name in react-native-icons
 };
 
