@@ -14,12 +14,7 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
   },
   progressIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
     backgroundColor: '$primaryColor',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   onboardingFlowContainer: {
     flex: 0.85,

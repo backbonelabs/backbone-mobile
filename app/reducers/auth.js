@@ -3,7 +3,6 @@ export default (state = {
   passwordResetSent: false,
   inProgress: false,
   errorMessage: null,
-  hasOnboarded: false,
   userId: null,
 }, action) => {
   switch (action.type) {
@@ -20,7 +19,6 @@ export default (state = {
         inProgress: false,
         errorMessage: null,
         accessToken: action.payload.accessToken,
-        hasOnboarded: action.payload.user.hasOnboarded,
         userId: action.payload._id,
       };
     }
