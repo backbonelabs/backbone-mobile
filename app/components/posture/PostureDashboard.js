@@ -30,7 +30,7 @@ const renderItem = (session) => (
   </View>
 );
 
-const Home = (props) => (
+const PostureDashboard = (props) => (
   <View style={styles.container}>
     <View style={styles.header}>
       <HeadingText size={2}>{props.user.firstName}</HeadingText>
@@ -64,7 +64,7 @@ const Home = (props) => (
   </View>
 );
 
-Home.propTypes = {
+PostureDashboard.propTypes = {
   navigator: PropTypes.shape({
     push: PropTypes.func,
   }),
@@ -76,4 +76,4 @@ const mapStateToProps = (state) => {
   return { user };
 };
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(PostureDashboard);
