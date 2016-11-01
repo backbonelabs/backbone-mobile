@@ -33,7 +33,7 @@ const renderItem = (session) => (
 const PostureDashboard = (props) => (
   <View style={styles.container}>
     <View style={styles.header}>
-      <HeadingText size={2}>{props.user.firstName}</HeadingText>
+      <HeadingText size={2}>{props.user.nickname}</HeadingText>
       <HeadingText size={2}>Choose your goal</HeadingText>
     </View>
     <View style={styles.body}>
@@ -68,7 +68,10 @@ PostureDashboard.propTypes = {
   navigator: PropTypes.shape({
     push: PropTypes.func,
   }),
-  user: PropTypes.object,
+  user: PropTypes.shape({
+    nickname: PropTypes.string,
+    dailyStreak: PropTypes.number,
+  }),
 };
 
 const mapStateToProps = (state) => {
