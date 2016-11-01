@@ -22,8 +22,6 @@ export default EStyleSheet.create({
     height: 39,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
   },
   icon: {
     position: 'relative',
