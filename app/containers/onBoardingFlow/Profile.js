@@ -42,18 +42,19 @@ const Profile = props => (
             :
               <Button
                 primary
-                style={{ alignSelf: 'center' }}
+                style={styles._button}
                 text="SAVE"
                 onPress={props.saveData}
                 disabled={!props.nickname || !props.gender || !props.height || !props.weight}
               />
           }
-          <Button
-            style={{ alignSelf: 'center', marginTop: 15 }}
-            text="BACK"
-            textStyle={styles._secondaryButtonText}
-            onPress={props.previousStep}
-          />
+          <View style={{ paddingTop: 15 }}>
+            <Button
+              style={styles._button}
+              text="BACK"
+              onPress={props.previousStep}
+            />
+          </View>
         </View>
     ) }
   </View>

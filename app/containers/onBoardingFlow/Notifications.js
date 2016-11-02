@@ -35,7 +35,7 @@ const Notifications = props => {
       <View style={styles.buttonContainer}>
         <View>
           <Button
-            style={{ alignSelf: 'center' }}
+            style={styles._button}
             onPress={() => Linking.openURL('app-settings:')}
             text="ENABLE"
             {...firstButtonProps}
@@ -43,7 +43,7 @@ const Notifications = props => {
         </View>
         <View style={{ paddingTop: 15 }}>
           <Button
-            style={{ alignSelf: 'center' }}
+            style={styles._button}
             text={props.notificationsEnabled ? 'NEXT' : 'NOT NOW'}
             onPress={props.nextStep}
             primary={props.notificationsEnabled}

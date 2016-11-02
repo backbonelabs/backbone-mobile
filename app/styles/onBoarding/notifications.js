@@ -26,17 +26,7 @@ export default EStyleSheet.create({
   buttonContainer: {
     flex: 0.27,
   },
-  primaryButtonContainer: {
-    alignItems: 'center',
-  },
-  secondaryButtonContainer: {
-    alignItems: 'center',
-    paddingTop: 15,
-  },
-  secondaryButton: {
-    borderColor: '$primaryColor',
-    borderWidth: 1,
-    borderRadius: 5,
-    backgroundColor: 'white',
+  button: {
+    alignSelf: 'center',
   },
 });

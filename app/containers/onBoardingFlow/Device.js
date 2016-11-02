@@ -20,16 +20,17 @@ const Device = props => (
     <View style={styles.buttonContainer}>
       <Button
         primary
-        style={{ alignSelf: 'center' }}
+        style={styles._button}
         text="CONNECT"
         onPress={() => props.navigator.push(routes.deviceConnect)}
       />
-      <Button
-        style={{ alignSelf: 'center', marginTop: 15 }}
-        text="BACK"
-        textStyle={styles._secondaryButtonText}
-        onPress={props.previousStep}
-      />
+      <View style={{ paddingTop: 15 }}>
+        <Button
+          style={styles._button}
+          text="BACK"
+          onPress={props.previousStep}
+        />
+      </View>
     </View>
   </View>
 );
