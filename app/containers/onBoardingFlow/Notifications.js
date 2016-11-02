@@ -12,13 +12,10 @@ import progressChart from '../../images/onboarding/progressChart.png';
 
 const Notifications = props => {
   const firstButtonProps = { primary: true };
-  const secondButtonProps = {};
 
   if (props.notificationsEnabled) {
     delete firstButtonProps.primary;
     firstButtonProps.disabled = true;
-    secondButtonProps.primary = true;
-    secondButtonProps.textStyle = { color: 'white' };
   }
 
   return (
@@ -48,9 +45,8 @@ const Notifications = props => {
           <Button
             style={{ alignSelf: 'center' }}
             text={props.notificationsEnabled ? 'NEXT' : 'NOT NOW'}
-            textStyle={styles._secondaryButtonText}
             onPress={props.nextStep}
-            {...secondButtonProps}
+            primary={props.notificationsEnabled}
           />
         </View>
       </View>

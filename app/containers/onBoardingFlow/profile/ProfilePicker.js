@@ -3,6 +3,7 @@ import {
   View,
   Text,
   Picker,
+  Platform,
   DatePickerIOS,
   TouchableOpacity,
 } from 'react-native';
@@ -146,6 +147,7 @@ const ProfilePicker = (props) => {
         switch (props.pickerType) {
           case 'birthdate':
             return (
+              Platform.os === 'ios' &&
               <DatePickerIOS
                 style={styles.datePicker}
                 date={props.birthdate || new Date()}

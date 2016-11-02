@@ -39,7 +39,4 @@ export default EStyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'white',
   },
-  secondaryButtonText: {
-    color: '$primaryColor',
-  },
 });
