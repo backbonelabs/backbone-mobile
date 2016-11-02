@@ -172,9 +172,9 @@ class OnBoarding extends Component {
 
         // Store weight (lb) / height (in) values on backend
         weight: weight.type === 'lb' ?
-          weight.value : Math.floor(weight.value / constants.weight.conversionValue),
+          weight.value : weight.value / constants.weight.conversionValue,
         height: height.type === 'in' ?
-          height.value : Math.floor(height.value / constants.height.conversionValue),
+          height.value : height.value / constants.height.conversionValue,
       };
 
       this.props.dispatch(userActions.updateUser({

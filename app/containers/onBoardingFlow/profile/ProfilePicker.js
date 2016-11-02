@@ -19,9 +19,9 @@ const PickerItem = Picker.Item;
 
 const ProfilePicker = (props) => {
   const heightValues = [...Array(props.height.type === 'in' ?
-    95
+    100
     :
-    Math.floor(95 * constants.height.conversionValue)
+    Math.floor(100 * constants.height.conversionValue)
   ).keys()];
 
   const heightLabel = value => (
@@ -42,8 +42,8 @@ const ProfilePicker = (props) => {
     if (type !== props.height.type) {
       const { height } = props;
       const equalsInch = type === 'in';
-      const centimeterToInch = Math.floor(height.value / constants.height.conversionValue);
-      const inchToCentimeter = Math.floor(height.value * constants.height.conversionValue);
+      const centimeterToInch = Math.round(height.value / constants.height.conversionValue);
+      const inchToCentimeter = Math.round(height.value * constants.height.conversionValue);
 
       props.updateField('height', Object.assign({}, height, {
         value: equalsInch ? centimeterToInch : inchToCentimeter,
@@ -82,8 +82,8 @@ const ProfilePicker = (props) => {
     if (type !== props.weight.type) {
       const { weight } = props;
       const equalsPound = type === 'lb';
-      const KilogramToPound = Math.floor(weight.value / constants.weight.conversionValue);
-      const poundToKilogram = Math.floor(weight.value * constants.weight.conversionValue);
+      const KilogramToPound = Math.ceil(weight.value / constants.weight.conversionValue);
+      const poundToKilogram = Math.ceil(weight.value * constants.weight.conversionValue);
 
       props.updateField('weight', Object.assign({}, weight, {
         value: equalsPound ? KilogramToPound : poundToKilogram,
