@@ -32,7 +32,7 @@ const ProfilePicker = (props) => {
   );
 
   const heightValueChangeHandler = value => (
-    props.updateField('height', Object.assign({}, props.height, {
+    props.updateProfile('height', Object.assign({}, props.height, {
       value,
       label: heightLabel(value),
     }))
@@ -45,7 +45,7 @@ const ProfilePicker = (props) => {
       const centimeterToInch = Math.round(height.value / constants.height.conversionValue);
       const inchToCentimeter = Math.round(height.value * constants.height.conversionValue);
 
-      props.updateField('height', Object.assign({}, height, {
+      props.updateProfile('height', Object.assign({}, height, {
         value: equalsInch ? centimeterToInch : inchToCentimeter,
         type,
         label: equalsInch ?
@@ -59,7 +59,7 @@ const ProfilePicker = (props) => {
   const weightValues = [...Array(props.weight.type === 'lb' ?
     500
     :
-    Math.floor(500 * constants.weight.conversionValue)
+    Math.floor(500 * constants.weight.conversionValue) + 1
   ).keys()];
 
   const weightLabel = value => (
@@ -72,7 +72,7 @@ const ProfilePicker = (props) => {
   const weightValueChangeHandler = value => {
     const { weight } = props;
 
-    props.updateField('weight', Object.assign({}, weight, {
+    props.updateProfile('weight', Object.assign({}, weight, {
       value,
       label: weightLabel(value),
     }));
@@ -82,10 +82,10 @@ const ProfilePicker = (props) => {
     if (type !== props.weight.type) {
       const { weight } = props;
       const equalsPound = type === 'lb';
-      const KilogramToPound = Math.ceil(weight.value / constants.weight.conversionValue);
+      const KilogramToPound = Math.round(weight.value / constants.weight.conversionValue);
       const poundToKilogram = Math.ceil(weight.value * constants.weight.conversionValue);
 
-      props.updateField('weight', Object.assign({}, weight, {
+      props.updateProfile('weight', Object.assign({}, weight, {
         value: equalsPound ? KilogramToPound : poundToKilogram,
         type,
         label: equalsPound ?
@@ -153,14 +153,17 @@ const ProfilePicker = (props) => {
         </TouchableOpacity>
       </View>
       { (() => {
+        const currentDate = new Date();
+
         switch (props.pickerType) {
           case 'birthdate':
             return (
               Platform.OS === 'ios' &&
               <DatePickerIOS
-                date={props.birthdate || new Date()}
+                date={props.birthdate || currentDate}
+                maximumDate={currentDate}
                 mode="date"
-                onDateChange={date => props.updateField('birthdate', date)}
+                onDateChange={date => props.updateProfile('birthdate', date)}
               />
             );
           case 'height':
@@ -179,7 +182,7 @@ ProfilePicker.propTypes = {
   height: PropTypes.object,
   weight: PropTypes.object,
   birthdate: PropTypes.object,
-  updateField: PropTypes.func,
+  updateProfile: PropTypes.func,
   pickerType: PropTypes.string,
   setPickerType: PropTypes.func,
 };

@@ -19,7 +19,7 @@ const Profile = props => (
       setPickerType={props.setPickerType}
       nickname={props.nickname}
       gender={props.gender}
-      updateField={props.updateField}
+      updateProfile={props.updateProfile}
     />
     <ProfileBody
       setPickerType={props.setPickerType}
@@ -34,7 +34,7 @@ const Profile = props => (
         weight={props.weight}
         setPickerType={props.setPickerType}
         pickerType={props.pickerType}
-        updateField={props.updateField}
+        updateProfile={props.updateProfile}
       /> : (
         <View style={styles.buttonContainer}>
           { props.isUpdating ?
@@ -70,7 +70,7 @@ Profile.propTypes = {
   birthdate: PropTypes.object,
   height: PropTypes.object,
   weight: PropTypes.object,
-  updateField: PropTypes.func,
+  updateProfile: PropTypes.func,
   saveData: PropTypes.func,
   isUpdating: PropTypes.bool,
 };

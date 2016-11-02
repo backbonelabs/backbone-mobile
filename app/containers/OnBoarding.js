@@ -56,7 +56,7 @@ class OnBoarding extends Component {
     this.nextStep = this.nextStep.bind(this);
     this.previousStep = this.previousStep.bind(this);
     this.setPickerType = this.setPickerType.bind(this);
-    this.updateField = this.updateField.bind(this);
+    this.updateProfile = this.updateProfile.bind(this);
   }
 
   componentWillMount() {
@@ -66,11 +66,11 @@ class OnBoarding extends Component {
       PushNotificationIOS.checkPermissions(permissions => {
         // Update notificationsEnabled to true if permissions enabled
         if (permissions.alert) {
-          this.updateField('notificationsEnabled', true);
+          this.setState({ notificationsEnabled: true });
         } else {
           // Listener for enabling notifications event if permissions disabled
           PushNotificationIOS.addEventListener('register', () => {
-            this.updateField('notificationsEnabled', true);
+            this.setState({ notificationsEnabled: true });
           });
         }
       });
@@ -105,7 +105,7 @@ class OnBoarding extends Component {
 
   /**
    * Opens and closes the selected data picker component
-   * @const {String} pickerType
+   * @param {String} pickerType
    */
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was inputting nickname
@@ -129,7 +129,7 @@ class OnBoarding extends Component {
               nextStep: this.nextStep,
               previousStep: this.previousStep,
               setPickerType: this.setPickerType,
-              updateField: this.updateField,
+              updateProfile: this.updateProfile,
               ...this.state,
             })
           ))
@@ -186,10 +186,10 @@ class OnBoarding extends Component {
 
   /**
    * Updates state (field) with value
-   * @const {String} field
-   * @const {Object} value
+   * @param {String} field
+   * @param {*} value
    */
-  updateField(field, value) {
+  updateProfile(field, value) {
     this.setState({ [field]: value });
   }
 

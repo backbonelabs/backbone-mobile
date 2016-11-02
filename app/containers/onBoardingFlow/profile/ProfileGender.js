@@ -42,7 +42,7 @@ const ProfileGender = props => {
             <TouchableOpacity
               key={key}
               style={styles.gender}
-              onPress={() => props.updateField('gender', props.gender ? null : gender[value])}
+              onPress={() => props.updateProfile('gender', props.gender ? null : gender[value])}
             >
               <Image
                 style={styles._genderIcon}
@@ -69,7 +69,7 @@ const ProfileGender = props => {
           autoCorrect={false}
           autoCapitalize="none"
           keyboardType="default"
-          onChangeText={text => props.updateField('nickname', text)}
+          onChangeText={text => props.updateProfile('nickname', text)}
           {...inputProps}
         />
       }
@@ -79,7 +79,7 @@ const ProfileGender = props => {
 
 ProfileGender.propTypes = {
   gender: PropTypes.number,
-  updateField: PropTypes.func,
+  updateProfile: PropTypes.func,
   nickname: PropTypes.string,
 };
 
