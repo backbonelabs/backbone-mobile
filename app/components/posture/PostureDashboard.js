@@ -46,6 +46,7 @@ const PostureDashboard = (props) => (
           itemWidth={styles.$itemWidth}
           slideStyle={styles.carouselItem}
           inactiveSlideScale={0.8}
+          showsHorizontalScrollIndicator={false}
         />
       </View>
       <Button
