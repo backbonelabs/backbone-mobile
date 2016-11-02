@@ -80,17 +80,17 @@ export default EStyleSheet.create({
     justifyContent: 'flex-end',
   },
   datePicker: {
-    marginTop: 10,
-    marginBottom: -15,
+    marginTop: 10 * relativeDimensions.heightDifference,
+    marginBottom: -15 * relativeDimensions.heightDifference,
   },
   profilePicker: {
-    marginTop: 10,
-    marginBottom: -15,
+    marginTop: 10 * relativeDimensions.heightDifference,
+    marginBottom: -15 * relativeDimensions.heightDifference,
     flexDirection: 'row',
   },
   profilePickerHeader: {
-    height: 40,
-    marginBottom: -26,
+    height: 40 * relativeDimensions.heightDifference,
+    marginBottom: -26 * relativeDimensions.heightDifference,
     backgroundColor: '$primaryColor',
     justifyContent: 'center',
     alignItems: 'flex-end',
@@ -107,7 +107,7 @@ export default EStyleSheet.create({
   profilePickerHeaderButton: {
     flex: 1,
     padding: 15,
-    marginRight: 5,
+    marginRight: 5 * relativeDimensions.weightDifference,
     justifyContent: 'center',
   },
 });
