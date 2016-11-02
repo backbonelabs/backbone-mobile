@@ -23,8 +23,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   gender: {
-    marginRight: 15 * relativeDimensions.widthDifference,
-    marginLeft: 15 * relativeDimensions.widthDifference,
+    marginHorizontal: 15 * relativeDimensions.widthDifference,
     alignItems: 'center',
   },
   genderText: {
@@ -98,8 +97,7 @@ export default EStyleSheet.create({
   },
   profilePickerHeaderButton: {
     flex: 1,
-    paddingRight: 15 * relativeDimensions.widthDifference,
-    paddingLeft: 15 * relativeDimensions.widthDifference,
+    paddingHorizontal: 15 * relativeDimensions.widthDifference,
     marginRight: 5 * relativeDimensions.widthDifference,
     justifyContent: 'center',
   },
