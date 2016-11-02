@@ -65,6 +65,7 @@ const ProfileGender = props => {
           style={styles._nicknameInput}
           defaultValue={props.nickname}
           placeholder="Nickname"
+          autoFocus
           autoCorrect={false}
           autoCapitalize="none"
           keyboardType="default"
