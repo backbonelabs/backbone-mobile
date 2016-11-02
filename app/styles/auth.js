@@ -1,4 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -7,39 +10,68 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   formContainer: {
-    width: '90%',
+    width: 342 * widthDifference,
   },
-  textField: {
-    fontSize: '1.5rem',
-    height: '2rem',
+  backBoneLogoWrapper: {
+    marginTop: 106 * heightDifference,
+    marginBottom: 16 * heightDifference,
+    marginLeft: 125 * widthDifference,
+    marginRight: 120 * widthDifference,
+    alignSelf: 'center',
+    width: 95 * widthDifference,
+    height: 88 * heightDifference,
+    paddingTop: 10,
+    paddingRight: 10,
+    paddingBottom: 9,
+    paddingLeft: 11,
   },
-  textFieldView: {
-    borderColor: 'black',
-    borderBottomWidth: 1,
-    marginTop: 10,
-    marginBottom: 10,
+  loginHeading: {
+    textAlign: 'center',
   },
-  button: {
-    height: '3rem',
-    marginTop: 20,
-    borderRadius: '$buttonBorderRadius',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '$primaryColor',
+  emailInput: {
+    width: 340 * widthDifference,
+    marginTop: 57 * heightDifference,
+    marginBottom: 34 * heightDifference,
   },
-  buttonText: {
-    color: 'white',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
+  passwordInput: {
+    width: 340 * widthDifference,
+    marginBottom: 101 * heightDifference,
   },
-  forgotPasswordButton: {
-    marginTop: 10,
-    height: 30,
-    justifyContent: 'center',
+  backButton: {
+    alignSelf: 'center',
+    marginBottom: 27 * heightDifference,
+  },
+  loginButton: {
+    alignSelf: 'center',
+  },
+  forgotPasswordWrapper: {
+    marginTop: 8 * heightDifference,
+    marginBottom: 24 * heightDifference,
+    width: 350 * widthDifference,
+    height: 16 * heightDifference,
+    alignSelf: 'center',
   },
   forgotPassword: {
-    fontSize: '0.75rem',
     textAlign: 'center',
-    textDecorationLine: 'underline',
+  },
+  resetSubHeading: {
+    marginTop: 26 * heightDifference,
+    textAlign: 'center',
+    alignSelf: 'center',
+  },
+  resetInput: {
+    width: 340 * widthDifference,
+    marginTop: 43 * heightDifference,
+    marginBottom: 144 * heightDifference,
+  },
+  resetButton: {
+    alignSelf: 'center',
+    marginBottom: 7 * heightDifference,
+  },
+  nevermindWrapper: {
+    marginBottom: 94 * heightDifference,
+    width: 350 * widthDifference,
+    height: 16 * heightDifference,
+    alignSelf: 'center',
   },
 });

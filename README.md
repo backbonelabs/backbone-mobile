@@ -5,11 +5,13 @@ Backbone mobile app for iOS and Android
 
 ## Requirements
 
-- Node.js 6.2.2 (This is currently the highest Node.js version supported by AWS)
+- Node.js 6.2.2
 
 ## Development
 
-First, follow the setup instructions at https://facebook.github.io/react-native/docs/getting-started.html, and then read the additional notes below for each OS.
+Use [Yarn](https://yarnpkg.com/) instead of npm to install package dependencies. Using Yarn will ensure you get the same dependency versions. Assuming you already have Yarn installed, simply run `yarn install` from the project root.
+
+Then, follow the setup instructions at https://facebook.github.io/react-native/docs/getting-started.html, and read the additional notes below for each OS.
 
 ### iOS
 

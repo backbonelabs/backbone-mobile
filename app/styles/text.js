@@ -15,15 +15,18 @@ export default EStyleSheet.create({
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: 24,
+    lineHeight: 30,
   },
   heading2: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: 20,
+    lineHeight: 24,
   },
   heading3: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: 18,
+    lineHeight: 20,
   },
 });

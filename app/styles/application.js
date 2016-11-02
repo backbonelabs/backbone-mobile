@@ -14,9 +14,6 @@ export default EStyleSheet.create({
     alignSelf: 'center',
     color: '$primaryColor',
   },
-  titleText: {
-    marginTop: '0.65rem',
-  },
   tabBar: {
     height: 59,
     flexDirection: 'row',
