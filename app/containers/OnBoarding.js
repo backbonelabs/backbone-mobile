@@ -39,13 +39,13 @@ class OnBoarding extends Component {
       birthdate: null,
       gender: null,
       height: {
-        value: null,
-        type: 'in',
+        value: 25,
+        type: 'cm',
         label: '',
       },
       weight: {
-        value: null,
-        type: 'lb',
+        value: 25,
+        type: 'kg',
         label: '',
       },
       pickerType: null,

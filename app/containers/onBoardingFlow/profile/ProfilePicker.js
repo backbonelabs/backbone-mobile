@@ -103,7 +103,7 @@ const ProfilePicker = (props) => {
     };
 
     return (
-      <View style={styles.profilePicker}>
+      <View style={styles.profilePickerItemsContainer}>
         <Picker
           style={styles.profilePickerItems}
           selectedValue={props[metric].value}
@@ -145,7 +145,7 @@ const ProfilePicker = (props) => {
         <TouchableOpacity
           style={styles.profilePickerHeaderButton}
           onPress={() => (
-            // Ensure nothing is passed as parameter
+            // Ensure nothing is passed in
             props.setPickerType()
           )}
         >
@@ -158,7 +158,6 @@ const ProfilePicker = (props) => {
             return (
               Platform.OS === 'ios' &&
               <DatePickerIOS
-                style={styles.datePicker}
                 date={props.birthdate || new Date()}
                 mode="date"
                 onDateChange={date => props.updateField('birthdate', date)}
