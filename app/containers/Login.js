@@ -79,7 +79,7 @@ class Login extends Component {
             :
               <View style={styles.formContainer}>
                 <View style={styles.backBoneLogoWrapper}>
-                  <Image style={styles.backBoneLogo} source={BackBoneLogo} />
+                  <Image source={BackBoneLogo} />
                 </View>
                 <HeadingText size={2} style={styles._loginHeading}>Welcome back!</HeadingText>
                 <Input

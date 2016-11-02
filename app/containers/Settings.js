@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Text,
@@ -8,15 +8,18 @@ import {
   ScrollView,
   NativeModules,
   TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { get, isEmpty, isEqual } from 'lodash';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
+import BodyText from '../components/BodyText';
+import SecondaryText from '../components/SecondaryText';
 import userActions from '../actions/user';
 import styles from '../styles/settings';
-
-const { PropTypes } = React;
+import constants from '../utils/constants';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { DeviceManagementService } = NativeModules;
 
@@ -27,12 +30,17 @@ class Settings extends Component {
       popToTop: PropTypes.func,
     }),
     dispatch: PropTypes.func,
-    errorMessage: PropTypes.string,
-    isFetching: PropTypes.bool,
-    isUpdating: PropTypes.bool,
+    app: PropTypes.shape({
+      config: PropTypes.object,
+    }),
     user: PropTypes.shape({
-      _id: PropTypes.string,
-      settings: PropTypes.object,
+      errorMessage: PropTypes.string,
+      isFetching: PropTypes.bool,
+      isUpdating: PropTypes.bool,
+      user: PropTypes.shape({
+        _id: PropTypes.string,
+        settings: PropTypes.object,
+      }),
     }),
   };
 
@@ -40,7 +48,7 @@ class Settings extends Component {
     super(props);
     this.state = {
       isPristine: true,
-      settings: get(this.props.user, 'settings', {}),
+      settings: get(this.props.user.user, 'settings', {}),
     };
     this.update = this.update.bind(this);
     this.updateSettings = this.updateSettings.bind(this);
@@ -49,17 +57,17 @@ class Settings extends Component {
   componentWillReceiveProps(nextProps) {
     let stateChanges = {};
 
-    if (!this.props.errorMessage && nextProps.errorMessage) {
-      Alert.alert('Error', nextProps.errorMessage);
-    } else if (!isEqual(this.props.user, nextProps.user)) {
+    if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
+      Alert.alert('Error', nextProps.user.errorMessage);
+    } else if (!isEqual(this.props.user.user, nextProps.user.user)) {
       stateChanges = {
         ...stateChanges,
-        settings: nextProps.user.settings,
+        settings: nextProps.user.user.settings,
       };
     }
 
     // Reset pristine flag after updating settings
-    if (this.props.isUpdating && !nextProps.isUpdating && !nextProps.errorMessage) {
+    if (this.props.user.isUpdating && !nextProps.user.isUpdating && !nextProps.user.errorMessage) {
       stateChanges = {
         ...stateChanges,
         isPristine: true,
@@ -73,7 +81,7 @@ class Settings extends Component {
 
   update() {
     this.props.dispatch(userActions.updateUserSettings({
-      _id: this.props.user._id,
+      _id: this.props.user.user._id,
       settings: this.state.settings,
     }));
   }
@@ -93,7 +101,7 @@ class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.props.isFetching || this.props.isUpdating ?
+        {this.props.user.isFetching || this.props.user.isUpdating ?
           <Spinner />
           :
             <ScrollView style={styles.innerContainer}>
@@ -152,6 +160,21 @@ class Settings extends Component {
               >
                 <Text>Forget this device</Text>
               </TouchableHighlight>
+              {this.props.app.config.DEV_MODE &&
+                <View style={{ marginTop: 5, borderWidth: 1 }}>
+                  <BodyText>Dev menu:</BodyText>
+                  <TouchableOpacity
+                    onPress={() => SensitiveInfo.deleteItem(constants.accessTokenStorageKey)}
+                  >
+                    <SecondaryText>Delete access token from storage</SecondaryText>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => SensitiveInfo.deleteItem(constants.userStorageKey)}
+                  >
+                    <SecondaryText>Delete user from storage</SecondaryText>
+                  </TouchableOpacity>
+                </View>
+              }
             </ScrollView>
         }
       </View>
@@ -160,8 +183,8 @@ class Settings extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
-  return user;
+  const { app, user } = state;
+  return { app, user };
 };
 
 export default connect(mapStateToProps)(Settings);

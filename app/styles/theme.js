@@ -1,8 +1,9 @@
 import { Dimensions, Navigator } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get('window');
+const statusBarHeight = Navigator.NavigationBar.Styles.General.StatusBarHeight;
 const totalNavHeight = Navigator.NavigationBar.Styles.General.TotalNavHeight;
-const iconSize = 0.08 * width;
+const iconSize = 0.08 * screenWidth;
 const iconButtonSize = 1.5 * iconSize;
 
 const primaryColor = '#ED1C24';
@@ -22,5 +23,7 @@ export default {
   iconButtonSize,
   rem: 16,
   buttonBorderRadius: 4,
+  statusBarHeight,
   totalNavHeight,
+  screenWidth,
 };

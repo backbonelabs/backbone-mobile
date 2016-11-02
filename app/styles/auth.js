@@ -12,11 +12,6 @@ export default EStyleSheet.create({
   formContainer: {
     width: 342 * widthDifference,
   },
-  backBoneLogo: {
-    width: 74 * widthDifference,
-    height: 69 * heightDifference,
-    alignSelf: 'center',
-  },
   backBoneLogoWrapper: {
     marginTop: 106 * heightDifference,
     marginBottom: 16 * heightDifference,
