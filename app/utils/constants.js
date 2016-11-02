@@ -26,11 +26,11 @@ export default {
     female: 2,
   },
   height: {
-    conversionTypes: ['in', 'cm'],
+    conversionTypes: ['cm', 'in'],
     conversionValue: 2.54,
   },
   weight: {
-    conversionTypes: ['lb', 'kg'],
+    conversionTypes: ['kg', 'lb'],
     conversionValue: 0.453592,
   },
 };
