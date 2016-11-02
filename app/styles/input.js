@@ -20,11 +20,11 @@ export default EStyleSheet.create({
     }),
     width: 235,
     height: 39,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 10,
   },
   icon: {
-    color: '$color',
+    position: 'relative',
     right: 20,
   },
   disabled: {
