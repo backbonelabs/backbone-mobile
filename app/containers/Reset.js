@@ -81,7 +81,6 @@ class Reset extends Component {
                   onChangeText={text => this.setState({ email: text })}
                   onSubmitEditing={this.sendPasswordResetRequest}
                   autoCorrect={false}
-                  autoFocus
                   returnKeyType="go"
                 />
                 <Button

@@ -39,6 +39,11 @@ class Login extends Component {
       password: '',
     };
     this.login = this.login.bind(this);
+    this.autoFocus = true;
+  }
+
+  componentDidMount() {
+    this.autoFocus = false;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -68,7 +73,7 @@ class Login extends Component {
 
   render() {
     const { inProgress } = this.props.auth;
-
+    const autoFocusProp = this.autoFocus ? { autoFocus: true } : {};
     // The main View is composed in the TouchableWithoutFeedback to allow
     // the keyboard to be closed when tapping outside of an input field
     return (
@@ -94,7 +99,7 @@ class Login extends Component {
                   onChangeText={text => this.setState({ email: text })}
                   onSubmitEditing={() => this.passwordField.focus()}
                   autoCorrect={false}
-                  autoFocus
+                  {...autoFocusProp}
                   returnKeyType="next"
                 />
                 <Input
