@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
+  Alert,
   Animated,
   Keyboard,
   Platform,
@@ -10,7 +11,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import OnBoardingFlow from './onBoardingFlow';
+import constants from '../utils/constants';
+import onBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 import userActions from '../actions/user';
 
@@ -57,15 +59,15 @@ class OnBoarding extends Component {
   }
 
   componentWillMount() {
-    // Only to be run on iOS devices
+    // Check if user has enabled notifications on their iOS device
     if (Platform.OS === 'ios') {
-      // Check push notification settings
+      // Check notification permissions
       PushNotificationIOS.checkPermissions(permissions => {
-        // If push notifications are already enabled, go to next step
+        // Update notificationsEnabled to true if permissions enabled
         if (permissions.alert) {
           this.updateField('notificationsEnabled', true);
         } else {
-          // Set listener for user enabling push notifications
+          // Listener for enabling notifications event if permissions disabled
           PushNotificationIOS.addEventListener('register', () => {
             this.updateField('notificationsEnabled', true);
           });
@@ -75,8 +77,15 @@ class OnBoarding extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // isUpdating is truthy while user is saving profile info
+    // If it goes from true to false, operation is complete
     if (this.props.isUpdating && !nextProps.isUpdating) {
-      this.nextStep();
+      // Check whether user has successfully completed onboarding
+      if (nextProps.hasOnboarded) {
+        this.nextStep();
+      } else {
+        Alert.alert('Error', 'Unable to save, please try again');
+      }
     }
   }
 
@@ -93,28 +102,39 @@ class OnBoarding extends Component {
     ];
   }
 
-  setPickerType(info) {
+  /**
+   * Opens and closes the selected data picker component
+   * @const {String} pickerType
+   */
+  setPickerType(pickerType) {
+    // Dismiss keyboard, in case user was inputting nickname
     Keyboard.dismiss();
 
-    this.setState({ pickerType: info || null });
+    // Open selected data picker if pickerType is passed in
+    // Close selected data picker if pickerType is undefined
+    this.setState({ pickerType: pickerType || null });
   }
 
-  // Combines the separate onboarding step components into one
   loadOnBoardingFlow() {
-    const steps = OnBoardingFlow.map((step, i) => (
-      step({
-        key: `${i}`,
-        navigator: this.props.navigator,
-        isUpdating: this.props.isUpdating,
-        saveData: this.saveData,
-        nextStep: this.nextStep,
-        previousStep: this.previousStep,
-        setPickerType: this.setPickerType,
-        updateField: this.updateField,
-        ...this.state,
-      })
-    ));
-    return <Animated.View style={this.getStepStyle()}>{steps}</Animated.View>;
+    return (
+      <Animated.View style={this.getStepStyle()}>
+        { // Renders the separate onboarding steps under a single component
+          onBoardingFlow.map((step, i) => (
+            step({
+              key: `${i}`,
+              navigator: this.props.navigator,
+              isUpdating: this.props.isUpdating,
+              saveData: this.saveData,
+              nextStep: this.nextStep,
+              previousStep: this.previousStep,
+              setPickerType: this.setPickerType,
+              updateField: this.updateField,
+              ...this.state,
+            })
+          ))
+        }
+      </Animated.View>
+    );
   }
 
   // Transitions back to previous onboarding step
@@ -133,7 +153,7 @@ class OnBoarding extends Component {
     }, this.stepTransitionAnimation);
   }
 
-  // Store onboarding data all at once
+  // Save profile data
   saveData() {
     this.setState({ hasOnboarded: true }, () => {
       const {
@@ -148,11 +168,13 @@ class OnBoarding extends Component {
         nickname,
         gender,
         hasOnboarded,
-        // Store weight(lb) / height(in) values on backend
-        weight: weight.value * (weight.type === 'lb' ? 1 : 2),
-        height: height.value / (height.type === 'in' ? 1 : 2.5),
-      };
 
+        // Store weight (lb) / height (in) values on backend
+        weight: weight.type === 'lb' ?
+          weight.value : Math.floor(weight.value / constants.weight.conversionValue),
+        height: height.type === 'in' ?
+          height.value : Math.floor(height.value / constants.height.conversionValue),
+      };
 
       this.props.dispatch(userActions.updateUser({
         _id: this.props.user._id,
@@ -161,11 +183,17 @@ class OnBoarding extends Component {
     });
   }
 
+  /**
+   * Updates state (field) with value
+   * @const {String} field
+   * @const {Object} value
+   */
   updateField(field, value) {
     this.setState({ [field]: value });
   }
 
-  // Animates transition from one onboarding step to another
+  // Animates onboarding step transition by moving
+  // component along the x-axis specified in valueX
   stepTransitionAnimation() {
     Animated.spring(this.state.animatedValues, {
       tension: 10,
@@ -180,14 +208,17 @@ class OnBoarding extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.progressBarContainer}>
-          { OnBoardingFlow.map((value, key) => (
-            <Icon
-              key={key}
-              name={this.state.step > key ? 'check-square-o' : 'square-o'}
-              size={44}
-              color={styles._progressIcon.backgroundColor}
-            />
-          )) }
+          {
+            // Render appropriate icon based on the user's onboarding flow progress
+            onBoardingFlow.map((value, key) => (
+              <Icon
+                key={key}
+                name={this.state.step > key ? 'check-square-o' : 'square-o'}
+                size={44}
+                color={styles._progressIcon.backgroundColor}
+              />
+            ))
+          }
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           { this.loadOnBoardingFlow() }
