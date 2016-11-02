@@ -18,7 +18,11 @@ const PickerItem = Picker.Item;
 
 
 const ProfilePicker = (props) => {
-  const heightValues = [...Array(props.height.type === 'in' ? 95 : 237).keys()];
+  const heightValues = [...Array(props.height.type === 'in' ?
+    95
+    :
+    Math.floor(95 * constants.height.conversionValue)
+  ).keys()];
 
   const heightLabel = value => (
     props.height.type === 'in' ?
@@ -38,8 +42,8 @@ const ProfilePicker = (props) => {
     if (type !== props.height.type) {
       const { height } = props;
       const equalsInch = type === 'in';
-      const centimeterToInch = Math.floor(height.value / 2.5);
-      const inchToCentimeter = Math.floor(height.value * 2.5);
+      const centimeterToInch = Math.floor(height.value / constants.height.conversionValue);
+      const inchToCentimeter = Math.floor(height.value * constants.height.conversionValue);
 
       props.updateField('height', Object.assign({}, height, {
         value: equalsInch ? centimeterToInch : inchToCentimeter,
@@ -52,7 +56,11 @@ const ProfilePicker = (props) => {
     }
   };
 
-  const weightValues = [...Array(props.weight.type === 'lb' ? 500 : 1000).keys()];
+  const weightValues = [...Array(props.weight.type === 'lb' ?
+    500
+    :
+    Math.floor(500 * constants.weight.conversionValue)
+  ).keys()];
 
   const weightLabel = value => (
     props.weight.type === 'lb' ?
@@ -74,8 +82,8 @@ const ProfilePicker = (props) => {
     if (type !== props.weight.type) {
       const { weight } = props;
       const equalsPound = type === 'lb';
-      const KilogramToPound = Math.floor(weight.value / 0.5);
-      const poundToKilogram = Math.floor(weight.value * 0.5);
+      const KilogramToPound = Math.floor(weight.value / constants.weight.conversionValue);
+      const poundToKilogram = Math.floor(weight.value * constants.weight.conversionValue);
 
       props.updateField('weight', Object.assign({}, weight, {
         value: equalsPound ? KilogramToPound : poundToKilogram,
@@ -103,12 +111,13 @@ const ProfilePicker = (props) => {
         >
           { (metricEnum[metric] ? heightValues : weightValues)
               .map((value, key) => {
-                const label = metricEnum[metric] ? heightLabel(value + 1) : weightLabel(value + 1);
+                const newValue = value + 1;
+                const label = metricEnum[metric] ? heightLabel(newValue) : weightLabel(newValue);
 
                 return (
                   <PickerItem
                     key={key}
-                    value={value + 1}
+                    value={newValue}
                     label={label}
                   />
                 );

@@ -27,10 +27,10 @@ export default {
   },
   height: {
     conversionTypes: ['in', 'cm'],
-    cmConversion: 2.5,
+    conversionValue: 2.54,
   },
   weight: {
     conversionTypes: ['lb', 'kg'],
-    kgConversion: 0.5,
+    conversionValue: 0.453592,
   },
 };
