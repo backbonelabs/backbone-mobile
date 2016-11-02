@@ -33,7 +33,7 @@ const ProfileBody = props => {
   const formattedProfile = { birthdate: dateString, height: height.label, weight: weight.label };
 
   return (
-    <View style={styles.profileFieldContainer}>
+    <View style={styles.profileBodyContainer}>
       { map(formattedProfile, (value, key) => (
         <TouchableOpacity
           key={key}

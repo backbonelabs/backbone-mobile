@@ -45,6 +45,7 @@ const ProfileGender = props => {
               onPress={() => props.updateField('gender', props.gender ? null : gender[value])}
             >
               <Image
+                style={styles._genderIcon}
                 source={genderIcons[(gender[value] === props.gender) ? `${value}Selected` : value]}
               />
               <SecondaryText style={styles._genderText}>

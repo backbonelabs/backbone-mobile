@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../../utils/relativeDimensions';
 
 export default EStyleSheet.create({
   container: {
@@ -22,19 +23,23 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   gender: {
-    margin: 15,
+    marginRight: 15 * relativeDimensions.widthDifference,
+    marginLeft: 15 * relativeDimensions.widthDifference,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   genderText: {
-    marginTop: 5,
+    marginTop: 5 * relativeDimensions.heightDifference,
     textAlign: 'center',
+  },
+  genderIcon: {
+    width: 42 * relativeDimensions.widthDifference,
+    height: 50 * relativeDimensions.heightDifference,
   },
   nicknameInput: {
     width: '41%',
-    height: 50,
+    height: 50 * relativeDimensions.heightDifference,
   },
-  profileFieldContainer: {
+  profileBodyContainer: {
     flex: 0.33,
     alignSelf: 'center',
     justifyContent: 'space-around',
@@ -49,7 +54,7 @@ export default EStyleSheet.create({
         borderRadius: 5,
       },
     }),
-    paddingLeft: 15,
+    paddingLeft: 15 * relativeDimensions.widthDifference,
     borderColor: '#979797',
     alignItems: 'flex-start',
     justifyContent: 'center',
