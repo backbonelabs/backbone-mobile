@@ -147,7 +147,7 @@ const ProfilePicker = (props) => {
         switch (props.pickerType) {
           case 'birthdate':
             return (
-              Platform.os === 'ios' &&
+              Platform.OS === 'ios' &&
               <DatePickerIOS
                 style={styles.datePicker}
                 date={props.birthdate || new Date()}
