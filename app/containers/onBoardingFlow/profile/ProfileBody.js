@@ -3,7 +3,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { map, uniqueId } from 'lodash';
+import { map } from 'lodash';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../../styles/onBoarding/profile';
 import BodyText from '../../../components/BodyText';
@@ -36,7 +36,7 @@ const ProfileBody = props => {
     <View style={styles.profileFieldContainer}>
       { map(formattedProfile, (value, key) => (
         <TouchableOpacity
-          key={`profileFieldKey-${uniqueId()}`}
+          key={key}
           style={styles.profileField}
           onPress={() => props.setPickerType(key)}
         >

@@ -9,7 +9,6 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { pick, uniqueId } from 'lodash';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import OnBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
@@ -38,12 +37,12 @@ class OnBoarding extends Component {
       gender: null,
       height: {
         value: null,
-        type: 'ft in',
+        type: 'in',
         label: '',
       },
       weight: {
         value: null,
-        type: 'lbs',
+        type: 'lb',
         label: '',
       },
       pickerType: null,
@@ -137,15 +136,23 @@ class OnBoarding extends Component {
   // Store onboarding data all at once
   saveData() {
     this.setState({ hasOnboarded: true }, () => {
-      const profileData = pick(this.state, [
-        'nickname',
-        'gender',
-        'hasOnboarded',
-      ]);
+      const {
+        nickname,
+        gender,
+        hasOnboarded,
+        weight,
+        height,
+      } = this.state;
 
-      // Only store weight/height values on backend
-      profileData.weight = this.state.weight.value;
-      profileData.height = this.state.height.value;
+      const profileData = {
+        nickname,
+        gender,
+        hasOnboarded,
+        // Store weight(lb) / height(in) values on backend
+        weight: weight.value * (weight.type === 'lb' ? 1 : 2),
+        height: height.value / (height.type === 'in' ? 1 : 2.5),
+      };
+
 
       this.props.dispatch(userActions.updateUser({
         _id: this.props.user._id,
@@ -175,7 +182,7 @@ class OnBoarding extends Component {
         <View style={styles.progressBarContainer}>
           { OnBoardingFlow.map((value, key) => (
             <Icon
-              key={`progressIconKey-${uniqueId()}`}
+              key={key}
               name={this.state.step > key ? 'check-square-o' : 'square-o'}
               size={44}
               color={styles._progressIcon.backgroundColor}

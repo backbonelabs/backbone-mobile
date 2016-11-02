@@ -26,13 +26,11 @@ export default {
     female: 2,
   },
   height: {
-    pickerItems: [...Array(95).keys()],
-    conversionTypes: ['ft in', 'cm'],
+    conversionTypes: ['in', 'cm'],
     cmConversion: 2.5,
   },
   weight: {
-    pickerItems: [...Array(1000).keys()],
-    conversionTypes: ['lbs', 'kg'],
+    conversionTypes: ['lb', 'kg'],
     kgConversion: 0.5,
   },
 };

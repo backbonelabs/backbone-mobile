@@ -6,7 +6,6 @@ import {
   DatePickerIOS,
   TouchableOpacity,
 } from 'react-native';
-import { uniqueId } from 'lodash';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoarding/profile';
 
@@ -18,58 +17,74 @@ const PickerItem = Picker.Item;
 
 
 const ProfilePicker = (props) => {
+  const heightValues = [...Array(props.height.type === 'in' ? 95 : 237).keys()];
+
   const heightLabel = value => (
-    props.height.type === 'ft in' ?
-      `${Math.floor(value / 12)}' ${value % 12}"`
+    props.height.type === 'in' ?
+      `${Math.floor(value / 12)}ft ${value % 12}in`
       :
-      `${value * heightConstant.cmConversion}`
+      `${value}cm`
   );
 
   const heightValueChangeHandler = value => (
     props.updateField('height', Object.assign({}, props.height, {
       value,
-      label: props.height.type === 'ft in' ?
-        `${Math.floor(value / 12)}ft ${value % 12}in`
-        :
-        `${value * heightConstant.cmConversion}${props.height.type}` }),
-    )
+      label: heightLabel(value),
+    }))
   );
 
-  const heightTypeChangeHandler = type => (
-    props.updateField('height', Object.assign({}, props.height, {
-      type,
-      label: type === 'ft in' ?
-        `${Math.floor(props.height.value / 12)}' ${props.height.value % 12}"`
-        :
-        `${props.height.value * heightConstant.cmConversion}${type}` })
-    )
-  );
+  const heightTypeChangeHandler = type => {
+    if (type !== props.height.type) {
+      const { height } = props;
+      const equalsInch = type === 'in';
+      const centimeterToInch = Math.floor(height.value / 2.5);
+      const inchToCentimeter = Math.floor(height.value * 2.5);
+
+      props.updateField('height', Object.assign({}, height, {
+        value: equalsInch ? centimeterToInch : inchToCentimeter,
+        type,
+        label: equalsInch ?
+          `${Math.floor(centimeterToInch / 12)}ft ${centimeterToInch % 12}in`
+          :
+          `${inchToCentimeter}cm` })
+      );
+    }
+  };
+
+  const weightValues = [...Array(props.weight.type === 'lb' ? 500 : 1000).keys()];
 
   const weightLabel = value => (
-    props.weight.type === 'lbs' ?
-      `${value}`
+    props.weight.type === 'lb' ?
+      `${value}lb`
       :
-      `${(value * weightConstant.kgConversion).toFixed(1)}`
+      `${(value)}kg`
   );
 
   const weightValueChangeHandler = value => {
-    props.updateField('weight', Object.assign({}, props.weight, {
+    const { weight } = props;
+
+    props.updateField('weight', Object.assign({}, weight, {
       value,
-      label: props.weight.type === 'lbs' ?
-        `${value}${props.weight.type}`
-        :
-        `${value * weightConstant.kgConversion}${props.weight.type}` })
-    );
+      label: weightLabel(value),
+    }));
   };
 
   const weightTypeChangeHandler = type => {
-    props.updateField('weight', Object.assign({}, props.weight, {
-      type,
-      label: type === 'lbs' ?
-        `${props.weight.value}${type}`
-        :
-        `${(props.weight.value * weightConstant.kgConversion).toFixed(1)}${type}` })
-    );
+    if (type !== props.weight.type) {
+      const { weight } = props;
+      const equalsPound = type === 'lb';
+      const KilogramToPound = Math.floor(weight.value / 0.5);
+      const poundToKilogram = Math.floor(weight.value * 0.5);
+
+      props.updateField('weight', Object.assign({}, weight, {
+        value: equalsPound ? KilogramToPound : poundToKilogram,
+        type,
+        label: equalsPound ?
+          `${KilogramToPound}lb`
+          :
+          `${poundToKilogram}kg`,
+      }));
+    }
   };
 
   const makeProfilePicker = metric => {
@@ -85,14 +100,14 @@ const ProfilePicker = (props) => {
           selectedValue={props[metric].value}
           onValueChange={metricEnum[metric] ? heightValueChangeHandler : weightValueChangeHandler}
         >
-          { (metricEnum[metric] ? heightConstant.pickerItems : weightConstant.pickerItems)
-              .map(value => {
-                const label = metricEnum[metric] ? heightLabel(value) : weightLabel(value);
+          { (metricEnum[metric] ? heightValues : weightValues)
+              .map((value, key) => {
+                const label = metricEnum[metric] ? heightLabel(value + 1) : weightLabel(value + 1);
 
-                return (value !== 0) && (
+                return (
                   <PickerItem
-                    key={`${metric}PickerItemKey-${uniqueId()}`}
-                    value={value}
+                    key={key}
+                    value={value + 1}
                     label={label}
                   />
                 );
@@ -105,8 +120,8 @@ const ProfilePicker = (props) => {
           onValueChange={metricEnum[metric] ? heightTypeChangeHandler : weightTypeChangeHandler}
         >
           { (metricEnum[metric] ? heightConstant.conversionTypes : weightConstant.conversionTypes)
-              .map(value => (
-                <PickerItem key={`${metric}MetricKey-${uniqueId()}`} value={value} label={value} />
+              .map((value, key) => (
+                <PickerItem key={key} value={value} label={value} />
               )
           ) }
         </Picker>

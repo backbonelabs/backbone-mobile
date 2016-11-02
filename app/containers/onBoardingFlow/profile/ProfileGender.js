@@ -4,7 +4,6 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import { uniqueId } from 'lodash';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoarding/profile';
 import Input from '../../../components/Input';
@@ -33,7 +32,7 @@ const ProfileGender = props => {
 
   return (
     <View style={styles.genderSelectionContainer}>
-      { Object.keys(gender).map(value => {
+      { Object.keys(gender).map((value, key) => {
         let returnedComponent;
 
         if (props.gender && gender[value] !== props.gender) {
@@ -41,7 +40,7 @@ const ProfileGender = props => {
         } else {
           returnedComponent = (
             <TouchableOpacity
-              key={`genderKey-${uniqueId()}`}
+              key={key}
               style={styles.gender}
               onPress={() => props.updateField('gender', props.gender ? null : gender[value])}
             >
