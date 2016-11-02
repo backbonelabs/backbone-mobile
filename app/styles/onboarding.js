@@ -7,7 +7,7 @@ export default EStyleSheet.create({
   },
   progressBarContainer: {
     flex: 0.15,
-    width: '50%',
+    width: '32%',
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
