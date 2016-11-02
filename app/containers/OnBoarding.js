@@ -24,6 +24,7 @@ class OnBoarding extends Component {
     dispatch: PropTypes.func,
     user: PropTypes.shape({
       _id: PropTypes.string,
+      hasOnboarded: PropTypes.bool,
     }),
     isUpdating: PropTypes.bool,
   };
@@ -81,7 +82,7 @@ class OnBoarding extends Component {
     // If it goes from true to false, operation is complete
     if (this.props.isUpdating && !nextProps.isUpdating) {
       // Check whether user has successfully completed onboarding
-      if (nextProps.hasOnboarded) {
+      if (nextProps.user.hasOnboarded) {
         this.nextStep();
       } else {
         Alert.alert('Error', 'Unable to save, please try again');
