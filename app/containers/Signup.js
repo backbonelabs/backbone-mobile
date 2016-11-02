@@ -60,22 +60,16 @@ class Signup extends Component {
   }
 
   onEmailChange(email) {
-    const testEmail = emailRegex.test(email);
-    // the following two if statements test the validity of an email that is pasted
-    // one setState is called each time this function runs
-    if (this.state.emailPristine && !testEmail) {
-      return this.setState({ emailPristine: false, validEmail: false, email });
+    const stateChanges = {
+      validEmail: emailRegex.test(email),
+      email,
+    };
+
+    if (this.state.emailPristine) {
+      stateChanges.emailPristine = false;
     }
 
-    if (this.state.emailPristine && testEmail) {
-      return this.setState({ emailPristine: false, validEmail: true, email });
-    }
-
-    if (testEmail) {
-      return this.setState({ validEmail: true, email });
-    }
-
-    return this.setState({ validEmail: false, email });
+    this.setState(stateChanges);
   }
 
   onPasswordChange(password) {
