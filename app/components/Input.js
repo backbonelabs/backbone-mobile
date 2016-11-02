@@ -28,6 +28,7 @@ const Input = (props) => {
   inputStyles.push(style);
 
   const Icon = iconMap[iconFont];
+  const relativeSize = 16 * relativeDimensions.widthDifference;
 
   return (
     <View style={[styles.container, props.containerStyles]}>
@@ -38,9 +39,9 @@ const Input = (props) => {
         {...remainingProps}
       />
       {Icon && iconRightName ?
-        <Icon name={iconRightName} color={styles.$color} size={16} style={styles.icon} />
+        <Icon name={iconRightName} color={styles.$color} size={relativeSize} style={styles.icon} />
         :
-          <View style={{ ...styles._icon, width: 16 * relativeDimensions.widthDifference }} />
+          <View style={{ ...styles._icon, width: relativeSize }} />
       }
     </View>
   );
