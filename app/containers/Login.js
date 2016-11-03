@@ -27,7 +27,9 @@ class Login extends Component {
       errorMessage: PropTypes.string,
       inProgress: PropTypes.bool,
     }),
-    user: PropTypes.object,
+    user: PropTypes.shape({
+      hasOnboarded: PropTypes.bool,
+    }),
     dispatch: PropTypes.func,
     navigator: PropTypes.object,
   };
@@ -48,8 +50,13 @@ class Login extends Component {
       SensitiveInfo.setItem(constants.accessTokenStorageKey, newAccessToken);
       SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
 
-      // Redirect for device connect
-      this.props.navigator.replace(routes.deviceConnect);
+      // User has already gone through onboarding
+      if (nextProps.user.hasOnboarded) {
+        this.props.navigator.replace(routes.deviceConnect);
+      } else {
+        // User hasn't completed onboarding process
+        this.props.navigator.replace(routes.onboarding);
+      }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', nextProps.auth.errorMessage);
