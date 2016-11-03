@@ -42,6 +42,8 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
   gestures: false,
 });
 
+const isiOS = Platform.OS === 'ios';
+
 class Application extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
@@ -64,7 +66,7 @@ class Application extends Component {
     this.props.dispatch(appActions.setConfig(Environment));
 
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
-    if (Platform.OS === 'android') {
+    if (!isiOS) {
       BackAndroid.addEventListener('hardwareBackPress', () => {
         if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
           // There are subsequent routes after the initial route,
@@ -91,7 +93,7 @@ class Application extends Component {
     // If not, display prompt for user to enable Bluetooth.
     // This cannot be done on the BluetoothService module side
     // compared to iOS.
-    if (Platform.OS === 'android') {
+    if (!isiOS) {
       Bluetooth.getIsEnabled()
         .then(isEnabled => !isEnabled && Bluetooth.enable());
     }
@@ -107,7 +109,7 @@ class Application extends Component {
       }
     };
 
-    if (Platform.OS === 'ios') {
+    if (isiOS) {
       this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
     } else {
       this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
@@ -199,18 +201,10 @@ class Application extends Component {
       </View>
     );
 
-    const statusBarProps = {};
-    if (Platform.OS === 'android') {
-      statusBarProps.backgroundColor = theme.primaryColor;
-    } else {
-      statusBarProps.barStyle = 'light-content';
-    }
-
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar {...statusBarProps} />
         <TitleBar
-          navigator={navigator}
+          navigator={this.navigator}
           currentRoute={route}
         />
         <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
@@ -220,6 +214,13 @@ class Application extends Component {
   }
 
   render() {
+    const statusBarProps = {};
+    if (isiOS) {
+      statusBarProps.barStyle = 'light-content';
+    } else {
+      statusBarProps.backgroundColor = theme.primaryColor;
+    }
+
     return (
       <Drawer
         type="displace"
@@ -237,6 +238,17 @@ class Application extends Component {
         onClose={() => this.setState({ drawerIsOpen: false })}
         acceptPan={false}
       >
+        <StatusBar {...statusBarProps} />
+        {isiOS &&
+          // The background color cannot be set for the status bar in iOS, so
+          // a static View is overlayed on top of the status bar for all scenes
+          <View
+            style={{
+              backgroundColor: theme.primaryColor,
+              height: theme.statusBarHeight,
+            }}
+          />
+        }
         <Navigator
           configureScene={this.configureScene}
           initialRoute={routes.welcome}

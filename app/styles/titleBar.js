@@ -7,14 +7,13 @@ const baseTitleBarStyles = {
   justifyContent: 'center',
   alignItems: 'center',
   backgroundColor: theme.primaryColor,
-  paddingTop: theme.statusBarHeight,
 };
 
 export default EStyleSheet.create({
   $leftButtonIconSize: 28 * relativeDimensions.heightDifference,
   visibleTitleBar: {
     ...baseTitleBarStyles,
-    minHeight: 64 * relativeDimensions.heightDifference,
+    minHeight: 44 * relativeDimensions.heightDifference,
   },
   hiddenTitleBar: {
     ...baseTitleBarStyles,
