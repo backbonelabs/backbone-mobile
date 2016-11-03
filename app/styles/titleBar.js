@@ -13,7 +13,7 @@ export default EStyleSheet.create({
   $leftButtonIconSize: 28 * relativeDimensions.heightDifference,
   visibleTitleBar: {
     ...baseTitleBarStyles,
-    minHeight: 44 * relativeDimensions.heightDifference,
+    minHeight: theme.titleBarHeight * relativeDimensions.heightDifference,
   },
   hiddenTitleBar: {
     ...baseTitleBarStyles,
