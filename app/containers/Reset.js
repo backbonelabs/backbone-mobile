@@ -42,22 +42,22 @@ class Reset extends Component {
       // Pop up an alert and have user check their inbox to confirm
       Alert.alert(
         'Success',
-        'We\'ve emailed you a confirmation email please check your ' +
-        'inbox and follow the instructions to reset your password',
+        'We sent you a password reset link. ' +
+        'Please check your email and use the link to reset your password.',
         [{
           text: 'OK',
-          onPress: () => this.props.navigator.popToTop(),
+          onPress: () => this.props.navigator.pop(),
         }]
       );
+    }
+    // if there is an authentication error, reset email state
+    if (!this.props.errorMessage && nextProps.errorMessage) {
+      this.setState({ email: null });
     }
   }
 
   sendPasswordResetRequest() {
-    if (this.state.email && this.state.email.length) {
-      this.props.dispatch(authActions.reset({ email: this.state.email }));
-    } else {
-      Alert.alert('Missing fields', 'Email is required');
-    }
+    this.props.dispatch(authActions.reset({ email: this.state.email }));
   }
 
   render() {
@@ -79,11 +79,12 @@ class Reset extends Component {
                   placeholder="example@email.com"
                   keyboardType="email-address"
                   onChangeText={text => this.setState({ email: text })}
-                  onSubmitEditing={this.sendPasswordResetRequest}
+                  onSubmitEditing={this.state.email ? this.sendPasswordResetRequest : null}
                   autoCorrect={false}
                   returnKeyType="go"
                 />
                 <Button
+                  disabled={!this.state.email}
                   primary
                   style={styles._resetButton}
                   text="RESET"
