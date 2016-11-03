@@ -23,9 +23,10 @@ const TitleBar = (props) => {
 
   // The route's rightComponent, if present, will be passed the navigator object
   // so it can perform navigation functions
-  const rightButton = props.currentRoute.rightComponent ? (
+  const RightComponent = props.currentRoute.rightComponent;
+  const rightButton = RightComponent ? (
     <TouchableOpacity style={styles.sideButtons}>
-      <props.currentRoute.rightComponent navigator={props.navigator} />
+      <RightComponent navigator={props.navigator} />
     </TouchableOpacity>
   ) : undefined;
 
