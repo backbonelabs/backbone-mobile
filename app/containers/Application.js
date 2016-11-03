@@ -14,12 +14,11 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
-import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { clone } from 'lodash';
 import appActions from '../actions/app';
+import TitleBar from '../components/TitleBar';
 import Menu from '../components/Menu';
-import HeadingText from '../components/HeadingText';
 import routes from '../routes';
 import styles from '../styles/application';
 import theme from '../styles/theme';
@@ -50,42 +49,6 @@ class Application extends Component {
 
   constructor() {
     super();
-
-    this.navigationBarRouteMapper = {
-      LeftButton: (route, navigator) => {
-        let onPressHandler;
-        let iconName;
-
-        if (route.showMenu || route.showBackButton) {
-          onPressHandler = route.showMenu ? () => this.showMenu(route, navigator) : navigator.pop;
-          iconName = route.showMenu ? 'bars' : 'angle-left';
-
-          return (
-            <TouchableOpacity style={styles.leftButton} onPress={onPressHandler}>
-              <Icon
-                name={iconName}
-                style={styles.leftButtonIcon}
-                size={EStyleSheet.globalVars.$iconSize}
-                color={styles._leftButtonIcon.color}
-              />
-            </TouchableOpacity>
-          );
-        }
-      },
-      RightButton: (route, navigator) => route.rightButton && (
-        <TouchableOpacity
-          style={styles.rightButton}
-          onPress={() => route.rightButton.onPress(navigator)}
-        >
-          <Icon
-            name={route.rightButton.iconName}
-            size={EStyleSheet.globalVars.$iconSize}
-            color={EStyleSheet.globalVars.$primaryColor}
-          />
-        </TouchableOpacity>
-      ),
-      Title: route => route.title && <HeadingText size={3}>{route.title}</HeadingText>,
-    };
 
     this.state = {
       drawerIsOpen: false,
@@ -246,6 +209,10 @@ class Application extends Component {
     return (
       <View style={{ flex: 1 }}>
         <StatusBar {...statusBarProps} />
+        <TitleBar
+          navigator={navigator}
+          currentRoute={route}
+        />
         <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
         { route.showTabBar && TabBar }
       </View>
@@ -271,7 +238,6 @@ class Application extends Component {
         acceptPan={false}
       >
         <Navigator
-          navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
           initialRoute={routes.welcome}
           renderScene={this.renderScene}
