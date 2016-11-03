@@ -42,7 +42,9 @@ const ProfilePicker = (props) => {
     if (type !== props.height.type) {
       const { height } = props;
       const equalsInch = type === 'in';
-      const centimeterToInch = Math.round(height.value / constants.height.conversionValue);
+      const centimeterToInch = Math.max(1,
+        Math.round(height.value / constants.height.conversionValue)
+      );
       const inchToCentimeter = Math.round(height.value * constants.height.conversionValue);
 
       props.updateProfile('height', Object.assign({}, height, {
@@ -59,7 +61,7 @@ const ProfilePicker = (props) => {
   const weightValues = [...Array(props.weight.type === 'lb' ?
     500
     :
-    Math.floor(500 * constants.weight.conversionValue) + 1
+    Math.ceil(500 * constants.weight.conversionValue)
   ).keys()];
 
   const weightLabel = value => (
