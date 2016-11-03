@@ -59,7 +59,7 @@ class Application extends Component {
     this.configureScene = this.configureScene.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
-    this.navigator = null;
+    this.navigator = null; // Components should use this custom navigator object
   }
 
   componentWillMount() {
@@ -161,6 +161,7 @@ class Application extends Component {
     // Alter the push method on the navigator object to include a timestamp for
     // each route in the route stack so that each route in the stack is unique.
     // This prevents React errors when a route is in the stack multiple times.
+    // All components should use this customized navigator object.
     if (!this.navigator) {
       this.navigator = clone(navigator);
       this.navigator._push = this.navigator.push; // the original push method
