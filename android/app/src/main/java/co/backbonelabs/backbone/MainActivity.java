@@ -20,6 +20,9 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Hide splash theme
+        setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
 
         // Enable Timber logging only on debug mode
