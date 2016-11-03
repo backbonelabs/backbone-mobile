@@ -20,12 +20,12 @@ export default EStyleSheet.create({
     height: 0,
   },
   title: {
-    flex: 0.34,
+    flex: 0.50,
     color: '#FFFFFF',
     textAlign: 'center',
   },
   sideContainers: {
-    flex: 0.33,
+    flex: 0.25,
     paddingHorizontal: 6 * relativeDimensions.widthDifference,
   },
   sideContainersText: {

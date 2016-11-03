@@ -6,8 +6,8 @@ import styles from '../styles/titleBar';
 
 const TitleBar = (props) => {
   const routeStack = props.navigator.getCurrentRoutes();
-  const previousRoute = routeStack[routeStack.length - 2];
-  const leftButton = props.currentRoute.showBackButton ? (
+  const previousRoute = routeStack.length >= 2 ? routeStack[routeStack.length - 2] : null;
+  const leftButton = previousRoute && props.currentRoute.showBackButton ? (
     <TouchableOpacity style={styles.sideButtons} onPress={props.navigator.pop}>
       <Icon
         name="angle-left"
@@ -15,7 +15,7 @@ const TitleBar = (props) => {
         size={styles.$leftButtonIconSize}
         color={styles._buttonIcon.color}
       />
-      <HeadingText size={2} style={styles._sideContainersText}>
+      <HeadingText size={2} style={styles._sideContainersText} numberOfLines={1}>
         {previousRoute.title}
       </HeadingText>
     </TouchableOpacity>
