@@ -4,5 +4,5 @@ export default {
   name: 'profile',
   title: 'Profile',
   component: Profile,
-  showMenu: true,
+  showBackButton: true,
 };
