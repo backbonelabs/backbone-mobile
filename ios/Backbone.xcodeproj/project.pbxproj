@@ -24,6 +24,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4457C4B01D60273200F05D92 /* BluetoothService.m */; };
 		446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */ = {isa = PBXBuildFile; fileRef = 446AF7F81D53DB1200F85785 /* DeviceManagementService.m */; };
+		447B900E1DB8228000AC7E71 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 447B90071DB8227100AC7E71 /* libRCTPushNotification.a */; };
 		44970BBB1D2AC74B00351480 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44970BB01D2AC74400351480 /* libART.a */; };
 		449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */; };
 		54B3C7A82E534518AA08CE57 /* libRNSensitiveInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8A4554BED5149C3AFC4FB96 /* libRNSensitiveInfo.a */; };
@@ -107,6 +108,13 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
+		447B90061DB8227100AC7E71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 447B8FFC1DB8227100AC7E71 /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
 		44970BAF1D2AC74400351480 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 44970BAB1D2AC74400351480 /* ART.xcodeproj */;
@@ -164,6 +172,7 @@
 		4457C4B01D60273200F05D92 /* BluetoothService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BluetoothService.m; path = backbone/BluetoothService.m; sourceTree = "<group>"; };
 		446AF7F71D53DB1200F85785 /* DeviceManagementService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeviceManagementService.h; path = backbone/DeviceManagementService.h; sourceTree = "<group>"; };
 		446AF7F81D53DB1200F85785 /* DeviceManagementService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DeviceManagementService.m; path = backbone/DeviceManagementService.m; sourceTree = "<group>"; };
+		447B8FFC1DB8227100AC7E71 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		4486A5391D89D83500F6CC40 /* Backbone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Backbone.entitlements; path = Backbone/Backbone.entitlements; sourceTree = "<group>"; };
 		44970BAB1D2AC74400351480 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
@@ -219,6 +228,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				447B900E1DB8228000AC7E71 /* libRCTPushNotification.a in Frameworks */,
 				44970BBB1D2AC74B00351480 /* libART.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -372,6 +382,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		447B8FFD1DB8227100AC7E71 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				447B90071DB8227100AC7E71 /* libRCTPushNotification.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		44970BAC1D2AC74400351480 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -415,6 +433,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				447B8FFC1DB8227100AC7E71 /* RCTPushNotification.xcodeproj */,
 				44970BAB1D2AC74400351480 /* ART.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -592,6 +611,10 @@
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
 				},
 				{
+					ProductGroup = 447B8FFD1DB8227100AC7E71 /* Products */;
+					ProjectRef = 447B8FFC1DB8227100AC7E71 /* RCTPushNotification.xcodeproj */;
+				},
+				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
 					ProjectRef = 139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */;
 				},
@@ -679,6 +702,13 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		447B90071DB8227100AC7E71 /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 447B90061DB8227100AC7E71 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		44970BB01D2AC74400351480 /* libART.a */ = {
@@ -1009,6 +1039,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native-sensitive-info/ios/RNSensitiveInfo/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 				);
 				INFOPLIST_FILE = backbone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1047,6 +1078,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native-sensitive-info/ios/RNSensitiveInfo/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 				);
 				INFOPLIST_FILE = backbone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

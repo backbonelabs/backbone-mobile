@@ -21,4 +21,16 @@ export default {
     CONNECTED: 2,
     DISCONNECTING: 3,
   },
+  gender: {
+    male: 1,
+    female: 2,
+  },
+  height: {
+    conversionTypes: ['cm', 'in'],
+    conversionValue: 2.54,
+  },
+  weight: {
+    conversionTypes: ['kg', 'lb'],
+    conversionValue: 0.453592,
+  },
 };
