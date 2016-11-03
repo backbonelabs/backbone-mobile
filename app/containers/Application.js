@@ -22,6 +22,7 @@ import Menu from '../components/Menu';
 import HeadingText from '../components/HeadingText';
 import routes from '../routes';
 import styles from '../styles/application';
+import theme from '../styles/theme';
 import constants from '../utils/constants';
 
 const { bluetoothStates } = constants;
@@ -235,9 +236,16 @@ class Application extends Component {
       </View>
     );
 
+    const statusBarProps = {};
+    if (Platform.OS === 'android') {
+      statusBarProps.backgroundColor = theme.primaryColor;
+    } else {
+      statusBarProps.barStyle = 'light-content';
+    }
+
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar />
+        <StatusBar {...statusBarProps} />
         <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
         { route.showTabBar && TabBar }
       </View>
