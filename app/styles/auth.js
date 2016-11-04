@@ -13,17 +13,13 @@ export default EStyleSheet.create({
     width: 342 * widthDifference,
   },
   backBoneLogoWrapper: {
-    marginTop: 106 * heightDifference,
+    marginTop: 80 * heightDifference,
     marginBottom: 16 * heightDifference,
-    marginLeft: 125 * widthDifference,
-    marginRight: 120 * widthDifference,
     alignSelf: 'center',
-    width: 95 * widthDifference,
-    height: 88 * heightDifference,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 9,
-    paddingLeft: 11,
+  },
+  backboneLogo: {
+    width: 80 * widthDifference,
+    height: 74 * heightDifference,
   },
   loginHeading: {
     textAlign: 'center',
@@ -51,9 +47,6 @@ export default EStyleSheet.create({
     height: 16 * heightDifference,
     alignSelf: 'center',
   },
-  forgotPassword: {
-    textAlign: 'center',
-  },
   resetSubHeading: {
     marginTop: 26 * heightDifference,
     textAlign: 'center',
@@ -67,12 +60,6 @@ export default EStyleSheet.create({
   resetButton: {
     alignSelf: 'center',
     marginBottom: 7 * heightDifference,
-  },
-  nevermindWrapper: {
-    marginBottom: 94 * heightDifference,
-    width: 350 * widthDifference,
-    height: 16 * heightDifference,
-    alignSelf: 'center',
   },
   signupHeading: {
     marginTop: 6 * heightDifference,
