@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import com.facebook.react.ReactActivity;
+import com.horcrux.svg.RNSvgPackage;
 import com.mbientlab.metawear.MetaWearBleService;
 
 import timber.log.Timber;
