@@ -1,8 +1,9 @@
 import { Dimensions, Navigator } from 'react-native';
+import relativeDimensions from '../utils/relativeDimensions';
 
 const { width: screenWidth } = Dimensions.get('window');
 const statusBarHeight = Navigator.NavigationBar.Styles.General.StatusBarHeight;
-const titleBarHeight = 44;
+const titleBarHeight = 44 * relativeDimensions.heightDifference;
 const totalNavHeight = statusBarHeight + titleBarHeight;
 const iconSize = 0.08 * screenWidth;
 const iconButtonSize = 1.5 * iconSize;
