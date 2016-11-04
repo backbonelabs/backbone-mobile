@@ -1,46 +1,127 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Text,
-  Alert,
-  Slider,
+  Image,
   Switch,
-  ScrollView,
-  NativeModules,
-  TouchableHighlight,
-  TouchableOpacity,
+  Linking,
+  Platform,
+  AppState,
+  PushNotificationIOS,
 } from 'react-native';
-import { connect } from 'react-redux';
-import { get, isEmpty, isEqual } from 'lodash';
-import Button from '../components/Button';
-import Spinner from '../components/Spinner';
-import BodyText from '../components/BodyText';
-import SecondaryText from '../components/SecondaryText';
-import userActions from '../actions/user';
-import styles from '../styles/settings';
-import constants from '../utils/constants';
+import SvgUri from 'react-native-svg-uri';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import constants from '../utils/constants';
+import styles from '../styles/settings';
+import Button from '../components/Button';
+import BodyText from '../components/BodyText';
+import backgroundOpacity from '../images/backgroundOpacity.png';
+import arrow from '../images/settings/arrow.svg';
+import batteryIcon from '../images/settings/batteryIcon.png';
+import sensorSmall from '../images/settings/sensorSmall.png';
+import profileIcon from '../images/settings/profileIcon.svg';
+import alertIcon from '../images/settings/alertIcon.svg';
+import tutorialIcon from '../images/settings/tutorialIcon.svg';
+import supportIcon from '../images/settings/supportIcon.svg';
+import notificationsIcon from '../images/settings/notificationsIcon.svg';
+import SecondaryText from '../components/SecondaryText';
 
-const { DeviceManagementService } = NativeModules;
+const SensorSettings = () => (
+  <View style={styles.sensorSettingsContainer}>
+    <View style={styles.sensorIcon}>
+      <Image source={sensorSmall} />
+    </View>
+    <View style={styles.sensorText}>
+      <BodyText>MY BACKBONE</BodyText>
+      <View style={styles.batteryInfo}>
+        <Image source={batteryIcon} style={styles.batteryIcon} />
+        <SecondaryText style={styles._batteryText}>Battery: 100%</SecondaryText>
+      </View>
+      <SecondaryText style={styles._batteryText}>About 10 days</SecondaryText>
+    </View>
+    <View style={styles.arrow}>
+      <SvgUri source={arrow} />
+    </View>
+  </View>
+);
+
+const AccountRemindersSettings = props => (
+  <View style={styles.accountRemindersContainer}>
+    <View style={styles.accountRemindersHeader}>
+      <BodyText>ACCOUNT & REMINDERS</BodyText>
+    </View>
+    <View style={styles.accountRemindersSettingContainer}>
+      <View style={styles.settingsIcon}>
+        <SvgUri source={profileIcon} />
+      </View>
+      <View style={styles.settingsText}>
+        <BodyText>Profile</BodyText>
+      </View>
+      <View style={styles.arrow}>
+        <SvgUri source={arrow} />
+      </View>
+    </View>
+    <View style={styles.accountRemindersSettingContainer}>
+      <View style={styles.settingsIcon}>
+        <SvgUri source={alertIcon} />
+      </View>
+      <View style={styles.settingsText}>
+        <BodyText>Alerts</BodyText>
+      </View>
+      <View style={styles.arrow}>
+        <SvgUri source={arrow} />
+      </View>
+    </View>
+    <View style={styles.notificationsContainer}>
+      <View style={styles.settingsIcon}>
+        <SvgUri source={notificationsIcon} />
+      </View>
+      <View style={styles.notificationsText}>
+        <BodyText>Push Notifications</BodyText>
+      </View>
+      <View style={styles.notificationsSwitch}>
+        <Switch
+          onValueChange={props.updateNotifications}
+          value={props.notificationsEnabled}
+        />
+      </View>
+    </View>
+  </View>
+);
+
+const HelpSettings = () => (
+  <View style={styles.helpContainer}>
+    <View style={styles.helpSettingsHeader}>
+      <BodyText>HELP</BodyText>
+    </View>
+    <View style={styles.helpSettingContainer}>
+      <View style={styles.settingsIcon}>
+        <SvgUri source={tutorialIcon} />
+      </View>
+      <View style={styles.settingsText}>
+        <BodyText>How To Use</BodyText>
+      </View>
+      <View style={styles.arrow}>
+        <SvgUri source={arrow} />
+      </View>
+    </View>
+    <View style={styles.helpSettingContainer}>
+      <View style={styles.settingsIcon}>
+        <SvgUri source={supportIcon} />
+      </View>
+      <View style={styles.settingsText}>
+        <BodyText>Support</BodyText>
+      </View>
+      <View style={styles.arrow}>
+        <SvgUri source={arrow} />
+      </View>
+    </View>
+  </View>
+);
 
 class Settings extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
-      replace: PropTypes.func,
       popToTop: PropTypes.func,
-    }),
-    dispatch: PropTypes.func,
-    app: PropTypes.shape({
-      config: PropTypes.object,
-    }),
-    user: PropTypes.shape({
-      errorMessage: PropTypes.string,
-      isFetching: PropTypes.bool,
-      isUpdating: PropTypes.bool,
-      user: PropTypes.shape({
-        _id: PropTypes.string,
-        settings: PropTypes.object,
-      }),
     }),
   };
 
@@ -48,143 +129,82 @@ class Settings extends Component {
     super(props);
     this.state = {
       isPristine: true,
-      settings: get(this.props.user.user, 'settings', {}),
+      notificationsEnabled: false,
     };
-    this.update = this.update.bind(this);
-    this.updateSettings = this.updateSettings.bind(this);
+
+    this.updateNotifications = this.updateNotifications.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    let stateChanges = {};
-
-    if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
-      Alert.alert('Error', nextProps.user.errorMessage);
-    } else if (!isEqual(this.props.user.user, nextProps.user.user)) {
-      stateChanges = {
-        ...stateChanges,
-        settings: nextProps.user.user.settings,
-      };
-    }
-
-    // Reset pristine flag after updating settings
-    if (this.props.user.isUpdating && !nextProps.user.isUpdating && !nextProps.user.errorMessage) {
-      stateChanges = {
-        ...stateChanges,
-        isPristine: true,
-      };
-    }
-
-    if (!isEmpty(stateChanges)) {
-      this.setState(stateChanges);
+  componentWillMount() {
+    this.checkNotificationsPermission();
+    // Check if user has enabled notifications on their iOS device
+    if (Platform.OS === 'ios') {
+      AppState.addEventListener('change', state => {
+        if (state === 'active') {
+          this.checkNotificationsPermission();
+        }
+      });
     }
   }
 
-  update() {
-    this.props.dispatch(userActions.updateUserSettings({
-      _id: this.props.user.user._id,
-      settings: this.state.settings,
-    }));
+  componentWillUnmount() {
+    // Remove app state event listener
+    AppState.removeEventListener('change');
   }
 
-  /**
-   * Updates a field and sets the pristine flag to false
-   * @param {String} field
-   * @param {String} value
-   */
-  updateSettings(field, value) {
-    this.setState({
-      isPristine: false,
-      settings: Object.assign({}, this.state.settings, { [field]: value }),
+  checkNotificationsPermission() {
+    // Check notification permissions
+    PushNotificationIOS.checkPermissions(permissions => {
+      // Update notificationsEnabled to true if permissions enabled
+      if (permissions.alert !== this.state.notificationsEnabled) {
+        // Specifically set to boolean due to Switch prop validation
+        this.setState({ notificationsEnabled: !!permissions.alert });
+      }
+    });
+  }
+
+  updateNotifications(value) {
+    this.setState({ notificationsEnabled: value }, () => {
+      // Linking scheme for iOS only
+      if (Platform.OS === 'ios') {
+        Linking.openURL('app-settings:');
+      }
     });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        {this.props.user.isFetching || this.props.user.isUpdating ?
-          <Spinner />
-          :
-            <ScrollView style={styles.innerContainer}>
-              <View style={styles.postureThreshold}>
-                <Text style={styles.text}>Posture Threshold</Text>
-                <Slider
-                  minimumValue={0.1}
-                  maximumValue={1}
-                  step={0.01}
-                  value={this.state.settings.postureThreshold}
-                  onSlidingComplete={value => this.updateSettings('postureThreshold', value)}
-                />
-              </View>
-              <View style={styles.vibrationContainer}>
-                <View style={styles.vibration}>
-                  <Text>Backbone Vibration</Text>
-                  <Switch
-                    value={this.state.settings.backboneVibration}
-                    onValueChange={value => this.updateSettings('backboneVibration', value)}
-                  />
-                </View>
-                <View style={styles.vibration}>
-                  <Text>Phone Vibration</Text>
-                  <Switch
-                    value={this.state.settings.phoneVibration}
-                    onValueChange={value => this.updateSettings('phoneVibration', value)}
-                  />
-                </View>
-              </View>
-              <View style={styles.postureThreshold}>
-                <Text style={styles.text}>Slouch Time Threshold</Text>
-                <Slider
-                  minimumValue={5}
-                  maximumValue={60}
-                  step={1}
-                  value={this.state.settings.slouchTimeThreshold}
-                  onSlidingComplete={value => this.updateSettings('slouchTimeThreshold', value)}
-                />
-              </View>
-              <Button
-                disabled={this.state.isPristine}
-                onPress={this.update}
-                text="Save"
-              />
-              <TouchableHighlight
-                style={styles.forget}
-                onPress={() => (
-                  DeviceManagementService.forgetDevice((error) => {
-                    if (error) {
-                      // Placeholder until Rocio finalizes flow
-                    } else {
-                      this.props.navigator.popToTop();
-                    }
-                  })
-                )}
-              >
-                <Text>Forget this device</Text>
-              </TouchableHighlight>
-              {this.props.app.config.DEV_MODE &&
-                <View style={{ marginTop: 5, borderWidth: 1 }}>
-                  <BodyText>Dev menu:</BodyText>
-                  <TouchableOpacity
-                    onPress={() => SensitiveInfo.deleteItem(constants.accessTokenStorageKey)}
-                  >
-                    <SecondaryText>Delete access token from storage</SecondaryText>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => SensitiveInfo.deleteItem(constants.userStorageKey)}
-                  >
-                    <SecondaryText>Delete user from storage</SecondaryText>
-                  </TouchableOpacity>
-                </View>
-              }
-            </ScrollView>
-        }
+        <View style={{ height: 55 }} />
+        <Image source={backgroundOpacity} style={styles.backgroundImage}>
+          <SensorSettings />
+          <AccountRemindersSettings
+            notificationsEnabled={this.state.notificationsEnabled}
+            updateNotifications={this.updateNotifications}
+          />
+          <HelpSettings />
+          <View style={styles.buttonContainer}>
+            <Button
+              primary
+              text="SIGN OUT"
+              style={styles._button}
+              onPress={() => {
+                SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
+                SensitiveInfo.deleteItem(constants.userStorageKey);
+                this.props.navigator.popToTop();
+              }}
+            />
+          </View>
+          <View style={{ flex: 0.17 }} />
+        </Image>
       </View>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  const { app, user } = state;
-  return { app, user };
+AccountRemindersSettings.propTypes = {
+  updateNotifications: PropTypes.func,
+  notificationsEnabled: PropTypes.bool,
 };
 
-export default connect(mapStateToProps)(Settings);
+export default Settings;
