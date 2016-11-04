@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import HeadingText from './HeadingText';
+import BodyText from './BodyText';
 import styles from '../styles/titleBar';
 
 const TitleBar = (props) => {
@@ -15,9 +16,9 @@ const TitleBar = (props) => {
         size={styles.$leftButtonIconSize}
         color={styles._buttonIcon.color}
       />
-      <HeadingText size={2} style={styles._sideContainersText} numberOfLines={1}>
+      <BodyText style={styles._sideContainersText} numberOfLines={1}>
         {previousRoute.title}
-      </HeadingText>
+      </BodyText>
     </TouchableOpacity>
   ) : undefined;
 
