@@ -136,7 +136,9 @@ class Login extends Component {
                   onPress={() => this.props.navigator.push(routes.reset)}
                   activeOpacity={0.4}
                 >
-                  <SecondaryText style={styles._forgotPassword}>Forgot your password?</SecondaryText>
+                  <SecondaryText style={styles._forgotPassword}>
+                    Forgot your password?
+                  </SecondaryText>
                 </TouchableOpacity>
               </View>
           }
