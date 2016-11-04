@@ -31,7 +31,7 @@ export default EStyleSheet.create({
     textAlign: 'center',
   },
   genderIcon: {
-    width: 42 * relativeDimensions.widthDifference,
+    width: 50 * relativeDimensions.widthDifference,
     height: 50 * relativeDimensions.heightDifference,
   },
   nicknameInput: {
