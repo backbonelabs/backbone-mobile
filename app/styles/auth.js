@@ -7,74 +7,43 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  formContainer: {
+  innerContainer: {
     width: 342 * widthDifference,
-  },
-  backBoneLogoWrapper: {
-    marginTop: 80 * heightDifference,
-    marginBottom: 16 * heightDifference,
-    alignSelf: 'center',
+    paddingTop: 80 * heightDifference,
   },
   backboneLogo: {
+    alignSelf: 'center',
     width: 80 * widthDifference,
     height: 74 * heightDifference,
   },
-  loginHeading: {
+  headingText: {
+    textAlign: 'center',
+    marginVertical: 16 * heightDifference,
+  },
+  subHeadingText: {
     textAlign: 'center',
   },
-  emailInput: {
-    width: 340 * widthDifference,
-    marginTop: 57 * heightDifference,
-    marginBottom: 34 * heightDifference,
+  formContainer: {
+    marginTop: 30 * heightDifference,
   },
-  passwordInput: {
-    width: 340 * widthDifference,
-    marginBottom: 101 * heightDifference,
+  inputFieldContainer: {
+    marginBottom: 30 * heightDifference,
   },
-  loginButton: {
+  inputField: {
+    width: 340 * widthDifference,
+  },
+  CTAContainer: {
+    marginVertical: 16 * heightDifference,
+  },
+  CTAButton: {
     alignSelf: 'center',
   },
-  forgotPasswordWrapper: {
-    marginTop: 10 * heightDifference,
-    alignSelf: 'center',
-  },
-  resetSubHeading: {
-    marginTop: 26 * heightDifference,
+  forgotPassword: {
     textAlign: 'center',
-    alignSelf: 'center',
-  },
-  resetInput: {
-    width: 340 * widthDifference,
-    marginTop: 43 * heightDifference,
-    marginBottom: 144 * heightDifference,
-  },
-  resetButton: {
-    alignSelf: 'center',
-    marginBottom: 7 * heightDifference,
-  },
-  signupHeading: {
-    marginTop: 6 * heightDifference,
-    alignSelf: 'center',
-    textAlign: 'center',
-  },
-  signupInput: {
-    width: 340 * widthDifference,
-  },
-  signupBtn: {
-    alignSelf: 'center',
-  },
-  signupEmailContainer: {
-    marginTop: 59 * heightDifference,
-    marginBottom: 34 * heightDifference,
-    alignItems: 'center',
-  },
-  signupPasswordContainer: {
-    marginBottom: 85 * heightDifference,
-    alignItems: 'center',
   },
   warning: {
     color: '$primaryColor',
+    textAlign: 'center',
   },
 });

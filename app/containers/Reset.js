@@ -63,29 +63,33 @@ class Reset extends Component {
           { this.props.inProgress ?
             <Spinner />
             :
-              <View style={styles.formContainer}>
-                <View style={styles.backBoneLogoWrapper}>
-                  <Image source={BackBoneLogo} style={styles.backboneLogo} />
+              <View style={styles.innerContainer}>
+                <Image source={BackBoneLogo} style={styles.backboneLogo} />
+                <HeadingText size={2} style={styles._headingText}>No problem!</HeadingText>
+                <BodyText style={styles._subHeadingText}>What's your email?</BodyText>
+                <View style={styles.formContainer}>
+                  <View style={styles.inputFieldContainer}>
+                    <Input
+                      style={styles._inputField}
+                      autoCapitalize="none"
+                      placeholder="Email"
+                      keyboardType="email-address"
+                      onChangeText={text => this.setState({ email: text })}
+                      onSubmitEditing={this.sendPasswordResetRequest}
+                      autoCorrect={false}
+                      autoFocus
+                      returnKeyType="go"
+                    />
+                  </View>
+                  <View style={styles.CTAContainer}>
+                    <Button
+                      style={styles._CTAButton}
+                      primary
+                      text="RESET"
+                      onPress={this.sendPasswordResetRequest}
+                    />
+                  </View>
                 </View>
-                <HeadingText size={2} style={styles._loginHeading}>No problem!</HeadingText>
-                <BodyText style={styles._resetSubHeading}>What's your email?</BodyText>
-                <Input
-                  style={styles._resetInput}
-                  autoCapitalize="none"
-                  placeholder="example@email.com"
-                  keyboardType="email-address"
-                  onChangeText={text => this.setState({ email: text })}
-                  onSubmitEditing={this.sendPasswordResetRequest}
-                  autoCorrect={false}
-                  autoFocus
-                  returnKeyType="go"
-                />
-                <Button
-                  primary
-                  style={styles._resetButton}
-                  text="RESET"
-                  onPress={this.sendPasswordResetRequest}
-                />
               </View>
           }
         </View>
