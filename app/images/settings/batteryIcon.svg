@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="13px" viewBox="0 0 24 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: #FFFFFF;">
+    <!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+    <title>Fill 1</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="13 0 0 0 0 10.4999 0 20.9998 13 20.9998 13 10.4999"></polygon>
+    </defs>
+    <g id="hifi---FINAL" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Settings-" transform="translate(-128.000000, -105.000000)">
+            <g id="Battery---full" transform="translate(140.500000, 111.500000) rotate(90.000000) translate(-140.500000, -111.500000) translate(134.000000, 101.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-2"></g>
+                <path d="M9.96,10.6968 L6.96,17.6968 C6.88,17.8838 6.697,17.9998 6.5,17.9998 C6.467,17.9998 6.434,17.9968 6.399,17.9898 C6.167,17.9418 6,17.7378 6,17.4998 L6,12.9998 L3.5,12.9998 C3.332,12.9998 3.175,12.9158 3.083,12.7758 C2.99,12.6348 2.975,12.4578 3.04,12.3028 L6.04,5.3028 C6.134,5.0848 6.36,4.9618 6.601,5.0108 C6.833,5.0578 7,5.2628 7,5.4998 L7,9.9998 L9.5,9.9998 C9.668,9.9998 9.825,10.0848 9.917,10.2248 C10.01,10.3648 10.025,10.5428 9.96,10.6968 M9,1.9998 L9,0.4998 C9,0.2238 8.776,-0.0002 8.5,-0.0002 L4.5,-0.0002 C4.224,-0.0002 4,0.2238 4,0.4998 L4,1.9998 L2.5,1.9998 C1.121,1.9998 0,3.1218 0,4.4998 L0,18.4998 C0,19.8788 1.121,20.9998 2.5,20.9998 L10.5,20.9998 C11.879,20.9998 13,19.8788 13,18.4998 L13,4.4998 C13,3.1218 11.879,1.9998 10.5,1.9998 L9,1.9998 Z" id="Fill-1" fill="#44DB5E" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

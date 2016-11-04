@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="23px" viewBox="0 0 12 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+    <title>arrow right</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0 23 12 23 12 0 0 0"></polygon>
+    </defs>
+    <g id="hifi---FINAL" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Settings-" transform="translate(-345.000000, -393.000000)">
+            <g id="arrow-right" transform="translate(351.000000, 404.500000) scale(-1, -1) translate(-351.000000, -404.500000) translate(345.000000, 393.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-2"></g>
+                <path d="M11.5,23 C11.372,23 11.244,22.951 11.146,22.854 L0.146,11.854 C-0.049,11.658 -0.049,11.342 0.146,11.146 L11.146,0.146 C11.342,-0.049 11.658,-0.049 11.853,0.146 C12.049,0.342 12.049,0.658 11.853,0.854 L1.207,11.5 L11.853,22.146 C12.049,22.342 12.049,22.658 11.853,22.854 C11.756,22.951 11.628,23 11.5,23" id="Fill-1" fill="#000000" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>
