@@ -65,11 +65,6 @@ export default EStyleSheet.create({
   signupBtn: {
     alignSelf: 'center',
   },
-  signupBackBtn: {
-    alignSelf: 'center',
-    marginTop: 19 * heightDifference,
-    marginBottom: 51 * heightDifference,
-  },
   signupEmailContainer: {
     marginTop: 59 * heightDifference,
     marginBottom: 34 * heightDifference,

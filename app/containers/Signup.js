@@ -110,7 +110,7 @@ class Signup extends Component {
             :
               <View style={styles.formContainer}>
                 <View style={styles.backBoneLogoWrapper}>
-                  <Image style={styles.backBoneLogo} source={BackBoneLogo} />
+                  <Image source={BackBoneLogo} style={styles.backboneLogo} />
                 </View>
                 <BodyText style={styles._signupHeading}>
                   Feel and look your strongest with better posture
@@ -160,12 +160,6 @@ class Signup extends Component {
                   primary
                   disabled={this.props.inProgress || ((!email || !validEmail) || (!password || !validPassword))}
                   onPress={this.signup}
-                />
-                <Button
-                  style={styles._signupBackBtn}
-                  text="BACK"
-                  disabled={this.props.inProgress}
-                  onPress={this.props.navigator.pop}
                 />
               </View>
           }
