@@ -16,6 +16,7 @@ export default EStyleSheet.create({
     alignSelf: 'center',
     width: 80 * widthDifference,
     height: 74 * heightDifference,
+    resizeMode: 'contain',
   },
   headingText: {
     textAlign: 'center',
