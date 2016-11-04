@@ -26,7 +26,6 @@ export default EStyleSheet.create({
   },
   sideContainers: {
     flex: 0.25,
-    paddingHorizontal: 6 * relativeDimensions.widthDifference,
   },
   sideContainersText: {
     color: '#FFFFFF',
@@ -34,6 +33,7 @@ export default EStyleSheet.create({
   sideButtons: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 6 * relativeDimensions.widthDifference,
   },
   buttonIcon: {
     color: '#FFFFFF',
