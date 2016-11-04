@@ -33,18 +33,11 @@ export default EStyleSheet.create({
     width: 340 * widthDifference,
     marginBottom: 101 * heightDifference,
   },
-  backButton: {
-    alignSelf: 'center',
-    marginBottom: 27 * heightDifference,
-  },
   loginButton: {
     alignSelf: 'center',
   },
   forgotPasswordWrapper: {
-    marginTop: 8 * heightDifference,
-    marginBottom: 24 * heightDifference,
-    width: 350 * widthDifference,
-    height: 16 * heightDifference,
+    marginTop: 10 * heightDifference,
     alignSelf: 'center',
   },
   resetSubHeading: {

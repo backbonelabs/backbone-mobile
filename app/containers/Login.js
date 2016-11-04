@@ -86,7 +86,7 @@ class Login extends Component {
             :
               <View style={styles.formContainer}>
                 <View style={styles.backBoneLogoWrapper}>
-                  <Image source={BackBoneLogo} />
+                  <Image source={BackBoneLogo} style={styles.backboneLogo} />
                 </View>
                 <HeadingText size={2} style={styles._loginHeading}>Welcome back!</HeadingText>
                 <Input
@@ -131,17 +131,9 @@ class Login extends Component {
                     onPress={() => this.props.navigator.push(routes.reset)}
                     activeOpacity={0.4}
                   >
-                    <SecondaryText style={styles._forgotPassword}>
-                      Forgot your password?
-                    </SecondaryText>
+                    <SecondaryText>Forgot your password?</SecondaryText>
                   </TouchableOpacity>
                 </View>
-                <Button
-                  style={styles._backButton}
-                  text="BACK"
-                  disabled={inProgress}
-                  onPress={this.props.navigator.pop}
-                />
               </View>
           }
         </View>
