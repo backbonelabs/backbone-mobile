@@ -28,6 +28,20 @@ import supportIcon from '../images/settings/supportIcon.svg';
 import notificationsIcon from '../images/settings/notificationsIcon.svg';
 import SecondaryText from '../components/SecondaryText';
 
+const iconMap = {
+  profile: profileIcon,
+  alert: alertIcon,
+  tutorial: tutorialIcon,
+  support: supportIcon,
+  notifications: notificationsIcon,
+};
+
+const ArrowIcon = () => (
+  <View style={styles.arrow}>
+    <SvgUri source={arrow} />
+  </View>
+);
+
 const SensorSettings = () => (
   <View style={styles.sensorSettingsContainer}>
     <View style={styles.sensorIconContainer}>
@@ -41,9 +55,19 @@ const SensorSettings = () => (
       </View>
       <SecondaryText style={styles._batteryText}>About 10 days</SecondaryText>
     </View>
-    <View style={styles.arrow}>
-      <SvgUri source={arrow} />
-    </View>
+    <ArrowIcon />
+  </View>
+);
+
+const SettingsIcon = props => (
+  <View style={styles.settingsIcon}>
+    <SvgUri source={iconMap[props.iconName]} />
+  </View>
+);
+
+const SettingsText = props => (
+  <View style={styles.settingsText}>
+    <BodyText>{props.text}</BodyText>
   </View>
 );
 
@@ -53,34 +77,18 @@ const AccountRemindersSettings = props => (
       <BodyText>ACCOUNT & REMINDERS</BodyText>
     </View>
     <View style={styles.accountRemindersSettingContainer}>
-      <View style={styles.settingsIcon}>
-        <SvgUri source={profileIcon} />
-      </View>
-      <View style={styles.settingsText}>
-        <BodyText>Profile</BodyText>
-      </View>
-      <View style={styles.arrow}>
-        <SvgUri source={arrow} />
-      </View>
+      <SettingsIcon iconName="profile" />
+      <SettingsText text="Profile" />
+      <ArrowIcon />
     </View>
     <View style={styles.accountRemindersSettingContainer}>
-      <View style={styles.settingsIcon}>
-        <SvgUri source={alertIcon} />
-      </View>
-      <View style={styles.settingsText}>
-        <BodyText>Alerts</BodyText>
-      </View>
-      <View style={styles.arrow}>
-        <SvgUri source={arrow} />
-      </View>
+      <SettingsIcon iconName="alert" />
+      <SettingsText text="Alerts" />
+      <ArrowIcon />
     </View>
     <View style={styles.notificationsContainer}>
-      <View style={styles.settingsIcon}>
-        <SvgUri source={notificationsIcon} />
-      </View>
-      <View style={styles.notificationsText}>
-        <BodyText>Push Notifications</BodyText>
-      </View>
+      <SettingsIcon iconName="notifications" />
+      <SettingsText text="Push Notifications" />
       <View style={styles.notificationsSwitch}>
         <Switch
           onValueChange={props.updateNotifications}
@@ -97,26 +105,14 @@ const HelpSettings = () => (
       <BodyText>HELP</BodyText>
     </View>
     <View style={styles.helpSettingContainer}>
-      <View style={styles.settingsIcon}>
-        <SvgUri source={tutorialIcon} />
-      </View>
-      <View style={styles.settingsText}>
-        <BodyText>How To Use</BodyText>
-      </View>
-      <View style={styles.arrow}>
-        <SvgUri source={arrow} />
-      </View>
+      <SettingsIcon iconName="tutorial" />
+      <SettingsText text="How To Use" />
+      <ArrowIcon />
     </View>
     <View style={styles.helpSettingContainer}>
-      <View style={styles.settingsIcon}>
-        <SvgUri source={supportIcon} />
-      </View>
-      <View style={styles.settingsText}>
-        <BodyText>Support</BodyText>
-      </View>
-      <View style={styles.arrow}>
-        <SvgUri source={arrow} />
-      </View>
+      <SettingsIcon iconName="support" />
+      <SettingsText text="Support" />
+      <ArrowIcon />
     </View>
   </View>
 );
@@ -131,10 +127,9 @@ class Settings extends Component {
     }),
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      isPristine: true,
       notificationsEnabled: false,
     };
 
@@ -162,7 +157,7 @@ class Settings extends Component {
     // Check notification permissions
     PushNotificationIOS.checkPermissions(permissions => {
       // Update notificationsEnabled to true if permissions enabled
-      if (permissions.alert !== this.state.notificationsEnabled) {
+      if (!!permissions.alert !== this.state.notificationsEnabled) {
         // Specifically set to boolean due to Switch prop validation
         this.setState({ notificationsEnabled: !!permissions.alert });
       }
@@ -180,7 +175,7 @@ class Settings extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
           <SensorSettings />
           <AccountRemindersSettings
@@ -224,6 +219,14 @@ class Settings extends Component {
 const mapStateToProps = (state) => {
   const { app } = state;
   return { app };
+};
+
+SettingsIcon.propTypes = {
+  iconName: PropTypes.string,
+};
+
+SettingsText.propTypes = {
+  text: PropTypes.string,
 };
 
 AccountRemindersSettings.propTypes = {

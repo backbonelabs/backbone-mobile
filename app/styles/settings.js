@@ -25,11 +25,7 @@ const absoluteCenter = {
 };
 
 export default EStyleSheet.create({
-  container: {
-    flex: 1,
-  },
   backgroundImage: {
-    flex: 1,
     width: 375 * relativeDimensions.widthDifference,
     height: 667 * relativeDimensions.heightDifference,
   },
