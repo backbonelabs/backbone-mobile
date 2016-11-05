@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
+  Alert,
   Switch,
   Linking,
   Platform,
@@ -134,6 +135,7 @@ class Settings extends Component {
     };
 
     this.updateNotifications = this.updateNotifications.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   componentWillMount() {
@@ -173,6 +175,12 @@ class Settings extends Component {
     });
   }
 
+  signOut() {
+    SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
+    SensitiveInfo.deleteItem(constants.userStorageKey);
+    this.props.navigator.popToTop();
+  }
+
   render() {
     return (
       <ScrollView>
@@ -188,11 +196,14 @@ class Settings extends Component {
               primary
               text="SIGN OUT"
               style={styles._button}
-              onPress={() => {
-                SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
-                SensitiveInfo.deleteItem(constants.userStorageKey);
-                this.props.navigator.popToTop();
-              }}
+              onPress={() => Alert.alert(
+                'Sign Out',
+                '\nAre you sure you want to sign out of your account?',
+                [
+                  { text: 'Cancel' },
+                  { text: 'OK', onPress: this.signOut },
+                ]
+              )}
             />
           </View>
         </Image>
