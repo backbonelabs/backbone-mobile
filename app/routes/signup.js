@@ -5,5 +5,4 @@ export default {
   title: 'Signup',
   component: Signup,
   showBackButton: true,
-  showTabBar: false,
 };

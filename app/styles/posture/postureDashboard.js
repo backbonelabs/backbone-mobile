@@ -8,7 +8,6 @@ export default EStyleSheet.create({
   $sliderWidth: '$screenWidth',
   container: {
     flex: 1,
-    marginTop: '$totalNavHeight',
   },
   header: {
     flex: 0.1,

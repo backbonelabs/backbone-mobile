@@ -7,15 +7,19 @@ import styles from '../styles/text';
 import reusableDefaults from './utils/reusableDefaults';
 
 class BodyText extends React.Component {
-
   setNativeProps(nativeProps) {
     this._root.setNativeProps(nativeProps);
   }
 
   render() {
+    const {
+      style,
+      ...remainingProps,
+    } = this.props;
+
     return (
       <View ref={component => { this._root = component; }}>
-        <Text style={[styles._body, this.props.style]}>
+        <Text style={[styles._body, style]} {...remainingProps}>
           {this.props.children}
         </Text>
       </View>
