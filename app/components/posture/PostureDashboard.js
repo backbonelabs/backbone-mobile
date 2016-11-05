@@ -13,7 +13,7 @@ import Icon5Min from '../../images/session/5min.png';
 import Icon10Min from '../../images/session/10min.png';
 import Icon15Min from '../../images/session/15min.png';
 import Icon20Min from '../../images/session/20min.png';
-import IconUnlimited from '../../images/session/unlimited.png';
+import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 
 const sessions = [
@@ -21,7 +21,7 @@ const sessions = [
   { id: '10min', icon: Icon10Min },
   { id: '15min', icon: Icon15Min },
   { id: '20min', icon: Icon20Min },
-  { id: 'unlimited', icon: IconUnlimited },
+  { id: 'infinity', icon: IconInfinity },
 ];
 
 const renderItem = (session) => (
