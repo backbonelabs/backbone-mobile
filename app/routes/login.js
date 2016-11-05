@@ -2,8 +2,7 @@ import Login from '../containers/Login';
 
 export default {
   name: 'login',
-  title: 'Log In',
+  title: 'Login',
   component: Login,
   showBackButton: true,
-  showTabBar: false,
 };

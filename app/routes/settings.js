@@ -4,6 +4,5 @@ export default {
   name: 'settings',
   title: 'Settings',
   component: Settings,
-  showMenu: true,
   showTabBar: true,
 };
