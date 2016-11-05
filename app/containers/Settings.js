@@ -6,15 +6,18 @@ import {
   Linking,
   Platform,
   AppState,
+  ScrollView,
+  TouchableOpacity,
   PushNotificationIOS,
 } from 'react-native';
+import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import styles from '../styles/settings';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
-import backgroundOpacity from '../images/backgroundOpacity.png';
+import gradientBackground20 from '../images/gradientBackground20.png';
 import arrow from '../images/settings/arrow.svg';
 import batteryIcon from '../images/settings/batteryIcon.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
@@ -27,8 +30,8 @@ import SecondaryText from '../components/SecondaryText';
 
 const SensorSettings = () => (
   <View style={styles.sensorSettingsContainer}>
-    <View style={styles.sensorIcon}>
-      <Image source={sensorSmall} />
+    <View style={styles.sensorIconContainer}>
+      <Image source={sensorSmall} style={styles.sensorIcon} />
     </View>
     <View style={styles.sensorText}>
       <BodyText>MY BACKBONE</BodyText>
@@ -123,6 +126,9 @@ class Settings extends Component {
     navigator: PropTypes.shape({
       popToTop: PropTypes.func,
     }),
+    app: PropTypes.shape({
+      config: PropTypes.object,
+    }),
   };
 
   constructor(props) {
@@ -174,9 +180,8 @@ class Settings extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={{ height: 55 }} />
-        <Image source={backgroundOpacity} style={styles.backgroundImage}>
+      <ScrollView style={styles.container}>
+        <Image source={gradientBackground20} style={styles.backgroundImage}>
           <SensorSettings />
           <AccountRemindersSettings
             notificationsEnabled={this.state.notificationsEnabled}
@@ -195,16 +200,35 @@ class Settings extends Component {
               }}
             />
           </View>
-          <View style={{ flex: 0.17 }} />
         </Image>
-      </View>
+        {this.props.app.config.DEV_MODE &&
+          <View style={{ marginTop: 5, borderWidth: 1 }}>
+            <BodyText>Dev menu:</BodyText>
+            <TouchableOpacity
+              onPress={() => SensitiveInfo.deleteItem(constants.accessTokenStorageKey)}
+            >
+              <SecondaryText>Delete access token from storage</SecondaryText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => SensitiveInfo.deleteItem(constants.userStorageKey)}
+            >
+              <SecondaryText>Delete user from storage</SecondaryText>
+            </TouchableOpacity>
+          </View>
+        }
+      </ScrollView>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { app } = state;
+  return { app };
+};
 
 AccountRemindersSettings.propTypes = {
   updateNotifications: PropTypes.func,
   notificationsEnabled: PropTypes.bool,
 };
 
-export default Settings;
+export default connect(mapStateToProps)(Settings);

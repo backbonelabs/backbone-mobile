@@ -1,4 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
 
 const settingsHeader = {
   justifyContent: 'flex-end',
@@ -29,9 +30,16 @@ export default EStyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
+    width: 375 * relativeDimensions.widthDifference,
+    height: 667 * relativeDimensions.heightDifference,
   },
-  sensorSettingsContainer: Object.assign({ flex: 0.15, flexDirection: 'row' }, border),
-  sensorIcon: Object.assign({ flex: 0.35 }, absoluteCenter),
+  sensorSettingsContainer: Object.assign({ flex: 0.18, flexDirection: 'row' }, border),
+  sensorIconContainer: Object.assign({ flex: 0.35 }, absoluteCenter),
+  sensorIcon: {
+    width: 70 * relativeDimensions.widthDifference,
+    height: 59 * relativeDimensions.heightDifference,
+    resizeMode: 'contain',
+  },
   sensorText: {
     flex: 0.52,
     justifyContent: 'center',
@@ -42,12 +50,12 @@ export default EStyleSheet.create({
     color: 'black',
   },
   batteryIcon: {
-    marginRight: 3,
+    width: 24 * relativeDimensions.widthDifference,
+    height: 13 * relativeDimensions.heightDifference,
+    marginRight: 3 * relativeDimensions.widthDifference,
+    resizeMode: 'contain',
   },
   arrow: Object.assign({ flex: 0.13 }, absoluteCenter),
-  arrowIcon: {
-    transform: [{ rotate: '180deg' }],
-  },
   settingsIcon: {
     flex: 0.15,
     alignItems: 'center',
@@ -55,7 +63,7 @@ export default EStyleSheet.create({
   settingsText: {
     flex: 0.72,
   },
-  accountRemindersContainer: Object.assign({ flex: 0.30 }, border),
+  accountRemindersContainer: Object.assign({ flex: 0.32 }, border),
   accountRemindersHeader: Object.assign({ flex: 0.25 }, settingsHeader),
   accountRemindersSettingContainer: Object.assign({ flex: 0.25 }, positioning, border),
   helpContainer: {
@@ -72,7 +80,7 @@ export default EStyleSheet.create({
   helpSettingsHeader: Object.assign({ flex: 0.33 }, settingsHeader),
   helpSettingContainer: Object.assign({ flex: 0.34 }, positioning, border),
   buttonContainer: {
-    flex: 0.2,
+    flex: 0.27,
     justifyContent: 'center',
   },
   button: {
