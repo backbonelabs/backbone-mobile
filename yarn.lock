@@ -1028,6 +1028,14 @@ color-string@^0.3.0:
   dependencies:
     color-name "^1.0.0"
 
+color@^0.11.1:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/color/-/color-0.11.4.tgz#6d7b5c74fb65e841cd48792ad1ed5e07b904d764"
+  dependencies:
+    clone "^1.0.2"
+    color-convert "^1.3.0"
+    color-string "^0.3.0"
+
 color@0.11.3:
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/color/-/color-0.11.3.tgz#4bad1d0d52499dd00dbd6f0868442467e49394e6"
@@ -3589,6 +3597,20 @@ react-native-snap-carousel:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-1.2.0.tgz#c3a70c529bd69d8830adf8b41b8f4a2108f57aaf"
 
+react-native-svg-uri@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-svg-uri/-/react-native-svg-uri-0.0.3.tgz#160227ce3b96ac8b51aa9aec836b81469a69024e"
+  dependencies:
+    react-native-svg "^4.3.1"
+    xmldom "^0.1.22"
+
+react-native-svg@^4.3.1, react-native-svg@4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-4.3.1.tgz#87da61e815091308c0abd5164767b494f0012c1d"
+  dependencies:
+    color "^0.11.1"
+    lodash "^4.0.0"
+
 react-native-vector-icons@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-2.1.0.tgz#37ff40e2fc753a56624846e7471282b818b92edc"
@@ -4700,7 +4722,7 @@ xmldoc@^0.4.0:
   dependencies:
     sax "~1.1.1"
 
-xmldom@0.1.x:
+xmldom@^0.1.22, xmldom@0.1.x:
   version "0.1.22"
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.22.tgz#10de4e5e964981f03c8cc72fadc08d14b6c3aa26"
 
