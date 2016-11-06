@@ -14,6 +14,7 @@ import {
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import routes from '../routes';
 import constants from '../utils/constants';
 import styles from '../styles/settings';
 import Button from '../components/Button';
@@ -121,7 +122,7 @@ const HelpSettings = () => (
 class Settings extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
-      popToTop: PropTypes.func,
+      resetTo: PropTypes.func,
     }),
     app: PropTypes.shape({
       config: PropTypes.object,
@@ -139,9 +140,10 @@ class Settings extends Component {
   }
 
   componentWillMount() {
-    this.checkNotificationsPermission();
-    // Check if user has enabled notifications on their iOS device
     if (Platform.OS === 'ios') {
+      // Check if user has enabled notifications on their iOS device
+      this.checkNotificationsPermission();
+
       AppState.addEventListener('change', state => {
         if (state === 'active') {
           this.checkNotificationsPermission();
@@ -176,9 +178,10 @@ class Settings extends Component {
   }
 
   signOut() {
+    // Remove locally stored user data and send back to Welcome scene
     SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
     SensitiveInfo.deleteItem(constants.userStorageKey);
-    this.props.navigator.popToTop();
+    this.props.navigator.resetTo(routes.welcome);
   }
 
   render() {

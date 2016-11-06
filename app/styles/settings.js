@@ -5,8 +5,8 @@ const settingsHeader = {
   justifyContent: 'flex-end',
   borderBottomWidth: 1,
   borderColor: '#EEEEEE',
-  paddingLeft: 15,
-  paddingBottom: 5,
+  paddingLeft: 15 * relativeDimensions.widthDifference,
+  paddingBottom: 5 * relativeDimensions.heightDifference,
 };
 
 const border = {
