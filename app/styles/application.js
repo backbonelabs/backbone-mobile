@@ -19,8 +19,7 @@ export default EStyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    borderTopWidth: 1,
-    borderColor: '#DDDDDD',
+    backgroundColor: 'white',
   },
   tabBarItem: {
     alignItems: 'center',
