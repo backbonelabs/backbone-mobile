@@ -6,7 +6,6 @@ const { widthDifference, heightDifference } = relativeDimensions;
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '$totalNavHeight',
   },
   timer: {
     textAlign: 'center',

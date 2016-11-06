@@ -108,65 +108,61 @@ class Signup extends Component {
           {this.props.inProgress ?
             <Spinner />
             :
-              <View style={styles.formContainer}>
-                <View style={styles.backBoneLogoWrapper}>
-                  <Image style={styles.backBoneLogo} source={BackBoneLogo} />
-                </View>
-                <BodyText style={styles._signupHeading}>
+              <View style={styles.innerContainer}>
+                <Image source={BackBoneLogo} style={styles.backboneLogo} />
+                <BodyText style={styles._headingText}>
                   Feel and look your strongest with better posture
                 </BodyText>
-                <View style={styles.signupEmailContainer}>
-                  <Input
-                    style={styles._signupInput}
-                    handleRef={ref => (
-                      this.emailField = ref
-                    )}
-                    value={email}
-                    autoCapitalize="none"
-                    placeholder="Email"
-                    keyboardType="email-address"
-                    onChangeText={this.onEmailChange}
-                    onSubmitEditing={() => this.passwordField.focus()}
-                    autoCorrect={false}
-                    autoFocus
-                    returnKeyType="next"
-                    {...emailIconProps}
-                  />
-                </View>
-                <View style={styles.signupPasswordContainer}>
-                  <Input
-                    style={styles._signupInput}
-                    handleRef={ref => (
-                      this.passwordField = ref
-                    )}
-                    value={password}
-                    autoCapitalize="none"
-                    placeholder="Password"
-                    keyboardType="default"
-                    onChangeText={this.onPasswordChange}
-                    onSubmitEditing={((!email || !validEmail) || (!password || !validPassword)) ? null : this.signup}
-                    autoCorrect={false}
-                    secureTextEntry
-                    returnKeyType="go"
-                    {...passwordIconProps}
-                  />
+                <View style={styles.formContainer}>
+                  <View style={styles.inputFieldContainer}>
+                    <Input
+                      style={styles._inputField}
+                      handleRef={ref => (
+                        this.emailField = ref
+                      )}
+                      value={email}
+                      autoCapitalize="none"
+                      placeholder="Email"
+                      keyboardType="email-address"
+                      onChangeText={this.onEmailChange}
+                      onSubmitEditing={() => this.passwordField.focus()}
+                      autoCorrect={false}
+                      autoFocus
+                      returnKeyType="next"
+                      {...emailIconProps}
+                    />
+                  </View>
+                  <View style={styles.inputFieldContainer}>
+                    <Input
+                      style={styles._inputField}
+                      handleRef={ref => (
+                        this.passwordField = ref
+                      )}
+                      value={password}
+                      autoCapitalize="none"
+                      placeholder="Password"
+                      keyboardType="default"
+                      onChangeText={this.onPasswordChange}
+                      onSubmitEditing={((!email || !validEmail) || (!password || !validPassword)) ? null : this.signup}
+                      autoCorrect={false}
+                      secureTextEntry
+                      returnKeyType="go"
+                      {...passwordIconProps}
+                    />
+                  </View>
                   <BodyText style={styles._warning}>
                     {passwordWarning}
                   </BodyText>
+                  <View style={styles.CTAContainer}>
+                    <Button
+                      style={styles._CTAButton}
+                      text="SIGN UP"
+                      primary
+                      disabled={this.props.inProgress || ((!email || !validEmail) || (!password || !validPassword))}
+                      onPress={this.signup}
+                    />
+                  </View>
                 </View>
-                <Button
-                  style={styles._signupBtn}
-                  text="SIGN UP"
-                  primary
-                  disabled={this.props.inProgress || ((!email || !validEmail) || (!password || !validPassword))}
-                  onPress={this.signup}
-                />
-                <Button
-                  style={styles._signupBackBtn}
-                  text="BACK"
-                  disabled={this.props.inProgress}
-                  onPress={this.props.navigator.pop}
-                />
               </View>
           }
         </View>

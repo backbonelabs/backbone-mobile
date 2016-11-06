@@ -4,7 +4,6 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    marginTop: '$totalNavHeight',
   },
   innerContainer: {
     flex: 1,

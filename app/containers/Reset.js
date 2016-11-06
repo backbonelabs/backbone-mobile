@@ -1,11 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-
 import {
   View,
   Alert,
   Image,
   TouchableWithoutFeedback,
-  TouchableOpacity,
   Keyboard,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -15,12 +13,10 @@ import Button from '../components/Button';
 import styles from '../styles/auth';
 import Spinner from '../components/Spinner';
 import BackBoneLogo from '../images/bblogo.png';
-import SecondaryText from '../components/SecondaryText';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 
 class Reset extends Component {
-
   static propTypes = {
     dispatch: PropTypes.func,
     navigator: PropTypes.object,
@@ -67,38 +63,32 @@ class Reset extends Component {
           { this.props.inProgress ?
             <Spinner />
             :
-              <View style={styles.formContainer}>
-                <View style={styles.backBoneLogoWrapper}>
-                  <Image source={BackBoneLogo} />
-                </View>
-                <HeadingText size={2} style={styles._loginHeading}>No problem!</HeadingText>
-                <BodyText style={styles._resetSubHeading}>What's your email?</BodyText>
-                <Input
-                  style={styles._resetInput}
-                  autoCapitalize="none"
-                  placeholder="example@email.com"
-                  keyboardType="email-address"
-                  onChangeText={text => this.setState({ email: text })}
-                  onSubmitEditing={this.sendPasswordResetRequest}
-                  autoCorrect={false}
-                  autoFocus
-                  returnKeyType="go"
-                />
-                <Button
-                  primary
-                  style={styles._resetButton}
-                  text="RESET"
-                  onPress={this.sendPasswordResetRequest}
-                />
-                <View style={styles.nevermindWrapper}>
-                  <TouchableOpacity
-                    onPress={this.props.navigator.pop}
-                    activeOpacity={0.4}
-                  >
-                    <SecondaryText style={styles._forgotPassword}>
-                      Nevermind! Take me back to login
-                    </SecondaryText>
-                  </TouchableOpacity>
+              <View style={styles.innerContainer}>
+                <Image source={BackBoneLogo} style={styles.backboneLogo} />
+                <HeadingText size={2} style={styles._headingText}>No problem!</HeadingText>
+                <BodyText style={styles._subHeadingText}>What's your email?</BodyText>
+                <View style={styles.formContainer}>
+                  <View style={styles.inputFieldContainer}>
+                    <Input
+                      style={styles._inputField}
+                      autoCapitalize="none"
+                      placeholder="Email"
+                      keyboardType="email-address"
+                      onChangeText={text => this.setState({ email: text })}
+                      onSubmitEditing={this.sendPasswordResetRequest}
+                      autoCorrect={false}
+                      autoFocus
+                      returnKeyType="go"
+                    />
+                  </View>
+                  <View style={styles.CTAContainer}>
+                    <Button
+                      style={styles._CTAButton}
+                      primary
+                      text="RESET"
+                      onPress={this.sendPasswordResetRequest}
+                    />
+                  </View>
                 </View>
               </View>
           }
