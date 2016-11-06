@@ -1,20 +1,24 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Alert,
   Vibration,
   NativeModules,
   NativeAppEventEmitter,
+  Slider,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { isFunction } from 'lodash';
-import Button from '../Button';
 import styles from '../../styles/posture/postureMonitor';
+import HeadingText from '../../components/HeadingText';
+import BodyText from '../../components/BodyText';
+import SecondaryText from '../../components/SecondaryText';
+import MonitorButton from './postureMonitor/MonitorButton';
+import Monitor from './postureMonitor/Monitor';
 
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
-
-const { PropTypes } = React;
 
 class PostureMonitor extends Component {
   static propTypes = {
@@ -32,6 +36,7 @@ class PostureMonitor extends Component {
     super();
     this.state = {
       monitoring: null,
+      slouch: 0,
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
@@ -102,16 +107,37 @@ class PostureMonitor extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button
-          text="Start"
-          onPress={this.enablePostureActivity}
-          disabled={this.state.monitoring}
-        />
-        <Button
-          text="Stop"
-          onPress={this.disablePostureActivity}
-          disabled={!this.state.monitoring}
-        />
+        <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
+        <BodyText style={styles._heading}>SESSION TIME</BodyText>
+        <Monitor />
+        <View style={styles.monitorRatingContainer}>
+          <BodyText style={styles._monitorPoor}>Poor</BodyText>
+          <BodyText style={styles._monitorGood}>Good</BodyText>
+        </View>
+        <BodyText style={styles._monitorTitle}>POSTURE MONITOR</BodyText>
+        <SecondaryText style={styles._sliderTitle}>
+          Tune up or down the Backbone's slouching detection
+        </SecondaryText>
+        <View style={styles.sliderContainer}>
+          <Icon name="minus" style={{ top: 14 }} />
+          <View style={{ flex: 1 }}>
+            <Slider
+              minimumTrackTintColor={'#ED1C24'}
+              minimumValue={0.1}
+              maximumValue={1}
+              onValueChange={(value) => this.setState({ slouch: value })}
+            />
+          </View>
+          <Icon name="plus" style={{ top: 14 }} />
+        </View>
+        <View style={styles.btnContainer}>
+          {
+          this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} />
+          : <MonitorButton pause onPress={this.enablePostureActivity} />
+          }
+          <MonitorButton alerts onPress={this.enablePostureActivity} />
+          <MonitorButton stop onPress={this.disablePostureActivity} />
+        </View>
       </View>
     );
   }
@@ -123,4 +149,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(PostureMonitor);
-
