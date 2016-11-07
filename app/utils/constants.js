@@ -33,4 +33,18 @@ export default {
     conversionTypes: ['kg', 'lb'],
     conversionValue: 0.453592,
   },
+  months: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
 };
