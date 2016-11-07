@@ -163,11 +163,13 @@ class OnBoarding extends Component {
         hasOnboarded,
         weight,
         height,
+        birthdate,
       } = this.state;
 
       const profileData = {
         nickname,
         gender,
+        birthdate,
         hasOnboarded,
 
         // Store weight (lb) / height (in) values on backend
