@@ -1,81 +1,48 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
+const border = {
+  borderBottomWidth: 1,
+  borderColor: '#EEEEEE',
+};
+
+const sliderStyle = {
+  width: 325 * relativeDimensions.widthDifference,
+  justifyContent: 'center',
+};
+
 export default EStyleSheet.create({
   backgroundImage: {
     width: 375 * relativeDimensions.widthDifference,
     height: 667 * relativeDimensions.heightDifference,
   },
-  spacerContainer: {
-    flex: 0.09,
-    borderBottomWidth: 1,
-    borderColor: '#EEEEEE',
-  },
-  vibrationContainer: {
+  spacerContainer: Object.assign({ flex: 0.09 }, border),
+  vibrationContainer: Object.assign({
     flex: 0.08,
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: '#EEEEEE',
-  },
+  }, border),
   vibrationText: {
     flex: 0.5,
     alignItems: 'flex-start',
-    paddingLeft: 10,
+    paddingLeft: 10 * relativeDimensions.widthDifference,
   },
   vibrationSwitch: {
     flex: 0.5,
     alignItems: 'flex-end',
-    paddingRight: 10,
+    paddingRight: 10 * relativeDimensions.widthDifference,
   },
-  vibrationSettingsContainer: {
-    flex: 0.39,
-    borderBottomWidth: 1,
-    borderColor: '#EEEEEE',
-  },
-  vibrationStrengthContainer: {
+  vibrationSettingsContainer: Object.assign({ flex: 0.39 }, border),
+  sliderContainer: {
     flex: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  vibrationStrengthText: {
-    flex: 0.4,
-    width: 325,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  vibrationStrengthSlider: {
-    flex: 0.25,
-    width: 325,
-    justifyContent: 'center',
-  },
-  vibrationStrengthSliderText: {
-    flex: 0.35,
-    width: 325,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  vibrationPatternContainer: {
-    flex: 0.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  vibrationPatternText: {
-    flex: 0.4,
-    width: 325,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  vibrationPatternSlider: {
-    flex: 0.25,
-    width: 325,
-    justifyContent: 'center',
-  },
-  vibrationPatternSliderText: {
-    flex: 0.35,
-    width: 325,
-    flexDirection: 'row',
-    justifyContent: 'center',
+  slider: Object.assign({ flex: 0.25 }, sliderStyle),
+  sliderText: Object.assign({ flex: 0.4, alignItems: 'flex-start' }, sliderStyle),
+  sliderDetails: Object.assign({ flex: 0.35, flexDirection: 'row', justifyContent: 'space-between' }, sliderStyle),
+  sliderDetailsText: {
+    color: 'black',
   },
   batteryLifeWarningContainer: {
     flex: 0.36,
@@ -84,7 +51,7 @@ export default EStyleSheet.create({
   batteryLifeWarningText: {
     color: 'black',
     fontSize: 13,
-    paddingTop: 15,
-    paddingHorizontal: 5,
+    paddingTop: 15 * relativeDimensions.heightDifference,
+    paddingHorizontal: 5 * relativeDimensions.widthDifference,
   },
 });
