@@ -9,6 +9,7 @@ export default EStyleSheet.create({
   },
   timer: {
     textAlign: 'center',
+    marginTop: 43 * heightDifference,
     marginBottom: 5 * heightDifference,
   },
   heading: {
@@ -17,7 +18,7 @@ export default EStyleSheet.create({
   },
   monitor: {
     width: 275 * widthDifference,
-    height: 138 * heightDifference,
+    height: 135 * heightDifference,
     alignSelf: 'center',
     backgroundColor: 'red',
     borderTopLeftRadius: 275,
@@ -41,16 +42,19 @@ export default EStyleSheet.create({
     height: 10,
     borderRadius: 25,
     backgroundColor: 'black',
-    left: -51,
+    left: -51.5,
     top: -5,
   },
   monitorHand: {
     position: 'absolute',
-    left: -47,
-    bottom: 0,
-    width: 2,
-    height: 85,
+    left: -48,
+    bottom: 2,
+    width: 3,
+    height: 90,
     backgroundColor: 'black',
+  },
+  spinner: {
+    top: 110,
   },
   monitorTitle: {
     textAlign: 'center',
@@ -74,7 +78,7 @@ export default EStyleSheet.create({
   },
   sliderContainer: {
     width: 296 * widthDifference,
-    marginBottom: 55 * heightDifference,
+    marginBottom: 50 * heightDifference,
     alignSelf: 'center',
     flexDirection: 'row',
   },
@@ -84,5 +88,13 @@ export default EStyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent: 'space-around',
+  },
+  monitorBtn: {
+    width: 76 * widthDifference,
+    height: 75 * heightDifference,
+  },
+  btnText: {
+    textAlign: 'center',
+    marginTop: 14 * heightDifference,
   },
 });

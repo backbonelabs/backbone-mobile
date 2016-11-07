@@ -8,6 +8,7 @@ import stopActiveImg from '../../../images/monitor/stopButtonActive.png';
 import playImg from '../../../images/monitor/playButton.png';
 import alertsImg from '../../../images/monitor/alertsButton.png';
 import alertsDisabledImg from '../../../images/monitor/alertsButtonDisabled.png';
+import styles from '../../../styles/posture/postureMonitor';
 
 const MonitorButton = (props) => {
   let image;
@@ -24,7 +25,7 @@ const MonitorButton = (props) => {
       activeOpacity={0.5}
       {...props}
     >
-      <Image style={{ width: 76, height: 75 }} source={image} />
+      <Image style={styles.monitorBtn} source={image} />
     </TouchableOpacity>
   );
 };

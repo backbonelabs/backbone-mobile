@@ -6,6 +6,7 @@ import {
   NativeModules,
   NativeAppEventEmitter,
   Slider,
+  Text,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
@@ -37,6 +38,7 @@ class PostureMonitor extends Component {
     this.state = {
       monitoring: null,
       slouch: 0,
+      level: '90',
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
@@ -109,7 +111,7 @@ class PostureMonitor extends Component {
       <View style={styles.container}>
         <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
         <BodyText style={styles._heading}>SESSION TIME</BodyText>
-        <Monitor />
+        <Monitor level={this.state.level} />
         <View style={styles.monitorRatingContainer}>
           <BodyText style={styles._monitorPoor}>Poor</BodyText>
           <BodyText style={styles._monitorGood}>Good</BodyText>
@@ -131,12 +133,24 @@ class PostureMonitor extends Component {
           <Icon name="plus" style={{ top: 14 }} />
         </View>
         <View style={styles.btnContainer}>
-          {
-          this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} />
-          : <MonitorButton pause onPress={this.enablePostureActivity} />
+          { this.state.monitoring ?
+            <View>
+              <MonitorButton pause onPress={this.enablePostureActivity} />
+              <Text style={styles.btnText}>Pause</Text>
+            </View> :
+              <View>
+                <MonitorButton play onPress={this.enablePostureActivity} />
+                <Text style={styles.btnText}>Play</Text>
+              </View>
           }
-          <MonitorButton alerts onPress={this.enablePostureActivity} />
-          <MonitorButton stop onPress={this.disablePostureActivity} />
+          <View>
+            <MonitorButton alertsDisabled />
+            <Text style={styles.btnText}>Alerts</Text>
+          </View>
+          <View>
+            <MonitorButton stop onPress={this.disablePostureActivity} />
+            <Text style={styles.btnText}>Stop</Text>
+          </View>
         </View>
       </View>
     );
