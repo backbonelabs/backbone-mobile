@@ -15,6 +15,9 @@ import Spinner from '../components/Spinner';
 import BackBoneLogo from '../images/bblogo.png';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
+/* eslint-disable max-len */
+const emailRegex = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
+/* eslint-disable max-len */
 
 class Reset extends Component {
   static propTypes = {
@@ -29,8 +32,11 @@ class Reset extends Component {
     super();
     this.state = {
       email: null,
+      emailPristine: true,
+      validEmail: false,
     };
     this.sendPasswordResetRequest = this.sendPasswordResetRequest.bind(this);
+    this.onEmailChange = this.onEmailChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -38,25 +44,40 @@ class Reset extends Component {
       // Pop up an alert and have user check their inbox to confirm
       Alert.alert(
         'Success',
-        'We\'ve emailed you a confirmation email please check your ' +
-        'inbox and follow the instructions to reset your password',
+        'We sent you a password reset link. ' +
+        'Please check your email and use the link to reset your password.',
         [{
           text: 'OK',
-          onPress: () => this.props.navigator.popToTop(),
+          onPress: this.props.navigator.pop,
         }]
       );
     }
   }
 
-  sendPasswordResetRequest() {
-    if (this.state.email && this.state.email.length) {
-      this.props.dispatch(authActions.reset({ email: this.state.email }));
-    } else {
-      Alert.alert('Missing fields', 'Email is required');
+  onEmailChange(email) {
+    const stateChanges = {
+      validEmail: emailRegex.test(email),
+      email,
+    };
+
+    if (this.state.emailPristine) {
+      stateChanges.emailPristine = false;
     }
+
+    this.setState(stateChanges);
+  }
+
+  sendPasswordResetRequest() {
+    this.props.dispatch(authActions.reset({ email: this.state.email }));
   }
 
   render() {
+    const { email, validEmail, emailPristine } = this.state;
+    const emailIconProps = {};
+    if (!emailPristine) {
+      emailIconProps.iconRightName = validEmail ? 'check' : 'close';
+    }
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -74,15 +95,16 @@ class Reset extends Component {
                       autoCapitalize="none"
                       placeholder="Email"
                       keyboardType="email-address"
-                      onChangeText={text => this.setState({ email: text })}
-                      onSubmitEditing={this.sendPasswordResetRequest}
+                      onChangeText={this.onEmailChange}
+                      onSubmitEditing={(!email || !validEmail) ? null : this.sendPasswordResetRequest}
                       autoCorrect={false}
-                      autoFocus
                       returnKeyType="go"
+                      {...emailIconProps}
                     />
                   </View>
                   <View style={styles.CTAContainer}>
                     <Button
+                      disabled={(!email || !validEmail)}
                       style={styles._CTAButton}
                       primary
                       text="RESET"
