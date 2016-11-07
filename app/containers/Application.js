@@ -192,9 +192,7 @@ class Application extends Component {
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
-                onPress={() =>
-                  !isSameRoute && this.navigator.push(routes[value.routeName])
-                }
+                onPress={() => !isSameRoute && this.navigator.push(routes[value.routeName])}
               >
                 <Image source={imageSource} style={styles.tabBarImage} />
                 <Text style={{ color: tabBarTextColor }}>{ value.name }</Text>
