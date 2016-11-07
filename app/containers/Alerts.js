@@ -16,15 +16,15 @@ import thumbImage from '../images/settings/thumbImage.png';
 import trackImage from '../images/settings/trackImage.png';
 import gradientBackground20 from '../images/gradientBackground20.png';
 
-const BackboneVibration = props => (
+const VibrationToggle = props => (
   <View style={styles.vibrationContainer}>
     <View style={styles.vibrationText}>
-      <BodyText>Backbone Vibration</BodyText>
+      <BodyText> {props.text} </BodyText>
     </View>
     <View style={styles.vibrationSwitch}>
       <Switch
-        value={props.user.settings.backboneVibration}
-        onValueChange={value => props.updateUserSettings('backboneVibration', value)}
+        value={props.user.settings[props.settingName]}
+        onValueChange={value => props.updateUserSettings(props.settingName, value)}
       />
     </View>
   </View>
@@ -87,20 +87,6 @@ const VibrationSettings = props => (
   </View>
 );
 
-const PhoneVibration = props => (
-  <View style={styles.vibrationContainer}>
-    <View style={styles.vibrationText}>
-      <BodyText>Phone Vibration</BodyText>
-    </View>
-    <View style={styles.vibrationSwitch}>
-      <Switch
-        value={props.user.settings.phoneVibration}
-        onValueChange={value => props.updateUserSettings('phoneVibration', value)}
-      />
-    </View>
-  </View>
-);
-
 class Alerts extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
@@ -147,9 +133,19 @@ class Alerts extends Component {
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
           <View style={styles.spacerContainer} />
-          <BackboneVibration user={user} updateUserSettings={this.updateUserSettings} />
+          <VibrationToggle
+            user={user}
+            updateUserSettings={this.updateUserSettings}
+            text="Backbone Vibration"
+            settingName="backboneVibration"
+          />
           <VibrationSettings user={user} updateUserSettings={this.updateUserSettings} />
-          <PhoneVibration user={user} updateUserSettings={this.updateUserSettings} />
+          <VibrationToggle
+            user={user}
+            updateUserSettings={this.updateUserSettings}
+            text="Phone Vibration"
+            settingName="phoneVibration"
+          />
           <View style={styles.batteryLifeWarningContainer}>
             <SecondaryText style={styles._batteryLifeWarningText}>
               Increasing the vibration strength and pattern of
@@ -162,15 +158,6 @@ class Alerts extends Component {
   }
 }
 
-BackboneVibration.propTypes = {
-  user: PropTypes.shape({
-    settings: PropTypes.shape({
-      backboneVibration: PropTypes.bool,
-    }),
-  }),
-  updateUserSettings: PropTypes.func,
-};
-
 VibrationSettings.propTypes = {
   user: PropTypes.shape({
     settings: PropTypes.shape({
@@ -181,13 +168,15 @@ VibrationSettings.propTypes = {
   updateUserSettings: PropTypes.func,
 };
 
-PhoneVibration.propTypes = {
+VibrationToggle.propTypes = {
   user: PropTypes.shape({
     settings: PropTypes.shape({
       phoneVibration: PropTypes.bool,
     }),
   }),
   updateUserSettings: PropTypes.func,
+  text: PropTypes.string.isRequired,
+  settingName: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => {
