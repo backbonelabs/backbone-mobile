@@ -2,6 +2,7 @@ import React from 'react';
 import { TextInput, View } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/input';
+import relativeDimensions from '../utils/relativeDimensions';
 
 // This is a map of font names to modules.
 // To use other fonts supported by react-native-vector-icons,
@@ -27,9 +28,10 @@ const Input = (props) => {
   inputStyles.push(style);
 
   const Icon = iconMap[iconFont];
+  const relativeSize = 16 * relativeDimensions.widthDifference;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, props.containerStyles]}>
       <TextInput
         ref={ref => handleRef(ref)}
         style={inputStyles}
@@ -37,8 +39,10 @@ const Input = (props) => {
         {...remainingProps}
       />
       {Icon && iconRightName ?
-        <Icon name={iconRightName} color={styles._icon.color} size={16} style={styles.icon} />
-        : null}
+        <Icon name={iconRightName} color={styles.$color} size={relativeSize} style={styles.icon} />
+        :
+          <View style={{ ...styles._icon, width: relativeSize }} />
+      }
     </View>
   );
 };
@@ -49,6 +53,7 @@ Input.propTypes = {
   editable: PropTypes.bool,
   handleRef: PropTypes.func,
   style: PropTypes.object,
+  containerStyles: PropTypes.object,
   iconFont: PropTypes.oneOf(['FontAwesome']),
   iconRightName: PropTypes.string, // maps to a font name in react-native-icons
 };

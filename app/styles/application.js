@@ -14,16 +14,12 @@ export default EStyleSheet.create({
     alignSelf: 'center',
     color: '$primaryColor',
   },
-  titleText: {
-    marginTop: '0.65rem',
-  },
   tabBar: {
     height: 59,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    borderTopWidth: 1,
-    borderColor: '#DDDDDD',
+    backgroundColor: 'white',
   },
   tabBarItem: {
     alignItems: 'center',

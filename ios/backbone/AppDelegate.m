@@ -12,6 +12,7 @@
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 #import "Mixpanel/Mixpanel.h"
+#import "RCTPushNotificationManager.h"
 
 @implementation AppDelegate
 
@@ -48,6 +49,19 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
+}
+
+// Required to register for notifications
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+  DLog(@"didRegisterUserNotificationSettings");
+  [RCTPushNotificationManager didRegisterUserNotificationSettings:notificationSettings];
+}
+
+// Required for the register event.
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  DLog(@"didRegisterForRemoteNotificationsWithDeviceToken");
+  DLog(@"deviceToken: %@", deviceToken);
+  [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
 // Handler for when the app is active in the foreground

@@ -10,7 +10,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
     width: 150 * widthDifference,
-    height: 40 * heightDifference,
+    height: 45 * heightDifference,
     borderRadius: 5,
   },
   secondaryBtn: {

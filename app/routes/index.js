@@ -1,7 +1,7 @@
 import activity from './activity';
 import deviceConnect from './device/deviceConnect';
 import deviceScan from './device/deviceScan';
-import home from './home';
+import welcome from './welcome';
 import login from './login';
 import signup from './signup';
 import postureDashboard from './posture/postureDashboard';
@@ -12,12 +12,13 @@ import profile from './profile';
 import settings from './settings';
 import errors from './errors';
 import reset from './reset';
+import onboarding from './onboarding';
 
 export default {
   activity,
   deviceConnect,
   deviceScan,
-  home,
+  welcome,
   login,
   signup,
   postureDashboard,
@@ -28,4 +29,5 @@ export default {
   settings,
   errors,
   reset,
+  onboarding,
 };

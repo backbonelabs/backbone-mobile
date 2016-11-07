@@ -27,7 +27,9 @@ class Login extends Component {
       errorMessage: PropTypes.string,
       inProgress: PropTypes.bool,
     }),
-    user: PropTypes.object,
+    user: PropTypes.shape({
+      hasOnboarded: PropTypes.bool,
+    }),
     dispatch: PropTypes.func,
     navigator: PropTypes.object,
   };
@@ -53,8 +55,13 @@ class Login extends Component {
       SensitiveInfo.setItem(constants.accessTokenStorageKey, newAccessToken);
       SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
 
-      // Redirect for device connect
-      this.props.navigator.replace(routes.deviceConnect);
+      // User has already gone through onboarding
+      if (nextProps.user.hasOnboarded) {
+        this.props.navigator.replace(routes.deviceConnect);
+      } else {
+        // User hasn't completed onboarding process
+        this.props.navigator.replace(routes.onboarding);
+      }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
       // Authentication error
       Alert.alert('Authentication Error', nextProps.auth.errorMessage);
@@ -82,64 +89,62 @@ class Login extends Component {
           {inProgress ?
             <Spinner />
             :
-              <View style={styles.formContainer}>
-                <View style={styles.backBoneLogoWrapper}>
-                  <Image style={styles.backBoneLogo} source={BackBoneLogo} />
+              <View style={styles.innerContainer}>
+                <Image source={BackBoneLogo} style={styles.backboneLogo} />
+                <HeadingText size={2} style={styles._headingText}>Welcome back!</HeadingText>
+                <View style={styles.formContainer}>
+                  <View style={styles.inputFieldContainer}>
+                    <Input
+                      style={styles._inputField}
+                      handleRef={ref => (
+                        this.emailField = ref
+                      )}
+                      value={this.state.email}
+                      autoCapitalize="none"
+                      placeholder="Email"
+                      keyboardType="email-address"
+                      onChangeText={text => this.setState({ email: text })}
+                      onSubmitEditing={() => this.passwordField.focus()}
+                      autoCorrect={false}
+                      {...autoFocusProp}
+                      returnKeyType="next"
+                    />
+                  </View>
+                  <View style={styles.inputFieldContainer}>
+                    <Input
+                      style={styles._inputField}
+                      handleRef={ref => (
+                        this.passwordField = ref
+                      )}
+                      value={this.state.password}
+                      autoCapitalize="none"
+                      placeholder="Password"
+                      keyboardType="default"
+                      onChangeText={text => this.setState({ password: text })}
+                      onSubmitEditing={this.login}
+                      autoCorrect={false}
+                      secureTextEntry
+                      returnKeyType="go"
+                    />
+                  </View>
+                  <View style={styles.CTAContainer}>
+                    <Button
+                      style={styles._CTAButton}
+                      text="LOGIN"
+                      primary
+                      disabled={inProgress}
+                      onPress={this.login}
+                    />
+                  </View>
                 </View>
-                <HeadingText size={2} style={styles._loginHeading}>Welcome back!</HeadingText>
-                <Input
-                  style={styles._emailInput}
-                  handleRef={ref => (
-                    this.emailField = ref
-                  )}
-                  value={this.state.email}
-                  autoCapitalize="none"
-                  placeholder="Email"
-                  keyboardType="email-address"
-                  onChangeText={text => this.setState({ email: text })}
-                  onSubmitEditing={() => this.passwordField.focus()}
-                  autoCorrect={false}
-                  {...autoFocusProp}
-                  returnKeyType="next"
-                />
-                <Input
-                  style={styles._passwordInput}
-                  handleRef={ref => (
-                    this.passwordField = ref
-                  )}
-                  value={this.state.password}
-                  autoCapitalize="none"
-                  placeholder="Password"
-                  keyboardType="default"
-                  onChangeText={text => this.setState({ password: text })}
-                  onSubmitEditing={this.login}
-                  autoCorrect={false}
-                  secureTextEntry
-                  returnKeyType="go"
-                />
-                <Button
-                  style={styles._loginButton}
-                  text="LOGIN"
-                  primary
-                  disabled={inProgress}
-                  onPress={this.login}
-                />
-                <View style={styles.forgotPasswordWrapper}>
-                  <TouchableOpacity
-                    onPress={() => this.props.navigator.push(routes.reset)}
-                    activeOpacity={0.4}
-                  >
-                    <SecondaryText style={styles._forgotPassword}>
-                      Forgot your password?
-                    </SecondaryText>
-                  </TouchableOpacity>
-                </View>
-                <Button
-                  style={styles._backButton}
-                  text="BACK"
-                  disabled={inProgress}
-                  onPress={this.props.navigator.pop}
-                />
+                <TouchableOpacity
+                  onPress={() => this.props.navigator.push(routes.reset)}
+                  activeOpacity={0.4}
+                >
+                  <SecondaryText style={styles._forgotPassword}>
+                    Forgot your password?
+                  </SecondaryText>
+                </TouchableOpacity>
               </View>
           }
         </View>

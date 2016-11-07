@@ -7,76 +7,44 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  formContainer: {
+  innerContainer: {
     width: 342 * widthDifference,
+    paddingTop: 80 * heightDifference,
   },
-  backBoneLogo: {
-    width: 74 * widthDifference,
-    height: 69 * heightDifference,
+  backboneLogo: {
     alignSelf: 'center',
+    width: 80 * widthDifference,
+    height: 74 * heightDifference,
+    resizeMode: 'contain',
   },
-  backBoneLogoWrapper: {
-    marginTop: 106 * heightDifference,
-    marginBottom: 16 * heightDifference,
-    marginLeft: 125 * widthDifference,
-    marginRight: 120 * widthDifference,
-    alignSelf: 'center',
-    width: 95 * widthDifference,
-    height: 88 * heightDifference,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 9,
-    paddingLeft: 11,
+  headingText: {
+    textAlign: 'center',
+    marginVertical: 16 * heightDifference,
   },
-  loginHeading: {
+  subHeadingText: {
     textAlign: 'center',
   },
-  emailInput: {
+  formContainer: {
+    marginTop: 30 * heightDifference,
+  },
+  inputFieldContainer: {
+    marginBottom: 30 * heightDifference,
+  },
+  inputField: {
     width: 340 * widthDifference,
-    marginTop: 57 * heightDifference,
-    marginBottom: 34 * heightDifference,
   },
-  passwordInput: {
-    width: 340 * widthDifference,
-    marginBottom: 101 * heightDifference,
+  CTAContainer: {
+    marginVertical: 16 * heightDifference,
   },
-  backButton: {
-    alignSelf: 'center',
-    marginBottom: 27 * heightDifference,
-  },
-  loginButton: {
-    alignSelf: 'center',
-  },
-  forgotPasswordWrapper: {
-    marginTop: 8 * heightDifference,
-    marginBottom: 24 * heightDifference,
-    width: 350 * widthDifference,
-    height: 16 * heightDifference,
+  CTAButton: {
     alignSelf: 'center',
   },
   forgotPassword: {
     textAlign: 'center',
   },
-  resetSubHeading: {
-    marginTop: 26 * heightDifference,
+  warning: {
+    color: '$primaryColor',
     textAlign: 'center',
-    alignSelf: 'center',
-  },
-  resetInput: {
-    width: 340 * widthDifference,
-    marginTop: 43 * heightDifference,
-    marginBottom: 144 * heightDifference,
-  },
-  resetButton: {
-    alignSelf: 'center',
-    marginBottom: 7 * heightDifference,
-  },
-  nevermindWrapper: {
-    marginBottom: 94 * heightDifference,
-    width: 350 * widthDifference,
-    height: 16 * heightDifference,
-    alignSelf: 'center',
   },
 });

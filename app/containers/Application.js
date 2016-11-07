@@ -14,13 +14,14 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
-import EStyleSheet from 'react-native-extended-stylesheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { clone } from 'lodash';
 import appActions from '../actions/app';
+import TitleBar from '../components/TitleBar';
 import Menu from '../components/Menu';
 import routes from '../routes';
 import styles from '../styles/application';
+import theme from '../styles/theme';
 import constants from '../utils/constants';
 
 const { bluetoothStates } = constants;
@@ -41,6 +42,8 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
   gestures: false,
 });
 
+const isiOS = Platform.OS === 'ios';
+
 class Application extends Component {
   static propTypes = {
     dispatch: React.PropTypes.func,
@@ -49,42 +52,6 @@ class Application extends Component {
   constructor() {
     super();
 
-    this.navigationBarRouteMapper = {
-      LeftButton: (route, navigator) => {
-        let onPressHandler;
-        let iconName;
-
-        if (route.showMenu || route.showBackButton) {
-          onPressHandler = route.showMenu ? () => this.showMenu(route, navigator) : navigator.pop;
-          iconName = route.showMenu ? 'bars' : 'angle-left';
-
-          return (
-            <TouchableOpacity style={styles.leftButton} onPress={onPressHandler}>
-              <Icon
-                name={iconName}
-                style={styles.leftButtonIcon}
-                size={EStyleSheet.globalVars.$iconSize}
-                color={styles._leftButtonIcon.color}
-              />
-            </TouchableOpacity>
-          );
-        }
-      },
-      RightButton: (route, navigator) => route.rightButton && (
-        <TouchableOpacity
-          style={styles.rightButton}
-          onPress={() => route.rightButton.onPress(navigator)}
-        >
-          <Icon
-            name={route.rightButton.iconName}
-            size={EStyleSheet.globalVars.$iconSize}
-            color={EStyleSheet.globalVars.$primaryColor}
-          />
-        </TouchableOpacity>
-      ),
-      Title: route => route.title && <Text style={styles.titleText}>{route.title}</Text>,
-    };
-
     this.state = {
       drawerIsOpen: false,
     };
@@ -92,14 +59,14 @@ class Application extends Component {
     this.configureScene = this.configureScene.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
-    this.navigator = null;
+    this.navigator = null; // Components should use this custom navigator object
   }
 
   componentWillMount() {
     this.props.dispatch(appActions.setConfig(Environment));
 
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
-    if (Platform.OS === 'android') {
+    if (!isiOS) {
       BackAndroid.addEventListener('hardwareBackPress', () => {
         if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
           // There are subsequent routes after the initial route,
@@ -126,7 +93,7 @@ class Application extends Component {
     // If not, display prompt for user to enable Bluetooth.
     // This cannot be done on the BluetoothService module side
     // compared to iOS.
-    if (Platform.OS === 'android') {
+    if (!isiOS) {
       Bluetooth.getIsEnabled()
         .then(isEnabled => !isEnabled && Bluetooth.enable());
     }
@@ -142,7 +109,7 @@ class Application extends Component {
       }
     };
 
-    if (Platform.OS === 'ios') {
+    if (isiOS) {
       this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
     } else {
       this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
@@ -194,6 +161,7 @@ class Application extends Component {
     // Alter the push method on the navigator object to include a timestamp for
     // each route in the route stack so that each route in the stack is unique.
     // This prevents React errors when a route is in the stack multiple times.
+    // All components should use this customized navigator object.
     if (!this.navigator) {
       this.navigator = clone(navigator);
       this.navigator._push = this.navigator.push; // the original push method
@@ -236,7 +204,10 @@ class Application extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar />
+        <TitleBar
+          navigator={this.navigator}
+          currentRoute={route}
+        />
         <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
         { route.showTabBar && TabBar }
       </View>
@@ -244,6 +215,13 @@ class Application extends Component {
   }
 
   render() {
+    const statusBarProps = {};
+    if (isiOS) {
+      statusBarProps.barStyle = 'light-content';
+    } else {
+      statusBarProps.backgroundColor = theme.primaryColor;
+    }
+
     return (
       <Drawer
         type="displace"
@@ -261,10 +239,20 @@ class Application extends Component {
         onClose={() => this.setState({ drawerIsOpen: false })}
         acceptPan={false}
       >
+        <StatusBar {...statusBarProps} />
+        {isiOS &&
+          // The background color cannot be set for the status bar in iOS, so
+          // a static View is overlayed on top of the status bar for all scenes
+          <View
+            style={{
+              backgroundColor: theme.primaryColor,
+              height: theme.statusBarHeight,
+            }}
+          />
+        }
         <Navigator
-          navigationBar={<Navigator.NavigationBar routeMapper={this.navigationBarRouteMapper} />}
           configureScene={this.configureScene}
-          initialRoute={routes.home}
+          initialRoute={routes.welcome}
           renderScene={this.renderScene}
         />
       </Drawer>
