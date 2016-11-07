@@ -193,7 +193,7 @@ class Application extends Component {
                 key={key}
                 style={styles.tabBarItem}
                 onPress={() =>
-                  isSameRoute ? undefined : this.navigator.push(routes[value.routeName])
+                  !isSameRoute && this.navigator.push(routes[value.routeName])
                 }
               >
                 <Image source={imageSource} style={styles.tabBarImage} />

@@ -16,7 +16,7 @@ export default EStyleSheet.create({
     color: '$primaryColor',
   },
   tabBar: {
-    height: 59,
+    height: 62 * relativeDimensions.heightDifference,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -35,5 +35,6 @@ export default EStyleSheet.create({
   tabBarImage: {
     height: 30 * relativeDimensions.heightDifference,
     width: 30 * relativeDimensions.widthDifference,
+    resizeMode: 'contain',
   },
 });
