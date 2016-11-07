@@ -3,6 +3,7 @@ import {
   Alert,
   View,
   Text,
+  Image,
   StatusBar,
   Navigator,
   DeviceEventEmitter,
@@ -14,8 +15,11 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Drawer from 'react-native-drawer';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { clone } from 'lodash';
+import sessionActive from '../images/sessionActive.png';
+import sessionInactive from '../images/sessionInactive.png';
+import settingsActive from '../images/settingsActive.png';
+import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
 import TitleBar from '../components/TitleBar';
 import Menu from '../components/Menu';
@@ -149,12 +153,14 @@ class Application extends Component {
       {
         name: 'Session',
         routeName: 'postureDashboard',
-        iconName: 'circle-o',
+        active: sessionActive,
+        inactive: sessionInactive,
       },
       {
         name: 'Settings',
         routeName: 'settings',
-        iconName: 'circle-o',
+        active: settingsActive,
+        inactive: settingsInactive,
       },
     ];
 
@@ -178,23 +184,20 @@ class Application extends Component {
             // Check if current route matches tab bar route
             const isSameRoute = route.name === value.routeName;
             // Set icon to active color if current route matches tab bar route
-            const tabBarItemColor = isSameRoute ?
-            styles._activeTabBarItem.color : styles._inactiveTabBarItem.color;
+            const tabBarTextColor = isSameRoute ?
+            styles._activeTabBarImage.color : styles._inactiveTabBarImage.color;
+            const imageSource = isSameRoute ? value.active : value.inactive;
 
             return (
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
-                onPress={() => (
+                onPress={() =>
                   isSameRoute ? undefined : this.navigator.push(routes[value.routeName])
-                )}
+                }
               >
-                <Icon
-                  name="circle"
-                  size={30}
-                  color={tabBarItemColor}
-                />
-                <Text style={{ color: tabBarItemColor }}>{ value.name }</Text>
+                <Image source={imageSource} style={styles.tabBarImage} />
+                <Text style={{ color: tabBarTextColor }}>{ value.name }</Text>
               </TouchableOpacity>
             );
           })
