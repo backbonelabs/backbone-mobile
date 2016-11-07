@@ -5,7 +5,6 @@ import {
   Switch,
   ScrollView,
   Slider,
-  Platform,
 } from 'react-native';
 import { cloneDeep } from 'lodash';
 import { connect } from 'react-redux';
