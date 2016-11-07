@@ -45,7 +45,10 @@ const Profile = props => (
                 style={styles._button}
                 text="SAVE"
                 onPress={props.saveData}
-                disabled={!props.nickname || !props.gender || !props.height || !props.weight}
+                disabled={
+                  !props.nickname || !props.gender || !props.birthdate ||
+                  !props.height.value || !props.weight.value
+                }
               />
           }
           <View style={{ paddingTop: 15 }}>
