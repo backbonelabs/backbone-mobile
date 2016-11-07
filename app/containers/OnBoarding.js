@@ -188,11 +188,16 @@ class OnBoarding extends Component {
 
   /**
    * Updates state (field) with value
-   * @param {String} field
-   * @param {*} value
+   * @param {String}  field
+   * @param {*}       value
+   * @param {Boolean} clearPickerType Whether or not to hide picker components on update
    */
-  updateProfile(field, value) {
-    this.setState({ [field]: value });
+  updateProfile(field, value, clearPickerType) {
+    const newState = { [field]: value };
+    if (clearPickerType) {
+      newState.pickerType = null;
+    }
+    this.setState(newState);
   }
 
   // Animates onboarding step transition by moving

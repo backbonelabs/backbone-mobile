@@ -5,7 +5,9 @@ import {
   Picker,
   Platform,
   DatePickerIOS,
+  DatePickerAndroid,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoarding/profile';
@@ -143,31 +145,56 @@ const ProfilePicker = (props) => {
 
   return (
     <View style={styles.profilePickerContainer}>
-      <View style={styles.profilePickerHeader}>
-        <TouchableOpacity
-          style={styles.profilePickerHeaderButton}
-          onPress={() => (
-            // Ensure nothing is passed in
-            props.setPickerType()
-          )}
-        >
-          <Text style={styles.profilePickerHeaderText}>Save</Text>
-        </TouchableOpacity>
-      </View>
+      { Platform.OS === 'android' && props.pickerType !== 'birthdate' ? (
+        // If the birthdate field is selected, only show the picker header on iOS
+        // because the Android date picker automatically closes after selecting a date
+        // so there's no point in showing this header
+        <View style={styles.profilePickerHeader}>
+          <TouchableOpacity
+            style={styles.profilePickerHeaderButton}
+            onPress={() => (
+              // Ensure nothing is passed in
+              props.setPickerType()
+            )}
+          >
+            <Text style={styles.profilePickerHeaderText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
       { (() => {
         const currentDate = new Date();
 
         switch (props.pickerType) {
           case 'birthdate':
-            return (
-              Platform.OS === 'ios' &&
-              <DatePickerIOS
-                date={props.birthdate || currentDate}
-                maximumDate={currentDate}
-                mode="date"
-                onDateChange={date => props.updateProfile('birthdate', date)}
-              />
-            );
+            // Show the appropriate date component based on OS
+            if (Platform.OS === 'ios') {
+              // iOS
+              return (
+                <DatePickerIOS
+                  date={props.birthdate || currentDate}
+                  maximumDate={currentDate}
+                  mode="date"
+                  onDateChange={date => props.updateProfile('birthdate', date)}
+                />
+              );
+            }
+
+            // Android
+            DatePickerAndroid.open({
+              date: props.birthdate || currentDate,
+              maxDate: currentDate,
+            })
+              .then((selection) => {
+                const { action, year, month, day } = selection;
+                if (action !== DatePickerAndroid.dismissedAction) {
+                  const date = new Date(year, month, day);
+                  props.updateProfile('birthdate', date, true);
+                }
+              })
+              .catch(() => {
+                Alert.alert('Error', 'Unexpected error. Please try again.');
+              });
+            break;
           case 'height':
             return makeProfilePicker('height');
           case 'weight':
