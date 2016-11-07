@@ -29,6 +29,7 @@ import tutorialIcon from '../images/settings/tutorialIcon.svg';
 import supportIcon from '../images/settings/supportIcon.svg';
 import notificationsIcon from '../images/settings/notificationsIcon.svg';
 import SecondaryText from '../components/SecondaryText';
+import authActions from '../actions/auth';
 
 const iconMap = {
   profile: profileIcon,
@@ -127,6 +128,7 @@ class Settings extends Component {
     app: PropTypes.shape({
       config: PropTypes.object,
     }),
+    dispatch: PropTypes.func,
   };
 
   constructor() {
@@ -178,9 +180,10 @@ class Settings extends Component {
   }
 
   signOut() {
-    // Remove locally stored user data and send back to Welcome scene
+    // Remove locally stored user data, clear store and send back to Welcome scene
     SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
     SensitiveInfo.deleteItem(constants.userStorageKey);
+    this.props.dispatch(authActions.signOut());
     this.props.navigator.resetTo(routes.welcome);
   }
 
