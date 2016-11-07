@@ -23,6 +23,8 @@ const signup = payload => ({
   payload,
 });
 
+const signOut = () => ({ type: 'SIGN__OUT' });
+
 const signupError = error => ({
   type: 'SIGNUP__ERROR',
   payload: error,
@@ -142,4 +144,5 @@ export default {
     };
   },
   setAccessToken,
+  signOut,
 };

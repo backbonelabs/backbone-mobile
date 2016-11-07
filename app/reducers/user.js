@@ -3,7 +3,7 @@ import { omit } from 'lodash';
 export default (state = {
   isFetching: false,
   isUpdating: false,
-  user: null,
+  user: {},
   errorMessage: null,
 }, action) => {
   switch (action.type) {
@@ -88,6 +88,15 @@ export default (state = {
       return {
         ...state,
         user: action.payload.user,
+      };
+    }
+    case 'SIGN__OUT': {
+      return {
+        ...state,
+        isFetching: false,
+        isUpdating: false,
+        user: {},
+        errorMessage: null,
       };
     }
     default:
