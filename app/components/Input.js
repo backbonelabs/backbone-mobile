@@ -36,6 +36,7 @@ const Input = (props) => {
         ref={ref => handleRef(ref)}
         style={inputStyles}
         placeholderTextColor={styles._$placeholderTextColor}
+        underlineColorAndroid={'transparent'}
         {...remainingProps}
       />
       {Icon && iconRightName ?
