@@ -6,7 +6,6 @@ import {
   ScrollView,
   Slider,
 } from 'react-native';
-import { cloneDeep } from 'lodash';
 import { connect } from 'react-redux';
 import userAction from '../actions/user';
 import styles from '../styles/alerts';
@@ -117,9 +116,8 @@ class Alerts extends Component {
   // Update user setting
   updateUserSettings(field, value) {
     const { user } = this.props.user;
-    const clonedSettings = cloneDeep(user.settings);
     const userSettingsUpdateFields = {
-      settings: Object.assign({}, clonedSettings, { [field]: value }),
+      settings: Object.assign({}, user.settings, { [field]: value }),
     };
     const updatedUser = { _id: user._id, userSettingsUpdateFields };
 
