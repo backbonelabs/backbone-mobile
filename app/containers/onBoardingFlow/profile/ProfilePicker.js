@@ -13,18 +13,18 @@ import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoarding/profile';
 
 const {
-  height: heightConstant,
-  weight: weightConstant,
+  height: heightConstants,
+  weight: weightConstants,
 } = constants;
 const PickerItem = Picker.Item;
 
-
 const ProfilePicker = (props) => {
-  const heightValues = [...Array(props.height.type === 'in' ?
-    100
-    :
-    Math.floor(100 * constants.height.conversionValue)
-  ).keys()];
+  const heightValues = [];
+  const totalHeightValues = props.height.type === heightConstants.conversionTypes[1] ?
+    100 : Math.floor(100 * heightConstants.conversionValue);
+  for (let i = 1; i <= totalHeightValues; i++) {
+    heightValues.push(i);
+  }
 
   const heightLabel = value => (
     props.height.type === 'in' ?
@@ -45,9 +45,9 @@ const ProfilePicker = (props) => {
       const { height } = props;
       const equalsInch = type === 'in';
       const centimeterToInch = Math.max(1,
-        Math.round(height.value / constants.height.conversionValue)
+        Math.round(height.value / heightConstants.conversionValue)
       );
-      const inchToCentimeter = Math.round(height.value * constants.height.conversionValue);
+      const inchToCentimeter = Math.round(height.value * heightConstants.conversionValue);
 
       props.updateProfile('height', Object.assign({}, height, {
         value: equalsInch ? centimeterToInch : inchToCentimeter,
@@ -60,11 +60,12 @@ const ProfilePicker = (props) => {
     }
   };
 
-  const weightValues = [...Array(props.weight.type === 'lb' ?
-    500
-    :
-    Math.ceil(500 * constants.weight.conversionValue)
-  ).keys()];
+  const weightValues = [];
+  const totalWeightValues = props.weight.type === weightConstants.conversionTypes[1] ?
+    500 : Math.ceil(500 * weightConstants.conversionValue);
+  for (let i = 1; i <= totalWeightValues; i++) {
+    weightValues.push(i);
+  }
 
   const weightLabel = value => (
     props.weight.type === 'lb' ?
@@ -86,8 +87,8 @@ const ProfilePicker = (props) => {
     if (type !== props.weight.type) {
       const { weight } = props;
       const equalsPound = type === 'lb';
-      const KilogramToPound = Math.round(weight.value / constants.weight.conversionValue);
-      const poundToKilogram = Math.ceil(weight.value * constants.weight.conversionValue);
+      const KilogramToPound = Math.round(weight.value / weightConstants.conversionValue);
+      const poundToKilogram = Math.ceil(weight.value * weightConstants.conversionValue);
 
       props.updateProfile('weight', Object.assign({}, weight, {
         value: equalsPound ? KilogramToPound : poundToKilogram,
@@ -115,13 +116,12 @@ const ProfilePicker = (props) => {
         >
           { (metricEnum[metric] ? heightValues : weightValues)
               .map((value, key) => {
-                const newValue = value + 1;
-                const label = metricEnum[metric] ? heightLabel(newValue) : weightLabel(newValue);
+                const label = metricEnum[metric] ? heightLabel(value) : weightLabel(value);
 
                 return (
                   <PickerItem
                     key={key}
-                    value={newValue}
+                    value={value}
                     label={label}
                   />
                 );
@@ -133,7 +133,7 @@ const ProfilePicker = (props) => {
           selectedValue={props[metric].type}
           onValueChange={metricEnum[metric] ? heightTypeChangeHandler : weightTypeChangeHandler}
         >
-          { (metricEnum[metric] ? heightConstant.conversionTypes : weightConstant.conversionTypes)
+          { (metricEnum[metric] ? heightConstants.conversionTypes : weightConstants.conversionTypes)
               .map((value, key) => (
                 <PickerItem key={key} value={value} label={value} />
               )
