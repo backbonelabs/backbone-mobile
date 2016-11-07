@@ -43,18 +43,18 @@ const VibrationSettings = props => (
           minimumValue={0.1}
           maximumValue={1}
           step={0.1}
-          thumbImage={Platform.OS === 'ios' && thumbImage}
-          trackImage={Platform.OS === 'ios' && trackImage}
+          thumbImage={thumbImage}
+          trackImage={trackImage}
           value={props.user.settings.vibrationStrength}
           onValueChange={value => props.updateUserSettings('vibrationStrength', value)}
         />
       </View>
       <View style={styles.sliderDetails}>
         <View style={{ flex: 0.5 }}>
-          <SecondaryText style={styles.sliderDetailsText}>Low</SecondaryText>
+          <SecondaryText style={styles._sliderDetailsText}>Low</SecondaryText>
         </View>
         <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
-          <SecondaryText style={styles.sliderDetailsText}>High</SecondaryText>
+          <SecondaryText style={styles._sliderDetailsText}>High</SecondaryText>
         </View>
       </View>
     </View>
@@ -67,21 +67,21 @@ const VibrationSettings = props => (
           minimumValue={1}
           maximumValue={3}
           step={1}
-          thumbImage={Platform.OS === 'ios' && thumbImage}
-          trackImage={Platform.OS === 'ios' && trackImage}
+          thumbImage={thumbImage}
+          trackImage={trackImage}
           value={props.user.settings.vibrationPattern}
           onValueChange={value => props.updateUserSettings('vibrationPattern', value)}
         />
       </View>
       <View style={styles.sliderDetails}>
         <View style={{ flex: 0.33 }}>
-          <SecondaryText style={styles.sliderDetailsText}>1</SecondaryText>
+          <SecondaryText style={styles._sliderDetailsText}>1</SecondaryText>
         </View>
         <View style={{ flex: 0.33, alignItems: 'center' }}>
-          <SecondaryText style={styles.sliderDetailsText}>2</SecondaryText>
+          <SecondaryText style={styles._sliderDetailsText}>2</SecondaryText>
         </View>
         <View style={{ flex: 0.33, alignItems: 'flex-end' }}>
-          <SecondaryText style={styles.sliderDetailsText}>3</SecondaryText>
+          <SecondaryText style={styles._sliderDetailsText}>3</SecondaryText>
         </View>
       </View>
     </View>

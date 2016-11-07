@@ -40,7 +40,11 @@ export default EStyleSheet.create({
   },
   slider: Object.assign({ flex: 0.25 }, sliderStyle),
   sliderText: Object.assign({ flex: 0.4, alignItems: 'flex-start' }, sliderStyle),
-  sliderDetails: Object.assign({ flex: 0.35, flexDirection: 'row', justifyContent: 'space-between' }, sliderStyle),
+  sliderDetails: Object.assign({
+    flex: 0.35,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  }, sliderStyle),
   sliderDetailsText: {
     color: 'black',
   },
