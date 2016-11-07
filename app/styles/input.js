@@ -15,8 +15,8 @@ export default EStyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     width: 235 * relativeDimensions.widthDifference,
-    height: 39 * relativeDimensions.heightDifference,
-    paddingHorizontal: 10 * relativeDimensions.widthDifference,
+    height: 44 * relativeDimensions.heightDifference,
+    paddingHorizontal: 20 * relativeDimensions.widthDifference,
     paddingVertical: 10 * relativeDimensions.heightDifference,
   },
   icon: {
