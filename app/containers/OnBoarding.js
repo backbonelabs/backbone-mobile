@@ -161,6 +161,7 @@ class OnBoarding extends Component {
         nickname,
         gender,
         hasOnboarded,
+        birthdate,
         weight,
         height,
       } = this.state;
@@ -169,6 +170,7 @@ class OnBoarding extends Component {
         nickname,
         gender,
         hasOnboarded,
+        birthdate,
 
         // Store weight (lb) / height (in) values on backend
         weight: weight.type === 'lb' ?
