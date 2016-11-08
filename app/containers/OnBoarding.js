@@ -211,6 +211,8 @@ class OnBoarding extends Component {
         gender,
         hasOnboarded,
         birthdate,
+        heightUnitPreference: height.unit,
+        weightUnitPreference: weight.unit,
 
         // Store weight (lb) / height (in) values on backend
         weight: weight.unit === constants.weight.units.LB ?

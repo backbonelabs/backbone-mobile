@@ -47,17 +47,17 @@ export default class ProfilePicker extends Component {
     // Generate numeric and unit picker values
     this.pickerNumericValues = {
       height: {
-        in: generateNumericValues(100),
-        cm: generateNumericValues(Math.floor(100 * heightConstants.conversionValue)),
+        IN: generateNumericValues(100),
+        CM: generateNumericValues(Math.floor(100 * heightConstants.conversionValue)),
       },
       weight: {
-        lb: generateNumericValues(500),
-        kg: generateNumericValues(Math.ceil(500 * weightConstants.conversionValue)),
+        LB: generateNumericValues(500),
+        KG: generateNumericValues(Math.ceil(500 * weightConstants.conversionValue)),
       },
     };
     this.pickerUnitValues = {
-      height: Object.values(heightConstants.units),
-      weight: Object.values(weightConstants.units),
+      height: Object.entries(heightConstants.units),
+      weight: Object.entries(weightConstants.units),
     };
 
     this._setValues = this._setValues.bind(this);
@@ -108,8 +108,7 @@ export default class ProfilePicker extends Component {
   }
 
   _weightLabel(value) {
-    return this.state.currentUnit === weightConstants.units.LB ?
-      `${value}lb` : `${(value)}kg`;
+    return `${value}${constants.weightUnitIdToLabel[this.state.currentUnit].toLowerCase()}`;
   }
 
   _valueChangeHandler(value) {
@@ -161,16 +160,23 @@ export default class ProfilePicker extends Component {
     const metric = this.props.pickerType;
     let unitChangeHandler;
     let getLabel;
+    let pickerNumericValues = [];
 
     switch (metric) {
-      case metricTypes.HEIGHT:
+      case metricTypes.HEIGHT: {
         unitChangeHandler = this._heightTypeChangeHandler;
         getLabel = this._heightLabel;
+        const unit = constants.heightUnitIdToLabel[this.state.currentUnit];
+        pickerNumericValues = this.pickerNumericValues[metric][unit];
         break;
-      case metricTypes.WEIGHT:
+      }
+      case metricTypes.WEIGHT: {
         unitChangeHandler = this._weightTypeChangeHandler;
         getLabel = this._weightLabel;
+        const unit = constants.weightUnitIdToLabel[this.state.currentUnit];
+        pickerNumericValues = this.pickerNumericValues[metric][unit];
         break;
+      }
       default:
         break;
     }
@@ -182,7 +188,7 @@ export default class ProfilePicker extends Component {
           selectedValue={this.state.currentValue}
           onValueChange={this._valueChangeHandler}
         >
-          {this.pickerNumericValues[metric][this.state.currentUnit].map((value, key) => (
+          {pickerNumericValues.map((value, key) => (
             <PickerItem
               key={key}
               value={value}
@@ -195,8 +201,8 @@ export default class ProfilePicker extends Component {
           selectedValue={this.state.currentUnit}
           onValueChange={unitChangeHandler}
         >
-          {this.pickerUnitValues[metric].map((value, key) => (
-            <PickerItem key={key} value={value} label={String(value)} />
+          {this.pickerUnitValues[metric].map((value) => (
+            <PickerItem key={value[1]} value={value[1]} label={value[0].toLowerCase()} />
           ))}
         </Picker>
       </View>
