@@ -5,9 +5,7 @@ import {
   Vibration,
   NativeModules,
   NativeAppEventEmitter,
-  Slider,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { isFunction } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
@@ -16,6 +14,7 @@ import BodyText from '../../components/BodyText';
 import SecondaryText from '../../components/SecondaryText';
 import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
+import MonitorSlider from './postureMonitor/MonitorSlider';
 
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
@@ -110,7 +109,7 @@ class PostureMonitor extends Component {
       <View style={styles.container}>
         <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
         <BodyText style={styles._heading}>SESSION TIME</BodyText>
-        <Monitor level={this.state.level} />
+        <Monitor />
         <View style={styles.monitorRatingContainer}>
           <BodyText style={styles._monitorPoor}>Poor</BodyText>
           <BodyText style={styles._monitorGood}>Good</BodyText>
@@ -119,18 +118,7 @@ class PostureMonitor extends Component {
         <SecondaryText style={styles._sliderTitle}>
           Tune up or down the Backbone's slouching detection
         </SecondaryText>
-        <View style={styles.sliderContainer}>
-          <Icon name="minus" style={{ top: 14 }} />
-          <View style={{ flex: 1 }}>
-            <Slider
-              minimumTrackTintColor={'#ED1C24'}
-              minimumValue={0.1}
-              maximumValue={1}
-              onValueChange={(value) => this.setState({ slouch: value })}
-            />
-          </View>
-          <Icon name="plus" style={{ top: 14 }} />
-        </View>
+        <MonitorSlider onValueChange={(value) => this.setState({ slouch: value })} />
         <View style={styles.btnContainer}>
           { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
             <MonitorButton play onPress={this.enablePostureActivity} />
