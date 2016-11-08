@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { TouchableOpacity, Image } from 'react-native';
+import { TouchableOpacity, Image, Text, View } from 'react-native';
 // import SvgUri from 'react-native-svg-uri';  switch to svg at after library is updated
 import pauseImg from '../../../images/monitor/pauseButton.png';
 import pauseActiveImg from '../../../images/monitor/pauseButtonActive.png';
@@ -12,21 +12,25 @@ import styles from '../../../styles/posture/postureMonitor';
 
 const MonitorButton = (props) => {
   let image;
-  if (props.play) { image = playImg; }
-  if (props.pause) { image = pauseImg; }
-  if (props.pauseActive) { image = pauseActiveImg; }
-  if (props.stop) { image = stopImg; }
-  if (props.stopActive) { image = stopActiveImg; }
-  if (props.alerts) { image = alertsImg; }
-  if (props.alertsDisabled) { image = alertsDisabledImg; }
+  let text;
+  if (props.play) { image = playImg; text = 'Play'; }
+  if (props.pause) { image = pauseImg; text = 'Pause'; }
+  if (props.pauseActive) { image = pauseActiveImg; text = 'Pause'; }
+  if (props.stop) { image = stopImg; text = 'Stop'; }
+  if (props.stopActive) { image = stopActiveImg; text = 'Stop'; }
+  if (props.alerts) { image = alertsImg; text = 'Alerts'; }
+  if (props.alertsDisabled) { image = alertsDisabledImg; text = 'Alerts'; }
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.5}
-      {...props}
-    >
-      <Image style={styles.monitorBtn} source={image} />
-    </TouchableOpacity>
+    <View>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        {...props}
+      >
+        <Image style={styles.monitorBtn} source={image} />
+      </TouchableOpacity>
+      <Text style={styles.btnText}>{text}</Text>
+    </View>
   );
 };
 
