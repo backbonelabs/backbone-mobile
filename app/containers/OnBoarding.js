@@ -16,6 +16,7 @@ import constants from '../utils/constants';
 import onBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 import userActions from '../actions/user';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
@@ -86,6 +87,7 @@ class OnBoarding extends Component {
     if (this.props.isUpdating && !nextProps.isUpdating) {
       // Check whether user has successfully completed onboarding
       if (nextProps.user.hasOnboarded) {
+        SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
         this.nextStep();
       } else {
         Alert.alert('Error', 'Unable to save, please try again');
