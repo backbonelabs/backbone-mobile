@@ -23,6 +23,14 @@ const metricTypes = {
   WEIGHT: 'weight',
 };
 
+const generateNumericValues = count => {
+  const values = [];
+  for (let i = 1; i <= count; i++) {
+    values.push(i);
+  }
+  return values;
+};
+
 export default class ProfilePicker extends Component {
   static propTypes = {
     height: PropTypes.object,
@@ -35,15 +43,30 @@ export default class ProfilePicker extends Component {
 
   constructor(props) {
     super(props);
-    this.pickerNumericValues = [];
-    this.pickerUnitValues = [];
+
+    // Generate numeric and unit picker values
+    this.pickerNumericValues = {
+      height: {
+        in: generateNumericValues(100),
+        cm: generateNumericValues(Math.floor(100 * heightConstants.conversionValue)),
+      },
+      weight: {
+        lb: generateNumericValues(500),
+        kg: generateNumericValues(Math.ceil(500 * weightConstants.conversionValue)),
+      },
+    };
+    this.pickerUnitValues = {
+      height: Object.values(heightConstants.units),
+      weight: Object.values(weightConstants.units),
+    };
+
     this._setValues = this._setValues.bind(this);
     this._heightLabel = this._heightLabel.bind(this);
     this._weightLabel = this._weightLabel.bind(this);
     this._valueChangeHandler = this._valueChangeHandler.bind(this);
     this._heightTypeChangeHandler = this._heightTypeChangeHandler.bind(this);
     this._weightTypeChangeHandler = this._weightTypeChangeHandler.bind(this);
-    this._makeProfilePicker = this._makeProfilePicker.bind(this);
+    this._showPickers = this._showPickers.bind(this);
   }
 
   componentWillMount() {
@@ -134,7 +157,8 @@ export default class ProfilePicker extends Component {
     }
   }
 
-  _makeProfilePicker(metric) {
+  _showPickers() {
+    const metric = this.props.pickerType;
     let unitChangeHandler;
     let getLabel;
 
@@ -158,7 +182,7 @@ export default class ProfilePicker extends Component {
           selectedValue={this.state.currentValue}
           onValueChange={this._valueChangeHandler}
         >
-          {this.pickerNumericValues.map((value, key) => (
+          {this.pickerNumericValues[metric][this.state.currentUnit].map((value, key) => (
             <PickerItem
               key={key}
               value={value}
@@ -171,7 +195,7 @@ export default class ProfilePicker extends Component {
           selectedValue={this.state.currentUnit}
           onValueChange={unitChangeHandler}
         >
-          {this.pickerUnitValues.map((value, key) => (
+          {this.pickerUnitValues[metric].map((value, key) => (
             <PickerItem key={key} value={value} label={String(value)} />
           ))}
         </Picker>
@@ -180,34 +204,6 @@ export default class ProfilePicker extends Component {
   }
 
   render() {
-    // Determine how many numeric value PickerItems to generate
-    // and generate the unit value PickerItems
-    let totalValues;
-    switch (this.props.pickerType) {
-      case metricTypes.HEIGHT:
-        totalValues = this.state.currentUnit === heightConstants.units.IN ?
-          100 : Math.floor(100 * heightConstants.conversionValue);
-
-        this.pickerUnitValues = Object.values(heightConstants.units);
-        break;
-
-      case metricTypes.WEIGHT:
-        totalValues = this.state.currentUnit === weightConstants.units.LB ?
-          500 : Math.floor(500 * heightConstants.conversionValue);
-
-        this.pickerUnitValues = Object.values(weightConstants.units);
-        break;
-
-      default:
-        break;
-    }
-
-    // Generate picker values for the metric's numeric picker component
-    this.pickerNumericValues = [];
-    for (let i = 1; i <= totalValues; i++) {
-      this.pickerNumericValues.push(i);
-    }
-
     return (
       <View style={styles.profilePickerContainer}>
         { Platform.OS === 'android' && this.props.pickerType === 'birthdate' ? null : (
@@ -273,9 +269,8 @@ export default class ProfilePicker extends Component {
                 });
               break;
             case 'height':
-              return this._makeProfilePicker('height');
             case 'weight':
-              return this._makeProfilePicker('weight');
+              return this._showPickers();
             default:
               return null;
           }
