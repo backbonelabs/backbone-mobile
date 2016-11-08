@@ -5,6 +5,7 @@ import {
   Switch,
   ScrollView,
   Slider,
+  Alert,
 } from 'react-native';
 import { connect } from 'react-redux';
 import userAction from '../actions/user';
@@ -144,11 +145,15 @@ class Alerts extends Component {
     // Update app store and user account to reflect new settings
     this.props.dispatch(userAction.updateUserSettings(updatedUserSettings))
       .then(response => {
-        if (!response.error) {
-          // Store updated user in local storage
-          SensitiveInfo.setItem(constants.userStorageKey, Object.assign({},
-            this.props.user, updatedUserSettings,
-          ));
+        if (response.error) {
+          // Show user error message
+          Alert.alert('Error', response.payload.message);
+        } else {
+          // Store updated user settings in local storage
+          SensitiveInfo.setItem(
+            constants.userStorageKey,
+            Object.assign({}, this.props.user, response.payload)
+          );
         }
       });
   }
