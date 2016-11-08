@@ -117,7 +117,7 @@ export default {
   updateUserSettings(user) {
     const {
       _id,
-      userSettingsUpdateFields,
+      settings,
     } = user;
 
     return (dispatch, getState) => {
@@ -129,7 +129,7 @@ export default {
       return Fetcher.post({
         url: `${settingsUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify(userSettingsUpdateFields.settings),
+        body: JSON.stringify(settings),
       })
         .then(response => response.json()
           .then((body) => {

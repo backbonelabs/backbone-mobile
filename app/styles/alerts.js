@@ -21,16 +21,13 @@ export default EStyleSheet.create({
     flex: 0.08,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 10 * relativeDimensions.widthDifference,
   }, border),
   vibrationText: {
-    flex: 0.5,
-    alignItems: 'flex-start',
-    paddingLeft: 10 * relativeDimensions.widthDifference,
+    flex: 0.85,
   },
   vibrationSwitch: {
-    flex: 0.5,
-    alignItems: 'flex-end',
-    paddingRight: 10 * relativeDimensions.widthDifference,
+    flex: 0.15,
   },
   vibrationSettingsContainer: Object.assign({ flex: 0.39 }, border),
   sliderContainer: {
@@ -46,16 +43,16 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
   }, sliderStyle),
   sliderDetailsText: {
-    color: 'black',
+    color: '$primaryFontColor',
   },
   batteryLifeWarningContainer: {
     flex: 0.36,
     alignItems: 'center',
-  },
-  batteryLifeWarningText: {
-    color: 'black',
-    fontSize: 13,
     paddingTop: 15 * relativeDimensions.heightDifference,
     paddingHorizontal: 5 * relativeDimensions.widthDifference,
+  },
+  batteryLifeWarningText: {
+    color: '$primaryFontColor',
+    fontSize: 13,
   },
 });

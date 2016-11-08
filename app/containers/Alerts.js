@@ -18,7 +18,7 @@ import gradientBackground20 from '../images/gradientBackground20.png';
 const VibrationToggle = props => (
   <View style={styles.vibrationContainer}>
     <View style={styles.vibrationText}>
-      <BodyText> {props.text} </BodyText>
+      <BodyText>{props.text}</BodyText>
     </View>
     <View style={styles.vibrationSwitch}>
       <Switch
@@ -28,6 +28,17 @@ const VibrationToggle = props => (
     </View>
   </View>
 );
+
+VibrationToggle.propTypes = {
+  user: PropTypes.shape({
+    settings: PropTypes.shape({
+      phoneVibration: PropTypes.bool,
+    }),
+  }),
+  updateUserSettings: PropTypes.func,
+  text: PropTypes.string.isRequired,
+  settingName: PropTypes.string.isRequired,
+};
 
 const VibrationSettings = props => (
   <View style={styles.vibrationSettingsContainer}>
@@ -86,6 +97,16 @@ const VibrationSettings = props => (
   </View>
 );
 
+VibrationSettings.propTypes = {
+  user: PropTypes.shape({
+    settings: PropTypes.shape({
+      vibrationStrength: PropTypes.number,
+      vibrationPattern: PropTypes.number,
+    }),
+  }),
+  updateUserSettings: PropTypes.func,
+};
+
 class Alerts extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
@@ -116,10 +137,10 @@ class Alerts extends Component {
   // Update user setting
   updateUserSettings(field, value) {
     const { user } = this.props.user;
-    const userSettingsUpdateFields = {
+    const updatedUser = {
+      _id: user._id,
       settings: Object.assign({}, user.settings, { [field]: value }),
     };
-    const updatedUser = { _id: user._id, userSettingsUpdateFields };
 
     this.props.dispatch(userAction.updateUserSettings(updatedUser));
   }
@@ -155,27 +176,6 @@ class Alerts extends Component {
     );
   }
 }
-
-VibrationSettings.propTypes = {
-  user: PropTypes.shape({
-    settings: PropTypes.shape({
-      vibrationStrength: PropTypes.number,
-      vibrationPattern: PropTypes.number,
-    }),
-  }),
-  updateUserSettings: PropTypes.func,
-};
-
-VibrationToggle.propTypes = {
-  user: PropTypes.shape({
-    settings: PropTypes.shape({
-      phoneVibration: PropTypes.bool,
-    }),
-  }),
-  updateUserSettings: PropTypes.func,
-  text: PropTypes.string.isRequired,
-  settingName: PropTypes.string.isRequired,
-};
 
 const mapStateToProps = (state) => {
   const { user } = state;
