@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import userAction from '../actions/user';
+import constants from '../utils/constants';
+import SensitiveInfo from '../utils/SensitiveInfo';
 import styles from '../styles/alerts';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
@@ -134,15 +136,19 @@ class Alerts extends Component {
     this.updateUserSettings = this.updateUserSettings.bind(this);
   }
 
-  // Update user setting
+  // Update user settings
   updateUserSettings(field, value) {
     const { user } = this.props.user;
-    const updatedUser = {
+    const updatedUserSettings = {
       _id: user._id,
       settings: Object.assign({}, user.settings, { [field]: value }),
     };
 
-    this.props.dispatch(userAction.updateUserSettings(updatedUser));
+    // Store updated user in local storage
+    SensitiveInfo.setItem(constants.userStorageKey, Object.assign({}, user, updatedUserSettings));
+
+    // Update app store and user account to reflect new settings
+    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings));
   }
 
   render() {
