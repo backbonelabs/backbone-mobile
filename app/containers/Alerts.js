@@ -113,17 +113,14 @@ class Alerts extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     user: PropTypes.shape({
-      user: PropTypes.shape({
-        _id: PropTypes.string,
-        settings: PropTypes.shape({
-          slouchTimeThreshold: PropTypes.number,
-          postureThreshold: PropTypes.number,
-          backboneVibration: PropTypes.bool,
-          phoneVibration: PropTypes.bool,
-          vibrationPattern: PropTypes.number,
-        }),
+      _id: PropTypes.string,
+      settings: PropTypes.shape({
+        slouchTimeThreshold: PropTypes.number,
+        postureThreshold: PropTypes.number,
+        backboneVibration: PropTypes.bool,
+        phoneVibration: PropTypes.bool,
+        vibrationPattern: PropTypes.number,
       }),
-      isUpdating: PropTypes.bool,
     }),
   };
 
@@ -138,21 +135,24 @@ class Alerts extends Component {
 
   // Update user settings
   updateUserSettings(field, value) {
-    const { user } = this.props.user;
+    const { settings, _id } = this.props.user;
     const updatedUserSettings = {
-      _id: user._id,
-      settings: Object.assign({}, user.settings, { [field]: value }),
+      _id,
+      settings: Object.assign({}, settings, { [field]: value }),
     };
 
-    // Store updated user in local storage
-    SensitiveInfo.setItem(constants.userStorageKey, Object.assign({}, user, updatedUserSettings));
-
     // Update app store and user account to reflect new settings
-    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings));
+    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings))
+      .then(() => (
+        // Store updated user in local storage
+        SensitiveInfo.setItem(constants.userStorageKey, Object.assign({},
+          this.props.user, updatedUserSettings,
+        ))
+      ));
   }
 
   render() {
-    const { user } = this.props.user;
+    const { user } = this.props;
 
     return (
       <ScrollView>
@@ -184,7 +184,7 @@ class Alerts extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
+  const { user: { user } } = state;
   return { user };
 };
 
