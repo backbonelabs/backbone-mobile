@@ -26,10 +26,18 @@ export default {
     female: 2,
   },
   height: {
+    defaults: {
+      value: 60,
+      unit: 'in',
+    },
     conversionTypes: ['cm', 'in'],
     conversionValue: 2.54,
   },
   weight: {
+    defaults: {
+      value: 100,
+      unit: 'lb',
+    },
     conversionTypes: ['kg', 'lb'],
     conversionValue: 0.453592,
   },

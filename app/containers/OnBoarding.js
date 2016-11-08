@@ -39,13 +39,13 @@ class OnBoarding extends Component {
       birthdate: null,
       gender: null,
       height: {
-        value: 60,
-        type: 'in',
+        value: null,
+        unit: null,
         label: '',
       },
       weight: {
-        value: 100,
-        type: 'lb',
+        value: null,
+        unit: null,
         label: '',
       },
       pickerType: null,
@@ -173,9 +173,9 @@ class OnBoarding extends Component {
         birthdate,
 
         // Store weight (lb) / height (in) values on backend
-        weight: weight.type === 'lb' ?
+        weight: weight.unit === 'lb' ?
           weight.value : weight.value / constants.weight.conversionValue,
-        height: height.type === 'in' ?
+        height: height.unit === 'in' ?
           height.value : height.value / constants.height.conversionValue,
       };
 

@@ -18,16 +18,51 @@ const {
 } = constants;
 const PickerItem = Picker.Item;
 
+const metricTypes = {
+  HEIGHT: 'height',
+  WEIGHT: 'weight',
+};
+
 const ProfilePicker = (props) => {
-  const heightValues = [];
-  const totalHeightValues = props.height.type === heightConstants.conversionTypes[1] ?
-    100 : Math.floor(100 * heightConstants.conversionValue);
-  for (let i = 1; i <= totalHeightValues; i++) {
-    heightValues.push(i);
+  const { pickerType } = props;
+  let defaults;
+  if (pickerType === metricTypes.HEIGHT) {
+    defaults = heightConstants.defaults;
+  } else if (pickerType === metricTypes.WEIGHT) {
+    defaults = weightConstants.defaults;
+  }
+  const currentValue = props[pickerType].value || defaults.value;
+  const currentUnit = props[pickerType].unit || defaults.unit;
+
+  let pickerUnitValues;
+  let totalValues;
+  switch (pickerType) {
+    case metricTypes.HEIGHT:
+      totalValues = currentUnit === heightConstants.conversionTypes[1] ?
+        100 : Math.floor(100 * heightConstants.conversionValue);
+
+      pickerUnitValues = heightConstants.conversionTypes;
+      break;
+
+    case metricTypes.WEIGHT:
+      totalValues = currentUnit === weightConstants.conversionTypes[1] ?
+        500 : Math.floor(500 * heightConstants.conversionValue);
+
+      pickerUnitValues = weightConstants.conversionTypes;
+      break;
+
+    default:
+      break;
+  }
+
+  // Generate picker values for the metric's numeric picker component
+  const pickerNumericValues = [];
+  for (let i = 1; i <= totalValues; i++) {
+    pickerNumericValues.push(i);
   }
 
   const heightLabel = value => (
-    props.height.type === 'in' ?
+    currentUnit === heightConstants.conversionTypes[1] ?
       `${Math.floor(value / 12)}ft ${value % 12}in`
       :
       `${value}cm`
@@ -40,18 +75,18 @@ const ProfilePicker = (props) => {
     }))
   );
 
-  const heightTypeChangeHandler = type => {
-    if (type !== props.height.type) {
+  const heightTypeChangeHandler = unit => {
+    if (unit !== currentUnit) {
       const { height } = props;
-      const equalsInch = type === 'in';
+      const equalsInch = unit === heightConstants.conversionTypes[1];
       const centimeterToInch = Math.max(1,
-        Math.round(height.value / heightConstants.conversionValue)
+        Math.round(currentValue / heightConstants.conversionValue)
       );
-      const inchToCentimeter = Math.round(height.value * heightConstants.conversionValue);
+      const inchToCentimeter = Math.round(currentValue * heightConstants.conversionValue);
 
       props.updateProfile('height', Object.assign({}, height, {
         value: equalsInch ? centimeterToInch : inchToCentimeter,
-        type,
+        unit,
         label: equalsInch ?
           `${Math.floor(centimeterToInch / 12)}ft ${centimeterToInch % 12}in`
           :
@@ -60,39 +95,30 @@ const ProfilePicker = (props) => {
     }
   };
 
-  const weightValues = [];
-  const totalWeightValues = props.weight.type === weightConstants.conversionTypes[1] ?
-    500 : Math.ceil(500 * weightConstants.conversionValue);
-  for (let i = 1; i <= totalWeightValues; i++) {
-    weightValues.push(i);
-  }
-
   const weightLabel = value => (
-    props.weight.type === 'lb' ?
+    currentUnit === weightConstants.conversionTypes[1] ?
       `${value}lb`
       :
       `${(value)}kg`
   );
 
-  const weightValueChangeHandler = value => {
-    const { weight } = props;
-
-    props.updateProfile('weight', Object.assign({}, weight, {
+  const weightValueChangeHandler = value => (
+    props.updateProfile('weight', Object.assign({}, props.weight, {
       value,
       label: weightLabel(value),
-    }));
-  };
+    }))
+  );
 
-  const weightTypeChangeHandler = type => {
-    if (type !== props.weight.type) {
+  const weightTypeChangeHandler = unit => {
+    if (unit !== currentUnit) {
       const { weight } = props;
-      const equalsPound = type === 'lb';
-      const KilogramToPound = Math.round(weight.value / weightConstants.conversionValue);
-      const poundToKilogram = Math.ceil(weight.value * weightConstants.conversionValue);
+      const equalsPound = unit === weightConstants.conversionTypes[1];
+      const KilogramToPound = Math.round(currentValue / weightConstants.conversionValue);
+      const poundToKilogram = Math.ceil(currentValue * weightConstants.conversionValue);
 
       props.updateProfile('weight', Object.assign({}, weight, {
         value: equalsPound ? KilogramToPound : poundToKilogram,
-        type,
+        unit,
         label: equalsPound ?
           `${KilogramToPound}lb`
           :
@@ -102,42 +128,48 @@ const ProfilePicker = (props) => {
   };
 
   const makeProfilePicker = metric => {
-    const metricEnum = {
-      weight: 0,
-      height: 1,
-    };
+    let valueChangeHandler;
+    let unitChangeHandler;
+    let getLabel;
+
+    switch (metric) {
+      case metricTypes.HEIGHT:
+        valueChangeHandler = heightValueChangeHandler;
+        unitChangeHandler = heightTypeChangeHandler;
+        getLabel = heightLabel;
+        break;
+      case metricTypes.WEIGHT:
+        valueChangeHandler = weightValueChangeHandler;
+        unitChangeHandler = weightTypeChangeHandler;
+        getLabel = weightLabel;
+        break;
+      default:
+        break;
+    }
 
     return (
       <View style={styles.profilePickerItemsContainer}>
         <Picker
           style={styles.profilePickerItems}
-          selectedValue={props[metric].value}
-          onValueChange={metricEnum[metric] ? heightValueChangeHandler : weightValueChangeHandler}
+          selectedValue={currentValue}
+          onValueChange={valueChangeHandler}
         >
-          { (metricEnum[metric] ? heightValues : weightValues)
-              .map((value, key) => {
-                const label = metricEnum[metric] ? heightLabel(value) : weightLabel(value);
-
-                return (
-                  <PickerItem
-                    key={key}
-                    value={value}
-                    label={label}
-                  />
-                );
-              })
-          }
+          {pickerNumericValues.map((value, key) => (
+            <PickerItem
+              key={key}
+              value={value}
+              label={getLabel(value)}
+            />
+          ))}
         </Picker>
         <Picker
           style={styles.profilePickerMetric}
-          selectedValue={props[metric].type}
-          onValueChange={metricEnum[metric] ? heightTypeChangeHandler : weightTypeChangeHandler}
+          selectedValue={currentUnit}
+          onValueChange={unitChangeHandler}
         >
-          { (metricEnum[metric] ? heightConstants.conversionTypes : weightConstants.conversionTypes)
-              .map((value, key) => (
-                <PickerItem key={key} value={value} label={value} />
-              )
-          ) }
+          {pickerUnitValues.map((value, key) => (
+            <PickerItem key={key} value={value} label={String(value)} />
+          ))}
         </Picker>
       </View>
     );
