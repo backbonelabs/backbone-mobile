@@ -62,7 +62,11 @@ class Welcome extends Component {
                   });
 
                   // Redirect user to dashboard
-                  this.props.navigator.replace(routes.postureDashboard);
+                  if (user.hasOnboarded) {
+                    this.props.navigator.replace(routes.postureDashboard);
+                  } else {
+                    this.props.navigator.replace(routes.onboarding);
+                  }
                 } else {
                   this._completeInitialization();
                 }
