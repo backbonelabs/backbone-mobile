@@ -6,7 +6,8 @@ import {
   Keyboard,
   Dimensions,
   TouchableWithoutFeedback,
-  // Platform,
+  Platform,
+  ViewPagerAndroid,
   // PushNotificationIOS,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -17,6 +18,7 @@ import styles from '../styles/onboarding';
 import userActions from '../actions/user';
 
 const { width } = Dimensions.get('window');
+const isIOS = Platform.OS === 'ios';
 
 class OnBoarding extends Component {
   static propTypes = {
@@ -57,11 +59,12 @@ class OnBoarding extends Component {
     this.previousStep = this.previousStep.bind(this);
     this.setPickerType = this.setPickerType.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
+    this.stepTransitionAnimation = this.stepTransitionAnimation.bind(this);
   }
 
   // componentWillMount() {
   //   // Check if user has enabled notifications on their iOS device
-  //   if (Platform.OS === 'ios') {
+  //   if (isIOS) {
   //     // Check notification permissions
   //     PushNotificationIOS.checkPermissions(permissions => {
   //       // Update notificationsEnabled to true if permissions enabled
@@ -95,14 +98,6 @@ class OnBoarding extends Component {
   //   PushNotificationIOS.removeEventListener('register');
   // }
 
-  // Returns an array with multiple style objects
-  getStepStyle() {
-    return [
-      styles.onboardingFlowContainer,
-      { transform: this.state.animatedValues.getTranslateTransform() },
-    ];
-  }
-
   /**
    * Opens and closes the selected data picker component
    * @param {String} pickerType
@@ -117,24 +112,50 @@ class OnBoarding extends Component {
   }
 
   loadOnBoardingFlow() {
+    const pageViews = onBoardingFlow.map((step, i) => (
+      step({
+        key: `${i}`,
+        navigator: this.props.navigator,
+        isUpdating: this.props.isUpdating,
+        saveData: this.saveData,
+        nextStep: this.nextStep,
+        previousStep: this.previousStep,
+        setPickerType: this.setPickerType,
+        updateProfile: this.updateProfile,
+        ...this.state,
+      })
+    ));
+
+    if (isIOS) {
+      // For iOS, use Animated.View
+      return (
+        <Animated.View
+          style={[
+            styles.onboardingFlowContainer, {
+              transform: this.state.animatedValues.getTranslateTransform(),
+            },
+          ]}
+        >
+          {pageViews}
+        </Animated.View>
+      );
+    }
+
+    // For Android, use ViewPagerAndroid since Animated.View doesn't work
+    // on Android as of RN 0.36. The problem is when the next View is brought
+    // into view, the View is not actually visible even though the animated
+    // scroll works fine. It seems like any content that is rendered outside the
+    // screen view will be clipped and will not appear even when they are moved
+    // into the screen view area.
     return (
-      <Animated.View style={this.getStepStyle()}>
-        { // Renders the separate onboarding steps under a single component
-          onBoardingFlow.map((step, i) => (
-            step({
-              key: `${i}`,
-              navigator: this.props.navigator,
-              isUpdating: this.props.isUpdating,
-              saveData: this.saveData,
-              nextStep: this.nextStep,
-              previousStep: this.previousStep,
-              setPickerType: this.setPickerType,
-              updateProfile: this.updateProfile,
-              ...this.state,
-            })
-          ))
-        }
-      </Animated.View>
+      <ViewPagerAndroid
+        ref={viewPager => { this.viewPager = viewPager; }}
+        style={styles.onboardingFlowContainer}
+        initialPage={this.state.step}
+        scrollEnabled={false}
+      >
+        {pageViews}
+      </ViewPagerAndroid>
     );
   }
 
@@ -152,6 +173,23 @@ class OnBoarding extends Component {
       step: this.state.step + 1,
       valueX: this.state.valueX - width,
     }, this.stepTransitionAnimation);
+  }
+
+  // Animates onboarding step transition
+  stepTransitionAnimation() {
+    if (isIOS) {
+      // For iOS, use Animated API to move component along the x-axis specified in valueX
+      Animated.spring(this.state.animatedValues, {
+        tension: 10,
+        toValue: {
+          x: this.state.valueX,
+          y: 0,
+        },
+      }).start();
+    } else {
+      // For Android, use ViewPagerAndroid API to set the page
+      this.viewPager.setPage(this.state.step);
+    }
   }
 
   // Save profile data
@@ -198,18 +236,6 @@ class OnBoarding extends Component {
       newState.pickerType = null;
     }
     this.setState(newState);
-  }
-
-  // Animates onboarding step transition by moving
-  // component along the x-axis specified in valueX
-  stepTransitionAnimation() {
-    Animated.spring(this.state.animatedValues, {
-      tension: 10,
-      toValue: {
-        x: this.state.valueX,
-        y: 0,
-      },
-    }).start();
   }
 
   render() {
