@@ -58,7 +58,9 @@ export default class ProfilePicker extends Component {
 
   _setValues(props) {
     const { pickerType } = props;
-    if (pickerType !== 'birthdate') {
+    if (pickerType === 'birthdate') {
+      this.setState({ currentValue: props[pickerType] || new Date() });
+    } else {
       let defaults;
       switch (pickerType) {
         case metricTypes.HEIGHT:
@@ -208,20 +210,26 @@ export default class ProfilePicker extends Component {
 
     return (
       <View style={styles.profilePickerContainer}>
-        { Platform.OS === 'android' && this.props.pickerType !== 'birthdate' ? (
+        { Platform.OS === 'android' && this.props.pickerType === 'birthdate' ? null : (
           // If the birthdate field is selected, only show the picker header on iOS
-          // because the Android date picker automatically closes after selecting a date
-          // so there's no point in showing this header
+          // because the Android date picker is a modal that automatically closes after
+          // selecting a date, so upon close, it would update the profile and there would
+          // be no point in showing this save header bar
           <View style={styles.profilePickerHeader}>
             <TouchableOpacity
               style={styles.profilePickerHeaderButton}
               onPress={() => {
-                this.props.updateProfile(this.props.pickerType, {
-                  ...this.props[this.props.pickerType],
-                  value: this.state.currentValue,
-                  unit: this.state.currentUnit,
-                  label: this._getLabel(this.props.pickerType, this.state.currentValue),
-                });
+                const { pickerType } = this.props;
+                if (pickerType === 'birthdate') {
+                  this.props.updateProfile(pickerType, this.state.currentValue);
+                } else {
+                  this.props.updateProfile(this.props.pickerType, {
+                    ...this.props[this.props.pickerType],
+                    value: this.state.currentValue,
+                    unit: this.state.currentUnit,
+                    label: this._getLabel(this.props.pickerType, this.state.currentValue),
+                  });
+                }
                 // This will unmount the current ProfilePicker instance
                 this.props.setPickerType();
               }}
@@ -229,7 +237,7 @@ export default class ProfilePicker extends Component {
               <Text style={styles.profilePickerHeaderText}>Save</Text>
             </TouchableOpacity>
           </View>
-        ) : null}
+        )}
         { (() => {
           const currentDate = new Date();
 
@@ -240,17 +248,17 @@ export default class ProfilePicker extends Component {
                 // iOS
                 return (
                   <DatePickerIOS
-                    date={this.props.birthdate || currentDate}
+                    date={this.state.currentValue}
                     maximumDate={currentDate}
                     mode="date"
-                    onDateChange={date => this.props.updateProfile('birthdate', date)}
+                    onDateChange={date => this.setState({ currentValue: date })}
                   />
                 );
               }
 
               // Android
               DatePickerAndroid.open({
-                date: this.props.birthdate || currentDate,
+                date: this.state.currentValue,
                 maxDate: currentDate,
               })
                 .then((selection) => {
