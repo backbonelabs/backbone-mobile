@@ -51,13 +51,6 @@ const Profile = props => (
                 }
               />
           }
-          <View style={{ paddingTop: 15 }}>
-            <Button
-              style={styles._button}
-              text="BACK"
-              onPress={props.previousStep}
-            />
-          </View>
         </View>
     ) }
   </View>
