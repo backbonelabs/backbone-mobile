@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Alert,
+  // Alert,
   Vibration,
   NativeModules,
   NativeAppEventEmitter,
@@ -38,7 +38,7 @@ class PostureMonitor extends Component {
     this.state = {
       monitoring: null,
       slouch: 0,
-      level: '90',
+      level: 90,
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
@@ -97,7 +97,7 @@ class PostureMonitor extends Component {
         });
       } else {
         // TODO: Send to Error component (tbd)
-        Alert.alert('Error', error.message);
+        // Alert.alert('Error', error.message);
       }
     });
   }
