@@ -23,6 +23,8 @@ const signup = payload => ({
   payload,
 });
 
+const signOut = () => ({ type: 'SIGN__OUT' });
+
 const signupError = error => ({
   type: 'SIGNUP__ERROR',
   payload: error,
@@ -118,7 +120,7 @@ export default {
       dispatch(passwordResetStart());
 
       return Fetcher.post({
-        url: `${Environment.API_SERVER_URL}/auth/reset`,
+        url: `${Environment.API_SERVER_URL}/auth/password-reset-token`,
         body: JSON.stringify(user),
       })
         .then((response) => {
@@ -142,4 +144,5 @@ export default {
     };
   },
   setAccessToken,
+  signOut,
 };

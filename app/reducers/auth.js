@@ -44,6 +44,16 @@ export default (state = {
         accessToken: action.payload.accessToken,
       };
     }
+    case 'SIGN__OUT': {
+      return {
+        ...state,
+        accessToken: null,
+        passwordResetSent: false,
+        inProgress: false,
+        errorMessage: null,
+        userId: null,
+      };
+    }
     case 'SIGNUP__ERROR': {
       return {
         ...state,

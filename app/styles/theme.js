@@ -20,7 +20,7 @@ export default {
   primaryFontColor,
   secondaryFontColor,
   activeBorderColor,
-  disabledColor: '#ccc',
+  disabledColor: '#A9A9A9',
   iconSize,
   iconButtonSize,
   rem: 16,

@@ -4,10 +4,10 @@ import {
   Alert,
   Animated,
   Keyboard,
-  Platform,
   Dimensions,
-  PushNotificationIOS,
   TouchableWithoutFeedback,
+  // Platform,
+  // PushNotificationIOS,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -50,7 +50,7 @@ class OnBoarding extends Component {
       },
       pickerType: null,
       hasOnboarded: false,
-      notificationsEnabled: false,
+      // notificationsEnabled: false,
     };
     this.saveData = this.saveData.bind(this);
     this.nextStep = this.nextStep.bind(this);
@@ -59,23 +59,23 @@ class OnBoarding extends Component {
     this.updateProfile = this.updateProfile.bind(this);
   }
 
-  componentWillMount() {
-    // Check if user has enabled notifications on their iOS device
-    if (Platform.OS === 'ios') {
-      // Check notification permissions
-      PushNotificationIOS.checkPermissions(permissions => {
-        // Update notificationsEnabled to true if permissions enabled
-        if (permissions.alert) {
-          this.setState({ notificationsEnabled: true });
-        } else {
-          // Listener for enabling notifications event if permissions disabled
-          PushNotificationIOS.addEventListener('register', () => {
-            this.setState({ notificationsEnabled: true });
-          });
-        }
-      });
-    }
-  }
+  // componentWillMount() {
+  //   // Check if user has enabled notifications on their iOS device
+  //   if (Platform.OS === 'ios') {
+  //     // Check notification permissions
+  //     PushNotificationIOS.checkPermissions(permissions => {
+  //       // Update notificationsEnabled to true if permissions enabled
+  //       if (permissions.alert) {
+  //         this.setState({ notificationsEnabled: true });
+  //       } else {
+  //         // Listener for enabling notifications event if permissions disabled
+  //         PushNotificationIOS.addEventListener('register', () => {
+  //           this.setState({ notificationsEnabled: true });
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
   componentWillReceiveProps(nextProps) {
     // isUpdating is truthy while user is saving profile info
@@ -90,10 +90,10 @@ class OnBoarding extends Component {
     }
   }
 
-  componentWillUnmount() {
-    // Remove notifications event listener to prevent memory leaks
-    PushNotificationIOS.removeEventListener('register');
-  }
+  // componentWillUnmount() {
+  //   // Remove notifications event listener to prevent memory leaks
+  //   PushNotificationIOS.removeEventListener('register');
+  // }
 
   // Returns an array with multiple style objects
   getStepStyle() {

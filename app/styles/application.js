@@ -1,4 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
 
 const navButton = {
   width: '$iconButtonSize',
@@ -15,21 +16,25 @@ export default EStyleSheet.create({
     color: '$primaryColor',
   },
   tabBar: {
-    height: 59,
+    height: 62 * relativeDimensions.heightDifference,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    borderTopWidth: 1,
-    borderColor: '#DDDDDD',
+    backgroundColor: 'white',
   },
   tabBarItem: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  activeTabBarItem: {
+  activeTabBarImage: {
     color: '$primaryColor',
   },
-  inactiveTabBarItem: {
+  inactiveTabBarImage: {
     color: '$disabledColor',
+  },
+  tabBarImage: {
+    height: 30 * relativeDimensions.heightDifference,
+    width: 30 * relativeDimensions.widthDifference,
+    resizeMode: 'contain',
   },
 });
