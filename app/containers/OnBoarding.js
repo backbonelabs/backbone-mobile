@@ -173,9 +173,9 @@ class OnBoarding extends Component {
         birthdate,
 
         // Store weight (lb) / height (in) values on backend
-        weight: weight.unit === 'lb' ?
+        weight: weight.unit === constants.weight.units.LB ?
           weight.value : weight.value / constants.weight.conversionValue,
-        height: height.unit === 'in' ?
+        height: height.unit === constants.height.units.IN ?
           height.value : height.value / constants.height.conversionValue,
       };
 

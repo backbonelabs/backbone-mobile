@@ -38,17 +38,17 @@ const ProfilePicker = (props) => {
   let totalValues;
   switch (pickerType) {
     case metricTypes.HEIGHT:
-      totalValues = currentUnit === heightConstants.conversionTypes[1] ?
+      totalValues = currentUnit === heightConstants.units.IN ?
         100 : Math.floor(100 * heightConstants.conversionValue);
 
-      pickerUnitValues = heightConstants.conversionTypes;
+      pickerUnitValues = Object.values(heightConstants.units);
       break;
 
     case metricTypes.WEIGHT:
-      totalValues = currentUnit === weightConstants.conversionTypes[1] ?
+      totalValues = currentUnit === weightConstants.units.LB ?
         500 : Math.floor(500 * heightConstants.conversionValue);
 
-      pickerUnitValues = weightConstants.conversionTypes;
+      pickerUnitValues = Object.values(weightConstants.units);
       break;
 
     default:
@@ -62,7 +62,7 @@ const ProfilePicker = (props) => {
   }
 
   const heightLabel = value => (
-    currentUnit === heightConstants.conversionTypes[1] ?
+    currentUnit === heightConstants.units.IN ?
       `${Math.floor(value / 12)}ft ${value % 12}in`
       :
       `${value}cm`
@@ -78,7 +78,7 @@ const ProfilePicker = (props) => {
   const heightTypeChangeHandler = unit => {
     if (unit !== currentUnit) {
       const { height } = props;
-      const equalsInch = unit === heightConstants.conversionTypes[1];
+      const equalsInch = unit === heightConstants.units.IN;
       const centimeterToInch = Math.max(1,
         Math.round(currentValue / heightConstants.conversionValue)
       );
@@ -96,7 +96,7 @@ const ProfilePicker = (props) => {
   };
 
   const weightLabel = value => (
-    currentUnit === weightConstants.conversionTypes[1] ?
+    currentUnit === weightConstants.units.LB ?
       `${value}lb`
       :
       `${(value)}kg`
@@ -112,7 +112,7 @@ const ProfilePicker = (props) => {
   const weightTypeChangeHandler = unit => {
     if (unit !== currentUnit) {
       const { weight } = props;
-      const equalsPound = unit === weightConstants.conversionTypes[1];
+      const equalsPound = unit === weightConstants.units.LB;
       const KilogramToPound = Math.round(currentValue / weightConstants.conversionValue);
       const poundToKilogram = Math.ceil(currentValue * weightConstants.conversionValue);
 

@@ -30,7 +30,10 @@ export default {
       value: 60,
       unit: 'in',
     },
-    conversionTypes: ['cm', 'in'],
+    units: {
+      CM: 'cm',
+      IN: 'in',
+    },
     conversionValue: 2.54,
   },
   weight: {
@@ -38,7 +41,10 @@ export default {
       value: 100,
       unit: 'lb',
     },
-    conversionTypes: ['kg', 'lb'],
+    units: {
+      LB: 'lb',
+      KG: 'kg',
+    },
     conversionValue: 0.453592,
   },
 };
