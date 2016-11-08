@@ -45,7 +45,7 @@ class Welcome extends Component {
           this.props.dispatch(authActions.setAccessToken(accessToken));
 
           // Check if there is already a user profile in the app store
-          if (this.props.user) {
+          if (this.props.user._id) {
             // There is a user profile in the app store
             // Redirect user to dashboard
             this.props.navigator.replace(routes.postureDashboard);
