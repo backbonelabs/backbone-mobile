@@ -135,12 +135,12 @@ export default {
           .then((body) => {
             if (body.error) {
               // Error received from API server
-              dispatch(updateUserSettingsError(
+              return dispatch(updateUserSettingsError(
                 new Error(body.error)
               ));
-            } else {
-              dispatch(updateUserSettings(body));
             }
+
+            return dispatch(updateUserSettings(body));
           })
         )
         .catch(() => (

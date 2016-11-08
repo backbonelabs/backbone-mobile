@@ -143,12 +143,14 @@ class Alerts extends Component {
 
     // Update app store and user account to reflect new settings
     this.props.dispatch(userAction.updateUserSettings(updatedUserSettings))
-      .then(() => (
-        // Store updated user in local storage
-        SensitiveInfo.setItem(constants.userStorageKey, Object.assign({},
-          this.props.user, updatedUserSettings,
-        ))
-      ));
+      .then(response => {
+        if (!response.error) {
+          // Store updated user in local storage
+          SensitiveInfo.setItem(constants.userStorageKey, Object.assign({},
+            this.props.user, updatedUserSettings,
+          ));
+        }
+      });
   }
 
   render() {
