@@ -1,80 +1,45 @@
-import React, { Component, PropTypes } from 'react';
-import {
-  View,
-  Animated,
-  Easing,
-} from 'react-native';
+import React from 'react';
+import Svg, { // eslint-disable-line
+    Circle,
+    LinearGradient,
+    Defs,
+    Stop,
+} from 'react-native-svg';
+import { View } from 'react-native';
 import styles from '../.././../styles/posture/postureMonitor';
+import relativeDimensions from '../../../utils/relativeDimensions';
 
-class Monitor extends Component {
-  static propTypes = {
-    level: PropTypes.number,
-  }
+const { widthDifference } = relativeDimensions;
 
-  constructor(props) {
-    super(props);
-    this.spinValue = new Animated.Value(0);
-  }
-
-  componentDidMount() {
-    this.spin();
-  }
-
-  spin() {
-    this.spinValue.setValue(0);
-    Animated.timing(
-      this.spinValue,
-      {
-        toValue: 1,
-        duration: 1500,
-        easing: Easing.linear,
-      }
-    ).start();
-  }
-
-  render() {
-    const { level } = this.props;
-    const spin = this.spinValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', `${level}deg`],
-    });
-
-    return (
-      <View style={styles.monitor}>
-        <View style={styles.monitorPointer}>
-          <Animated.View
-            style={[
-              {
-                transform: [
-                    { rotate: spin },
-                ],
-              },
-            ]}
-          >
-            <View style={styles.point} />
-            <View style={styles.hand} />
-          </Animated.View>
-          <View style={styles.base} />
-        </View>
-      </View>
-    );
-  }
-}
+const Monitor = () => (
+  <View style={{ alignSelf: 'center' }}>
+    <Svg
+      height="135"
+      width="275"
+    >
+      <Defs>
+        <LinearGradient id="grad" x1="0" y1="0" x2="200" y2="0">
+          <Stop offset="0" stopColor="rgb(240,185,77)" stopOpacity="1" />
+          <Stop offset="1" stopColor="rgb(237,28,36)" stopOpacity="2" />
+        </LinearGradient>
+      </Defs>
+      <Circle
+        cx="140"
+        cy="130"
+        r={130 * widthDifference}
+        stroke="black"
+        strokeWidth="3.5"
+        fill="url(#grad)"
+        originY={100}
+        rotate={2}
+      />
+    </Svg>
+    <View style={styles.monitorPointer}>
+      <View style={styles.point} />
+      <View style={styles.hand} />
+      <View style={styles.base} />
+    </View>
+  </View>
+);
 
 export default Monitor;
-
-        // <Animated.View
-        //   style={[
-        //     styles.spinner,
-        //     {
-        //       transform: [
-        //           { rotate: spin },
-        //       ],
-        //     },
-        //   ]}
-        // >
-          // <View style={styles.monitorPointWrapper}>
-          //   <View style={styles.monitorHand} />
-          //   <View style={styles.monitorPoint} />
-          // </View>
-        // </Animated.View>
