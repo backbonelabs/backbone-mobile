@@ -35,6 +35,7 @@
 		669B14DF1D51053F00DCEFBE /* PostureModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DE1D51053F00DCEFBE /* PostureModule.m */; };
 		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
+		6902DC861DCCCD360021A7D0 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 6902DC841DCCCD360021A7D0 /* Utilities.m */; };
 		690F1C5B1DB8FF5100AE2E98 /* UserSettingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */; };
 		697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 697D0FE71DA3DCDC00F6FF13 /* StepModule.m */; };
 		69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */; };
@@ -121,6 +122,55 @@
 			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
 			remoteInfo = RNSensitiveInfo;
 		};
+		69F029301DCA3F9C0079E1FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A283A1D9B042B00D4039D;
+			remoteInfo = "RCTImage-tvOS";
+		};
+		69F029341DCA3F9C0079E1FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A28471D9B043800D4039D;
+			remoteInfo = "RCTLinking-tvOS";
+		};
+		69F029381DCA3F9C0079E1FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A28541D9B044C00D4039D;
+			remoteInfo = "RCTNetwork-tvOS";
+		};
+		69F0293C1DCA3F9C0079E1FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A28611D9B046600D4039D;
+			remoteInfo = "RCTSettings-tvOS";
+		};
+		69F029401DCA3F9C0079E1FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A287B1D9B048500D4039D;
+			remoteInfo = "RCTText-tvOS";
+		};
+		69F029451DCA3F9C0079E1FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A28881D9B049200D4039D;
+			remoteInfo = "RCTWebSocket-tvOS";
+		};
+		69F029491DCA3F9C0079E1FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A28131D9B038B00D4039D;
+			remoteInfo = "React-tvOS";
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -183,13 +233,15 @@
 		669B15191D51439E00DCEFBE /* SensorNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SensorNotifications.h; path = backbone/SensorNotifications.h; sourceTree = "<group>"; };
 		669B151C1D51458700DCEFBE /* SensorNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorNotifications.m; path = backbone/SensorNotifications.m; sourceTree = "<group>"; };
 		66F918791DA9F82B00649391 /* Lato.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Lato.ttf; path = ../android/app/src/main/assets/fonts/Lato.ttf; sourceTree = "<group>"; };
+		6902DC801DCCCD360021A7D0 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		6902DC831DCCCD360021A7D0 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
+		6902DC841DCCCD360021A7D0 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
 		690F1C591DB8FF5100AE2E98 /* UserSettingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserSettingService.h; path = backbone/UserSettingService.h; sourceTree = "<group>"; };
 		690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserSettingService.m; path = backbone/UserSettingService.m; sourceTree = "<group>"; };
 		697D0FE61DA3DCDC00F6FF13 /* StepModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StepModule.h; path = backbone/StepModule.h; sourceTree = "<group>"; };
 		697D0FE71DA3DCDC00F6FF13 /* StepModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StepModule.m; path = backbone/StepModule.m; sourceTree = "<group>"; };
 		69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalNotificationManager.h; path = backbone/LocalNotificationManager.h; sourceTree = "<group>"; };
 		69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalNotificationManager.m; path = backbone/LocalNotificationManager.m; sourceTree = "<group>"; };
-		69ABF9E81DA3CA6F00D9B15A /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = backbone/Constants.h; sourceTree = "<group>"; };
 		69FCAED01DB67B8E007712A4 /* Backbone-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Backbone-Prefix.pch"; path = "backbone/Backbone-Prefix.pch"; sourceTree = "<group>"; };
 		6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -258,6 +310,7 @@
 			isa = PBXGroup;
 			children = (
 				00C302C01ABCB91800DB3ED1 /* libRCTImage.a */,
+				69F029311DCA3F9C0079E1FD /* libRCTImage-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -266,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */,
+				69F029391DCA3F9C0079E1FD /* libRCTNetwork-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -300,6 +354,7 @@
 			isa = PBXGroup;
 			children = (
 				139105C11AF99BAD00B5F7CC /* libRCTSettings.a */,
+				69F0293D1DCA3F9C0079E1FD /* libRCTSettings-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -308,6 +363,7 @@
 			isa = PBXGroup;
 			children = (
 				139FDEF41B06529B00C62182 /* libRCTWebSocket.a */,
+				69F029461DCA3F9C0079E1FD /* libRCTWebSocket-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -315,6 +371,7 @@
 		13B07FAE1A68108700A75B9A /* Backbone */ = {
 			isa = PBXGroup;
 			children = (
+				6902DC7F1DCCCD360021A7D0 /* util */,
 				4486A5391D89D83500F6CC40 /* Backbone.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -344,7 +401,6 @@
 				697D0FE71DA3DCDC00F6FF13 /* StepModule.m */,
 				69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */,
 				69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */,
-				69ABF9E81DA3CA6F00D9B15A /* Constants.h */,
 				669B14D01D50626500DCEFBE /* ActivityService.h */,
 				669B14DC1D50630A00DCEFBE /* ActivityService.m */,
 				690F1C591DB8FF5100AE2E98 /* UserSettingService.h */,
@@ -357,6 +413,7 @@
 			isa = PBXGroup;
 			children = (
 				146834041AC3E56700842450 /* libReact.a */,
+				69F0294A1DCA3F9C0079E1FD /* libReact-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -404,10 +461,22 @@
 			name = Fonts;
 			sourceTree = "<group>";
 		};
+		6902DC7F1DCCCD360021A7D0 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				6902DC801DCCCD360021A7D0 /* Constants.h */,
+				6902DC831DCCCD360021A7D0 /* Utilities.h */,
+				6902DC841DCCCD360021A7D0 /* Utilities.m */,
+			);
+			name = util;
+			path = backbone/util;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				78C398B91ACF4ADC00677621 /* libRCTLinking.a */,
+				69F029351DCA3F9C0079E1FD /* libRCTLinking-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -435,6 +504,7 @@
 			isa = PBXGroup;
 			children = (
 				832341B51AAA6A8300B99B32 /* libRCTText.a */,
+				69F029411DCA3F9C0079E1FD /* libRCTText-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -695,6 +765,55 @@
 			remoteRef = 665DFF671D64133C003B4449 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		69F029311DCA3F9C0079E1FD /* libRCTImage-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTImage-tvOS.a";
+			remoteRef = 69F029301DCA3F9C0079E1FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		69F029351DCA3F9C0079E1FD /* libRCTLinking-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTLinking-tvOS.a";
+			remoteRef = 69F029341DCA3F9C0079E1FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		69F029391DCA3F9C0079E1FD /* libRCTNetwork-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTNetwork-tvOS.a";
+			remoteRef = 69F029381DCA3F9C0079E1FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		69F0293D1DCA3F9C0079E1FD /* libRCTSettings-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTSettings-tvOS.a";
+			remoteRef = 69F0293C1DCA3F9C0079E1FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		69F029411DCA3F9C0079E1FD /* libRCTText-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTText-tvOS.a";
+			remoteRef = 69F029401DCA3F9C0079E1FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		69F029461DCA3F9C0079E1FD /* libRCTWebSocket-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTWebSocket-tvOS.a";
+			remoteRef = 69F029451DCA3F9C0079E1FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		69F0294A1DCA3F9C0079E1FD /* libReact-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libReact-tvOS.a";
+			remoteRef = 69F029491DCA3F9C0079E1FD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -910,6 +1029,7 @@
 				669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */,
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
 				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
+				6902DC861DCCCD360021A7D0 /* Utilities.m in Sources */,
 				4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

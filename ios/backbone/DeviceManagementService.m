@@ -7,42 +7,50 @@
 
 @synthesize bridge = _bridge;
 
-static MBLMetaWear *_sharedDevice;
-static MBLMetaWearManager *_manager;
 static BOOL _remembered;
-static NSMutableDictionary *_deviceCollection;
-
-+ (MBLMetaWear *)getDevice {
-  return _sharedDevice;
-}
+static NSMutableDictionary *_deviceCollection = nil;
 
 - (id)init {
-  _manager = [MBLMetaWearManager sharedManager];
+  if (!_deviceCollection) {
+    _deviceCollection = [NSMutableDictionary new];
+  }
+  
   return self;
 }
 
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(getSavedDevice:(RCTResponseSenderBlock)callback) {
-  [[_manager retrieveSavedMetaWearsAsync] continueWithBlock:^id(BFTask *task) {
-    if ([task.result count]) {
+  NSUserDefaults *preference = [NSUserDefaults standardUserDefaults];
+  
+  // Check the shared preference for previously saved device UUID
+  if ([preference objectForKey:PREF_SAVED_DEVICE_KEY]) {
+    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:[preference objectForKey:PREF_SAVED_DEVICE_KEY]];
+    
+    NSArray *savedDevices = [BluetoothServiceInstance.centralManager retrievePeripheralsWithIdentifiers:@[uuid]];
+    DLog(@"Has Saved Device %@ %@", [preference objectForKey:PREF_SAVED_DEVICE_KEY], savedDevices);
+    if (savedDevices && [savedDevices count] > 0) {
+      [BluetoothServiceInstance selectDevice:savedDevices[0]];
+      
       DLog(@"Found a saved device");
       _remembered = YES;
-      _sharedDevice = task.result[0];
-    } else {
+    }
+    else {
       DLog(@"No saved device found");
       _remembered = NO;
     }
-    // Check whether a _sharedDevice is nil, instead of checking
-    // whether we have a remembered device.
-    callback(@[[NSNumber numberWithBool:_sharedDevice != nil]]);
-    return nil;
-  }];
+  }
+  else {
+    DLog(@"No saved device found");
+    _remembered = NO;
+  }
+  
+  callback(@[[NSNumber numberWithBool:BluetoothServiceInstance.currentDevice != nil]]);
 }
 
 RCT_EXPORT_METHOD(connectToDevice) {
-  DLog(@"Attempting to connect to %@", _sharedDevice);
-  [_sharedDevice connectWithHandler:^(NSError * _Nullable error) {
+  DLog(@"Attempting to connect to %@", BluetoothServiceInstance.currentDevice);
+  [BluetoothServiceInstance connectDevice:BluetoothServiceInstance.currentDevice completionBlock:^(NSError * _Nullable error) {
     if (error) {
       NSDictionary *makeError = RCTMakeError(@"Failed to connect to device", nil, @{
                                                                                     @"domain": error.domain,
@@ -53,21 +61,23 @@ RCT_EXPORT_METHOD(connectToDevice) {
       [self deviceConnectionStatus:makeError];
     } else {
       if (!_remembered) {
-        [_manager stopScanForMetaWears];
-        [_sharedDevice rememberDevice];
+        [BluetoothServiceInstance stopScan];
+        [self rememberDevice:BluetoothServiceInstance.currentDevice.identifier.UUIDString];
       }
-      [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
+//      [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       [self deviceConnectionStatus:@{@"isConnected": @YES}];
     }
+  
   }];
-
+  
   [self checkConnectTimeout];
 }
 
 RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)callback) {
   [self stopScanForDevices];
-  _sharedDevice = [_deviceCollection objectForKey:deviceID];
-  if (!_sharedDevice) {
+  [BluetoothServiceInstance selectDevice:_deviceCollection[deviceID][@"peripheral"]];
+  
+  if (!BluetoothServiceInstance.currentDevice) {
     NSDictionary *makeError = RCTMakeError(@"Failed to select device", nil, @{});
     callback(@[makeError]);
   } else {
@@ -78,26 +88,25 @@ RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)call
 RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
   DLog(@"Scanning for devices");
   if ([BluetoothService getIsEnabled]) {
-    // Bluetooth is enabled, continue with scan
-    _deviceCollection = [NSMutableDictionary new];
-    NSMutableArray *deviceList = [NSMutableArray new];
-
-    [_manager startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *__nonnull array) {
-      if ([deviceList count]) {
-        [deviceList removeAllObjects];
-      }
-
-      for (MBLMetaWear *device in array) {
-        _deviceCollection[[device.identifier UUIDString]] = device;
+    [BluetoothServiceInstance startScanForBLEDevicesAllowDuplicates:NO handler:^(NSDictionary * _Nonnull device) {
+      DLog(@"Found %@", device);
+      _deviceCollection[device[@"identifier"]] = device;
+      
+      NSMutableArray *deviceList = [NSMutableArray new];
+      
+      [_deviceCollection enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
         [deviceList addObject: @{
-                                 @"name": device.name,
-                                 @"identifier": [device.identifier UUIDString],
-                                 @"RSSI": device.discoveryTimeRSSI ?: [NSNull null]
+                                 @"name": obj[@"name"],
+                                 @"identifier": obj[@"identifier"],
+                                 @"RSSI": obj[@"RSSI"]
                                  }];
-      }
+      }];
+      
       [self devicesFound:deviceList];
+      
+      callback(@[[NSNull null]]);
+      DLog(@"Device: %@ %@, %@, %@", device[@"name"], device[@"advertisementData"], device[@"RSSI"], device[@"identifier"]);
     }];
-    callback(@[[NSNull null]]);
   } else {
     // Bluetooth is disabled
     callback(@[RCTMakeError(@"Bluetooth is not enabled", nil, nil)]);
@@ -106,31 +115,39 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
 
 RCT_EXPORT_METHOD(stopScanForDevices) {
   DLog(@"Stopping device scan");
-  [_manager stopScanForMetaWears];
+  [BluetoothServiceInstance stopScan];
 }
 
 RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
-  callback(@[[NSNumber numberWithInteger:_sharedDevice.state]]);
+  callback(@[[NSNumber numberWithInteger:BluetoothServiceInstance.currentDevice.state]]);
 }
 
 RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   DLog(@"forget device");
-  [_sharedDevice disconnectWithHandler:^(NSError * _Nullable error) {
+  NSUserDefaults *preference = [NSUserDefaults standardUserDefaults];
+  [preference removeObjectForKey:PREF_SAVED_DEVICE_KEY];
+  
+  [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
     if (error) {
       NSDictionary *makeError = RCTMakeError(@"Failed to disconnect with device", nil, nil);
       callback(@[makeError]);
-    } else {
-      [_sharedDevice forgetDevice];
-      _sharedDevice = nil;
+    }
+    else {
       _remembered = NO;
       callback(@[[NSNull null]]);
     }
   }];
 }
 
+- (void)rememberDevice:(NSString *)uuid {
+  DLog(@"Remember device %@", uuid);
+  NSUserDefaults *preference = [NSUserDefaults standardUserDefaults];
+  [preference setObject:uuid forKey:PREF_SAVED_DEVICE_KEY];
+}
+
 - (void)checkConnectTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-    if (_sharedDevice.state != MBLConnectionStateConnected) {
+    if (BluetoothServiceInstance.currentDevice.state != CBPeripheralStateConnected) {
       DLog(@"Connection timeout");
       NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, @{ @"remembered": [NSNumber numberWithBool:_remembered] });
       [self deviceConnectionStatus:makeError];
