@@ -52,7 +52,6 @@ class OnBoarding extends Component {
         label: '',
       },
       pickerType: null,
-      hasOnboarded: false,
       // notificationsEnabled: false,
     };
     this.saveData = this.saveData.bind(this);
@@ -196,36 +195,33 @@ class OnBoarding extends Component {
 
   // Save profile data
   saveData() {
-    this.setState({ hasOnboarded: true }, () => {
-      const {
-        nickname,
-        gender,
-        hasOnboarded,
-        birthdate,
-        weight,
-        height,
-      } = this.state;
+    const {
+      nickname,
+      gender,
+      birthdate,
+      weight,
+      height,
+    } = this.state;
 
-      const profileData = {
-        nickname,
-        gender,
-        hasOnboarded,
-        birthdate,
-        heightUnitPreference: height.unit,
-        weightUnitPreference: weight.unit,
+    const profileData = {
+      hasOnboarded: true,
+      nickname,
+      gender,
+      birthdate,
+      heightUnitPreference: height.unit,
+      weightUnitPreference: weight.unit,
 
-        // Store weight (lb) / height (in) values on backend
-        weight: weight.unit === constants.weight.units.LB ?
-          weight.value : weight.value / constants.weight.conversionValue,
-        height: height.unit === constants.height.units.IN ?
-          height.value : height.value / constants.height.conversionValue,
-      };
+      // Store weight (lb) / height (in) values on backend
+      weight: weight.unit === constants.weight.units.LB ?
+        weight.value : weight.value / constants.weight.conversionValue,
+      height: height.unit === constants.height.units.IN ?
+        height.value : height.value / constants.height.conversionValue,
+    };
 
-      this.props.dispatch(userActions.updateUser({
-        _id: this.props.user._id,
-        ...profileData,
-      }));
-    });
+    this.props.dispatch(userActions.updateUser({
+      _id: this.props.user._id,
+      ...profileData,
+    }));
   }
 
   /**
