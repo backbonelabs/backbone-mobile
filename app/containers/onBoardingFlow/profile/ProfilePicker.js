@@ -80,13 +80,11 @@ export default class ProfilePicker extends Component {
       }),
     };
 
-    this._setValues = this._setValues.bind(this);
     this._heightLabel = this._heightLabel.bind(this);
     this._weightLabel = this._weightLabel.bind(this);
     this._valueChangeHandler = this._valueChangeHandler.bind(this);
     this._heightTypeChangeHandler = this._heightTypeChangeHandler.bind(this);
     this._weightTypeChangeHandler = this._weightTypeChangeHandler.bind(this);
-    this._showPickers = this._showPickers.bind(this);
   }
 
   componentWillMount() {
