@@ -56,8 +56,28 @@ export default class ProfilePicker extends Component {
       },
     };
     this.pickerUnitValues = {
-      height: Object.entries(heightConstants.units),
-      weight: Object.entries(weightConstants.units),
+      height: Object.entries(heightConstants.units).sort((a, b) => {
+        // Sort unit values based on their numeric constant values in descending order.
+        // This assumes the preferred unit of measure has the lowest value. This is sort
+        // of a hack because on a small screen, it is not apparent there are additional
+        // picker options when the picker defaults to the first PickerItem. As a result,
+        // this will default the imperial UOM (the default) as the second PickerItem so
+        // the user sees both the metric and imperial UOMs.
+        if (a[1] < b[1]) return 1;
+        else if (a[1] === b[1]) return 0;
+        return -1;
+      }),
+      weight: Object.entries(weightConstants.units).sort((a, b) => {
+        // Sort unit values based on their numeric constant values in descending order.
+        // This assumes the preferred unit of measure has the lowest value. This is sort
+        // of a hack because on a small screen, it is not apparent there are additional
+        // picker options when the picker defaults to the first PickerItem. As a result,
+        // this will default the imperial UOM (the default) as the second PickerItem so
+        // the user sees both the metric and imperial UOMs.
+        if (a[1] < b[1]) return 1;
+        else if (a[1] === b[1]) return 0;
+        return -1;
+      }),
     };
 
     this._setValues = this._setValues.bind(this);
