@@ -13,6 +13,7 @@ import settings from './settings';
 import errors from './errors';
 import reset from './reset';
 import onboarding from './onboarding';
+import alerts from './alerts';
 
 export default {
   activity,
@@ -30,4 +31,5 @@ export default {
   errors,
   reset,
   onboarding,
+  alerts,
 };

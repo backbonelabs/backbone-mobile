@@ -84,11 +84,14 @@ const AccountRemindersSettings = props => (
       <SettingsText text="Profile" />
       <ArrowIcon />
     </View>
-    <View style={styles.accountRemindersSettingContainer}>
+    <TouchableOpacity
+      style={styles.accountRemindersSettingContainer}
+      onPress={() => props.navigator.push(routes.alerts)}
+    >
       <SettingsIcon iconName="alert" />
       <SettingsText text="Alerts" />
       <ArrowIcon />
-    </View>
+    </TouchableOpacity>
     <View style={styles.notificationsContainer}>
       <SettingsIcon iconName="notifications" />
       <SettingsText text="Push Notifications" />
@@ -193,6 +196,7 @@ class Settings extends Component {
         <Image source={gradientBackground20} style={styles.backgroundImage}>
           <SensorSettings />
           <AccountRemindersSettings
+            navigator={this.props.navigator}
             notificationsEnabled={this.state.notificationsEnabled}
             updateNotifications={this.updateNotifications}
           />
@@ -249,6 +253,9 @@ SettingsText.propTypes = {
 AccountRemindersSettings.propTypes = {
   updateNotifications: PropTypes.func,
   notificationsEnabled: PropTypes.bool,
+  navigator: PropTypes.shape({
+    push: PropTypes.func,
+  }),
 };
 
 export default connect(mapStateToProps)(Settings);

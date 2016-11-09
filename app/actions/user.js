@@ -117,15 +117,8 @@ export default {
   updateUserSettings(user) {
     const {
       _id,
-      ...userSettingsUpdateFields,
+      settings,
     } = user;
-
-    const {
-      postureThreshold,
-      backboneVibration,
-      phoneVibration,
-      slouchTimeThreshold,
-    } = userSettingsUpdateFields.settings;
 
     return (dispatch, getState) => {
       const state = getState();
@@ -136,23 +129,18 @@ export default {
       return Fetcher.post({
         url: `${settingsUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({
-          postureThreshold,
-          backboneVibration,
-          phoneVibration,
-          slouchTimeThreshold,
-        }),
+        body: JSON.stringify(settings),
       })
         .then(response => response.json()
           .then((body) => {
             if (body.error) {
               // Error received from API server
-              dispatch(updateUserSettingsError(
+              return dispatch(updateUserSettingsError(
                 new Error(body.error)
               ));
-            } else {
-              dispatch(updateUserSettings(body));
             }
+
+            return dispatch(updateUserSettings(body));
           })
         )
         .catch(() => (
