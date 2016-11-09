@@ -152,7 +152,7 @@ class Alerts extends Component {
           // Store updated user settings in local storage
           SensitiveInfo.setItem(
             constants.userStorageKey,
-            Object.assign({}, this.props.user, response.payload)
+            Object.assign({}, this.props.user, { settings: response.payload })
           );
         }
       });
