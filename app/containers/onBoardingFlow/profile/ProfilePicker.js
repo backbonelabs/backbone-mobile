@@ -153,11 +153,11 @@ export default class ProfilePicker extends Component {
     const { currentValue, currentUnit } = this.state;
     if (unit !== currentUnit) {
       const equalsPound = unit === weightConstants.units.LB;
-      const KilogramToPound = Math.round(currentValue / weightConstants.conversionValue);
+      const kilogramToPound = Math.round(currentValue / weightConstants.conversionValue);
       const poundToKilogram = Math.ceil(currentValue * weightConstants.conversionValue);
 
       this.setState({
-        currentValue: equalsPound ? KilogramToPound : poundToKilogram,
+        currentValue: equalsPound ? kilogramToPound : poundToKilogram,
         currentUnit: unit,
       });
     }
