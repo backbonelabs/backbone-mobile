@@ -1,5 +1,5 @@
-import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
 
 export default EStyleSheet.create({
   $placeholderTextColor: '#A9A9A9',
@@ -11,21 +11,17 @@ export default EStyleSheet.create({
   inputField: {
     color: '$color',
     fontSize: '1rem',
-    ...Platform.select({
-      ios: {
-        borderColor: '#979797',
-        borderWidth: 1,
-        borderRadius: 5,
-      },
-    }),
-    width: 235,
-    height: 39,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    borderColor: '#979797',
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 235 * relativeDimensions.widthDifference,
+    height: 44 * relativeDimensions.heightDifference,
+    paddingHorizontal: 20 * relativeDimensions.widthDifference,
+    paddingVertical: 10 * relativeDimensions.heightDifference,
   },
   icon: {
     position: 'relative',
-    right: 20,
+    right: 20 * relativeDimensions.widthDifference,
   },
   disabled: {
     color: '$disabledColor',

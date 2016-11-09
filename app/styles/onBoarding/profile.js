@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
@@ -46,13 +45,8 @@ export default EStyleSheet.create({
   profileField: {
     height: '7%',
     width: '65%',
-    ...Platform.select({
-      ios: {
-        borderColor: '#979797',
-        borderWidth: 1,
-        borderRadius: 5,
-      },
-    }),
+    borderWidth: 1,
+    borderRadius: 5,
     paddingLeft: 15 * relativeDimensions.widthDifference,
     borderColor: '#979797',
     alignItems: 'flex-start',
