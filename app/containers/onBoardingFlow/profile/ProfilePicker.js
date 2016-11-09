@@ -41,8 +41,8 @@ export default class ProfilePicker extends Component {
     setPickerType: PropTypes.func,
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     // Generate numeric and unit picker values
     this.pickerNumericValues = {
