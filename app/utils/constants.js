@@ -21,16 +21,52 @@ export default {
     CONNECTED: 2,
     DISCONNECTING: 3,
   },
+  heightUnitIdToLabel: {
+    1: 'IN',
+    2: 'CM',
+  },
+  weightUnitIdToLabel: {
+    1: 'LB',
+    2: 'KG',
+  },
   gender: {
     male: 1,
     female: 2,
   },
   height: {
-    conversionTypes: ['cm', 'in'],
+    defaults: {
+      value: 60,
+      unit: 1,
+    },
+    units: {
+      IN: 1,
+      CM: 2,
+    },
     conversionValue: 2.54,
   },
   weight: {
-    conversionTypes: ['kg', 'lb'],
+    defaults: {
+      value: 100,
+      unit: 1,
+    },
+    units: {
+      LB: 1,
+      KG: 2,
+    },
     conversionValue: 0.453592,
   },
+  months: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ],
 };

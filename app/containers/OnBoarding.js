@@ -6,7 +6,8 @@ import {
   Keyboard,
   Dimensions,
   TouchableWithoutFeedback,
-  // Platform,
+  Platform,
+  ViewPagerAndroid,
   // PushNotificationIOS,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -15,8 +16,10 @@ import constants from '../utils/constants';
 import onBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 import userActions from '../actions/user';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { width } = Dimensions.get('window');
+const isIOS = Platform.OS === 'ios';
 
 class OnBoarding extends Component {
   static propTypes = {
@@ -39,17 +42,16 @@ class OnBoarding extends Component {
       birthdate: null,
       gender: null,
       height: {
-        value: 60,
-        type: 'in',
+        value: null,
+        unit: null,
         label: '',
       },
       weight: {
-        value: 100,
-        type: 'lb',
+        value: null,
+        unit: null,
         label: '',
       },
       pickerType: null,
-      hasOnboarded: false,
       // notificationsEnabled: false,
     };
     this.saveData = this.saveData.bind(this);
@@ -57,11 +59,12 @@ class OnBoarding extends Component {
     this.previousStep = this.previousStep.bind(this);
     this.setPickerType = this.setPickerType.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
+    this.stepTransitionAnimation = this.stepTransitionAnimation.bind(this);
   }
 
   // componentWillMount() {
   //   // Check if user has enabled notifications on their iOS device
-  //   if (Platform.OS === 'ios') {
+  //   if (isIOS) {
   //     // Check notification permissions
   //     PushNotificationIOS.checkPermissions(permissions => {
   //       // Update notificationsEnabled to true if permissions enabled
@@ -83,6 +86,7 @@ class OnBoarding extends Component {
     if (this.props.isUpdating && !nextProps.isUpdating) {
       // Check whether user has successfully completed onboarding
       if (nextProps.user.hasOnboarded) {
+        SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
         this.nextStep();
       } else {
         Alert.alert('Error', 'Unable to save, please try again');
@@ -95,46 +99,72 @@ class OnBoarding extends Component {
   //   PushNotificationIOS.removeEventListener('register');
   // }
 
-  // Returns an array with multiple style objects
-  getStepStyle() {
-    return [
-      styles.onboardingFlowContainer,
-      { transform: this.state.animatedValues.getTranslateTransform() },
-    ];
-  }
-
   /**
    * Opens and closes the selected data picker component
-   * @param {String} pickerType
+   * @param {String} pickerType Data picker to open. If undefined, the
+   *                            data pickers will be hidden
    */
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was inputting nickname
     Keyboard.dismiss();
 
-    // Open selected data picker if pickerType is passed in
-    // Close selected data picker if pickerType is undefined
-    this.setState({ pickerType: pickerType || null });
+    if (this.state.pickerType && pickerType && this.state.pickerType !== pickerType) {
+      // Switching between two different data pickers (height and weight) should
+      // first unmount the currently mounted picker components and then mount a new
+      // instance of the new pickers to ensure components start with a fresh state.
+      this.setState({ pickerType: null }, () => {
+        this.setState({ pickerType: pickerType || null });
+      });
+    } else {
+      this.setState({ pickerType: pickerType || null });
+    }
   }
 
   loadOnBoardingFlow() {
+    const pageViews = onBoardingFlow.map((step, i) => (
+      step({
+        key: `${i}`,
+        navigator: this.props.navigator,
+        isUpdating: this.props.isUpdating,
+        saveData: this.saveData,
+        nextStep: this.nextStep,
+        previousStep: this.previousStep,
+        setPickerType: this.setPickerType,
+        updateProfile: this.updateProfile,
+        ...this.state,
+      })
+    ));
+
+    if (isIOS) {
+      // For iOS, use Animated.View
+      return (
+        <Animated.View
+          style={[
+            styles.onboardingFlowContainer, {
+              transform: this.state.animatedValues.getTranslateTransform(),
+            },
+          ]}
+        >
+          {pageViews}
+        </Animated.View>
+      );
+    }
+
+    // For Android, use ViewPagerAndroid since Animated.View doesn't work
+    // on Android as of RN 0.36. The problem is when the next View is brought
+    // into view, the View is not actually visible even though the animated
+    // scroll works fine. It seems like any content that is rendered outside the
+    // screen view will be clipped and will not appear even when they are moved
+    // into the screen view area.
     return (
-      <Animated.View style={this.getStepStyle()}>
-        { // Renders the separate onboarding steps under a single component
-          onBoardingFlow.map((step, i) => (
-            step({
-              key: `${i}`,
-              navigator: this.props.navigator,
-              isUpdating: this.props.isUpdating,
-              saveData: this.saveData,
-              nextStep: this.nextStep,
-              previousStep: this.previousStep,
-              setPickerType: this.setPickerType,
-              updateProfile: this.updateProfile,
-              ...this.state,
-            })
-          ))
-        }
-      </Animated.View>
+      <ViewPagerAndroid
+        ref={viewPager => { this.viewPager = viewPager; }}
+        style={styles.onboardingFlowContainer}
+        initialPage={this.state.step}
+        scrollEnabled={false}
+      >
+        {pageViews}
+      </ViewPagerAndroid>
     );
   }
 
@@ -154,55 +184,66 @@ class OnBoarding extends Component {
     }, this.stepTransitionAnimation);
   }
 
+  // Animates onboarding step transition
+  stepTransitionAnimation() {
+    if (isIOS) {
+      // For iOS, use Animated API to move component along the x-axis specified in valueX
+      Animated.spring(this.state.animatedValues, {
+        tension: 10,
+        toValue: {
+          x: this.state.valueX,
+          y: 0,
+        },
+      }).start();
+    } else {
+      // For Android, use ViewPagerAndroid API to set the page
+      this.viewPager.setPage(this.state.step);
+    }
+  }
+
   // Save profile data
   saveData() {
-    this.setState({ hasOnboarded: true }, () => {
-      const {
-        nickname,
-        gender,
-        hasOnboarded,
-        weight,
-        height,
-      } = this.state;
+    const {
+      nickname,
+      gender,
+      birthdate,
+      weight,
+      height,
+    } = this.state;
 
-      const profileData = {
-        nickname,
-        gender,
-        hasOnboarded,
+    const profileData = {
+      hasOnboarded: true,
+      nickname,
+      gender,
+      birthdate,
+      heightUnitPreference: height.unit,
+      weightUnitPreference: weight.unit,
 
-        // Store weight (lb) / height (in) values on backend
-        weight: weight.type === 'lb' ?
-          weight.value : weight.value / constants.weight.conversionValue,
-        height: height.type === 'in' ?
-          height.value : height.value / constants.height.conversionValue,
-      };
+      // Store weight (lb) / height (in) values on backend
+      weight: weight.unit === constants.weight.units.LB ?
+        weight.value : weight.value / constants.weight.conversionValue,
+      height: height.unit === constants.height.units.IN ?
+        height.value : height.value / constants.height.conversionValue,
+    };
 
-      this.props.dispatch(userActions.updateUser({
-        _id: this.props.user._id,
-        ...profileData,
-      }));
-    });
+    this.props.dispatch(userActions.updateUser({
+      _id: this.props.user._id,
+      ...profileData,
+    }));
   }
 
   /**
    * Updates state (field) with value
-   * @param {String} field
-   * @param {*} value
+   * @param {String}  field
+   * @param {*}       value
+   * @param {Boolean} clearPickerType Whether or not to hide picker components on update
    */
-  updateProfile(field, value) {
-    this.setState({ [field]: value });
-  }
-
-  // Animates onboarding step transition by moving
-  // component along the x-axis specified in valueX
-  stepTransitionAnimation() {
-    Animated.spring(this.state.animatedValues, {
-      tension: 10,
-      toValue: {
-        x: this.state.valueX,
-        y: 0,
-      },
-    }).start();
+  updateProfile(field, value, clearPickerType) {
+    const newState = { [field]: value };
+    if (clearPickerType) {
+      newState.pickerType = null;
+    }
+    this.setState(newState);
   }
 
   render() {

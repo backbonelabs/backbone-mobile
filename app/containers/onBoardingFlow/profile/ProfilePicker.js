@@ -1,192 +1,305 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Text,
   Picker,
   Platform,
   DatePickerIOS,
+  DatePickerAndroid,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoarding/profile';
 
 const {
-  height: heightConstant,
-  weight: weightConstant,
+  height: heightConstants,
+  weight: weightConstants,
 } = constants;
 const PickerItem = Picker.Item;
 
+const metricTypes = {
+  HEIGHT: 'height',
+  WEIGHT: 'weight',
+};
 
-const ProfilePicker = (props) => {
-  const heightValues = [...Array(props.height.type === 'in' ?
-    100
-    :
-    Math.floor(100 * constants.height.conversionValue)
-  ).keys()];
+const generateNumericValues = count => {
+  const values = [];
+  for (let i = 1; i <= count; i++) {
+    values.push(i);
+  }
+  return values;
+};
 
-  const heightLabel = value => (
-    props.height.type === 'in' ?
-      `${Math.floor(value / 12)}ft ${value % 12}in`
-      :
-      `${value}cm`
-  );
-
-  const heightValueChangeHandler = value => (
-    props.updateProfile('height', Object.assign({}, props.height, {
-      value,
-      label: heightLabel(value),
-    }))
-  );
-
-  const heightTypeChangeHandler = type => {
-    if (type !== props.height.type) {
-      const { height } = props;
-      const equalsInch = type === 'in';
-      const centimeterToInch = Math.max(1,
-        Math.round(height.value / constants.height.conversionValue)
-      );
-      const inchToCentimeter = Math.round(height.value * constants.height.conversionValue);
-
-      props.updateProfile('height', Object.assign({}, height, {
-        value: equalsInch ? centimeterToInch : inchToCentimeter,
-        type,
-        label: equalsInch ?
-          `${Math.floor(centimeterToInch / 12)}ft ${centimeterToInch % 12}in`
-          :
-          `${inchToCentimeter}cm` })
-      );
-    }
+export default class ProfilePicker extends Component {
+  static propTypes = {
+    height: PropTypes.object,
+    weight: PropTypes.object,
+    birthdate: PropTypes.object,
+    updateProfile: PropTypes.func,
+    pickerType: PropTypes.string,
+    setPickerType: PropTypes.func,
   };
 
-  const weightValues = [...Array(props.weight.type === 'lb' ?
-    500
-    :
-    Math.ceil(500 * constants.weight.conversionValue)
-  ).keys()];
+  constructor() {
+    super();
 
-  const weightLabel = value => (
-    props.weight.type === 'lb' ?
-      `${value}lb`
-      :
-      `${(value)}kg`
-  );
-
-  const weightValueChangeHandler = value => {
-    const { weight } = props;
-
-    props.updateProfile('weight', Object.assign({}, weight, {
-      value,
-      label: weightLabel(value),
-    }));
-  };
-
-  const weightTypeChangeHandler = type => {
-    if (type !== props.weight.type) {
-      const { weight } = props;
-      const equalsPound = type === 'lb';
-      const KilogramToPound = Math.round(weight.value / constants.weight.conversionValue);
-      const poundToKilogram = Math.ceil(weight.value * constants.weight.conversionValue);
-
-      props.updateProfile('weight', Object.assign({}, weight, {
-        value: equalsPound ? KilogramToPound : poundToKilogram,
-        type,
-        label: equalsPound ?
-          `${KilogramToPound}lb`
-          :
-          `${poundToKilogram}kg`,
-      }));
-    }
-  };
-
-  const makeProfilePicker = metric => {
-    const metricEnum = {
-      weight: 0,
-      height: 1,
+    // Generate numeric and unit picker values
+    this.pickerNumericValues = {
+      height: {
+        IN: generateNumericValues(100),
+        CM: generateNumericValues(Math.floor(100 * heightConstants.conversionValue)),
+      },
+      weight: {
+        LB: generateNumericValues(500),
+        KG: generateNumericValues(Math.ceil(500 * weightConstants.conversionValue)),
+      },
     };
+    this.pickerUnitValues = {
+      height: Object.entries(heightConstants.units).sort((a, b) => {
+        // Sort unit values based on their numeric constant values in descending order.
+        // This assumes the preferred unit of measure has the lowest value. This is sort
+        // of a hack because on a small screen, it is not apparent there are additional
+        // picker options when the picker defaults to the first PickerItem. As a result,
+        // this will default the imperial UOM (the default) as the second PickerItem so
+        // the user sees both the metric and imperial UOMs.
+        if (a[1] < b[1]) return 1;
+        else if (a[1] === b[1]) return 0;
+        return -1;
+      }),
+      weight: Object.entries(weightConstants.units).sort((a, b) => {
+        // Sort unit values based on their numeric constant values in descending order.
+        // This assumes the preferred unit of measure has the lowest value. This is sort
+        // of a hack because on a small screen, it is not apparent there are additional
+        // picker options when the picker defaults to the first PickerItem. As a result,
+        // this will default the imperial UOM (the default) as the second PickerItem so
+        // the user sees both the metric and imperial UOMs.
+        if (a[1] < b[1]) return 1;
+        else if (a[1] === b[1]) return 0;
+        return -1;
+      }),
+    };
+
+    this._heightLabel = this._heightLabel.bind(this);
+    this._weightLabel = this._weightLabel.bind(this);
+    this._valueChangeHandler = this._valueChangeHandler.bind(this);
+    this._heightTypeChangeHandler = this._heightTypeChangeHandler.bind(this);
+    this._weightTypeChangeHandler = this._weightTypeChangeHandler.bind(this);
+  }
+
+  componentWillMount() {
+    this._setValues(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.pickerType !== nextProps.pickerType) {
+      this._setValues(nextProps);
+    }
+  }
+
+  _setValues(props) {
+    const { pickerType } = props;
+    if (pickerType === 'birthdate') {
+      this.setState({ currentValue: props[pickerType] || new Date() });
+    } else {
+      let defaults;
+      switch (pickerType) {
+        case metricTypes.HEIGHT:
+          defaults = heightConstants.defaults;
+          break;
+        case metricTypes.WEIGHT:
+          defaults = weightConstants.defaults;
+          break;
+        default:
+          defaults = {};
+      }
+      this.setState({
+        currentValue: props[pickerType].value || defaults.value,
+        currentUnit: props[pickerType].unit || defaults.unit,
+      });
+    }
+  }
+
+  _heightLabel(value) {
+    return this.state.currentUnit === heightConstants.units.IN ?
+      `${Math.floor(value / 12)}ft ${value % 12}in` : `${value}cm`;
+  }
+
+  _weightLabel(value) {
+    return `${value}${constants.weightUnitIdToLabel[this.state.currentUnit].toLowerCase()}`;
+  }
+
+  _valueChangeHandler(value) {
+    this.setState({ currentValue: value });
+  }
+
+  _heightTypeChangeHandler(unit) {
+    const { currentValue, currentUnit } = this.state;
+    if (unit !== currentUnit) {
+      const equalsInch = unit === heightConstants.units.IN;
+      const centimeterToInch = Math.max(1,
+        Math.round(currentValue / heightConstants.conversionValue)
+      );
+      const inchToCentimeter = Math.round(currentValue * heightConstants.conversionValue);
+
+      this.setState({
+        currentValue: equalsInch ? centimeterToInch : inchToCentimeter,
+        currentUnit: unit,
+      });
+    }
+  }
+
+  _weightTypeChangeHandler(unit) {
+    const { currentValue, currentUnit } = this.state;
+    if (unit !== currentUnit) {
+      const equalsPound = unit === weightConstants.units.LB;
+      const kilogramToPound = Math.round(currentValue / weightConstants.conversionValue);
+      const poundToKilogram = Math.ceil(currentValue * weightConstants.conversionValue);
+
+      this.setState({
+        currentValue: equalsPound ? kilogramToPound : poundToKilogram,
+        currentUnit: unit,
+      });
+    }
+  }
+
+  _getLabel(metric, value) {
+    switch (metric) {
+      case metricTypes.HEIGHT:
+        return this._heightLabel(value);
+      case metricTypes.WEIGHT:
+        return this._weightLabel(value);
+      default:
+        return;
+    }
+  }
+
+  _showPickers() {
+    const metric = this.props.pickerType;
+    let unitChangeHandler;
+    let getLabel;
+    let pickerNumericValues = [];
+
+    switch (metric) {
+      case metricTypes.HEIGHT: {
+        unitChangeHandler = this._heightTypeChangeHandler;
+        getLabel = this._heightLabel;
+        const unit = constants.heightUnitIdToLabel[this.state.currentUnit];
+        pickerNumericValues = this.pickerNumericValues[metric][unit];
+        break;
+      }
+      case metricTypes.WEIGHT: {
+        unitChangeHandler = this._weightTypeChangeHandler;
+        getLabel = this._weightLabel;
+        const unit = constants.weightUnitIdToLabel[this.state.currentUnit];
+        pickerNumericValues = this.pickerNumericValues[metric][unit];
+        break;
+      }
+      default:
+        break;
+    }
 
     return (
       <View style={styles.profilePickerItemsContainer}>
         <Picker
           style={styles.profilePickerItems}
-          selectedValue={props[metric].value}
-          onValueChange={metricEnum[metric] ? heightValueChangeHandler : weightValueChangeHandler}
+          selectedValue={this.state.currentValue}
+          onValueChange={this._valueChangeHandler}
         >
-          { (metricEnum[metric] ? heightValues : weightValues)
-              .map((value, key) => {
-                const newValue = value + 1;
-                const label = metricEnum[metric] ? heightLabel(newValue) : weightLabel(newValue);
-
-                return (
-                  <PickerItem
-                    key={key}
-                    value={newValue}
-                    label={label}
-                  />
-                );
-              })
-          }
+          {pickerNumericValues.map((value, key) => (
+            <PickerItem
+              key={key}
+              value={value}
+              label={getLabel(value)}
+            />
+          ))}
         </Picker>
         <Picker
           style={styles.profilePickerMetric}
-          selectedValue={props[metric].type}
-          onValueChange={metricEnum[metric] ? heightTypeChangeHandler : weightTypeChangeHandler}
+          selectedValue={this.state.currentUnit}
+          onValueChange={unitChangeHandler}
         >
-          { (metricEnum[metric] ? heightConstant.conversionTypes : weightConstant.conversionTypes)
-              .map((value, key) => (
-                <PickerItem key={key} value={value} label={value} />
-              )
-          ) }
+          {this.pickerUnitValues[metric].map((value) => (
+            <PickerItem key={value[1]} value={value[1]} label={value[0].toLowerCase()} />
+          ))}
         </Picker>
       </View>
     );
-  };
+  }
 
-  return (
-    <View style={styles.profilePickerContainer}>
-      <View style={styles.profilePickerHeader}>
-        <TouchableOpacity
-          style={styles.profilePickerHeaderButton}
-          onPress={() => (
-            // Ensure nothing is passed in
-            props.setPickerType()
-          )}
-        >
-          <Text style={styles.profilePickerHeaderText}>Save</Text>
-        </TouchableOpacity>
+  render() {
+    return (
+      <View style={styles.profilePickerContainer}>
+        { Platform.OS === 'android' && this.props.pickerType === 'birthdate' ? null : (
+          // If the birthdate field is selected, only show the picker header on iOS
+          // because the Android date picker is a modal that automatically closes after
+          // selecting a date, so upon close, it would update the profile and there would
+          // be no point in showing this save header bar
+          <View style={styles.profilePickerHeader}>
+            <TouchableOpacity
+              style={styles.profilePickerHeaderButton}
+              onPress={() => {
+                const { pickerType } = this.props;
+                if (pickerType === 'birthdate') {
+                  this.props.updateProfile(pickerType, this.state.currentValue);
+                } else {
+                  this.props.updateProfile(this.props.pickerType, {
+                    ...this.props[this.props.pickerType],
+                    value: this.state.currentValue,
+                    unit: this.state.currentUnit,
+                    label: this._getLabel(this.props.pickerType, this.state.currentValue),
+                  });
+                }
+                // This will unmount the current ProfilePicker instance
+                this.props.setPickerType();
+              }}
+            >
+              <Text style={styles.profilePickerHeaderText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        { (() => {
+          const currentDate = new Date();
+
+          switch (this.props.pickerType) {
+            case 'birthdate':
+              // Show the appropriate date component based on OS
+              if (Platform.OS === 'ios') {
+                // iOS
+                return (
+                  <DatePickerIOS
+                    date={this.state.currentValue}
+                    maximumDate={currentDate}
+                    mode="date"
+                    onDateChange={date => this.setState({ currentValue: date })}
+                  />
+                );
+              }
+
+              // Android
+              DatePickerAndroid.open({
+                date: this.state.currentValue,
+                maxDate: currentDate,
+              })
+                .then((selection) => {
+                  const { action, year, month, day } = selection;
+                  if (action !== DatePickerAndroid.dismissedAction) {
+                    const date = new Date(year, month, day);
+                    this.props.updateProfile('birthdate', date, true);
+                  }
+                })
+                .catch(() => {
+                  Alert.alert('Error', 'Unexpected error. Please try again.');
+                });
+              break;
+            case 'height':
+            case 'weight':
+              return this._showPickers();
+            default:
+              return null;
+          }
+        })() }
       </View>
-      { (() => {
-        const currentDate = new Date();
-
-        switch (props.pickerType) {
-          case 'birthdate':
-            return (
-              Platform.OS === 'ios' &&
-              <DatePickerIOS
-                date={props.birthdate || currentDate}
-                maximumDate={currentDate}
-                mode="date"
-                onDateChange={date => props.updateProfile('birthdate', date)}
-              />
-            );
-          case 'height':
-            return makeProfilePicker('height');
-          case 'weight':
-            return makeProfilePicker('weight');
-          default:
-            return null;
-        }
-      })() }
-    </View>
-  );
-};
-
-ProfilePicker.propTypes = {
-  height: PropTypes.object,
-  weight: PropTypes.object,
-  birthdate: PropTypes.object,
-  updateProfile: PropTypes.func,
-  pickerType: PropTypes.string,
-  setPickerType: PropTypes.func,
-};
-
-export default ProfilePicker;
+    );
+  }
+}

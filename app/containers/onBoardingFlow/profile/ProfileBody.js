@@ -8,21 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../../styles/onBoarding/profile';
 import BodyText from '../../../components/BodyText';
 import SecondaryText from '../../../components/SecondaryText';
-
-const monthList = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+import constants from '../../../utils/constants';
 
 const ProfileBody = props => {
   const {
@@ -31,7 +17,7 @@ const ProfileBody = props => {
     birthdate,
   } = props;
   const dateString = birthdate ?
-    `${monthList[birthdate.getMonth()]} ${birthdate.getDate()}, ${birthdate.getFullYear()}`
+    `${constants.months[birthdate.getMonth()]} ${birthdate.getDate()}, ${birthdate.getFullYear()}`
     :
     '';
   const formattedProfile = {
