@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { TouchableOpacity, Image, Text, View } from 'react-native';
+import { TouchableOpacity, Image, View } from 'react-native';
 // import SvgUri from 'react-native-svg-uri';  switch to svg at after library is updated
 import pauseImg from '../../../images/monitor/pauseButton.png';
 import pauseActiveImg from '../../../images/monitor/pauseButtonActive.png';
@@ -9,27 +9,39 @@ import playImg from '../../../images/monitor/playButton.png';
 import alertsImg from '../../../images/monitor/alertsButton.png';
 import alertsDisabledImg from '../../../images/monitor/alertsButtonDisabled.png';
 import styles from '../../../styles/posture/postureMonitor';
+import BodyText from '../../BodyText';
 
 const MonitorButton = (props) => {
+  const {
+    play,
+    pauseActive,
+    pause,
+    stop,
+    stopActive,
+    alerts,
+    alertsDisabled,
+    ...otherProps,
+  } = props;
+
   let image;
   let text;
-  if (props.play) { image = playImg; text = 'Play'; }
-  if (props.pause) { image = pauseImg; text = 'Pause'; }
-  if (props.pauseActive) { image = pauseActiveImg; text = 'Pause'; }
-  if (props.stop) { image = stopImg; text = 'Stop'; }
-  if (props.stopActive) { image = stopActiveImg; text = 'Stop'; }
-  if (props.alerts) { image = alertsImg; text = 'Alerts'; }
-  if (props.alertsDisabled) { image = alertsDisabledImg; text = 'Alerts'; }
+  if (play) { image = playImg; text = 'Play'; }
+  if (pause) { image = pauseImg; text = 'Pause'; }
+  if (pauseActive) { image = pauseActiveImg; text = 'Pause'; }
+  if (stop) { image = stopImg; text = 'Stop'; }
+  if (stopActive) { image = stopActiveImg; text = 'Stop'; }
+  if (alerts) { image = alertsImg; text = 'Alerts'; }
+  if (alertsDisabled) { image = alertsDisabledImg; text = 'Alerts'; }
 
   return (
     <View>
       <TouchableOpacity
         activeOpacity={0.5}
-        {...props}
+        {...otherProps}
       >
         <Image style={styles.monitorBtn} source={image} />
       </TouchableOpacity>
-      <Text style={styles.btnText}>{text}</Text>
+      <BodyText style={styles._btnText}>{text}</BodyText>
     </View>
   );
 };

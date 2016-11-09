@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  // Alert,
+  Alert,
   Vibration,
   NativeModules,
   NativeAppEventEmitter,
@@ -95,7 +95,7 @@ class PostureMonitor extends Component {
         });
       } else {
         // TODO: Send to Error component (tbd)
-        // Alert.alert('Error', error.message);
+        Alert.alert('Error', error.message);
       }
     });
   }
@@ -107,7 +107,7 @@ class PostureMonitor extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
+        <HeadingText size={3} style={styles._timer}>05:00</HeadingText>
         <BodyText style={styles._heading}>SESSION TIME</BodyText>
         <Monitor />
         <View style={styles.monitorRatingContainer}>
@@ -116,7 +116,7 @@ class PostureMonitor extends Component {
         </View>
         <BodyText style={styles._monitorTitle}>POSTURE MONITOR</BodyText>
         <SecondaryText style={styles._sliderTitle}>
-          Tune up or down the Backbone's slouching detection
+          Tune up or down the Backbone's slouch detection
         </SecondaryText>
         <MonitorSlider onValueChange={(value) => this.setState({ slouch: value })} />
         <View style={styles.btnContainer}>

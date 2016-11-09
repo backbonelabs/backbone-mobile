@@ -10,28 +10,27 @@ import styles from '../.././../styles/posture/postureMonitor';
 import relativeDimensions from '../../../utils/relativeDimensions';
 
 const { widthDifference } = relativeDimensions;
+const responsiveWidth = 136 * widthDifference;
 
 const Monitor = () => (
   <View style={{ alignSelf: 'center' }}>
     <Svg
-      height="135"
-      width="275"
+      height={responsiveWidth}
+      width={responsiveWidth * 2}
     >
       <Defs>
-        <LinearGradient id="grad" x1="0" y1="0" x2="200" y2="0">
-          <Stop offset="0" stopColor="rgb(240,185,77)" stopOpacity="1" />
-          <Stop offset="1" stopColor="rgb(237,28,36)" stopOpacity="2" />
+        <LinearGradient id="grad" x1="0" y1="0" x2={250 * widthDifference} y2="0">
+          <Stop offset="0" stopColor="#F0B94D" stopOpacity="1" />
+          <Stop offset="1" stopColor="#ED1C24" stopOpacity="2" />
         </LinearGradient>
       </Defs>
       <Circle
-        cx="140"
-        cy="130"
+        cx={responsiveWidth}
+        cy={responsiveWidth}
         r={130 * widthDifference}
-        stroke="black"
-        strokeWidth="3.5"
+        stroke="#231F20"
+        strokeWidth={3 * widthDifference}
         fill="url(#grad)"
-        originY={100}
-        rotate={2}
       />
     </Svg>
     <View style={styles.monitorPointer}>
