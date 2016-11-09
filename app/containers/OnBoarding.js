@@ -101,15 +101,23 @@ class OnBoarding extends Component {
 
   /**
    * Opens and closes the selected data picker component
-   * @param {String} pickerType
+   * @param {String} pickerType Data picker to open. If undefined, the
+   *                            data pickers will be hidden
    */
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was inputting nickname
     Keyboard.dismiss();
 
-    // Open selected data picker if pickerType is passed in
-    // Close selected data picker if pickerType is undefined
-    this.setState({ pickerType: pickerType || null });
+    if (this.state.pickerType && pickerType && this.state.pickerType !== pickerType) {
+      // Switching between two different data pickers (height and weight) should
+      // first unmount the currently mounted picker components and then mount a new
+      // instance of the new pickers to ensure components start with a fresh state.
+      this.setState({ pickerType: null }, () => {
+        this.setState({ pickerType: pickerType || null });
+      });
+    } else {
+      this.setState({ pickerType: pickerType || null });
+    }
   }
 
   loadOnBoardingFlow() {
