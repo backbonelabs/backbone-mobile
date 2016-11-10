@@ -48,7 +48,7 @@ TitleBar.propTypes = {
   currentRoute: PropTypes.shape({
     title: PropTypes.string,
     showBackButton: PropTypes.bool,
-    rightComponent: PropTypes.element,
+    rightComponent: PropTypes.func,
   }),
   style: PropTypes.object,
 };
