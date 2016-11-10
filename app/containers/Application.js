@@ -78,6 +78,11 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       BackAndroid.addEventListener('hardwareBackPress', () => {
+        if (this.props.modal.show) {
+          // There is a modal being displayed, hide it
+          this.props.dispatch(appActions.hideFullModal());
+        }
+
         if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
           // There are subsequent routes after the initial route,
           // so pop the route stack to navigate one scene back
