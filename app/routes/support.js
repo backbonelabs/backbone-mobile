@@ -5,15 +5,21 @@ import Support from '../containers/Support';
 import supportActions from '../actions/support';
 import BodyText from '../components/BodyText';
 import Spinner from '../components/Spinner';
+import theme from '../styles/theme';
 
-const SupportSubmit = props => (
-  <TouchableOpacity
-    onPress={() => props.dispatch(supportActions.createTicket(props.supportMessage))}
-  >
-    {props.inProgress ?
-      <Spinner color="#FFFFFF" /> : <BodyText style={{ color: '#FFFFFF' }}>Send</BodyText>}
-  </TouchableOpacity>
-);
+const SupportSubmit = props => {
+  const textColor = props.supportMessage ? '#FFFFFF' : theme.disabledColor;
+  const text = <BodyText style={{ color: textColor }}>Send</BodyText>;
+
+  return props.supportMessage ? (
+    <TouchableOpacity
+      onPress={() => props.dispatch(supportActions.createTicket(props.supportMessage))}
+    >
+      {props.inProgress ?
+        <Spinner color="#FFFFFF" /> : text}
+    </TouchableOpacity>
+  ) : text;
+};
 
 SupportSubmit.propTypes = {
   dispatch: PropTypes.func,
