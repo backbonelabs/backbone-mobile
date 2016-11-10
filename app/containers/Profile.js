@@ -133,7 +133,6 @@ class Profile extends Component {
       email: user.email,
       pickerType: null,
     };
-    this.setPickerType = this.setPickerType.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
     this.saveData = this.saveData.bind(this);
     this.fieldInputBlurHandler = this.fieldInputBlurHandler.bind(this);
