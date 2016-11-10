@@ -34,7 +34,7 @@ const mapStateToProps = (state) => {
 
 export default {
   name: 'support',
-  title: 'Send us a message',
+  title: 'Talk to us',
   component: Support,
   showBackButton: true,
   rightComponent: connect(mapStateToProps)(SupportSubmit),
