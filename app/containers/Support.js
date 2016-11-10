@@ -63,6 +63,7 @@ class Support extends Component {
             style={styles.inputField}
             placeholder="Message here"
             multiline
+            autoFocus
             onChangeText={text => this.props.dispatch(supportActions.updateMessage(text))}
           />
         </Image>
