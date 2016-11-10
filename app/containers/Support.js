@@ -47,7 +47,6 @@ class Support extends Component {
       if (nextProps.support.errorMessage) {
         Alert.alert('Error', nextProps.support.errorMessage);
       } else {
-        Alert.alert('success');
         this.props.dispatch(appActions.showFullModal({
           onClose: this.props.navigator.pop,
           content: <ConfirmationMessage nickname={this.props.user.nickname} />,
