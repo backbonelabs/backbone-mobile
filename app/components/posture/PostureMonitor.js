@@ -107,8 +107,8 @@ class PostureMonitor extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <HeadingText size={3} style={styles._timer}>05:00</HeadingText>
-        <BodyText style={styles._heading}>SESSION TIME</BodyText>
+        <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
+        <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
         <Monitor />
         <View style={styles.monitorRatingContainer}>
           <BodyText style={styles._monitorPoor}>Poor</BodyText>

@@ -19,9 +19,9 @@ const Monitor = () => (
       width={responsiveWidth * 2}
     >
       <Defs>
-        <LinearGradient id="grad" x1="0" y1="0" x2={250 * widthDifference} y2="0">
-          <Stop offset="0" stopColor="#F0B94D" stopOpacity="1" />
-          <Stop offset="1" stopColor="#ED1C24" stopOpacity="2" />
+        <LinearGradient id="grad" x1="0" y1="0" x2={responsiveWidth * 2} y2="0">
+          <Stop offset="0" stopColor="#F0B24B" stopOpacity="1" />
+          <Stop offset="1" stopColor="#ED1C24" stopOpacity="1" />
         </LinearGradient>
       </Defs>
       <Circle

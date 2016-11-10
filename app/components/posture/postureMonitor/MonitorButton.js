@@ -36,7 +36,7 @@ const MonitorButton = (props) => {
   return (
     <View>
       <TouchableOpacity
-        activeOpacity={0.5}
+        activeOpacity={0.4}
         {...otherProps}
       >
         <Image style={styles.monitorBtn} source={image} />
