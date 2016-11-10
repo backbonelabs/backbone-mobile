@@ -27,41 +27,41 @@ const {
 
 const ProfileFieldTitle = props => (
   <View style={styles.profileFieldTitle}>
-    <BodyText>{props.text}</BodyText>
+    <BodyText>{props.title}</BodyText>
     { props.edited && <SecondaryText> {props.editedText}</SecondaryText> }
   </View>
 );
 
 ProfileFieldTitle.propTypes = {
-  text: PropTypes.string,
+  title: PropTypes.string,
   edited: PropTypes.bool,
   editedText: PropTypes.string,
 };
 
 const ProfileField = props => (
   <TouchableOpacity style={styles.profileField} onPress={props.onPress}>
-    <ProfileFieldTitle text={props.text} edited={props.edited} editedText="(edited)" />
-    <View style={styles.profileFieldInfo}>
-      <SecondaryText style={styles._profileText}>{props.info}</SecondaryText>
+    <ProfileFieldTitle title={props.title} edited={props.edited} editedText="(edited)" />
+    <View style={styles.profileFieldData}>
+      <SecondaryText style={styles._profileText}>{props.profileData}</SecondaryText>
     </View>
   </TouchableOpacity>
 );
 
 ProfileField.propTypes = {
-  text: PropTypes.any,
+  title: PropTypes.any,
   edited: PropTypes.bool,
   onPress: PropTypes.func,
-  info: PropTypes.string,
+  profileData: PropTypes.string,
 };
 
 const ProfileFieldInput = props => (
   <View style={styles.profileField}>
     <ProfileFieldTitle
-      text={props.text}
+      title={props.title}
       edited={props.edited}
       editedText={props.editedText || '(edited)'}
     />
-    <View style={styles.profileFieldInfo}>
+    <View style={styles.profileFieldData}>
       <Input
         style={styles.profileFieldInput}
         {...props.extraProps}
@@ -83,7 +83,7 @@ ProfileFieldInput.propTypes = {
   blurHandler: PropTypes.func,
   edited: PropTypes.bool,
   editedText: PropTypes.string,
-  text: PropTypes.string,
+  title: PropTypes.string,
 };
 
 class Profile extends Component {
@@ -303,7 +303,7 @@ class Profile extends Component {
           <View style={styles.spacer} />
           <View style={styles.profileFieldContainer}>
             <ProfileFieldInput
-              text="Nickname"
+              title="Nickname"
               edited={nickname !== user.nickname}
               field="nickname"
               value={nickname}
@@ -315,31 +315,31 @@ class Profile extends Component {
               onPress={() => this.setState({
                 gender: constants.gender.male === gender ? 2 : 1,
               })}
-              text="Gender"
+              title="Gender"
               edited={gender !== user.gender}
-              info={constants.gender.male === gender ? 'Male' : 'Female'}
+              profileData={constants.gender.male === gender ? 'Male' : 'Female'}
             />
             <ProfileField
               onPress={() => this.setPickerType('birthdate')}
-              text="Birthdate"
+              title="Birthdate"
               edited={birthdate.getTime() !== new Date(user.birthdate).getTime()}
-              info={`${constants.months[birthdate.getMonth()]} ${
+              profileData={`${constants.months[birthdate.getMonth()]} ${
                   birthdate.getDate()}, ${birthdate.getFullYear()}`}
             />
             <ProfileField
               onPress={() => this.setPickerType('height')}
-              text="Height"
+              title="Height"
               edited={height.initialValue !== height.value}
-              info={this._setHeightLabel(height.value)}
+              profileData={this._setHeightLabel(height.value)}
             />
             <ProfileField
               onPress={() => this.setPickerType('weight')}
-              text="Height"
+              title="Height"
               edited={weight.initialValue !== weight.value}
-              info={this._setWeightLabel(weight.value)}
+              profileData={this._setWeightLabel(weight.value)}
             />
             <ProfileFieldInput
-              text="Email"
+              title="Email"
               edited={email !== user.email || !user.isConfirmed}
               editedText={!user.isConfirmed ? '(unconfirmed)' : ''}
               field="email"

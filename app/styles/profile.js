@@ -30,7 +30,7 @@ export default EStyleSheet.create({
   profileText: {
     color: 'black',
   },
-  profileFieldInfo: {
+  profileFieldData: {
     flex: 0.61,
     alignItems: 'flex-end',
   },
