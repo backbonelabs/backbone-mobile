@@ -70,8 +70,8 @@ static BOOL shouldSendNotifications;
       // Emit posture data event before time variables are cleared
       [self emitPostureData];
       DLog(@"BZZT!");
-      MBLMetaWear *device = [DeviceManagementService getDevice];
-      [device.hapticBuzzer startHapticWithDutyCycleAsync:248 pulseWidth:500 completion:nil];
+//      MBLMetaWear *device = [DeviceManagementService getDevice];
+//      [device.hapticBuzzer startHapticWithDutyCycleAsync:248 pulseWidth:500 completion:nil];
       // Check if a notification should be posted
       if (shouldSendNotifications) {
         // Post local notification to phone
