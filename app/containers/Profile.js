@@ -26,7 +26,7 @@ const {
 } = constants;
 
 const ProfileFieldTitle = props => (
-  <View style={{ flex: 0.39, flexDirection: 'row', alignItems: 'center' }}>
+  <View style={styles.profileFieldTitle}>
     <BodyText>{props.text}</BodyText>
     { props.edited && <SecondaryText> {props.editedText}</SecondaryText> }
   </View>
@@ -39,9 +39,9 @@ ProfileFieldTitle.propTypes = {
 };
 
 const ProfileField = props => (
-  <TouchableOpacity style={styles.field} onPress={props.onPress}>
+  <TouchableOpacity style={styles.profileField} onPress={props.onPress}>
     <ProfileFieldTitle text={props.text} edited={props.edited} editedText="(edited)" />
-    <View style={{ flex: 0.61, alignItems: 'flex-end' }}>
+    <View style={styles.profileFieldInfo}>
       <SecondaryText style={styles._profileText}>{props.info}</SecondaryText>
     </View>
   </TouchableOpacity>
@@ -55,18 +55,15 @@ ProfileField.propTypes = {
 };
 
 const ProfileFieldInput = props => (
-  <View style={styles.field}>
+  <View style={styles.profileField}>
     <ProfileFieldTitle
       text={props.text}
       edited={props.edited}
       editedText={props.editedText || '(edited)'}
     />
-    <View style={{ flex: 0.61 }}>
+    <View style={styles.profileFieldInfo}>
       <Input
-        style={{
-          borderColor: 'transparent',
-          textAlign: 'right',
-        }}
+        style={styles.profileFieldInput}
         {...props.extraProps}
         onBlur={() => props.blurHandler(props.field)}
         value={props.value}
@@ -304,7 +301,7 @@ class Profile extends Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
           <View style={styles.spacer} />
-          <View style={styles.profileFields}>
+          <View style={styles.profileFieldContainer}>
             <ProfileFieldInput
               text="Nickname"
               edited={nickname !== user.nickname}

@@ -12,21 +12,34 @@ export default EStyleSheet.create({
     height: 667 * relativeDimensions.heightDifference,
   },
   spacer: Object.assign({ flex: 0.09 }, border),
-  profileFields: Object.assign({
+  profileFieldContainer: Object.assign({
     flex: 0.5,
   }, border),
-  field: Object.assign({
+  profileFieldTitle: {
+    flex: 0.39,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileField: Object.assign({
     flex: 0.16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 10 * relativeDimensions.widthDifference,
   }, border),
   profileText: {
     color: 'black',
   },
+  profileFieldInfo: {
+    flex: 0.61,
+    alignItems: 'flex-end',
+  },
+  profileFieldInput: {
+    borderColor: 'transparent',
+    textAlign: 'right',
+  },
   bottomSpacerContainer: {
     flex: 0.41,
-    paddingTop: 20,
+    paddingTop: 20 * relativeDimensions.heightDifference,
   },
 });
