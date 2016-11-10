@@ -9,7 +9,7 @@ const TitleBar = (props) => {
   const routeStack = props.navigator.getCurrentRoutes();
   const previousRoute = routeStack.length >= 2 ? routeStack[routeStack.length - 2] : null;
   const leftButton = previousRoute && props.currentRoute.showBackButton ? (
-    <TouchableOpacity style={styles.sideButtons} onPress={props.navigator.pop}>
+    <TouchableOpacity style={styles.leftComponent} onPress={props.navigator.pop}>
       <Icon
         name="angle-left"
         style={styles.buttonIcon}
@@ -26,9 +26,9 @@ const TitleBar = (props) => {
   // so it can perform navigation functions
   const RightComponent = props.currentRoute.rightComponent;
   const rightButton = RightComponent ? (
-    <TouchableOpacity style={styles.sideButtons}>
+    <View style={styles.rightComponent}>
       <RightComponent navigator={props.navigator} />
-    </TouchableOpacity>
+    </View>
   ) : undefined;
 
   // TitleBar will be visible, i.e., extend pass the status bar, only if the route has a title
