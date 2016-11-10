@@ -5,6 +5,7 @@ export default EStyleSheet.create({
   inputField: {
     flex: 1,
     fontSize: '1rem',
+    paddingHorizontal: 10 * relativeDimensions.widthDifference,
     textAlignVertical: 'top', // Android
   },
   confirmationMessageContainer: {
