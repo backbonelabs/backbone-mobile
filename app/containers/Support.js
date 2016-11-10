@@ -11,12 +11,15 @@ import appActions from '../actions/app';
 import supportActions from '../actions/support';
 import HeadingText from '../components/HeadingText';
 import gradientBackground20 from '../images/gradientBackground20.png';
+import sendout from '../images/settings/sendout.png';
 import styles from '../styles/support';
 
 const ConfirmationMessage = props => (
   <View style={styles.confirmationMessageContainer}>
-    <HeadingText size={3} style={styles._confirmationMessageText}>{props.nickname},</HeadingText>
-    <HeadingText size={3} style={styles._confirmationMessageText}>help is on the way!</HeadingText>
+    <Image source={sendout} style={styles.confirmationMessageImage} />
+    <HeadingText size={3} style={styles._confirmationMessageText}>
+      {props.nickname}, help is on the way!
+    </HeadingText>
     <HeadingText size={3} style={[{ marginTop: 16 }, styles._confirmationMessageText]}>
       We'll be in touch
     </HeadingText>
