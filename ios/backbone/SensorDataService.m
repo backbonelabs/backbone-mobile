@@ -1,4 +1,5 @@
 #import "SensorDataService.h"
+#import "BluetoothService.h"
 #import "DeviceManagementService.h"
 #import "ActivityModule.h"
 #import "SensorNotifications.h"
@@ -30,8 +31,7 @@
  */
 @implementation SensorDataService
 
-- (id)initWithDevice:(MBLMetaWear *)device {
-  self.device = device;
+- (id)initService {
   self.activeActivities = [[NSMutableSet alloc] init];
   self.activeSensors = [[NSMutableSet alloc] init];
   return self;
@@ -45,13 +45,13 @@
  */
 + (SensorDataService *)getSensorDataService {
   static SensorDataService *_sharedInstance = nil;
-  MBLMetaWear *device = [DeviceManagementService getDevice];
+  CBPeripheral *device = BluetoothServiceInstance.currentDevice;
   if (!device) {
     @throw [NSException exceptionWithName:@"DeviceNotConnectedException" reason:@"Not connected to a device" userInfo:nil];
   } else {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-      _sharedInstance = [[self alloc] initWithDevice:device];
+      _sharedInstance = [[self alloc] initService];
     });
     return _sharedInstance;
   }
@@ -81,19 +81,19 @@
     if ([activityModule.sensor isEqualToString:@"accelerometer"]) {
       // accelerometer
       DLog(@"Enabling accelerometer");
-      MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
-      accelerometerBMI160.sampleFrequency = 1.56;
-      [accelerometerBMI160.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
-        // Post notification with the RMS, x, y, and z values from the accelerometer event
-        [[NSNotificationCenter defaultCenter] postNotificationName:AccelerometerNotification
-                                                            object:sensorDataService
-                                                          userInfo:@{
-                                                                     @"rms": [NSNumber numberWithDouble:obj.RMS],
-                                                                     @"x": [NSNumber numberWithDouble:obj.x],
-                                                                     @"y": [NSNumber numberWithDouble:obj.y],
-                                                                     @"z": [NSNumber numberWithDouble:obj.z]
-                                                                     }];
-      }];
+//      MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
+//      accelerometerBMI160.sampleFrequency = 1.56;
+//      [accelerometerBMI160.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData * _Nullable obj, NSError * _Nullable error) {
+//        // Post notification with the RMS, x, y, and z values from the accelerometer event
+//        [[NSNotificationCenter defaultCenter] postNotificationName:AccelerometerNotification
+//                                                            object:sensorDataService
+//                                                          userInfo:@{
+//                                                                     @"rms": [NSNumber numberWithDouble:obj.RMS],
+//                                                                     @"x": [NSNumber numberWithDouble:obj.x],
+//                                                                     @"y": [NSNumber numberWithDouble:obj.y],
+//                                                                     @"z": [NSNumber numberWithDouble:obj.z]
+//                                                                     }];
+//      }];
     }
     else if ([activityModule.sensor isEqualToString:@"accelerometerBMI160"]) {
       // accelerometer
@@ -101,13 +101,13 @@
       [[UIApplication sharedApplication] cancelAllLocalNotifications];
       
       if ([LocalNotificationManager scheduleNotification:activityModule.name]) {
-        MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
-        
-        [accelerometerBMI160.stepEvent startNotificationsWithHandlerAsync:^(MBLNumericData * _Nullable obj, NSError * _Nullable error) {
-          [[NSNotificationCenter defaultCenter] postNotificationName:AccelerometerBMI160Notification
-                                                              object:sensorDataService
-                                                            userInfo:nil];
-        }];
+//        MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
+//        
+//        [accelerometerBMI160.stepEvent startNotificationsWithHandlerAsync:^(MBLNumericData * _Nullable obj, NSError * _Nullable error) {
+//          [[NSNotificationCenter defaultCenter] postNotificationName:AccelerometerBMI160Notification
+//                                                              object:sensorDataService
+//                                                            userInfo:nil];
+//        }];
       }
     }
 
@@ -164,19 +164,19 @@
       if ([listeningToSensor isEqualToString:@"accelerometer"]) {
         // Stop notifications on accelerometer
         DLog(@"Disabling notifications on accelerometer");
-        [sensorDataService.device.accelerometer.dataReadyEvent stopNotificationsAsync];
+//        [sensorDataService.device.accelerometer.dataReadyEvent stopNotificationsAsync];
       }
       else if ([listeningToSensor isEqualToString:@"gyro"]) {
         // Stop notifications on gyroscope
         DLog(@"Disabling notifications on gyroscope");
-        [sensorDataService.device.gyro.dataReadyEvent stopNotificationsAsync];
+//        [sensorDataService.device.gyro.dataReadyEvent stopNotificationsAsync];
       }
       else if ([listeningToSensor isEqualToString:@"accelerometerBMI160"]) {
         DLog(@"Disabling notifications on accelerometerBMI160");
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
         
-        MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
-        [accelerometerBMI160.stepEvent stopNotificationsAsync];
+//        MBLAccelerometerBMI160 *accelerometerBMI160 = (MBLAccelerometerBMI160*)sensorDataService.device.accelerometer;
+//        [accelerometerBMI160.stepEvent stopNotificationsAsync];
       }
     }
   }];
