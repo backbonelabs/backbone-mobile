@@ -254,7 +254,7 @@ class Profile extends Component {
   /**
    * Sets input value to user profile field's value if field is empty or, if field
    * is an email, fails email validation
-   * @param {String}  field  Property key
+   * @param {String}  field  Object key for accessing state/prop value
    */
   fieldInputBlurHandler(field) {
     if (!this.state[field]) {
