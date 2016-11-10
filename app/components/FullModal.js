@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Image, View, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { isFunction } from 'lodash';
 import appActions from '../actions/app';
 import gradientBackground20 from '../images/gradientBackground20.png';
 import styles from '../styles/fullModal';
@@ -12,7 +13,9 @@ const FullModal = props => (
       <TouchableOpacity
         onPress={() => {
           props.dispatch(appActions.hideFullModal());
-          props.onClose();
+          if (isFunction(props.onClose)) {
+            props.onClose();
+          }
         }}
       >
         <Icon
