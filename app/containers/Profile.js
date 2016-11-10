@@ -334,7 +334,7 @@ class Profile extends Component {
             />
             <ProfileField
               onPress={() => this.setPickerType('weight')}
-              title="Height"
+              title="Weight"
               edited={weight.initialValue !== weight.value}
               profileData={this._setWeightLabel(weight.value)}
             />
