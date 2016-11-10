@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Alert,
@@ -8,13 +8,16 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { isFunction } from 'lodash';
-import Button from '../Button';
 import styles from '../../styles/posture/postureMonitor';
+import HeadingText from '../../components/HeadingText';
+import BodyText from '../../components/BodyText';
+import SecondaryText from '../../components/SecondaryText';
+import MonitorButton from './postureMonitor/MonitorButton';
+import Monitor from './postureMonitor/Monitor';
+import MonitorSlider from './postureMonitor/MonitorSlider';
 
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
-
-const { PropTypes } = React;
 
 class PostureMonitor extends Component {
   static propTypes = {
@@ -32,6 +35,8 @@ class PostureMonitor extends Component {
     super();
     this.state = {
       monitoring: null,
+      slouch: 0,
+      level: 90,
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
@@ -102,16 +107,25 @@ class PostureMonitor extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button
-          text="Start"
-          onPress={this.enablePostureActivity}
-          disabled={this.state.monitoring}
-        />
-        <Button
-          text="Stop"
-          onPress={this.disablePostureActivity}
-          disabled={!this.state.monitoring}
-        />
+        <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
+        <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
+        <Monitor />
+        <View style={styles.monitorRatingContainer}>
+          <BodyText style={styles._monitorPoor}>Poor</BodyText>
+          <BodyText style={styles._monitorGood}>Good</BodyText>
+        </View>
+        <BodyText style={styles._monitorTitle}>POSTURE MONITOR</BodyText>
+        <SecondaryText style={styles._sliderTitle}>
+          Tune up or down the Backbone's slouch detection
+        </SecondaryText>
+        <MonitorSlider onValueChange={(value) => this.setState({ slouch: value })} />
+        <View style={styles.btnContainer}>
+          { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
+            <MonitorButton play onPress={this.enablePostureActivity} />
+          }
+          <MonitorButton alertsDisabled />
+          <MonitorButton stop onPress={this.disablePostureActivity} />
+        </View>
       </View>
     );
   }
@@ -123,4 +137,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(PostureMonitor);
-
