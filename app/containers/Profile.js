@@ -219,6 +219,7 @@ class Profile extends Component {
   /**
    * Convert the measurement value into an appropriate formatted "label"
    * @param {Object}  value  Current height value
+   * @return {String}  Returns a formatted height measurement string
    */
   _setHeightLabel(value) {
     const { user } = this.props.user;
@@ -231,7 +232,8 @@ class Profile extends Component {
 
   /**
    * Convert the measurement value into an appropriate formatted "label"
-   * @param {Object}  value  Current weight value
+   * @param  {Object}  value  Current weight value
+   * @return {String}  Returns a formatted weight measurement string
    */
   _setWeightLabel(value) {
     return `${value}${constants.weightUnitIdToLabel[this.state.weight.unit].toLowerCase()}`;
