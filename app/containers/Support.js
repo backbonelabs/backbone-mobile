@@ -2,23 +2,53 @@ import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   TextInput,
+  View,
 } from 'react-native';
 import { connect } from 'react-redux';
+import appActions from '../actions/app';
 import supportActions from '../actions/support';
+import HeadingText from '../components/HeadingText';
+import styles from '../styles/support';
+
+const ConfirmationMessage = props => (
+  <View style={styles.confirmationMessageContainer}>
+    <HeadingText size={3} style={styles._confirmationMessageText}>{props.nickname},</HeadingText>
+    <HeadingText size={3} style={styles._confirmationMessageText}>help is on the way!</HeadingText>
+    <HeadingText size={3} style={[{ marginTop: 16 }, styles._confirmationMessageText]}>
+      We'll be in touch
+    </HeadingText>
+  </View>
+);
+
+ConfirmationMessage.propTypes = {
+  nickname: PropTypes.string,
+};
 
 class Support extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
-    inProgress: PropTypes.bool,
-    errorMessage: PropTypes.string,
+    navigator: PropTypes.shape({
+      pop: PropTypes.func,
+    }),
+    support: PropTypes.shape({
+      inProgress: PropTypes.bool,
+      errorMessage: PropTypes.string,
+    }),
+    user: PropTypes.shape({
+      nickname: PropTypes.string,
+    }),
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.inProgress && !nextProps.inProgress) {
-      if (nextProps.errorMessage) {
-        Alert.alert('Error', nextProps.errorMessage);
+    if (this.props.support.inProgress && !nextProps.support.inProgress) {
+      if (nextProps.support.errorMessage) {
+        Alert.alert('Error', nextProps.support.errorMessage);
       } else {
         Alert.alert('success');
+        this.props.dispatch(appActions.showFullModal({
+          onClose: this.props.navigator.pop,
+          content: <ConfirmationMessage nickname={this.props.user.nickname} />,
+        }));
       }
     }
   }
@@ -26,7 +56,7 @@ class Support extends Component {
   render() {
     return (
       <TextInput
-        style={{ flex: 1, fontSize: 16 }}
+        style={styles.inputField}
         placeholder="Message here"
         multiline
         onChangeText={text => this.props.dispatch(supportActions.updateMessage(text))}
@@ -36,8 +66,8 @@ class Support extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { support } = state;
-  return support;
+  const { support, user: { user } } = state;
+  return { support, user };
 };
 
 export default connect(mapStateToProps)(Support);

@@ -6,6 +6,10 @@ export default (state = {
   inProgress: false,
   isConnected: false,
   errorMessage: null,
+  modal: {
+    show: false,
+    content: null,
+  },
 }, action) => {
   switch (action.type) {
     case 'UPDATE_BLUETOOTH_STATE': {
@@ -53,6 +57,27 @@ export default (state = {
         ...state,
         inProgress: false,
         errorMessage: action.error.message,
+      };
+    }
+    case 'SHOW_FULL_MODAL': {
+      const { content, onClose } = action.payload;
+      return {
+        ...state,
+        modal: {
+          show: true,
+          content,
+          onClose,
+        },
+      };
+    }
+    case 'HIDE_FULL_MODAL': {
+      return {
+        ...state,
+        modal: {
+          show: false,
+          content: null,
+          onClose: null,
+        },
       };
     }
     default:

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   View,
@@ -21,6 +21,7 @@ import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
 import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
+import FullModal from '../components/FullModal';
 import TitleBar from '../components/TitleBar';
 import Menu from '../components/Menu';
 import routes from '../routes';
@@ -50,7 +51,12 @@ const isiOS = Platform.OS === 'ios';
 
 class Application extends Component {
   static propTypes = {
-    dispatch: React.PropTypes.func,
+    dispatch: PropTypes.func,
+    modal: PropTypes.shape({
+      show: PropTypes.bool,
+      content: PropTypes.node,
+      onClose: PropTypes.func,
+    }),
   };
 
   constructor() {
@@ -203,7 +209,9 @@ class Application extends Component {
       </View>
     );
 
-    return (
+    return this.props.modal.show ? (
+      <FullModal onClose={this.props.modal.onClose}>{this.props.modal.content}</FullModal>
+    ) : (
       <View style={{ flex: 1 }}>
         <TitleBar
           navigator={this.navigator}
@@ -261,4 +269,9 @@ class Application extends Component {
   }
 }
 
-export default connect()(Application);
+const mapStateToProps = (state) => {
+  const { app } = state;
+  return app;
+};
+
+export default connect(mapStateToProps)(Application);
