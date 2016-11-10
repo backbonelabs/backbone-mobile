@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
+  Image,
+  ScrollView,
   TextInput,
   View,
 } from 'react-native';
@@ -8,6 +10,7 @@ import { connect } from 'react-redux';
 import appActions from '../actions/app';
 import supportActions from '../actions/support';
 import HeadingText from '../components/HeadingText';
+import gradientBackground20 from '../images/gradientBackground20.png';
 import styles from '../styles/support';
 
 const ConfirmationMessage = props => (
@@ -55,12 +58,16 @@ class Support extends Component {
 
   render() {
     return (
-      <TextInput
-        style={styles.inputField}
-        placeholder="Message here"
-        multiline
-        onChangeText={text => this.props.dispatch(supportActions.updateMessage(text))}
-      />
+      <ScrollView>
+        <Image source={gradientBackground20}>
+          <TextInput
+            style={styles.inputField}
+            placeholder="Message here"
+            multiline
+            onChangeText={text => this.props.dispatch(supportActions.updateMessage(text))}
+          />
+        </Image>
+      </ScrollView>
     );
   }
 }
