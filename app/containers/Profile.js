@@ -20,6 +20,10 @@ import SecondaryText from '../components/SecondaryText';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import gradientBackground20 from '../images/gradientBackground20.png';
 
+/* eslint-disable max-len */
+const emailRegex = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
+/* eslint-disable max-len */
+
 const {
   height: heightConstants,
   weight: weightConstants,
@@ -63,7 +67,7 @@ const ProfileFieldInput = props => (
     />
     <View style={styles.profileFieldData}>
       <Input
-        style={styles.profileFieldInput}
+        style={styles._profileFieldInput}
         {...props.extraProps}
         onBlur={() => props.blurHandler(props.field)}
         value={props.value}
@@ -212,7 +216,10 @@ class Profile extends Component {
     });
   }
 
-  // Convert the measurement value into appropriate format
+  /**
+   * Convert the measurement value into an appropriate formatted "label"
+   * @param {Object}  value  Current height value
+   */
   _setHeightLabel(value) {
     const { user } = this.props.user;
     const equalsInch = user.heightUnitPreference === heightConstants.units.IN;
@@ -222,7 +229,10 @@ class Profile extends Component {
     return equalsInch ? inchLabel : centimeterLabel;
   }
 
-  // Convert the measurement value into appropriate format
+  /**
+   * Convert the measurement value into an appropriate formatted "label"
+   * @param {Object}  value  Current weight value
+   */
   _setWeightLabel(value) {
     return `${value}${constants.weightUnitIdToLabel[this.state.weight.unit].toLowerCase()}`;
   }
@@ -241,10 +251,15 @@ class Profile extends Component {
     this.setState(newState);
   }
 
-  // Upon blurring an input field, if it fails validation,
-  // reset to details already on user profile
+  /**
+   * Sets input value to user profile field's value if field is empty or, if field
+   * is an email, fails email validation
+   * @param {String}  field  Property key
+   */
   fieldInputBlurHandler(field) {
     if (!this.state[field]) {
+      this.updateProfile(field, this.props.user.user[field]);
+    } else if (field === 'email' && !emailRegex.test(this.state[field])) {
       this.updateProfile(field, this.props.user.user[field]);
     }
   }
