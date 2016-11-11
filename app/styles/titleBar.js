@@ -11,6 +11,11 @@ const baseTitleBarStyles = {
   backgroundColor: theme.primaryColor,
 };
 
+const baseSideButtonStyles = {
+  alignItems: 'center',
+  paddingHorizontal: 6 * widthDifference,
+};
+
 export default EStyleSheet.create({
   $leftButtonIconSize: 28 * heightDifference,
   visibleTitleBar: {
@@ -32,10 +37,13 @@ export default EStyleSheet.create({
   sideContainersText: {
     color: '#FFFFFF',
   },
-  sideButtons: {
+  leftComponent: {
+    ...baseSideButtonStyles,
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 6 * widthDifference,
+  },
+  rightComponent: {
+    ...baseSideButtonStyles,
+    flexDirection: 'row-reverse',
   },
   buttonIcon: {
     color: '#FFFFFF',
