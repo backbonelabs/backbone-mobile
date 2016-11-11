@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Switch,
-  ScrollView,
   Slider,
   Alert,
 } from 'react-native';
@@ -162,7 +161,7 @@ class Alerts extends Component {
     const { user } = this.props;
 
     return (
-      <ScrollView>
+      <View>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
           <View style={styles.spacerContainer} />
           <VibrationToggle
@@ -185,7 +184,7 @@ class Alerts extends Component {
             </SecondaryText>
           </View>
         </Image>
-      </ScrollView>
+      </View>
     );
   }
 }
