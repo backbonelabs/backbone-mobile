@@ -6,7 +6,6 @@ const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   button: {
-    flex: 1,
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
     width: 150 * widthDifference,
