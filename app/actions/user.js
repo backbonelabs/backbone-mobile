@@ -44,6 +44,11 @@ const updateUserSettingsError = error => ({
   error: true,
 });
 
+const prepareUserUpdate = payload => ({
+  type: 'PREPARE_USER_UPDATE',
+  payload,
+});
+
 export default {
   fetchUser() {
     return (dispatch, getState) => {
@@ -151,4 +156,5 @@ export default {
         ));
     };
   },
+  prepareUserUpdate,
 };
