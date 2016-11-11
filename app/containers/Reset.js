@@ -94,7 +94,8 @@ class Reset extends Component {
                       placeholder="Email"
                       keyboardType="email-address"
                       onChangeText={this.onEmailChange}
-                      onSubmitEditing={(!email || !validEmail) ? null : this.sendPasswordResetRequest}
+                      onSubmitEditing={(!email ||
+                        !validEmail) ? null : this.sendPasswordResetRequest}
                       autoCorrect={false}
                       returnKeyType="go"
                       {...emailIconProps}
