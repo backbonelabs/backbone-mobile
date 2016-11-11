@@ -161,30 +161,28 @@ class Alerts extends Component {
     const { user } = this.props;
 
     return (
-      <View>
-        <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <View style={styles.spacerContainer} />
-          <VibrationToggle
-            user={user}
-            updateUserSettings={this.updateUserSettings}
-            text="Backbone Vibration"
-            settingName="backboneVibration"
-          />
-          <VibrationSettings user={user} updateUserSettings={this.updateUserSettings} />
-          <VibrationToggle
-            user={user}
-            updateUserSettings={this.updateUserSettings}
-            text="Phone Vibration"
-            settingName="phoneVibration"
-          />
-          <View style={styles.batteryLifeWarningContainer}>
-            <SecondaryText style={styles._batteryLifeWarningText}>
-              Increasing the vibration strength and pattern of
-              your Backbone will decrease the battery life
-            </SecondaryText>
-          </View>
-        </Image>
-      </View>
+      <Image source={gradientBackground20} style={styles.backgroundImage}>
+        <View style={styles.spacerContainer} />
+        <VibrationToggle
+          user={user}
+          updateUserSettings={this.updateUserSettings}
+          text="Backbone Vibration"
+          settingName="backboneVibration"
+        />
+        <VibrationSettings user={user} updateUserSettings={this.updateUserSettings} />
+        <VibrationToggle
+          user={user}
+          updateUserSettings={this.updateUserSettings}
+          text="Phone Vibration"
+          settingName="phoneVibration"
+        />
+        <View style={styles.batteryLifeWarningContainer}>
+          <SecondaryText style={styles._batteryLifeWarningText}>
+            Increasing the vibration strength and pattern of
+            your Backbone will decrease the battery life
+          </SecondaryText>
+        </View>
+      </Image>
     );
   }
 }
