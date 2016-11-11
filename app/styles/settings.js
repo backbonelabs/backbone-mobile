@@ -1,20 +1,21 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
+const { widthDifference, heightDifference } = relativeDimensions;
+
+const bottomBorder = {
+  borderBottomWidth: 1,
+  borderColor: '#EEEEEE',
+};
+
 const settingsHeader = {
   justifyContent: 'flex-end',
-  borderBottomWidth: 1,
-  borderColor: '#EEEEEE',
-  paddingLeft: 15 * relativeDimensions.widthDifference,
-  paddingBottom: 5 * relativeDimensions.heightDifference,
+  ...bottomBorder,
+  paddingLeft: 15 * widthDifference,
+  paddingBottom: 5 * heightDifference,
 };
 
-const border = {
-  borderBottomWidth: 1,
-  borderColor: '#EEEEEE',
-};
-
-const positioning = {
+const centerRowItems = {
   flexDirection: 'row',
   alignItems: 'center',
 };
@@ -26,32 +27,45 @@ const absoluteCenter = {
 
 export default EStyleSheet.create({
   backgroundImage: {
-    width: 375 * relativeDimensions.widthDifference,
-    height: 667 * relativeDimensions.heightDifference,
+    width: '100%',
+    height: '100%',
   },
-  sensorSettingsContainer: Object.assign({ flex: 0.18, flexDirection: 'row' }, border),
-  sensorIconContainer: Object.assign({ flex: 0.35 }, absoluteCenter),
+  sensorSettingsContainer: {
+    flex: 0.18,
+    flexDirection: 'row',
+    ...bottomBorder,
+  },
+  sensorIconContainer: {
+    flex: 0.35,
+    ...absoluteCenter,
+  },
   sensorIcon: {
-    width: 70 * relativeDimensions.widthDifference,
-    height: 59 * relativeDimensions.heightDifference,
+    width: 70 * widthDifference,
+    height: 59 * heightDifference,
     resizeMode: 'contain',
   },
   sensorText: {
     flex: 0.52,
     justifyContent: 'center',
   },
-  batteryInfo: Object.assign({ marginVertical: 3 }, positioning),
+  batteryInfo: {
+    marginVertical: 3 * heightDifference,
+    ...centerRowItems,
+  },
   batteryText: {
     fontSize: 13,
-    color: 'black',
+    color: '$primaryFontColor',
   },
   batteryIcon: {
-    width: 24 * relativeDimensions.widthDifference,
-    height: 13 * relativeDimensions.heightDifference,
-    marginRight: 3 * relativeDimensions.widthDifference,
+    width: 24 * widthDifference,
+    height: 13 * heightDifference,
+    marginRight: 3 * widthDifference,
     resizeMode: 'contain',
   },
-  arrow: Object.assign({ flex: 0.13 }, absoluteCenter),
+  arrow: {
+    flex: 0.13,
+    ...absoluteCenter,
+  },
   settingsIcon: {
     flex: 0.15,
     alignItems: 'center',
@@ -59,13 +73,26 @@ export default EStyleSheet.create({
   settingsText: {
     flex: 0.72,
   },
-  accountRemindersContainer: Object.assign({ flex: 0.32 }, border),
-  accountRemindersHeader: Object.assign({ flex: 0.25 }, settingsHeader),
-  accountRemindersSettingContainer: Object.assign({ flex: 0.25 }, positioning, border),
+  accountRemindersContainer: {
+    flex: 0.32,
+    ...bottomBorder,
+  },
+  accountRemindersHeader: {
+    flex: 0.25,
+    ...settingsHeader,
+  },
+  accountRemindersSettingContainer: {
+    flex: 0.25,
+    ...centerRowItems,
+    ...bottomBorder,
+  },
   helpContainer: {
     flex: 0.23,
   },
-  notificationsContainer: Object.assign({ flex: 0.26 }, positioning),
+  notificationsContainer: {
+    flex: 0.26,
+    ...centerRowItems,
+  },
   notificationsText: {
     flex: 0.65,
   },
@@ -73,13 +100,18 @@ export default EStyleSheet.create({
     flex: 0.2,
     alignItems: 'center',
   },
-  helpSettingsHeader: Object.assign({ flex: 0.33 }, settingsHeader),
-  helpSettingContainer: Object.assign({ flex: 0.34 }, positioning, border),
+  helpSettingsHeader: {
+    flex: 0.33,
+    ...settingsHeader,
+  },
+  helpSettingContainer: {
+    flex: 0.34,
+    ...centerRowItems,
+    ...bottomBorder,
+  },
   buttonContainer: {
     flex: 0.27,
     justifyContent: 'center',
-  },
-  button: {
-    alignSelf: 'center',
+    alignItems: 'center',
   },
 });

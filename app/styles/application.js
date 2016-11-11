@@ -1,6 +1,8 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
+const { widthDifference, heightDifference } = relativeDimensions;
+
 const navButton = {
   width: '$iconButtonSize',
   height: '$iconButtonSize',
@@ -9,14 +11,20 @@ const navButton = {
 };
 
 export default EStyleSheet.create({
-  leftButton: Object.assign({}, navButton, { paddingLeft: '1.5%' }),
-  rightButton: Object.assign({}, navButton, { paddingRight: '1.5%' }),
+  leftButton: {
+    ...navButton,
+    paddingLeft: '1.5%',
+  },
+  rightButton: {
+    ...navButton,
+    paddingRight: '1.5%',
+  },
   leftButtonIcon: {
     alignSelf: 'center',
     color: '$primaryColor',
   },
   tabBar: {
-    height: 62 * relativeDimensions.heightDifference,
+    height: 62 * heightDifference,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -33,8 +41,8 @@ export default EStyleSheet.create({
     color: '$disabledColor',
   },
   tabBarImage: {
-    height: 30 * relativeDimensions.heightDifference,
-    width: 30 * relativeDimensions.widthDifference,
+    height: 30 * heightDifference,
+    width: 30 * widthDifference,
     resizeMode: 'contain',
   },
 });

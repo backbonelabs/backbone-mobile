@@ -1,6 +1,8 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
+const { widthDifference, heightDifference } = relativeDimensions;
+
 export default EStyleSheet.create({
   container: {
     width: '100%',
@@ -8,7 +10,6 @@ export default EStyleSheet.create({
   textContainer: {
     flex: 0.08,
     alignItems: 'center',
-    justifyContent: 'flex-start',
   },
   text: {
     textAlign: 'center',
@@ -22,20 +23,21 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   gender: {
-    marginHorizontal: 15 * relativeDimensions.widthDifference,
+    marginHorizontal: 15 * widthDifference,
     alignItems: 'center',
   },
   genderText: {
-    marginTop: 5 * relativeDimensions.heightDifference,
+    marginTop: 5 * heightDifference,
     textAlign: 'center',
   },
   genderIcon: {
-    width: 50 * relativeDimensions.widthDifference,
-    height: 50 * relativeDimensions.heightDifference,
+    width: 50 * widthDifference,
+    height: 50 * heightDifference,
+    resizeMode: 'contain',
   },
   nicknameInput: {
     width: '41%',
-    height: 50 * relativeDimensions.heightDifference,
+    height: 50 * heightDifference,
   },
   profileBodyContainer: {
     flex: 0.33,
@@ -47,9 +49,8 @@ export default EStyleSheet.create({
     width: '65%',
     borderWidth: 1,
     borderRadius: 5,
-    paddingLeft: 15 * relativeDimensions.widthDifference,
+    paddingLeft: 15 * widthDifference,
     borderColor: '#979797',
-    alignItems: 'flex-start',
     justifyContent: 'center',
   },
   completedProfileField: {
@@ -59,7 +60,7 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
   },
   profileFieldIcon: {
-    color: '#231F20',
+    color: '$primaryFontColor',
   },
   buttonContainer: {
     flex: 0.42,
@@ -75,7 +76,7 @@ export default EStyleSheet.create({
     flexDirection: 'row',
   },
   profilePickerHeader: {
-    height: 50 * relativeDimensions.heightDifference,
+    height: 50 * heightDifference,
     alignItems: 'flex-end',
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
@@ -91,8 +92,8 @@ export default EStyleSheet.create({
   },
   profilePickerHeaderButton: {
     flex: 1,
-    paddingHorizontal: 15 * relativeDimensions.widthDifference,
-    marginRight: 5 * relativeDimensions.widthDifference,
+    paddingHorizontal: 15 * widthDifference,
+    marginRight: 5 * widthDifference,
     justifyContent: 'center',
   },
 });
