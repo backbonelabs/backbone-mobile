@@ -6,6 +6,11 @@ const border = {
   borderColor: '#EEEEEE',
 };
 
+const positioning = {
+  flexDirection: 'row',
+  alignItems: 'center',
+};
+
 export default EStyleSheet.create({
   backgroundImage: {
     width: 375 * relativeDimensions.widthDifference,
@@ -15,18 +20,14 @@ export default EStyleSheet.create({
   profileFieldContainer: Object.assign({
     flex: 0.5,
   }, border),
-  profileFieldTitle: {
+  profileFieldTitle: Object.assign({
     flex: 0.39,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  }, positioning),
   profileField: Object.assign({
     flex: 0.16,
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 10 * relativeDimensions.widthDifference,
-  }, border),
+  }, border, positioning),
   profileText: {
     color: 'black',
   },
