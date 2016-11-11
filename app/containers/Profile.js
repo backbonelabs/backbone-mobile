@@ -187,13 +187,17 @@ class Profile extends Component {
     }
   }
 
-  // Sync state to user's height information
+  /**
+   * Sync state to user's height information
+   * @param  {Object}  userProps  User data
+   */
   _setHeightValue(userProps) {
     const equalsInch = userProps.heightUnitPreference === heightConstants.units.IN;
     const inchesToCentimeters = userProps.height * heightConstants.conversionValue;
 
     this.setState({
       height: {
+        // Save initial user height value for comparison use
         initialValue: userProps.height,
         value: Math.round(equalsInch ? userProps.height : inchesToCentimeters),
         unit: userProps.heightUnitPreference,
@@ -202,7 +206,10 @@ class Profile extends Component {
     });
   }
 
-  // Sync state to user's weight information
+  /**
+   * Sync state to user's weight information
+   * @param  {Object}  userProps  User data
+   */
   _setWeightValue(userProps) {
     const { ceil, round } = Math;
     const equalsPound = userProps.weightUnitPreference === weightConstants.units.LB;
@@ -210,6 +217,7 @@ class Profile extends Component {
 
     this.setState({
       weight: {
+        // Save initial user height value for comparison use
         initialValue: userProps.weight,
         value: equalsPound ? round(userProps.weight) : ceil(poundToKilogram),
         unit: userProps.weightUnitPreference,
@@ -261,6 +269,7 @@ class Profile extends Component {
    * @param {String}  field  Object key for accessing state/prop value
    */
   fieldInputBlurHandler(field) {
+    // Check if state property value is falsy
     if (!this.state[field]) {
       this.updateProfile(field, this.props.user.user[field]);
     } else if (field === 'email' && !emailRegex.test(this.state[field])) {
