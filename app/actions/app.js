@@ -38,4 +38,13 @@ export default {
       DeviceManagementService.connectToDevice();
     };
   },
+  showFullModal(modalConfig) {
+    return {
+      type: 'SHOW_FULL_MODAL',
+      payload: modalConfig,
+    };
+  },
+  hideFullModal() {
+    return { type: 'HIDE_FULL_MODAL' };
+  },
 };

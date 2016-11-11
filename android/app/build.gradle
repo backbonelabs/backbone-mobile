@@ -66,7 +66,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.vectoricons = [
-    iconFontNames: ['FontAwesome.ttf']
+    iconFontNames: ['FontAwesome.ttf', 'MaterialIcons.ttf']
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

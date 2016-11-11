@@ -52,6 +52,7 @@
 	<array>
 		<string>FontAwesome.ttf</string>
 		<string>Lato.ttf</string>
+		<string>MaterialIcons.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

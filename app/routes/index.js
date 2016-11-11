@@ -14,6 +14,7 @@ import errors from './errors';
 import reset from './reset';
 import onboarding from './onboarding';
 import alerts from './alerts';
+import support from './support';
 
 export default {
   activity,
@@ -32,4 +33,5 @@ export default {
   reset,
   onboarding,
   alerts,
+  support,
 };
