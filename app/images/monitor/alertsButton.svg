@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  width="75px" height="75px" viewBox="0 0 75 75" enable-background="new 0 0 75 75" xml:space="preserve">
+<g id="monitor---alerts">
+  <g id="Group-7">
+    <circle id="Circle-1" fill="none" stroke="#231F20" cx="37.5" cy="37.5" r="37"/>
+  </g>
+  <g id="Page-1" transform="translate(25.500000, 19.000000)">
+    <defs>
+      <filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="0.0009766" y="0.4995117" width="23.9980469" height="36.0004883">
+      <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+      </filter>
+    </defs>
+    <mask maskUnits="userSpaceOnUse" x="0.0009766" y="0.4995117" width="23.9980469" height="36.0004883" id="mask-2">
+      <g filter="url(#Adobe_OpacityMaskFilter)">
+        <polygon id="path-1" fill="#FFFFFF" points="23.4980469,0.0004883 -0.4990234,0.0004883 -0.4990234,36 23.4980469,36"/>
+      </g>
+    </mask>
+    <path id="Fill-1" mask="url(#mask-2)" fill="#231F20" d="M22.9746094,3.578125l-9-3
+      c-0.4375-0.1469727-0.90625-0.0839844-1.2841797,0.1591797c-0.3808594,0.2431641-0.6328125,0.6479492-0.6806641,1.0981445
+      L10.746582,13.1962891l-4.0771484-2.0371094c-0.4199219-0.2099609-0.9116211-0.2099609-1.3286133-0.0058594
+      c-0.4204102,0.2041016-0.7202148,0.59375-0.8100586,1.0527344l-4.5,22.5
+      c-0.1411133,0.7021484,0.2338867,1.4072266,0.894043,1.6806641C1.1137695,36.4648438,1.3056641,36.5,1.5004883,36.5
+      c0.4892578,0,0.9628906-0.2402344,1.2480469-0.6689453l8.2651367-12.3955078l4.8144531,2.40625
+      c0.3935547,0.1943359,0.8554688,0.2148438,1.2597656,0.0390625c0.4082031-0.1748047,0.7148438-0.5166016,0.84375-0.9394531
+      l6-19.5C24.171875,4.6611328,23.7480469,3.8334961,22.9746094,3.578125"/>
+  </g>
+</g>
+</svg>

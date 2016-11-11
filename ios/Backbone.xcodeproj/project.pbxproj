@@ -1163,7 +1163,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
@@ -1205,7 +1205,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
