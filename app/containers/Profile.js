@@ -192,7 +192,7 @@ class Profile extends Component {
     this.setState({
       height: {
         // Save initial user height value for comparison use
-        initialValue: userProps.height,
+        initialValue: Math.round(equalsInch ? userProps.height : inchesToCentimeters),
         value: Math.round(equalsInch ? userProps.height : inchesToCentimeters),
         unit: userProps.heightUnitPreference,
         label: '',
@@ -212,7 +212,7 @@ class Profile extends Component {
     this.setState({
       weight: {
         // Save initial user weight value for comparison use
-        initialValue: userProps.weight,
+        initialValue: equalsPound ? round(userProps.weight) : ceil(poundToKilogram),
         value: equalsPound ? round(userProps.weight) : ceil(poundToKilogram),
         unit: userProps.weightUnitPreference,
         label: '',
@@ -351,7 +351,6 @@ class Profile extends Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <View style={styles.spacer} />
           <View style={styles.profileFieldContainer}>
             <ProfileFieldInput
               title="Nickname"
@@ -396,8 +395,6 @@ class Profile extends Component {
                   return;
                 } else if (!user.isConfirmed) {
                   return '(unconfirmed)';
-                } else {
-                  return '';
                 }
               })()}
               field="email"
