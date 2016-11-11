@@ -153,14 +153,16 @@ class Profile extends Component {
   componentWillReceiveProps(nextProps) {
     // isUpdating is truthy while user is saving profile info
     // If it goes from true to false, operation is complete
-    if (this.props.user.isUpdating && !nextProps.user.isUpdating && !nextProps.user.errorMessage) {
-      SensitiveInfo.setItem(constants.userStorageKey, nextProps.user.user);
-      this._setHeightValue(nextProps.user.user);
-      this._setWeightValue(nextProps.user.user);
-    } else if (nextProps.user.errorMessage) {
-      // If trying to save user profile info or access this scene
-      // without having properly logged in, it'll throw an error
-      Alert.alert('Error', 'Invalid user');
+    if (this.props.user.isUpdating && !nextProps.user.isUpdating) {
+      if (nextProps.user.errorMessage) {
+        // If trying to save user profile info or access this scene
+        // without having properly logged in, it'll throw an error
+        Alert.alert('Error', 'Invalid user');
+      } else {
+        SensitiveInfo.setItem(constants.userStorageKey, nextProps.user.user);
+        this._setHeightValue(nextProps.user.user);
+        this._setWeightValue(nextProps.user.user);
+      }
     }
   }
 
