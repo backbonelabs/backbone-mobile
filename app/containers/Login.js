@@ -57,7 +57,7 @@ class Login extends Component {
 
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
-        this.props.navigator.replace(routes.deviceConnect);
+        this.props.navigator.replace(routes.postureDashboard);
       } else {
         // User hasn't completed onboarding process
         this.props.navigator.replace(routes.onboarding);
