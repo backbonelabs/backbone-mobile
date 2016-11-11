@@ -70,6 +70,7 @@ class Button extends Component {
         <TouchableHighlight
           activeOpacity={0.4}
           style={this.state.pressStatus ? secondaryActive : secondaryStyles}
+          underlayColor="transparent"
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
