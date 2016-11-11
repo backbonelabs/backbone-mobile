@@ -12,10 +12,8 @@ import userActions from '../actions/user';
 import styles from '../styles/profile';
 import constants from '../utils/constants';
 import ProfilePicker from '../containers/onBoardingFlow/profile/ProfilePicker';
-import BodyText from '../components/BodyText';
-import Button from '../components/Button';
 import Input from '../components/Input';
-import Spinner from '../components/Spinner';
+import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import gradientBackground20 from '../images/gradientBackground20.png';
@@ -44,7 +42,7 @@ ProfileFieldTitle.propTypes = {
 };
 
 const ProfileField = props => (
-  // Pressing on profile field initiates editing
+  // Pressing on a profile field initiates editing
   <TouchableOpacity style={styles.profileField} onPress={props.onPress}>
     <ProfileFieldTitle title={props.title} edited={props.edited} editedText="(edited)" />
     <View style={styles.profileFieldData}>
@@ -65,6 +63,7 @@ const ProfileFieldInput = props => (
     <ProfileFieldTitle
       title={props.title}
       edited={props.edited}
+      // Show optional edited text if needed (e.g. "unconfirmed" for email)
       editedText={props.editedText || '(edited)'}
     />
     <View style={styles.profileFieldData}>
@@ -94,30 +93,21 @@ class Profile extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     user: PropTypes.shape({
-      user: PropTypes.shape({
-        _id: PropTypes.string,
-        settings: PropTypes.shape({
-          slouchTimeThreshold: PropTypes.number,
-          postureThreshold: PropTypes.number,
-          backboneVibration: PropTypes.bool,
-          phoneVibration: PropTypes.bool,
-          vibrationPattern: PropTypes.number,
-        }),
-        nickname: PropTypes.string,
-        email: PropTypes.string,
-        birthdate: PropTypes.date,
-        height: PropTypes.number,
-        weight: PropTypes.number,
-        weightUnitPreference: PropTypes.number,
-        heightUnitPreference: PropTypes.number,
-      }),
-      isUpdating: PropTypes.bool,
+      _id: PropTypes.string,
+      nickname: PropTypes.string,
+      email: PropTypes.string,
+      birthdate: PropTypes.date,
+      height: PropTypes.number,
+      weight: PropTypes.number,
+      weightUnitPreference: PropTypes.number,
+      heightUnitPreference: PropTypes.number,
     }),
+    isUpdating: PropTypes.bool,
   };
 
   constructor(props) {
     super(props);
-    const { user } = this.props.user;
+    const { user } = this.props;
     this.state = {
       nickname: user.nickname,
       gender: user.gender,
@@ -137,31 +127,35 @@ class Profile extends Component {
       email: user.email,
       pickerType: null,
     };
+    this.setPickerType = this.setPickerType.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
-    this.saveData = this.saveData.bind(this);
+    this.prepareUserUpdate = this.prepareUserUpdate.bind(this);
     this.fieldInputBlurHandler = this.fieldInputBlurHandler.bind(this);
   }
 
   componentWillMount() {
-    const { user } = this.props.user;
-
+    // Get latest user data
     this.props.dispatch(userActions.fetchUser());
-    this._setHeightValue(user);
-    this._setWeightValue(user);
+    // Set height and weight values manually
+    // Since we need to format data for certain properties
+    this._setHeightValue(this.props.user);
+    this._setWeightValue(this.props.user);
   }
 
   componentWillReceiveProps(nextProps) {
     // isUpdating is truthy during profile save operation
     // If it goes from true to false, operation is complete
-    if (this.props.user.isUpdating && !nextProps.user.isUpdating) {
-      if (nextProps.user.errorMessage) {
+    if (this.props.isUpdating && !nextProps.isUpdating) {
+      if (nextProps.errorMessage) {
         // If trying to save user profile data or access this scene
         // without having properly logged in, it'll throw an error
         Alert.alert('Error', 'Invalid user');
       } else {
-        SensitiveInfo.setItem(constants.userStorageKey, nextProps.user.user);
-        this._setHeightValue(nextProps.user.user);
-        this._setWeightValue(nextProps.user.user);
+        // Upon a successful user save, store updated user locally
+        SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
+        this._setHeightValue(nextProps.user);
+        this._setWeightValue(nextProps.user);
+        Alert.alert('Success', 'Profile updated');
       }
     }
   }
@@ -188,7 +182,7 @@ class Profile extends Component {
   }
 
   /**
-   * Sync height state to user's height data
+   * Format user's height data and save to height state
    * @param  {Object}  userProps  User data
    */
   _setHeightValue(userProps) {
@@ -207,7 +201,7 @@ class Profile extends Component {
   }
 
   /**
-   * Sync weight state to user's weight information
+   * Format user's weight data and save to weight state
    * @param  {Object}  userProps  User data
    */
   _setWeightValue(userProps) {
@@ -217,7 +211,7 @@ class Profile extends Component {
 
     this.setState({
       weight: {
-        // Save initial user height value for comparison use
+        // Save initial user weight value for comparison use
         initialValue: userProps.weight,
         value: equalsPound ? round(userProps.weight) : ceil(poundToKilogram),
         unit: userProps.weightUnitPreference,
@@ -227,21 +221,20 @@ class Profile extends Component {
   }
 
   /**
-   * Convert the measurement value into an appropriate formatted "label"
+   * Convert the measurement value into an appropriate formatted label
    * @param  {Object}  value  Current height value
    * @return {String}         Returns a formatted height measurement string
    */
   _setHeightLabel(value) {
-    const { user } = this.props.user;
-    const equalsInch = user.heightUnitPreference === heightConstants.units.IN;
+    const equalsInch = this.state.height.unit === heightConstants.units.IN;
     const inchLabel = `${Math.floor(value / 12)}ft ${value % 12}in`;
-    const centimeterLabel = `${Math.round(value * heightConstants.conversionValue)}
-      ${constants.weightUnitIdToLabel[user.weightUnitPreference].toLowerCase()}`;
+    const centimeterLabel = `${Math.round(value)}${
+      constants.heightUnitIdToLabel[this.state.height.unit].toLowerCase()}`;
     return equalsInch ? inchLabel : centimeterLabel;
   }
 
   /**
-   * Convert the measurement value into an appropriate formatted "label"
+   * Convert the measurement value into an appropriate formatted label
    * @param  {Object}  value  Current weight value
    * @return {String}         Returns a formatted weight measurement string
    */
@@ -260,25 +253,48 @@ class Profile extends Component {
     if (clearPickerType) {
       newState.pickerType = null;
     }
-    this.setState(newState);
+    this.setState(newState, this.prepareUserUpdate);
   }
 
   /**
-   * Resets field back to user profile value if validation fails
+   * Resets field back to initial user profile value if validation fails
    * @param {String}  field  Object key for accessing state/prop value
    */
   fieldInputBlurHandler(field) {
     // Check if state property value is falsy
     if (!this.state[field]) {
-      this.updateProfile(field, this.props.user.user[field]);
-      // Check if field is an email, if truthy, validate
+      this.updateProfile(field, this.props.user[field]);
+      // Check if field is an email, if truthy, validate with regex
     } else if (field === 'email' && !emailRegex.test(this.state[field])) {
-      this.updateProfile(field, this.props.user.user[field]);
+      this.updateProfile(field, this.props.user[field]);
     }
   }
 
-  // Save profile data
-  saveData() {
+  dataHasChanged() {
+    const {
+      email,
+      nickname,
+      gender,
+      birthdate,
+      height,
+      weight,
+    } = this.state;
+    const { user } = this.props;
+
+    // Check if state is different from current user profile
+    if (email === user.email &&
+      nickname === user.nickname &&
+      gender === user.gender &&
+      birthdate.getTime() === new Date(user.birthdate).getTime() &&
+      height.initialValue === height.value &&
+      weight.initialValue === weight.value) {
+      return false;
+    }
+    return true;
+  }
+
+  // Prepare user data for update
+  prepareUserUpdate() {
     const {
       nickname,
       gender,
@@ -287,7 +303,7 @@ class Profile extends Component {
       height,
       email,
     } = this.state;
-    const { user } = this.props.user;
+    const { user } = this.props;
 
     const profileData = {
       nickname,
@@ -296,22 +312,28 @@ class Profile extends Component {
       heightUnitPreference: height.unit,
       weightUnitPreference: weight.unit,
 
-      // Store weight (lb) / height (in) values on backend
+      // Ensure weight (lb) / height (in) values will be stored as the base measurements
       weight: weight.unit === constants.weight.units.LB ?
         weight.value : weight.value / constants.weight.conversionValue,
       height: height.unit === constants.height.units.IN ?
         height.value : height.value / constants.height.conversionValue,
     };
 
-    // Check if email has changed
+    // Check if email has changed and assign separately
     if (email !== user.email) {
       profileData.email = email;
     }
 
-    this.props.dispatch(userActions.updateUser({
-      _id: user._id,
-      ...profileData,
-    }));
+    // Check if data has changed before preparing user update
+    if (this.dataHasChanged()) {
+      this.props.dispatch(userActions.prepareUserUpdate({
+        _id: user._id,
+        ...profileData,
+      }));
+    } else {
+      // Nothing has changed/user changed fields back to initial values
+      this.props.dispatch(userActions.prepareUserUpdate(null));
+    }
   }
 
   render() {
@@ -324,7 +346,7 @@ class Profile extends Component {
       weight,
       pickerType,
     } = this.state;
-    const { user, isUpdating } = this.props.user;
+    const { user } = this.props;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -341,9 +363,7 @@ class Profile extends Component {
               blurHandler={this.fieldInputBlurHandler}
             />
             <ProfileField
-              onPress={() => this.setState({
-                gender: constants.gender.male === gender ? 2 : 1,
-              })}
+              onPress={() => this.updateProfile('gender', constants.gender.male === gender ? 2 : 1)}
               title="Gender"
               edited={gender !== user.gender}
               profileData={constants.gender.male === gender ? 'Male' : 'Female'}
@@ -370,7 +390,16 @@ class Profile extends Component {
             <ProfileFieldInput
               title="Email"
               edited={email !== user.email || !user.isConfirmed}
-              editedText={!user.isConfirmed ? '(unconfirmed)' : ''}
+              editedText={(() => {
+                // Show appropriate edited text
+                if (email !== user.email) {
+                  return;
+                } else if (!user.isConfirmed) {
+                  return '(unconfirmed)';
+                } else {
+                  return '';
+                }
+              })()}
               field="email"
               value={email}
               updateProfile={this.updateProfile}
@@ -378,7 +407,7 @@ class Profile extends Component {
             />
           </View>
           <View style={styles.bottomSpacerContainer}>
-            { pickerType ?
+            { pickerType &&
               <ProfilePicker
                 birthdate={birthdate}
                 height={height}
@@ -386,28 +415,8 @@ class Profile extends Component {
                 setPickerType={this.setPickerType}
                 pickerType={pickerType}
                 updateProfile={this.updateProfile}
-              /> :
-                <View>
-                  { isUpdating ?
-                    <Spinner />
-                      :
-                        <Button
-                          primary
-                          style={{ alignSelf: 'center' }}
-                          text="SAVE"
-                          onPress={this.saveData}
-                          disabled={
-                            email === user.email &&
-                            nickname === user.nickname &&
-                            gender === user.gender &&
-                            birthdate.getTime() === new Date(user.birthdate).getTime() &&
-                            height.initialValue === height.value &&
-                            weight.initialValue === weight.value
-                          }
-                        />
-                  }
-                </View>
-              }
+              />
+            }
           </View>
         </Image>
       </TouchableWithoutFeedback>
@@ -417,7 +426,7 @@ class Profile extends Component {
 
 const mapStateToProps = (state) => {
   const { user } = state;
-  return { user };
+  return user;
 };
 
 export default connect(mapStateToProps)(Profile);
