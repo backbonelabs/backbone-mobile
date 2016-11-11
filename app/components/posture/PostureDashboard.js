@@ -15,6 +15,7 @@ import Icon15Min from '../../images/session/15min.png';
 import Icon20Min from '../../images/session/20min.png';
 import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
+import routes from '../../routes';
 
 const sessions = [
   { id: '5min', icon: Icon5Min },
@@ -49,15 +50,11 @@ const PostureDashboard = (props) => (
           showsHorizontalScrollIndicator={false}
         />
       </View>
-      <Button
-        text="START"
-        primary
-        style={styles._startButton}
-      />
+      <Button text="START" primary onPress={() => props.navigator.push(routes.postureMonitor)} />
     </View>
     <View style={styles.footer}>
-      <BodyText>DAILY STREAK</BodyText>
       <View style={styles.dailyStreakContainer}>
+        <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
         <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
         <BodyText style={styles._streakCounter}>{props.user.dailyStreak || 0}</BodyText>
       </View>

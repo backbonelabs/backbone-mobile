@@ -1,8 +1,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { widthDifference, heightDifference } = relativeDimensions;
 
 const stepButton = {
   flex: 0.25,
-  height: 65,
+  height: 65 * heightDifference,
   justifyContent: 'center',
 };
 
@@ -31,25 +34,23 @@ export default EStyleSheet.create({
     color: '$primaryColor',
   },
   stepIndicatorButton: {
-    width: 50,
-    height: 65,
+    width: 50 * widthDifference,
+    height: 65 * heightDifference,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  previousStepButton: Object.assign({}, stepButton,
-    {
-      alignItems: 'flex-start',
-      paddingLeft: '10%',
-    }
-  ),
-  nextStepButton: Object.assign({}, stepButton,
-    {
-      alignItems: 'flex-end',
-      paddingRight: '10%',
-    }
-  ),
+  previousStepButton: {
+    ...stepButton,
+    alignItems: 'flex-start',
+    paddingLeft: '10%',
+  },
+  nextStepButton: {
+    ...stepButton,
+    alignItems: 'flex-end',
+    paddingRight: '10%',
+  },
   paginationIcon: {
-    width: 25,
+    width: 25 * widthDifference,
     color: 'rgba(0,0,0,0.25)',
   },
 });

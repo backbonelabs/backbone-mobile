@@ -7,10 +7,10 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   innerContainer: {
-    width: 342 * widthDifference,
-    paddingTop: 80 * heightDifference,
+    width: '90%',
   },
   backboneLogo: {
     alignSelf: 'center',
@@ -26,13 +26,13 @@ export default EStyleSheet.create({
     textAlign: 'center',
   },
   formContainer: {
-    marginTop: 30 * heightDifference,
+    paddingVertical: 30 * heightDifference,
   },
   inputFieldContainer: {
     marginBottom: 30 * heightDifference,
   },
   inputField: {
-    width: 340 * widthDifference,
+    width: '90%',
   },
   CTAContainer: {
     marginVertical: 16 * heightDifference,
