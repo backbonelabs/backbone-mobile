@@ -54,12 +54,13 @@ class Button extends Component {
       buttonType = (
         <TouchableHighlight
           activeOpacity={0.4}
+          style={buttonStyles}
           underlayColor={'#85181C'}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
         >
-          <View style={buttonStyles}>
+          <View>
             <BodyText style={textStyles}>{this.props.text}</BodyText>
           </View>
         </TouchableHighlight>
@@ -68,11 +69,12 @@ class Button extends Component {
       buttonType = (
         <TouchableHighlight
           activeOpacity={0.4}
+          style={this.state.pressStatus ? secondaryActive : secondaryStyles}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
         >
-          <View style={this.state.pressStatus ? secondaryActive : secondaryStyles}>
+          <View>
             <BodyText style={this.state.pressStatus ? secondaryTextActive : secondaryTextStyles}>
               {this.props.text}
             </BodyText>
