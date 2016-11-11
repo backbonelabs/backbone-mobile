@@ -32,7 +32,8 @@ const {
 const ProfileFieldTitle = props => (
   <View style={styles.profileFieldTitle}>
     <BodyText>{props.title}</BodyText>
-    { props.edited && <SecondaryText> {props.editedText}</SecondaryText> }
+    { // Display text which signifies profile field has been edited
+      props.edited && <SecondaryText> {props.editedText}</SecondaryText> }
   </View>
 );
 
@@ -43,6 +44,7 @@ ProfileFieldTitle.propTypes = {
 };
 
 const ProfileField = props => (
+  // Pressing on profile field initiates editing
   <TouchableOpacity style={styles.profileField} onPress={props.onPress}>
     <ProfileFieldTitle title={props.title} edited={props.edited} editedText="(edited)" />
     <View style={styles.profileFieldData}>
@@ -68,7 +70,6 @@ const ProfileFieldInput = props => (
     <View style={styles.profileFieldData}>
       <Input
         style={styles._profileFieldInput}
-        {...props.extraProps}
         onBlur={() => props.blurHandler(props.field)}
         value={props.value}
         autoCorrect={false}
@@ -82,7 +83,6 @@ const ProfileFieldInput = props => (
 ProfileFieldInput.propTypes = {
   field: PropTypes.string,
   value: PropTypes.string,
-  extraProps: PropTypes.object,
   updateProfile: PropTypes.func,
   blurHandler: PropTypes.func,
   edited: PropTypes.bool,
@@ -151,11 +151,11 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // isUpdating is truthy while user is saving profile info
+    // isUpdating is truthy during profile save operation
     // If it goes from true to false, operation is complete
     if (this.props.user.isUpdating && !nextProps.user.isUpdating) {
       if (nextProps.user.errorMessage) {
-        // If trying to save user profile info or access this scene
+        // If trying to save user profile data or access this scene
         // without having properly logged in, it'll throw an error
         Alert.alert('Error', 'Invalid user');
       } else {
@@ -172,7 +172,7 @@ class Profile extends Component {
    *                            data pickers will be hidden
    */
   setPickerType(pickerType) {
-    // Dismiss keyboard, in case user was inputting nickname
+    // Dismiss keyboard, in case user was editing nickname or email
     Keyboard.dismiss();
 
     if (this.state.pickerType && pickerType && this.state.pickerType !== pickerType) {
@@ -188,7 +188,7 @@ class Profile extends Component {
   }
 
   /**
-   * Sync state to user's height information
+   * Sync height state to user's height data
    * @param  {Object}  userProps  User data
    */
   _setHeightValue(userProps) {
@@ -207,7 +207,7 @@ class Profile extends Component {
   }
 
   /**
-   * Sync state to user's weight information
+   * Sync weight state to user's weight information
    * @param  {Object}  userProps  User data
    */
   _setWeightValue(userProps) {
@@ -228,8 +228,8 @@ class Profile extends Component {
 
   /**
    * Convert the measurement value into an appropriate formatted "label"
-   * @param {Object}  value  Current height value
-   * @return {String}  Returns a formatted height measurement string
+   * @param  {Object}  value  Current height value
+   * @return {String}         Returns a formatted height measurement string
    */
   _setHeightLabel(value) {
     const { user } = this.props.user;
@@ -243,7 +243,7 @@ class Profile extends Component {
   /**
    * Convert the measurement value into an appropriate formatted "label"
    * @param  {Object}  value  Current weight value
-   * @return {String}  Returns a formatted weight measurement string
+   * @return {String}         Returns a formatted weight measurement string
    */
   _setWeightLabel(value) {
     return `${value}${constants.weightUnitIdToLabel[this.state.weight.unit].toLowerCase()}`;
@@ -264,14 +264,14 @@ class Profile extends Component {
   }
 
   /**
-   * Sets input value to user profile field's value if field is empty or, if field
-   * is an email, fails email validation
+   * Resets field back to user profile value if validation fails
    * @param {String}  field  Object key for accessing state/prop value
    */
   fieldInputBlurHandler(field) {
     // Check if state property value is falsy
     if (!this.state[field]) {
       this.updateProfile(field, this.props.user.user[field]);
+      // Check if field is an email, if truthy, validate
     } else if (field === 'email' && !emailRegex.test(this.state[field])) {
       this.updateProfile(field, this.props.user.user[field]);
     }
@@ -287,6 +287,7 @@ class Profile extends Component {
       height,
       email,
     } = this.state;
+    const { user } = this.props.user;
 
     const profileData = {
       nickname,
@@ -302,12 +303,13 @@ class Profile extends Component {
         height.value : height.value / constants.height.conversionValue,
     };
 
-    if (email !== this.props.user.user.email) {
+    // Check if email has changed
+    if (email !== user.email) {
       profileData.email = email;
     }
 
     this.props.dispatch(userActions.updateUser({
-      _id: this.props.user.user._id,
+      _id: user._id,
       ...profileData,
     }));
   }
@@ -331,10 +333,10 @@ class Profile extends Component {
           <View style={styles.profileFieldContainer}>
             <ProfileFieldInput
               title="Nickname"
+              // Check if field has been edited
               edited={nickname !== user.nickname}
               field="nickname"
               value={nickname}
-              extraProps={{ maxLength: 18 }}
               updateProfile={this.updateProfile}
               blurHandler={this.fieldInputBlurHandler}
             />
