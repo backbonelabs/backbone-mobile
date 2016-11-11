@@ -3,11 +3,10 @@
 #import "DeviceManagementService.h"
 
 @interface SensorDataService : NSObject
-@property MBLMetaWear *device;
 @property NSMutableSet *activeSensors;
 @property NSMutableSet *activeActivities;
 + (SensorDataService *)getSensorDataService;
-- (id)initWithDevice:(MBLMetaWear *)device;
+- (id)initService;
 - (void)registerActivity:(ActivityModule *)activityModule;
 - (void)unregisterActivityByName:(NSString *)activityName;
 - (void)unregisterAllActivities;

@@ -2,6 +2,8 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
+const { widthDifference, heightDifference } = relativeDimensions;
+
 const baseTitleBarStyles = {
   flexDirection: 'row',
   justifyContent: 'center',
@@ -9,8 +11,13 @@ const baseTitleBarStyles = {
   backgroundColor: theme.primaryColor,
 };
 
+const baseSideButtonStyles = {
+  alignItems: 'center',
+  paddingHorizontal: 6 * widthDifference,
+};
+
 export default EStyleSheet.create({
-  $leftButtonIconSize: 28 * relativeDimensions.heightDifference,
+  $leftButtonIconSize: 28 * heightDifference,
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
@@ -30,13 +37,16 @@ export default EStyleSheet.create({
   sideContainersText: {
     color: '#FFFFFF',
   },
-  sideButtons: {
+  leftComponent: {
+    ...baseSideButtonStyles,
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 6 * relativeDimensions.widthDifference,
+  },
+  rightComponent: {
+    ...baseSideButtonStyles,
+    flexDirection: 'row-reverse',
   },
   buttonIcon: {
     color: '#FFFFFF',
-    marginRight: 6 * relativeDimensions.widthDifference,
+    marginRight: 6 * widthDifference,
   },
 });

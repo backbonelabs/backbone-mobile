@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   View,
@@ -21,6 +21,7 @@ import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
 import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
+import FullModal from '../components/FullModal';
 import TitleBar from '../components/TitleBar';
 import Menu from '../components/Menu';
 import routes from '../routes';
@@ -50,7 +51,12 @@ const isiOS = Platform.OS === 'ios';
 
 class Application extends Component {
   static propTypes = {
-    dispatch: React.PropTypes.func,
+    dispatch: PropTypes.func,
+    modal: PropTypes.shape({
+      show: PropTypes.bool,
+      content: PropTypes.node,
+      onClose: PropTypes.func,
+    }),
   };
 
   constructor() {
@@ -72,6 +78,11 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       BackAndroid.addEventListener('hardwareBackPress', () => {
+        if (this.props.modal.show) {
+          // There is a modal being displayed, hide it
+          this.props.dispatch(appActions.hideFullModal());
+        }
+
         if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
           // There are subsequent routes after the initial route,
           // so pop the route stack to navigate one scene back
@@ -203,7 +214,9 @@ class Application extends Component {
       </View>
     );
 
-    return (
+    return this.props.modal.show ? (
+      <FullModal onClose={this.props.modal.onClose}>{this.props.modal.content}</FullModal>
+    ) : (
       <View style={{ flex: 1 }}>
         <TitleBar
           navigator={this.navigator}
@@ -261,4 +274,9 @@ class Application extends Component {
   }
 }
 
-export default connect()(Application);
+const mapStateToProps = (state) => {
+  const { app } = state;
+  return app;
+};
+
+export default connect(mapStateToProps)(Application);
