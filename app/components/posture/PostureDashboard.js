@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
+import postureActions from '../../actions/posture';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
 import Button from '../../components/Button';
@@ -18,11 +19,11 @@ import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
 
 const sessions = [
-  { id: '5min', icon: Icon5Min },
-  { id: '10min', icon: Icon10Min },
-  { id: '15min', icon: Icon15Min },
-  { id: '20min', icon: Icon20Min },
-  { id: 'infinity', icon: IconInfinity },
+  { id: '5min', durationSeconds: 5 * 60, icon: Icon5Min },
+  { id: '10min', durationSeconds: 10 * 60, icon: Icon10Min },
+  { id: '15min', durationSeconds: 15 * 60, icon: Icon15Min },
+  { id: '20min', durationSeconds: 20 * 60, icon: Icon20Min },
+  { id: 'infinity', durationSeconds: Infinity, icon: IconInfinity },
 ];
 
 const renderItem = (session) => (
@@ -48,15 +49,15 @@ const PostureDashboard = (props) => (
           slideStyle={styles.carouselItem}
           inactiveSlideScale={0.8}
           showsHorizontalScrollIndicator={false}
+          onSnapToItem={(index) => (
+            props.dispatch(postureActions.setSessionTime(sessions[index].durationSeconds))
+          )}
         />
       </View>
       <Button
         text="START"
         primary
-        onPress={() => {
-          // TODO: Store session in Redux store
-          props.navigator.push(routes.postureCalibrate);
-        }}
+        onPress={() => props.navigator.push(routes.postureCalibrate)}
       />
     </View>
     <View style={styles.footer}>
@@ -70,6 +71,7 @@ const PostureDashboard = (props) => (
 );
 
 PostureDashboard.propTypes = {
+  dispatch: PropTypes.func,
   navigator: PropTypes.shape({
     push: PropTypes.func,
   }),

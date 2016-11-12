@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { isFunction } from 'lodash';
+import postureActions from '../../actions/posture';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -21,23 +22,28 @@ const activityName = 'posture';
 
 class PostureMonitor extends Component {
   static propTypes = {
-    user: PropTypes.shape({
-      settings: PropTypes.object,
+    dispatch: PropTypes.func,
+    posture: PropTypes.shape({
+      sessionTimeSeconds: PropTypes.number,
+      remainingTimeSeconds: PropTypes.number,
     }),
-    settings: PropTypes.shape({
-      phoneVibration: PropTypes.bool,
-      postureThreshold: PropTypes.number,
-      slouchTimeThreshold: PropTypes.number,
+    user: PropTypes.shape({
+      settings: PropTypes.shape({
+        phoneVibration: PropTypes.bool,
+        postureThreshold: PropTypes.number,
+        slouchTimeThreshold: PropTypes.number,
+      }),
     }),
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       monitoring: null,
       slouch: 0,
       level: 90,
     };
+    this.intervalId = null;
     this.postureListener = null;
     this.activityDisabledListener = null;
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
@@ -60,11 +66,43 @@ class PostureMonitor extends Component {
     });
   }
 
+  componentDidMount() {
+    // Set up an interval timer to decrease the duration every second
+    if (this.props.posture.sessionTimeSeconds < Infinity) {
+      this.intervalId = setInterval(() => {
+        this.props.dispatch(postureActions.decreaseSessionTime());
+      }, 1000);
+    }
+  }
+
   componentWillUnmount() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+
     this.disablePostureActivity();
     if (this.activityDisabledListener && isFunction(this.activityDisabledListener.remove)) {
       this.activityDisabledListener.remove();
     }
+  }
+
+  getFormattedTimeRemaining() {
+    const secondsRemaining = this.props.posture.remainingTimeSeconds;
+    console.log('getFormattedTimeRemaining', secondsRemaining);
+    if (secondsRemaining <= 0) {
+      // In case the scene is still mounted after the session is finished,
+      // display no time remaining instead of a negative time
+      return '0:00';
+    }
+
+    // TODO: Show incrementing stopwatch if the unlimited session was chosen
+
+    const minutes = Math.floor(secondsRemaining / 60);
+    let seconds = secondsRemaining - (minutes * 60);
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
+    return `${minutes}:${seconds}`;
   }
 
   enablePostureActivity() {
@@ -107,7 +145,9 @@ class PostureMonitor extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
+        <HeadingText size={1} style={styles._timer}>
+          {this.getFormattedTimeRemaining()}
+        </HeadingText>
         <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
         <Monitor />
         <View style={styles.monitorRatingContainer}>
@@ -132,8 +172,8 @@ class PostureMonitor extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
-  return user;
+  const { posture, user: { user } } = state;
+  return { posture, user };
 };
 
 export default connect(mapStateToProps)(PostureMonitor);
