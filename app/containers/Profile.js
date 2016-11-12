@@ -16,6 +16,7 @@ import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Spinner from '../components/Spinner';
 import gradientBackground20 from '../images/gradientBackground20.png';
 
 const {
@@ -91,13 +92,16 @@ class Profile extends Component {
     user: PropTypes.shape({
       _id: PropTypes.string,
       nickname: PropTypes.string,
+      gender: PropTypes.number,
       email: PropTypes.string,
       birthdate: PropTypes.date,
       height: PropTypes.number,
       weight: PropTypes.number,
       weightUnitPreference: PropTypes.number,
       heightUnitPreference: PropTypes.number,
+      isConfirmed: PropTypes.bool,
     }),
+    isFetching: PropTypes.bool,
     isUpdating: PropTypes.bool,
   };
 
@@ -342,75 +346,79 @@ class Profile extends Component {
       weight,
       pickerType,
     } = this.state;
-    const { user } = this.props;
+    const { user, isFetching, isUpdating } = this.props;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <View style={styles.profileFieldContainer}>
-            <ProfileFieldInput
-              title="Nickname"
-              // Check if field has been edited
-              edited={nickname !== user.nickname}
-              field="nickname"
-              value={nickname}
-              updateProfile={this.updateProfile}
-              blurHandler={this.fieldInputBlurHandler}
-            />
-            <ProfileField
-              onPress={() => this.updateProfile('gender', constants.gender.male === gender ? 2 : 1)}
-              title="Gender"
-              edited={gender !== user.gender}
-              profileData={constants.gender.male === gender ? 'Male' : 'Female'}
-            />
-            <ProfileField
-              onPress={() => this.setPickerType('birthdate')}
-              title="Birthdate"
-              edited={birthdate.getTime() !== new Date(user.birthdate).getTime()}
-              profileData={`${constants.months[birthdate.getMonth()]} ${
-                  birthdate.getDate()}, ${birthdate.getFullYear()}`}
-            />
-            <ProfileField
-              onPress={() => this.setPickerType('height')}
-              title="Height"
-              edited={height.initialValue !== height.value}
-              profileData={this._setHeightLabel(height.value)}
-            />
-            <ProfileField
-              onPress={() => this.setPickerType('weight')}
-              title="Weight"
-              edited={weight.initialValue !== weight.value}
-              profileData={this._setWeightLabel(weight.value)}
-            />
-            <ProfileFieldInput
-              title="Email"
-              edited={email !== user.email || !user.isConfirmed}
-              editedText={(() => {
-                // Show appropriate edited text
-                if (email !== user.email) {
-                  return;
-                } else if (!user.isConfirmed) {
-                  return '(unconfirmed)';
+          { isFetching || isUpdating ?
+            <Spinner style={{ flex: 1 }} />
+            :
+                <View style={styles.profileFieldContainer}>
+                  <ProfileFieldInput
+                    title="Nickname"
+                    // Check if field has been edited
+                    edited={nickname !== user.nickname}
+                    field="nickname"
+                    value={nickname}
+                    updateProfile={this.updateProfile}
+                    blurHandler={this.fieldInputBlurHandler}
+                  />
+                  <ProfileField
+                    onPress={() => this.updateProfile('gender', constants.gender.male === gender ? 2 : 1)}
+                    title="Gender"
+                    edited={gender !== user.gender}
+                    profileData={constants.gender.male === gender ? 'Male' : 'Female'}
+                  />
+                  <ProfileField
+                    onPress={() => this.setPickerType('birthdate')}
+                    title="Birthdate"
+                    edited={birthdate.getTime() !== new Date(user.birthdate).getTime()}
+                    profileData={`${constants.months[birthdate.getMonth()]} ${
+                        birthdate.getDate()}, ${birthdate.getFullYear()}`}
+                  />
+                  <ProfileField
+                    onPress={() => this.setPickerType('height')}
+                    title="Height"
+                    edited={height.initialValue !== height.value}
+                    profileData={this._setHeightLabel(height.value)}
+                  />
+                  <ProfileField
+                    onPress={() => this.setPickerType('weight')}
+                    title="Weight"
+                    edited={weight.initialValue !== weight.value}
+                    profileData={this._setWeightLabel(weight.value)}
+                  />
+                  <ProfileFieldInput
+                    title="Email"
+                    edited={email !== user.email || !user.isConfirmed}
+                    editedText={(() => {
+                      // Show appropriate edited text
+                      if (email !== user.email) {
+                        return;
+                      } else if (!user.isConfirmed) {
+                        return '(unconfirmed)';
+                      }
+                    })()}
+                    field="email"
+                    value={email}
+                    updateProfile={this.updateProfile}
+                    blurHandler={this.fieldInputBlurHandler}
+                  />
+                </View>
+              }
+              <View style={styles.bottomSpacerContainer}>
+                { pickerType &&
+                  <ProfilePicker
+                    birthdate={birthdate}
+                    height={height}
+                    weight={weight}
+                    setPickerType={this.setPickerType}
+                    pickerType={pickerType}
+                    updateProfile={this.updateProfile}
+                  />
                 }
-              })()}
-              field="email"
-              value={email}
-              updateProfile={this.updateProfile}
-              blurHandler={this.fieldInputBlurHandler}
-            />
-          </View>
-          <View style={styles.bottomSpacerContainer}>
-            { pickerType &&
-              <ProfilePicker
-                birthdate={birthdate}
-                height={height}
-                weight={weight}
-                setPickerType={this.setPickerType}
-                pickerType={pickerType}
-                updateProfile={this.updateProfile}
-              />
-            }
-          </View>
+              </View>
         </Image>
       </TouchableWithoutFeedback>
     );
