@@ -56,7 +56,6 @@ export default (state = {
       return {
         ...state,
         isUpdating: false,
-        pendingUser: null,
         errorMessage: action.payload.message,
       };
     }
