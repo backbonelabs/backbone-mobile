@@ -53,12 +53,13 @@ export default {
   fetchUser() {
     return (dispatch, getState) => {
       const state = getState();
-      const { accessToken, userId } = state.auth;
+      const { accessToken } = state.auth;
+      const { user: { _id } } = state.user;
 
       dispatch(fetchUserStart());
 
       return Fetcher.get({
-        url: `${baseUrl}/${userId}`,
+        url: `${baseUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then(response => response.json()
