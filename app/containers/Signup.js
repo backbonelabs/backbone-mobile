@@ -5,6 +5,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
@@ -108,10 +109,13 @@ class Signup extends Component {
           {this.props.inProgress ?
             <Spinner />
             :
-              <View style={styles.innerContainer}>
+              <KeyboardAvoidingView
+                behavior="padding"
+                contentContainerStyle={styles.innerContainer}
+              >
                 <Image source={BackBoneLogo} style={styles.backboneLogo} />
                 <BodyText style={styles._headingText}>
-                  Feel and look your strongest with better posture
+                  Look & feel your strongest with Backbone
                 </BodyText>
                 <View style={styles.formContainer}>
                   <View style={styles.inputFieldContainer}>
@@ -163,7 +167,7 @@ class Signup extends Component {
                     />
                   </View>
                 </View>
-              </View>
+              </KeyboardAvoidingView>
           }
         </View>
       </TouchableWithoutFeedback>

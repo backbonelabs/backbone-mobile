@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
@@ -89,7 +90,10 @@ class Login extends Component {
           {inProgress ?
             <Spinner />
             :
-              <View style={styles.innerContainer}>
+              <KeyboardAvoidingView
+                behavior="padding"
+                contentContainerStyle={styles.innerContainer}
+              >
                 <Image source={BackBoneLogo} style={styles.backboneLogo} />
                 <HeadingText size={2} style={styles._headingText}>Welcome back!</HeadingText>
                 <View style={styles.formContainer}>
@@ -145,7 +149,7 @@ class Login extends Component {
                     Forgot your password?
                   </SecondaryText>
                 </TouchableOpacity>
-              </View>
+              </KeyboardAvoidingView>
           }
         </View>
       </TouchableWithoutFeedback>
