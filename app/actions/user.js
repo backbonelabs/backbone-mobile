@@ -75,7 +75,7 @@ export default {
         )
         .catch(() => (
           // Network error
-          dispatch(updateUserError(
+          dispatch(fetchUserError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));
