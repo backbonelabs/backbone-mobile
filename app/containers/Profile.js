@@ -69,6 +69,7 @@ const ProfileFieldInput = props => (
         onBlur={() => props.blurHandler(props.field)}
         value={props.value}
         autoCorrect={false}
+        keyboardType={props.keyboardType}
         autoCapitalize="none"
         onChangeText={value => props.updateProfile([props.field], value)}
       />
@@ -84,6 +85,7 @@ ProfileFieldInput.propTypes = {
   edited: PropTypes.bool,
   editedText: PropTypes.string,
   title: PropTypes.string,
+  keyboardType: PropTypes.string,
 };
 
 class Profile extends Component {
@@ -346,7 +348,6 @@ class Profile extends Component {
       pickerType,
     } = this.state;
     const { user, isFetching, isUpdating } = this.props;
-    const { gender } = constants;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -360,6 +361,7 @@ class Profile extends Component {
                     // Check if field has been edited
                     edited={nickname !== user.nickname}
                     field="nickname"
+                    keyboardType="default"
                     value={nickname}
                     updateProfile={this.updateProfile}
                     blurHandler={this.fieldInputBlurHandler}
@@ -405,6 +407,7 @@ class Profile extends Component {
                       }
                     })()}
                     field="email"
+                    keyboardType="email-address"
                     value={email}
                     updateProfile={this.updateProfile}
                     blurHandler={this.fieldInputBlurHandler}
