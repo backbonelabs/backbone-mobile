@@ -140,7 +140,13 @@ class Signup extends Component {
                       placeholder="Password"
                       keyboardType="default"
                       onChangeText={this.onPasswordChange}
-                      onSubmitEditing={((!email || !validEmail) || (!password || !validPassword)) ? null : this.signup}
+                      onSubmitEditing={
+                        ((!email || !validEmail) ||
+                        (!password || !validPassword)) ?
+                          null
+                          :
+                            this.signup
+                      }
                       autoCorrect={false}
                       secureTextEntry
                       returnKeyType="go"
@@ -155,7 +161,11 @@ class Signup extends Component {
                       style={styles._CTAButton}
                       text="SIGN UP"
                       primary
-                      disabled={this.props.inProgress || ((!email || !validEmail) || (!password || !validPassword))}
+                      disabled={
+                        this.props.inProgress ||
+                        ((!email || !validEmail) ||
+                        (!password || !validPassword))
+                      }
                       onPress={this.signup}
                     />
                   </View>
