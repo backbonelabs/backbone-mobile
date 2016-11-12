@@ -346,6 +346,7 @@ class Profile extends Component {
       pickerType,
     } = this.state;
     const { user, isFetching, isUpdating } = this.props;
+    const { gender } = constants;
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -364,7 +365,11 @@ class Profile extends Component {
                     blurHandler={this.fieldInputBlurHandler}
                   />
                   <ProfileField
-                    onPress={() => this.updateProfile('gender', constants.gender.male === gender ? 2 : 1)}
+                    onPress={() => this.updateProfile('gender',
+                      constants.gender.male === gender ?
+                        constants.gender.female
+                        :
+                          constants.gender.male)}
                     title="Gender"
                     edited={gender !== user.gender}
                     profileData={constants.gender.male === gender ? 'Male' : 'Female'}
