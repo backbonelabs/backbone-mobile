@@ -8,8 +8,8 @@ const positioning = {
 
 export default EStyleSheet.create({
   backgroundImage: {
-    width: 375 * relativeDimensions.widthDifference,
-    height: 667 * relativeDimensions.heightDifference,
+    width: '100%',
+    height: '100%',
   },
   profileFieldContainer: {
     flex: 0.55,
@@ -18,14 +18,14 @@ export default EStyleSheet.create({
     flex: 0.39,
   }, positioning),
   profileField: Object.assign({
-    flex: 0.16,
+    flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 10 * relativeDimensions.widthDifference,
     borderBottomWidth: 1,
     borderColor: '#EEEEEE',
   }, positioning),
   profileText: {
-    color: 'black',
+    color: '$primaryFontColor',
   },
   profileFieldData: {
     flex: 0.61,
