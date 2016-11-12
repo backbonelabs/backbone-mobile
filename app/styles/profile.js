@@ -33,7 +33,7 @@ export default EStyleSheet.create({
   },
   profileFieldInput: {
     fontFamily: '$primaryFont',
-    fontSize: 18,
+    fontSize: 14,
     borderColor: 'transparent',
     textAlign: 'right',
   },
