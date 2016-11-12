@@ -51,17 +51,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     private HashMap<String, BluetoothDevice> deviceCollection;
 
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (action.equals(Constants.ACTION_SERVICE_FOUND)) {
-                String uuid = intent.getStringExtra(Constants.EXTRA_CHARACTERISTIC_UUID);
-                Timber.d("Service %s", uuid);
-            }
-        }
-    };
-
     @ReactMethod
     public void getSavedDevice(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
@@ -96,9 +85,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         else {
             scanning = true;
             deviceCollection = new HashMap<String, BluetoothDevice>();
-
-            IntentFilter filter = new IntentFilter(Constants.ACTION_SERVICE_FOUND);
-            reactContext.registerReceiver(broadcastReceiver, filter);
 
             Timber.d("Starting scan");
             bluetoothService.startScanForBLEDevices(new BluetoothService.DeviceScanCallBack() {

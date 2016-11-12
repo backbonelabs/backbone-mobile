@@ -49,7 +49,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     public static BluetoothService getInstance(ReactApplicationContext reactContext) {
         if (instance == null) {
             instance = new BluetoothService(reactContext);
-            instance.characteristicList = new HashMap<UUID, BluetoothGattCharacteristic>();
+            instance.characteristicMap = new HashMap<UUID, BluetoothGattCharacteristic>();
 
 //            BootLoaderService.getInstance(reactContext);
         }
@@ -75,7 +75,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothGatt bleGatt;
 
-    private HashMap<UUID, BluetoothGattCharacteristic> characteristicList;
+    private HashMap<UUID, BluetoothGattCharacteristic> characteristicMap;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -186,7 +186,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             final String macAddress = gatt.getDevice().getAddress();
             Timber.d(macAddress + " onServicesDiscovered status: " + status);
-            characteristicList.clear();
+            characteristicMap.clear();
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Timber.d(macAddress + " GATT_SUCCESS");
@@ -206,7 +206,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                         for (BluetoothGattCharacteristic characteristic : characteristics) {
                             Timber.d(macAddress + " service: " + service.getUuid() + " characteristic: " + characteristic.getUuid());
 
-                            characteristicList.put(characteristic.getUuid(), characteristic);
+                            characteristicMap.put(characteristic.getUuid(), characteristic);
 
                             String characteristicUUID = characteristic.getUuid().toString();
                             Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
@@ -229,7 +229,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                         for (BluetoothGattCharacteristic characteristic : characteristics) {
                             Timber.d(macAddress + " service: " + service.getUuid() + " characteristic: " + characteristic.getUuid());
 
-                            characteristicList.put(characteristic.getUuid(), characteristic);
+                            characteristicMap.put(characteristic.getUuid(), characteristic);
 
                             // String characteristicUUID = characteristic.getUuid().toString();
                             // Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
@@ -351,7 +351,15 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     public BluetoothDevice findDeviceByAddress(String address) {
-        return bluetoothAdapter.getRemoteDevice(address);
+        BluetoothDevice device;
+        try {
+            device = bluetoothAdapter.getRemoteDevice(address);
+        } catch (IllegalArgumentException e) {
+            Timber.d("Invalid Address");
+            return null;
+        }
+
+        return device;
     }
 
     public void connectDevice(BluetoothDevice device, DeviceConnectionCallBack callBack) {
@@ -389,25 +397,20 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     public void toggleCharacteristicNotification(UUID characteristicUUID, boolean state) {
-        if (!characteristicList.containsKey(characteristicUUID)) {
+        if (!characteristicMap.containsKey(characteristicUUID)) {
             Timber.d("Characteristic Not Found!");
         }
         else {
             Timber.d("Characteristic Found! %s", characteristicUUID.toString());
-            BluetoothGattCharacteristic characteristic = characteristicList.get(characteristicUUID);
+            BluetoothGattCharacteristic characteristic = characteristicMap.get(characteristicUUID);
 
             // In Android, we need to directly write into the descriptor to enable notification
             if (characteristic.getDescriptor(UUID.fromString(Constants.CLIENT_CHARACTERISTIC_CONFIG)) != null) {
-                if (state == true) {
-                    BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(Constants.CLIENT_CHARACTERISTIC_CONFIG));
-                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                    boolean status = bleGatt.writeDescriptor(descriptor);
-                    Timber.d("Desc write %d", status ? 1 : 0);
-                } else {
-                    BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(Constants.CLIENT_CHARACTERISTIC_CONFIG));
-                    descriptor.setValue(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
-                    bleGatt.writeDescriptor(descriptor);
-                }
+                BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(Constants.CLIENT_CHARACTERISTIC_CONFIG));
+                descriptor.setValue(state == true ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
+
+                boolean status = bleGatt.writeDescriptor(descriptor);
+                Timber.d("Desc write %d", status ? 1 : 0);
             }
             else {
                 Timber.d("Desc OFF");
@@ -419,12 +422,12 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     public void writeToCharacteristic(UUID characteristicUUID, byte[] data) {
-        if (!characteristicList.containsKey(characteristicUUID)) {
+        if (!characteristicMap.containsKey(characteristicUUID)) {
             Timber.d("Characteristic not found!");
         }
         else {
             Timber.d("Write to %s", characteristicUUID.toString());
-            BluetoothGattCharacteristic characteristic = characteristicList.get(characteristicUUID);
+            BluetoothGattCharacteristic characteristic = characteristicMap.get(characteristicUUID);
 
             // Since Android's GATT class only allows 1 operation at a time,
             // we might have to attempt several times until an operation succeeds

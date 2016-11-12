@@ -7,9 +7,9 @@ public class Constants {
         String ACCELEROMETER = "ACCELEROMETER";
     }
     public interface ACTIONS {
-        String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.action.startPostureForegroundService";
-        String STOP_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.action.stopPostureForegroundService";
-        String STOP_POSTURE_ACTIVITY = "co.backbonelabs.backbone.action.stopPostureActivity";
+        String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.startPostureForegroundService";
+        String STOP_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.stopPostureForegroundService";
+        String STOP_POSTURE_ACTIVITY = "co.backbonelabs.backbone.intent.action.stopPostureActivity";
     }
     public interface NOTIFICATION_IDS {
         int FOREGROUND_SERVICE = 101;
@@ -45,22 +45,21 @@ public class Constants {
 
     public final static int MAX_BLE_ACTION_ATTEMPT = 50;
 
-    public final static String ACTION_SERVICE_FOUND = "com.backbonelabs.backbone.ACTION_SERVICE_FOUND";
-    public final static String ACTION_CHARACTERISTIC_FOUND = "com.backbonelabs.backbone.ACTION_CHARACTERISTIC_FOUND";
-    public final static String ACTION_CHARACTERISTIC_UPDATE = "com.backbonelabs.backbone.ACTION_CHARACTERISTIC_UPDATE";
-    public final static String ACTION_CHARACTERISTIC_WRITE = "com.backbonelabs.backbone.ACTION_CHARACTERISTIC_WRITE";
-    public final static String ACTION_BOOTLOADER_UPDATE = "com.backbonelabs.backbone.ACTION_BOOTLOADER_UPDATE";
+    public final static String ACTION_CHARACTERISTIC_FOUND = "co.backbonelabs.backbone.intent.ACTION_CHARACTERISTIC_FOUND";
+    public final static String ACTION_CHARACTERISTIC_UPDATE = "co.backbonelabs.backbone.intent.ACTION_CHARACTERISTIC_UPDATE";
+    public final static String ACTION_CHARACTERISTIC_WRITE = "co.backbonelabs.backbone.intent.ACTION_CHARACTERISTIC_WRITE";
+    public final static String ACTION_BOOTLOADER_UPDATE = "co.backbonelabs.backbone.intent.ACTION_BOOTLOADER_UPDATE";
 
-    public final static String EXTRA_CHARACTERISTIC_UUID = "com.backbonelabs.backbone.EXTRA_CHARACTERISTIC_UUID";
-    public final static String EXTRA_BYTE_VALUE = "com.backbonelabs.backbone.EXTRA_BYTE_VALUE";
-    public final static String EXTRA_BYTE_UUID_VALUE = "com.backbonelabs.backbone.EXTRA_BYTE_UUID_VALUE";
-    public final static String EXTRA_BYTE_INSTANCE_VALUE = "com.backbonelabs.backbone.EXTRA_BYTE_INSTANCE_VALUE";
-    public final static String EXTRA_BYTE_SERVICE_UUID_VALUE = "com.backbonelabs.backbone.EXTRA_BYTE_SERVICE_UUID_VALUE";
-    public final static String EXTRA_BYTE_SERVICE_INSTANCE_VALUE = "com.backbonelabs.backbone.EXTRA_BYTE_SERVICE_INSTANCE_VALUE";
+    public final static String EXTRA_CHARACTERISTIC_UUID = "co.backbonelabs.backbone.EXTRA_CHARACTERISTIC_UUID";
+    public final static String EXTRA_BYTE_VALUE = "co.backbonelabs.backbone.EXTRA_BYTE_VALUE";
+    public final static String EXTRA_BYTE_UUID_VALUE = "co.backbonelabs.backbone.EXTRA_BYTE_UUID_VALUE";
+    public final static String EXTRA_BYTE_INSTANCE_VALUE = "co.backbonelabs.backbone.EXTRA_BYTE_INSTANCE_VALUE";
+    public final static String EXTRA_BYTE_SERVICE_UUID_VALUE = "co.backbonelabs.backbone.EXTRA_BYTE_SERVICE_UUID_VALUE";
+    public final static String EXTRA_BYTE_SERVICE_INSTANCE_VALUE = "co.backbonelabs.backbone.EXTRA_BYTE_SERVICE_INSTANCE_VALUE";
 
     public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
 
-    public static final String DEVICE_PREF_ID = "com.backbonelabs.backbone.DEVICE_PREF_ID";
-    public static final String USER_PREF_ID = "com.backbonelabs.backbone.USER_PREF_ID";
-    public static final String SAVED_DEVICE_PREF_KEY = "com.backbonelabs.backbone.SAVED_DEVICE_PREF_KEY";
+    public static final String DEVICE_PREF_ID = "co.backbonelabs.backbone.DEVICE_PREF_ID";
+    public static final String USER_PREF_ID = "co.backbonelabs.backbone.USER_PREF_ID";
+    public static final String SAVED_DEVICE_PREF_KEY = "co.backbonelabs.backbone.SAVED_DEVICE_PREF_KEY";
 }
