@@ -233,7 +233,6 @@ class Settings extends Component {
             <Button
               primary
               text="SIGN OUT"
-              style={styles._button}
               onPress={() => Alert.alert(
                 'Sign Out',
                 '\nAre you sure you want to sign out of your account?',

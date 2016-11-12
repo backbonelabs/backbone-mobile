@@ -1,9 +1,12 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 23,
+    marginTop: 23 * heightDifference,
   },
   progressBarContainer: {
     flex: 0.15,

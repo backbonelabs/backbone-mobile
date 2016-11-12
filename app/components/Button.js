@@ -6,9 +6,7 @@ import {
 import BodyText from './BodyText';
 import styles from '../styles/button';
 
-
 class Button extends Component {
-
   static propTypes = {
     disabled: PropTypes.bool,
     onPress: PropTypes.func,
@@ -56,13 +54,15 @@ class Button extends Component {
       buttonType = (
         <TouchableHighlight
           activeOpacity={0.4}
-          underlayColor={'#85181C'}
           style={buttonStyles}
+          underlayColor={'#85181C'}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
         >
-          <BodyText style={textStyles}>{this.props.text}</BodyText>
+          <View>
+            <BodyText style={textStyles}>{this.props.text}</BodyText>
+          </View>
         </TouchableHighlight>
       );
     } else {
@@ -70,13 +70,16 @@ class Button extends Component {
         <TouchableHighlight
           activeOpacity={0.4}
           style={this.state.pressStatus ? secondaryActive : secondaryStyles}
+          underlayColor="transparent"
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
         >
-          <BodyText style={this.state.pressStatus ? secondaryTextActive : secondaryTextStyles}>
-            {this.props.text}
-          </BodyText>
+          <View>
+            <BodyText style={this.state.pressStatus ? secondaryTextActive : secondaryTextStyles}>
+              {this.props.text}
+            </BodyText>
+          </View>
         </TouchableHighlight>
       );
     }
@@ -90,11 +93,7 @@ class Button extends Component {
     buttonStyles.push(this.props.style);
     textStyles.push(this.props.textStyle);
 
-    return (
-      <View>
-        { buttonType }
-      </View>
-    );
+    return buttonType;
   }
 }
 
