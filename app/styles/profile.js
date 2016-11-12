@@ -12,7 +12,7 @@ export default EStyleSheet.create({
     height: 667 * relativeDimensions.heightDifference,
   },
   profileFieldContainer: {
-    flex: 0.5,
+    flex: 0.55,
   },
   profileFieldTitle: Object.assign({
     flex: 0.39,
@@ -32,9 +32,10 @@ export default EStyleSheet.create({
     alignItems: 'flex-end',
   },
   profileFieldInput: {
+    fontFamily: '$primaryFont',
+    fontSize: 18,
     borderColor: 'transparent',
     textAlign: 'right',
-    fontSize: 14,
   },
   bottomSpacerContainer: {
     flex: 0.45,
