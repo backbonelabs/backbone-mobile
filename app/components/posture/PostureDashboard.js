@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
@@ -32,54 +32,64 @@ const renderItem = (session) => (
   </View>
 );
 
-const PostureDashboard = (props) => (
-  <View style={styles.container}>
-    <View style={styles.header}>
-      <HeadingText size={2}>{props.user.nickname}</HeadingText>
-      <HeadingText size={2}>Choose your goal</HeadingText>
-    </View>
-    <View style={styles.body}>
-      <View style={styles.carouselContainer}>
-        <Carousel
-          items={sessions}
-          renderItem={renderItem}
-          snapOnAndroid
-          sliderWidth={styles.$sliderWidth}
-          itemWidth={styles.$itemWidth}
-          slideStyle={styles.carouselItem}
-          inactiveSlideScale={0.8}
-          showsHorizontalScrollIndicator={false}
-          onSnapToItem={(index) => (
-            props.dispatch(postureActions.setSessionTime(sessions[index].durationSeconds))
-          )}
-        />
-      </View>
-      <Button
-        text="START"
-        primary
-        onPress={() => props.navigator.push(routes.postureCalibrate)}
-      />
-    </View>
-    <View style={styles.footer}>
-      <View style={styles.dailyStreakContainer}>
-        <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
-        <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
-        <BodyText style={styles._streakCounter}>{props.user.dailyStreak || 0}</BodyText>
-      </View>
-    </View>
-  </View>
-);
+class PostureDashboard extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func,
+    navigator: PropTypes.shape({
+      push: PropTypes.func,
+    }),
+    user: PropTypes.shape({
+      nickname: PropTypes.string,
+      dailyStreak: PropTypes.number,
+    }),
+  };
 
-PostureDashboard.propTypes = {
-  dispatch: PropTypes.func,
-  navigator: PropTypes.shape({
-    push: PropTypes.func,
-  }),
-  user: PropTypes.shape({
-    nickname: PropTypes.string,
-    dailyStreak: PropTypes.number,
-  }),
-};
+  componentDidMount() {
+    this.setSessionTime(sessions[0].durationSeconds);
+  }
+
+  setSessionTime(seconds) {
+    this.props.dispatch(postureActions.setSessionTime(seconds));
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <HeadingText size={2}>{this.props.user.nickname}</HeadingText>
+          <HeadingText size={2}>Choose your goal</HeadingText>
+        </View>
+        <View style={styles.body}>
+          <View style={styles.carouselContainer}>
+            <Carousel
+              items={sessions}
+              renderItem={renderItem}
+              snapOnAndroid
+              sliderWidth={styles.$sliderWidth}
+              itemWidth={styles.$itemWidth}
+              slideStyle={styles.carouselItem}
+              inactiveSlideScale={0.8}
+              showsHorizontalScrollIndicator={false}
+              onSnapToItem={(index) => this.setSessionTime(sessions[index].durationSeconds)}
+            />
+          </View>
+          <Button
+            text="START"
+            primary
+            onPress={() => this.props.navigator.push(routes.postureCalibrate)}
+          />
+        </View>
+        <View style={styles.footer}>
+          <View style={styles.dailyStreakContainer}>
+            <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
+            <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
+            <BodyText style={styles._streakCounter}>{this.props.user.dailyStreak || 0}</BodyText>
+          </View>
+        </View>
+      </View>
+    );
+  }
+}
 
 const mapStateToProps = (state) => {
   const { user: { user } } = state;
