@@ -28,7 +28,7 @@ export default class PostureCalibrate extends Component {
     this.calibrationAnimationHandler = this.calibrationAnimationHandler.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.calibrationAnimation();
   }
 
@@ -38,11 +38,11 @@ export default class PostureCalibrate extends Component {
    *                         reducing the value of the appropriate
    *                         fadeAnim array item.
    */
-  calibrationAnimation(index) {
+  calibrationAnimation(index = 0) {
     // Use Animated timing function in order to perform opacity
     // fade animation over the span of 1 second.
     Animated.timing(
-      this.state.fadeAnim[index || 0],
+      this.state.fadeAnim[index],
       {
         duration: 1000,
         toValue: 0.4,
@@ -96,7 +96,7 @@ export default class PostureCalibrate extends Component {
         <View style={styles.calibrationCircleContainer}>
           {
             // Create 5 circles to represent calibration countdown
-            ([...Array(5).keys()]).map((value, key) =>
+            [0, 1, 2, 3, 4].map((value, key) =>
               <Animated.View
                 key={key}
                 style={[
