@@ -147,9 +147,8 @@ class Profile extends Component {
     // If it goes from true to false, operation is complete
     if (this.props.isUpdating && !nextProps.isUpdating) {
       if (nextProps.errorMessage) {
-        // If trying to save user profile data or access this scene
-        // without having properly logged in, it'll throw an error
-        Alert.alert('Error', 'Invalid user');
+        // Display an alert when failing to save changed user data
+        Alert.alert('Error', 'Failed to save changes, please try again');
       } else {
         // Upon a successful user save, store updated user locally
         SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
