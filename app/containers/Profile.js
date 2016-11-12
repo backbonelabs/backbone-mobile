@@ -161,6 +161,11 @@ class Profile extends Component {
     }
   }
 
+  componentWillUnmount() {
+    // Remove any pending changes upon component unmount
+    this.props.dispatch(userActions.prepareUserUpdate(null));
+  }
+
   /**
    * Opens and closes the selected data picker component
    * @param {String} pickerType Data picker to open. If undefined, the
