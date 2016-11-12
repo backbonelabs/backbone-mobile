@@ -65,7 +65,7 @@ export default class PostureCalibrate extends Component {
     }, () => {
       // If calibration is over, send to session monitoring
       if (this.state.count >= 5) {
-        this.props.navigator.push(routes.postureMonitor);
+        this.props.navigator.replace(routes.postureMonitor);
       } else {
         this.calibrationAnimation(this.state.count);
       }

@@ -50,7 +50,14 @@ const PostureDashboard = (props) => (
           showsHorizontalScrollIndicator={false}
         />
       </View>
-      <Button text="START" primary onPress={() => props.navigator.push(routes.postureMonitor)} />
+      <Button
+        text="START"
+        primary
+        onPress={() => {
+          // TODO: Store session in Redux store
+          props.navigator.push(routes.postureCalibrate);
+        }}
+      />
     </View>
     <View style={styles.footer}>
       <View style={styles.dailyStreakContainer}>
