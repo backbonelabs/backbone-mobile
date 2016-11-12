@@ -61,7 +61,7 @@ class Support extends Component {
   render() {
     return (
       <ScrollView>
-        <Image source={gradientBackground20}>
+        <Image source={gradientBackground20} style={styles.background}>
           <TextInput
             style={styles.inputField}
             placeholder="Message here"

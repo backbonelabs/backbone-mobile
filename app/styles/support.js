@@ -4,6 +4,10 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  background: {
+    height: '100%',
+    width: '100%',
+  },
   inputField: {
     flex: 1,
     fontSize: '1rem',
