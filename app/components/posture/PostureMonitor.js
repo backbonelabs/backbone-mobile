@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { isFunction } from 'lodash';
-import postureActions from '../../actions/posture';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
