@@ -92,6 +92,9 @@ export default {
       const state = getState();
       const { accessToken } = state.auth;
 
+      // Remove invalidData property, since no longer needed
+      delete userUpdateFields.invalidData;
+
       dispatch(updateUserStart());
 
       return Fetcher.post({

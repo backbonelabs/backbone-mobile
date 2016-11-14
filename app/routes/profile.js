@@ -8,10 +8,11 @@ import userActions from '../actions/user';
 import theme from '../styles/theme';
 
 const ProfileSave = props => {
-  const textColor = props.pendingUser ? '#FFFFFF' : theme.disabledColor;
+  const isPendingSave = props.pendingUser && !props.pendingUser.invalidData;
+  const textColor = isPendingSave ? '#FFFFFF' : theme.disabledColor;
   const text = <BodyText style={{ color: textColor }}>Save</BodyText>;
 
-  return props.pendingUser ? (
+  return isPendingSave ? (
     <TouchableOpacity
       onPress={() => props.dispatch(userActions.updateUser(props.pendingUser))}
     >

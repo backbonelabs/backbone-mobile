@@ -71,7 +71,7 @@ const ProfileFieldInput = props => (
         autoCorrect={false}
         keyboardType={props.keyboardType}
         autoCapitalize="none"
-        onChangeText={value => props.updateProfile([props.field], value)}
+        onChangeText={value => props.fieldInputChangeHandler([props.field], value)}
       />
     </View>
   </View>
@@ -80,7 +80,7 @@ const ProfileFieldInput = props => (
 ProfileFieldInput.propTypes = {
   field: PropTypes.string,
   value: PropTypes.string,
-  updateProfile: PropTypes.func,
+  fieldInputChangeHandler: PropTypes.func,
   blurHandler: PropTypes.func,
   edited: PropTypes.bool,
   editedText: PropTypes.string,
@@ -105,6 +105,7 @@ class Profile extends Component {
     }),
     isFetching: PropTypes.bool,
     isUpdating: PropTypes.bool,
+    pendingUser: PropTypes.object,
   };
 
   constructor(props) {
@@ -128,10 +129,12 @@ class Profile extends Component {
       },
       email: user.email,
       pickerType: null,
+      invalidData: false,
     };
     this.setPickerType = this.setPickerType.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
     this.prepareUserUpdate = this.prepareUserUpdate.bind(this);
+    this.fieldInputChangeHandler = this.fieldInputChangeHandler.bind(this);
     this.fieldInputBlurHandler = this.fieldInputBlurHandler.bind(this);
   }
 
@@ -263,6 +266,30 @@ class Profile extends Component {
   }
 
   /**
+   * Handles changes and input validation
+   * @param {String}  field  Object key for accessing state/prop value
+   * @param {String}  value  Text input value
+   */
+  fieldInputChangeHandler(field, value) {
+    let invalidData = false;
+
+    // Check if field is an email, if truthy, validate with regex
+    if (field[0] === 'email' && !constants.emailRegex.test(value)) {
+      // Email fails validation
+      invalidData = true;
+    } else if (!value) {
+      // Input field is empty
+      invalidData = true;
+    } else if (this.props.pendingUser && this.props.pendingUser.invalidData) {
+      // Input value passes email validation and isn't empty
+      invalidData = false;
+    }
+
+    // Update invalidData and updateProfile
+    this.setState({ invalidData }, () => this.updateProfile(field[0], value));
+  }
+
+  /**
    * Resets field back to initial user profile value if validation fails
    * @param {String}  field  Object key for accessing state/prop value
    */
@@ -274,7 +301,6 @@ class Profile extends Component {
       // Check if field is an email, if truthy, validate with regex
     } else if (field === 'email' && !constants.emailRegex.test(this.state[field])) {
       Alert.alert('Error', 'Not a valid email, please try again');
-      this.updateProfile(field, this.props.user[field]);
     }
   }
 
@@ -310,6 +336,7 @@ class Profile extends Component {
       weight,
       height,
       email,
+      invalidData,
     } = this.state;
     const { user } = this.props;
 
@@ -325,6 +352,7 @@ class Profile extends Component {
         weight.value : weight.value / constants.weight.conversionValue,
       height: height.unit === constants.height.units.IN ?
         height.value : height.value / constants.height.conversionValue,
+      invalidData,
     };
 
     // Check if email has changed and assign separately
@@ -370,7 +398,7 @@ class Profile extends Component {
                   field="nickname"
                   keyboardType="default"
                   value={nickname}
-                  updateProfile={this.updateProfile}
+                  fieldInputChangeHandler={this.fieldInputChangeHandler}
                   blurHandler={this.fieldInputBlurHandler}
                 />
                 <ProfileField
@@ -416,7 +444,7 @@ class Profile extends Component {
                   field="email"
                   keyboardType="email-address"
                   value={email}
-                  updateProfile={this.updateProfile}
+                  fieldInputChangeHandler={this.fieldInputChangeHandler}
                   blurHandler={this.fieldInputBlurHandler}
                 />
               </View>
