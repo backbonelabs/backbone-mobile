@@ -14,7 +14,7 @@ const responsiveWidth = 136 * widthDifference;
 
 class Monitor extends Component {
   static propTypes = {
-    level: PropTypes.number,
+    degree: PropTypes.number,
   }
   componentWillMount() {
     this.animatedValue = new Animated.Value(0);
@@ -26,10 +26,10 @@ class Monitor extends Component {
     }).start();
   }
   render() {
-    const { level } = this.props;
+    const { degree } = this.props;
     const interpolateRotation = this.animatedValue.interpolate({
       inputRange: [0, 1],
-      outputRange: ['0deg', `${level}deg`],
+      outputRange: ['0deg', `${degree}deg`],
     });
     const animatedStyle = {
       transform: [
