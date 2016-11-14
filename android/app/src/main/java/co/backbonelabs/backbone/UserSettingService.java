@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 
+import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.JSError;
 import timber.log.Timber;
 
@@ -17,8 +18,6 @@ import static android.content.Context.MODE_PRIVATE;
  * Interface for interacting with the local user setting via SharedPreferences
  */
 public class UserSettingService extends ReactContextBaseJavaModule {
-    private static final String SETTING_ID = "UserSetting";
-
     /**
      * Public constructor
      * @param reactContext
@@ -43,7 +42,7 @@ public class UserSettingService extends ReactContextBaseJavaModule {
         Timber.d("UpdateUserSetting");
 
         // Get the shared preference editor under private mode so the user setting can only be accessed via this app
-        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(SETTING_ID, MODE_PRIVATE);
+        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.USER_PREF_ID, MODE_PRIVATE);
         SharedPreferences.Editor editor = preference.edit();
 
         try {
