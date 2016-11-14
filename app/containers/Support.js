@@ -5,6 +5,7 @@ import {
   ScrollView,
   TextInput,
   View,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { connect } from 'react-redux';
 import appActions from '../actions/app';
@@ -61,15 +62,17 @@ class Support extends Component {
   render() {
     return (
       <ScrollView>
-        <Image source={gradientBackground20} style={styles.background}>
-          <TextInput
-            style={styles.inputField}
-            placeholder="Message here"
-            multiline
-            autoFocus
-            onChangeText={text => this.props.dispatch(supportActions.updateMessage(text))}
-          />
-        </Image>
+        <KeyboardAvoidingView behavior="padding">
+          <Image source={gradientBackground20} style={styles.background}>
+            <TextInput
+              style={styles.inputField}
+              placeholder="Message here"
+              multiline
+              autoFocus
+              onChangeText={text => this.props.dispatch(supportActions.updateMessage(text))}
+            />
+          </Image>
+        </KeyboardAvoidingView>
       </ScrollView>
     );
   }
