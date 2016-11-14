@@ -19,7 +19,8 @@ export default EStyleSheet.create({
   monitorPointer: {
     alignSelf: 'center',
     height: 0,
-    bottom: 75,
+    bottom: 85,
+    left: 1,
   },
   base: {
     width: 8,
@@ -29,7 +30,7 @@ export default EStyleSheet.create({
   },
   hand: {
     width: 2,
-    height: 60,
+    height: 70,
     backgroundColor: '$primaryFontColor',
     left: 3,
     top: 1,
