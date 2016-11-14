@@ -25,7 +25,6 @@ class PostureMonitor extends Component {
     dispatch: PropTypes.func,
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number,
-      remainingTimeSeconds: PropTypes.number,
     }),
     user: PropTypes.shape({
       settings: PropTypes.shape({
@@ -43,7 +42,6 @@ class PostureMonitor extends Component {
       slouch: 0,
       level: 90,
     };
-    this.intervalId = null;
     this.postureListener = null;
     this.activityDisabledListener = null;
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
@@ -66,37 +64,26 @@ class PostureMonitor extends Component {
     });
   }
 
-  componentDidMount() {
-    // Set up an interval timer to decrease the duration every second
-    if (this.props.posture.sessionTimeSeconds < Infinity) {
-      this.intervalId = setInterval(() => {
-        this.props.dispatch(postureActions.decreaseSessionTime());
-      }, 1000);
-    }
-  }
-
   componentWillUnmount() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-
     this.disablePostureActivity();
     if (this.activityDisabledListener && isFunction(this.activityDisabledListener.remove)) {
       this.activityDisabledListener.remove();
     }
   }
 
+  /**
+   * Displays the session time remaining/elapsed in M:SS format. For timed sessions, the time
+   * remaining will be displayed. For untimed sessions, the time elapsed will be displayed.
+   * @return {String} Time remaining/elapsed in M:SS format
+   */
   getFormattedTimeRemaining() {
-    const secondsRemaining = this.props.posture.remainingTimeSeconds;
-    console.log('getFormattedTimeRemaining', secondsRemaining);
-    if (secondsRemaining <= 0) {
-      // In case the scene is still mounted after the session is finished,
-      // display no time remaining instead of a negative time
-      return '0:00';
+    // TODO: Update to display correct time remaining for timed sessions and time elapsed for
+    // untimed sessions. This can be done after the device is programmed to stream time data.
+    // For now, it just displays the chosen session time.
+    const secondsRemaining = this.props.posture.sessionTimeSeconds;
+    if (secondsRemaining === Infinity) {
+      return '-:--';
     }
-
-    // TODO: Show incrementing stopwatch if the unlimited session was chosen
-
     const minutes = Math.floor(secondsRemaining / 60);
     let seconds = secondsRemaining - (minutes * 60);
     if (seconds < 10) {
@@ -112,6 +99,8 @@ class PostureMonitor extends Component {
           const { settings } = this.props.user;
           // Attach listener
           this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
+            // TODO: Get time remaining/elapsed from so component
+
             const { currentDistance, slouchTime } = event;
 
             // User is slouching if currentDistance is greater than or equal to threshold

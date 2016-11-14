@@ -5,9 +5,4 @@ export default {
       payload: seconds,
     };
   },
-  decreaseSessionTime() {
-    return {
-      type: 'DECREASE_SESSION_TIME',
-    };
-  },
 };
