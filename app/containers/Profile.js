@@ -269,9 +269,11 @@ class Profile extends Component {
   fieldInputBlurHandler(field) {
     // Check if state property value is falsy
     if (!this.state[field]) {
+      Alert.alert('Error', 'Field cannot be empty, please try again');
       this.updateProfile(field, this.props.user[field]);
       // Check if field is an email, if truthy, validate with regex
     } else if (field === 'email' && !constants.emailRegex.test(this.state[field])) {
+      Alert.alert('Error', 'Not a valid email, please try again');
       this.updateProfile(field, this.props.user[field]);
     }
   }
