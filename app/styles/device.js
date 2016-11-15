@@ -12,4 +12,16 @@ export default EStyleSheet.create({
     marginTop: '0.5rem',
     fontSize: '0.5rem',
   },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  deviceInfoBodyText: {
+    marginTop: 20,
+  },
+  deviceInfoSecondaryText: {
+    marginTop: 5,
+    color: '$primaryFontColor',
+  },
 });
