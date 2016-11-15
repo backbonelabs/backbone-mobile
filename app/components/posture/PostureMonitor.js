@@ -36,7 +36,7 @@ class PostureMonitor extends Component {
     this.state = {
       monitoring: null,
       slouch: 0,
-      degree: 90,
+      degree: -180,
     };
     this.postureListener = null;
     this.activityDisabledListener = null;

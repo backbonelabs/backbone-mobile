@@ -57,8 +57,8 @@ class Monitor extends Component {
             fill="url(#grad)"
           />
         </Svg>
-        <Animated.View style={animatedStyle}>
-          <View style={styles.monitorPointer}>
+        <Animated.View style={[styles.animationContainer, animatedStyle]}>
+          <View style={styles.monitorPointerContainer}>
             <View style={styles.point} />
             <View style={styles.hand} />
             <View style={styles.base} />

@@ -4,6 +4,7 @@ import relativeDimensions from '../../utils/relativeDimensions';
 const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $pointerBaseHeight: 84,
   container: {
     flex: 1,
   },
@@ -16,28 +17,30 @@ export default EStyleSheet.create({
     textAlign: 'center',
     marginBottom: 50 * heightDifference,
   },
-  monitorPointer: {
+  animationContainer: {
+    height: '$pointerBaseHeight * 2',
+    bottom: '$pointerBaseHeight',
+    marginBottom: '$pointerBaseHeight * -2',
+  },
+  monitorPointerContainer: {
     alignSelf: 'center',
-    height: 0,
-    bottom: 85,
-    left: 1,
+    alignItems: 'center',
+    height: '$pointerBaseHeight * 2',
+    marginBottom: '$pointerBaseHeight',
+    transform: [{ rotate: '90deg' }],
   },
   base: {
     width: 8,
     height: 8,
-    borderRadius: 25,
+    borderRadius: 4,
     backgroundColor: '$primaryFontColor',
   },
   hand: {
     width: 2,
     height: 70,
     backgroundColor: '$primaryFontColor',
-    left: 3,
-    top: 1,
   },
   point: {
-    width: 0,
-    height: 0,
     backgroundColor: 'transparent',
     borderTopWidth: 0,
     borderRightWidth: 5,
@@ -47,8 +50,6 @@ export default EStyleSheet.create({
     borderRightColor: 'transparent',
     borderBottomColor: '$primaryFontColor',
     borderLeftColor: 'transparent',
-    right: 1,
-    top: 1,
   },
   monitorTitle: {
     textAlign: 'center',
