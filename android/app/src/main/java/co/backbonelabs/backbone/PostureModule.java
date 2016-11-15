@@ -9,7 +9,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
-import com.mbientlab.metawear.module.Led;
 
 import java.util.HashMap;
 
@@ -88,26 +87,26 @@ public class PostureModule extends ActivityModule<HashMap<String, Float>> {
     }
 
     private void handleTilt() {
-        Led ledModule = DeviceManagementService.mwBoard.lookupModule(Led.class);
-
-        if (ledModule != null) {
-            if (Math.abs(tilt) > tiltThreshold && !isLedBlinking) {
-                Timber.d("Blink LED");
-                ledModule
-                        .configureColorChannel(Led.ColorChannel.GREEN)
-                        .setHighTime((short) 50)
-                        .setHighIntensity((byte) 20)
-                        .setPulseDuration((short) 100)
-                        .setRepeatCount((byte) -1)
-                        .commit();
-
-                ledModule.play(false);
-                isLedBlinking = true;
-            } else {
-                isLedBlinking = false;
-                ledModule.stop(false);
-            }
-        }
+//        Led ledModule = DeviceManagementService.mwBoard.lookupModule(Led.class);
+//
+//        if (ledModule != null) {
+//            if (Math.abs(tilt) > tiltThreshold && !isLedBlinking) {
+//                Timber.d("Blink LED");
+//                ledModule
+//                        .configureColorChannel(Led.ColorChannel.GREEN)
+//                        .setHighTime((short) 50)
+//                        .setHighIntensity((byte) 20)
+//                        .setPulseDuration((short) 100)
+//                        .setRepeatCount((byte) -1)
+//                        .commit();
+//
+//                ledModule.play(false);
+//                isLedBlinking = true;
+//            } else {
+//                isLedBlinking = false;
+//                ledModule.stop(false);
+//            }
+//        }
         emitTilt();
     }
 

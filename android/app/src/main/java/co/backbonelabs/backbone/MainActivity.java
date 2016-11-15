@@ -54,9 +54,10 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
     public void onDestroy() {
         super.onDestroy();
 
+        BluetoothService bluetoothService = BluetoothService.getInstance();
         // Disconnect from device
-        if (DeviceManagementService.mwBoard != null) {
-            DeviceManagementService.mwBoard.disconnect();
+        if (bluetoothService.getCurrentDevice() != null) {
+            bluetoothService.disconnect();
         }
 
         // Unbind the service when the activity is destroyed
