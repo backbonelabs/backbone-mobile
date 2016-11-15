@@ -6,10 +6,9 @@ const { heightDifference } = relativeDimensions;
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 23 * heightDifference,
   },
   progressBarContainer: {
-    flex: 0.15,
+    flex: 0.1,
     width: '32%',
     alignSelf: 'center',
     flexDirection: 'row',
@@ -20,7 +19,13 @@ export default EStyleSheet.create({
     backgroundColor: '$primaryColor',
   },
   onboardingFlowContainer: {
-    flex: 0.85,
+    flex: 0.77,
     flexDirection: 'row',
+  },
+  exitOnboarding: {
+    flex: 0.07,
+    paddingRight: 15,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
 });

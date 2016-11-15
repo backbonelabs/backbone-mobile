@@ -249,6 +249,13 @@ class OnBoarding extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.exitOnboarding}>
+          <Icon
+            name={'close'}
+            size={30}
+            color={'black'}
+          />
+        </View>
         <View style={styles.progressBarContainer}>
           {
             // Render appropriate icon based on the user's onboarding flow progress
