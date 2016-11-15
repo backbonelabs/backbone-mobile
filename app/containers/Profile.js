@@ -195,14 +195,15 @@ class Profile extends Component {
    * @param  {Object}  userProps  User data
    */
   _setHeightValue(userProps) {
+    const { round } = Math;
     const equalsInch = userProps.heightUnitPreference === heightConstants.units.IN;
     const inchesToCentimeters = userProps.height * heightConstants.conversionValue;
 
     this.setState({
       height: {
         // Save initial user height value for comparison use
-        initialValue: Math.round(equalsInch ? userProps.height : inchesToCentimeters),
-        value: Math.round(equalsInch ? userProps.height : inchesToCentimeters),
+        initialValue: round(equalsInch ? userProps.height : inchesToCentimeters),
+        value: round(equalsInch ? userProps.height : inchesToCentimeters),
         unit: userProps.heightUnitPreference,
         label: '',
       },
