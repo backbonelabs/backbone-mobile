@@ -4,6 +4,7 @@ import deviceScan from './device/deviceScan';
 import welcome from './welcome';
 import login from './login';
 import signup from './signup';
+import device from './device';
 import postureDashboard from './posture/postureDashboard';
 import postureCalibrate from './posture/postureCalibrate';
 import postureMonitor from './posture/postureMonitor';
@@ -34,4 +35,5 @@ export default {
   onboarding,
   alerts,
   support,
+  device,
 };

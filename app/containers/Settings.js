@@ -46,7 +46,7 @@ const ArrowIcon = () => (
 );
 
 const SensorSettings = () => (
-  <View style={styles.sensorSettingsContainer}>
+  <TouchableOpacity style={styles.sensorSettingsContainer}>
     <View style={styles.sensorIconContainer}>
       <Image source={sensorSmall} style={styles.sensorIcon} />
     </View>
@@ -59,7 +59,7 @@ const SensorSettings = () => (
       <SecondaryText style={styles._batteryText}>About 10 days</SecondaryText>
     </View>
     <ArrowIcon />
-  </View>
+  </TouchableOpacity>
 );
 
 const SettingsIcon = props => (
