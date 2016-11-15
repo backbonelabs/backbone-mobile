@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   ViewPagerAndroid,
+  TouchableOpacity,
   // PushNotificationIOS,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -15,8 +16,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import constants from '../utils/constants';
 import onBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
+import authActions from '../actions/auth';
 import userActions from '../actions/user';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import routes from '../routes';
 
 const { width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
@@ -60,6 +63,7 @@ class OnBoarding extends Component {
     this.setPickerType = this.setPickerType.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
     this.stepTransitionAnimation = this.stepTransitionAnimation.bind(this);
+    this.exitOnboarding = this.exitOnboarding.bind(this);
   }
 
   // componentWillMount() {
@@ -232,6 +236,14 @@ class OnBoarding extends Component {
     }));
   }
 
+  exitOnboarding() {
+    // Remove locally stored user data, clear store and send back to Welcome scene
+    SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
+    SensitiveInfo.deleteItem(constants.userStorageKey);
+    this.props.dispatch(authActions.signOut());
+    this.props.navigator.resetTo(routes.welcome);
+  }
+
   /**
    * Updates state (field) with value
    * @param {String}  field
@@ -249,12 +261,23 @@ class OnBoarding extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.exitOnboarding}>
-          <Icon
-            name={'close'}
-            size={30}
-            color={'black'}
-          />
+        <View style={styles.exitOnboardingIcon}>
+          <TouchableOpacity
+            style={styles.exitOnboardingButton}
+            onPress={() => (
+              Alert.alert(
+                'Are you sure?',
+                '\nExiting will log you out and can cause you to lose your information',
+                [{ text: 'Cancel' }, { text: 'Logout', onPress: this.exitOnboarding }]
+              )
+            )}
+          >
+            <Icon
+              name={'close'}
+              size={30}
+              color={styles._exitOnboardingIconColor.backgroundColor}
+            />
+          </TouchableOpacity>
         </View>
         <View style={styles.progressBarContainer}>
           {

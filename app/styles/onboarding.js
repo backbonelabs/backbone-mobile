@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference } = relativeDimensions;
+const { heightDifference, widthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -22,10 +22,17 @@ export default EStyleSheet.create({
     flex: 0.77,
     flexDirection: 'row',
   },
-  exitOnboarding: {
+  exitOnboardingButton: {
+    paddingHorizontal: 15 * widthDifference,
+    paddingVertical: 15 * heightDifference,
+    justifyContent: 'center',
+  },
+  exitOnboardingIcon: {
     flex: 0.07,
-    paddingRight: 15,
     alignItems: 'flex-end',
     justifyContent: 'center',
+  },
+  exitOnboardingIconColor: {
+    backgroundColor: '$secondaryFontColor',
   },
 });
