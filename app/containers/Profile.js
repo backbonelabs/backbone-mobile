@@ -285,7 +285,7 @@ class Profile extends Component {
       // Input field is empty, prevent saving to profile
       invalidData = true;
     } else if (!constants.emailRegex.test(this.state.email)) {
-      // Case: User isn't editing email, but didn't fix invalid email error
+      // Case: User editing field other than email (didn't fix invalid email error')
       // Email state fails validation, prevent saving to profile
       invalidData = true;
     } else if (this.props.pendingUser && this.props.pendingUser.invalidData) {
@@ -313,6 +313,7 @@ class Profile extends Component {
     }
   }
 
+  // Verify that state is different from previously saved user data
   dataHasChanged() {
     const {
       email,
