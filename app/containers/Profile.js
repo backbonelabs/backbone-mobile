@@ -275,13 +275,13 @@ class Profile extends Component {
 
     // Check if field is an email, if truthy, validate with regex
     if (field === 'email' && !constants.emailRegex.test(value)) {
-      // Email fails validation
+      // Email fails validation, prevent save
       invalidData = true;
     } else if (!value) {
-      // Input field is empty
+      // Input field is empty, prevent save
       invalidData = true;
     } else if (this.props.pendingUser && this.props.pendingUser.invalidData) {
-      // Input value passes email validation and isn't empty
+      // Input value passes email validation and isn't empty, allow save
       invalidData = false;
     }
 
@@ -297,9 +297,12 @@ class Profile extends Component {
     // Check if state property value is falsy
     if (!this.state[field]) {
       Alert.alert('Error', 'Field cannot be empty, please try again');
-      this.updateProfile(field, this.props.user[field]);
-      // Check if field is an email, if truthy, validate with regex
+      // Reset empty input field to initial value and allow save
+      this.setState({ invalidData: false }, () => (
+        this.updateProfile(field, this.props.user[field])
+      ));
     } else if (field === 'email' && !constants.emailRegex.test(this.state[field])) {
+      // Check if field is an email, if truthy, validate with regex
       Alert.alert('Error', 'Not a valid email, please try again');
     }
   }
