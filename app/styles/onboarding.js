@@ -23,8 +23,7 @@ export default EStyleSheet.create({
     flexDirection: 'row',
   },
   exitOnboardingButton: {
-    paddingHorizontal: 15 * widthDifference,
-    paddingVertical: 15 * heightDifference,
+    paddingHorizontal: 10 * (widthDifference * heightDifference),
     justifyContent: 'center',
   },
   exitOnboardingIcon: {
