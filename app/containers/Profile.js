@@ -71,7 +71,7 @@ const ProfileFieldInput = props => (
         autoCorrect={false}
         keyboardType={props.keyboardType}
         autoCapitalize="none"
-        onChangeText={value => props.fieldInputChangeHandler([props.field], value)}
+        onChangeText={value => props.fieldInputChangeHandler(props.field, value)}
       />
     </View>
   </View>
@@ -274,7 +274,7 @@ class Profile extends Component {
     let invalidData = false;
 
     // Check if field is an email, if truthy, validate with regex
-    if (field[0] === 'email' && !constants.emailRegex.test(value)) {
+    if (field === 'email' && !constants.emailRegex.test(value)) {
       // Email fails validation
       invalidData = true;
     } else if (!value) {
@@ -286,7 +286,7 @@ class Profile extends Component {
     }
 
     // Update invalidData and updateProfile
-    this.setState({ invalidData }, () => this.updateProfile(field[0], value));
+    this.setState({ invalidData }, () => this.updateProfile(field, value));
   }
 
   /**
