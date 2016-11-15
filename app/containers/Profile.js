@@ -236,10 +236,11 @@ class Profile extends Component {
    * @return {String}         Returns a formatted height measurement string
    */
   _setHeightLabel(value) {
-    const equalsInch = this.state.height.unit === heightConstants.units.IN;
+    const { unit } = this.state.height;
+    const equalsInch = unit === heightConstants.units.IN;
     const inchLabel = `${Math.floor(value / 12)}ft ${value % 12}in`;
     const centimeterLabel = `${Math.round(value)}${
-      constants.heightUnitIdToLabel[this.state.height.unit].toLowerCase()}`;
+      constants.heightUnitIdToLabel[unit].toLowerCase()}`;
     return equalsInch ? inchLabel : centimeterLabel;
   }
 
