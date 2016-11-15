@@ -80,7 +80,7 @@ class Support extends Component {
             { mainContent }
           </KeyboardAvoidingView>
           :
-          { mainContent }
+          mainContent
         }
       </ScrollView>
     );
