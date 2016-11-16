@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="266px" height="266px" viewBox="0 0 266 266" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+    <title>summary circle</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="52.9817241%" y1="100%" x2="38.790018%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#F0B94D" offset="0%"></stop>
+            <stop stop-color="#ED1C24" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="page-12" transform="translate(-88.000000, -1320.000000)">
+            <g id="summary-circle" transform="translate(62.000000, 1294.000000)">
+                <circle id="Oval-7" fill="#231F20" opacity="0.559386322" cx="159" cy="159" r="133"></circle>
+                <path d="M159.099026,272.099026 C220.954918,272.099026 271.099026,221.507202 271.099026,159.099026 C271.099026,96.690849 220.954918,46.0990258 159.099026,46.0990258 C158.591105,46.0990258 158.083973,46.102437 157.577653,46.109238 C128.142605,46.5046148 101.448371,58.3563702 81.6757557,77.4463699 C80.9637769,78.1337689 80.2607726,78.830553 79.5669381,79.5365252 C59.4965439,99.9580255 47.0990258,128.067801 47.0990258,159.099026 C47.0990258,160.303834 47.1177142,161.504238 47.1548145,162.69996" id="Oval-7" stroke="url(#linearGradient-1)" stroke-width="16" transform="translate(159.099026, 159.099026) scale(1, -1) rotate(135.000000) translate(-159.099026, -159.099026) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

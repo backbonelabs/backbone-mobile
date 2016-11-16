@@ -15,6 +15,9 @@ import SecondaryText from '../../components/SecondaryText';
 import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
 import MonitorSlider from './postureMonitor/MonitorSlider';
+import appActions from '../../actions/app';
+import routes from '../../routes';
+import PostureSummary from './PostureSummary';
 
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
@@ -29,6 +32,10 @@ class PostureMonitor extends Component {
       postureThreshold: PropTypes.number,
       slouchTimeThreshold: PropTypes.number,
     }),
+    navigator: PropTypes.shape({
+      resetTo: PropTypes.func,
+    }),
+    dispatch: PropTypes.func,
   };
 
   constructor() {
@@ -42,6 +49,7 @@ class PostureMonitor extends Component {
     this.activityDisabledListener = null;
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
     this.disablePostureActivity = this.disablePostureActivity.bind(this);
+    this.showModal = this.this.showModal.bind(this);
   }
 
   componentWillMount() {
@@ -104,6 +112,13 @@ class PostureMonitor extends Component {
     ActivityService.disableActivity(activityName);
   }
 
+  showModal() {
+    this.props.dispatch(appActions.showFullModal({
+      onClose: this.props.navigator.resetTo(routes.postureDashboard),
+      content: <PostureSummary />,
+    }));
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -123,7 +138,7 @@ class PostureMonitor extends Component {
           { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
             <MonitorButton play onPress={this.enablePostureActivity} />
           }
-          <MonitorButton alertsDisabled />
+          <MonitorButton alertsDisabled onPress={this.showModal} />
           <MonitorButton stop onPress={this.disablePostureActivity} />
         </View>
       </View>
