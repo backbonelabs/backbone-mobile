@@ -237,9 +237,7 @@ class OnBoarding extends Component {
   }
 
   exitOnboarding() {
-    // Remove locally stored user data, clear store and send back to Welcome scene
-    SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
-    SensitiveInfo.deleteItem(constants.userStorageKey);
+    // Remove locally stored user data and reset Redux auth/user store
     this.props.dispatch(authActions.signOut());
     this.props.navigator.resetTo(routes.welcome);
   }
