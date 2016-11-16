@@ -11,7 +11,7 @@ import HeadingText from '../HeadingText';
 import BodyText from '../BodyText';
 import SecondaryText from '../SecondaryText';
 import Button from '../Button';
-import calibrationImage from '../../images/calibration/sittingExample.png';
+import sittingExample from '../../images/calibration/sittingExample.png';
 import constants from '../../utils/constants';
 import SensitiveInfo from '../../utils/SensitiveInfo';
 
@@ -126,10 +126,7 @@ export default class PostureCalibrate extends Component {
           </BodyText>
         </View>
         <View style={styles.imageContainer}>
-          <Image
-            source={calibrationImage}
-            style={styles.image}
-          />
+          <Image style={styles.image} source={sittingExample} />
           <View style={styles.calibrationCircleContainer}>
             {
               // Create 5 circles to represent calibration countdown
