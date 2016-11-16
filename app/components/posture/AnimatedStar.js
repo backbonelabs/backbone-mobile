@@ -2,7 +2,6 @@ import React, { PropTypes, Component } from 'react';
 import {
   Dimensions,
   Animated,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../styles/posture/postureSummary';
@@ -67,7 +66,7 @@ class AnimatedStar extends Component {
   render() {
     return (
       <Animated.View style={[styles.starWrap, this.getHeartAnimationStyle(), this.props.style]}>
-        <View><Icon name="star" size={50} color="#F0B24B" /></View>
+        <Icon name="star" size={50} color="#F0B24B" />
       </Animated.View>
     );
   }
