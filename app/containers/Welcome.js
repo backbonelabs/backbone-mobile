@@ -95,7 +95,7 @@ class Welcome extends Component {
           </View>
           <View style={styles.caption}>
             <BodyText style={styles._text}>
-              Feel and look your strongest with better posture
+              Look & feel your strongest with Backbone
             </BodyText>
           </View>
         </View>

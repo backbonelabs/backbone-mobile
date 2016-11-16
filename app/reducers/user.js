@@ -4,6 +4,7 @@ export default (state = {
   isFetching: false,
   isUpdating: false,
   user: {},
+  pendingUser: null,
   errorMessage: null,
 }, action) => {
   switch (action.type) {
@@ -48,6 +49,7 @@ export default (state = {
         isUpdating: false,
         errorMessage: null,
         user: action.payload,
+        pendingUser: null,
       };
     }
     case 'UPDATE_USER__ERROR': {
@@ -96,7 +98,14 @@ export default (state = {
         isFetching: false,
         isUpdating: false,
         user: {},
+        pendingUser: null,
         errorMessage: null,
+      };
+    }
+    case 'PREPARE_USER_UPDATE': {
+      return {
+        ...state,
+        pendingUser: action.payload,
       };
     }
     default:

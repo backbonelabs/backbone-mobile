@@ -1,18 +1,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
-const width = 330 * widthDifference;
+const { heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $containerMarginPt: 20,
-  $heightDifference: heightDifference,
-  $widthDifference: widthDifference,
-  $topMargin: '$containerMarginPt * $heightDifference',
   container: {
     flex: 1,
-    marginTop: '$statusBarHeight + $topMargin',
-    marginBottom: '$containerMarginPt * $heightDifference',
     alignItems: 'center',
     alignSelf: 'center',
   },
@@ -20,13 +13,13 @@ export default EStyleSheet.create({
     flex: 0.8,
     alignItems: 'center',
     justifyContent: 'center',
-    width,
+    width: '90%',
   },
   heading: {
-    marginTop: 30,
+    marginTop: 30 * heightDifference,
   },
   caption: {
-    marginTop: 26,
+    marginTop: 26 * heightDifference,
   },
   text: {
     textAlign: 'center',
@@ -34,13 +27,13 @@ export default EStyleSheet.create({
   footer: {
     flex: 0.2,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    width,
+    justifyContent: 'center',
+    width: '90%',
   },
   CTAContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-    width,
+    width: '90%',
   },
 });

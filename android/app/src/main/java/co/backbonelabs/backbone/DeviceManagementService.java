@@ -1,17 +1,10 @@
 package co.backbonelabs.backbone;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.content.SharedPreferences;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -23,26 +16,21 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.mbientlab.metawear.MetaWearBoard;
-import com.mbientlab.metawear.MetaWearBoard.ConnectionStateHandler;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.JSError;
 import timber.log.Timber;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private static final String TAG = "DeviceManagementService";
-    public static MetaWearBoard mwBoard;
     private boolean scanning;
-    private Handler handler = new Handler(Looper.getMainLooper());
     private ReactContext reactContext;
-    private BluetoothAdapter bluetoothAdapter;
 
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -59,65 +47,45 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     private HashMap<String, BluetoothDevice> deviceCollection;
 
-    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
-            MainActivity.currentActivity.runOnUiThread(new Runnable() {
+    @ReactMethod
+    public void getSavedDevice(Callback callback) {
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.DEVICE_PREF_ID, MODE_PRIVATE);
+
+        String address = preference.getString(Constants.SAVED_DEVICE_PREF_KEY, "");
+        Timber.d("GetSaved %s", address);
+        BluetoothDevice device = bluetoothService.getCurrentDevice();
+
+        if (address != null && address.length() > 0) {
+            Timber.d("reconnect %s", address);
+            device = bluetoothService.findDeviceByAddress(address);
+
+            bluetoothService.selectDevice(device);
+        }
+
+        callback.invoke(device != null);
+    }
+
+    @ReactMethod
+    public void scanForDevices(Callback callback) {
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+        if (scanning) {
+            callback.invoke(JSError.make("A scan has already been initiated"));
+        }
+        else if (bluetoothService.getCurrentDevice() != null) {
+            callback.invoke();
+        }
+        else if (!bluetoothService.getIsEnabled()) {
+            callback.invoke(JSError.make("Bluetooth is not enabled"));
+        }
+        else {
+            scanning = true;
+            deviceCollection = new HashMap<String, BluetoothDevice>();
+
+            Timber.d("Starting scan");
+            bluetoothService.startScanForBLEDevices(new BluetoothService.DeviceScanCallBack() {
                 @Override
-                public void run() {
-                    BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-                        @Override
-                        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                                gatt.discoverServices();
-                            }
-                        }
-
-                        @Override
-                        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-                            final String macAddress = gatt.getDevice().getAddress();
-                            Timber.d(macAddress + " onServicesDiscovered status: " + status);
-                            if (status == BluetoothGatt.GATT_SUCCESS) {
-                                Timber.d(macAddress + " GATT_SUCCESS");
-                                List<BluetoothGattService> services = gatt.getServices();
-                                for (BluetoothGattService service : services) {
-                                    UUID serviceUuid = service.getUuid();
-                                    Timber.d(macAddress + " uuid: " + serviceUuid);
-                                    if (serviceUuid.equals(MetaWearBoard.METAWEAR_SERVICE_UUID)) {
-                                        // This is a MetaWear board
-                                        Timber.d("Found MetaWear board");
-                                        Timber.d(macAddress + " service: " + serviceUuid + " service type: " + service.getType());
-
-                                        List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
-                                        for (BluetoothGattCharacteristic characteristic : characteristics) {
-                                            Timber.d(macAddress + " service: " + service.getUuid() + " characteristic: " + characteristic.getUuid());
-
-                                            List<BluetoothGattDescriptor> descriptors = characteristic.getDescriptors();
-                                            for (BluetoothGattDescriptor descriptor : descriptors) {
-                                                byte[] descriptorValues = descriptor.getValue();
-                                                if (descriptorValues != null) {
-                                                    String dv = "";
-                                                    for (byte descriptorValue : descriptorValues) {
-                                                        dv = dv + descriptorValue + " :: ";
-                                                    }
-                                                    Timber.d("characteristic: " + characteristic.getUuid() + " descriptor: " + descriptor.getUuid() + " value: " + dv);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            // Close GATT client to release resources
-                            Timber.d("Closing GATT client");
-                            gatt.close();
-                        }
-                    };
-
-                    // Connect to GATT server (this is not needed for MetaWear,
-                    // but could serve as a useful resource later for interacting with proprietary device
-                    device.connectGatt(getCurrentActivity(), false, mGattCallback);
-
-                    // Add device to collection
+                public void onDeviceFound(BluetoothDevice device, int rssi) {
                     deviceCollection.put(device.getAddress(), device);
 
                     // Map device collection to a JS-compatible array of JS-compatible objects
@@ -136,33 +104,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
                     // Emit device array to JS
                     sendEvent(reactContext, "DevicesFound", deviceList);
-
                 }
             });
-        }
-    };
 
-    @ReactMethod
-    public void getSavedDevice(Callback callback) {
-        callback.invoke(mwBoard != null);
-    }
-
-    @ReactMethod
-    public void scanForDevices(Callback callback) {
-        BluetoothService bluetoothService = BluetoothService.getInstance();
-        if (scanning) {
-            callback.invoke(JSError.make("A scan has already been initiated"));
-        } else if (!bluetoothService.getIsEnabled()) {
-            callback.invoke(JSError.make("Bluetooth is not enabled"));
-        } else {
-            scanning = true;
-            deviceCollection = new HashMap<String, BluetoothDevice>();
-            Timber.d("Starting scan");
-            UUID[] serviceUuids = new UUID[] {
-                    MetaWearBoard.METAWEAR_SERVICE_UUID,
-            };
-            bluetoothAdapter = bluetoothService.getAdapter();
-            bluetoothAdapter.startLeScan(serviceUuids, mLeScanCallback);
             callback.invoke();
         }
     }
@@ -172,8 +116,8 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         Timber.d("Stopping scan");
         scanning = false;
         BluetoothService bluetoothService = BluetoothService.getInstance();
-        bluetoothAdapter = bluetoothService.getAdapter();
-        bluetoothAdapter.stopLeScan(mLeScanCallback);
+
+        bluetoothService.stopScan();
     }
 
     @ReactMethod
@@ -184,51 +128,47 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         if (device == null) {
             callback.invoke(JSError.make("Device not in range"));
         } else {
-            mwBoard = MainActivity.metaWearServiceBinder.getMetaWearBoard(device);
+            BluetoothService.getInstance().selectDevice(device);
+
             callback.invoke();
         }
     }
 
-    private final ConnectionStateHandler stateHandler = new ConnectionStateHandler() {
-        @Override
-        public void connected() {
-            Timber.d("MetaWearBoard connected");
-            WritableMap wm = Arguments.createMap();
-            wm.putBoolean("isConnected", true);
-            wm.putNull("message");
-            sendEvent(reactContext, "ConnectionStatus", wm);
-        }
-
-        @Override
-        public void disconnected() {
-            Timber.d("MetaWearBoard disconnected");
-            WritableMap wm = Arguments.createMap();
-            wm.putBoolean("isConnected", false);
-            wm.putNull("message");
-            sendEvent(reactContext, "ConnectionStatus", wm);
-        }
-
-        @Override
-        public void failure(int status, Throwable error) {
-            Log.e(TAG, "MetaWearBoard error connecting", error);
-            WritableMap wm = Arguments.createMap();
-            wm.putBoolean("isConnected", false);
-            wm.putString("message", "Device took too long to connect");
-            sendEvent(reactContext, "ConnectionStatus", wm);
-        }
-    };
-
     @ReactMethod
     public void connectToDevice() {
         Timber.d("connectToDevice");
-        mwBoard.setConnectionStateHandler(stateHandler);
-        mwBoard.connect();
+        final BluetoothService bluetoothService = BluetoothService.getInstance();
+        bluetoothService.connectDevice(bluetoothService.getCurrentDevice(), new BluetoothService.DeviceConnectionCallBack() {
+            @Override
+            public void onDeviceConnected() {
+                Timber.d("DeviceConnected");
+                WritableMap wm = Arguments.createMap();
+                wm.putBoolean("isConnected", true);
+                wm.putNull("message");
+                sendEvent(reactContext, "ConnectionStatus", wm);
+
+                rememberDevice(BluetoothService.getInstance().getCurrentDevice().getAddress());
+            }
+
+            @Override
+            public void onDeviceDisconnected() {
+                Timber.d("DeviceDisconnected");
+                WritableMap wm = Arguments.createMap();
+                wm.putBoolean("isConnected", false);
+                wm.putNull("message");
+                sendEvent(reactContext, "ConnectionStatus", wm);
+            }
+        });
+
+        checkConnectTimeout();
     }
 
     @ReactMethod
     public void getDeviceStatus(Callback callback) {
-        if (mwBoard != null) {
-            callback.invoke(mwBoard.isConnected() ? Constants.DEVICE_STATUSES.CONNECTED : Constants.DEVICE_STATUSES.DISCONNECTED);
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+
+        if (bluetoothService.getCurrentDevice() != null) {
+            callback.invoke(bluetoothService.getDeviceState() == BluetoothProfile.STATE_CONNECTED ? Constants.DEVICE_STATUSES.CONNECTED : Constants.DEVICE_STATUSES.DISCONNECTED);
         } else {
             callback.invoke(Constants.DEVICE_STATUSES.DISCONNECTED);
         }
@@ -236,12 +176,51 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void forgetDevice(Callback callback) {
-        if (mwBoard != null) {
-            mwBoard.disconnect();
-            mwBoard = null;
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+
+        if (bluetoothService.getCurrentDevice() != null) {
+            bluetoothService.disconnect();
+
+            SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.DEVICE_PREF_ID, MODE_PRIVATE);
+            SharedPreferences.Editor editor = preference.edit();
+
+            editor.remove(Constants.SAVED_DEVICE_PREF_KEY);
+            editor.commit();
+
             callback.invoke();
         } else {
             callback.invoke(JSError.make("Currently not connected to a device"));
+        }
+    }
+
+    private void checkConnectTimeout() {
+        int interval = 1000 * 10; // 10 seconds of timeout
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable(){
+            public void run() {
+                Timber.d("Check connection timeout");
+                if (BluetoothService.getInstance().getDeviceState() != BluetoothProfile.STATE_CONNECTED) {
+                    Timber.d("Device connection timeout");
+                    WritableMap wm = Arguments.createMap();
+                    wm.putBoolean("isConnected", false);
+                    wm.putString("message", "Device took too long to connect");
+                    sendEvent(reactContext, "ConnectionStatus", wm);
+                }
+            }
+        };
+
+        handler.postDelayed(runnable, interval);
+    }
+
+    private void rememberDevice(String address) {
+        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.DEVICE_PREF_ID, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preference.edit();
+
+        try {
+            editor.putString(Constants.SAVED_DEVICE_PREF_KEY, address);
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

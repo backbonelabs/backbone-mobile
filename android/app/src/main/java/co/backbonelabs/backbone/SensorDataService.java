@@ -4,19 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+//import android.support.v4.content.LocalBroadcastManager;
+//import android.util.Log;
 
-import com.mbientlab.metawear.AsyncOperation;
-import com.mbientlab.metawear.Message;
-import com.mbientlab.metawear.MetaWearBoard;
-import com.mbientlab.metawear.RouteManager;
-import com.mbientlab.metawear.RouteManager.MessageHandler;
-import com.mbientlab.metawear.UnsupportedModuleException;
-import com.mbientlab.metawear.data.CartesianFloat;
-import com.mbientlab.metawear.module.*;
-
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -27,7 +18,6 @@ public class SensorDataService {
     public static final String INTENT_EXTRA_NAME = "co.backbonelabs.Backbone.sensorData";
     private static final String TAG = "SensorDataService";
     private static SensorDataService instance = null;
-    private MetaWearBoard device = DeviceManagementService.mwBoard;
     private HashSet<ActivityModule> activeActivities = new HashSet<ActivityModule>();
     private HashSet<String> activeSensors = new HashSet<String>();
 
@@ -124,55 +114,55 @@ public class SensorDataService {
             switch (activityModule.getSensor()) {
                 case Constants.SENSORS.ACCELEROMETER:
                     Timber.d("Enabling accelerometer");
-                    try {
-                        Accelerometer accelerometer = device.getModule(Accelerometer.class);
-
-                        // Set sampling frequency to 3.125Hz
-                        accelerometer.setOutputDataRate(Bmi160Accelerometer.OutputDataRate.ODR_3_125_HZ.frequency());
-
-                        // Set sampling range to 2G
-                        accelerometer.setAxisSamplingRange(Bmi160Accelerometer.AccRange.AR_2G.scale());
-
-                        // Enable axis sampling
-                        accelerometer.enableAxisSampling();
-
-                        // Set up route data
-                        accelerometer.routeData()
-                                .fromAxes()
-                                .stream("accelerometerStream")
-                                .commit()
-                                .onComplete(new AsyncOperation.CompletionHandler<RouteManager>() {
-                                    @Override
-                                    public void success(RouteManager result) {
-                                        result.subscribe("accelerometerStream", new MessageHandler() {
-                                            @Override
-                                            public void process(Message msg) {
-                                                CartesianFloat axes = msg.getData(CartesianFloat.class);
-                                                Timber.d("axes data: " + axes.toString());
-
-                                                HashMap<String, Float> data = new HashMap<String, Float>();
-                                                data.put("x", axes.x());
-                                                data.put("y", axes.y());
-                                                data.put("z", axes.z());
-
-                                                Intent intent = new Intent(activityModule.getNotificationName());
-                                                intent.putExtra(INTENT_EXTRA_NAME, data);
-                                                LocalBroadcastManager.getInstance(MainActivity.currentActivity)
-                                                        .sendBroadcast(intent);
-                                            }
-                                        });
-                                    }
-                                });
-
-                        // Start the accelerometer activity stream
-                        accelerometer.start();
+//                    try {
+//                        Accelerometer accelerometer = device.getModule(Accelerometer.class);
+//
+//                        // Set sampling frequency to 3.125Hz
+//                        accelerometer.setOutputDataRate(Bmi160Accelerometer.OutputDataRate.ODR_3_125_HZ.frequency());
+//
+//                        // Set sampling range to 2G
+//                        accelerometer.setAxisSamplingRange(Bmi160Accelerometer.AccRange.AR_2G.scale());
+//
+//                        // Enable axis sampling
+//                        accelerometer.enableAxisSampling();
+//
+//                        // Set up route data
+//                        accelerometer.routeData()
+//                                .fromAxes()
+//                                .stream("accelerometerStream")
+//                                .commit()
+//                                .onComplete(new AsyncOperation.CompletionHandler<RouteManager>() {
+//                                    @Override
+//                                    public void success(RouteManager result) {
+//                                        result.subscribe("accelerometerStream", new MessageHandler() {
+//                                            @Override
+//                                            public void process(Message msg) {
+//                                                CartesianFloat axes = msg.getData(CartesianFloat.class);
+//                                                Timber.d("axes data: " + axes.toString());
+//
+//                                                HashMap<String, Float> data = new HashMap<String, Float>();
+//                                                data.put("x", axes.x());
+//                                                data.put("y", axes.y());
+//                                                data.put("z", axes.z());
+//
+//                                                Intent intent = new Intent(activityModule.getNotificationName());
+//                                                intent.putExtra(INTENT_EXTRA_NAME, data);
+//                                                LocalBroadcastManager.getInstance(MainActivity.currentActivity)
+//                                                        .sendBroadcast(intent);
+//                                            }
+//                                        });
+//                                    }
+//                                });
+//
+//                        // Start the accelerometer activity stream
+//                        accelerometer.start();
 
                         // Add the sensor to the set of active sensors
-                        activeSensors.add(activityModule.getSensor());
-                    } catch (UnsupportedModuleException e) {
-                        Log.e(TAG, "Module not present", e);
-                        activeActivities.remove(activityModule);
-                    }
+//                        activeSensors.add(activityModule.getSensor());
+//                    } catch (UnsupportedModuleException e) {
+//                        Log.e(TAG, "Module not present", e);
+//                        activeActivities.remove(activityModule);
+//                    }
                     break;
             }
         }
@@ -211,26 +201,26 @@ public class SensorDataService {
 
     private void toggleSensor(String sensor, boolean enable) {
         Timber.d("toggleSensor " + sensor + " " + enable);
-        try {
-            if (!device.isConnected()) {
-                // Device is not connected, do not attempt to toggle sensor
-                throw new Exception("Device is not connected");
-            }
-
-            switch (sensor) {
-                case Constants.SENSORS.ACCELEROMETER:
-                    Accelerometer accelerometer = device.getModule(Accelerometer.class);
-                    if (enable) {
-                        accelerometer.start();
-                    } else {
-                        accelerometer.stop();
-                    }
-                    break;
-            }
-        } catch (Exception e) {
-            // Swallow exceptions to prevent app from crashing
-            Log.e(TAG, "Error toggling " + sensor + " sensor", e);
-        }
+//        try {
+//            if (!device.isConnected()) {
+//                // Device is not connected, do not attempt to toggle sensor
+//                throw new Exception("Device is not connected");
+//            }
+//
+//            switch (sensor) {
+//                case Constants.SENSORS.ACCELEROMETER:
+//                    Accelerometer accelerometer = device.getModule(Accelerometer.class);
+//                    if (enable) {
+//                        accelerometer.start();
+//                    } else {
+//                        accelerometer.stop();
+//                    }
+//                    break;
+//            }
+//        } catch (Exception e) {
+//            // Swallow exceptions to prevent app from crashing
+//            Log.e(TAG, "Error toggling " + sensor + " sensor", e);
+//        }
     }
 
     private void startAllSensors() {

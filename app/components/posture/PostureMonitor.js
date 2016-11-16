@@ -36,7 +36,7 @@ class PostureMonitor extends Component {
     this.state = {
       monitoring: null,
       slouch: 0,
-      level: 90,
+      degree: -180,
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
@@ -109,7 +109,7 @@ class PostureMonitor extends Component {
       <View style={styles.container}>
         <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
         <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
-        <Monitor />
+        <Monitor degree={this.state.degree} />
         <View style={styles.monitorRatingContainer}>
           <BodyText style={styles._monitorPoor}>Poor</BodyText>
           <BodyText style={styles._monitorGood}>Good</BodyText>

@@ -1,27 +1,26 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { widthDifference } = relativeDimensions;
+const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   $itemWidth: 130 * 1.5 * widthDifference,
-  $sliderWidth: '$screenWidth',
+  $sliderWidth: '100%',
   container: {
     flex: 1,
   },
   header: {
-    flex: 0.1,
+    flex: 0.15,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   body: {
     flex: 0.5,
     justifyContent: 'space-around',
-  },
-  startButton: {
-    alignSelf: 'center',
+    alignItems: 'center',
   },
   carouselContainer: {
-    height: 150,
+    height: '$itemWidth',
   },
   carouselItem: {
     alignItems: 'center',
@@ -34,8 +33,17 @@ export default EStyleSheet.create({
   },
   dailyStreakContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dailyStreakTitle: {
+    marginBottom: 8 * heightDifference,
+  },
+  dailyStreakBanner: {
+    width: 55 * widthDifference,
+    height: 86 * heightDifference,
+    resizeMode: 'contain',
   },
   streakCounter: {
-    marginTop: -67,
+    marginTop: -67 * heightDifference,
   },
 });
