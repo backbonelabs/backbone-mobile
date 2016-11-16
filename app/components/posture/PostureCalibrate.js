@@ -115,6 +115,11 @@ export default class PostureCalibrate extends Component {
   }
 
   render() {
+    const buttonProps = {};
+    if (!this.state.isCountingDown) {
+      buttonProps.primary = true;
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
@@ -144,9 +149,9 @@ export default class PostureCalibrate extends Component {
         </View>
         <View style={styles.actionsContainer}>
           <Button
-            primary
+            {...buttonProps}
             onPress={() => this.setState({ isCountingDown: !this.state.isCountingDown })}
-            text={this.state.isCountingDown ? 'PAUSE' : 'START'}
+            text={this.state.isCountingDown ? 'PAUSE' : 'GO'}
           />
           <View style={styles.autoStartPreferenceContainer}>
             <View style={styles.autoStartPreferenceLabel}>
