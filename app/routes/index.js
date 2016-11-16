@@ -1,4 +1,5 @@
 import activity from './activity';
+import deviceAdd from './device/deviceAdd';
 import deviceConnect from './device/deviceConnect';
 import deviceScan from './device/deviceScan';
 import welcome from './welcome';
@@ -19,6 +20,7 @@ import support from './support';
 
 export default {
   activity,
+  deviceAdd,
   deviceConnect,
   deviceScan,
   welcome,
