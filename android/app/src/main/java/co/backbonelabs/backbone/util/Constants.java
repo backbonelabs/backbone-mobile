@@ -7,9 +7,9 @@ public class Constants {
         String ACCELEROMETER = "ACCELEROMETER";
     }
     public interface ACTIONS {
-        String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.startPostureForegroundService";
-        String STOP_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.stopPostureForegroundService";
-        String STOP_POSTURE_ACTIVITY = "co.backbonelabs.backbone.intent.action.stopPostureActivity";
+        String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.START_POSTURE_FOREGROUND_SERVICE";
+        String STOP_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.STOP_POSTURE_FOREGROUND_SERVICE";
+        String STOP_POSTURE_ACTIVITY = "co.backbonelabs.backbone.intent.action.STOP_POSTURE_ACTIVITY";
     }
     public interface NOTIFICATION_IDS {
         int FOREGROUND_SERVICE = 101;

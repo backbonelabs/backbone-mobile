@@ -68,22 +68,33 @@ const SettingsIcon = props => (
   </View>
 );
 
+SettingsIcon.propTypes = {
+  iconName: PropTypes.string,
+};
+
 const SettingsText = props => (
   <View style={styles.settingsText}>
     <BodyText>{props.text}</BodyText>
   </View>
 );
 
+SettingsText.propTypes = {
+  text: PropTypes.string,
+};
+
 const AccountRemindersSettings = props => (
   <View style={styles.accountRemindersContainer}>
     <View style={styles.accountRemindersHeader}>
       <BodyText>ACCOUNT & REMINDERS</BodyText>
     </View>
-    <View style={styles.accountRemindersSettingContainer}>
+    <TouchableOpacity
+      style={styles.accountRemindersSettingContainer}
+      onPress={() => props.navigator.push(routes.profile)}
+    >
       <SettingsIcon iconName="profile" />
       <SettingsText text="Profile" />
       <ArrowIcon />
-    </View>
+    </TouchableOpacity>
     <TouchableOpacity
       style={styles.accountRemindersSettingContainer}
       onPress={() => props.navigator.push(routes.alerts)}
@@ -105,7 +116,15 @@ const AccountRemindersSettings = props => (
   </View>
 );
 
-const HelpSettings = () => (
+AccountRemindersSettings.propTypes = {
+  updateNotifications: PropTypes.func,
+  notificationsEnabled: PropTypes.bool,
+  navigator: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+};
+
+const HelpSettings = props => (
   <View style={styles.helpContainer}>
     <View style={styles.helpSettingsHeader}>
       <BodyText>HELP</BodyText>
@@ -115,13 +134,22 @@ const HelpSettings = () => (
       <SettingsText text="How To Use" />
       <ArrowIcon />
     </View>
-    <View style={styles.helpSettingContainer}>
+    <TouchableOpacity
+      style={styles.helpSettingContainer}
+      onPress={() => props.navigator.push(routes.support)}
+    >
       <SettingsIcon iconName="support" />
       <SettingsText text="Support" />
       <ArrowIcon />
-    </View>
+    </TouchableOpacity>
   </View>
 );
+
+HelpSettings.propTypes = {
+  navigator: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+};
 
 class Settings extends Component {
   static propTypes = {
@@ -200,12 +228,11 @@ class Settings extends Component {
             notificationsEnabled={this.state.notificationsEnabled}
             updateNotifications={this.updateNotifications}
           />
-          <HelpSettings />
+          <HelpSettings navigator={this.props.navigator} />
           <View style={styles.buttonContainer}>
             <Button
               primary
               text="SIGN OUT"
-              style={styles._button}
               onPress={() => Alert.alert(
                 'Sign Out',
                 '\nAre you sure you want to sign out of your account?',
@@ -240,22 +267,6 @@ class Settings extends Component {
 const mapStateToProps = (state) => {
   const { app } = state;
   return { app };
-};
-
-SettingsIcon.propTypes = {
-  iconName: PropTypes.string,
-};
-
-SettingsText.propTypes = {
-  text: PropTypes.string,
-};
-
-AccountRemindersSettings.propTypes = {
-  updateNotifications: PropTypes.func,
-  notificationsEnabled: PropTypes.bool,
-  navigator: PropTypes.shape({
-    push: PropTypes.func,
-  }),
 };
 
 export default connect(mapStateToProps)(Settings);

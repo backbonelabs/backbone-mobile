@@ -1,9 +1,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
+const { widthDifference, heightDifference } = relativeDimensions;
+
 export default EStyleSheet.create({
-  $placeholderTextColor: '#A9A9A9',
-  $color: '#231F20',
+  $placeholderTextColor: '$secondaryFontColor',
+  $color: '$primaryFontColor',
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -14,14 +16,14 @@ export default EStyleSheet.create({
     borderColor: '#979797',
     borderWidth: 1,
     borderRadius: 5,
-    width: 235 * relativeDimensions.widthDifference,
-    height: 44 * relativeDimensions.heightDifference,
-    paddingHorizontal: 20 * relativeDimensions.widthDifference,
-    paddingVertical: 10 * relativeDimensions.heightDifference,
+    width: 235 * widthDifference,
+    height: 44 * heightDifference,
+    paddingHorizontal: 20 * widthDifference,
+    paddingVertical: 10 * heightDifference,
   },
   icon: {
     position: 'relative',
-    right: 20 * relativeDimensions.widthDifference,
+    right: 20 * widthDifference,
   },
   disabled: {
     color: '$disabledColor',

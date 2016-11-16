@@ -18,7 +18,6 @@ export default EStyleSheet.create({
     flex: 0.22,
     width: '65%',
     alignSelf: 'center',
-    justifyContent: 'flex-start',
   },
   subText: {
     textAlign: 'center',
