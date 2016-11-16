@@ -23,50 +23,19 @@ class PostureSummary extends Component {
     super(props);
 
     this.state = {
-      stars: [
-        {
-          id: 1,
-          right: 50,
-        },
-        {
-          id: 2,
-          right: 150,
-        },
-        {
-          id: 3,
-          right: 300,
-        },
-        {
-          id: 4,
-          right: 124,
-        },
-        {
-          id: 5,
-          right: 90,
-        },
-        {
-          id: 6,
-          right: 225,
-        },
-        {
-          id: 7,
-          right: 180,
-        },
-        {
-          id: 8,
-          right: 280,
-        },
-        {
-          id: 9,
-          right: 25,
-        },
-        {
-          id: 10,
-          right: 100,
-        },
-      ],
+      stars: [],
+      intervalId: '',
     };
     this.addStar = this.addStar.bind(this);
+  }
+
+  componentWillMount() {
+    const intervalId = setInterval(this.addStar, 800);
+    this.setState({ intervalId });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalId);
   }
 
   addStar() {
@@ -77,6 +46,7 @@ class PostureSummary extends Component {
     });
     this.setState(this.state);
   }
+
   removeStar(v) {
     const index = this.state.stars.findIndex((star) => star.id === v);
     this.state.stars.splice(index, 1);

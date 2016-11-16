@@ -49,7 +49,7 @@ class PostureMonitor extends Component {
     this.activityDisabledListener = null;
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
     this.disablePostureActivity = this.disablePostureActivity.bind(this);
-    this.showModal = this.this.showModal.bind(this);
+    this.showSummary = this.showSummary.bind(this);
   }
 
   componentWillMount() {
@@ -112,7 +112,7 @@ class PostureMonitor extends Component {
     ActivityService.disableActivity(activityName);
   }
 
-  showModal() {
+  showSummary() {
     this.props.dispatch(appActions.showFullModal({
       onClose: this.props.navigator.resetTo(routes.postureDashboard),
       content: <PostureSummary />,
@@ -138,7 +138,7 @@ class PostureMonitor extends Component {
           { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
             <MonitorButton play onPress={this.enablePostureActivity} />
           }
-          <MonitorButton alertsDisabled onPress={this.showModal} />
+          <MonitorButton alertsDisabled onPress={this.showSummary} />
           <MonitorButton stop onPress={this.disablePostureActivity} />
         </View>
       </View>

@@ -37,11 +37,11 @@ export default EStyleSheet.create({
     width: 335 * widthDifference,
     textAlign: 'center',
     alignSelf: 'center',
-    marginTop: 70,
+    marginTop: 70 * heightDifference,
   },
   starWrap: {
     position: 'absolute',
-    top: -50,
+    top: -100,
     backgroundColor: 'transparent',
   },
 });
