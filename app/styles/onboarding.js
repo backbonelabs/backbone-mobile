@@ -8,7 +8,7 @@ export default EStyleSheet.create({
     flex: 1,
   },
   progressBarContainer: {
-    flex: 0.1,
+    flex: 0.13,
     width: '32%',
     alignSelf: 'center',
     flexDirection: 'row',
@@ -19,7 +19,7 @@ export default EStyleSheet.create({
     backgroundColor: '$primaryColor',
   },
   onboardingFlowContainer: {
-    flex: 0.77,
+    flex: 0.8,
     flexDirection: 'row',
   },
   exitOnboardingButton: {
