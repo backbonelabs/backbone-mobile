@@ -25,6 +25,9 @@ export default EStyleSheet.create({
   },
   time: {
     fontSize: 36,
+    '@media (max-width: 320)': { // iphone4's max width
+      fontSize: 25,
+    },
     color: '$fontColor',
   },
   timeBodyText: {

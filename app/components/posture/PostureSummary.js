@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
-  Text,
 } from 'react-native';
 // import SvgUri from 'react-native-svg-uri'; replace when package updates
 import BodyText from '../../components/BodyText';
@@ -71,7 +70,7 @@ class PostureSummary extends Component {
       <View style={styles.container}>
         <Image source={summaryCircle} style={styles.summaryCircle}>
           <View style={styles.summary}>
-            <Text style={styles.time}>{this.props.time} mins</Text>
+            <BodyText style={styles._time}>{this.props.time} mins</BodyText>
             <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
             <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText>
           </View>
