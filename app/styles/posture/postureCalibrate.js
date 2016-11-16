@@ -9,7 +9,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   textContainer: {
-    flex: 0.20,
+    flex: 0.18,
     width: '75%',
     justifyContent: 'flex-end',
   },
@@ -21,16 +21,17 @@ export default EStyleSheet.create({
     textAlign: 'center',
   },
   imageContainer: {
-    flex: 0.50,
+    flex: 0.60,
     alignItems: 'center',
     justifyContent: 'center',
   },
   image: {
-    width: 133 * widthDifference,
-    height: 280 * heightDifference,
+    width: 131 * widthDifference,
+    height: 237 * heightDifference,
+    resizeMode: 'contain',
   },
   calibrationCircleContainer: {
-    marginTop: 16 * heightDifference,
+    marginTop: 20 * heightDifference,
     width: '44%',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -42,13 +43,13 @@ export default EStyleSheet.create({
     backgroundColor: '$primaryColor',
   },
   actionsContainer: {
-    flex: 0.20,
+    flex: 0.22,
     alignItems: 'center',
   },
   autoStartPreferenceContainer: {
     flexDirection: 'row',
     width: '75%',
-    marginTop: 14 * heightDifference,
+    marginTop: 20 * heightDifference,
     alignItems: 'center',
     justifyContent: 'center',
   },
