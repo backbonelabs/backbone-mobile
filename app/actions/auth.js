@@ -1,5 +1,7 @@
 import { NativeModules } from 'react-native';
 import Fetcher from '../utils/Fetcher';
+import SensitiveInfo from '../utils/SensitiveInfo';
+import constants from '../utils/constants';
 
 const { Environment, Mixpanel } = NativeModules;
 
@@ -143,6 +145,12 @@ export default {
         ));
     };
   },
+  signOut() {
+    return (dispatch) => {
+      SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
+      SensitiveInfo.deleteItem(constants.userStorageKey);
+      dispatch(signOut());
+    };
+  },
   setAccessToken,
-  signOut,
 };
