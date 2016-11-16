@@ -9,6 +9,7 @@ import styles from '../../styles/posture/postureCalibrate';
 import routes from '../../routes';
 import HeadingText from '../HeadingText';
 import BodyText from '../BodyText';
+import SecondaryText from '../SecondaryText';
 import Button from '../Button';
 import calibrationImage from '../../images/calibration/sittingExample.png';
 import constants from '../../utils/constants';
@@ -115,48 +116,52 @@ export default class PostureCalibrate extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <View style={styles.headingText}>
-            <HeadingText size={3}>
-              Get Ready
-            </HeadingText>
-          </View>
-          <View style={styles.secondaryText}>
-            <BodyText style={{ textAlign: 'center' }}>
-              Sit or stand up straight while Backbone calibrates
-            </BodyText>
-          </View>
+          <HeadingText style={styles._title} size={2}>
+            Get Ready
+          </HeadingText>
+          <BodyText style={styles._subtitle}>
+            Sit or stand up straight while Backbone calibrates
+          </BodyText>
         </View>
         <View style={styles.imageContainer}>
           <Image
             source={calibrationImage}
             style={styles.image}
           />
+          <View style={styles.calibrationCircleContainer}>
+            {
+              // Create 5 circles to represent calibration countdown
+              [0, 1, 2, 3, 4].map((value, key) =>
+                <Animated.View
+                  key={key}
+                  style={[
+                    styles.calibrationCircle,
+                    this.state.count >= key && { opacity: this.state.fadeAnim[key] },
+                  ]}
+                />
+              )
+            }
+          </View>
         </View>
-        <View style={styles.calibrationCircleContainer}>
-          {
-            // Create 5 circles to represent calibration countdown
-            [0, 1, 2, 3, 4].map((value, key) =>
-              <Animated.View
-                key={key}
-                style={[
-                  styles.calibrationCircle,
-                  this.state.count >= key && { opacity: this.state.fadeAnim[key] },
-                ]}
-              />
-            )
-          }
-        </View>
-        <Button
-          style={styles.startButton}
-          primary
-          onPress={() => this.setState({ isCountingDown: !this.state.isCountingDown })}
-          text={this.state.isCountingDown ? 'Pause' : 'Start'}
-        />
-        <View style={styles.autoStartPreferenceContainer}>
-          <Switch
-            onValueChange={this.toggleAutoStart}
-            value={this.state.autoStart}
+        <View style={styles.actionsContainer}>
+          <Button
+            primary
+            onPress={() => this.setState({ isCountingDown: !this.state.isCountingDown })}
+            text={this.state.isCountingDown ? 'PAUSE' : 'START'}
           />
+          <View style={styles.autoStartPreferenceContainer}>
+            <View style={styles.autoStartPreferenceLabel}>
+              <SecondaryText>
+                Automatically start calibration next time
+              </SecondaryText>
+            </View>
+            <View style={styles.autoStartPreferenceSwitch}>
+              <Switch
+                onValueChange={this.toggleAutoStart}
+                value={this.state.autoStart}
+              />
+            </View>
+          </View>
         </View>
       </View>
     );
