@@ -3613,6 +3613,12 @@ react-native-extended-stylesheet@0.3.0:
     css-mediaquery "^0.1.2"
     object-resolve-path "^1.1.0"
 
+react-native-keyboard-aware-scroll-view@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-keyboard-aware-scroll-view/-/react-native-keyboard-aware-scroll-view-0.2.3.tgz#6f19f39daf41a16caa08a2820773e9a43aa0dc8e"
+  dependencies:
+    react-timer-mixin "^0.13.3"
+
 react-native-sensitive-info@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-3.0.2.tgz#b2919b9081cdba640b0fa752ef608565babfad1e"
@@ -3735,7 +3741,7 @@ react-redux@4.4.5:
     lodash "^4.2.0"
     loose-envify "^1.1.0"
 
-react-timer-mixin@^0.13.2:
+react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
 

@@ -44,16 +44,22 @@ const updateUserSettingsError = error => ({
   error: true,
 });
 
+const prepareUserUpdate = payload => ({
+  type: 'PREPARE_USER_UPDATE',
+  payload,
+});
+
 export default {
   fetchUser() {
     return (dispatch, getState) => {
       const state = getState();
-      const { accessToken, userId } = state.auth;
+      const { accessToken } = state.auth;
+      const { user: { _id } } = state.user;
 
       dispatch(fetchUserStart());
 
       return Fetcher.get({
-        url: `${baseUrl}/${userId}`,
+        url: `${baseUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then(response => response.json()
@@ -69,7 +75,7 @@ export default {
         )
         .catch(() => (
           // Network error
-          dispatch(updateUserError(
+          dispatch(fetchUserError(
             new Error('We are encountering server issues. Please try again later.')
           ))
         ));
@@ -85,6 +91,9 @@ export default {
     return (dispatch, getState) => {
       const state = getState();
       const { accessToken } = state.auth;
+
+      // Remove invalidData property, since no longer needed
+      delete userUpdateFields.invalidData;
 
       dispatch(updateUserStart());
 
@@ -151,4 +160,5 @@ export default {
         ));
     };
   },
+  prepareUserUpdate,
 };
