@@ -1,4 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -18,10 +21,24 @@ export default EStyleSheet.create({
     height: '100%',
   },
   deviceInfoBodyText: {
-    marginTop: 20,
+    margin: 20 * (heightDifference * widthDifference),
+    color: '$primaryFontColor',
   },
   deviceInfoSecondaryText: {
-    marginTop: 5,
+    marginTop: 5 * (heightDifference * widthDifference),
+    color: '$primaryFontColor',
+  },
+  deviceUpdateText: {
+    color: '#0000EE',
+    marginTop: 5 * (heightDifference * widthDifference),
+    textDecorationLine: 'underline',
+    color: '$primaryFontColor',
+  },
+  batteryIcon: {
+    margin: 7 * (heightDifference * widthDifference),
+  },
+  batteryText: {
+    marginLeft: 5,
     color: '$primaryFontColor',
   },
 });
