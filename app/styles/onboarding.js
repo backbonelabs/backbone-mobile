@@ -1,15 +1,14 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference } = relativeDimensions;
+const { heightDifference, widthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 23 * heightDifference,
   },
   progressBarContainer: {
-    flex: 0.15,
+    flex: 0.13,
     width: '32%',
     alignSelf: 'center',
     flexDirection: 'row',
@@ -20,7 +19,19 @@ export default EStyleSheet.create({
     backgroundColor: '$primaryColor',
   },
   onboardingFlowContainer: {
-    flex: 0.85,
+    flex: 0.8,
     flexDirection: 'row',
+  },
+  exitOnboardingButton: {
+    paddingHorizontal: 10 * (widthDifference * heightDifference),
+    justifyContent: 'center',
+  },
+  exitOnboardingIcon: {
+    flex: 0.07,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  exitOnboardingIconColor: {
+    backgroundColor: '$secondaryFontColor',
   },
 });

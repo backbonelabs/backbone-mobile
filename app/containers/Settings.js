@@ -220,11 +220,20 @@ class Settings extends Component {
   }
 
   signOut() {
-    // Remove locally stored user data, clear store and send back to Welcome scene
-    SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
-    SensitiveInfo.deleteItem(constants.userStorageKey);
-    this.props.dispatch(authActions.signOut());
-    this.props.navigator.resetTo(routes.welcome);
+    Alert.alert(
+      'Sign Out',
+      '\nAre you sure you want to sign out of your account?',
+      [
+        { text: 'Cancel' },
+        { text: 'OK',
+          onPress: () => {
+            // Remove locally stored user data and reset Redux auth/user store
+            this.props.dispatch(authActions.signOut());
+            this.props.navigator.resetTo(routes.welcome);
+          },
+        },
+      ]
+    );
   }
 
   render() {
@@ -244,14 +253,7 @@ class Settings extends Component {
             <Button
               primary
               text="SIGN OUT"
-              onPress={() => Alert.alert(
-                'Sign Out',
-                '\nAre you sure you want to sign out of your account?',
-                [
-                  { text: 'Cancel' },
-                  { text: 'OK', onPress: this.signOut },
-                ]
-              )}
+              onPress={this.signOut}
             />
           </View>
         </Image>
