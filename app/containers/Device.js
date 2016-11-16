@@ -36,7 +36,6 @@ class Device extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       push: PropTypes.func,
-      pop: PropTypes.func,
     }),
     isConnected: PropTypes.bool,
   };
