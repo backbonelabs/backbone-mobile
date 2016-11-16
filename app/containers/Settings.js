@@ -213,11 +213,13 @@ class Settings extends Component {
       '\nAre you sure you want to sign out of your account?',
       [
         { text: 'Cancel' },
-        { text: 'OK', onPress: () => {
-          // Remove locally stored user data and reset Redux auth/user store
-          this.props.dispatch(authActions.signOut());
-          this.props.navigator.resetTo(routes.welcome);
-        } },
+        { text: 'OK',
+          onPress: () => {
+            // Remove locally stored user data and reset Redux auth/user store
+            this.props.dispatch(authActions.signOut());
+            this.props.navigator.resetTo(routes.welcome);
+          },
+        },
       ]
     );
   }
