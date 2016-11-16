@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
@@ -19,6 +19,10 @@ const getRandomNumber = (min, max) => (
 let startCount = 10;
 
 class PostureSummary extends Component {
+  static propTypes = {
+    time: PropTypes.string,
+    goal: PropTypes.string,
+  }
   constructor(props) {
     super(props);
 
@@ -69,9 +73,9 @@ class PostureSummary extends Component {
         <View style={styles.container}>
           <Image source={summaryCircle} style={styles.summaryCircle}>
             <View style={styles.summary}>
-              <Text style={styles.time}>04:30 mins</Text>
+              <Text style={styles.time}>{this.props.time} mins</Text>
               <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
-              <BodyText style={styles._goal}>Goal: 5 mins</BodyText>
+              <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText>
             </View>
           </Image>
           <BodyText style={styles._quote}>

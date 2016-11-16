@@ -115,7 +115,7 @@ class PostureMonitor extends Component {
   showSummary() {
     this.props.dispatch(appActions.showFullModal({
       onClose: this.props.navigator.resetTo(routes.postureDashboard),
-      content: <PostureSummary />,
+      content: <PostureSummary time="04:30" goal="5" />,
     }));
   }
 
