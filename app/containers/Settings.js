@@ -87,11 +87,14 @@ const AccountRemindersSettings = props => (
     <View style={styles.accountRemindersHeader}>
       <BodyText>ACCOUNT & REMINDERS</BodyText>
     </View>
-    <View style={styles.accountRemindersSettingContainer}>
+    <TouchableOpacity
+      style={styles.accountRemindersSettingContainer}
+      onPress={() => props.navigator.push(routes.profile)}
+    >
       <SettingsIcon iconName="profile" />
       <SettingsText text="Profile" />
       <ArrowIcon />
-    </View>
+    </TouchableOpacity>
     <TouchableOpacity
       style={styles.accountRemindersSettingContainer}
       onPress={() => props.navigator.push(routes.alerts)}
