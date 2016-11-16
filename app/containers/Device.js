@@ -57,27 +57,20 @@ class Device extends Component {
 
   componentWillMount() {
     // Get saved device
-    DeviceManagementService.getSavedDevice(device => {
-      // If there's a saved device, save details in component state
-      // if (device) {
-      //   this.setState({ device });
-      // }
-
-      // Placeholder data
-      // this.setState({
-      //   device: {
-      //     firmwareVersion: 0.1,
-      //     batteryLife: 100,
-      //     updateAvailable: true,
-      //   },
-      // });
-    });
+    if (this.props.isConnected) {
+      DeviceManagementService.getSavedDevice(device => {
+        // If there's a saved device, save details in component state
+        if (device) {
+          this.setState({ device });
+        }
+      });
+    }
   }
 
   unpairDevicePrompt() {
     Alert.alert(
       'Are you sure?',
-      'This will disconnect and\n unpair your Backbone',
+      'This will remove your Backbone',
       [
         { text: 'Cancel' },
         { text: 'Unpair', onPress: DeviceManagementService.forgetDevice },
@@ -106,14 +99,18 @@ class Device extends Component {
                 />
                 <DeviceInfoItem
                   headingText="Firmware"
-                  bodyText={`${device.firmwareVersion ? device.firmwareVersion : ''}${
-                    device.updateAvailable ? '(Update Available)' : ''}`}
+                  bodyText={device.firmwareVersion ?
+                    `${device.firmwareVersion} ${
+                        device.updateAvailable ? '(Update Available)' : '(Up to date)'}`
+                    :
+                      ''
+                  }
                 />
                 <DeviceInfoItem
                   headingText="Battery Life"
                   bodyText={device.batteryLife ? `${device.batteryLife}%` : ''}
                 >
-                  {device.batteryLife && <Image source={batteryIcon} style={{ marginTop: 3 }} />}
+                  {device.batteryLife && <Image source={batteryIcon} style={{ marginTop: 1 }} />}
                 </DeviceInfoItem>
               </View>
               <View style={styles.buttonContainer}>
