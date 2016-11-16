@@ -45,8 +45,11 @@ const ArrowIcon = () => (
   </View>
 );
 
-const SensorSettings = () => (
-  <TouchableOpacity style={styles.sensorSettingsContainer}>
+const SensorSettings = props => (
+  <TouchableOpacity
+    onPress={() => props.navigator.push(routes.device)}
+    style={styles.sensorSettingsContainer}
+  >
     <View style={styles.sensorIconContainer}>
       <Image source={sensorSmall} style={styles.sensorIcon} />
     </View>
@@ -61,6 +64,12 @@ const SensorSettings = () => (
     <ArrowIcon />
   </TouchableOpacity>
 );
+
+SensorSettings.propTypes = {
+  navigator: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+};
 
 const SettingsIcon = props => (
   <View style={styles.settingsIcon}>
@@ -219,16 +228,18 @@ class Settings extends Component {
   }
 
   render() {
+    const { navigator } = this.props;
+
     return (
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <SensorSettings />
+          <SensorSettings navigator={navigator} />
           <AccountRemindersSettings
-            navigator={this.props.navigator}
+            navigator={navigator}
             notificationsEnabled={this.state.notificationsEnabled}
             updateNotifications={this.updateNotifications}
           />
-          <HelpSettings navigator={this.props.navigator} />
+          <HelpSettings navigator={navigator} />
           <View style={styles.buttonContainer}>
             <Button
               primary
