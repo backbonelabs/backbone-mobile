@@ -48,7 +48,7 @@ class AnimatedStar extends Component {
   }
   componentDidMount() {
     Animated.timing(this.state.position, {
-      duration: 4000,
+      duration: 6000,
       toValue: ANIMATION_END_Y,
     }).start(this.props.onComplete);
   }

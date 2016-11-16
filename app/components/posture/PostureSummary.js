@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Text,
-  TouchableWithoutFeedback,
 } from 'react-native';
 // import SvgUri from 'react-native-svg-uri'; replace when package updates
 import BodyText from '../../components/BodyText';
@@ -16,7 +15,7 @@ const getRandomNumber = (min, max) => (
    (Math.random() * (max - min)) + min
 );
 
-let startCount = 10;
+let startCount = 0;
 
 class PostureSummary extends Component {
   static propTypes = {
@@ -69,21 +68,19 @@ class PostureSummary extends Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback style={styles.container} onPress={this.addStar}>
-        <View style={styles.container}>
-          <Image source={summaryCircle} style={styles.summaryCircle}>
-            <View style={styles.summary}>
-              <Text style={styles.time}>{this.props.time} mins</Text>
-              <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
-              <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText>
-            </View>
-          </Image>
-          <BodyText style={styles._quote}>
-              Nice work! Keep it up and you'll be on your way to better posture
-          </BodyText>
-          { this.dropStars() }
-        </View>
-      </TouchableWithoutFeedback>
+      <View style={styles.container}>
+        <Image source={summaryCircle} style={styles.summaryCircle}>
+          <View style={styles.summary}>
+            <Text style={styles.time}>{this.props.time} mins</Text>
+            <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
+            <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText>
+          </View>
+        </Image>
+        <BodyText style={styles._quote}>
+            Nice work! Keep it up and you'll be on your way to better posture
+        </BodyText>
+        { this.dropStars() }
+      </View>
     );
   }
 }

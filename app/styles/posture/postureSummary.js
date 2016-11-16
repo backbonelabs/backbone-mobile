@@ -13,6 +13,7 @@ export default EStyleSheet.create({
   summaryCircle: {
     width: 266 * widthDifference,
     height: 266 * heightDifference,
+    resizeMode: 'contain',
   },
   summary: {
     flex: 1,
