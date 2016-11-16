@@ -45,6 +45,7 @@ class Device extends Component {
     super();
     this.state = {
       device: {
+        isPaired: false,
         firmwareVersion: null,
         batteryLife: null,
         updateAvailable: false,
@@ -53,6 +54,7 @@ class Device extends Component {
     };
 
     this.unpairDevicePrompt = this.unpairDevicePrompt.bind(this);
+    this.routeToDeviceScan = this.routeToDeviceScan.bind(this);
   }
 
   componentWillMount() {
@@ -79,15 +81,15 @@ class Device extends Component {
   }
 
   routeToDeviceScan() {
-    this.props.navigator.push(routes.deviceScan);
+    this.props.navigator.push(routes.deviceAdd);
   }
 
   render() {
-    const { device } = this.state;
+    const { device, inProgress } = this.state;
 
     return (
       <Image source={gradientBackground20} style={styles.backgroundImage}>
-        { this.state.inProgress ?
+        { inProgress ?
           <Spinner />
           :
             <View style={styles.container}>
@@ -114,7 +116,7 @@ class Device extends Component {
                 </DeviceInfoItem>
               </View>
               <View style={styles.buttonContainer}>
-                { device ?
+                { device.isPaired ?
                   <View style={styles.buttonWrapper}>
                     <Button primary text="UNPAIR" onPress={this.unpairDevicePrompt} />
                     { /* // Only show this button if firmware is outdated
@@ -138,6 +140,6 @@ class Device extends Component {
 const mapStateToProps = state => {
   const { app } = state;
   return app;
-}
+};
 
 export default connect(mapStateToProps)(Device);
