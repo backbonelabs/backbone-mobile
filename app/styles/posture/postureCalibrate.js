@@ -41,6 +41,7 @@ export default EStyleSheet.create({
     height: 25 * widthDifference,
     borderRadius: 12.5,
     backgroundColor: '$primaryColor',
+    opacity: 0.4,
   },
   actionsContainer: {
     flex: 0.22,

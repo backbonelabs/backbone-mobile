@@ -28,7 +28,7 @@ export default class PostureCalibrate extends Component {
     super();
     this.state = {
       count: 0,
-      fadeAnim: [new Animated.Value(1)],
+      fadeAnim: [new Animated.Value(0.4)],
       isCountingDown: false,
     };
 
@@ -72,7 +72,7 @@ export default class PostureCalibrate extends Component {
       this.state.fadeAnim[index],
       {
         duration: 1000,
-        toValue: 0.4,
+        toValue: 1,
       }
     );
     this.animatedTiming.start(this.animationCallback);
