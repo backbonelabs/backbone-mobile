@@ -13,9 +13,24 @@ import styles from '../styles/device';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
+import HeadingText from '../components/HeadingText';
 import routes from '../routes';
 
 const { DeviceManagementService } = NativeModules;
+
+const DeviceInfoItem = props => (
+  <View style={styles.deviceInfo}>
+    <HeadingText size={3}>{props.headingText}: </HeadingText>
+    <BodyText style={styles._deviceInfoBodyText}>{props.bodyText || 'n/a'}</BodyText>
+    {props.children}
+  </View>
+);
+
+DeviceInfoItem.propTypes = {
+  children: PropTypes.node,
+  headingText: PropTypes.string,
+  bodyText: PropTypes.string,
+};
 
 class Device extends Component {
   static propTypes = {
@@ -48,14 +63,14 @@ class Device extends Component {
       //   this.setState({ device });
       // }
 
-      // Placeholder
-      this.setState({
-        device: {
-          firmwareVersion: 0.1,
-          batteryLife: 100,
-          updateAvailable: true,
-        },
-      });
+      // Placeholder data
+      // this.setState({
+      //   device: {
+      //     firmwareVersion: 0.1,
+      //     batteryLife: 100,
+      //     updateAvailable: true,
+      //   },
+      // });
     });
   }
 
@@ -76,9 +91,6 @@ class Device extends Component {
 
   render() {
     const { device } = this.state;
-    const firmwareVersion = `${device.firmwareVersion}${device.updateAvailable ? '(Update Available)' : ''}`;
-
-    console.log('device', device);
 
     return (
       <Image source={gradientBackground20} style={styles.backgroundImage}>
@@ -86,35 +98,37 @@ class Device extends Component {
           <Spinner />
           :
             <View style={styles.container}>
-              <View style={{ flex: 0.6, alignItems: 'center', justifyContent: 'flex-end' }}>
+              <View style={styles.deviceInfoContainer}>
                 <Image source={sensorSmall} style={{ marginBottom: 25 }} />
-                <BodyText style={{ marginBottom: 5 }}>
-                  Status: { this.props.isConnected ? 'Connected' : 'Disconnected' }
-                </BodyText>
-                <BodyText style={{ marginBottom: 5 }}>
-                  { /* // Only show this button if firmware is outdated
-                    // TO DO: Value for seeing if there's a firmware update
-                  */ }
-                  Firmware: { device ? firmwareVersion : '---' }
-                </BodyText>
-                <View style={{ flexDirection: 'row' }}>
-                  <BodyText style={{ marginBottom: 25 }}>Battery Life: 100%</BodyText>
-                  <Image source={batteryIcon} style={{ margin: 4 }} />
-                </View>
+                <DeviceInfoItem
+                  headingText="Status"
+                  bodyText={this.props.isConnected ? 'Connected' : 'Disconnected'}
+                />
+                <DeviceInfoItem
+                  headingText="Firmware"
+                  bodyText={`${device.firmwareVersion ? device.firmwareVersion : ''}${
+                    device.updateAvailable ? '(Update Available)' : ''}`}
+                />
+                <DeviceInfoItem
+                  headingText="Battery Life"
+                  bodyText={device.batteryLife ? `${device.batteryLife}%` : ''}
+                >
+                  {device.batteryLife && <Image source={batteryIcon} style={{ marginTop: 3 }} />}
+                </DeviceInfoItem>
               </View>
-              <View style={{ flex: 0.4, alignItems: 'center', justifyContent: 'center' }}>
+              <View style={styles.buttonContainer}>
                 { device ?
-                  <View style={{ flex: 1 }}>
+                  <View style={styles.buttonWrapper}>
                     <Button primary text="UNPAIR" onPress={this.unpairDevicePrompt} />
                     { /* // Only show this button if firmware is outdated
                          // TO DO: Value for seeing if there's a firmware update
                        */ }
-                    <Button style={{ marginTop: 10 }} text="UPDATE" />
+                    { device.updateAvailable && <Button style={{ marginTop: 10 }} text="UPDATE" />}
                   </View>
                   :
-                  <View style={{ flex: 1 }}>
-                    <Button primary text="ADD NEW" onPress={this.routeToDeviceScan} />
-                  </View>
+                    <View style={styles.buttonWrapper}>
+                      <Button primary text="ADD NEW" onPress={this.routeToDeviceScan} />
+                    </View>
                 }
               </View>
             </View>

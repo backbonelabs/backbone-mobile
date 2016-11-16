@@ -20,25 +20,31 @@ export default EStyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  deviceInfoBodyText: {
-    margin: 20 * (heightDifference * widthDifference),
-    color: '$primaryFontColor',
+  deviceInfoContainer: {
+    flex: 0.55,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
-  deviceInfoSecondaryText: {
-    marginTop: 5 * (heightDifference * widthDifference),
+  deviceInfo: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  deviceInfoBodyText: {
     color: '$primaryFontColor',
   },
   deviceUpdateText: {
     color: '#0000EE',
     marginTop: 5 * (heightDifference * widthDifference),
     textDecorationLine: 'underline',
-    color: '$primaryFontColor',
   },
-  batteryIcon: {
-    margin: 7 * (heightDifference * widthDifference),
+  buttonContainer: {
+    flex: 0.45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 25 * (heightDifference * widthDifference),
   },
-  batteryText: {
-    marginLeft: 5,
-    color: '$primaryFontColor',
+  buttonWrapper: {
+    flex: 1,
   },
 });
