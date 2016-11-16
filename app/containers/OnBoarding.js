@@ -86,7 +86,7 @@ class OnBoarding extends Component {
     if (this.props.isUpdating && !nextProps.isUpdating) {
       // Check whether user has successfully completed onboarding
       if (nextProps.user.hasOnboarded) {
-        SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
+        SensitiveInfo.setItem(constants.storageKeys.USER, nextProps.user);
         this.nextStep();
       } else {
         Alert.alert('Error', 'Unable to save, please try again');

@@ -31,6 +31,8 @@ import notificationsIcon from '../images/settings/notificationsIcon.svg';
 import SecondaryText from '../components/SecondaryText';
 import authActions from '../actions/auth';
 
+const { storageKeys } = constants;
+
 const iconMap = {
   profile: profileIcon,
   alert: alertIcon,
@@ -212,8 +214,8 @@ class Settings extends Component {
 
   signOut() {
     // Remove locally stored user data, clear store and send back to Welcome scene
-    SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
-    SensitiveInfo.deleteItem(constants.userStorageKey);
+    SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);
+    SensitiveInfo.deleteItem(storageKeys.USER);
     this.props.dispatch(authActions.signOut());
     this.props.navigator.resetTo(routes.welcome);
   }
@@ -248,12 +250,12 @@ class Settings extends Component {
           <View style={{ marginTop: 5, borderWidth: 1 }}>
             <BodyText>Dev menu:</BodyText>
             <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem(constants.accessTokenStorageKey)}
+              onPress={() => SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN)}
             >
               <SecondaryText>Delete access token from storage</SecondaryText>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem(constants.userStorageKey)}
+              onPress={() => SensitiveInfo.deleteItem(storageKeys.USER)}
             >
               <SecondaryText>Delete user from storage</SecondaryText>
             </TouchableOpacity>

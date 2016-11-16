@@ -17,6 +17,8 @@ import SensitiveInfo from '../../utils/SensitiveInfo';
 
 const { PropTypes } = React;
 
+const { storageKeys } = constants;
+
 export default class PostureCalibrate extends Component {
   static propTypes = {
     navigator: PropTypes.object,
@@ -36,7 +38,7 @@ export default class PostureCalibrate extends Component {
   }
 
   componentDidMount() {
-    SensitiveInfo.getItem(constants.calibrationAutoStartStorageKey)
+    SensitiveInfo.getItem(storageKeys.CALIBRATION_AUTO_START)
       .then(autoStart => {
         const newState = { autoStart };
         if (autoStart) {
@@ -108,7 +110,7 @@ export default class PostureCalibrate extends Component {
    * @param {Boolean} autoStart
    */
   toggleAutoStart(autoStart) {
-    SensitiveInfo.setItem(constants.calibrationAutoStartStorageKey, autoStart);
+    SensitiveInfo.setItem(storageKeys.CALIBRATION_AUTO_START, autoStart);
     this.setState({ autoStart });
   }
 
