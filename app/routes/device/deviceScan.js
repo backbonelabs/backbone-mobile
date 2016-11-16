@@ -7,6 +7,7 @@ import routes from '../../routes';
 
 const DeviceScanSkipButton = props => (
   <TouchableOpacity
+    style={{ padding: 5 }}
     onPress={() => props.navigator.replace(routes.postureDashboard)}
   >
     <BodyText style={{ color: '#FFFFFF' }}>Skip</BodyText>
