@@ -266,7 +266,7 @@ class Application extends Component {
         }
         <Navigator
           configureScene={this.configureScene}
-          initialRoute={routes.welcome}
+          initialRoute={routes.postureDashboard}
           renderScene={this.renderScene}
         />
       </Drawer>
