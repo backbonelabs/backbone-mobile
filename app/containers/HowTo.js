@@ -33,7 +33,10 @@ export default class HowTo extends Component {
                   <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress={() => (
-                      this.setState({ pressedItem: this.state.pressedItem ? null : contentKey })
+                      this.setState({ pressedItem: this.state.pressedItem === contentKey ?
+                        null
+                        :
+                          contentKey })
                     )}
                   >
                     {
