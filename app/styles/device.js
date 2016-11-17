@@ -42,7 +42,6 @@ export default EStyleSheet.create({
     flex: 0.45,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 25 * (heightDifference * widthDifference),
   },
   buttonWrapper: {
     flex: 1,

@@ -52,34 +52,44 @@ class Device extends Component {
       inProgress: false,
     };
 
-    this.unpairDevicePrompt = this.unpairDevicePrompt.bind(this);
-    this.routeToDeviceScan = this.routeToDeviceScan.bind(this);
+    this.unpairDevice = this.unpairDevice.bind(this);
+    this.addDevice = this.addDevice.bind(this);
   }
 
   componentWillMount() {
-    // Get saved device
-    if (this.props.isConnected) {
-      DeviceManagementService.getSavedDevice(device => {
-        // If there's a saved device, save details in component state
-        if (device) {
-          this.setState({ device });
-        }
-      });
-    }
+    // Get saved device information
+    DeviceManagementService.getSavedDevice(device => (
+      // If there's a saved device, save its details in state
+      device && this.setState({ device })
+    ));
   }
 
-  unpairDevicePrompt() {
+  unpairDevice() {
+    // Prompt user to confirm that they want to unpair device
     Alert.alert(
       'Are you sure?',
       'This will remove your Backbone',
       [
         { text: 'Cancel' },
-        { text: 'Unpair', onPress: DeviceManagementService.forgetDevice },
+        { text: 'Unpair',
+          onPress: () => {
+            // Reset state to defaults
+            this.setState({
+              device: {
+                isPaired: false,
+                firmwareVersion: null,
+                batteryLife: null,
+                updateAvailable: false,
+              },
+            }, DeviceManagementService.forgetDevice);
+          },
+        },
       ]
     );
   }
 
-  routeToDeviceScan() {
+  addDevice() {
+    // Navigate to deviceAdd route
     this.props.navigator.push(routes.deviceAdd);
   }
 
@@ -116,17 +126,12 @@ class Device extends Component {
               </View>
               <View style={styles.buttonContainer}>
                 { device.isPaired ?
-                  <View style={styles.buttonWrapper}>
-                    <Button primary text="UNPAIR" onPress={this.unpairDevicePrompt} />
-                    { /* // Only show this button if firmware is outdated
-                         // TO DO: Value for seeing if there's a firmware update
-                       */ }
-                    { device.updateAvailable && <Button style={{ marginTop: 10 }} text="UPDATE" />}
-                  </View>
+                  <Button primary text="UNPAIR" onPress={this.unpairDevice} />
                   :
-                    <View style={styles.buttonWrapper}>
-                      <Button primary text="ADD NEW" onPress={this.routeToDeviceScan} />
-                    </View>
+                    <Button primary text="ADD NEW" onPress={this.addDevice} />
+                }
+                { /* Only show this button if there's a firmware update available */
+                  device.updateAvailable && <Button style={{ marginTop: 10 }} text="UPDATE" />
                 }
               </View>
             </View>
