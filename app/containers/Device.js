@@ -83,7 +83,6 @@ class Device extends Component {
               inProgress: true,
             }, () => (
               DeviceManagementService.forgetDevice(error => {
-                console.log('error', error);
                 if (error) {
                   Alert.alert(
                     'Error',
