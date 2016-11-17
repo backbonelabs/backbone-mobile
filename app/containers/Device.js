@@ -8,8 +8,7 @@ import {
 import { connect } from 'react-redux';
 import gradientBackground20 from '../images/gradientBackground20.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
-import batteryIcon from '../images/settings/batteryIcon.png';
-import styles from '../styles/device';
+import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
@@ -20,8 +19,8 @@ const { DeviceManagementService } = NativeModules;
 
 const DeviceInfoItem = props => (
   <View style={styles.deviceInfo}>
-    <HeadingText size={3}>{props.headingText}: </HeadingText>
-    <BodyText style={styles._deviceInfoBodyText}>{props.bodyText || 'n/a'}</BodyText>
+    <HeadingText size={3}>{props.headingText}</HeadingText>
+    <BodyText style={styles._deviceInfoBodyText}>{props.bodyText}</BodyText>
     {props.children}
   </View>
 );
@@ -81,7 +80,20 @@ class Device extends Component {
                 batteryLife: null,
                 updateAvailable: false,
               },
-            }, DeviceManagementService.forgetDevice);
+              inProgress: true,
+            }, () => (
+              DeviceManagementService.forgetDevice(error => {
+                console.log('error', error);
+                if (error) {
+                  Alert.alert(
+                    'Error',
+                    'There was a problem unpairing your Backbone',
+                    [{ text: 'Try Again' }],
+                  );
+                }
+                this.setState({ inProgress: false });
+              })
+            ));
           },
         },
       ]
@@ -98,43 +110,33 @@ class Device extends Component {
 
     return (
       <Image source={gradientBackground20} style={styles.backgroundImage}>
-        { inProgress ?
-          <Spinner />
-          :
-            <View style={styles.container}>
-              <View style={styles.deviceInfoContainer}>
-                <Image source={sensorSmall} style={{ marginBottom: 25 }} />
-                <DeviceInfoItem
-                  headingText="Status"
-                  bodyText={this.props.isConnected ? 'Connected' : 'Disconnected'}
-                />
-                <DeviceInfoItem
-                  headingText="Firmware"
-                  bodyText={device.firmwareVersion ?
-                    `${device.firmwareVersion} ${
-                        device.updateAvailable ? '(Update Available)' : '(Up to date)'}`
-                    :
-                      ''
+        { /* Use spinner or some sort of progress visual for actions and firmware updates */
+          inProgress ?
+            <Spinner />
+            :
+              <View style={styles.container}>
+                <View style={styles.deviceInfoContainer}>
+                  <Image source={sensorSmall} style={styles.sensorImage} />
+                  <HeadingText size={3}>
+                    Firmware Version: { device.firmwareVersion || 'n/a' }
+                  </HeadingText>
+                  { device.updateAvailable &&
+                    <BodyText style={styles._deviceInfoBodyText}>
+                      (Update Available)
+                    </BodyText>
                   }
-                />
-                <DeviceInfoItem
-                  headingText="Battery Life"
-                  bodyText={device.batteryLife ? `${device.batteryLife}%` : ''}
-                >
-                  {device.batteryLife && <Image source={batteryIcon} style={{ marginTop: 1 }} />}
-                </DeviceInfoItem>
+                </View>
+                <View style={styles.buttonContainer}>
+                  { device.isPaired ?
+                    <Button primary text="UNPAIR" onPress={this.unpairDevice} />
+                    :
+                      <Button primary text="ADD NEW" onPress={this.addDevice} />
+                  }
+                  { /* Only show this button if there's a firmware update available */
+                    device.updateAvailable && <Button style={{ marginTop: 10 }} text="UPDATE" />
+                  }
+                </View>
               </View>
-              <View style={styles.buttonContainer}>
-                { device.isPaired ?
-                  <Button primary text="UNPAIR" onPress={this.unpairDevice} />
-                  :
-                    <Button primary text="ADD NEW" onPress={this.addDevice} />
-                }
-                { /* Only show this button if there's a firmware update available */
-                  device.updateAvailable && <Button style={{ marginTop: 10 }} text="UPDATE" />
-                }
-              </View>
-            </View>
         }
       </Image>
     );
