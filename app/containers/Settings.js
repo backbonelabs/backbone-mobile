@@ -54,7 +54,7 @@ const SensorSettings = props => (
       <Image source={sensorSmall} style={styles.sensorIcon} />
     </View>
     <View style={styles.sensorText}>
-      <BodyText style={styles.sensorTextTitle}>MY BACKBONE</BodyText>
+      <BodyText style={styles._sensorTextTitle}>MY BACKBONE</BodyText>
       <SecondaryText style={styles._deviceInfoText}>
         Status: { props.isConnected ? 'Connected' : 'Disconnected' }
       </SecondaryText>
