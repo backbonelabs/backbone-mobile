@@ -15,6 +15,7 @@ import reset from './reset';
 import onboarding from './onboarding';
 import alerts from './alerts';
 import support from './support';
+import howTo from './howTo';
 
 export default {
   activity,
@@ -34,4 +35,5 @@ export default {
   onboarding,
   alerts,
   support,
+  howTo,
 };
