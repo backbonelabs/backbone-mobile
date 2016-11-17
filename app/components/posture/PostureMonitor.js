@@ -138,9 +138,9 @@ class PostureMonitor extends Component {
   }
 
   showSummary() {
-    const secondsRemaining = this.props.posture.sessionTimeSeconds;
-    let minutes = Math.floor(secondsRemaining / 60);
-    if (secondsRemaining === Infinity) {
+    const sessionTime = this.props.posture.sessionTimeSeconds;
+    let minutes = Math.floor(sessionTime / 60);
+    if (sessionTime === Infinity) {
       minutes = 0;
     }
     this.props.dispatch(appActions.showFullModal({

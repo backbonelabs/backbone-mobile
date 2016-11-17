@@ -67,12 +67,12 @@ class PostureSummary extends Component {
             <View style={styles.summaryInner}>
               <BodyText style={styles._time}>{this.props.time} mins</BodyText>
               <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
-              <View style={styles.summaryOuter}>
-                {
-                  this.props.goal > 0 ?
-                    <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText> : null
-                }
-              </View>
+            </View>
+            <View style={styles.summaryOuter}>
+              {
+                this.props.goal > 0 ?
+                  <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText> : null
+              }
             </View>
           </View>
         </Image>
