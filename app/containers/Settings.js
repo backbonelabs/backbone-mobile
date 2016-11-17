@@ -54,12 +54,14 @@ const SensorSettings = props => (
       <Image source={sensorSmall} style={styles.sensorIcon} />
     </View>
     <View style={styles.sensorText}>
-      <BodyText>MY BACKBONE</BodyText>
+      <BodyText style={{ marginBottom: 2 }}>MY BACKBONE</BodyText>
+      <SecondaryText style={styles._deviceInfoText}>
+        Status: { props.isConnected ? 'Connected' : 'Disconnected' }
+      </SecondaryText>
       <View style={styles.batteryInfo}>
+        <SecondaryText style={styles._deviceInfoText}>Battery Life: 100%</SecondaryText>
         <Image source={batteryIcon} style={styles.batteryIcon} />
-        <SecondaryText style={styles._batteryText}>Battery: 100%</SecondaryText>
       </View>
-      <SecondaryText style={styles._batteryText}>About 10 days</SecondaryText>
     </View>
     <ArrowIcon />
   </TouchableOpacity>
@@ -69,6 +71,7 @@ SensorSettings.propTypes = {
   navigator: PropTypes.shape({
     push: PropTypes.func,
   }),
+  isConnected: PropTypes.bool,
 };
 
 const SettingsIcon = props => (
@@ -165,10 +168,9 @@ class Settings extends Component {
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
     }),
-    app: PropTypes.shape({
-      config: PropTypes.object,
-    }),
+    config: PropTypes.object,
     dispatch: PropTypes.func,
+    isConnected: PropTypes.bool,
   };
 
   constructor() {
@@ -242,7 +244,7 @@ class Settings extends Component {
     return (
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <SensorSettings navigator={navigator} />
+          <SensorSettings navigator={navigator} isConnected={this.props.isConnected} />
           <AccountRemindersSettings
             navigator={navigator}
             notificationsEnabled={this.state.notificationsEnabled}
@@ -257,7 +259,7 @@ class Settings extends Component {
             />
           </View>
         </Image>
-        {this.props.app.config.DEV_MODE &&
+        {this.props.config.DEV_MODE &&
           <View style={{ marginTop: 5, borderWidth: 1 }}>
             <BodyText>Dev menu:</BodyText>
             <TouchableOpacity
@@ -279,7 +281,7 @@ class Settings extends Component {
 
 const mapStateToProps = (state) => {
   const { app } = state;
-  return { app };
+  return app;
 };
 
 export default connect(mapStateToProps)(Settings);
