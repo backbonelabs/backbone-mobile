@@ -62,8 +62,6 @@ export default EStyleSheet.create({
   batteryIcon: {
     width: 24 * widthDifference,
     height: 13 * heightDifference,
-    marginTop: 1 * heightDifference,
-    marginRight: 3 * widthDifference,
     resizeMode: 'contain',
   },
   arrow: {
