@@ -49,16 +49,17 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   batteryInfo: {
-    marginVertical: 3 * heightDifference,
     ...centerRowItems,
   },
-  batteryText: {
+  deviceInfoText: {
+    marginVertical: 2 * heightDifference,
     fontSize: 13,
     color: '$primaryFontColor',
   },
   batteryIcon: {
     width: 24 * widthDifference,
     height: 13 * heightDifference,
+    marginTop: 1 * heightDifference,
     marginRight: 3 * widthDifference,
     resizeMode: 'contain',
   },
@@ -92,9 +93,6 @@ export default EStyleSheet.create({
   notificationsContainer: {
     flex: 0.26,
     ...centerRowItems,
-  },
-  notificationsText: {
-    flex: 0.65,
   },
   notificationsSwitch: {
     flex: 0.2,
