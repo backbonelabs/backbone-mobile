@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -26,24 +26,15 @@ export default EStyleSheet.create({
     justifyContent: 'flex-end',
   },
   deviceInfo: {
-    flexDirection: 'row',
-    marginBottom: 10,
     alignItems: 'center',
   },
   deviceInfoBodyText: {
+    marginTop: 5 * heightDifference,
     color: '$primaryFontColor',
-  },
-  deviceUpdateText: {
-    color: '#0000EE',
-    marginTop: 5 * (heightDifference * widthDifference),
-    textDecorationLine: 'underline',
   },
   buttonContainer: {
     flex: 0.45,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  buttonWrapper: {
-    flex: 1,
   },
 });
