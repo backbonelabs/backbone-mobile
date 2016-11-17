@@ -31,4 +31,7 @@ export default EStyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 25 * heightDifference,
   },
+  updateButton: {
+    marginTop: 10,
+  },
 });

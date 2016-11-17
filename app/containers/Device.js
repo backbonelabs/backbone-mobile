@@ -132,7 +132,7 @@ class Device extends Component {
                       <Button primary text="ADD NEW" onPress={this.addDevice} />
                   }
                   { /* Only show this button if there's a firmware update available */
-                    device.updateAvailable && <Button style={{ marginTop: 10 }} text="UPDATE" />
+                    device.updateAvailable && <Button style={styles.updateButton} text="UPDATE" />
                   }
                 </View>
               </View>
