@@ -12,7 +12,7 @@ export default EStyleSheet.create({
   },
   summaryCircle: {
     width: 266 * widthDifference,
-    height: 266 * heightDifference,
+    height: 266 * widthDifference,
     resizeMode: 'contain',
   },
   summary: {
@@ -20,8 +20,17 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: 266 * widthDifference,
-    height: 266 * heightDifference,
-    marginTop: 60 * heightDifference,
+    height: 266 * widthDifference,
+  },
+  summaryInner: {
+    flex: 0.50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  summaryOuter: {
+    flex: 0.25,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   time: {
     fontSize: 36,
@@ -32,7 +41,6 @@ export default EStyleSheet.create({
   },
   timeBodyText: {
     color: '$fontColor',
-    marginBottom: 60 * heightDifference,
   },
   goal: {
     color: '$fontColor',

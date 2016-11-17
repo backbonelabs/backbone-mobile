@@ -6,6 +6,7 @@ import {
 // import SvgUri from 'react-native-svg-uri'; replace when package updates
 import BodyText from '../../components/BodyText';
 import styles from '../../styles/posture/postureSummary';
+import theme from '../../styles/theme';
 // import summarySvg from '../../images/session/summaryCircle.svg'; replace when package updates
 import summaryCircle from '../../images/session/summaryCircle.png';
 import AnimatedStar from './AnimatedStar';
@@ -14,55 +15,47 @@ const getRandomNumber = (min, max) => (
    (Math.random() * (max - min)) + min
 );
 
-let startCount = 0;
-
 class PostureSummary extends Component {
   static propTypes = {
     time: PropTypes.string,
-    goal: PropTypes.string,
+    goal: PropTypes.number,
   }
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
-      stars: [],
+      stars: {},
       intervalId: '',
     };
+
+    this.counter = 0;
     this.addStar = this.addStar.bind(this);
   }
 
   componentWillMount() {
-    const intervalId = setInterval(this.addStar, 800);
-    this.setState({ intervalId });
+    this.intervalId = setInterval(this.addStar, 800);
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+    clearInterval(this.intervalId);
   }
 
   addStar() {
-    startCount += 1;
-    this.state.stars.push({
-      id: startCount,
-      right: getRandomNumber(0, 300),
-    });
-    this.setState(this.state);
+    const stars = { ...this.state.stars };
+    stars[++this.counter] = (
+      <AnimatedStar
+        key={this.counter}
+        style={{ right: getRandomNumber(-25, theme.screenWidth - 25) }}
+        onComplete={this.removeStar.bind(this, this.counter)} // eslint-disable-line
+      />
+    );
+    this.setState({ stars });
   }
 
   removeStar(v) {
-    const index = this.state.stars.findIndex((star) => star.id === v);
-    this.state.stars.splice(index, 1);
-    this.setState(this.state);
-  }
-
-  dropStars() {
-    return this.state.stars.map((star, idx) => (
-      <AnimatedStar
-        key={star.id}
-        style={{ right: this.state.stars[idx].right }}
-        onComplete={this.removeStar.bind(this, star.id)} // eslint-disable-line
-      />
-    ));
+    const stars = { ...this.state.stars };
+    delete stars[v];
+    this.setState({ stars });
   }
 
   render() {
@@ -70,15 +63,23 @@ class PostureSummary extends Component {
       <View style={styles.container}>
         <Image source={summaryCircle} style={styles.summaryCircle}>
           <View style={styles.summary}>
-            <BodyText style={styles._time}>{this.props.time} mins</BodyText>
-            <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
-            <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText>
+            <View style={styles.summaryOuter} />
+            <View style={styles.summaryInner}>
+              <BodyText style={styles._time}>{this.props.time} mins</BodyText>
+              <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
+              <View style={styles.summaryOuter}>
+                {
+                  this.props.goal > 0 ?
+                    <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText> : null
+                }
+              </View>
+            </View>
           </View>
         </Image>
         <BodyText style={styles._quote}>
-            Nice work! Keep it up and you'll be on your way to better posture
+            Nice work! Keep it up and you'll be on your way to better posture.
         </BodyText>
-        { this.dropStars() }
+        { Object.values(this.state.stars) }
       </View>
     );
   }

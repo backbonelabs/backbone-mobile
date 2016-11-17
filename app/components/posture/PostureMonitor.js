@@ -38,7 +38,6 @@ class PostureMonitor extends Component {
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
     }),
-    dispatch: PropTypes.func,
   };
 
   constructor(props) {
@@ -139,9 +138,14 @@ class PostureMonitor extends Component {
   }
 
   showSummary() {
+    const secondsRemaining = this.props.posture.sessionTimeSeconds;
+    let minutes = Math.floor(secondsRemaining / 60);
+    if (secondsRemaining === Infinity) {
+      minutes = 0;
+    }
     this.props.dispatch(appActions.showFullModal({
       onClose: this.props.navigator.resetTo(routes.postureDashboard),
-      content: <PostureSummary time="04:30" goal="5" />,
+      content: <PostureSummary time="04:30" goal={minutes} />,
     }));
   }
 
