@@ -2,6 +2,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
 const { widthDifference, heightDifference } = relativeDimensions;
+const responsiveWidthHalfCircle = 128.5 * widthDifference;
 
 export default EStyleSheet.create({
   $pointerBaseHeight: 84,
@@ -10,24 +11,25 @@ export default EStyleSheet.create({
   },
   timer: {
     textAlign: 'center',
-    marginTop: 43 * heightDifference,
+    marginTop: 40 * heightDifference,
+    '@media (max-height: 480)': { // iphone4's max height
+      marginTop: 10 * heightDifference,
+    },
     marginBottom: 5 * heightDifference,
   },
   heading: {
     textAlign: 'center',
     marginBottom: 50 * heightDifference,
-  },
-  animationContainer: {
-    height: '$pointerBaseHeight * 2',
-    bottom: '$pointerBaseHeight',
-    marginBottom: '$pointerBaseHeight * -2',
+    '@media (max-height: 480)': { // iphone4's max height
+      marginBottom: 15 * heightDifference,
+    },
   },
   monitorPointerContainer: {
     alignSelf: 'center',
     alignItems: 'center',
     height: '$pointerBaseHeight * 2',
-    marginBottom: '$pointerBaseHeight',
-    transform: [{ rotate: '90deg' }],
+    bottom: '$pointerBaseHeight',
+    marginBottom: '$pointerBaseHeight * -2',
   },
   base: {
     width: 8,
@@ -94,5 +96,13 @@ export default EStyleSheet.create({
   btnText: {
     textAlign: 'center',
     marginTop: 14 * heightDifference,
+  },
+  halfCircle: {
+    height: responsiveWidthHalfCircle,
+    width: responsiveWidthHalfCircle * 2,
+    borderBottomLeftRadius: responsiveWidthHalfCircle * 2,
+    borderBottomRightRadius: responsiveWidthHalfCircle * 2,
+    position: 'absolute',
+    backgroundColor: '#FFF',
   },
 });
