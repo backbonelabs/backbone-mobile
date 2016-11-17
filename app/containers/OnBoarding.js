@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   ViewPagerAndroid,
+  TouchableOpacity,
   // PushNotificationIOS,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -15,8 +16,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import constants from '../utils/constants';
 import onBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
+import authActions from '../actions/auth';
 import userActions from '../actions/user';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import routes from '../routes';
 
 const { width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
@@ -60,6 +63,7 @@ class OnBoarding extends Component {
     this.setPickerType = this.setPickerType.bind(this);
     this.updateProfile = this.updateProfile.bind(this);
     this.stepTransitionAnimation = this.stepTransitionAnimation.bind(this);
+    this.exitOnboarding = this.exitOnboarding.bind(this);
   }
 
   // componentWillMount() {
@@ -86,7 +90,7 @@ class OnBoarding extends Component {
     if (this.props.isUpdating && !nextProps.isUpdating) {
       // Check whether user has successfully completed onboarding
       if (nextProps.user.hasOnboarded) {
-        SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
+        SensitiveInfo.setItem(constants.storageKeys.USER, nextProps.user);
         this.nextStep();
       } else {
         Alert.alert('Error', 'Unable to save, please try again');
@@ -232,6 +236,12 @@ class OnBoarding extends Component {
     }));
   }
 
+  exitOnboarding() {
+    // Remove locally stored user data and reset Redux auth/user store
+    this.props.dispatch(authActions.signOut());
+    this.props.navigator.resetTo(routes.welcome);
+  }
+
   /**
    * Updates state (field) with value
    * @param {String}  field
@@ -249,6 +259,24 @@ class OnBoarding extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.exitOnboardingIcon}>
+          <TouchableOpacity
+            style={styles.exitOnboardingButton}
+            onPress={() => (
+              Alert.alert(
+                'Are you sure?',
+                '\nExiting will log you out and can cause you to lose your information',
+                [{ text: 'Cancel' }, { text: 'Logout', onPress: this.exitOnboarding }]
+              )
+            )}
+          >
+            <Icon
+              name={'close'}
+              size={30}
+              color={styles._exitOnboardingIconColor.backgroundColor}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.progressBarContainer}>
           {
             // Render appropriate icon based on the user's onboarding flow progress
