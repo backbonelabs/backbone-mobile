@@ -17,19 +17,19 @@ import routes from '../routes';
 
 const { DeviceManagementService } = NativeModules;
 
-const DeviceInfoItem = props => (
-  <View style={styles.deviceInfo}>
-    <HeadingText size={3}>{props.headingText}</HeadingText>
-    <BodyText style={styles._deviceInfoBodyText}>{props.bodyText}</BodyText>
-    {props.children}
-  </View>
-);
+// const DeviceInfoItem = props => (
+//   <View style={styles.deviceInfo}>
+//     <HeadingText size={3}>{props.headingText}</HeadingText>
+//     <BodyText style={styles._deviceInfoBodyText}>{props.bodyText}</BodyText>
+//     {props.children}
+//   </View>
+// );
 
-DeviceInfoItem.propTypes = {
-  children: PropTypes.node,
-  headingText: PropTypes.string,
-  bodyText: PropTypes.string,
-};
+// DeviceInfoItem.propTypes = {
+//   children: PropTypes.node,
+//   headingText: PropTypes.string,
+//   bodyText: PropTypes.string,
+// };
 
 class Device extends Component {
   static propTypes = {
