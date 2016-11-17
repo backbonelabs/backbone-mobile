@@ -18,7 +18,6 @@ export default EStyleSheet.create({
     justifyContent: 'flex-end',
   },
   sensorImage: {
-    resizeMode: 'contain',
     marginBottom: 25 * heightDifference,
   },
   deviceInfoBodyText: {
