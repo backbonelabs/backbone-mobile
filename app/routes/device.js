@@ -2,7 +2,7 @@ import Device from '../containers/Device';
 
 export default {
   name: 'device',
-  title: 'Device',
+  title: 'My Backbone',
   component: Device,
   showBackButton: true,
 };
