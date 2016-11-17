@@ -54,7 +54,7 @@ const SensorSettings = props => (
       <Image source={sensorSmall} style={styles.sensorIcon} />
     </View>
     <View style={styles.sensorText}>
-      <BodyText style={{ marginBottom: 2 }}>MY BACKBONE</BodyText>
+      <BodyText style={styles.sensorTextTitle}>MY BACKBONE</BodyText>
       <SecondaryText style={styles._deviceInfoText}>
         Status: { props.isConnected ? 'Connected' : 'Disconnected' }
       </SecondaryText>
@@ -239,12 +239,12 @@ class Settings extends Component {
   }
 
   render() {
-    const { navigator } = this.props;
+    const { isConnected, navigator, config } = this.props;
 
     return (
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <SensorSettings navigator={navigator} isConnected={this.props.isConnected} />
+          <SensorSettings navigator={navigator} isConnected={isConnected} />
           <AccountRemindersSettings
             navigator={navigator}
             notificationsEnabled={this.state.notificationsEnabled}
@@ -259,7 +259,7 @@ class Settings extends Component {
             />
           </View>
         </Image>
-        {this.props.config.DEV_MODE &&
+        {config.DEV_MODE &&
           <View style={{ marginTop: 5, borderWidth: 1 }}>
             <BodyText>Dev menu:</BodyText>
             <TouchableOpacity
