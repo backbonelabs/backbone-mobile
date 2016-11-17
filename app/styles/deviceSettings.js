@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
