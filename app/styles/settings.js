@@ -45,7 +45,7 @@ export default EStyleSheet.create({
     resizeMode: 'contain',
   },
   sensorTextTitle: {
-    marginBottom: 2,
+    marginBottom: 2 * heightDifference,
   },
   sensorText: {
     flex: 0.52,

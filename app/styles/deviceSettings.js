@@ -31,6 +31,6 @@ export default EStyleSheet.create({
     marginTop: 25 * heightDifference,
   },
   updateButton: {
-    marginTop: 10,
+    marginTop: 10 * heightDifference,
   },
 });
