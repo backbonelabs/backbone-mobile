@@ -143,11 +143,14 @@ const HelpSettings = props => (
     <View style={styles.helpSettingsHeader}>
       <BodyText>HELP</BodyText>
     </View>
-    <View style={styles.helpSettingContainer}>
+    <TouchableOpacity
+      style={styles.helpSettingContainer}
+      onPress={() => props.navigator.push(routes.howTo)}
+    >
       <SettingsIcon iconName="tutorial" />
-      <SettingsText text="How To Use" />
+      <SettingsText text="How To" />
       <ArrowIcon />
-    </View>
+    </TouchableOpacity>
     <TouchableOpacity
       style={styles.helpSettingContainer}
       onPress={() => props.navigator.push(routes.support)}
