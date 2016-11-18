@@ -9,6 +9,7 @@ export default (state = {
   modal: {
     show: false,
     content: null,
+    onClose: null,
   },
 }, action) => {
   switch (action.type) {
