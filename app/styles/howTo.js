@@ -43,11 +43,11 @@ export default EStyleSheet.create({
     color: '$primaryColor',
     height: 100 * heightDifference,
   },
-  pauseIcon: {
+  stopIcon: {
     color: '$primaryColor',
     height: 25 * heightDifference,
   },
-  pauseIconPadding: {
+  stopIconPadding: {
     paddingVertical: 5.5 * heightDifference,
     paddingHorizontal: 7.5 * widthDifference,
   },

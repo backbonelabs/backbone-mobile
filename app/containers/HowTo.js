@@ -61,16 +61,16 @@ export default class HowTo extends Component {
                     this.state.pressedItem === key ?
                       <Image style={styles.gif} source={value.GIF}>
                         <Icon
-                          style={styles._pauseIconPadding}
-                          name={'stop'}
-                          size={styles._pauseIcon.height}
-                          color={styles._pauseIcon.color}
+                          style={styles._stopIconPadding}
+                          name="stop"
+                          size={styles._stopIcon.height}
+                          color={styles._stopIcon.color}
                         />
                       </Image>
                       :
                         <Image style={styles.png} source={value.PNG}>
                           <Icon
-                            name={'play'}
+                            name="play"
                             size={styles._playIcon.height}
                             color={styles._playIcon.color}
                           />
