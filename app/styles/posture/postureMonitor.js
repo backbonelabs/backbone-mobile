@@ -97,7 +97,7 @@ export default EStyleSheet.create({
     textAlign: 'center',
     marginTop: 14 * heightDifference,
   },
-  halfCircleOutterContainer: {
+  halfCircleOuterContainer: {
     height: responsiveWidthHalfCircle,
     width: (responsiveWidthHalfCircle * 2),
     position: 'absolute',

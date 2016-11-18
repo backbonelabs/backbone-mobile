@@ -36,7 +36,7 @@ const Monitor = (props) => {
           fill="url(#grad)"
         />
       </Svg>
-      <View style={styles.halfCircleOutterContainer}>
+      <View style={styles.halfCircleOuterContainer}>
         <View
           style={[
             { transform: [{ rotate: `${slouchDetection}deg` }] },
