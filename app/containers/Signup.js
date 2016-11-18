@@ -19,7 +19,7 @@ import constants from '../utils/constants';
 import BackBoneLogo from '../images/bblogo.png';
 import BodyText from '../components/BodyText';
 
-const { accessTokenStorageKey } = constants;
+const { storageKeys } = constants;
 
 class Signup extends Component {
   static propTypes = {
@@ -79,7 +79,7 @@ class Signup extends Component {
   }
 
   saveAccessToken(accessToken) {
-    SensitiveInfo.setItem(accessTokenStorageKey, accessToken);
+    SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
   }
 
   signup() {
