@@ -21,6 +21,8 @@ import BackBoneLogo from '../images/bblogo.png';
 import HeadingText from '../components/HeadingText';
 import constants from '../utils/constants';
 
+const { storageKeys } = constants;
+
 class Login extends Component {
   static propTypes = {
     auth: PropTypes.shape({
@@ -53,8 +55,8 @@ class Login extends Component {
     const newAccessToken = nextProps.auth.accessToken;
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User successfully authenticated, save access token to local device
-      SensitiveInfo.setItem(constants.accessTokenStorageKey, newAccessToken);
-      SensitiveInfo.setItem(constants.userStorageKey, nextProps.user);
+      SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, newAccessToken);
+      SensitiveInfo.setItem(storageKeys.USER, nextProps.user);
 
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {

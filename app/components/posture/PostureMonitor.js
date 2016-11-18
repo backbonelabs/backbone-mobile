@@ -15,24 +15,33 @@ import SecondaryText from '../../components/SecondaryText';
 import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
 import MonitorSlider from './postureMonitor/MonitorSlider';
+import appActions from '../../actions/app';
+import routes from '../../routes';
+import PostureSummary from './PostureSummary';
 
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
 
 class PostureMonitor extends Component {
   static propTypes = {
-    user: PropTypes.shape({
-      settings: PropTypes.object,
+    dispatch: PropTypes.func,
+    posture: PropTypes.shape({
+      sessionTimeSeconds: PropTypes.number,
     }),
-    settings: PropTypes.shape({
-      phoneVibration: PropTypes.bool,
-      postureThreshold: PropTypes.number,
-      slouchTimeThreshold: PropTypes.number,
+    user: PropTypes.shape({
+      settings: PropTypes.shape({
+        phoneVibration: PropTypes.bool,
+        postureThreshold: PropTypes.number,
+        slouchTimeThreshold: PropTypes.number,
+      }),
+    }),
+    navigator: PropTypes.shape({
+      resetTo: PropTypes.func,
     }),
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       monitoring: null,
       slouch: 0,
@@ -42,6 +51,7 @@ class PostureMonitor extends Component {
     this.activityDisabledListener = null;
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
     this.disablePostureActivity = this.disablePostureActivity.bind(this);
+    this.showSummary = this.showSummary.bind(this);
   }
 
   componentWillMount() {
@@ -67,6 +77,27 @@ class PostureMonitor extends Component {
     }
   }
 
+  /**
+   * Displays the session time remaining/elapsed in M:SS format. For timed sessions, the time
+   * remaining will be displayed. For untimed sessions, the time elapsed will be displayed.
+   * @return {String} Time remaining/elapsed in M:SS format
+   */
+  getFormattedTimeRemaining() {
+    // TODO: Update to display correct time remaining for timed sessions and time elapsed for
+    // untimed sessions. This can be done after the device is programmed to stream time data.
+    // For now, it just displays the chosen session time.
+    const secondsRemaining = this.props.posture.sessionTimeSeconds;
+    if (secondsRemaining === Infinity) {
+      return '-:--';
+    }
+    const minutes = Math.floor(secondsRemaining / 60);
+    let seconds = secondsRemaining - (minutes * 60);
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
+    return `${minutes}:${seconds}`;
+  }
+
   enablePostureActivity() {
     ActivityService.enableActivity(activityName, (error) => {
       if (!error) {
@@ -74,6 +105,8 @@ class PostureMonitor extends Component {
           const { settings } = this.props.user;
           // Attach listener
           this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
+            // TODO: Get time remaining/elapsed from so component
+
             const { currentDistance, slouchTime } = event;
 
             // User is slouching if currentDistance is greater than or equal to threshold
@@ -104,10 +137,24 @@ class PostureMonitor extends Component {
     ActivityService.disableActivity(activityName);
   }
 
+  showSummary() {
+    const sessionTime = this.props.posture.sessionTimeSeconds;
+    let minutes = Math.floor(sessionTime / 60);
+    if (sessionTime === Infinity) {
+      minutes = 0;
+    }
+    this.props.dispatch(appActions.showFullModal({
+      onClose: this.props.navigator.resetTo(routes.postureDashboard),
+      content: <PostureSummary time="04:30" goal={minutes} />,
+    }));
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <HeadingText size={1} style={styles._timer}>05:00</HeadingText>
+        <HeadingText size={1} style={styles._timer}>
+          {this.getFormattedTimeRemaining()}
+        </HeadingText>
         <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
         <Monitor degree={this.state.degree} />
         <View style={styles.monitorRatingContainer}>
@@ -123,7 +170,7 @@ class PostureMonitor extends Component {
           { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
             <MonitorButton play onPress={this.enablePostureActivity} />
           }
-          <MonitorButton alertsDisabled />
+          <MonitorButton alertsDisabled onPress={this.showSummary} />
           <MonitorButton stop onPress={this.disablePostureActivity} />
         </View>
       </View>
@@ -132,8 +179,8 @@ class PostureMonitor extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
-  return user;
+  const { posture, user: { user } } = state;
+  return { posture, user };
 };
 
 export default connect(mapStateToProps)(PostureMonitor);

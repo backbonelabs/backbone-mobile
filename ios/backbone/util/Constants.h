@@ -36,20 +36,23 @@
 
 /*
  Services and Characteristics UUID
-*/
+ */
 
 #define BACKBONE_SERVICE_UUID                     [CBUUID UUIDWithString:@"00010000-0000-1000-8000-805F9B34FB00"]
+#define BATTERY_SERVICE_UUID                      [CBUUID UUIDWithString:@"180F"]
 #define BOOTLOADER_SERVICE_UUID                   [CBUUID UUIDWithString:@"00060000-F8CE-11E4-ABF4-0002A5D5C51B"]
 
 #define ACCELEROMETER_CHARACTERISTIC_UUID         [CBUUID UUIDWithString:@"00010004-0000-1000-8000-805F9B34FB00"]
 #define ENTER_BOOTLOADER_CHARACTERISTIC_UUID      [CBUUID UUIDWithString:@"00010005-0000-1000-8000-805F9B34FB00"]
+#define FIRMWARE_VERSION_CHARACTERISTIC_UUID      [CBUUID UUIDWithString:@"00010006-0000-1000-8000-805F9B34FB00"]
+#define BATTERY_LEVEL_CHARACTERISTIC_UUID         [CBUUID UUIDWithString:@"2A19"]
 #define BOOTLOADER_CHARACTERISTIC_UUID            [CBUUID UUIDWithString:@"00060001-F8CE-11E4-ABF4-0002A5D5C51B"]
 
 #define CLIENT_CHARACTERISTIC_CONFIG_UUID         [CBUUID UUIDWithString:@"00002902-0000-1000-8000-00805f9b34fb"]
 
 /*
  Bootloader Specifics
-*/
+ */
 
 #define BOOTLOADER_STATE_OFF          0
 #define BOOTLOADER_STATE_INITIATED    1
@@ -96,9 +99,11 @@
 
 /*
  Listing all type-definitions here
-*/
+ */
 typedef void (^ErrorHandler)(NSError *__nullable error);
 typedef void (^ArrayHandler)(NSArray *__nonnull array);
-typedef void (^DictionaryHandler)(NSDictionary *__nonnull array);
+typedef void (^StringHandler)(NSString *__nonnull str);
+typedef void (^IntHandler)(int value);
+typedef void (^DictionaryHandler)(NSDictionary *__nonnull dict);
 
 #endif /* Constants_h */

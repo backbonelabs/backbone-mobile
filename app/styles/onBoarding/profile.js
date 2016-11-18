@@ -36,7 +36,7 @@ export default EStyleSheet.create({
     resizeMode: 'contain',
   },
   nicknameInput: {
-    width: '41%',
+    width: '46%',
     height: 50 * heightDifference,
   },
   profileBodyContainer: {
