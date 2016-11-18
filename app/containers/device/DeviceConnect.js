@@ -106,9 +106,9 @@ class DeviceConnect extends Component {
     return (
       <View style={styles.container}>
         { this.props.inProgress &&
-          <View style={styles.spinner}>
+          <View>
             <Spinner />
-            <Text style={styles.spinnerText}>Connecting</Text>
+            <Text>Connecting</Text>
           </View>
         }
       </View>
