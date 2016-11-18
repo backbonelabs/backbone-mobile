@@ -15,6 +15,9 @@ import SecondaryText from '../../components/SecondaryText';
 import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
 import MonitorSlider from './postureMonitor/MonitorSlider';
+import appActions from '../../actions/app';
+import routes from '../../routes';
+import PostureSummary from './PostureSummary';
 
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
@@ -32,6 +35,9 @@ class PostureMonitor extends Component {
         slouchTimeThreshold: PropTypes.number,
       }),
     }),
+    navigator: PropTypes.shape({
+      resetTo: PropTypes.func,
+    }),
   };
 
   constructor(props) {
@@ -45,6 +51,7 @@ class PostureMonitor extends Component {
     this.activityDisabledListener = null;
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
     this.disablePostureActivity = this.disablePostureActivity.bind(this);
+    this.showSummary = this.showSummary.bind(this);
   }
 
   componentWillMount() {
@@ -130,6 +137,18 @@ class PostureMonitor extends Component {
     ActivityService.disableActivity(activityName);
   }
 
+  showSummary() {
+    const sessionTime = this.props.posture.sessionTimeSeconds;
+    let minutes = Math.floor(sessionTime / 60);
+    if (sessionTime === Infinity) {
+      minutes = 0;
+    }
+    this.props.dispatch(appActions.showFullModal({
+      onClose: this.props.navigator.resetTo(routes.postureDashboard),
+      content: <PostureSummary time="04:30" goal={minutes} />,
+    }));
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -151,7 +170,7 @@ class PostureMonitor extends Component {
           { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
             <MonitorButton play onPress={this.enablePostureActivity} />
           }
-          <MonitorButton alertsDisabled />
+          <MonitorButton alertsDisabled onPress={this.showSummary} />
           <MonitorButton stop onPress={this.disablePostureActivity} />
         </View>
       </View>
