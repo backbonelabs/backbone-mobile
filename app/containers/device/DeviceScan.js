@@ -3,17 +3,14 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Alert,
   ScrollView,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MKButton } from 'react-native-material-kit';
-import List from '../List';
-import Spinner from '../../components/Spinner';
 import styles from '../../styles/device';
-import routes from '../../routes';
+// import routes from '../../routes';
 
 const { PropTypes } = React;
 const { DeviceManagementService } = NativeModules;
@@ -40,13 +37,14 @@ class DeviceScan extends Component {
       deviceList: [],
       inProgress: false,
     };
-    this.selectDevice = this.selectDevice.bind(this);
+    // this.selectDevice = this.selectDevice.bind(this);
   }
 
   // Begin scanning for hardware devices in the vicinity
   componentWillMount() {
     // Native module listener will constantly update deviceList
-    // NativeAppEventEmitter.addListener('DevicesFound', deviceList => this.setState({ deviceList }));
+    // NativeAppEventEmitter.addListener('DevicesFound',
+    // deviceList => this.setState({ deviceList }));
 
     // DeviceManagementService.scanForDevices(error => {
     //   if (error) {
@@ -67,40 +65,40 @@ class DeviceScan extends Component {
   }
 
   // Saves the selected device and attempts to connect to it
-  selectDevice(deviceData) {
-    DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
-      if (error) {
-        // Do something about the select device error
-      } else {
-        // Navigate to DeviceConnect where it'll attempt to connect
-        this.props.navigator.replace(routes.deviceConnect);
-      }
-    });
-  }
+  // selectDevice(deviceData) {
+  //   DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
+  //     if (error) {
+  //       // Do something about the select device error
+  //     } else {
+  //       // Navigate to DeviceConnect where it'll attempt to connect
+  //       this.props.navigator.replace(routes.deviceConnect);
+  //     }
+  //   });
+  // }
 
   // Formats row data and displays it in a component
-  formatDeviceRow(rowData) {
-    // Pressing on a row will select device and attempt connect
-    return (
-      <View style={styles.cardStyle}>
-        <View style={{ flexDirection: 'column' }}>
-          <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
-            Backbone
-          </Text>
-          <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
-            Unique ID: d2f12936-a749-4da3-941c
-          </Text>
-        </View>
-        <SelectButton>
-          <Icon name="keyboard-arrow-right" size={15} color="white" />
-        </SelectButton>
-      </View>
-    );
-  }
+  // formatDeviceRow(rowData) {
+  //   // Pressing on a row will select device and attempt connect
+  //   return (
+  //     <View style={styles.cardStyle}>
+  //       <View style={{ flexDirection: 'column' }}>
+  //         <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
+  //           Backbone
+  //         </Text>
+  //         <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
+  //           Unique ID: d2f12936-a749-4da3-941c
+  //         </Text>
+  //       </View>
+  //       <SelectButton>
+  //         <Icon name="keyboard-arrow-right" size={15} color="white" />
+  //       </SelectButton>
+  //     </View>
+  //   );
+  // }
 
   render() {
     return (
-    <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.cardStyle}>
           <View style={{ flexDirection: 'column' }}>
             <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
