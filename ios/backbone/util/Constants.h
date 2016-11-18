@@ -104,6 +104,6 @@ typedef void (^ErrorHandler)(NSError *__nullable error);
 typedef void (^ArrayHandler)(NSArray *__nonnull array);
 typedef void (^StringHandler)(NSString *__nonnull str);
 typedef void (^IntHandler)(int value);
-typedef void (^DictionaryHandler)(NSDictionary *__nonnull array);
+typedef void (^DictionaryHandler)(NSDictionary *__nonnull dict);
 
 #endif /* Constants_h */

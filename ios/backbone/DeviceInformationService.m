@@ -39,18 +39,17 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(getFirmwareVersion:(RCTResponseSenderBlock)callback) {
-  [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
-    DLog(@"Get Firmware %@", str);
-    callback(@[str]);
-  }];
-}
-
-RCT_EXPORT_METHOD(getBatteryLevel:(RCTResponseSenderBlock)callback) {
-  [self retrieveBatteryLevel:^(int value) {
-    DLog(@"Get Battery %d", value);
-    callback(@[@(value)]);
-  }];
+RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
+  if (BluetoothServiceInstance.currentDevice && BluetoothServiceInstance.currentDevice.state == CBPeripheralStateConnected) {
+    [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
+      [self retrieveBatteryLevel:^(int value) {
+        callback(@[@{@"firmwareVersion" : str, @"batteryLevel" : @(value)}]);
+      }];
+    }];
+  }
+  else {
+    callback(@[[NSNull null]]);
+  }
 }
 
 - (void)retrieveFirmwareVersion:(StringHandler)handler {
@@ -101,7 +100,7 @@ RCT_EXPORT_METHOD(getBatteryLevel:(RCTResponseSenderBlock)callback) {
       _firmwareVersionHandler(@"");
     }
   }
-  else {
+  else if ([characteristic.UUID isEqual:BATTERY_LEVEL_CHARACTERISTIC_UUID]){
     if (!error) {
       uint8_t *data = (uint8_t*) [characteristic.value bytes];
 
