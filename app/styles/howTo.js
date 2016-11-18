@@ -10,7 +10,7 @@ const absoluteCenter = {
 
 const relativeImageDimensions = {
   width: 319 * widthDifference,
-  height: 239 * heightDifference,
+  height: 239 * widthDifference,
 };
 
 export default EStyleSheet.create({
@@ -45,10 +45,10 @@ export default EStyleSheet.create({
   },
   pauseIcon: {
     color: '$primaryColor',
-    width: 25 * widthDifference,
+    height: 25 * heightDifference,
   },
   pauseIconPadding: {
-    paddingVertical: 5.5 * widthDifference,
+    paddingVertical: 5.5 * heightDifference,
     paddingHorizontal: 7.5 * widthDifference,
   },
   textContainer: {

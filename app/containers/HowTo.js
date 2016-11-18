@@ -45,7 +45,7 @@ export default class HowTo extends Component {
                           <Icon
                             style={styles._pauseIconPadding}
                             name={howToContent.PAUSE}
-                            size={styles._pauseIcon.width}
+                            size={styles._pauseIcon.height}
                             color={styles._pauseIcon.color}
                           />
                         </Image>
