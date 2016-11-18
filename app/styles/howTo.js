@@ -17,14 +17,14 @@ export default EStyleSheet.create({
   background: {
     flex: 1,
     width: '100%',
-    height: '100%',
+    height: null,
   },
   howToContainer: {
     flex: 1,
     alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: '$activeBorderColor',
-    paddingVertical: 25 * heightDifference,
+    paddingVertical: 5 * heightDifference,
   },
   buttonContainer: {
     flex: 0.8,
@@ -53,7 +53,7 @@ export default EStyleSheet.create({
   },
   textContainer: {
     flex: 0.1,
-    paddingTop: 10 * heightDifference,
+    paddingVertical: 10 * heightDifference,
     ...absoluteCenter,
   },
 });
