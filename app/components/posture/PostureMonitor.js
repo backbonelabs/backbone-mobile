@@ -43,7 +43,7 @@ class PostureMonitor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      monitoring: null,
+      monitoring: false,
       slouchDeg: 320,
       handDeg: -90,
     };
@@ -170,7 +170,7 @@ class PostureMonitor extends Component {
           onValueChange={(value) => this.setState({ slouchDeg: value })}
           minimumValue={180}
           maximumValue={360}
-          disabled={!this.state.monitoring}
+          disabled={this.state.monitoring}
         />
         <View style={styles.btnContainer}>
           { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :

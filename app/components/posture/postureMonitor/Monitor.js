@@ -11,7 +11,6 @@ import relativeDimensions from '../../../utils/relativeDimensions';
 
 const { widthDifference } = relativeDimensions;
 const responsiveWidth = 136 * widthDifference;
-const responsiveWidthHalfCircle = 128.5 * widthDifference;
 
 const Monitor = (props) => {
   const { degree, slouchDetection } = props;
@@ -37,14 +36,15 @@ const Monitor = (props) => {
           fill="url(#grad)"
         />
       </Svg>
-      <View
-        style={{
-          width: responsiveWidthHalfCircle * 2,
-          alignSelf: 'center',
-          transform: [{ rotate: `${slouchDetection}deg` }],
-        }}
-      >
-        <View style={styles.halfCircle} />
+      <View style={styles.halfCircleOutterContainer}>
+        <View
+          style={[
+            { transform: [{ rotate: `${slouchDetection}deg` }] },
+            styles.halfCircleInnerContainer,
+          ]}
+        >
+          <View style={styles.halfCircle} />
+        </View>
       </View>
       <View style={[{ transform: [{ rotate: `${degree}deg` }] }, styles.monitorPointerContainer]}>
         <View style={styles.point} />
