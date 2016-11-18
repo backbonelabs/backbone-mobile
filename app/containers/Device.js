@@ -68,12 +68,12 @@ class Device extends Component {
           this.setState({
             device,
             inProgress: false,
-          }, () => SensitiveInfo.setItem(constants.storageKey.DEVICE, device));
+          }, () => SensitiveInfo.setItem(constants.storageKeys.DEVICE, device));
         }
       });
     } else {
       // If device isn't currently connected, fetch locally stored data
-      SensitiveInfo.getItem(constants.storageKey.DEVICE)
+      SensitiveInfo.getItem(constants.storageKeys.DEVICE)
         .then(device => {
           const stateData = device ? { device } : {};
           stateData.inProgress = false;
@@ -93,26 +93,38 @@ class Device extends Component {
         { text: 'Unpair',
           onPress: () => {
             // Reset state to defaults
-            this.setState({
-              device: {
-                isPaired: false,
-                firmwareVersion: null,
-                batteryLife: null,
-                updateAvailable: false,
-              },
-              inProgress: true,
-            }, () => (
+            this.setState({ inProgress: true }, () => (
               DeviceManagementService.forgetDevice(error => {
                 if (error) {
                   Alert.alert(
                     'Error',
                     'There was a problem unpairing your Backbone',
-                    [{ text: 'Try Again' }],
+                    [{
+                      text: 'Try Again',
+                      onPress: () => this.setState({ inProgress: false }),
+                    }],
                   );
                 } else {
-                  Alert.alert('Success', 'You have unpaired your Backbone');
+                  Alert.alert(
+                    'Success',
+                    'You have unpaired your Backbone',
+                    [{
+                      text: 'OK',
+                      onPress: () => (
+                        // Set device state back to defaults
+                        this.setState({
+                          device: {
+                            isPaired: false,
+                            firmwareVersion: null,
+                            batteryLife: null,
+                            updateAvailable: false,
+                          },
+                          inProgress: false,
+                        })
+                      ),
+                    }]
+                  );
                 }
-                this.setState({ inProgress: false });
               })
             ));
           },
