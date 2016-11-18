@@ -4,9 +4,12 @@ import {
   View,
   Text,
   Alert,
+  ScrollView,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MKButton } from 'react-native-material-kit';
 import List from '../List';
 import Spinner from '../../components/Spinner';
 import styles from '../../styles/device';
@@ -14,6 +17,14 @@ import routes from '../../routes';
 
 const { PropTypes } = React;
 const { DeviceManagementService } = NativeModules;
+
+const SelectButton = MKButton.coloredFab()
+  .withBackgroundColor('#ED1C24')
+  .withStyle({
+    height: 30,
+    width: 30,
+  })
+  .build();
 
 class DeviceScan extends Component {
   static propTypes = {
@@ -35,17 +46,17 @@ class DeviceScan extends Component {
   // Begin scanning for hardware devices in the vicinity
   componentWillMount() {
     // Native module listener will constantly update deviceList
-    NativeAppEventEmitter.addListener('DevicesFound', deviceList => this.setState({ deviceList }));
+    // NativeAppEventEmitter.addListener('DevicesFound', deviceList => this.setState({ deviceList }));
 
-    DeviceManagementService.scanForDevices(error => {
-      if (error) {
-        Alert.alert('Error', 'Unable to scan for devices', [{
-          text: 'Try Again',
-        }]);
-      } else {
-        this.setState({ inProgress: true });
-      }
-    });
+    // DeviceManagementService.scanForDevices(error => {
+    //   if (error) {
+    //     Alert.alert('Error', 'Unable to scan for devices', [{
+    //       text: 'Try Again',
+    //     }]);
+    //   } else {
+    //     this.setState({ inProgress: true });
+    //   }
+    // });
   }
 
   componentWillUnmount() {
@@ -71,23 +82,73 @@ class DeviceScan extends Component {
   formatDeviceRow(rowData) {
     // Pressing on a row will select device and attempt connect
     return (
-      <View onPress={() => this.selectDevice(rowData)}>
-        <Text style={styles.deviceName}>{rowData.name}</Text>
-        <Text style={styles.deviceID}>{rowData.identifier}</Text>
+      <View style={styles.cardStyle}>
+        <View style={{ flexDirection: 'column' }}>
+          <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
+            Backbone
+          </Text>
+          <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
+            Unique ID: d2f12936-a749-4da3-941c
+          </Text>
+        </View>
+        <SelectButton>
+          <Icon name="keyboard-arrow-right" size={15} color="white" />
+        </SelectButton>
       </View>
     );
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        { this.state.inProgress && <Spinner /> }
-        <List
-          dataBlob={this.state.deviceList}
-          formatRowData={this.formatDeviceRow}
-          onPressRow={this.selectDevice}
-        />
-      </View>
+    <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.cardStyle}>
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
+              Backbone
+            </Text>
+            <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
+              Unique ID: d2f12936-a749-4da3-941c
+            </Text>
+          </View>
+          <SelectButton>
+            <Icon name="keyboard-arrow-right" size={15} color="white" />
+          </SelectButton>
+        </View>
+        <View style={styles.cardStyle}>
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
+              Backbone
+            </Text>
+            <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
+              Unique ID: d2f12936-a749-4da3-941c
+            </Text>
+          </View>
+          <SelectButton>
+            <Icon name="keyboard-arrow-right" size={15} color="white" />
+          </SelectButton>
+        </View>
+        <View style={styles.cardStyle}>
+          <View style={{ flexDirection: 'column' }}>
+            <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
+              Backbone
+            </Text>
+            <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
+              Unique ID: d2f12936-a749-4da3-941c
+            </Text>
+          </View>
+          <SelectButton>
+            <Icon name="keyboard-arrow-right" size={15} color="white" />
+          </SelectButton>
+        </View>
+      </ScrollView>
+      // <View style={styles.container}>
+      //   { this.state.inProgress && <Spinner /> }
+      //   <List
+      //     dataBlob={this.state.deviceList}
+      //     formatRowData={this.formatDeviceRow}
+      //     onPressRow={this.selectDevice}
+      //   />
+      // </View>
     );
   }
 }
