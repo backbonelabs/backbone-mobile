@@ -10,9 +10,9 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    height: '$windowHeight - $statusBarHeight',
     paddingHorizontal: 10 * widthDifference,
     paddingVertical: 10 * heightDifference,
-    height: '$windowHeight - $statusBarHeight',
   },
   buttonContainer: {
     alignItems: 'flex-end',

@@ -8,31 +8,34 @@ import gradientBackground20 from '../images/gradientBackground20.png';
 import styles from '../styles/fullModal';
 
 const FullModal = props => (
-  <Image source={gradientBackground20} style={styles.container}>
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity
-        onPress={() => {
-          props.dispatch(appActions.hideFullModal());
-          if (isFunction(props.onClose)) {
-            props.onClose();
-          }
-        }}
-      >
-        <Icon
-          name="close"
-          size={styles.$iconSize}
-          color={styles._closeIcon.color}
-        />
-      </TouchableOpacity>
-    </View>
-    {props.children}
-  </Image>
+  props.show ? (
+    <Image source={gradientBackground20} style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            props.dispatch(appActions.hideFullModal());
+            if (isFunction(props.onClose)) {
+              props.onClose();
+            }
+          }}
+        >
+          <Icon
+            name="close"
+            size={styles.$iconSize}
+            color={styles._closeIcon.color}
+          />
+        </TouchableOpacity>
+      </View>
+      {props.children}
+    </Image>
+  ) : null
 );
 
 FullModal.propTypes = {
   children: PropTypes.node,
   dispatch: PropTypes.func,
   onClose: PropTypes.func,
+  show: PropTypes.bool,
 };
 
 export default connect()(FullModal);
