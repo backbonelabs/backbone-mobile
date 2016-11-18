@@ -3,6 +3,7 @@ export default {
   storageKeys: {
     ACCESS_TOKEN: 'accessToken',
     USER: 'user',
+    DEVICE: 'device',
     CALIBRATION_AUTO_START: 'calibrationAutoStart',
   },
   bluetoothStates: {

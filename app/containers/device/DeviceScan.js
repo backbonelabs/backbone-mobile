@@ -19,7 +19,6 @@ class DeviceScan extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
-      popToTop: PropTypes.func,
     }),
   };
 
@@ -42,7 +41,6 @@ class DeviceScan extends Component {
       if (error) {
         Alert.alert('Error', 'Unable to scan for devices', [{
           text: 'Try Again',
-          onPress: this.props.navigator.popToTop,
         }]);
       } else {
         this.setState({ inProgress: true });

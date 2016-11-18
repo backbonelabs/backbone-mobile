@@ -36,6 +36,8 @@
                @"5": [NSNumber numberWithInteger:4]
                };
   
+  _servicesFound = [NSMutableDictionary new];
+  
   self.centralManager = [[CBCentralManager alloc]
                          initWithDelegate:self
                          queue:nil
@@ -182,7 +184,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   _currentDevice = [peripheral copy];
   _currentDevice.delegate = self;
   
-  [_currentDevice discoverServices:@[BACKBONE_SERVICE_UUID, BOOTLOADER_SERVICE_UUID]];
+  [_currentDevice discoverServices:@[BACKBONE_SERVICE_UUID, BOOTLOADER_SERVICE_UUID, BATTERY_SERVICE_UUID]];
 //  [_currentDevice discoverServices:nil];
 }
 
@@ -203,6 +205,8 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 //    }
 //    else if (self.disconnectHandler != nil){
     if (self.disconnectHandler != nil){
+      [_servicesFound removeAllObjects];
+      
       self.currentDevice = nil;
       self.disconnectHandler(nil);
     }
@@ -215,7 +219,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
     DLog(@"Service : %@", peripheral.services);
     
     for (CBService *service in peripheral.services) {
-      if ([service.UUID isEqual:BACKBONE_SERVICE_UUID]) {
+      if ([service.UUID isEqual:BACKBONE_SERVICE_UUID] || [service.UUID isEqual:BATTERY_SERVICE_UUID]) {
 //        [_currentDevice discoverCharacteristics:@[[CBUUID UUIDWithString:@"00000006-0010-0080-0000-805F9B34FB00"]] forService:service];
         [_currentDevice discoverCharacteristics:nil forService:service];
       }
@@ -244,11 +248,16 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
   DLog(@"Found Characteristics");
   
+  if (service.characteristics && service.characteristics.count > 0) {
+    [_servicesFound setObject:@(YES) forKey:service.UUID.UUIDString];
+  }
+
+  // Check if all required services are ready
+  if ([_servicesFound count] == 2) {
+    self.connectHandler(nil);
+  }
+  
   if ([service.UUID isEqual:BACKBONE_SERVICE_UUID]) {
-    if (service.characteristics && service.characteristics.count > 0) {
-      self.connectHandler(nil);
-    }
-    
     for (CBCharacteristic *characteristic in service.characteristics) {
       if ([characteristic.UUID isEqual:ENTER_BOOTLOADER_CHARACTERISTIC_UUID]) {
         
@@ -259,10 +268,6 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
     }
   }
   else if ([service.UUID isEqual:BOOTLOADER_SERVICE_UUID]) {
-    if (service.characteristics && service.characteristics.count > 0) {
-      self.connectHandler(nil);
-    }
-    
     for (CBCharacteristic *characteristic in service.characteristics) {
       if ([characteristic.UUID isEqual:BOOTLOADER_CHARACTERISTIC_UUID]) {
         
