@@ -68,12 +68,12 @@ class Device extends Component {
           this.setState({
             device,
             inProgress: false,
-          }, () => SensitiveInfo.setItem(constants.deviceStorageKey, device));
+          }, () => SensitiveInfo.setItem(constants.storageKey.DEVICE, device));
         }
       });
     } else {
       // If device isn't currently connected, fetch locally stored data
-      SensitiveInfo.getItem(constants.deviceStorageKey)
+      SensitiveInfo.getItem(constants.storageKey.DEVICE)
         .then(device => {
           const stateData = device ? { device } : {};
           stateData.inProgress = false;
