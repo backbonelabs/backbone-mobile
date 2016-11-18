@@ -15,6 +15,8 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import constants from '../utils/constants';
 
+const { storageKeys } = constants;
+
 class Welcome extends Component {
   static propTypes = {
     user: PropTypes.object,
@@ -37,7 +39,7 @@ class Welcome extends Component {
     // This is the initialization process where we check if there
     // is a stored access token. An access token would have been saved
     // on a previously successful login.
-    SensitiveInfo.getItem(constants.accessTokenStorageKey)
+    SensitiveInfo.getItem(storageKeys.ACCESS_TOKEN)
       .then((accessToken) => {
         if (accessToken) {
           // There is a saved access token
@@ -51,7 +53,7 @@ class Welcome extends Component {
             this.props.navigator.replace(routes.postureDashboard);
           } else {
             // There is no user profile in the app store, so check local storage
-            return SensitiveInfo.getItem(constants.userStorageKey)
+            return SensitiveInfo.getItem(storageKeys.USER)
               .then((user) => {
                 if (user) {
                   // There is a user profile in local storage
