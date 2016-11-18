@@ -13,6 +13,8 @@ import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
 import HeadingText from '../components/HeadingText';
+import constants from '../utils/constants';
+import SensitiveInfo from '../utils/SensitiveInfo';
 import routes from '../routes';
 
 const { DeviceManagementService } = NativeModules;
@@ -48,19 +50,37 @@ class Device extends Component {
         batteryLife: null,
         updateAvailable: false,
       },
-      inProgress: false,
+      inProgress: true,
     };
 
     this.unpairDevice = this.unpairDevice.bind(this);
     this.addDevice = this.addDevice.bind(this);
+    this.updateFirmware = this.updateFirmware.bind(this);
   }
 
   componentWillMount() {
-    // Get saved device information
-    DeviceManagementService.getSavedDevice(device => (
-      // If there's a saved device, save its details in state
-      device && this.setState({ device })
-    ));
+    // Get latest device information if it's currently connected
+    // TODO: Use appropriate method for fetching latest device data
+    if (this.props.isConnected) {
+      DeviceManagementService.getSavedDevice(device => {
+        // Save latest device information in state and local store
+        if (device) {
+          this.setState({
+            device,
+            inProgress: false,
+          }, () => SensitiveInfo.setItem(constants.deviceStorageKey, device));
+        }
+      });
+    } else {
+      // If device isn't currently connected, fetch locally stored data
+      SensitiveInfo.getItem(constants.deviceStorageKey)
+        .then(device => {
+          const stateData = device ? { device } : {};
+          stateData.inProgress = false;
+
+          this.setState({ ...stateData });
+        });
+    }
   }
 
   unpairDevice() {
@@ -89,6 +109,8 @@ class Device extends Component {
                     'There was a problem unpairing your Backbone',
                     [{ text: 'Try Again' }],
                   );
+                } else {
+                  Alert.alert('Success', 'You have unpaired your Backbone');
                 }
                 this.setState({ inProgress: false });
               })
@@ -102,6 +124,16 @@ class Device extends Component {
   addDevice() {
     // Navigate to deviceAdd route
     this.props.navigator.push(routes.deviceAdd);
+  }
+
+  updateFirmware() {
+    if (!this.props.isConnected) {
+      Alert.alert('Error', 'Connect to your Backbone to update');
+    } else {
+      this.setState({ inProgress: true }, () => {
+        // TODO: Call native method here to update user's firmware
+      });
+    }
   }
 
   render() {
@@ -132,7 +164,13 @@ class Device extends Component {
                       <Button primary text="ADD NEW" onPress={this.addDevice} />
                   }
                   { /* Only show this button if there's a firmware update available */
-                    device.updateAvailable && <Button style={styles._updateButton} text="UPDATE" />
+                    device.updateAvailable && (
+                      <Button
+                        style={styles._updateButton}
+                        text="UPDATE"
+                        onPress={this.updateFirmware}
+                      />
+                    )
                   }
                 </View>
               </View>
