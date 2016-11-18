@@ -81,6 +81,7 @@ class Application extends Component {
         if (this.props.modal.show) {
           // There is a modal being displayed, hide it
           this.props.dispatch(appActions.hideFullModal());
+          return true;
         }
 
         if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
