@@ -44,22 +44,24 @@ export default EStyleSheet.create({
     height: 59 * heightDifference,
     resizeMode: 'contain',
   },
+  sensorTextTitle: {
+    marginBottom: 2 * heightDifference,
+  },
   sensorText: {
     flex: 0.52,
     justifyContent: 'center',
   },
   batteryInfo: {
-    marginVertical: 3 * heightDifference,
     ...centerRowItems,
   },
-  batteryText: {
+  deviceInfoText: {
+    marginVertical: 2 * heightDifference,
     fontSize: 13,
     color: '$primaryFontColor',
   },
   batteryIcon: {
     width: 24 * widthDifference,
     height: 13 * heightDifference,
-    marginRight: 3 * widthDifference,
     resizeMode: 'contain',
   },
   arrow: {
@@ -92,9 +94,6 @@ export default EStyleSheet.create({
   notificationsContainer: {
     flex: 0.26,
     ...centerRowItems,
-  },
-  notificationsText: {
-    flex: 0.65,
   },
   notificationsSwitch: {
     flex: 0.2,

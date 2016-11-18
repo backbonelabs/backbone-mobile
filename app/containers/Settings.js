@@ -47,22 +47,34 @@ const ArrowIcon = () => (
   </View>
 );
 
-const SensorSettings = () => (
-  <View style={styles.sensorSettingsContainer}>
+const SensorSettings = props => (
+  <TouchableOpacity
+    onPress={() => props.navigator.push(routes.device)}
+    style={styles.sensorSettingsContainer}
+  >
     <View style={styles.sensorIconContainer}>
       <Image source={sensorSmall} style={styles.sensorIcon} />
     </View>
     <View style={styles.sensorText}>
-      <BodyText>MY BACKBONE</BodyText>
+      <BodyText style={styles._sensorTextTitle}>MY BACKBONE</BodyText>
+      <SecondaryText style={styles._deviceInfoText}>
+        Status: { props.isConnected ? 'Connected' : 'Disconnected' }
+      </SecondaryText>
       <View style={styles.batteryInfo}>
+        <SecondaryText style={styles._deviceInfoText}>Battery Life: 100%</SecondaryText>
         <Image source={batteryIcon} style={styles.batteryIcon} />
-        <SecondaryText style={styles._batteryText}>Battery: 100%</SecondaryText>
       </View>
-      <SecondaryText style={styles._batteryText}>About 10 days</SecondaryText>
     </View>
     <ArrowIcon />
-  </View>
+  </TouchableOpacity>
 );
+
+SensorSettings.propTypes = {
+  navigator: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+  isConnected: PropTypes.bool,
+};
 
 const SettingsIcon = props => (
   <View style={styles.settingsIcon}>
@@ -158,10 +170,9 @@ class Settings extends Component {
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
     }),
-    app: PropTypes.shape({
-      config: PropTypes.object,
-    }),
+    config: PropTypes.object,
     dispatch: PropTypes.func,
+    isConnected: PropTypes.bool,
   };
 
   constructor() {
@@ -230,16 +241,18 @@ class Settings extends Component {
   }
 
   render() {
+    const { isConnected, navigator, config } = this.props;
+
     return (
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <SensorSettings />
+          <SensorSettings navigator={navigator} isConnected={isConnected} />
           <AccountRemindersSettings
-            navigator={this.props.navigator}
+            navigator={navigator}
             notificationsEnabled={this.state.notificationsEnabled}
             updateNotifications={this.updateNotifications}
           />
-          <HelpSettings navigator={this.props.navigator} />
+          <HelpSettings navigator={navigator} />
           <View style={styles.buttonContainer}>
             <Button
               primary
@@ -248,7 +261,7 @@ class Settings extends Component {
             />
           </View>
         </Image>
-        {this.props.app.config.DEV_MODE &&
+        {config.DEV_MODE &&
           <View style={{ marginTop: 5, borderWidth: 1 }}>
             <BodyText>Dev menu:</BodyText>
             <TouchableOpacity
@@ -270,7 +283,7 @@ class Settings extends Component {
 
 const mapStateToProps = (state) => {
   const { app } = state;
-  return { app };
+  return app;
 };
 
 export default connect(mapStateToProps)(Settings);
