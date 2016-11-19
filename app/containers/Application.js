@@ -77,6 +77,7 @@ class Application extends Component {
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
     this.navigator = null; // Components should use this custom navigator object
+    this.backAndroidListener = null;
   }
 
   componentWillMount() {
@@ -85,7 +86,7 @@ class Application extends Component {
 
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
-      BackAndroid.addEventListener('hardwareBackPress', () => {
+      this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
         if (this.props.app.modal.show) {
           // There is a modal being displayed, hide it
           this.props.dispatch(appActions.hideFullModal());
@@ -194,6 +195,9 @@ class Application extends Component {
   componentWillUnmount() {
     if (this.bluetoothListener) {
       this.bluetoothListener.remove();
+    }
+    if (this.backAndroidListener) {
+      this.backAndroidListener.remove();
     }
   }
 
