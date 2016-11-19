@@ -194,7 +194,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     }
 
     private void checkConnectTimeout() {
-        int interval = 1000 * 10; // 10 seconds of timeout
+        int interval = 1000 * 20; // 20 seconds of timeout
         Handler handler = new Handler();
         Runnable runnable = new Runnable(){
             public void run() {
