@@ -31,7 +31,6 @@ export default class List extends Component {
   renderRow(rowData) {
     return (
       <TouchableOpacity
-        style={styles.rowButton}
         onPress={() => this.props.onPressRow && this.props.onPressRow(rowData)}
       >
         { this.props.formatRowData(rowData) }
@@ -39,16 +38,11 @@ export default class List extends Component {
     );
   }
 
-  renderSeparator(sectionId, rowId) {
-    return <View key={rowId} style={styles.rowSeparator} />;
-  }
-
   render() {
     return (
       <ListView
         dataSource={this.state.dataSource}
         renderRow={this.renderRow}
-        renderSeparator={this.renderSeparator}
         enableEmptySections
       />
     );
