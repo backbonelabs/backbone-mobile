@@ -1,154 +1,142 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import {
   View,
-  Text,
-  ScrollView,
+  Alert,
   NativeModules,
+  TouchableOpacity,
   NativeAppEventEmitter,
 } from 'react-native';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { MKButton } from 'react-native-material-kit';
 import styles from '../../styles/device';
-// import routes from '../../routes';
+import List from '../../containers/List';
+import Spinner from '../../components/Spinner';
+import BodyText from '../../components/BodyText';
+import SecondaryText from '../../components/SecondaryText';
+import theme from '../../styles/theme';
+import routes from '../../routes';
+import constants from '../../utils/constants';
 
-const { PropTypes } = React;
 const { DeviceManagementService } = NativeModules;
-
-const SelectButton = MKButton.coloredFab()
-  .withBackgroundColor('#ED1C24')
-  .withStyle({
-    height: 30,
-    width: 30,
-  })
-  .build();
 
 class DeviceScan extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
     }),
+    bluetoothState: PropTypes.number,
   };
-
 
   constructor() {
     super();
     this.state = {
-      deviceList: [],
+      // List's data source
+      deviceList: [
+        // Dummy data
+        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
+        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
+        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
+      ],
       inProgress: false,
     };
-    // this.selectDevice = this.selectDevice.bind(this);
+    this.selectDevice = this.selectDevice.bind(this);
   }
 
-  // Begin scanning for hardware devices in the vicinity
   componentWillMount() {
-    // Native module listener will constantly update deviceList
-    // NativeAppEventEmitter.addListener('DevicesFound',
-    // deviceList => this.setState({ deviceList }));
+    // Check if Bluetooth is active
+    if (constants.bluetoothStates.ON === this.props.bluetoothState) {
+      // Set listener for updating deviceList
+      NativeAppEventEmitter.addListener('DevicesFound', deviceList => (
+        this.setState({ deviceList })
+      ));
 
-    // DeviceManagementService.scanForDevices(error => {
-    //   if (error) {
-    //     Alert.alert('Error', 'Unable to scan for devices', [{
-    //       text: 'Try Again',
-    //     }]);
-    //   } else {
-    //     this.setState({ inProgress: true });
-    //   }
-    // });
+      // Initiate scanning
+      DeviceManagementService.scanForDevices(error => {
+        if (error) {
+          Alert.alert(
+            'Error',
+            `Unable to scan. ${error.message}`,
+            [{ text: 'Try Again' }],
+          );
+        } else {
+          this.setState({ inProgress: true });
+        }
+      });
+    } else {
+      // Remind user that their Bluetooth is off
+      Alert.alert('Error', 'Unable to scan. Turn Bluetooth on first');
+    }
   }
 
   componentWillUnmount() {
+    // Remove listener
     NativeAppEventEmitter.removeAllListeners('DevicesFound');
 
-    // Stop device scanning in case a scan is in progress
+    // Stop scanning
     DeviceManagementService.stopScanForDevices();
   }
 
-  // Saves the selected device and attempts to connect to it
-  // selectDevice(deviceData) {
-  //   DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
-  //     if (error) {
-  //       // Do something about the select device error
-  //     } else {
-  //       // Navigate to DeviceConnect where it'll attempt to connect
-  //       this.props.navigator.replace(routes.deviceConnect);
-  //     }
-  //   });
-  // }
+  /**
+   * Selects a device to connect to
+   * @param {Object}  deviceData  Selected device's data
+   */
+  selectDevice(deviceData) {
+    DeviceManagementService.selectDevice(deviceData.identifier, error => {
+      if (error) {
+        Alert.alert(
+          'Error',
+          'Unable to connect',
+          [{ text: 'Try Again' }],
+        );
+      } else {
+        // Attempt connect to selected device
+        this.props.navigator.replace(routes.deviceConnect);
+      }
+    });
+  }
 
-  // Formats row data and displays it in a component
-  // formatDeviceRow(rowData) {
-  //   // Pressing on a row will select device and attempt connect
-  //   return (
-  //     <View style={styles.cardStyle}>
-  //       <View style={{ flexDirection: 'column' }}>
-  //         <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
-  //           Backbone
-  //         </Text>
-  //         <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
-  //           Unique ID: d2f12936-a749-4da3-941c
-  //         </Text>
-  //       </View>
-  //       <SelectButton>
-  //         <Icon name="keyboard-arrow-right" size={15} color="white" />
-  //       </SelectButton>
-  //     </View>
-  //   );
-  // }
+ /**
+   * Formats device data into a list item row
+   * @param {Object}  rowData  Device data for a single row
+   */
+  formatDeviceRow(rowData) {
+    return (
+      <TouchableOpacity style={styles.cardStyle} onPress={() => this.selectDevice(rowData)}>
+        <View style={styles.textContainer}>
+          <BodyText>{rowData.deviceName}</BodyText>
+          <SecondaryText>Unique ID: {rowData.identifier}</SecondaryText>
+        </View>
+        <Icon
+          name="keyboard-arrow-right"
+          size={styles._icon.height}
+          color={theme.primaryFontColor}
+        />
+      </TouchableOpacity>
+    );
+  }
 
   render() {
+    const { inProgress, deviceList } = this.state;
+
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.cardStyle}>
-          <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
-              Backbone
-            </Text>
-            <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
-              Unique ID: d2f12936-a749-4da3-941c
-            </Text>
-          </View>
-          <SelectButton>
-            <Icon name="keyboard-arrow-right" size={15} color="white" />
-          </SelectButton>
-        </View>
-        <View style={styles.cardStyle}>
-          <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
-              Backbone
-            </Text>
-            <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
-              Unique ID: d2f12936-a749-4da3-941c
-            </Text>
-          </View>
-          <SelectButton>
-            <Icon name="keyboard-arrow-right" size={15} color="white" />
-          </SelectButton>
-        </View>
-        <View style={styles.cardStyle}>
-          <View style={{ flexDirection: 'column' }}>
-            <Text style={[styles.cardContentStyle, { color: 'black', fontSize: 16 }]}>
-              Backbone
-            </Text>
-            <Text style={[styles.cardContentStyle, { marginTop: 3 }]}>
-              Unique ID: d2f12936-a749-4da3-941c
-            </Text>
-          </View>
-          <SelectButton>
-            <Icon name="keyboard-arrow-right" size={15} color="white" />
-          </SelectButton>
-        </View>
-      </ScrollView>
-      // <View style={styles.container}>
-      //   { this.state.inProgress && <Spinner /> }
-      //   <List
-      //     dataBlob={this.state.deviceList}
-      //     formatRowData={this.formatDeviceRow}
-      //     onPressRow={this.selectDevice}
-      //   />
-      // </View>
+      <View style={styles.container}>
+        { !inProgress &&
+          <Spinner style={styles.spinner} />
+        }
+        <List
+          dataBlob={deviceList}
+          formatRowData={this.formatDeviceRow}
+          onPressRow={this.selectDevice}
+        />
+      </View>
     );
   }
 }
 
-export default DeviceScan;
+const mapStateToProps = state => {
+  const { app } = state;
+  return app;
+};
+
+export default connect(mapStateToProps)(DeviceScan);
