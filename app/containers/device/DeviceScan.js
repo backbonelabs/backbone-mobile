@@ -102,7 +102,7 @@ class DeviceScan extends Component {
    */
   formatDeviceRow(rowData) {
     return (
-      <TouchableOpacity style={styles.cardStyle} onPress={() => this.selectDevice(rowData)}>
+      <View style={styles.cardStyle}>
         <View style={styles.textContainer}>
           <BodyText>{rowData.deviceName}</BodyText>
           <SecondaryText style={styles._secondaryText}>
@@ -114,7 +114,7 @@ class DeviceScan extends Component {
           size={styles._icon.height}
           color={theme.primaryFontColor}
         />
-      </TouchableOpacity>
+      </View>
     );
   }
 
