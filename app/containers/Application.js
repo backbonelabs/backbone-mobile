@@ -81,6 +81,7 @@ class Application extends Component {
         if (this.props.modal.show) {
           // There is a modal being displayed, hide it
           this.props.dispatch(appActions.hideFullModal());
+          return true;
         }
 
         if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
@@ -175,18 +176,6 @@ class Application extends Component {
       },
     ];
 
-    // Alter the push method on the navigator object to include a timestamp for
-    // each route in the route stack so that each route in the stack is unique.
-    // This prevents React errors when a route is in the stack multiple times.
-    // All components should use this customized navigator object.
-    if (!this.navigator) {
-      this.navigator = clone(navigator);
-      this.navigator._push = this.navigator.push; // the original push method
-      this.navigator.push = function push(routeObj) {
-        return this._push({ ...routeObj, key: Date.now() });
-      };
-    }
-
     const TabBar = (
       <View style={styles.tabBar}>
         {
@@ -214,16 +203,39 @@ class Application extends Component {
       </View>
     );
 
-    return this.props.modal.show ? (
-      <FullModal onClose={this.props.modal.onClose}>{this.props.modal.content}</FullModal>
-    ) : (
+    const hiddenStyles = {
+      opacity: 0,
+      height: 0,
+      position: 'absolute',
+    };
+
+    // Alter the push method on the navigator object to include a timestamp for
+    // each route in the route stack so that each route in the stack is unique.
+    // This prevents React errors when a route is in the stack multiple times.
+    // All components should use this customized navigator object.
+    if (!this.navigator) {
+      this.navigator = clone(navigator);
+      this.navigator._push = this.navigator.push; // the original push method
+      this.navigator.push = function push(routeObj) {
+        return this._push({ ...routeObj, key: Date.now() });
+      };
+    }
+
+    const { modal: modalProps } = this.props;
+
+    return (
       <View style={{ flex: 1 }}>
         <TitleBar
           navigator={this.navigator}
           currentRoute={route}
         />
-        <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
-        { route.showTabBar && TabBar }
+        <FullModal show={modalProps.show} onClose={modalProps.onClose}>
+          {modalProps.content}
+        </FullModal>
+        <View style={[modalProps.show ? hiddenStyles : {}, { flex: 1 }]}>
+          <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
+          { route.showTabBar && TabBar }
+        </View>
       </View>
     );
   }
