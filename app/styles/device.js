@@ -34,6 +34,9 @@ export default EStyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
+  secondaryText: {
+    marginTop: 5 * heightDifference,
+  },
   spinner: {
     paddingVertical: 15 * heightDifference,
   },

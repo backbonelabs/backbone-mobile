@@ -105,7 +105,9 @@ class DeviceScan extends Component {
       <TouchableOpacity style={styles.cardStyle} onPress={() => this.selectDevice(rowData)}>
         <View style={styles.textContainer}>
           <BodyText>{rowData.deviceName}</BodyText>
-          <SecondaryText>Unique ID: {rowData.identifier}</SecondaryText>
+          <SecondaryText style={styles._secondaryText}>
+            Unique ID: {rowData.identifier}
+          </SecondaryText>
         </View>
         <Icon
           name="keyboard-arrow-right"
