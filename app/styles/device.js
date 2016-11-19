@@ -1,62 +1,43 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { heightDifference, widthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  deviceName: {
-    color: 'white',
-    fontSize: '1.25rem',
-  },
-  deviceID: {
-    marginTop: '0.5rem',
-    fontSize: '0.5rem',
-  },
   container: {
     flex: 1,
-    height: null,
     alignItems: 'center',
+    backgroundColor: '#EEE',
   },
   cardStyle: {
-    flexDirection: 'row',
     width: '100%',
-    marginVertical: 3,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#ffffff',
+
+    marginVertical: 3 * heightDifference,
+    paddingVertical: 20 * heightDifference,
+    paddingHorizontal: 13 * widthDifference,
+    borderWidth: 1 * widthDifference,
     borderRadius: 2,
     borderColor: '#ffffff',
-    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    justifyContent: 'space-between',
     shadowColor: 'rgba(0, 0, 0, 0.12)',
     shadowOpacity: 0.8,
     shadowRadius: 2,
     shadowOffset: {
-      height: 1,
-      width: 2,
+      height: 1 * heightDifference,
+      width: 2 * widthDifference,
     },
   },
-  cardTitleStyle: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  cardActionStyle: {
-    height: '9%',
-    flexDirection: 'row',
-    borderStyle: 'solid',
-    borderTopColor: 'rgba(0, 0, 0, 0.1)',
-    borderTopWidth: 1,
-    alignItems: 'center',
+  textContainer: {
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    paddingLeft: 10,
-    paddingRight: 10,
   },
-  cardContentStyle: {
-    fontSize: 12,
-    fontFamily: 'Lato',
-    color: 'rgba(0, 0, 0, 0.54)',
+  spinner: {
+    paddingVertical: 15 * heightDifference,
   },
-  cardActionStyleText: {
-    fontFamily: 'Lato',
-    fontWeight: 'bold',
-    fontSize: 14.5,
+  icon: {
+    height: 45 * heightDifference,
   },
 });
