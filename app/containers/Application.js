@@ -20,14 +20,17 @@ import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
 import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
+import authActions from '../actions/auth';
 import FullModal from '../components/FullModal';
+import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
 import routes from '../routes';
 import styles from '../styles/application';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
-const { bluetoothStates } = constants;
+const { bluetoothStates, storageKeys } = constants;
 
 const {
   BluetoothService: Bluetooth,
@@ -50,15 +53,26 @@ const isiOS = Platform.OS === 'ios';
 class Application extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
-    modal: PropTypes.shape({
-      show: PropTypes.bool,
-      content: PropTypes.node,
-      onClose: PropTypes.func,
+    app: PropTypes.shape({
+      modal: PropTypes.shape({
+        show: PropTypes.bool,
+        content: PropTypes.node,
+        onClose: PropTypes.func,
+      }),
+    }),
+    user: PropTypes.shape({
+      _id: PropTypes.string,
     }),
   };
 
   constructor() {
     super();
+
+    this.state = {
+      initializing: true,
+      initialRoute: null,
+    };
+
     this.configureScene = this.configureScene.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
@@ -66,12 +80,13 @@ class Application extends Component {
   }
 
   componentWillMount() {
+    // Load config variables
     this.props.dispatch(appActions.setConfig(Environment));
 
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       BackAndroid.addEventListener('hardwareBackPress', () => {
-        if (this.props.modal.show) {
+        if (this.props.app.modal.show) {
           // There is a modal being displayed, hide it
           this.props.dispatch(appActions.hideFullModal());
           return true;
@@ -88,6 +103,7 @@ class Application extends Component {
       });
     }
 
+    // Get initial Bluetooth state
     Bluetooth.getState((error, state) => {
       if (!error) {
         this.props.dispatch({
@@ -98,6 +114,7 @@ class Application extends Component {
         Alert.alert('Error', error);
       }
     });
+
     // For Android only, check if Bluetooth is enabled.
     // If not, display prompt for user to enable Bluetooth.
     // This cannot be done on the BluetoothService module side
@@ -107,6 +124,7 @@ class Application extends Component {
         .then(isEnabled => !isEnabled && Bluetooth.enable());
     }
 
+    // Set up a handler that will process Bluetooth state changes
     const handler = ({ state }) => {
       this.props.dispatch({
         type: 'UPDATE_BLUETOOTH_STATE',
@@ -123,12 +141,77 @@ class Application extends Component {
     } else {
       this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
     }
+
+    // Check if there is a stored access token. An access token
+    // would have been saved on a previously successful login
+    SensitiveInfo.getItem(storageKeys.ACCESS_TOKEN)
+      .then((accessToken) => {
+        if (accessToken) {
+          // There is a saved access token
+          // Dispatch access token to the store
+          this.props.dispatch(authActions.setAccessToken(accessToken));
+
+          // Check if there is already a user profile in the Redux store
+          if (this.props.user._id) {
+            // There is a user profile in the Redux store
+            // Set initial route to posture dashboard
+            this.setInitialRoute(routes.postureDashboard);
+          } else {
+            // There is no user profile in the Redux store, check local storage
+            return SensitiveInfo.getItem(storageKeys.USER)
+              .then((user) => {
+                if (user) {
+                  // There is a user profile in local storage
+                  // Dispatch user profile to the Redux store
+                  this.props.dispatch({
+                    type: 'FETCH_USER',
+                    payload: user,
+                  });
+
+                  if (user.hasOnboarded) {
+                    // User completed onboarding, set initial route to posture dashboard
+                    this.setInitialRoute(routes.postureDashboard);
+                  } else {
+                    // User did not complete onboarding, set initial route to onboarding
+                    this.setInitialRoute(routes.onboarding);
+                  }
+                } else {
+                  // There is no user profile in local storage
+                  this.setInitialRoute();
+                }
+              });
+          }
+        } else {
+          // There is no saved access token
+          this.setInitialRoute();
+        }
+      })
+      .catch(() => {
+        this.setInitialRoute();
+      });
   }
 
   componentWillUnmount() {
     if (this.bluetoothListener) {
       this.bluetoothListener.remove();
     }
+  }
+
+  /**
+   * Defines the initial scene to mount and ends the initialization process
+   * @param {Object} route=routes.welcome Route object, defaults to the welcome route
+   */
+  setInitialRoute(route = routes.welcome) {
+    // Intentionally add a delay because some times the initialization process
+    // can be so quick that the spinner icon only flashes for a blink of an eye,
+    // and it might not be obvious it was a spinner icon indicating some type of
+    // background activity. We can remove this if preferred.
+    setTimeout(() => {
+      this.setState({
+        initializing: false,
+        initialRoute: route,
+      });
+    }, 500);
   }
 
   configureScene() {
@@ -207,7 +290,7 @@ class Application extends Component {
       };
     }
 
-    const { modal: modalProps } = this.props;
+    const { modal: modalProps } = this.props.app;
 
     return (
       <View style={{ flex: 1 }}>
@@ -235,7 +318,7 @@ class Application extends Component {
     }
 
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <StatusBar {...statusBarProps} />
         {isiOS &&
           // The background color cannot be set for the status bar in iOS, so
@@ -247,19 +330,21 @@ class Application extends Component {
             }}
           />
         }
-        <Navigator
-          configureScene={this.configureScene}
-          initialRoute={routes.welcome}
-          renderScene={this.renderScene}
-        />
+        {this.state.initializing ? <Spinner /> : (
+          <Navigator
+            configureScene={this.configureScene}
+            initialRoute={this.state.initialRoute}
+            renderScene={this.renderScene}
+          />
+        )}
       </View>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  const { app } = state;
-  return app;
+  const { app, user: { user } } = state;
+  return { app, user };
 };
 
 export default connect(mapStateToProps)(Application);
