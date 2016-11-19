@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import {
-  View,
   ListView,
   TouchableOpacity,
 } from 'react-native';
-import styles from '../styles/list';
-
-const { PropTypes } = React;
 
 export default class List extends Component {
   static propTypes = {
