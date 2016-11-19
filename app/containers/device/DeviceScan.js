@@ -123,7 +123,7 @@ class DeviceScan extends Component {
 
     return (
       <View style={styles.container}>
-        { !inProgress &&
+        { inProgress &&
           <Spinner style={styles.spinner} />
         }
         <List
