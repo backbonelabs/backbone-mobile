@@ -4,7 +4,6 @@ import {
   View,
   Alert,
   NativeModules,
-  TouchableOpacity,
   NativeAppEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';

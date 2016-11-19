@@ -11,8 +11,6 @@ export default class List extends Component {
     onPressRow: PropTypes.func,
   };
 
-  static defaultProps = { dataBlob: [] };
-
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
