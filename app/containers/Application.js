@@ -14,7 +14,6 @@ import {
   BackAndroid,
 } from 'react-native';
 import { connect } from 'react-redux';
-import Drawer from 'react-native-drawer';
 import { clone } from 'lodash';
 import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
@@ -23,7 +22,6 @@ import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
 import FullModal from '../components/FullModal';
 import TitleBar from '../components/TitleBar';
-import Menu from '../components/Menu';
 import routes from '../routes';
 import styles from '../styles/application';
 import theme from '../styles/theme';
@@ -61,11 +59,6 @@ class Application extends Component {
 
   constructor() {
     super();
-
-    this.state = {
-      drawerIsOpen: false,
-    };
-
     this.configureScene = this.configureScene.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.navigate = this.navigate.bind(this);
@@ -142,19 +135,12 @@ class Application extends Component {
     return CustomSceneConfig;
   }
 
-  showMenu() {
-    this.setState({ drawerIsOpen: true });
-  }
-
   navigate(route) {
     const routeStack = this.navigator.getCurrentRoutes();
     const currentRoute = routeStack[routeStack.length - 1];
     if (route.name !== currentRoute.name) {
       // Only navigate if the selected route isn't the current route
       this.navigator.push(route);
-    }
-    if (this.state.drawerIsOpen) {
-      this.setState({ drawerIsOpen: false });
     }
   }
 
@@ -249,22 +235,7 @@ class Application extends Component {
     }
 
     return (
-      <Drawer
-        type="displace"
-        content={<Menu
-          menuItems={[
-            routes.activity.activityDashboard,
-            routes.postureDashboard,
-            routes.profile,
-            routes.settings,
-          ]}
-          navigate={route => this.navigate(route)}
-        />}
-        openDrawerOffset={0.3} // right margin when drawer is opened
-        open={this.state.drawerIsOpen}
-        onClose={() => this.setState({ drawerIsOpen: false })}
-        acceptPan={false}
-      >
+      <View>
         <StatusBar {...statusBarProps} />
         {isiOS &&
           // The background color cannot be set for the status bar in iOS, so
@@ -281,7 +252,7 @@ class Application extends Component {
           initialRoute={routes.welcome}
           renderScene={this.renderScene}
         />
-      </Drawer>
+      </View>
     );
   }
 }
