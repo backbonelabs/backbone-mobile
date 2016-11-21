@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
@@ -77,7 +78,13 @@ class PostureDashboard extends Component {
                 color={theme.primaryColor}
               />
           }
-          <SecondaryText>&nbsp;{bannerText}</SecondaryText>
+          {inProgress ? <SecondaryText style={styles.bannerText}>{bannerText}</SecondaryText> :
+            <TouchableOpacity
+              onPress={() => this.props.navigator.push(routes.deviceAdd)}
+            >
+              <SecondaryText style={styles.bannerText}>{bannerText}</SecondaryText>
+            </TouchableOpacity>
+          }
         </View>
       );
     }
