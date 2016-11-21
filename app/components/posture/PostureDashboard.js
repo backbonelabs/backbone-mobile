@@ -78,11 +78,11 @@ class PostureDashboard extends Component {
                 color={theme.primaryColor}
               />
           }
-          {inProgress ? <SecondaryText style={styles.bannerText}>{bannerText}</SecondaryText> :
+          {inProgress ? <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText> :
             <TouchableOpacity
               onPress={() => this.props.navigator.push(routes.deviceAdd)}
             >
-              <SecondaryText style={styles.bannerText}>{bannerText}</SecondaryText>
+              <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText>
             </TouchableOpacity>
           }
         </View>
