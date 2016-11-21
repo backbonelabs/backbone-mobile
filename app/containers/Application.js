@@ -155,6 +155,9 @@ class Application extends Component {
           // Check if there is already a user profile in the Redux store
           if (this.props.user._id) {
             // There is a user profile in the Redux store
+            // Attempt to auto connect to device
+            this.props.dispatch(appActions.attemptAutoConnect());
+
             // Set initial route to posture dashboard
             this.setInitialRoute(routes.postureDashboard);
           } else {
@@ -168,6 +171,9 @@ class Application extends Component {
                     type: 'FETCH_USER',
                     payload: user,
                   });
+
+                  // Attempt to auto connect to device
+                  this.props.dispatch(appActions.attemptAutoConnect());
 
                   if (user.hasOnboarded) {
                     // User completed onboarding, set initial route to posture dashboard
