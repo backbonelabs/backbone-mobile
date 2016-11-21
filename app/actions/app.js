@@ -10,17 +10,18 @@ const connect = payload => ({
   payload,
 });
 
-const connectError = error => ({
+const connectError = payload => ({
   type: 'CONNECT__ERROR',
+  payload,
   error: true,
 });
 
 function setConnectEventListener(dispatch) {
   NativeAppEventEmitter.once('ConnectionStatus', status => {
-    if (status.isConnected) {
-      dispatch(connect(status));
-    } else {
+    if (status.message) {
       dispatch(connectError(status));
+    } else {
+      dispatch(connect(status));
     }
   });
 }
