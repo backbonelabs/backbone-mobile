@@ -5,11 +5,15 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import postureActions from '../../actions/posture';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
+import SecondaryText from '../../components/SecondaryText';
 import Button from '../../components/Button';
+import Spinner from '../../components/Spinner';
 import styles from '../../styles/posture/postureDashboard';
+import theme from '../../styles/theme';
 import Icon5Min from '../../images/session/5min.png';
 import Icon10Min from '../../images/session/10min.png';
 import Icon15Min from '../../images/session/15min.png';
@@ -17,6 +21,9 @@ import Icon20Min from '../../images/session/20min.png';
 import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
+import relativeDimensions from '../../utils/relativeDimensions';
+
+const { heightDifference } = relativeDimensions;
 
 const sessions = [
   { id: '5min', durationSeconds: 5 * 60, icon: Icon5Min },
@@ -38,6 +45,10 @@ class PostureDashboard extends Component {
     navigator: PropTypes.shape({
       push: PropTypes.func,
     }),
+    app: PropTypes.shape({
+      inProgress: PropTypes.bool,
+      isConnected: PropTypes.bool,
+    }),
     user: PropTypes.shape({
       nickname: PropTypes.string,
       dailyStreak: PropTypes.number,
@@ -52,10 +63,32 @@ class PostureDashboard extends Component {
     this.props.dispatch(postureActions.setSessionTime(seconds));
   }
 
+  getBanner() {
+    const { inProgress, isConnected } = this.props.app;
+    if (!isConnected) {
+      const bannerText = inProgress ? 'Connecting...' : 'Backbone not connected';
+      return (
+        <View style={styles.banner}>
+          {inProgress ?
+            <View><Spinner size="small" /></View> :
+              <Icon
+                name="exclamation-circle"
+                size={14 * heightDifference}
+                color={theme.primaryColor}
+              />
+          }
+          <SecondaryText>&nbsp;{bannerText}</SecondaryText>
+        </View>
+      );
+    }
+    return null;
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
+          {this.getBanner()}
           <HeadingText size={2}>{this.props.user.nickname}</HeadingText>
           <HeadingText size={2}>Choose your goal</HeadingText>
         </View>
@@ -92,8 +125,8 @@ class PostureDashboard extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user: { user } } = state;
-  return { user };
+  const { app, user: { user } } = state;
+  return { app, user };
 };
 
 export default connect(mapStateToProps)(PostureDashboard);

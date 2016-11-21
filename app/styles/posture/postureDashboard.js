@@ -14,6 +14,10 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  banner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   body: {
     flex: 0.5,
     justifyContent: 'space-around',
