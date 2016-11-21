@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
+  AppState,
   View,
   Text,
   Image,
@@ -78,6 +79,7 @@ class Application extends Component {
     this.navigate = this.navigate.bind(this);
     this.navigator = null; // Components should use this custom navigator object
     this.backAndroidListener = null;
+    this.handleAppStateChange = this.handleAppStateChange.bind(this);
   }
 
   componentWillMount() {
@@ -143,6 +145,9 @@ class Application extends Component {
       this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
     }
 
+    // Listen to when the app switches between foreground and background
+    AppState.addEventListener('change', this.handleAppStateChange);
+
     // Check if there is a stored access token. An access token
     // would have been saved on a previously successful login
     SensitiveInfo.getItem(storageKeys.ACCESS_TOKEN)
@@ -205,6 +210,7 @@ class Application extends Component {
     if (this.backAndroidListener) {
       this.backAndroidListener.remove();
     }
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   /**
@@ -222,6 +228,13 @@ class Application extends Component {
         initialRoute: route,
       });
     }, 500);
+  }
+
+  handleAppStateChange(currentAppState) {
+    if (currentAppState === 'active') {
+      // Attempt auto-connect when app is brought back into the foreground
+      this.props.dispatch(appActions.attemptAutoConnect());
+    }
   }
 
   configureScene() {
