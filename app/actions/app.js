@@ -12,7 +12,7 @@ const connect = payload => ({
 
 const connectError = error => ({
   type: 'CONNECT__ERROR',
-  error,
+  error: true,
 });
 
 function setConnectEventListener(dispatch) {
@@ -24,6 +24,18 @@ function setConnectEventListener(dispatch) {
     }
   });
 }
+
+const disconnectStart = () => ({ type: 'DISCONNECT__START' });
+
+const disconnect = () => ({
+  type: 'DISCONNECT',
+});
+
+const disconnectError = error => ({
+  type: 'DISCONNECT__ERROR',
+  payload: error,
+  error: true,
+});
 
 const appActions = {
   setConfig(config) {
@@ -55,6 +67,18 @@ const appActions = {
             }
             // Do nothing if there is no saved device
           });
+        }
+      });
+    };
+  },
+  disconnect() {
+    return (dispatch) => {
+      dispatch(disconnectStart());
+      DeviceManagementService.forgetDevice(err => {
+        if (err) {
+          dispatch(disconnectError(err));
+        } else {
+          dispatch(disconnect());
         }
       });
     };
