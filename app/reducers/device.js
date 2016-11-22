@@ -1,8 +1,6 @@
-import { isEmpty } from 'lodash';
-
 export default (state = {
   inProgress: false,
-  device: null,
+  device: {},
   isConnected: false,
   errorMessage: null,
 }, action) => {
@@ -62,7 +60,7 @@ export default (state = {
         ...state,
         inProgress: false,
         isConnected: true,
-        device: isEmpty(action.payload) ? null : action.payload,
+        device: action.payload || {},
       };
     }
     default:
