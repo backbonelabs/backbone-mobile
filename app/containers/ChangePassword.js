@@ -77,9 +77,9 @@ class ChangePassword extends Component {
     } else {
       return this.props.dispatch(userActions.updateUser({
         _id: user._id,
+        password: newPassword,
+        verifyPassword: confirmNewPassword,
         currentPassword,
-        newPassword,
-        confirmNewPassword,
       }));
     }
   }
