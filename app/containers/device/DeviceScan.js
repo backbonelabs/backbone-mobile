@@ -41,8 +41,8 @@ class DeviceScan extends Component {
       inProgress: false,
     };
     this.selectDevice = this.selectDevice.bind(this);
-    // Bind initiateScanning, since corresponding Alert's onPress
-    // handler loses "this" context after pressing "Try Again" twice
+    // Bind initiateScanning, since corresponding Alert's onPress handler
+    // loses "this" context if user presses "Try Again" more than once
     this.initiateScanning = this.initiateScanning.bind(this);
   }
 
