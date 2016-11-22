@@ -43,9 +43,9 @@ class PostureMonitor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      monitoring: null,
-      slouch: 0,
-      degree: -180,
+      monitoring: false,
+      slouchDeg: 320,
+      handDeg: -90,
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
@@ -144,7 +144,7 @@ class PostureMonitor extends Component {
       minutes = 0;
     }
     this.props.dispatch(appActions.showFullModal({
-      onClose: this.props.navigator.resetTo(routes.postureDashboard),
+      onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
       content: <PostureSummary time="04:30" goal={minutes} />,
     }));
   }
@@ -156,7 +156,7 @@ class PostureMonitor extends Component {
           {this.getFormattedTimeRemaining()}
         </HeadingText>
         <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
-        <Monitor degree={this.state.degree} />
+        <Monitor degree={this.state.handDeg} slouchDetection={this.state.slouchDeg} />
         <View style={styles.monitorRatingContainer}>
           <BodyText style={styles._monitorPoor}>Poor</BodyText>
           <BodyText style={styles._monitorGood}>Good</BodyText>
@@ -165,7 +165,13 @@ class PostureMonitor extends Component {
         <SecondaryText style={styles._sliderTitle}>
           Tune up or down the Backbone's slouch detection
         </SecondaryText>
-        <MonitorSlider onValueChange={(value) => this.setState({ slouch: value })} />
+        <MonitorSlider
+          value={this.state.slouchDeg}
+          onValueChange={(value) => this.setState({ slouchDeg: value })}
+          minimumValue={180}
+          maximumValue={360}
+          disabled={this.state.monitoring}
+        />
         <View style={styles.btnContainer}>
           { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
             <MonitorButton play onPress={this.enablePostureActivity} />

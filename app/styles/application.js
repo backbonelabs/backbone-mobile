@@ -3,14 +3,21 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const { widthDifference, heightDifference } = relativeDimensions;
 
-const navButton = {
-  width: '$iconButtonSize',
-  height: '$iconButtonSize',
+const absoluteCenter = {
   alignItems: 'center',
   justifyContent: 'center',
 };
 
+const navButton = {
+  ...absoluteCenter,
+  width: '$iconButtonSize',
+  height: '$iconButtonSize',
+};
+
 export default EStyleSheet.create({
+  spinner: {
+    ...absoluteCenter,
+  },
   leftButton: {
     ...navButton,
     paddingLeft: '1.5%',
@@ -31,8 +38,7 @@ export default EStyleSheet.create({
     backgroundColor: 'white',
   },
   tabBarItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    ...absoluteCenter,
   },
   activeTabBarImage: {
     color: '$primaryColor',

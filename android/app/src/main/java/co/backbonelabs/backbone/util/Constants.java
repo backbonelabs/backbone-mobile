@@ -34,13 +34,24 @@ public class Constants {
 
     public interface SERVICE_UUIDS {
         UUID BACKBONE_SERVICE = UUID.fromString("00010000-0000-1000-8000-805F9B34FB00");
+        UUID BATTERY_SERVICE = UUID.fromString("0000180F-0000-1000-8000-00805F9B34FB");
         UUID BOOTLOADER_SERVICE = UUID.fromString("00060000-F8CE-11E4-ABF4-0002A5D5C51B");
     }
 
     public interface CHARACTERISTIC_UUIDS {
         UUID ACCELEROMETER_CHARACTERISTIC = UUID.fromString("00010004-0000-1000-8000-805F9B34FB00");
         UUID ENTER_BOOTLOADER_CHARACTERISTIC = UUID.fromString("00010005-0000-1000-8000-805F9B34FB00");
+        UUID FIRMWARE_VERSION_CHARACTERISTIC = UUID.fromString("00010006-0000-1000-8000-805F9B34FB00");
+        UUID BATTERY_LEVEL_CHARACTERISTIC = UUID.fromString("00002A19-0000-1000-8000-00805F9B34FB");
         UUID BOOTLOADER_CHARACTERISTIC = UUID.fromString("00060001-F8CE-11E4-ABF4-0002A5D5C51B");
+    }
+
+    public interface StringCallBack {
+        void onStringCallBack(String str);
+    }
+
+    public interface IntCallBack {
+        void onIntCallBack(int value);
     }
 
     public final static int MAX_BLE_ACTION_ATTEMPT = 50;
@@ -50,14 +61,14 @@ public class Constants {
     public final static String ACTION_CHARACTERISTIC_WRITE = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_WRITE";
     public final static String ACTION_BOOTLOADER_UPDATE = "co.backbonelabs.backbone.intent.action.BOOTLOADER_UPDATE";
 
-    public final static String EXTRA_CHARACTERISTIC_UUID = "co.backbonelabs.backbone.extra.CHARACTERISTIC_UUID";
     public final static String EXTRA_BYTE_VALUE = "co.backbonelabs.backbone.extra.BYTE_VALUE";
     public final static String EXTRA_BYTE_UUID_VALUE = "co.backbonelabs.backbone.extra.BYTE_UUID_VALUE";
+    public final static String EXTRA_BYTE_STATUS_VALUE = "co.backbonelabs.backbone.extra.BYTE_STATUS_VALUE";
     public final static String EXTRA_BYTE_INSTANCE_VALUE = "co.backbonelabs.backbone.extra.BYTE_INSTANCE_VALUE";
     public final static String EXTRA_BYTE_SERVICE_UUID_VALUE = "co.backbonelabs.backbone.extra.BYTE_SERVICE_UUID_VALUE";
     public final static String EXTRA_BYTE_SERVICE_INSTANCE_VALUE = "co.backbonelabs.backbone.extra.BYTE_SERVICE_INSTANCE_VALUE";
 
-    public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
+    public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805F9B34FB";
 
     public static final String DEVICE_PREF_ID = "co.backbonelabs.backbone.DEVICE_PREF_ID";
     public static final String USER_PREF_ID = "co.backbonelabs.backbone.USER_PREF_ID";
