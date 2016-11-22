@@ -33,7 +33,6 @@ export default (state = {
       return {
         ...state,
         inProgress: true,
-        isConnected: false,
         errorMessage: null,
       };
     }
@@ -41,6 +40,7 @@ export default (state = {
       return {
         ...state,
         inProgress: false,
+        isConnected: true,
         device: isEmpty(action.payload) ? null : action.payload,
       };
     }
