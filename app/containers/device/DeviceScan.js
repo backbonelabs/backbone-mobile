@@ -108,7 +108,10 @@ class DeviceScan extends Component {
         Alert.alert(
           'Error',
           'Unable to connect',
-          [{ text: 'Try Again' }],
+          [
+            { text: 'Cancel' },
+            { text: 'Try Again', onPress: () => this.selectDevice(deviceData) },
+          ],
         );
       } else {
         // Attempt connect to selected device
