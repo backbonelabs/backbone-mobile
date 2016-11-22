@@ -3,9 +3,6 @@ import { isString, mapValues } from 'lodash';
 export default (state = {
   bluetoothState: null,
   config: {},
-  inProgress: false,
-  isConnected: false,
-  errorMessage: null,
   modal: {
     show: false,
     content: null,
@@ -36,28 +33,6 @@ export default (state = {
       return {
         ...state,
         config: transformedConfig,
-      };
-    }
-    case 'CONNECT__START': {
-      return {
-        ...state,
-        inProgress: true,
-        isConnected: false,
-        errorMessage: null,
-      };
-    }
-    case 'CONNECT': {
-      return {
-        ...state,
-        inProgress: false,
-        isConnected: action.payload.isConnected,
-      };
-    }
-    case 'CONNECT__ERROR': {
-      return {
-        ...state,
-        inProgress: false,
-        errorMessage: action.error.message,
       };
     }
     case 'SHOW_FULL_MODAL': {

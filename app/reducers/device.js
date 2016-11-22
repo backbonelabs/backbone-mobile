@@ -29,6 +29,27 @@ export default (state = {
         errorMessage: action.payload.message,
       };
     }
+    case 'DEVICE_DISCONNECT__START': {
+      return {
+        ...state,
+        inProgress: true,
+        errorMessage: null,
+      };
+    }
+    case 'DEVICE_DISCONNECT': {
+      return {
+        ...state,
+        inProgress: false,
+        isConnected: false,
+      };
+    }
+    case 'DEVICE_DISCONNECT__ERROR': {
+      return {
+        ...state,
+        inProgress: false,
+        errorMessage: action.payload.message,
+      };
+    }
     case 'DEVICE_GET_INFO__START': {
       return {
         ...state,
