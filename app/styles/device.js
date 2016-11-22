@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
@@ -9,9 +10,8 @@ export default EStyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#EEE',
   },
-  cardStyle: {
+  cardStyle: Object.assign({
     width: '100%',
-
     marginVertical: 3 * heightDifference,
     paddingVertical: 20 * heightDifference,
     paddingHorizontal: 13 * widthDifference,
@@ -22,6 +22,9 @@ export default EStyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffff',
     justifyContent: 'space-between',
+  },
+  // If iOS use shadow properties, else add elevation for Android
+  Platform.OS === 'ios' ? {
     shadowColor: 'rgba(0, 0, 0, 0.12)',
     shadowOpacity: 0.8,
     shadowRadius: 2,
@@ -29,7 +32,7 @@ export default EStyleSheet.create({
       height: 1 * heightDifference,
       width: 2 * widthDifference,
     },
-  },
+  } : { elevation: 1 }),
   textContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
