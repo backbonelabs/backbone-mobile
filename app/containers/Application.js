@@ -177,11 +177,13 @@ class Application extends Component {
                     payload: user,
                   });
 
-                  // Attempt to auto connect to device
-                  this.props.dispatch(appActions.attemptAutoConnect());
 
                   if (user.hasOnboarded) {
-                    // User completed onboarding, set initial route to posture dashboard
+                    // User completed onboarding
+                    // Attempt to auto connect to device
+                    this.props.dispatch(appActions.attemptAutoConnect());
+
+                    // Set initial route to posture dashboard
                     this.setInitialRoute(routes.postureDashboard);
                   } else {
                     // User did not complete onboarding, set initial route to onboarding
@@ -218,7 +220,7 @@ class Application extends Component {
    * @param {Object} route=routes.welcome Route object, defaults to the welcome route
    */
   setInitialRoute(route = routes.welcome) {
-    // Intentionally add a delay because some times the initialization process
+    // Intentionally add a delay because sometimes the initialization process
     // can be so quick that the spinner icon only flashes for a blink of an eye,
     // and it might not be obvious it was a spinner icon indicating some type of
     // background activity. We can remove this if preferred.
