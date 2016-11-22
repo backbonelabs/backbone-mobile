@@ -32,7 +32,7 @@ export default EStyleSheet.create({
       height: 1 * heightDifference,
       width: 2 * widthDifference,
     },
-  } : { elevation: 1 }),
+  } : { elevation: 1 * heightDifference }),
   textContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
