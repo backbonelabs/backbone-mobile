@@ -13,12 +13,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
-import SensitiveInfo from '../utils/SensitiveInfo';
+import appActions from '../actions/app';
+import authActions from '../actions/auth';
 import routes from '../routes';
-import constants from '../utils/constants';
-import styles from '../styles/settings';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
+import SecondaryText from '../components/SecondaryText';
 import gradientBackground20 from '../images/gradientBackground20.png';
 import arrow from '../images/settings/arrow.svg';
 import batteryIcon from '../images/settings/batteryIcon.png';
@@ -28,8 +28,9 @@ import alertIcon from '../images/settings/alertIcon.svg';
 import tutorialIcon from '../images/settings/tutorialIcon.svg';
 import supportIcon from '../images/settings/supportIcon.svg';
 import notificationsIcon from '../images/settings/notificationsIcon.svg';
-import SecondaryText from '../components/SecondaryText';
-import authActions from '../actions/auth';
+import styles from '../styles/settings';
+import constants from '../utils/constants';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { storageKeys } = constants;
 
@@ -284,6 +285,11 @@ class Settings extends Component {
               onPress={() => SensitiveInfo.deleteItem(storageKeys.USER)}
             >
               <SecondaryText>Delete user from storage</SecondaryText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.dispatch(appActions.disconnect())}
+            >
+              <SecondaryText>Forget device</SecondaryText>
             </TouchableOpacity>
           </View>
         }
