@@ -18,6 +18,7 @@ import routes from '../../routes';
 import constants from '../../utils/constants';
 
 const { DeviceManagementService } = NativeModules;
+const { ON, OFF } = constants.bluetoothStates;
 
 class DeviceScan extends Component {
   static propTypes = {
@@ -43,28 +44,23 @@ class DeviceScan extends Component {
   }
 
   componentWillMount() {
-    // Check if Bluetooth is active
-    if (constants.bluetoothStates.ON === this.props.bluetoothState) {
-      // Set listener for updating deviceList
-      NativeAppEventEmitter.addListener('DevicesFound', deviceList => (
-        this.setState({ deviceList })
-      ));
-
-      // Initiate scanning
-      DeviceManagementService.scanForDevices(error => {
-        if (error) {
-          Alert.alert(
-            'Error',
-            `Unable to scan. ${error.message}`,
-            [{ text: 'Try Again' }],
-          );
-        } else {
-          this.setState({ inProgress: true });
-        }
-      });
+    if (this.props.bluetoothState === ON) {
+      // Bluetooth is on, initiate scanning
+      this.initiateScanning();
     } else {
       // Remind user that their Bluetooth is off
       Alert.alert('Error', 'Unable to scan. Turn Bluetooth on first');
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.bluetoothState === OFF && nextProps.bluetoothState === ON) {
+      // User has switched Bluetooth on, initiate scanning
+      this.initiateScanning();
+    } else if (this.props.bluetoothState === ON && nextProps.bluetoothState === OFF) {
+      // User has switched Bluetooth off, stop scanning
+      // TO DO: Call native module method to stop device scanning
+      this.setState({ inProgress: false });
     }
   }
 
@@ -74,6 +70,26 @@ class DeviceScan extends Component {
 
     // Stop scanning
     DeviceManagementService.stopScanForDevices();
+  }
+
+  initiateScanning() {
+    // Update deviceList with discovered devices
+    NativeAppEventEmitter.addListener('DevicesFound', deviceList => (
+      this.setState({ deviceList })
+    ));
+
+    // Initiate scanning
+    DeviceManagementService.scanForDevices(error => {
+      if (error) {
+        Alert.alert(
+          'Error',
+          `Unable to scan. ${error.message}`,
+          [{ text: 'Try Again' }],
+        );
+      } else {
+        this.setState({ inProgress: true });
+      }
+    });
   }
 
   /**
