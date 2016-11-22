@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import {
-  View,
   ListView,
   TouchableOpacity,
 } from 'react-native';
-import styles from '../styles/list';
-
-const { PropTypes } = React;
 
 export default class List extends Component {
   static propTypes = {
@@ -14,8 +10,6 @@ export default class List extends Component {
     formatRowData: PropTypes.func.isRequired,
     onPressRow: PropTypes.func,
   };
-
-  static defaultProps = { dataBlob: [] };
 
   constructor(props) {
     super(props);
@@ -31,7 +25,6 @@ export default class List extends Component {
   renderRow(rowData) {
     return (
       <TouchableOpacity
-        style={styles.rowButton}
         onPress={() => this.props.onPressRow && this.props.onPressRow(rowData)}
       >
         { this.props.formatRowData(rowData) }
@@ -39,16 +32,11 @@ export default class List extends Component {
     );
   }
 
-  renderSeparator(sectionId, rowId) {
-    return <View key={rowId} style={styles.rowSeparator} />;
-  }
-
   render() {
     return (
       <ListView
         dataSource={this.state.dataSource}
         renderRow={this.renderRow}
-        renderSeparator={this.renderSeparator}
         enableEmptySections
       />
     );
