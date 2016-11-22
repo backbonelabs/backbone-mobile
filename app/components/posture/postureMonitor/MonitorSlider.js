@@ -8,11 +8,8 @@ const MonitorSlider = (props) => (
     <Icon name="minus" size={15} style={{ paddingRight: 5 }} />
     <View style={{ flex: 1 }}>
       <Slider
-        disabled={props.disabled}
         minimumTrackTintColor={'#ED1C24'}
-        minimumValue={0.1}
-        maximumValue={1}
-        onValueChange={props.onValueChange}
+        {...props}
       />
     </View>
     <Icon name="plus" size={15} style={{ paddingLeft: 5 }} />

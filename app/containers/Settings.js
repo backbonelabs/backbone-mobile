@@ -13,12 +13,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
-import SensitiveInfo from '../utils/SensitiveInfo';
+import appActions from '../actions/app';
+import authActions from '../actions/auth';
 import routes from '../routes';
-import constants from '../utils/constants';
-import styles from '../styles/settings';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
+import SecondaryText from '../components/SecondaryText';
 import gradientBackground20 from '../images/gradientBackground20.png';
 import arrow from '../images/settings/arrow.svg';
 import batteryIcon from '../images/settings/batteryIcon.png';
@@ -28,8 +28,9 @@ import alertIcon from '../images/settings/alertIcon.svg';
 import tutorialIcon from '../images/settings/tutorialIcon.svg';
 import supportIcon from '../images/settings/supportIcon.svg';
 import notificationsIcon from '../images/settings/notificationsIcon.svg';
-import SecondaryText from '../components/SecondaryText';
-import authActions from '../actions/auth';
+import styles from '../styles/settings';
+import constants from '../utils/constants';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { storageKeys } = constants;
 
@@ -47,22 +48,34 @@ const ArrowIcon = () => (
   </View>
 );
 
-const SensorSettings = () => (
-  <View style={styles.sensorSettingsContainer}>
+const SensorSettings = props => (
+  <TouchableOpacity
+    onPress={() => props.navigator.push(routes.device)}
+    style={styles.sensorSettingsContainer}
+  >
     <View style={styles.sensorIconContainer}>
       <Image source={sensorSmall} style={styles.sensorIcon} />
     </View>
     <View style={styles.sensorText}>
-      <BodyText>MY BACKBONE</BodyText>
+      <BodyText style={styles._sensorTextTitle}>MY BACKBONE</BodyText>
+      <SecondaryText style={styles._deviceInfoText}>
+        Status: { props.isConnected ? 'Connected' : 'Disconnected' }
+      </SecondaryText>
       <View style={styles.batteryInfo}>
+        <SecondaryText style={styles._deviceInfoText}>Battery Life: 100%</SecondaryText>
         <Image source={batteryIcon} style={styles.batteryIcon} />
-        <SecondaryText style={styles._batteryText}>Battery: 100%</SecondaryText>
       </View>
-      <SecondaryText style={styles._batteryText}>About 10 days</SecondaryText>
     </View>
     <ArrowIcon />
-  </View>
+  </TouchableOpacity>
 );
+
+SensorSettings.propTypes = {
+  navigator: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+  isConnected: PropTypes.bool,
+};
 
 const SettingsIcon = props => (
   <View style={styles.settingsIcon}>
@@ -131,11 +144,14 @@ const HelpSettings = props => (
     <View style={styles.helpSettingsHeader}>
       <BodyText>HELP</BodyText>
     </View>
-    <View style={styles.helpSettingContainer}>
+    <TouchableOpacity
+      style={styles.helpSettingContainer}
+      onPress={() => props.navigator.push(routes.howTo)}
+    >
       <SettingsIcon iconName="tutorial" />
-      <SettingsText text="How To Use" />
+      <SettingsText text="How To" />
       <ArrowIcon />
-    </View>
+    </TouchableOpacity>
     <TouchableOpacity
       style={styles.helpSettingContainer}
       onPress={() => props.navigator.push(routes.support)}
@@ -158,10 +174,9 @@ class Settings extends Component {
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
     }),
-    app: PropTypes.shape({
-      config: PropTypes.object,
-    }),
+    config: PropTypes.object,
     dispatch: PropTypes.func,
+    isConnected: PropTypes.bool,
   };
 
   constructor() {
@@ -230,16 +245,18 @@ class Settings extends Component {
   }
 
   render() {
+    const { isConnected, navigator, config } = this.props;
+
     return (
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <SensorSettings />
+          <SensorSettings navigator={navigator} isConnected={isConnected} />
           <AccountRemindersSettings
-            navigator={this.props.navigator}
+            navigator={navigator}
             notificationsEnabled={this.state.notificationsEnabled}
             updateNotifications={this.updateNotifications}
           />
-          <HelpSettings navigator={this.props.navigator} />
+          <HelpSettings navigator={navigator} />
           <View style={styles.buttonContainer}>
             <Button
               primary
@@ -248,7 +265,7 @@ class Settings extends Component {
             />
           </View>
         </Image>
-        {this.props.app.config.DEV_MODE &&
+        {config.DEV_MODE &&
           <View style={{ marginTop: 5, borderWidth: 1 }}>
             <BodyText>Dev menu:</BodyText>
             <TouchableOpacity
@@ -261,6 +278,11 @@ class Settings extends Component {
             >
               <SecondaryText>Delete user from storage</SecondaryText>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.dispatch(appActions.disconnect())}
+            >
+              <SecondaryText>Forget device</SecondaryText>
+            </TouchableOpacity>
           </View>
         }
       </ScrollView>
@@ -270,7 +292,7 @@ class Settings extends Component {
 
 const mapStateToProps = (state) => {
   const { app } = state;
-  return { app };
+  return app;
 };
 
 export default connect(mapStateToProps)(Settings);

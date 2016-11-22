@@ -12,7 +12,6 @@
     "lodash": "4.15.0",
     "react": "15.3.2",
     "react-native": "0.37.0",
-    "react-native-drawer": "2.3.0",
     "react-native-extended-stylesheet": "0.3.0",
     "react-native-keyboard-aware-scroll-view": "0.2.3",
     "react-native-sensitive-info": "3.0.2",
