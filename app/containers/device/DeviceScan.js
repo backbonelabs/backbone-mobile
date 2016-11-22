@@ -41,6 +41,9 @@ class DeviceScan extends Component {
       inProgress: false,
     };
     this.selectDevice = this.selectDevice.bind(this);
+    // Bind initiateScanning, since corresponding Alert's onPress
+    // handler loses "this" context after pressing "Try Again" twice
+    this.initiateScanning = this.initiateScanning.bind(this);
   }
 
   componentWillMount() {
@@ -83,7 +86,7 @@ class DeviceScan extends Component {
       if (error) {
         Alert.alert(
           'Error',
-          `Unable to scan. ${error.message}`,
+          'Unable to scan.', // Add error message here (if available)
           [
             { text: 'Cancel' },
             { text: 'Try Again', onPress: this.initiateScanning },
