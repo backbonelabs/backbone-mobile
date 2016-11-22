@@ -47,6 +47,11 @@ class DeviceScan extends Component {
   }
 
   componentWillMount() {
+    // Set listener for updating deviceList with discovered devices
+    NativeAppEventEmitter.addListener('DevicesFound', deviceList => (
+      this.setState({ deviceList })
+    ));
+
     if (this.props.bluetoothState === ON) {
       // Bluetooth is on, initiate scanning
       this.initiateScanning();
@@ -62,8 +67,7 @@ class DeviceScan extends Component {
       this.initiateScanning();
     } else if (this.props.bluetoothState === ON && nextProps.bluetoothState === OFF) {
       // User has switched Bluetooth off, stop scanning
-      // TO DO: Call native module method to stop device scanning
-      this.setState({ inProgress: false });
+      this.setState({ inProgress: false }, DeviceManagementService.stopScanForDevices);
     }
   }
 
@@ -76,11 +80,6 @@ class DeviceScan extends Component {
   }
 
   initiateScanning() {
-    // Update deviceList with discovered devices
-    NativeAppEventEmitter.addListener('DevicesFound', deviceList => (
-      this.setState({ deviceList })
-    ));
-
     // Initiate scanning
     DeviceManagementService.scanForDevices(error => {
       if (error) {
