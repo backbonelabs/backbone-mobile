@@ -1,5 +1,6 @@
 import { NativeModules, NativeAppEventEmitter } from 'react-native';
 import constants from '../utils/constants';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { DeviceManagementService, DeviceInformationService } = NativeModules;
 
@@ -80,6 +81,8 @@ const deviceActions = {
         if (err) {
           dispatch(disconnectError(err));
         } else {
+          // Remove device information from local storage
+          SensitiveInfo.deleteItem(constants.storageKeys.DEVICE);
           dispatch(disconnect());
         }
       });
@@ -88,7 +91,9 @@ const deviceActions = {
   getInfo() {
     return (dispatch) => {
       dispatch(getInfoStart());
-      DeviceInformationService.getDeviceInfo(results => {
+      DeviceInformationService.getDeviceInformation(results => {
+        // Store device information in local storage
+        SensitiveInfo.setItem(constants.storageKeys.DEVICE, results);
         dispatch(getInfo(results));
       });
     };
