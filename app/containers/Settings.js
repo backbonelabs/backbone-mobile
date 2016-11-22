@@ -10,6 +10,7 @@ import {
   ScrollView,
   TouchableOpacity,
   PushNotificationIOS,
+  NativeModules,
 } from 'react-native';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
@@ -282,6 +283,13 @@ class Settings extends Component {
               onPress={() => this.props.dispatch(appActions.disconnect())}
             >
               <SecondaryText>Forget device</SecondaryText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => NativeModules.DeviceManagementService.cancelConnection(response => {
+                console.log('cancelConnection response', response);
+              })}
+            >
+              <SecondaryText>Disconnect device</SecondaryText>
             </TouchableOpacity>
           </View>
         }
