@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { connect } from 'react-redux';
 import userActions from '../actions/user';
@@ -17,6 +19,9 @@ class ChangePassword extends Component {
       _id: PropTypes.string,
     }),
     dispatch: PropTypes.func,
+    navigator: PropTypes.shape({
+      pop: PropTypes.func,
+    }),
   }
 
   constructor() {
@@ -37,7 +42,16 @@ class ChangePassword extends Component {
         Alert.alert('Error', `${nextProps.errorMessage}`);
       } else {
         // Upon a successful save
-        Alert.alert('Success', 'Password saved');
+        Alert.alert(
+          'Success',
+          'Password Saved',
+          [
+            {
+              text: 'ok',
+              onPress: this.props.navigator.pop,
+            },
+          ]
+        );
       }
     }
   }
@@ -54,9 +68,12 @@ class ChangePassword extends Component {
       ) {
       // Show alert if any field is not 8 characters long
       Alert.alert('Password must be at least 8 characters');
-    } else if (newPassword.toLowerCase() !== confirmNewPassword.toLowerCase()) {
+    } else if (newPassword !== confirmNewPassword) {
       // Show alert if new and confirm password don't match
-      Alert.alert('New password and Confirm password do not match');
+      Alert.alert('New Password and Confirm New Password do not match');
+    } else if (newPassword === currentPassword) {
+      // Show alert if new and current password match
+      Alert.alert('New Password and Current Password cannot be the same');
     } else {
       return this.props.dispatch(userActions.updateUser({
         _id: user._id,
@@ -69,69 +86,79 @@ class ChangePassword extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {
-          this.props.isUpdating ?
-            <Spinner /> :
-              <View style={styles.innerContainer}>
-                <View style={styles.inputContainer}>
-                  <Input
-                    style={styles._currentPassword}
-                    autoCapitalize="none"
-                    placeholder="Current Password"
-                    keyboardType="default"
-                    value={this.state.currentPassword}
-                    onChangeText={text => this.setState({ currentPassword: text })}
-                    autoCorrect={false}
-                    onSubmitEditing={this.save}
-                    secureTextEntry
-                    returnKeyType="go"
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          {
+            this.props.isUpdating ?
+              <Spinner /> :
+                <View style={styles.innerContainer}>
+                  <View style={styles.inputContainer}>
+                    <Input
+                      style={styles._currentPassword}
+                      autoCapitalize="none"
+                      handleRef={ref => (
+                        this.currentPassword = ref
+                      )}
+                      placeholder="Current Password"
+                      keyboardType="default"
+                      value={this.state.currentPassword}
+                      onChangeText={text => this.setState({ currentPassword: text })}
+                      onSubmitEditing={() => this.newPassword.focus()}
+                      autoCorrect={false}
+                      secureTextEntry
+                      returnKeyType="next"
+                    />
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <Input
+                      style={styles._inputField}
+                      autoCapitalize="none"
+                      handleRef={ref => (
+                        this.newPassword = ref
+                      )}
+                      placeholder="New Password"
+                      keyboardType="default"
+                      value={this.state.newPassword}
+                      onChangeText={text => this.setState({ newPassword: text })}
+                      onSubmitEditing={() => this.confirmNewPassword.focus()}
+                      autoCorrect={false}
+                      secureTextEntry
+                      returnKeyType="next"
+                    />
+                  </View>
+                  <View style={styles.inputContainer}>
+                    <Input
+                      style={styles._inputField}
+                      autoCapitalize="none"
+                      handleRef={ref => (
+                        this.confirmNewPassword = ref
+                      )}
+                      placeholder="Confirm New Password"
+                      keyboardType="default"
+                      value={this.state.confirmNewPassword}
+                      onChangeText={text => this.setState({ confirmNewPassword: text })}
+                      autoCorrect={false}
+                      secureTextEntry
+                      returnKeyType="next"
+                    />
+                  </View>
+                  <Button
+                    style={styles._saveButton}
+                    text="Save"
+                    disabled={
+                      (
+                        !this.state.currentPassword ||
+                        !this.state.newPassword ||
+                        !this.state.confirmNewPassword
+                      )
+                    }
+                    onPress={this.save}
+                    primary
                   />
                 </View>
-                <View style={styles.inputContainer}>
-                  <Input
-                    style={styles._inputField}
-                    autoCapitalize="none"
-                    placeholder="New Password"
-                    keyboardType="default"
-                    value={this.state.newPassword}
-                    onChangeText={text => this.setState({ newPassword: text })}
-                    autoCorrect={false}
-                    onSubmitEditing={this.save}
-                    secureTextEntry
-                    returnKeyType="go"
-                  />
-                </View>
-                <View style={styles.inputContainer}>
-                  <Input
-                    style={styles._inputField}
-                    autoCapitalize="none"
-                    placeholder="Confirm New Password"
-                    keyboardType="default"
-                    value={this.state.confirmNewPassword}
-                    onChangeText={text => this.setState({ confirmNewPassword: text })}
-                    autoCorrect={false}
-                    onSubmitEditing={this.save}
-                    secureTextEntry
-                    returnKeyType="go"
-                  />
-                </View>
-                <Button
-                  style={styles._saveButton}
-                  text="Save"
-                  disabled={
-                    (
-                      !this.state.currentPassword ||
-                      !this.state.newPassword ||
-                      !this.state.confirmNewPassword
-                    )
-                  }
-                  onPress={this.save}
-                  primary
-                />
-              </View>
-        }
-      </View>
+          }
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

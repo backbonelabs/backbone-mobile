@@ -3,20 +3,9 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const { heightDifference } = relativeDimensions;
 
-const input = {
-  width: '90%',
-  backgroundColor: '#FFF',
-  borderWidth: 0,
-  borderBottomWidth: 2,
-  borderTopWidth: 2,
-  borderColor: 'black',
-  borderRadius: 0,
-};
-
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eee',
     alignItems: 'center',
   },
   innerContainer: {
@@ -29,10 +18,10 @@ export default EStyleSheet.create({
     alignSelf: 'center',
   },
   inputField: {
-    ...input,
+    width: '90%',
   },
   currentPassword: {
-    ...input,
+    width: '90%',
     marginBottom: 20 * heightDifference,
   },
   saveButton: {
