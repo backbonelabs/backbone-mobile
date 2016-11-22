@@ -136,7 +136,9 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 }
 
 - (void)stopScan {
-  [self.centralManager stopScan];
+  if ([self.centralManager isScanning]) {
+    [self.centralManager stopScan];
+  }
 }
 
 - (void)selectDevice:(CBPeripheral *)device {
@@ -151,9 +153,13 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 }
 
 - (void)disconnectDevice:(ErrorHandler)completionHandler {
-  if (self.currentDevice) {
-    self.disconnectHandler = completionHandler;
+  self.disconnectHandler = completionHandler;
+  
+  if (self.currentDevice && (BluetoothServiceInstance.currentDevice.state == CBPeripheralStateConnected || BluetoothServiceInstance.currentDevice.state == CBPeripheralStateConnecting)) {
     [self.centralManager cancelPeripheralConnection:self.currentDevice];
+  }
+  else {
+    self.disconnectHandler(nil);
   }
 }
 
@@ -178,7 +184,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   self.scanDeviceHandler(device);
 }
 
-- (void) centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
+- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
   DLog(@"didconnect %@", peripheral);
   _currentDevice = [peripheral copy];
