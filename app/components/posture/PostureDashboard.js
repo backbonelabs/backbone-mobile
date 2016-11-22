@@ -46,7 +46,7 @@ class PostureDashboard extends Component {
     navigator: PropTypes.shape({
       push: PropTypes.func,
     }),
-    app: PropTypes.shape({
+    device: PropTypes.shape({
       inProgress: PropTypes.bool,
       isConnected: PropTypes.bool,
     }),
@@ -65,7 +65,7 @@ class PostureDashboard extends Component {
   }
 
   getBanner() {
-    const { inProgress, isConnected } = this.props.app;
+    const { inProgress, isConnected } = this.props.device;
     if (!isConnected) {
       const bannerText = inProgress ? 'Connecting...' : 'Backbone not connected';
       return (
@@ -132,8 +132,8 @@ class PostureDashboard extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user } } = state;
-  return { app, user };
+  const { device, user: { user } } = state;
+  return { device, user };
 };
 
 export default connect(mapStateToProps)(PostureDashboard);
