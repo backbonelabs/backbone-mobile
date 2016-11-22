@@ -10,7 +10,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#EEE',
   },
-  cardStyle: Object.assign({
+  cardStyle: {
     width: '100%',
     marginVertical: 3 * heightDifference,
     paddingVertical: 20 * heightDifference,
@@ -22,17 +22,21 @@ export default EStyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffff',
     justifyContent: 'space-between',
+    ...Platform.select({ // OS-specific drop shadow styling
+      ios: {
+        shadowColor: 'rgba(0, 0, 0, 0.12)',
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        shadowOffset: {
+          height: 1 * heightDifference,
+          width: 2 * widthDifference,
+        },
+      },
+      android: {
+        elevation: 1,
+      },
+    }),
   },
-  // If iOS use shadow properties, else add elevation for Android
-  Platform.OS === 'ios' ? {
-    shadowColor: 'rgba(0, 0, 0, 0.12)',
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    shadowOffset: {
-      height: 1 * heightDifference,
-      width: 2 * widthDifference,
-    },
-  } : { elevation: 1 * heightDifference }),
   textContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
