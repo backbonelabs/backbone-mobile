@@ -84,7 +84,10 @@ class DeviceScan extends Component {
         Alert.alert(
           'Error',
           `Unable to scan. ${error.message}`,
-          [{ text: 'Try Again' }],
+          [
+            { text: 'Cancel' },
+            { text: 'Try Again', onPress: this.initiateScanning },
+          ],
         );
       } else {
         this.setState({ inProgress: true });
