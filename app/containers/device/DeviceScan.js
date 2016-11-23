@@ -1,89 +1,156 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import {
   View,
-  Text,
   Alert,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
-import List from '../List';
-import Spinner from '../../components/Spinner';
+import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../../styles/device';
+import List from '../../containers/List';
+import Spinner from '../../components/Spinner';
+import BodyText from '../../components/BodyText';
+import SecondaryText from '../../components/SecondaryText';
+import theme from '../../styles/theme';
 import routes from '../../routes';
+import constants from '../../utils/constants';
 
-const { PropTypes } = React;
 const { DeviceManagementService } = NativeModules;
+const { ON, OFF } = constants.bluetoothStates;
 
 class DeviceScan extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
     }),
+    bluetoothState: PropTypes.number,
   };
-
 
   constructor() {
     super();
     this.state = {
-      deviceList: [],
+      // List's data source
+      deviceList: [
+        // Dummy data
+        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
+        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
+        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
+      ],
       inProgress: false,
     };
     this.selectDevice = this.selectDevice.bind(this);
+    // Bind initiateScanning, since corresponding Alert's onPress handler
+    // loses "this" context if user presses "Try Again" more than once
+    this.initiateScanning = this.initiateScanning.bind(this);
   }
 
-  // Begin scanning for hardware devices in the vicinity
   componentWillMount() {
-    // Native module listener will constantly update deviceList
-    NativeAppEventEmitter.addListener('DevicesFound', deviceList => this.setState({ deviceList }));
+    // Set listener for updating deviceList with discovered devices
+    NativeAppEventEmitter.addListener('DevicesFound', deviceList => (
+      this.setState({ deviceList })
+    ));
 
+    if (this.props.bluetoothState === ON) {
+      // Bluetooth is on, initiate scanning
+      this.initiateScanning();
+    } else {
+      // Remind user that their Bluetooth is off
+      Alert.alert('Error', 'Unable to scan. Turn Bluetooth on first');
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.bluetoothState === OFF && nextProps.bluetoothState === ON) {
+      // User has switched Bluetooth on, initiate scanning
+      this.initiateScanning();
+    } else if (this.props.bluetoothState === ON && nextProps.bluetoothState === OFF) {
+      // User has switched Bluetooth off, stop scanning
+      this.setState({ inProgress: false }, DeviceManagementService.stopScanForDevices);
+    }
+  }
+
+  componentWillUnmount() {
+    // Remove listener
+    NativeAppEventEmitter.removeAllListeners('DevicesFound');
+
+    // Stop scanning
+    DeviceManagementService.stopScanForDevices();
+  }
+
+  initiateScanning() {
+    // Initiate scanning
     DeviceManagementService.scanForDevices(error => {
       if (error) {
-        Alert.alert('Error', 'Unable to scan for devices', [{
-          text: 'Try Again',
-        }]);
+        Alert.alert(
+          'Error',
+          'Unable to scan.', // Add error message here (if available)
+          [
+            { text: 'Cancel' },
+            { text: 'Try Again', onPress: this.initiateScanning },
+          ],
+        );
       } else {
         this.setState({ inProgress: true });
       }
     });
   }
 
-  componentWillUnmount() {
-    NativeAppEventEmitter.removeAllListeners('DevicesFound');
-
-    // Stop device scanning in case a scan is in progress
-    DeviceManagementService.stopScanForDevices();
-  }
-
-  // Saves the selected device and attempts to connect to it
+  /**
+   * Selects a device to connect to
+   * @param {Object}  deviceData  Selected device's data
+   */
   selectDevice(deviceData) {
-    DeviceManagementService.selectDevice(deviceData.identifier, (error) => {
+    DeviceManagementService.selectDevice(deviceData.identifier, error => {
       if (error) {
-        // Do something about the select device error
+        Alert.alert(
+          'Error',
+          'Unable to connect',
+          [
+            { text: 'Cancel' },
+            { text: 'Try Again', onPress: () => this.selectDevice(deviceData) },
+          ],
+        );
       } else {
-        // Navigate to DeviceConnect where it'll attempt to connect
+        // Attempt connect to selected device
         this.props.navigator.replace(routes.deviceConnect);
       }
     });
   }
 
-  // Formats row data and displays it in a component
+ /**
+   * Formats device data into a list item row
+   * @param {Object}  rowData  Device data for a single row
+   */
   formatDeviceRow(rowData) {
-    // Pressing on a row will select device and attempt connect
     return (
-      <View onPress={() => this.selectDevice(rowData)}>
-        <Text style={styles.deviceName}>{rowData.name}</Text>
-        <Text style={styles.deviceID}>{rowData.identifier}</Text>
+      <View style={styles.cardStyle}>
+        <View style={styles.textContainer}>
+          <BodyText>{rowData.deviceName}</BodyText>
+          <SecondaryText style={styles._secondaryText}>
+            Unique ID: {rowData.identifier}
+          </SecondaryText>
+        </View>
+        <Icon
+          name="keyboard-arrow-right"
+          size={styles._icon.height}
+          color={theme.primaryFontColor}
+        />
       </View>
     );
   }
 
   render() {
+    const { inProgress, deviceList } = this.state;
+
     return (
       <View style={styles.container}>
-        { this.state.inProgress && <Spinner /> }
+        { inProgress &&
+          <Spinner style={styles.spinner} />
+        }
         <List
-          dataBlob={this.state.deviceList}
+          dataBlob={deviceList}
           formatRowData={this.formatDeviceRow}
           onPressRow={this.selectDevice}
         />
@@ -92,4 +159,9 @@ class DeviceScan extends Component {
   }
 }
 
-export default DeviceScan;
+const mapStateToProps = state => {
+  const { app } = state;
+  return app;
+};
+
+export default connect(mapStateToProps)(DeviceScan);
