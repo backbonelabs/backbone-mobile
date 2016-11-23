@@ -52,7 +52,7 @@ class DeviceConnect extends Component {
     // device has successfully connected to their smartphone
     if (!this.props.isConnected && nextProps.isConnected) {
       Alert.alert('Success', 'Connected', [
-        { text: 'Continue', onPress: () => this.props.navigator.replace(routes.postureDashboard) }
+        { text: 'Continue', onPress: () => this.props.navigator.replace(routes.postureDashboard) },
       ]);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Prompt user to reattempt connect upon failed attempt

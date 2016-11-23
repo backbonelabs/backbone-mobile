@@ -6,7 +6,6 @@ import {
   NativeModules,
 } from 'react-native';
 import { connect } from 'react-redux';
-import gradientBackground20 from '../images/gradientBackground20.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
 import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
