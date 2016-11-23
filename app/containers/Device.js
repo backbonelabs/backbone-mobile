@@ -6,6 +6,7 @@ import {
   NativeModules,
 } from 'react-native';
 import { connect } from 'react-redux';
+import deviceActions from '../actions/device';
 import gradientBackground20 from '../images/gradientBackground20.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
 import styles from '../styles/deviceSettings';
@@ -35,10 +36,16 @@ const { DeviceManagementService } = NativeModules;
 
 class Device extends Component {
   static propTypes = {
+    dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       push: PropTypes.func,
     }),
     isConnected: PropTypes.bool,
+    inProgress: PropTypes.bool,
+    device: PropTypes.shape({
+      batteryLevel: PropTypes.number,
+      firmwareVersion: PropTypes.string,
+    }),
   };
 
   constructor() {
@@ -47,7 +54,6 @@ class Device extends Component {
       device: {
         isPaired: false,
         firmwareVersion: null,
-        batteryLife: null,
         updateAvailable: false,
       },
       inProgress: true,
@@ -59,27 +65,30 @@ class Device extends Component {
   }
 
   componentWillMount() {
-    // Get latest device information if it's currently connected
-    // TODO: Use appropriate method for fetching latest device data
     if (this.props.isConnected) {
-      DeviceManagementService.getSavedDevice(device => {
-        // Save latest device information in state and local store
-        if (device) {
-          this.setState({
-            device,
-            inProgress: false,
-          }, () => SensitiveInfo.setItem(constants.storageKeys.DEVICE, device));
-        }
-      });
+      // Get latest device information if it's currently connected
+      this.props.dispatch(deviceActions.getInfo());
     } else {
-      // If device isn't currently connected, fetch locally stored data
+      // If device isn't currently connected, fetch locally stored data, if any
       SensitiveInfo.getItem(constants.storageKeys.DEVICE)
         .then(device => {
-          const stateData = device ? { device } : {};
-          stateData.inProgress = false;
-
-          this.setState({ ...stateData });
+          const stateData = { inProgress: false };
+          if (device) {
+            stateData.device = device;
+          }
+          this.setState(stateData);
         });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { inProgress, device } = nextProps;
+    if (this.props.inProgress && !inProgress) {
+      // Save latest device information in state and local store
+      this.setState({
+        device,
+        inProgress,
+      });
     }
   }
 
@@ -116,7 +125,6 @@ class Device extends Component {
                           device: {
                             isPaired: false,
                             firmwareVersion: null,
-                            batteryLife: null,
                             updateAvailable: false,
                           },
                           inProgress: false,
@@ -193,8 +201,8 @@ class Device extends Component {
 }
 
 const mapStateToProps = state => {
-  const { app } = state;
-  return app;
+  const { device } = state;
+  return device;
 };
 
 export default connect(mapStateToProps)(Device);
