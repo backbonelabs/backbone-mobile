@@ -4,15 +4,22 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
   },
-  progress: {
-    flex: 1,
+  bodyContainer: {
+    flex: 0.8,
   },
-  deviceName: {
-    color: 'white',
-    fontSize: '1.25rem',
+  spinnerContainer: {
+    flex: 0.55,
+    justifyContent: 'flex-end',
   },
-  deviceID: {
-    marginTop: '0.5rem',
-    fontSize: '0.5rem',
+  spinner: {
+    marginBottom: 15,
+  },
+  textContainer: {
+    flex: 0.45,
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    flex: 0.2,
+    alignItems: 'center',
   },
 });

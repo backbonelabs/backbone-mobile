@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import {
   View,
   Alert,
-  Text,
   NativeModules,
 } from 'react-native';
 import { connect } from 'react-redux';
 import routes from '../../routes';
 import appActions from '../../actions/app.js';
-import styles from '../../styles/device';
+import styles from '../../styles/device/deviceConnect';
 import Spinner from '../../components/Spinner';
+import HeadingText from '../../components/HeadingText';
+import Button from '../../components/Button';
 import constants from '../../utils/constants';
 
 const { DeviceManagementService } = NativeModules;
@@ -32,6 +33,7 @@ class DeviceConnect extends Component {
     // Not doing much in constructor, but need component lifecycle methods
     super();
     this.state = {};
+    this.cancelConnect = this.cancelConnect.bind(this);
   }
 
   componentWillMount() {
@@ -102,15 +104,29 @@ class DeviceConnect extends Component {
     );
   }
 
+  cancelConnect() {
+    // TO DO: Call native module method for canceling connect
+    this.props.navigator.replace(routes.postureDashboard);
+  }
+
   render() {
-    return (
+    return !this.props.inProgress && (
       <View style={styles.container}>
-        { this.props.inProgress &&
-          <View>
-            <Spinner />
-            <Text>Connecting</Text>
+        <View style={styles.bodyContainer}>
+          <View style={styles.spinnerContainer}>
+            <Spinner style={styles._spinner} />
           </View>
-        }
+          <View style={styles.textContainer}>
+            <HeadingText size={2}>Connecting...</HeadingText>
+          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            primary
+            text="Cancel"
+            onPress={this.cancelConnect}
+          />
+        </View>
       </View>
     );
   }
