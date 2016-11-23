@@ -15,7 +15,6 @@ const fetchUser = payload => ({
 const fetchUserError = error => ({
   type: 'FETCH_USER__ERROR',
   payload: error,
-  error: true,
 });
 
 const updateUserStart = () => ({ type: 'UPDATE_USER__START' });
@@ -28,7 +27,6 @@ const updateUser = payload => ({
 const updateUserError = error => ({
   type: 'UPDATE_USER__ERROR',
   payload: error,
-  error: true,
 });
 
 const updateUserSettingsStart = () => ({ type: 'UPDATE_USER_SETTINGS__START' });
@@ -41,7 +39,6 @@ const updateUserSettings = payload => ({
 const updateUserSettingsError = error => ({
   type: 'UPDATE_USER_SETTINGS__ERROR',
   payload: error,
-  error: true,
 });
 
 const prepareUserUpdate = payload => ({

@@ -14,7 +14,6 @@ const connect = payload => ({
 const connectError = payload => ({
   type: 'DEVICE_CONNECT__ERROR',
   payload,
-  error: true,
 });
 
 function setConnectEventListener(dispatch) {
@@ -36,7 +35,6 @@ const disconnect = () => ({
 const disconnectError = error => ({
   type: 'DEVICE_DISCONNECT__ERROR',
   payload: error,
-  error: true,
 });
 
 const forgetStart = () => ({ type: 'DEVICE_FORGET__START' });
@@ -48,7 +46,6 @@ const forget = () => ({
 const forgetError = error => ({
   type: 'DEVICE_FORGET__ERROR',
   payload: error,
-  error: true,
 });
 
 const getInfoStart = () => ({ type: 'DEVICE_GET_INFO__START' });
