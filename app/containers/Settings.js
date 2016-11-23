@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
+import deviceActions from '../actions/device';
 import routes from '../routes';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
@@ -61,10 +62,14 @@ const SensorSettings = props => (
       <SecondaryText style={styles._deviceInfoText}>
         Status: { props.isConnected ? 'Connected' : 'Disconnected' }
       </SecondaryText>
-      <View style={styles.batteryInfo}>
-        <SecondaryText style={styles._deviceInfoText}>Battery Life: 100%</SecondaryText>
-        <Image source={batteryIcon} style={styles.batteryIcon} />
-      </View>
+      {props.isConnected && (
+        <View style={styles.batteryInfo}>
+          <SecondaryText style={styles._deviceInfoText}>
+            Battery Life: {props.device.batteryLevel}%
+          </SecondaryText>
+          <Image source={batteryIcon} style={styles.batteryIcon} />
+        </View>
+      )}
     </View>
     <ArrowIcon />
   </TouchableOpacity>
@@ -75,6 +80,9 @@ SensorSettings.propTypes = {
     push: PropTypes.func,
   }),
   isConnected: PropTypes.bool,
+  device: PropTypes.shape({
+    batteryLevel: PropTypes.number,
+  }),
 };
 
 const SettingsIcon = props => (
@@ -171,12 +179,16 @@ HelpSettings.propTypes = {
 
 class Settings extends Component {
   static propTypes = {
+    dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
     }),
-    config: PropTypes.object,
-    dispatch: PropTypes.func,
-    isConnected: PropTypes.bool,
+    app: PropTypes.shape({
+      config: PropTypes.object,
+    }),
+    device: PropTypes.shape({
+      isConnected: PropTypes.bool,
+    }),
   };
 
   constructor() {
@@ -199,6 +211,13 @@ class Settings extends Component {
           this.checkNotificationsPermission();
         }
       });
+    }
+
+    // TODO: Implement appropriate logic for notification settings on Android
+
+    if (this.props.device.isConnected) {
+      // Get latest device information if it's currently connected
+      this.props.dispatch(deviceActions.getInfo());
     }
   }
 
@@ -245,12 +264,19 @@ class Settings extends Component {
   }
 
   render() {
-    const { isConnected, navigator, config } = this.props;
+    const {
+      device: {
+        isConnected,
+        device,
+      },
+      navigator,
+      app: { config },
+    } = this.props;
 
     return (
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <SensorSettings navigator={navigator} isConnected={isConnected} />
+          <SensorSettings navigator={navigator} isConnected={isConnected} device={device} />
           <AccountRemindersSettings
             navigator={navigator}
             notificationsEnabled={this.state.notificationsEnabled}
@@ -291,8 +317,8 @@ class Settings extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app } = state;
-  return app;
+  const { app, device } = state;
+  return { app, device };
 };
 
 export default connect(mapStateToProps)(Settings);
