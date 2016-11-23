@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Alert,
   View,
   Image,
   TouchableOpacity,
@@ -56,6 +57,12 @@ class PostureDashboard extends Component {
     }),
   };
 
+  constructor() {
+    super();
+
+    this.start = this.start.bind(this);
+  }
+
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
   }
@@ -91,6 +98,26 @@ class PostureDashboard extends Component {
     return null;
   }
 
+  start() {
+    if (!this.props.app.isConnected) {
+      return Alert.alert(
+          'Error',
+          'Device not found, please connect your device before starting the session.',
+        [
+          {
+            text: 'Connect',
+            onPress: () => this.props.navigator.push(routes.deviceAdd),
+          },
+          {
+            text: 'Back',
+          },
+        ]
+      );
+    }
+
+    return this.props.navigator.push(routes.postureCalibrate);
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -116,7 +143,7 @@ class PostureDashboard extends Component {
           <Button
             text="START"
             primary
-            onPress={() => this.props.navigator.push(routes.postureCalibrate)}
+            onPress={this.start}
           />
         </View>
         <View style={styles.footer}>
