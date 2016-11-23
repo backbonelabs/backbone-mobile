@@ -18,6 +18,7 @@ import onboarding from './onboarding';
 import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
+import changePassword from './changePassword';
 
 export default {
   activity,
@@ -40,4 +41,5 @@ export default {
   support,
   howTo,
   device,
+  changePassword,
 };

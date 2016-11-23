@@ -10,6 +10,7 @@ import {
   ScrollView,
   TouchableOpacity,
   PushNotificationIOS,
+  NativeModules,
 } from 'react-native';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
@@ -108,6 +109,14 @@ const AccountRemindersSettings = props => (
     >
       <SettingsIcon iconName="profile" />
       <SettingsText text="Profile" />
+      <ArrowIcon />
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.accountRemindersSettingContainer}
+      onPress={() => props.navigator.push(routes.changePassword)}
+    >
+      <SettingsIcon />
+      <SettingsText text="Change Password" />
       <ArrowIcon />
     </TouchableOpacity>
     <TouchableOpacity
@@ -282,6 +291,13 @@ class Settings extends Component {
               onPress={() => this.props.dispatch(appActions.disconnect())}
             >
               <SecondaryText>Forget device</SecondaryText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => NativeModules.DeviceManagementService.cancelConnection(response => {
+                console.log('cancelConnection response', response);
+              })}
+            >
+              <SecondaryText>Disconnect device</SecondaryText>
             </TouchableOpacity>
           </View>
         }

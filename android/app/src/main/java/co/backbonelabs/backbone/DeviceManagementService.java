@@ -163,6 +163,25 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         checkConnectTimeout();
     }
 
+    /**
+     * Disconnects an established connection, or cancels a connection attempt currently in progress
+     * @param callback Callback will be invoked with an error object if there is an exception.
+     *                 Otherwise, it will be invoked with no arguments.
+     */
+    @ReactMethod
+    public void cancelConnection(Callback callback) {
+        Timber.d("Cancel device connection and any running scan");
+        try {
+            final BluetoothService bluetoothService = BluetoothService.getInstance();
+            bluetoothService.stopScan();
+            bluetoothService.disconnect();
+            callback.invoke();
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.invoke(JSError.make(e.getMessage()));
+        }
+    }
+
     @ReactMethod
     public void getDeviceStatus(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
