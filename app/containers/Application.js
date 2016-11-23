@@ -23,6 +23,7 @@ import settingsActive from '../images/settingsActive.png';
 import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
+import deviceActions from '../actions/device';
 import FullModal from '../components/FullModal';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
@@ -168,7 +169,7 @@ class Application extends Component {
           if (this.props.user._id) {
             // There is a user profile in the Redux store
             // Attempt to auto connect to device
-            this.props.dispatch(appActions.attemptAutoConnect());
+            this.props.dispatch(deviceActions.attemptAutoConnect());
 
             // Set initial route to posture dashboard
             this.setInitialRoute(routes.postureDashboard);
@@ -188,7 +189,7 @@ class Application extends Component {
                   if (user.hasOnboarded) {
                     // User completed onboarding
                     // Attempt to auto connect to device
-                    this.props.dispatch(appActions.attemptAutoConnect());
+                    this.props.dispatch(deviceActions.attemptAutoConnect());
 
                     // Set initial route to posture dashboard
                     this.setInitialRoute(routes.postureDashboard);
@@ -242,7 +243,7 @@ class Application extends Component {
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
       // Attempt auto-connect when app is brought back into the foreground
-      this.props.dispatch(appActions.attemptAutoConnect());
+      this.props.dispatch(deviceActions.attemptAutoConnect());
     }
   }
 

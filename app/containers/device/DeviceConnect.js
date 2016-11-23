@@ -6,8 +6,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import routes from '../../routes';
-import appActions from '../../actions/app.js';
 import styles from '../../styles/device/deviceConnect';
+import deviceActions from '../../actions/device';
 import Spinner from '../../components/Spinner';
 import HeadingText from '../../components/HeadingText';
 import Button from '../../components/Button';
@@ -68,7 +68,7 @@ class DeviceConnect extends Component {
     DeviceManagementService.getSavedDevice((device) => {
       if (device) {
         // Saved device is found, attempt to connect
-        this.props.dispatch(appActions.connect());
+        this.props.dispatch(deviceActions.connect());
       } else {
         // There's no device, route to scene for scanning
         this.props.navigator.replace(routes.deviceScan);

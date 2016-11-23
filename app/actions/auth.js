@@ -15,7 +15,6 @@ const login = payload => ({
 const loginError = error => ({
   type: 'LOGIN__ERROR',
   payload: error,
-  error: true,
 });
 
 const signupStart = () => ({ type: 'SIGNUP__START' });
@@ -30,7 +29,6 @@ const signOut = () => ({ type: 'SIGN__OUT' });
 const signupError = error => ({
   type: 'SIGNUP__ERROR',
   payload: error,
-  error: true,
 });
 
 const passwordResetStart = () => ({ type: 'PASSWORD_RESET__START' });
@@ -43,7 +41,6 @@ const passwordReset = payload => ({
 const passwordResetError = error => ({
   type: 'PASSWORD_RESET__ERROR',
   payload: error,
-  error: true,
 });
 
 const setAccessToken = token => ({

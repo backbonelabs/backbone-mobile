@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Alert,
   View,
   Image,
 } from 'react-native';
@@ -38,7 +39,7 @@ class PostureDashboard extends Component {
     navigator: PropTypes.shape({
       push: PropTypes.func,
     }),
-    app: PropTypes.shape({
+    device: PropTypes.shape({
       inProgress: PropTypes.bool,
       isConnected: PropTypes.bool,
     }),
@@ -48,12 +49,38 @@ class PostureDashboard extends Component {
     }),
   };
 
+  constructor() {
+    super();
+
+    this.start = this.start.bind(this);
+  }
+
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
   }
 
   setSessionTime(seconds) {
     this.props.dispatch(postureActions.setSessionTime(seconds));
+  }
+
+  start() {
+    if (!this.props.device.isConnected) {
+      return Alert.alert(
+          'Error',
+          'Device not found, please connect to your Backbone before starting a session.',
+        [
+          {
+            text: 'Cancel',
+          },
+          {
+            text: 'Connect',
+            onPress: () => this.props.navigator.push(routes.deviceAdd),
+          },
+        ]
+      );
+    }
+
+    return this.props.navigator.push(routes.postureCalibrate);
   }
 
   render() {
@@ -80,7 +107,7 @@ class PostureDashboard extends Component {
           <Button
             text="START"
             primary
-            onPress={() => this.props.navigator.push(routes.postureCalibrate)}
+            onPress={this.start}
           />
         </View>
         <View style={styles.footer}>
@@ -96,8 +123,8 @@ class PostureDashboard extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user } } = state;
-  return { app, user };
+  const { device, user: { user } } = state;
+  return { device, user };
 };
 
 export default connect(mapStateToProps)(PostureDashboard);
