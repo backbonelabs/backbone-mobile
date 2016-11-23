@@ -140,7 +140,19 @@ class Device extends Component {
 
   updateFirmware() {
     if (!this.props.isConnected) {
-      Alert.alert('Error', 'Connect to your Backbone to update');
+      Alert.alert(
+          'Error',
+          'Device not found, please connect to your Backbone before updating.',
+        [
+          {
+            text: 'Connect',
+            onPress: () => this.props.navigator.push(routes.deviceAdd),
+          },
+          {
+            text: 'Back',
+          },
+        ]
+      );
     } else {
       this.setState({ inProgress: true }, () => {
         // TODO: Call native method here to update user's firmware
