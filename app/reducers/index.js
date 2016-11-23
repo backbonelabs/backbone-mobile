@@ -4,6 +4,7 @@ import user from './user';
 import app from './app';
 import support from './support';
 import posture from './posture';
+import device from './device';
 
 export default combineReducers({
   auth,
@@ -11,4 +12,5 @@ export default combineReducers({
   app,
   support,
   posture,
+  device,
 });

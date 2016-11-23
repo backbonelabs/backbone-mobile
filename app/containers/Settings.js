@@ -14,8 +14,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
-import appActions from '../actions/app';
 import authActions from '../actions/auth';
+import deviceActions from '../actions/device';
 import routes from '../routes';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
@@ -32,8 +32,6 @@ import notificationsIcon from '../images/settings/notificationsIcon.svg';
 import styles from '../styles/settings';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
-
-const { DeviceManagementService, UserSettingService } = NativeModules;
 
 const { storageKeys } = constants;
 
@@ -64,10 +62,14 @@ const SensorSettings = props => (
       <SecondaryText style={styles._deviceInfoText}>
         Status: { props.isConnected ? 'Connected' : 'Disconnected' }
       </SecondaryText>
-      <View style={styles.batteryInfo}>
-        <SecondaryText style={styles._deviceInfoText}>Battery Life: 100%</SecondaryText>
-        <Image source={batteryIcon} style={styles.batteryIcon} />
-      </View>
+      {props.isConnected && (
+        <View style={styles.batteryInfo}>
+          <SecondaryText style={styles._deviceInfoText}>
+            Battery Life: {props.device.batteryLevel}%
+          </SecondaryText>
+          <Image source={batteryIcon} style={styles.batteryIcon} />
+        </View>
+      )}
     </View>
     <ArrowIcon />
   </TouchableOpacity>
@@ -78,6 +80,9 @@ SensorSettings.propTypes = {
     push: PropTypes.func,
   }),
   isConnected: PropTypes.bool,
+  device: PropTypes.shape({
+    batteryLevel: PropTypes.number,
+  }),
 };
 
 const SettingsIcon = props => (
@@ -143,7 +148,7 @@ const AccountRemindersSettings = props => (
     ) : (
       <TouchableOpacity
         style={styles.notificationsContainer}
-        onPress={() => UserSettingService.launchAppSettings()}
+        onPress={() => NativeModules.UserSettingService.launchAppSettings()}
       >
         <SettingsIcon iconName="notifications" />
         <SettingsText text="Push Notifications" />
@@ -193,12 +198,16 @@ HelpSettings.propTypes = {
 
 class Settings extends Component {
   static propTypes = {
+    dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
     }),
-    config: PropTypes.object,
-    dispatch: PropTypes.func,
-    isConnected: PropTypes.bool,
+    app: PropTypes.shape({
+      config: PropTypes.object,
+    }),
+    device: PropTypes.shape({
+      isConnected: PropTypes.bool,
+    }),
   };
 
   constructor() {
@@ -222,11 +231,45 @@ class Settings extends Component {
         }
       });
     }
+
+    // TODO: Implement appropriate logic for notification settings on Android
+
+    if (this.props.device.isConnected) {
+      // Get latest device information if it's currently connected
+      this.props.dispatch(deviceActions.getInfo());
+    }
   }
 
   componentWillUnmount() {
     // Remove app state event listener
     AppState.removeEventListener('change');
+  }
+
+  getDevMenu() {
+    const items = [{
+      label: 'Delete access token from local storage',
+      handler: () => SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN),
+    }, {
+      label: 'Delete user from local storage',
+      handler: () => SensitiveInfo.deleteItem(storageKeys.USER),
+    }, {
+      label: 'Disconnect device',
+      handler: () => this.props.dispatch(deviceActions.disconnect()),
+    }, {
+      label: 'Forget device',
+      handler: () => this.props.dispatch(deviceActions.forget()),
+    }];
+
+    return (
+      <View style={styles.devMenu}>
+        <BodyText>Dev menu:</BodyText>
+        {items.map((item, key) => (
+          <TouchableOpacity key={key} style={styles.devMenuItem} onPress={item.handler}>
+            <SecondaryText>{item.label}</SecondaryText>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
   }
 
   checkNotificationsPermission() {
@@ -236,15 +279,6 @@ class Settings extends Component {
       if (!!permissions.alert !== this.state.notificationsEnabled) {
         // Specifically set to boolean due to Switch prop validation
         this.setState({ notificationsEnabled: !!permissions.alert });
-      }
-    });
-  }
-
-  updateNotifications(value) {
-    this.setState({ notificationsEnabled: value }, () => {
-      // Linking scheme for iOS only
-      if (Platform.OS === 'ios') {
-        Linking.openURL('app-settings:');
       }
     });
   }
@@ -266,13 +300,29 @@ class Settings extends Component {
     );
   }
 
+  updateNotifications(value) {
+    this.setState({ notificationsEnabled: value }, () => {
+      // Linking scheme for iOS only
+      if (Platform.OS === 'ios') {
+        Linking.openURL('app-settings:');
+      }
+    });
+  }
+
   render() {
-    const { isConnected, navigator, config } = this.props;
+    const {
+      device: {
+        isConnected,
+        device,
+      },
+      navigator,
+      app: { config },
+    } = this.props;
 
     return (
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <SensorSettings navigator={navigator} isConnected={isConnected} />
+          <SensorSettings navigator={navigator} isConnected={isConnected} device={device} />
           <AccountRemindersSettings
             navigator={navigator}
             notificationsEnabled={this.state.notificationsEnabled}
@@ -287,41 +337,15 @@ class Settings extends Component {
             />
           </View>
         </Image>
-        {config.DEV_MODE &&
-          <View style={{ marginTop: 5, borderWidth: 1 }}>
-            <BodyText>Dev menu:</BodyText>
-            <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN)}
-            >
-              <SecondaryText>Delete access token from storage</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem(storageKeys.USER)}
-            >
-              <SecondaryText>Delete user from storage</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.props.dispatch(appActions.disconnect())}
-            >
-              <SecondaryText>Forget device</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => DeviceManagementService.cancelConnection(response => {
-                console.log('cancelConnection response', response);
-              })}
-            >
-              <SecondaryText>Disconnect device</SecondaryText>
-            </TouchableOpacity>
-          </View>
-        }
+        {config.DEV_MODE && this.getDevMenu()}
       </ScrollView>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  const { app } = state;
-  return app;
+  const { app, device } = state;
+  return { app, device };
 };
 
 export default connect(mapStateToProps)(Settings);

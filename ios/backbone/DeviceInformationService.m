@@ -39,16 +39,22 @@
 
 RCT_EXPORT_MODULE();
 
+/**
+ Retrieves the device battery level and firmware version
+ @param callback The callback will be called with an error dictionary as the first argument if there are exceptions,
+                 and a device information dictionary as the second argument if there are no exceptions
+ */
 RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
   if (BluetoothServiceInstance.currentDevice && BluetoothServiceInstance.currentDevice.state == CBPeripheralStateConnected) {
     [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
       [self retrieveBatteryLevel:^(int value) {
-        callback(@[@{@"firmwareVersion" : str, @"batteryLevel" : @(value)}]);
+        callback(@[[NSNull null], @{@"firmwareVersion" : str, @"batteryLevel" : @(value)}]);
       }];
     }];
   }
   else {
-    callback(@[[NSNull null]]);
+    NSDictionary *makeError = RCTMakeError(@"Not connected to a device", nil, nil);
+    callback(@[makeError]);
   }
 }
 
