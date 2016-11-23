@@ -149,7 +149,7 @@ class Device extends Component {
             onPress: () => this.props.navigator.push(routes.deviceAdd),
           },
           {
-            text: 'Back',
+            text: 'Cancel',
           },
         ]
       );
