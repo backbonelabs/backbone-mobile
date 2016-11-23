@@ -151,44 +151,38 @@ class Device extends Component {
   render() {
     const { device, inProgress } = this.state;
 
-    return (
-      <Image source={gradientBackground20} style={styles.backgroundImage}>
-        { /* Use spinner or some sort of progress visual for actions and firmware updates */
-          inProgress ?
-            <Spinner />
-            :
-              <View style={styles.container}>
-                <View style={styles.deviceInfoContainer}>
-                  <Image source={sensorSmall} style={styles.sensorImage} />
-                  <HeadingText size={3}>
-                    Firmware Version: { device.firmwareVersion || 'n/a' }
-                  </HeadingText>
-                  { device.updateAvailable &&
-                    <BodyText style={styles._deviceInfoBodyText}>
-                      (Update Available)
-                    </BodyText>
-                  }
-                </View>
-                <View style={styles.buttonContainer}>
-                  { device.isPaired ?
-                    <Button primary text="UNPAIR" onPress={this.unpairDevice} />
-                    :
-                      <Button primary text="ADD NEW" onPress={this.addDevice} />
-                  }
-                  { /* Only show this button if there's a firmware update available */
-                    device.updateAvailable && (
-                      <Button
-                        style={styles._updateButton}
-                        text="UPDATE"
-                        onPress={this.updateFirmware}
-                      />
-                    )
-                  }
-                </View>
-              </View>
-        }
-      </Image>
-    );
+    return inProgress ?
+      <Spinner />
+      :
+        <View style={styles.container}>
+          <View style={styles.deviceInfoContainer}>
+            <Image source={sensorSmall} style={styles.sensorImage} />
+            <HeadingText size={3}>
+              Firmware Version: { device.firmwareVersion || 'n/a' }
+            </HeadingText>
+            { device.updateAvailable &&
+              <BodyText style={styles._deviceInfoBodyText}>
+                (Update Available)
+              </BodyText>
+            }
+          </View>
+          <View style={styles.buttonContainer}>
+            { device.isPaired ?
+              <Button primary text="UNPAIR" onPress={this.unpairDevice} />
+              :
+                <Button primary text="ADD NEW" onPress={this.addDevice} />
+            }
+            { /* Only show this button if there's a firmware update available */
+              device.updateAvailable && (
+                <Button
+                  style={styles._updateButton}
+                  text="UPDATE"
+                  onPress={this.updateFirmware}
+                />
+              )
+            }
+          </View>
+        </View>;
   }
 }
 

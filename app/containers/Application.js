@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
@@ -25,11 +26,15 @@ import authActions from '../actions/auth';
 import FullModal from '../components/FullModal';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
+import SecondaryText from '../components/SecondaryText';
 import routes from '../routes';
 import styles from '../styles/application';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { heightDifference } = relativeDimensions;
 
 const { bluetoothStates, storageKeys } = constants;
 
@@ -60,6 +65,8 @@ class Application extends Component {
         content: PropTypes.node,
         onClose: PropTypes.func,
       }),
+      inProgress: PropTypes.bool,
+      isConnected: PropTypes.bool,
     }),
     user: PropTypes.shape({
       _id: PropTypes.string,
@@ -315,7 +322,34 @@ class Application extends Component {
       };
     }
 
-    const { modal: modalProps } = this.props.app;
+    const { modal: modalProps, inProgress, isConnected } = this.props.app;
+
+    const ConnectBanner = () => {
+      if (!isConnected) {
+        const bannerText = inProgress ? 'Connecting...' : 'Backbone not connected';
+        return (
+          <View style={styles.banner}>
+            {inProgress ?
+              <View><Spinner size="small" /></View> :
+                <Icon
+                  style={styles._bannerIcon}
+                  name="exclamation-circle"
+                  size={15 * heightDifference}
+                  color={theme.primaryColor}
+                />
+            }
+            {inProgress ? <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText> :
+              <TouchableOpacity
+                onPress={() => this.navigator.push(routes.deviceAdd)}
+              >
+                <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText>
+              </TouchableOpacity>
+            }
+          </View>
+        );
+      }
+      return null;
+    };
 
     return (
       <View style={{ flex: 1 }}>
@@ -323,6 +357,7 @@ class Application extends Component {
           navigator={this.navigator}
           currentRoute={route}
         />
+        { route.showConnectBanner && <ConnectBanner /> }
         <FullModal show={modalProps.show} onClose={modalProps.onClose}>
           {modalProps.content}
         </FullModal>
