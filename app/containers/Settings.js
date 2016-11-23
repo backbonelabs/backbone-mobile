@@ -113,6 +113,14 @@ const AccountRemindersSettings = props => (
     </TouchableOpacity>
     <TouchableOpacity
       style={styles.accountRemindersSettingContainer}
+      onPress={() => props.navigator.push(routes.changePassword)}
+    >
+      <SettingsIcon />
+      <SettingsText text="Change Password" />
+      <ArrowIcon />
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.accountRemindersSettingContainer}
       onPress={() => props.navigator.push(routes.alerts)}
     >
       <SettingsIcon iconName="alert" />
