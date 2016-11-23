@@ -39,6 +39,18 @@ const disconnectError = error => ({
   error: true,
 });
 
+const forgetStart = () => ({ type: 'DEVICE_FORGET__START' });
+
+const forget = () => ({
+  type: 'DEVICE_FORGET',
+});
+
+const forgetError = error => ({
+  type: 'DEVICE_FORGET__ERROR',
+  payload: error,
+  error: true,
+});
+
 const getInfoStart = () => ({ type: 'DEVICE_GET_INFO__START' });
 
 const getInfo = payload => ({
@@ -77,13 +89,25 @@ const deviceActions = {
   disconnect() {
     return (dispatch) => {
       dispatch(disconnectStart());
-      DeviceManagementService.forgetDevice(err => {
+      DeviceManagementService.cancelConnection(err => {
         if (err) {
           dispatch(disconnectError(err));
         } else {
+          dispatch(disconnect());
+        }
+      });
+    };
+  },
+  forget() {
+    return (dispatch) => {
+      dispatch(forgetStart());
+      DeviceManagementService.forgetDevice(err => {
+        if (err) {
+          dispatch(forgetError(err));
+        } else {
           // Remove device information from local storage
           SensitiveInfo.deleteItem(constants.storageKeys.DEVICE);
-          dispatch(disconnect());
+          dispatch(forget());
         }
       });
     };

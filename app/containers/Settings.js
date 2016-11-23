@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
-import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import routes from '../routes';
@@ -305,7 +304,12 @@ class Settings extends Component {
               <SecondaryText>Delete user from storage</SecondaryText>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.dispatch(appActions.disconnect())}
+              onPress={() => this.props.dispatch(deviceActions.disconnect())}
+            >
+              <SecondaryText>Disconnect device</SecondaryText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.dispatch(deviceActions.forget())}
             >
               <SecondaryText>Forget device</SecondaryText>
             </TouchableOpacity>
