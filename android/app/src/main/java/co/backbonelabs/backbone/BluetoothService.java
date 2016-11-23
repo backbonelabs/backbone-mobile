@@ -391,8 +391,14 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         stopScan();
     }
 
+    /**
+     * Disconnects an established connection, or cancels a connection attempt currently in progress,
+     * and then closes and forgets the GATT client
+     */
     public void disconnect() {
+        Timber.d("disconnect()");
         if (bleGatt != null) {
+            Timber.d("About to disconnect and close");
             bleGatt.disconnect();
             bleGatt.close();
             bleGatt = null;
