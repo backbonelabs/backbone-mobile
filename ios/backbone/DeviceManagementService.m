@@ -60,9 +60,11 @@ RCT_EXPORT_METHOD(connectToDevice) {
                                                                                     });
       [self deviceConnectionStatus:makeError];
     } else {
+      [BluetoothServiceInstance stopScan];
+      
       if (!_remembered) {
-        [BluetoothServiceInstance stopScan];
         [self rememberDevice:BluetoothServiceInstance.currentDevice.identifier.UUIDString];
+        _remembered = YES;
       }
 //      [_sharedDevice.led flashLEDColorAsync:[UIColor greenColor] withIntensity:1.0 numberOfFlashes:1];
       [self deviceConnectionStatus:@{@"isConnected": @YES}];
@@ -117,6 +119,21 @@ RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(stopScanForDevices) {
   DLog(@"Stopping device scan");
   [BluetoothServiceInstance stopScan];
+}
+
+RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
+  DLog(@"Cancel device connection and any running scanning");
+  [BluetoothServiceInstance stopScan];
+  
+  [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
+    if (error) {
+      NSDictionary *makeError = RCTMakeError(@"Failed to disconnect", nil, nil);
+      callback(@[makeError]);
+    }
+    else {
+      callback(@[[NSNull null]]);
+    }
+  }];
 }
 
 RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
