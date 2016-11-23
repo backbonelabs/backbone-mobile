@@ -33,6 +33,7 @@ class DeviceConnect extends Component {
     super();
     this.state = {};
     this.cancelConnect = this.cancelConnect.bind(this);
+    this.getSavedDevice = this.getSavedDevice.bind(this);
   }
 
   componentWillMount() {
@@ -54,7 +55,7 @@ class DeviceConnect extends Component {
         { text: 'Continue', onPress: () => this.props.navigator.replace(routes.postureDashboard) }
       ]);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      // Prompt user to reattempt connect or cancel upon failed attempt
+      // Prompt user to reattempt connect upon failed attempt
       Alert.alert('Error', nextProps.errorMessage, [
         { text: 'Cancel', onPress: () => this.props.navigator.replace(routes.postureDashboard) },
         { text: 'Retry', onPress: this.getSavedDevice },
@@ -81,7 +82,7 @@ class DeviceConnect extends Component {
   }
 
   render() {
-    return !this.props.inProgress && (
+    return this.props.inProgress && (
       <View style={styles.container}>
         <View style={styles.bodyContainer}>
           <View style={styles.spinnerContainer}>
