@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
@@ -54,11 +53,11 @@ export default EStyleSheet.create({
   },
   banner: {
     flexDirection: 'row',
-    ...absoluteCenter,
     backgroundColor: '#EEE',
+    ...absoluteCenter,
   },
   bannerIcon: {
-    paddingTop: 1,
+    paddingTop: 1 * heightDifference,
   },
   bannerText: {
     color: '$primaryFontColor',
