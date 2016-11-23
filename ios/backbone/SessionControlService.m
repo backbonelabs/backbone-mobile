@@ -80,7 +80,7 @@ RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
 
 RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   if (BluetoothServiceInstance.currentDevice && self.sessionControlCharacteristic && self.distanceCharacteristic) {
-    if (currentSessionState == SESSION_STATE_RUNNING) {
+    if (currentSessionState == SESSION_STATE_RUNNING || currentSessionState == SESSION_STATE_PAUSED) {
       [self toggleSessionOperation:SESSION_OPERATION_STOP];
     }
     else {
