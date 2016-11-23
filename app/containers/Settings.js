@@ -225,6 +225,33 @@ class Settings extends Component {
     AppState.removeEventListener('change');
   }
 
+  getDevMenu() {
+    const items = [{
+      label: 'Delete access token from local storage',
+      handler: () => SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN),
+    }, {
+      label: 'Delete user from local storage',
+      handler: () => SensitiveInfo.deleteItem(storageKeys.USER),
+    }, {
+      label: 'Disconnect device',
+      handler: () => this.props.dispatch(deviceActions.disconnect()),
+    }, {
+      label: 'Forget device',
+      handler: () => this.props.dispatch(deviceActions.forget()),
+    }];
+
+    return (
+      <View style={styles.devMenu}>
+        <BodyText>Dev menu:</BodyText>
+        {items.map((item, key) => (
+          <TouchableOpacity key={key} style={styles.devMenuItem} onPress={item.handler}>
+            <SecondaryText>{item.label}</SecondaryText>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  }
+
   checkNotificationsPermission() {
     // Check notification permissions
     PushNotificationIOS.checkPermissions(permissions => {
@@ -232,15 +259,6 @@ class Settings extends Component {
       if (!!permissions.alert !== this.state.notificationsEnabled) {
         // Specifically set to boolean due to Switch prop validation
         this.setState({ notificationsEnabled: !!permissions.alert });
-      }
-    });
-  }
-
-  updateNotifications(value) {
-    this.setState({ notificationsEnabled: value }, () => {
-      // Linking scheme for iOS only
-      if (Platform.OS === 'ios') {
-        Linking.openURL('app-settings:');
       }
     });
   }
@@ -260,6 +278,15 @@ class Settings extends Component {
         },
       ]
     );
+  }
+
+  updateNotifications(value) {
+    this.setState({ notificationsEnabled: value }, () => {
+      // Linking scheme for iOS only
+      if (Platform.OS === 'ios') {
+        Linking.openURL('app-settings:');
+      }
+    });
   }
 
   render() {
@@ -290,31 +317,7 @@ class Settings extends Component {
             />
           </View>
         </Image>
-        {config.DEV_MODE &&
-          <View style={{ marginTop: 5, borderWidth: 1 }}>
-            <BodyText>Dev menu:</BodyText>
-            <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN)}
-            >
-              <SecondaryText>Delete access token from storage</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem(storageKeys.USER)}
-            >
-              <SecondaryText>Delete user from storage</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.props.dispatch(deviceActions.disconnect())}
-            >
-              <SecondaryText>Disconnect device</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.props.dispatch(deviceActions.forget())}
-            >
-              <SecondaryText>Forget device</SecondaryText>
-            </TouchableOpacity>
-          </View>
-        }
+        {config.DEV_MODE && this.getDevMenu()}
       </ScrollView>
     );
   }
