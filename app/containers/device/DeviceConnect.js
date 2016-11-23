@@ -21,7 +21,6 @@ class DeviceConnect extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
-      popToTop: PropTypes.func,
     }),
     isConnected: PropTypes.bool,
     dispatch: PropTypes.func,
@@ -40,7 +39,6 @@ class DeviceConnect extends Component {
     // Check current connection status with Backbone device
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === constants.deviceStatuses.CONNECTED) {
-        // Replace scene in nav stack, since user can't go back
         this.props.navigator.replace(routes.postureDashboard);
       } else {
         this.getSavedDevice();
@@ -49,17 +47,18 @@ class DeviceConnect extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // If isConnected is true, then alert the user that
-    // the device has successfully connected to their smartphone
+    // If isConnected is true, then alert the user that the
+    // device has successfully connected to their smartphone
     if (!this.props.isConnected && nextProps.isConnected) {
-      Alert.alert('Success', 'Connected', [{
-        text: 'Continue',
-        onPress: () => this.props.navigator.replace(routes.postureDashboard),
-      }]);
+      Alert.alert('Success', 'Connected', [
+        { text: 'Continue', onPress: () => this.props.navigator.replace(routes.postureDashboard) }
+      ]);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      // On a failed attempt to connect, send them to the
-      // Errors scene with the error message
-      this.deviceError(nextProps.errorMessage);
+      // Prompt user to reattempt connect or cancel upon failed attempt
+      Alert.alert('Error', nextProps.errorMessage, [
+        { text: 'Cancel', onPress: () => this.props.navigator.replace(routes.postureDashboard) },
+        { text: 'Retry', onPress: this.getSavedDevice },
+      ]);
     }
   }
 
@@ -74,34 +73,6 @@ class DeviceConnect extends Component {
         this.props.navigator.replace(routes.deviceScan);
       }
     });
-  }
-
-  // Handle error message and allows user to perform actions
-  // such as retrying a connection attempt and forgetting device
-  deviceError(errorMessage) {
-    this.props.navigator.replace(
-      Object.assign({}, routes.errors, {
-        errorMessage,
-        iconName: {
-          header: 'warning',
-          footer: 'chain-broken',
-        },
-        onPress: {
-          primary: () => this.props.navigator.replace(routes.deviceConnect),
-          secondary: () => DeviceManagementService.forgetDevice(error => {
-            if (error) {
-              // Do something about the forget device error
-            } else {
-              this.props.navigator.popToTop();
-            }
-          }),
-        },
-        onPressText: {
-          primary: 'Retry',
-          secondary: 'Forget this device',
-        },
-      })
-    );
   }
 
   cancelConnect() {
