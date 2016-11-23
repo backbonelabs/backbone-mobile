@@ -30,6 +30,7 @@
   DLog(@"SessionControl init");
   [BluetoothServiceInstance addCharacteristicDelegate:self];
   
+  currentSessionState = SESSION_STATE_STOPPED;
   _sessionControlCharacteristic = nil;
   _distanceCharacteristic = nil;
   
