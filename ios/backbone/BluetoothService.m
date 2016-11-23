@@ -155,7 +155,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 - (void)disconnectDevice:(ErrorHandler)completionHandler {
   self.disconnectHandler = completionHandler;
   
-  if (self.currentDevice && (BluetoothServiceInstance.currentDevice.state == CBPeripheralStateConnected || BluetoothServiceInstance.currentDevice.state == CBPeripheralStateConnecting)) {
+  if (self.currentDevice && (self.currentDevice.state == CBPeripheralStateConnected || self.currentDevice.state == CBPeripheralStateConnecting)) {
     [self.centralManager cancelPeripheralConnection:self.currentDevice];
   }
   else {
