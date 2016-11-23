@@ -55,6 +55,11 @@ const getInfo = payload => ({
   payload,
 });
 
+const getInfoError = error => ({
+  type: 'DEVICE_GET_INFO__ERROR',
+  payload: error,
+});
+
 const deviceActions = {
   connect() {
     return (dispatch) => {
@@ -112,10 +117,14 @@ const deviceActions = {
   getInfo() {
     return (dispatch) => {
       dispatch(getInfoStart());
-      DeviceInformationService.getDeviceInformation(results => {
-        // Store device information in local storage
-        SensitiveInfo.setItem(constants.storageKeys.DEVICE, results);
-        dispatch(getInfo(results));
+      DeviceInformationService.getDeviceInformation((err, results) => {
+        if (err) {
+          dispatch(getInfoError(err));
+        } else {
+          // Store device information in local storage
+          SensitiveInfo.setItem(constants.storageKeys.DEVICE, results);
+          dispatch(getInfo(results));
+        }
       });
     };
   },

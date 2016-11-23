@@ -82,7 +82,15 @@ export default (state = {
         ...state,
         inProgress: false,
         isConnected: true,
-        device: action.payload || {},
+        device: action.payload,
+      };
+    }
+    case 'DEVICE_GET_INFO__ERROR': {
+      return {
+        ...state,
+        inProgress: false,
+        isConnected: false,
+        errorMessage: action.payload.message,
       };
     }
     default:
