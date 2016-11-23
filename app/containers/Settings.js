@@ -33,6 +33,8 @@ import styles from '../styles/settings';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
+const { DeviceManagementService, UserSettingService } = NativeModules;
+
 const { storageKeys } = constants;
 
 const iconMap = {
@@ -127,16 +129,27 @@ const AccountRemindersSettings = props => (
       <SettingsText text="Alerts" />
       <ArrowIcon />
     </TouchableOpacity>
-    <View style={styles.notificationsContainer}>
-      <SettingsIcon iconName="notifications" />
-      <SettingsText text="Push Notifications" />
-      <View style={styles.notificationsSwitch}>
-        <Switch
-          onValueChange={props.updateNotifications}
-          value={props.notificationsEnabled}
-        />
+    {Platform.OS === 'ios' ? (
+      <View style={styles.notificationsContainer}>
+        <SettingsIcon iconName="notifications" />
+        <SettingsText text="Push Notifications" />
+        <View style={styles.notificationsSwitch}>
+          <Switch
+            onValueChange={props.updateNotifications}
+            value={props.notificationsEnabled}
+          />
+        </View>
       </View>
-    </View>
+    ) : (
+      <TouchableOpacity
+        style={styles.notificationsContainer}
+        onPress={() => UserSettingService.launchAppSettings()}
+      >
+        <SettingsIcon iconName="notifications" />
+        <SettingsText text="Push Notifications" />
+        <ArrowIcon />
+      </TouchableOpacity>
+    )}
   </View>
 );
 
@@ -293,7 +306,7 @@ class Settings extends Component {
               <SecondaryText>Forget device</SecondaryText>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => NativeModules.DeviceManagementService.cancelConnection(response => {
+              onPress={() => DeviceManagementService.cancelConnection(response => {
                 console.log('cancelConnection response', response);
               })}
             >
