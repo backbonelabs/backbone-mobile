@@ -102,7 +102,7 @@ class PostureDashboard extends Component {
     if (!this.props.app.isConnected) {
       return Alert.alert(
           'Error',
-          'Device not found, please connect your device before starting the session.',
+          'Device not found, please connect to your Backbone before starting session.',
         [
           {
             text: 'Connect',
