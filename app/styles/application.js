@@ -53,14 +53,11 @@ export default EStyleSheet.create({
   },
   banner: {
     flexDirection: 'row',
-    backgroundColor: '#EEE',
+    backgroundColor: '$bannerColor',
     ...absoluteCenter,
   },
-  bannerIcon: {
-    paddingTop: 1 * heightDifference,
-  },
   bannerText: {
-    color: '$primaryFontColor',
     padding: 4 * widthDifference,
+    color: '$primaryFontColor',
   },
 });

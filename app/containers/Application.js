@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
@@ -34,7 +34,7 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference } = relativeDimensions;
+const { widthDifference } = relativeDimensions;
 
 const { bluetoothStates, storageKeys } = constants;
 
@@ -328,24 +328,21 @@ class Application extends Component {
       if (!isConnected) {
         const bannerText = inProgress ? 'Connecting...' : 'Backbone not connected';
         return (
-          <View style={styles.banner}>
-            {inProgress ?
-              <View><Spinner size="small" /></View> :
+          <TouchableOpacity
+            style={styles.banner}
+            onPress={() => !inProgress && this.navigator.push(routes.deviceAdd)}
+          >
+            { inProgress ?
+              <View><Spinner size="small" /></View>
+              :
                 <Icon
-                  style={styles._bannerIcon}
-                  name="exclamation-circle"
-                  size={15 * heightDifference}
+                  name="error"
+                  size={16 * widthDifference}
                   color={theme.primaryColor}
                 />
             }
-            {inProgress ? <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText> :
-              <TouchableOpacity
-                onPress={() => this.navigator.push(routes.deviceAdd)}
-              >
-                <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText>
-              </TouchableOpacity>
-            }
-          </View>
+            <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText>
+          </TouchableOpacity>
         );
       }
       return null;
