@@ -134,27 +134,30 @@ const AccountRemindersSettings = props => (
       <SettingsText text="Alerts" />
       <ArrowIcon />
     </TouchableOpacity>
-    {Platform.OS === 'ios' ? (
-      <View style={styles.notificationsContainer}>
-        <SettingsIcon iconName="notifications" />
-        <SettingsText text="Push Notifications" />
-        <View style={styles.notificationsSwitch}>
-          <Switch
-            onValueChange={props.updateNotifications}
-            value={props.notificationsEnabled}
-          />
+    {Platform.select({
+      ios: (
+        <View style={styles.notificationsContainer}>
+          <SettingsIcon iconName="notifications" />
+          <SettingsText text="Push Notifications" />
+          <View style={styles.notificationsSwitch}>
+            <Switch
+              onValueChange={props.updateNotifications}
+              value={props.notificationsEnabled}
+            />
+          </View>
         </View>
-      </View>
-    ) : (
-      <TouchableOpacity
-        style={styles.notificationsContainer}
-        onPress={() => NativeModules.UserSettingService.launchAppSettings()}
-      >
-        <SettingsIcon iconName="notifications" />
-        <SettingsText text="Push Notifications" />
-        <ArrowIcon />
-      </TouchableOpacity>
-    )}
+      ),
+      android: (
+        <TouchableOpacity
+          style={styles.notificationsContainer}
+          onPress={() => NativeModules.UserSettingService.launchAppSettings()}
+        >
+          <SettingsIcon iconName="notifications" />
+          <SettingsText text="Push Notifications" />
+          <ArrowIcon />
+        </TouchableOpacity>
+      ),
+    })}
   </View>
 );
 
