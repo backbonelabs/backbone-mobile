@@ -105,11 +105,11 @@ class PostureDashboard extends Component {
           'Device not found, please connect to your Backbone before starting session.',
         [
           {
-            text: 'Connect',
-            onPress: () => this.props.navigator.push(routes.deviceAdd),
+            text: 'Cancel',
           },
           {
-            text: 'Cancel',
+            text: 'Connect',
+            onPress: () => this.props.navigator.push(routes.deviceAdd),
           },
         ]
       );

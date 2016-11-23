@@ -145,11 +145,11 @@ class Device extends Component {
           'Device not found, please connect to your Backbone before updating.',
         [
           {
-            text: 'Connect',
-            onPress: () => this.props.navigator.push(routes.deviceAdd),
+            text: 'Cancel',
           },
           {
-            text: 'Cancel',
+            text: 'Connect',
+            onPress: () => this.props.navigator.push(routes.deviceAdd),
           },
         ]
       );
