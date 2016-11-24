@@ -241,16 +241,12 @@ class Settings extends Component {
 
     // TODO: Implement appropriate logic for notification settings on Android
 
-    // Call getInfo only when scene comes into focus
-    this.props.navigator.navigationContext.addListener('didfocus', () => (
-      this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected))
-    ));
+    this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
   }
 
   componentWillUnmount() {
     // Remove listeners
     AppState.removeEventListener('change');
-    this.props.navigator.navigationContext.removeListener('didfocus');
   }
 
   getDevMenu() {

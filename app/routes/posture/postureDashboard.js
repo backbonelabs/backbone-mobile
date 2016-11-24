@@ -5,5 +5,5 @@ export default {
   title: 'Session',
   component: PostureDashboard,
   showTabBar: true,
-  showConnectBanner: true,
+  showBanner: true,
 };

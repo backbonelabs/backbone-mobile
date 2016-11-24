@@ -26,6 +26,7 @@ import deviceActions from '../actions/device';
 import FullModal from '../components/FullModal';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
+import Banner from '../components/Banner';
 import routes from '../routes';
 import styles from '../styles/application';
 import theme from '../styles/theme';
@@ -335,6 +336,7 @@ class Application extends Component {
         <FullModal show={modalProps.show} onClose={modalProps.onClose}>
           {modalProps.content}
         </FullModal>
+        { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.show ? hiddenStyles : {}, { flex: 1 }]}>
           <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
           { route.showTabBar && TabBar }
