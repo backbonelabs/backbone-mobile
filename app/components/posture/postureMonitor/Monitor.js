@@ -47,9 +47,9 @@ const Monitor = (props) => {
         </View>
       </View>
       <View style={[{ transform: [{ rotate: `${degree}deg` }] }, styles.monitorPointerContainer]}>
-        <View style={styles.point} />
-        <View style={styles.hand} />
         <View style={styles.base} />
+        <View style={styles.hand} />
+        <View style={styles.point} />
       </View>
     </View>
   );

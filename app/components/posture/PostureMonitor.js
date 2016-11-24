@@ -42,8 +42,8 @@ class PostureMonitor extends Component {
     super();
     this.state = {
       monitoring: false,
-      slouchDeg: 320,
-      handDeg: -90,
+      slouchDeg: -90,
+      handDeg: 0,
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
@@ -189,8 +189,8 @@ class PostureMonitor extends Component {
         <MonitorSlider
           value={this.state.slouchDeg}
           onValueChange={(value) => this.setState({ slouchDeg: value })}
-          minimumValue={180}
-          maximumValue={360}
+          minimumValue={-180}
+          maximumValue={0}
           disabled={this.state.monitoring}
         />
         <View style={styles.btnContainer}>

@@ -4,8 +4,10 @@ import relativeDimensions from '../../utils/relativeDimensions';
 const { widthDifference, heightDifference } = relativeDimensions;
 const responsiveWidthHalfCircle = 128.5 * widthDifference;
 
+const totalPointerWidth = 10 * widthDifference;
+const totalPointerLength = 88 * widthDifference;
+
 export default EStyleSheet.create({
-  $pointerBaseHeight: 84,
   container: {
     flex: 1,
   },
@@ -25,33 +27,35 @@ export default EStyleSheet.create({
     },
   },
   monitorPointerContainer: {
+    flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',
-    height: '$pointerBaseHeight * 2',
-    bottom: '$pointerBaseHeight',
-    marginBottom: '$pointerBaseHeight * -2',
+    justifyContent: 'flex-end',
+    height: totalPointerWidth,
+    width: `${totalPointerLength * 2} - ${8 * widthDifference}`,
+    marginTop: totalPointerWidth * -0.5,
   },
   base: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 8 * widthDifference,
+    height: 8 * widthDifference,
+    borderRadius: 4 * widthDifference,
     backgroundColor: '$primaryFontColor',
   },
   hand: {
-    width: 2,
-    height: 70,
+    height: 2 * widthDifference,
+    width: 70 * widthDifference,
     backgroundColor: '$primaryFontColor',
   },
   point: {
     backgroundColor: 'transparent',
-    borderTopWidth: 0,
-    borderRightWidth: 5,
-    borderBottomWidth: 10,
-    borderLeftWidth: 5,
-    borderTopColor: 'transparent',
+    borderRightWidth: 0,
+    borderTopWidth: 5 * widthDifference,
+    borderLeftWidth: 10 * widthDifference,
+    borderBottomWidth: 5 * widthDifference,
     borderRightColor: 'transparent',
-    borderBottomColor: '$primaryFontColor',
-    borderLeftColor: 'transparent',
+    borderTopColor: 'transparent',
+    borderLeftColor: '$primaryFontColor',
+    borderBottomColor: 'transparent',
   },
   monitorTitle: {
     textAlign: 'center',
