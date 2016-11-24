@@ -204,6 +204,10 @@ class Settings extends Component {
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
+      navigationContext: PropTypes.shape({
+        addListener: PropTypes.func,
+        removeListener: PropTypes.func,
+      }),
     }),
     app: PropTypes.shape({
       config: PropTypes.object,
@@ -234,13 +238,19 @@ class Settings extends Component {
         }
       });
     }
+
     // TODO: Implement appropriate logic for notification settings on Android
-    this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
+
+    // Call getInfo only when scene comes into focus
+    this.props.navigator.navigationContext.addListener('didfocus', () => (
+      this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected))
+    ));
   }
 
   componentWillUnmount() {
-    // Remove app state event listener
+    // Remove listeners
     AppState.removeEventListener('change');
+    this.props.navigator.navigationContext.removeListener('didfocus');
   }
 
   getDevMenu() {
