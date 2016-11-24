@@ -153,15 +153,11 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       break;
   }
-  
-  // For now we need to store this as it's needed later upon successfully toggling the notification
-  //  NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
-  _currentCommandData = [[NSData dataWithBytes:bytes length:sizeof(bytes)] copy];
-  
-  [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
+
+  NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
   
   DLog(@"Toggle Session State %d", operation);
-//  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:self.sessionControlCharacteristic type:CBCharacteristicWriteWithResponse];
+  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:self.sessionControlCharacteristic type:CBCharacteristicWriteWithResponse];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
@@ -205,10 +201,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       _errorHandler(error);
     }
     else {
-//      _errorHandler(nil);
-      
-      // Temporary solution: Toggle session state on the board only after toggling the notification state
-      [BluetoothServiceInstance.currentDevice writeValue:_currentCommandData forCharacteristic:self.sessionControlCharacteristic type:CBCharacteristicWriteWithResponse];
+      // Session control is fully updated, return callback with no error
+      _errorHandler(nil);
     }
   }
 }
@@ -221,9 +215,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       _errorHandler(error);
     }
     else {
-      _errorHandler(nil);
-      // When we have the updated firmware, we should toggle distance notification here after successfully update the session state
-//      [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
+      // No error, so we proceed to toggling distance notification
+      [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
     }
   }
 }
