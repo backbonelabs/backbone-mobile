@@ -248,8 +248,13 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       }
     }
     else {
-      // No error, so we proceed to toggling distance notification
-      [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
+      if (_errorHandler) {
+        // No error, so we proceed to toggling distance notification
+        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
+      }
+      else {
+        // For reverting, no need toggling the notification on the same state.
+      }
     }
   }
 }
