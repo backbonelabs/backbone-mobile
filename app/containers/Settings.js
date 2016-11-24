@@ -238,10 +238,14 @@ class Settings extends Component {
         }
       });
     }
-
     // TODO: Implement appropriate logic for notification settings on Android
 
-    this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
+    // Call getInfo once scene comes into focus
+    let eventSubscriber = this.props.navigator.navigationContext.addListener('didfocus', () => {
+      this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
+      eventSubscriber.remove();
+      eventSubscriber = null;
+    });
   }
 
   componentWillUnmount() {
