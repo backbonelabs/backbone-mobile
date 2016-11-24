@@ -51,13 +51,4 @@ export default EStyleSheet.create({
     width: 30 * widthDifference,
     resizeMode: 'contain',
   },
-  banner: {
-    flexDirection: 'row',
-    backgroundColor: '$bannerColor',
-    ...absoluteCenter,
-  },
-  bannerText: {
-    padding: 4 * widthDifference,
-    color: '$primaryFontColor',
-  },
 });

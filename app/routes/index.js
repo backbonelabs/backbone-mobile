@@ -19,6 +19,7 @@ import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
+import banner from './banner';
 
 export default {
   activity,
@@ -42,4 +43,5 @@ export default {
   howTo,
   device,
   changePassword,
+  banner,
 };

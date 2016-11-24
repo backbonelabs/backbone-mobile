@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
@@ -27,15 +26,11 @@ import deviceActions from '../actions/device';
 import FullModal from '../components/FullModal';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
-import SecondaryText from '../components/SecondaryText';
 import routes from '../routes';
 import styles from '../styles/application';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
-import relativeDimensions from '../utils/relativeDimensions';
-
-const { widthDifference } = relativeDimensions;
 
 const { bluetoothStates, storageKeys } = constants;
 
@@ -330,31 +325,6 @@ class Application extends Component {
     }
 
     const { modal: modalProps } = this.props.app;
-    const { inProgress, isConnected } = this.props.device;
-
-    const ConnectBanner = () => {
-      if (!isConnected) {
-        const bannerText = inProgress ? 'Connecting...' : 'Backbone not connected';
-        return (
-          <TouchableOpacity
-            style={styles.banner}
-            onPress={() => !inProgress && this.navigator.push(routes.deviceAdd)}
-          >
-            { inProgress ?
-              <View><Spinner size="small" /></View>
-              :
-                <Icon
-                  name="error"
-                  size={16 * widthDifference}
-                  color={theme.primaryColor}
-                />
-            }
-            <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText>
-          </TouchableOpacity>
-        );
-      }
-      return null;
-    };
 
     return (
       <View style={{ flex: 1 }}>
@@ -362,7 +332,6 @@ class Application extends Component {
           navigator={this.navigator}
           currentRoute={route}
         />
-        { route.showConnectBanner && <ConnectBanner /> }
         <FullModal show={modalProps.show} onClose={modalProps.onClose}>
           {modalProps.content}
         </FullModal>
@@ -408,8 +377,8 @@ class Application extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user }, device } = state;
-  return { app, user, device };
+  const { app, user: { user } } = state;
+  return { app, user };
 };
 
 export default connect(mapStateToProps)(Application);
