@@ -192,7 +192,13 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
         Timber.d("Toggle Session Control %d", operation);
 
-        bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
+        boolean status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
+
+        // There won't be any response back from the board once it failed here
+        // So if we failed initiating the characteristic writer, handle the error callback right away
+        if (!status) {
+            errorCallBack.onErrorCallBack("Error Initiating Write Operation On Session Control");
+        }
     }
 
     private final BroadcastReceiver bleBroadcastReceiver = new BroadcastReceiver() {
@@ -249,10 +255,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
                 int status = intent.getIntExtra(Constants.EXTRA_BYTE_STATUS_VALUE, BluetoothGatt.GATT_FAILURE);
 
-                Timber.d("Pasti Donk %d", status);
-
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC.toString())) {
-                    Timber.d("Bisa Donk %d", status);
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (errorCallBack != null) {
                             errorCallBack.onErrorCallBack(null);

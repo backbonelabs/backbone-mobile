@@ -487,7 +487,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         }
     }
 
-    public void writeToCharacteristic(UUID characteristicUUID, byte[] data) {
+    public boolean writeToCharacteristic(UUID characteristicUUID, byte[] data) {
+        boolean writeStatus = false;
+
         if (!characteristicMap.containsKey(characteristicUUID)) {
             Timber.d("Characteristic not found!");
         }
@@ -495,11 +497,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             Timber.d("Write to %s", characteristicUUID.toString());
             BluetoothGattCharacteristic characteristic = characteristicMap.get(characteristicUUID);
 
-            // Since Android's GATT class only allows 1 operation at a time,
+            // Since Android's GATT class only allows 1 write operation at a time,
             // we might have to attempt several times until an operation succeeds
             // when there is another GATT operation still running.
             // In most cases, it should succeed right away.
-            boolean writeStatus;
             int counter = Constants.MAX_BLE_ACTION_ATTEMPT;
             do {
                 characteristic.setValue(data);
@@ -516,6 +517,8 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             } while (!writeStatus && (counter-- > 0));
             Timber.d("Write Status %d", writeStatus ? 1 : 0);
         }
+
+        return writeStatus;
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
