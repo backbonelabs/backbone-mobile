@@ -31,14 +31,13 @@ class Device extends Component {
   constructor() {
     super();
 
-    this.unpairDevice = this.unpairDevice.bind(this);
     this.addDevice = this.addDevice.bind(this);
+    this.unpairDevice = this.unpairDevice.bind(this);
     this.updateFirmware = this.updateFirmware.bind(this);
   }
 
-  componentWillMount() {
-    // Get latest device information if it's currently connected
-    this.props.dispatch(deviceActions.getInfo(this.props.isConnected));
+  addDevice() {
+    this.props.navigator.push(routes.deviceAdd);
   }
 
   unpairDevice() {
@@ -56,24 +55,18 @@ class Device extends Component {
     );
   }
 
-  addDevice() {
-    // Navigate to deviceAdd route
-    this.props.navigator.push(routes.deviceAdd);
-  }
-
   updateFirmware() {
     if (!this.props.isConnected) {
       Alert.alert(
           'Error',
-          'Device not found, please connect to your Backbone before updating.',
+          'Please connect to your Backbone before updating.',
         [
           { text: 'Cancel' },
-          {
-            text: 'Connect',
-            onPress: () => this.props.navigator.push(routes.deviceAdd),
-          },
+          { text: 'Connect', onPress: this.addDevice },
         ]
       );
+    } else {
+      // TO DO: Call necessary method to update firmware
     }
   }
 
@@ -101,7 +94,11 @@ class Device extends Component {
             { device && device.firmwareVersion ?
               <Button primary text="UNPAIR" onPress={this.unpairDevice} />
               :
-                <Button primary text="ADD NEW" onPress={this.addDevice} />
+                <Button
+                  primary
+                  text="ADD NEW"
+                  onPress={this.addDevice}
+                />
             }
             { /* Only show this button if there's a firmware update available */
               device && device.updateAvailable && (
