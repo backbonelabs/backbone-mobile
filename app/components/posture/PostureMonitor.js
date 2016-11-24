@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Alert,
-  Vibration,
+  // Alert,
+  // Vibration,
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { isFunction } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -19,8 +18,7 @@ import appActions from '../../actions/app';
 import routes from '../../routes';
 import PostureSummary from './PostureSummary';
 
-const { ActivityService } = NativeModules;
-const activityName = 'posture';
+const { SessionControlService } = NativeModules;
 
 class PostureMonitor extends Component {
   static propTypes = {
@@ -40,8 +38,8 @@ class PostureMonitor extends Component {
     }),
   };
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
       monitoring: false,
       slouchDeg: 320,
@@ -49,32 +47,29 @@ class PostureMonitor extends Component {
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
-    this.enablePostureActivity = this.enablePostureActivity.bind(this);
-    this.disablePostureActivity = this.disablePostureActivity.bind(this);
+    this.startSession = this.startSession.bind(this);
+    this.pauseSession = this.pauseSession.bind(this);
+    this.stopSession = this.stopSession.bind(this);
     this.showSummary = this.showSummary.bind(this);
   }
 
   componentWillMount() {
-    this.enablePostureActivity();
-
-    // Register listener for when the posture activity is disabled
-    this.activityDisabledListener = NativeAppEventEmitter.addListener('ActivityDisabled', event => {
-      if (event.module === activityName) {
-        this.setState({ monitoring: false }, () => {
-          // Remove the posture event listener
-          if (this.postureListener && isFunction(this.postureListener.remove)) {
-            this.postureListener.remove();
-          }
-        });
-      }
+    // Set up listener for posture distance data
+    this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', ({ currentDistance }) => {
+      console.log('PostureDistance data', currentDistance);
+      this.setState({ currentDistance });
     });
+
+    // Automatically start the session on mount
+    this.startSession();
   }
 
   componentWillUnmount() {
-    this.disablePostureActivity();
-    if (this.activityDisabledListener && isFunction(this.activityDisabledListener.remove)) {
-      this.activityDisabledListener.remove();
-    }
+    // End the session if it's running
+    this.stopSession();
+
+    // Remove the listener for posture distance data
+    this.postureListener.remove();
   }
 
   /**
@@ -98,43 +93,69 @@ class PostureMonitor extends Component {
     return `${minutes}:${seconds}`;
   }
 
-  enablePostureActivity() {
-    ActivityService.enableActivity(activityName, (error) => {
-      if (!error) {
-        this.setState({ monitoring: true }, () => {
-          const { settings } = this.props.user;
-          // Attach listener
-          this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
-            // TODO: Get time remaining/elapsed from so component
+  startSession() {
+    // ActivityService.enableActivity(activityName, (error) => {
+    //   if (!error) {
+    //     this.setState({ monitoring: true }, () => {
+    //       const { settings } = this.props.user;
+    //       // Attach listener
+    //       this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
+    //         // TODO: Get time remaining/elapsed from so component
 
-            const { currentDistance, slouchTime } = event;
+    //         const { currentDistance, slouchTime } = event;
 
-            // User is slouching if currentDistance is greater than or equal to threshold
-            const isSlouching = (currentDistance >= settings.postureThreshold);
+    //         // User is slouching if currentDistance is greater than or equal to threshold
+    //         const isSlouching = (currentDistance >= settings.postureThreshold);
 
-            // Check if user slouch time is over slouch time threshold
-            const isOverSlouchTimeThreshold = (slouchTime >= settings.slouchTimeThreshold);
-            // If user is slouching and phone vibration is set to true, then vibrate phone
-            if (isSlouching && settings.phoneVibration && isOverSlouchTimeThreshold) {
-              /**
-               * Next PR will include toggling on/off vibration settings and fetching user settings
-               * without the user having to go to the settings route (which is how it currently is)
-               */
-              Vibration.vibrate();
-            } else if (isSlouching && !settings.phoneVibration) {
-              // We may still want to do something here, even if phoneVibration isn't true
-            }
-          });
-        });
+    //         // Check if user slouch time is over slouch time threshold
+    //         const isOverSlouchTimeThreshold = (slouchTime >= settings.slouchTimeThreshold);
+    //         // If user is slouching and phone vibration is set to true, then vibrate phone
+    //         if (isSlouching && settings.phoneVibration && isOverSlouchTimeThreshold) {
+    //           /**
+    //            * Next PR will include toggling on/off vibration settings and fetching user settings
+    //            * without the user having to go to the settings route (which is how it currently is)
+    //            */
+    //           Vibration.vibrate();
+    //         } else if (isSlouching && !settings.phoneVibration) {
+    //           // We may still want to do something here, even if phoneVibration isn't true
+    //         }
+    //       });
+    //     });
+    //   } else {
+    //     // TODO: Send to Error component (tbd)
+    //     Alert.alert('Error', error.message);
+    //   }
+    // });
+
+    SessionControlService.start(err => {
+      if (err) {
+        console.log('error', err);
       } else {
-        // TODO: Send to Error component (tbd)
-        Alert.alert('Error', error.message);
+        console.log('no error', err);
+        this.setState({ monitoring: true });
       }
     });
   }
 
-  disablePostureActivity() {
-    ActivityService.disableActivity(activityName);
+  pauseSession() {
+    SessionControlService.pause(err => {
+      if (err) {
+        console.log('error', err);
+      } else {
+        this.setState({ monitoring: false });
+      }
+    });
+  }
+
+  stopSession() {
+    // ActivityService.disableActivity(activityName);
+    SessionControlService.stop(err => {
+      if (err) {
+        console.log('error', err);
+      } else {
+        this.setState({ monitoring: false });
+      }
+    });
   }
 
   showSummary() {
@@ -173,11 +194,11 @@ class PostureMonitor extends Component {
           disabled={this.state.monitoring}
         />
         <View style={styles.btnContainer}>
-          { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
-            <MonitorButton play onPress={this.enablePostureActivity} />
+          { this.state.monitoring ? <MonitorButton pause onPress={this.pauseSession} /> :
+            <MonitorButton play onPress={this.startSession} />
           }
           <MonitorButton alertsDisabled onPress={this.showSummary} />
-          <MonitorButton stop onPress={this.disablePostureActivity} />
+          <MonitorButton stop onPress={this.stopSession} />
         </View>
       </View>
     );
