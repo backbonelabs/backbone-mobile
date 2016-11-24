@@ -269,7 +269,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 mBundle.putByteArray(Constants.EXTRA_BYTE_VALUE, characteristic.getValue());
-                mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE,  characteristic.getUuid().toString());
+                mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE,  characteristicUUID);
             }
 
             intent.putExtras(mBundle);
@@ -284,7 +284,16 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             String characteristicUUID = characteristic.getUuid().toString();
             Timber.d("DidChanged %s", characteristicUUID);
 
-            if (characteristicUUID.equalsIgnoreCase(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC.toString())) {
+            Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_UPDATE);
+            Bundle mBundle = new Bundle();
+
+            mBundle.putByteArray(Constants.EXTRA_BYTE_VALUE, characteristic.getValue());
+            mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
+
+            intent.putExtras(mBundle);
+            reactContext.sendBroadcast(intent);
+
+//            if (characteristicUUID.equalsIgnoreCase(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC.toString())) {
                 // final Intent intent = new Intent(Constants.ACTION_BOOTLOADER_UPDATE);
                 // Bundle mBundle = new Bundle();
                 // // Putting the byte value read for GATT Db
@@ -305,21 +314,40 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                 // reactContext.sendBroadcast(intent);
 
                 // Timber.d("Broadcast %s : %s", characteristicUUID, hexValue);
-            }
+//            }
         }
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic
                 characteristic, int status) {
-            String serviceUUID = characteristic.getService().getUuid().toString();
-
             String characteristicUUID = characteristic.getUuid().toString();
-            Timber.d("DidWrite %d", status);
-            if (status == BluetoothGatt.GATT_SUCCESS) {
+            Timber.d("DidWrite %s %d", characteristicUUID, status);
 
-            } else {
+            Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_WRITE);
+            Bundle mBundle = new Bundle();
 
-            }
+            mBundle.putInt(Constants.EXTRA_BYTE_STATUS_VALUE, status);
+            mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
+
+            intent.putExtras(mBundle);
+            reactContext.sendBroadcast(intent);
+        }
+
+        @Override
+        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
+                                      int status) {
+            BluetoothGattCharacteristic characteristic = descriptor.getCharacteristic();
+            String characteristicUUID = characteristic.getUuid().toString();
+            Timber.d("DidWriteDescriptor %s %d", characteristicUUID, status);
+
+            Intent intent = new Intent(Constants.ACTION_DESCRIPTOR_WRITE);
+            Bundle mBundle = new Bundle();
+
+            mBundle.putInt(Constants.EXTRA_BYTE_STATUS_VALUE, status);
+            mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
+
+            intent.putExtras(mBundle);
+            reactContext.sendBroadcast(intent);
         }
     };
 
@@ -420,7 +448,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         return characteristicMap.containsKey(characteristicUUID);
     }
 
-    public void toggleCharacteristicNotification(UUID characteristicUUID, boolean state) {
+    public boolean toggleCharacteristicNotification(UUID characteristicUUID, boolean state) {
+        boolean status = false;
+
         if (!characteristicMap.containsKey(characteristicUUID)) {
             Timber.d("Characteristic Not Found!");
         }
@@ -433,16 +463,17 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                 BluetoothGattDescriptor descriptor = characteristic.getDescriptor(UUID.fromString(Constants.CLIENT_CHARACTERISTIC_CONFIG));
                 descriptor.setValue(state == true ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
 
-                boolean status = bleGatt.writeDescriptor(descriptor);
+                status = bleGatt.writeDescriptor(descriptor);
                 Timber.d("Desc write %d", status ? 1 : 0);
             }
-            else {
-                Timber.d("Desc OFF");
-            }
 
-            boolean charStatus = bleGatt.setCharacteristicNotification(characteristic, state);
-            Timber.d("Char write %d", charStatus ? 1 : 0);
+            if (status) {
+                status = bleGatt.setCharacteristicNotification(characteristic, state);
+                Timber.d("Char write %d", status ? 1 : 0);
+            }
         }
+
+        return status;
     }
 
     public void readCharacteristic(UUID characteristicUUID) {
