@@ -20,6 +20,24 @@ import PostureSummary from './PostureSummary';
 
 const { SessionControlService } = NativeModules;
 
+/**
+ * Maps distance values to slouch degrees for determining how much to rotate
+ * the monitor pointer. The degree output would range from -180 to 0, where -180
+ * would have the pointer pointing horizontally left and 0 would have the pointer
+ * pointing horizontally right.
+ * @param  {Number} distance Deviation from the control point
+ * @return {Number}          Degree equivalent of the distance value
+ */
+const distanceToDegrees = distance => {
+  const minDistance = 0;
+  const maxDistance = 0.25;
+  const minMappedDegree = 0;
+  const maxMappedDegree = -180;
+  const numerator = (distance - minDistance) * (maxMappedDegree - minMappedDegree);
+  const denominator = maxDistance - minDistance;
+  return Math.max(-180, (numerator / denominator) + minMappedDegree);
+};
+
 class PostureMonitor extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
@@ -47,6 +65,7 @@ class PostureMonitor extends Component {
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
+    this.distanceHandler = this.distanceHandler.bind(this);
     this.startSession = this.startSession.bind(this);
     this.pauseSession = this.pauseSession.bind(this);
     this.stopSession = this.stopSession.bind(this);
@@ -55,10 +74,10 @@ class PostureMonitor extends Component {
 
   componentWillMount() {
     // Set up listener for posture distance data
-    this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', ({ currentDistance }) => {
-      console.log('PostureDistance data', currentDistance);
-      this.setState({ currentDistance });
-    });
+    this.postureListener = NativeAppEventEmitter.addListener(
+      'PostureDistance',
+      this.distanceHandler
+    );
 
     // Automatically start the session on mount
     this.startSession();
@@ -93,42 +112,39 @@ class PostureMonitor extends Component {
     return `${minutes}:${seconds}`;
   }
 
+  distanceHandler(event) {
+    const { currentDistance } = event;
+
+    /*
+    The following was carried over from before for reference. It will need some cleaning up.
+
+    ==================================================
+
+    const { currentDistance, slouchTime } = event;
+
+    // User is slouching if currentDistance is greater than or equal to threshold
+    const isSlouching = (currentDistance >= settings.postureThreshold);
+
+    // Check if user slouch time is over slouch time threshold
+    const isOverSlouchTimeThreshold = (slouchTime >= settings.slouchTimeThreshold);
+    // If user is slouching and phone vibration is set to true, then vibrate phone
+    if (isSlouching && settings.phoneVibration && isOverSlouchTimeThreshold) {
+      Vibration.vibrate();
+    } else if (isSlouching && !settings.phoneVibration) {
+      // We may still want to do something here, even if phoneVibration isn't true
+    }
+
+    ==================================================
+     */
+
+    // Calculate and update the number of degrees to rotate the pointer
+    this.setState({ handDeg: distanceToDegrees(currentDistance) });
+  }
+
   startSession() {
-    // ActivityService.enableActivity(activityName, (error) => {
-    //   if (!error) {
-    //     this.setState({ monitoring: true }, () => {
-    //       const { settings } = this.props.user;
-    //       // Attach listener
-    //       this.postureListener = NativeAppEventEmitter.addListener('PostureDistance', (event) => {
-    //         // TODO: Get time remaining/elapsed from so component
-
-    //         const { currentDistance, slouchTime } = event;
-
-    //         // User is slouching if currentDistance is greater than or equal to threshold
-    //         const isSlouching = (currentDistance >= settings.postureThreshold);
-
-    //         // Check if user slouch time is over slouch time threshold
-    //         const isOverSlouchTimeThreshold = (slouchTime >= settings.slouchTimeThreshold);
-    //         // If user is slouching and phone vibration is set to true, then vibrate phone
-    //         if (isSlouching && settings.phoneVibration && isOverSlouchTimeThreshold) {
-    //           /**
-    //            * Next PR will include toggling on/off vibration settings and fetching user settings
-    //            * without the user having to go to the settings route (which is how it currently is)
-    //            */
-    //           Vibration.vibrate();
-    //         } else if (isSlouching && !settings.phoneVibration) {
-    //           // We may still want to do something here, even if phoneVibration isn't true
-    //         }
-    //       });
-    //     });
-    //   } else {
-    //     // TODO: Send to Error component (tbd)
-    //     Alert.alert('Error', error.message);
-    //   }
-    // });
-
     SessionControlService.start(err => {
       if (err) {
+        // TODO: Implement error handling
         console.log('error', err);
       } else {
         console.log('no error', err);
@@ -140,6 +156,7 @@ class PostureMonitor extends Component {
   pauseSession() {
     SessionControlService.pause(err => {
       if (err) {
+        // TODO: Implement error handling
         console.log('error', err);
       } else {
         this.setState({ monitoring: false });
@@ -148,9 +165,9 @@ class PostureMonitor extends Component {
   }
 
   stopSession() {
-    // ActivityService.disableActivity(activityName);
     SessionControlService.stop(err => {
       if (err) {
+        // TODO: Implement error handling
         console.log('error', err);
       } else {
         this.setState({ monitoring: false });
