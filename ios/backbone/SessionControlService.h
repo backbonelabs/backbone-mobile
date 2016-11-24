@@ -11,6 +11,7 @@
 #import "Constants.h"
 
 @interface SessionControlService : NSObject <RCTBridgeModule, CBPeripheralDelegate> {
+  NSData *_currentCommandData;
   ErrorHandler _errorHandler;
   int currentSessionState;
   
