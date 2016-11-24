@@ -30,6 +30,7 @@
   DLog(@"SessionControl init");
   [BluetoothServiceInstance addCharacteristicDelegate:self];
   
+  previousSessionState = SESSION_STATE_STOPPED;
   currentSessionState = SESSION_STATE_STOPPED;
   _sessionControlCharacteristic = nil;
   _distanceCharacteristic = nil;
@@ -123,6 +124,9 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   uint8_t bytes[1];
   _errorHandler = handler;
   
+  currentCommand = operation;
+  previousSessionState = currentSessionState;
+  
   switch (operation) {
     case SESSION_OPERATION_START:
       bytes[0] = SESSION_COMMAND_START;
@@ -198,11 +202,38 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     if (error) {
       DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
       
-      _errorHandler(error);
+      switch (previousSessionState) {
+        case SESSION_STATE_STOPPED:
+          // Stop the current session since there was an error creating the new session
+          [self toggleSessionOperation:SESSION_OPERATION_STOP withHandler:nil];
+          break;
+        case SESSION_STATE_PAUSED:
+          // Revert back to pause the current session since the resume operation went wrong
+          [self toggleSessionOperation:SESSION_OPERATION_PAUSE withHandler:nil];
+          break;
+        case SESSION_STATE_RUNNING:
+          if (currentCommand == SESSION_OPERATION_STOP) {
+            // Session is stopped anyway, so there's no point reverting it back, as that would create a completely new session.
+            // React should decide how to handle this case, ie. we can let the user to retry turning off the notification.
+          }
+          else if (currentCommand == SESSION_OPERATION_PAUSE) {
+            // Pausing was not successfully completed, so we resume the current session
+            [self toggleSessionOperation:SESSION_OPERATION_RESUME withHandler:nil];
+          }
+          break;
+        default:
+          break;
+      }
+      
+      if (_errorHandler) {
+        _errorHandler(error);
+      }
     }
     else {
       // Session control is fully updated, return callback with no error
-      _errorHandler(nil);
+      if (_errorHandler) {
+        _errorHandler(nil);
+      }
     }
   }
 }
@@ -212,7 +243,9 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     if (error) {
       DLog(@"Error writing to characteristic: %@ %@", characteristic.UUID, error.localizedDescription);
       
-      _errorHandler(error);
+      if (_errorHandler) {
+        _errorHandler(error);
+      }
     }
     else {
       // No error, so we proceed to toggling distance notification

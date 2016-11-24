@@ -13,6 +13,8 @@
 @interface SessionControlService : NSObject <RCTBridgeModule, CBPeripheralDelegate> {
   ErrorHandler _errorHandler;
   int currentSessionState;
+  int previousSessionState;
+  int currentCommand;
   
   BOOL distanceNotificationStatus;
 }
