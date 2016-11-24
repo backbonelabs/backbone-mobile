@@ -1,7 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -14,25 +19,35 @@
                         <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="GradientBackground100" translatesAutoresizingMaskIntoConstraints="NO" id="CeL-lx-zn7"/>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="GradientBackground100" translatesAutoresizingMaskIntoConstraints="NO" id="CeL-lx-zn7">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LogoWhite" translatesAutoresizingMaskIntoConstraints="NO" id="IuY-Eg-nRJ">
+                                <rect key="frame" x="147.5" y="246" width="80" height="73"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="V8C-fU-d3Y"/>
                                     <constraint firstAttribute="height" constant="73" id="VQi-sS-Rcb"/>
                                 </constraints>
                             </imageView>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="BackboneWhite" translatesAutoresizingMaskIntoConstraints="NO" id="5Rd-Iq-56h"/>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="BackboneWhite" translatesAutoresizingMaskIntoConstraints="NO" id="5Rd-Iq-56h">
+                                <rect key="frame" x="39.5" y="350" width="296" height="23"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="5Rd-Iq-56h" secondAttribute="height" multiplier="144:11" id="Tej-Yz-emw"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="5Rd-Iq-56h" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="0Kp-rR-aic"/>
                             <constraint firstItem="CeL-lx-zn7" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="5Qp-QQ-tab"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="5Rd-Iq-56h" secondAttribute="trailing" constant="23.5" id="GbA-OR-Rf9"/>
                             <constraint firstItem="IuY-Eg-nRJ" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="SxA-lb-X8g"/>
                             <constraint firstItem="CeL-lx-zn7" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Tdp-7i-erv"/>
                             <constraint firstItem="IuY-Eg-nRJ" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-51" id="geA-bF-TrS"/>
+                            <constraint firstItem="5Rd-Iq-56h" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="23.5" id="k7p-Xa-Gic"/>
                             <constraint firstAttribute="trailing" secondItem="CeL-lx-zn7" secondAttribute="trailing" id="nbo-rc-TZS"/>
                             <constraint firstAttribute="bottom" secondItem="CeL-lx-zn7" secondAttribute="bottom" id="v2s-On-l7K"/>
                             <constraint firstItem="5Rd-Iq-56h" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="28" id="x8J-jA-ZZR"/>
