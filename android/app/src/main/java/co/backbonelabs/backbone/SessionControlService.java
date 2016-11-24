@@ -170,21 +170,25 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         switch (operation) {
             case Constants.SESSION_OPERATION.START:
                 commandBytes[0] = Constants.SESSION_COMMAND.START;
+                currentSessionState = Constants.SESSION_STATE.RUNNING;
                 distanceNotificationStatus = true;
 
                 break;
             case Constants.SESSION_OPERATION.RESUME:
                 commandBytes[0] = Constants.SESSION_COMMAND.RESUME;
+                currentSessionState = Constants.SESSION_STATE.RUNNING;
                 distanceNotificationStatus = true;
 
                 break;
             case Constants.SESSION_OPERATION.PAUSE:
                 commandBytes[0] = Constants.SESSION_COMMAND.PAUSE;
+                currentSessionState = Constants.SESSION_STATE.PAUSED;
                 distanceNotificationStatus = false;
 
                 break;
             case Constants.SESSION_OPERATION.STOP:
                 commandBytes[0] = Constants.SESSION_COMMAND.STOP;
+                currentSessionState = Constants.SESSION_STATE.STOPPED;
                 distanceNotificationStatus = false;
 
                 break;
