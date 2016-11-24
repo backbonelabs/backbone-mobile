@@ -202,6 +202,11 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     if (error) {
       DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
       
+      if (_errorHandler) {
+        _errorHandler(error);
+      }
+      
+      // Revert as needed
       switch (previousSessionState) {
         case SESSION_STATE_STOPPED:
           // Stop the current session since there was an error creating the new session
@@ -223,10 +228,6 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
           break;
         default:
           break;
-      }
-      
-      if (_errorHandler) {
-        _errorHandler(error);
       }
     }
     else {
