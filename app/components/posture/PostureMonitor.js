@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  // Alert,
   // Vibration,
   NativeModules,
-  NativeAppEventEmitter,
+  NativeEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
 import styles from '../../styles/posture/postureMonitor';
@@ -19,6 +18,7 @@ import routes from '../../routes';
 import PostureSummary from './PostureSummary';
 
 const { SessionControlService } = NativeModules;
+const eventEmitter = new NativeEventEmitter(SessionControlService);
 
 /**
  * Maps distance values to slouch degrees for determining how much to rotate
@@ -30,7 +30,7 @@ const { SessionControlService } = NativeModules;
  */
 const distanceToDegrees = distance => {
   const minDistance = 0;
-  const maxDistance = 0.25;
+  const maxDistance = 0.3; // This is the max distance we care for
   const minMappedDegree = 0;
   const maxMappedDegree = -180;
   const numerator = (distance - minDistance) * (maxMappedDegree - minMappedDegree);
@@ -74,7 +74,7 @@ class PostureMonitor extends Component {
 
   componentWillMount() {
     // Set up listener for posture distance data
-    this.postureListener = NativeAppEventEmitter.addListener(
+    this.postureListener = eventEmitter.addListener(
       'PostureDistance',
       this.distanceHandler
     );

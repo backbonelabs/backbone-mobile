@@ -42,6 +42,10 @@
   return [SessionControlService getSessionControlService];
 }
 
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"PostureDistance"];
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(start:(RCTResponseSenderBlock)callback) {
@@ -186,10 +190,10 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       DLog(@"DistanceRawValue %x %x %x %x", dataPointer[0], dataPointer[1], dataPointer[2], dataPointer[3]);
       
       float currentDistance = [Utilities convertToFloatFromBytes:dataPointer];
-      
-      [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
-                                                                                  @"currentDistance": [NSNumber numberWithFloat:currentDistance]
-                                                                                  }];
+
+      [self sendEventWithName:@"PostureDistance" body:@{
+                                                        @"currentDistance": [NSNumber numberWithFloat:currentDistance]
+                                                        }];
     }
     else {
       
