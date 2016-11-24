@@ -323,6 +323,9 @@ class Application extends Component {
       this.navigator.replace = function replace(routeObj) {
         return this._replace({ ...routeObj, key: Date.now() });
       };
+    } else {
+      // Keep routeStack in sync between both navigators
+      this.navigator.state = clone(navigator.state);
     }
 
     const { modal: modalProps } = this.props.app;
