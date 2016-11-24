@@ -119,6 +119,7 @@ const deviceActions = {
       const { storageKeys } = constants;
       dispatch(getInfoStart());
 
+      // Get latest information if device is connected
       if (isConnected) {
         DeviceInformationService.getDeviceInformation((err, results) => {
           if (err) {
@@ -130,12 +131,15 @@ const deviceActions = {
           }
         });
       } else {
+        // Get locally stored device information
         SensitiveInfo.getItem(storageKeys.DEVICE)
           .then(device => {
             if (device) {
+              // Update device store with locally stored device
               dispatch(getInfo(device));
             } else {
-              dispatch(getInfo());
+              // No locally stored device, set to empty object
+              dispatch(getInfo({}));
             }
           });
       }
