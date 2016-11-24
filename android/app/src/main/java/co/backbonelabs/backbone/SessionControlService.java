@@ -238,7 +238,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (errorCallBack != null) {
-                            boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC, true);
+                            // Session state updated, so we proceed to toggle the notification state
+                            boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC, distanceNotificationStatus);
 
                             // If we failed initiating the descriptor writer, handle the error callback
                             if (!toggleStatus) {
