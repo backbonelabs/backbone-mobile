@@ -65,7 +65,7 @@ const SensorSettings = props => (
       {props.isConnected && (
         <View style={styles.batteryInfo}>
           <SecondaryText style={styles._deviceInfoText}>
-            Battery Life: {props.device.batteryLevel}%
+            Battery Life: {props.device && props.device.batteryLevel}%
           </SecondaryText>
           <Image source={batteryIcon} style={styles.batteryIcon} />
         </View>
@@ -234,13 +234,8 @@ class Settings extends Component {
         }
       });
     }
-
     // TODO: Implement appropriate logic for notification settings on Android
-
-    if (this.props.device.isConnected) {
-      // Get latest device information if it's currently connected
-      this.props.dispatch(deviceActions.getInfo());
-    }
+    this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
   }
 
   componentWillUnmount() {
