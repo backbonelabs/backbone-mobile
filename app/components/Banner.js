@@ -14,15 +14,15 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const { widthDifference } = relativeDimensions;
 
-const ConnectBanner = props => {
-  const { isConnected, inProgress } = props.device;
+const Banner = props => {
+  const { isConnected, inProgress } = props;
 
   if (!isConnected) {
     const bannerText = inProgress ? 'Connecting...' : 'Backbone not connected';
     return (
       <TouchableOpacity
         style={styles.banner}
-        onPress={() => !inProgress && this.navigator.push(routes.deviceAdd)}
+        onPress={() => !inProgress && props.navigator.push(routes.deviceAdd)}
       >
         { inProgress ?
           <View><Spinner size="small" /></View>
@@ -42,10 +42,11 @@ const ConnectBanner = props => {
 
 const { PropTypes } = React;
 
-ConnectBanner.propTypes = {
-  device: PropTypes.shape({
-    isConnected: PropTypes.bool,
-    inProgress: PropTypes.bool,
+Banner.propTypes = {
+  isConnected: PropTypes.bool,
+  inProgress: PropTypes.bool,
+  navigator: PropTypes.shape({
+    push: PropTypes.func,
   }),
 };
 
@@ -54,4 +55,4 @@ const mapStateToProps = state => {
   return device;
 };
 
-export default connect(mapStateToProps)(ConnectBanner);
+export default connect(mapStateToProps)(Banner);
