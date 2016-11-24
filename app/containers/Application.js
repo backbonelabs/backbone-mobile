@@ -66,6 +66,8 @@ class Application extends Component {
         content: PropTypes.node,
         onClose: PropTypes.func,
       }),
+    }),
+    device: PropTypes.shape({
       inProgress: PropTypes.bool,
       isConnected: PropTypes.bool,
     }),
@@ -321,9 +323,14 @@ class Application extends Component {
       this.navigator.push = function push(routeObj) {
         return this._push({ ...routeObj, key: Date.now() });
       };
+      this.navigator._replace = this.navigator.replace; // the original replace method
+      this.navigator.replace = function replace(routeObj) {
+        return this._replace({ ...routeObj, key: Date.now() });
+      };
     }
 
-    const { modal: modalProps, inProgress, isConnected } = this.props.app;
+    const { modal: modalProps } = this.props.app;
+    const { inProgress, isConnected } = this.props.device;
 
     const ConnectBanner = () => {
       if (!isConnected) {
@@ -401,8 +408,8 @@ class Application extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user } } = state;
-  return { app, user };
+  const { app, user: { user }, device } = state;
+  return { app, user, device };
 };
 
 export default connect(mapStateToProps)(Application);
