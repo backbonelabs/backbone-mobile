@@ -46,16 +46,24 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(start:(RCTResponseSenderBlock)callback) {
   if (BluetoothServiceInstance.currentDevice && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_STOPPED) {
-      [self toggleSessionOperation:SESSION_OPERATION_START];
+      [self toggleSessionOperation:SESSION_OPERATION_START withHandler:^(NSError * _Nullable error) {
+        if (error) {
+          callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
+        }
+        else {
+          callback(@[[NSNull null]]);
+        }
+      }];
     }
     else if (currentSessionState == SESSION_STATE_PAUSED) {
-      [self toggleSessionOperation:SESSION_OPERATION_RESUME];
+      [self toggleSessionOperation:SESSION_OPERATION_RESUME withHandler:^(NSError * _Nullable error) {
+        
+      }];
     }
     else {
       // Do nothing
+      callback(@[[NSNull null]]);
     }
-    
-    callback(@[[NSNull null]]);
   }
   else {
     callback(@[RCTMakeError(@"Session Control is not ready", nil, nil)]);
@@ -65,13 +73,19 @@ RCT_EXPORT_METHOD(start:(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
   if (BluetoothServiceInstance.currentDevice && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_RUNNING) {
-      [self toggleSessionOperation:SESSION_OPERATION_PAUSE];
+      [self toggleSessionOperation:SESSION_OPERATION_PAUSE withHandler:^(NSError * _Nullable error) {
+        if (error) {
+          callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
+        }
+        else {
+          callback(@[[NSNull null]]);
+        }
+      }];
     }
     else {
       // Do nothing
+      callback(@[[NSNull null]]);
     }
-    
-    callback(@[[NSNull null]]);
   }
   else {
     callback(@[RCTMakeError(@"Session Control is not ready", nil, nil)]);
@@ -81,32 +95,42 @@ RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   if (BluetoothServiceInstance.currentDevice && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_RUNNING || currentSessionState == SESSION_STATE_PAUSED) {
-      [self toggleSessionOperation:SESSION_OPERATION_STOP];
+      [self toggleSessionOperation:SESSION_OPERATION_STOP withHandler:^(NSError * _Nullable error) {
+        if (error) {
+          callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
+        }
+        else {
+          callback(@[[NSNull null]]);
+        }
+      }];
     }
     else {
       // Do nothing
+      callback(@[[NSNull null]]);
     }
-    
-    callback(@[[NSNull null]]);
   }
   else {
     callback(@[RCTMakeError(@"Session Control is not ready", nil, nil)]);
   }
 }
 
-- (void)toggleSessionOperation:(int)operation {
+- (void)toggleSessionOperation:(int)operation withHandler:(ErrorHandler)handler{
   uint8_t bytes[1];
-  bool distanceNotificationStatus = YES;
+  _errorHandler = handler;
   
   switch (operation) {
     case SESSION_OPERATION_START:
       bytes[0] = SESSION_COMMAND_START;
       currentSessionState = SESSION_STATE_RUNNING;
       
+      distanceNotificationStatus = YES;
+      
       break;
     case SESSION_OPERATION_RESUME:
       bytes[0] = SESSION_COMMAND_RESUME;
       currentSessionState = SESSION_STATE_RUNNING;
+      
+      distanceNotificationStatus = YES;
       
       break;
     case SESSION_OPERATION_PAUSE:
@@ -162,6 +186,33 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     }
     else {
       
+    }
+  }
+}
+
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
+  if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
+    if (error) {
+      DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
+      
+      _errorHandler(error);
+    }
+    else {
+      _errorHandler(nil);
+    }
+  }
+}
+
+- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+  if ([characteristic.UUID isEqual:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
+    if (error) {
+      DLog(@"Error writing to characteristic: %@ %@", characteristic.UUID, error.localizedDescription);
+      
+      _errorHandler(error);
+    }
+    else {
+      // No error, so we proceed to toggling distance notification
+//      [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
     }
   }
 }

@@ -11,7 +11,10 @@
 #import "Constants.h"
 
 @interface SessionControlService : NSObject <RCTBridgeModule, CBPeripheralDelegate> {
+  ErrorHandler _errorHandler;
   int currentSessionState;
+  
+  BOOL distanceNotificationStatus;
 }
 
 @property (nonatomic, strong) RCTBridge *bridge;
