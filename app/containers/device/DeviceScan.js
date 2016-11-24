@@ -32,12 +32,7 @@ class DeviceScan extends Component {
     super();
     this.state = {
       // List's data source
-      deviceList: [
-        // Dummy data
-        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
-        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
-        { deviceName: 'Backbone', identifier: 'd2f12936-a749-4da3-941c' },
-      ],
+      deviceList: [],
       inProgress: false,
     };
     this.selectDevice = this.selectDevice.bind(this);
@@ -127,9 +122,9 @@ class DeviceScan extends Component {
     return (
       <View style={styles.cardStyle}>
         <View style={styles.textContainer}>
-          <BodyText>{rowData.deviceName}</BodyText>
+          <BodyText>{rowData.name}</BodyText>
           <SecondaryText style={styles._secondaryText}>
-            Unique ID: {rowData.identifier}
+            {rowData.identifier}
           </SecondaryText>
         </View>
         <Icon
