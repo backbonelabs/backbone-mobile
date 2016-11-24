@@ -245,6 +245,14 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
     DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
   }
   
+  if ([_characteristicDelegates count] > 0) {
+    for (id<CBPeripheralDelegate> delegate in _characteristicDelegates) {
+      if ([delegate respondsToSelector:@selector(peripheral:didUpdateNotificationStateForCharacteristic:error:)]) {
+        [delegate peripheral:peripheral didUpdateNotificationStateForCharacteristic:characteristic error:error];
+      }
+    }
+  }
+  
   // Notification has started
   if (characteristic.isNotifying) {
     DLog(@"Notification active: %@ %@", characteristic.UUID, characteristic);
