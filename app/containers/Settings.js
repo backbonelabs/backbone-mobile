@@ -240,8 +240,8 @@ class Settings extends Component {
     }
     // TODO: Implement appropriate logic for notification settings on Android
 
-    // Call getInfo once scene comes into focus
-    let eventSubscriber = this.props.navigator.navigationContext.addListener('didfocus', () => {
+    // Add listener to run logic only after scene comes into focus
+    let eventSubscriber = this.props.navigator.navigationContext.addListener('willfocus', () => {
       this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
       eventSubscriber.remove();
       eventSubscriber = null;
@@ -301,6 +301,8 @@ class Settings extends Component {
           onPress: () => {
             // Remove locally stored user data and reset Redux auth/user store
             this.props.dispatch(authActions.signOut());
+            // Disconnect from device
+            this.props.dispatch(deviceActions.disconnect());
             this.props.navigator.resetTo(routes.welcome);
           },
         },
