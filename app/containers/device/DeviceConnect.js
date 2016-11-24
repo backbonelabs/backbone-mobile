@@ -58,7 +58,7 @@ class DeviceConnect extends Component {
       // Prompt user to reattempt connect upon failed attempt
       Alert.alert('Error', nextProps.errorMessage, [
         { text: 'Cancel', onPress: () => this.props.navigator.replace(routes.postureDashboard) },
-        { text: 'Retry', onPress: this.getSavedDevice },
+        { text: 'Retry', onPress: () => this.props.dispatch(deviceActions.connect()) },
       ]);
     }
   }
@@ -82,7 +82,7 @@ class DeviceConnect extends Component {
   }
 
   render() {
-    return this.props.inProgress && (
+    return this.props.inProgress ? (
       <View style={styles.container}>
         <View style={styles.bodyContainer}>
           <View style={styles.spinnerContainer}>
@@ -100,13 +100,15 @@ class DeviceConnect extends Component {
           />
         </View>
       </View>
-    );
+    )
+    :
+      <View />;
   }
 }
 
 const mapStateToProps = state => {
-  const { app } = state;
-  return app;
+  const { device } = state;
+  return device;
 };
 
 export default connect(mapStateToProps)(DeviceConnect);
