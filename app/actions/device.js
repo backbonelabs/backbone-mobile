@@ -114,18 +114,31 @@ const deviceActions = {
       });
     };
   },
-  getInfo() {
+  getInfo(isConnected) {
     return (dispatch) => {
+      const { storageKeys } = constants;
       dispatch(getInfoStart());
-      DeviceInformationService.getDeviceInformation((err, results) => {
-        if (err) {
-          dispatch(getInfoError(err));
-        } else {
-          // Store device information in local storage
-          SensitiveInfo.setItem(constants.storageKeys.DEVICE, results);
-          dispatch(getInfo(results));
-        }
-      });
+
+      if (isConnected) {
+        DeviceInformationService.getDeviceInformation((err, results) => {
+          if (err) {
+            dispatch(getInfoError(err));
+          } else {
+            // Store device information in local storage
+            SensitiveInfo.setItem(storageKeys.DEVICE, results);
+            dispatch(getInfo(results));
+          }
+        });
+      } else {
+        SensitiveInfo.getItem(storageKeys.DEVICE)
+          .then(device => {
+            if (device) {
+              dispatch(getInfo(device));
+            } else {
+              dispatch(getInfo());
+            }
+          });
+      }
     };
   },
 };
