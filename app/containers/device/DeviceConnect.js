@@ -10,7 +10,6 @@ import styles from '../../styles/device/deviceConnect';
 import deviceActions from '../../actions/device';
 import Spinner from '../../components/Spinner';
 import HeadingText from '../../components/HeadingText';
-import Button from '../../components/Button';
 import constants from '../../utils/constants';
 
 const { DeviceManagementService } = NativeModules;
@@ -43,6 +42,8 @@ class DeviceConnect extends Component {
     // Check current connection status with Backbone device
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === constants.deviceStatuses.CONNECTED) {
+        // Update store, since user only able to initiate connect if isConnected is false
+        this.props.dispatch(deviceActions.connect({ isConnected: status }));
         this.props.navigator.replace(routes.postureDashboard);
       } else {
         this.getSavedDevice();
@@ -111,16 +112,6 @@ class DeviceConnect extends Component {
           <View style={styles.textContainer}>
             <HeadingText size={2}>Connecting...</HeadingText>
           </View>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            primary
-            text="Cancel"
-            onPress={() => {
-              this.props.dispatch(deviceActions.disconnect());
-              this.goBackToScene();
-            }}
-          />
         </View>
       </View>
     )
