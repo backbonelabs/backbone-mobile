@@ -262,7 +262,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
             Timber.d("DidRead %s", characteristicUUID);
             // GATT Characteristic read
-            Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_UPDATE);
+            Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_READ);
             Bundle mBundle = new Bundle();
 
             mBundle.putInt(Constants.EXTRA_BYTE_STATUS_VALUE, status);
