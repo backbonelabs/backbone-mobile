@@ -82,19 +82,24 @@ class DeviceConnect extends Component {
   // TO DO: Implement below method once figured out discrepancy
   // between navigator's routeStack and getCurrentRoutes
   goBackToScene() {
-    const deviceRoutes = {
+    const routebackScenes = {
       device: 'device',
       postureDashboard: 'postureDashboard',
     };
+
+    // Loop through routeStack starting with the most recent route
     const routeStack = this.props.navigator.getCurrentRoutes().reverse();
 
     for (let i = 0; i < routeStack.length; i++) {
       const routeName = routeStack[i].name;
-      if (deviceRoutes[routeName]) {
+      // Route to the last route before DeviceScan / DeviceConnect
+      // If it matches device or postureDashboard in that order
+      if (routebackScenes[routeName]) {
         return this.props.navigator.popToRoute(routeStack[i]);
       }
     }
 
+    // If it doesn't match a property in routebackScenes send to PostureDashboard
     return this.props.navigator.replace(routes.postureDashboard);
   }
 
