@@ -375,7 +375,7 @@ public class Utilities {
      * @param data
      * @return
      */
-    private static float getFloatFromByteArray(byte[] data, int offset) {
+    public static float getFloatFromByteArray(byte[] data, int offset) {
         return ByteBuffer.wrap(data, offset, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 
