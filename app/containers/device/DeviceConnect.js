@@ -21,6 +21,8 @@ class DeviceConnect extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
+      popToRoute: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
     }),
     isConnected: PropTypes.bool,
     dispatch: PropTypes.func,
@@ -34,6 +36,7 @@ class DeviceConnect extends Component {
     this.state = {};
     this.cancelConnect = this.cancelConnect.bind(this);
     this.getSavedDevice = this.getSavedDevice.bind(this);
+    this.goBackToScene = this.goBackToScene.bind(this);
   }
 
   componentWillMount() {
@@ -52,7 +55,7 @@ class DeviceConnect extends Component {
     // device has successfully connected to their smartphone
     if (!this.props.isConnected && nextProps.isConnected) {
       Alert.alert('Success', 'Connected', [
-        { text: 'Continue', onPress: () => this.props.navigator.replace(routes.postureDashboard) },
+        { text: 'Continue', onPress: this.goBackToScene },
       ]);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Prompt user to reattempt connect upon failed attempt
@@ -79,6 +82,18 @@ class DeviceConnect extends Component {
   cancelConnect() {
     // TO DO: Call native module method for canceling connect
     this.props.navigator.replace(routes.postureDashboard);
+  }
+
+  // TO DO: Implement below method once figured out discrepancy
+  // between navigator's routeStack and getCurrentRoutes
+  goBackToScene() {
+    const routeStack = this.props.navigator.getCurrentRoutes().reverse();
+
+    for (let i = 0; i < routeStack.length; i++) {
+      if (routeStack[i].name !== 'DeviceConnect' && routeStack[i].name !== 'DeviceScan') {
+        return this.props.navigator.popToRoute(routeStack[i]);
+      }
+    }
   }
 
   render() {
