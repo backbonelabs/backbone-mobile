@@ -79,8 +79,6 @@ class DeviceConnect extends Component {
     });
   }
 
-  // TO DO: Implement below method once figured out discrepancy
-  // between navigator's routeStack and getCurrentRoutes
   goBackToScene() {
     const routebackScenes = {
       device: 'device',
@@ -119,7 +117,6 @@ class DeviceConnect extends Component {
             primary
             text="Cancel"
             onPress={() => {
-              // TO DO: Call method here to cancel scan
               this.props.dispatch(deviceActions.disconnect());
               this.goBackToScene();
             }}
