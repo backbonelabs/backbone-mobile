@@ -35,7 +35,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
         super(reactContext);
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.ACTION_CHARACTERISTIC_UPDATE);
+        filter.addAction(Constants.ACTION_CHARACTERISTIC_READ);
         reactContext.registerReceiver(bleBroadcastReceiver, filter);
     }
 
@@ -109,8 +109,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             final String action = intent.getAction();
             Timber.d("Receive Broadcast %s", action);
 
-            if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
-                Timber.d("CharacteristicUpdate");
+            if (action.equals(Constants.ACTION_CHARACTERISTIC_READ)) {
+                Timber.d("CharacteristicRead");
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
                 int status = intent.getIntExtra(Constants.EXTRA_BYTE_STATUS_VALUE, BluetoothGatt.GATT_FAILURE);
 

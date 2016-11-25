@@ -464,12 +464,12 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                 descriptor.setValue(state == true ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
 
                 status = bleGatt.writeDescriptor(descriptor);
-                Timber.d("Desc write %d", status ? 1 : 0);
+                Timber.d("Desc write %b", status);
             }
 
             if (status) {
                 status = bleGatt.setCharacteristicNotification(characteristic, state);
-                Timber.d("Char write %d", status ? 1 : 0);
+                Timber.d("Char write %b", status);
             }
         }
 

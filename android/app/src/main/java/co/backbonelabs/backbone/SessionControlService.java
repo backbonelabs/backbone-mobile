@@ -52,7 +52,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
     private boolean distanceNotificationStatus;
 
-    private Constants.ErrorCallBack errorCallBack;
+    private Constants.IntCallBack errorCallBack;
 
     @Override
     public String getName() {
@@ -67,27 +67,27 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
             if (currentSessionState == Constants.SESSION_STATE.STOPPED) {
-                toggleSessionOperation(Constants.SESSION_OPERATION.START, new Constants.ErrorCallBack() {
+                toggleSessionOperation(Constants.SESSION_OPERATION.START, new Constants.IntCallBack() {
                     @Override
-                    public void onErrorCallBack(String err) {
-                        if (err == null) {
+                    public void onIntCallBack(int val) {
+                        if (val == 0) {
                             callback.invoke();
                         }
                         else {
-                            callback.invoke(JSError.make(err));
+                            callback.invoke(JSError.make("Error toggling session"));
                         }
                     }
                 });
             }
             else if (currentSessionState == Constants.SESSION_STATE.PAUSED) {
-                toggleSessionOperation(Constants.SESSION_OPERATION.RESUME, new Constants.ErrorCallBack() {
+                toggleSessionOperation(Constants.SESSION_OPERATION.RESUME, new Constants.IntCallBack() {
                     @Override
-                    public void onErrorCallBack(String err) {
-                        if (err == null) {
+                    public void onIntCallBack(int val) {
+                        if (val == 0) {
                             callback.invoke();
                         }
                         else {
-                            callback.invoke(JSError.make(err));
+                            callback.invoke(JSError.make("Error toggling session"));
                         }
                     }
                 });
@@ -109,14 +109,14 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
             if (currentSessionState == Constants.SESSION_STATE.RUNNING) {
-                toggleSessionOperation(Constants.SESSION_OPERATION.PAUSE, new Constants.ErrorCallBack() {
+                toggleSessionOperation(Constants.SESSION_OPERATION.PAUSE, new Constants.IntCallBack() {
                     @Override
-                    public void onErrorCallBack(String err) {
-                        if (err == null) {
+                    public void onIntCallBack(int val) {
+                        if (val == 0) {
                             callback.invoke();
                         }
                         else {
-                            callback.invoke(JSError.make(err));
+                            callback.invoke(JSError.make("Error toggling session"));
                         }
                     }
                 });
@@ -138,14 +138,14 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
             if (currentSessionState == Constants.SESSION_STATE.RUNNING || currentSessionState == Constants.SESSION_STATE.PAUSED) {
-                toggleSessionOperation(Constants.SESSION_OPERATION.STOP, new Constants.ErrorCallBack() {
+                toggleSessionOperation(Constants.SESSION_OPERATION.STOP, new Constants.IntCallBack() {
                     @Override
-                    public void onErrorCallBack(String err) {
-                        if (err == null) {
+                    public void onIntCallBack(int val) {
+                        if (val == 0) {
                             callback.invoke();
                         }
                         else {
-                            callback.invoke(JSError.make(err));
+                            callback.invoke(JSError.make("Error toggling session"));
                         }
                     }
                 });
@@ -159,9 +159,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         }
     }
 
-    private void toggleSessionOperation(int operation, Constants.ErrorCallBack errCallBack) {
+    private void toggleSessionOperation(int operation, Constants.IntCallBack errCallBack) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
-        byte[] commandBytes = new byte[]{};
+        byte[] commandBytes = new byte[1];
 
         previousSessionState = currentSessionState;
         currentCommand = operation;
@@ -201,7 +201,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         // There won't be any response back from the board once it failed here
         // So if we failed initiating the characteristic writer, handle the error callback right away
         if (!status) {
-            errorCallBack.onErrorCallBack("Error Initiating Write Operation On Session Control");
+            errorCallBack.onIntCallBack(1);
         }
     }
 
@@ -215,20 +215,17 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
                 Timber.d("CharacteristicUpdate");
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
-                int status = intent.getIntExtra(Constants.EXTRA_BYTE_STATUS_VALUE, BluetoothGatt.GATT_FAILURE);
 
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC.toString())) {
-                    if (status == BluetoothGatt.GATT_SUCCESS) {
-                        byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
+                    byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
 
-                        float currentDistance = Utilities.getFloatFromByteArray(responseArray, 0);
+                    float currentDistance = Utilities.getFloatFromByteArray(responseArray, 0);
 
-                        WritableMap wm = Arguments.createMap();
-                        wm.putDouble("currentDistance", currentDistance);
-                        EventEmitter.send(reactContext, "PostureDistance", wm);
+                    WritableMap wm = Arguments.createMap();
+                    wm.putDouble("currentDistance", currentDistance);
+                    EventEmitter.send(reactContext, "PostureDistance", wm);
 
-                        Timber.d("Distance %f", currentDistance);
-                    }
+                    Timber.d("Distance %f", currentDistance);
                 }
             }
             else if (action.equals(Constants.ACTION_CHARACTERISTIC_WRITE)) {
@@ -243,13 +240,13 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                             // If we failed initiating the descriptor writer, handle the error callback
                             if (!toggleStatus) {
-                                errorCallBack.onErrorCallBack("Error Toggling Notification");
+                                errorCallBack.onIntCallBack(1);
                             }
                         }
                     }
                     else {
                         if (errorCallBack != null) {
-                            errorCallBack.onErrorCallBack("Error updating session state");
+                            errorCallBack.onIntCallBack(1);
                         }
                     }
                 }
@@ -263,13 +260,13 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (errorCallBack != null) {
-                            errorCallBack.onErrorCallBack(null);
+                            errorCallBack.onIntCallBack(0);
                         }
                     }
                     else {
                         if (errorCallBack != null) {
                             // Properly handle the failure when we failed toggling the notification state
-                            errorCallBack.onErrorCallBack("Error Updating Notification State");
+                            errorCallBack.onIntCallBack(1);
 
                             // Revert as needed
                             switch (previousSessionState) {

@@ -84,14 +84,11 @@ public class Constants {
         void onIntCallBack(int value);
     }
 
-    public interface ErrorCallBack {
-        void onErrorCallBack(String err);
-    }
-
     public final static int MAX_BLE_ACTION_ATTEMPT = 50;
 
     public final static String ACTION_CHARACTERISTIC_FOUND = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_FOUND";
     public final static String ACTION_CHARACTERISTIC_UPDATE = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_UPDATE";
+    public final static String ACTION_CHARACTERISTIC_READ = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_READ";
     public final static String ACTION_CHARACTERISTIC_WRITE = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_WRITE";
     public final static String ACTION_DESCRIPTOR_WRITE = "co.backbonelabs.backbone.intent.action.DESCRIPTOR_WRITE";
     public final static String ACTION_BOOTLOADER_UPDATE = "co.backbonelabs.backbone.intent.action.BOOTLOADER_UPDATE";
