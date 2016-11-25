@@ -83,22 +83,19 @@ class DeviceConnect extends Component {
   // between navigator's routeStack and getCurrentRoutes
   goBackToScene() {
     const deviceRoutes = {
-      CONNECT: 'deviceConnect',
-      SCAN: 'deviceScan',
-      ONBOARDING: 'onboarding',
+      device: 'device',
+      postureDashboard: 'postureDashboard',
     };
-    const { CONNECT, SCAN, ONBOARDING } = deviceRoutes;
     const routeStack = this.props.navigator.getCurrentRoutes().reverse();
 
     for (let i = 0; i < routeStack.length; i++) {
-      if (routeStack[i].name === ONBOARDING) {
-        // Route to postureDashboard if user comes from onboarding
-        return this.props.navigator.resetTo(routes.postureDashboard);
-      } else if (routeStack[i].name !== CONNECT && routeStack[i].name !== SCAN) {
-        // Route to last scene before device scan/connect
+      const routeName = routeStack[i].name;
+      if (deviceRoutes[routeName]) {
         return this.props.navigator.popToRoute(routeStack[i]);
       }
     }
+
+    return this.props.navigator.replace(routes.postureDashboard);
   }
 
   render() {

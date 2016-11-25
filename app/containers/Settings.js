@@ -206,7 +206,6 @@ class Settings extends Component {
       resetTo: PropTypes.func,
       navigationContext: PropTypes.shape({
         addListener: PropTypes.func,
-        removeListener: PropTypes.func,
       }),
     }),
     app: PropTypes.shape({
@@ -244,9 +243,7 @@ class Settings extends Component {
   componentDidMount() {
     // Add listener to run logic only after scene comes into focus
     let eventSubscriber = this.props.navigator.navigationContext.addListener('didfocus', () => {
-      if (this.props.device.isConnected) {
-        this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
-      }
+      this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
       eventSubscriber.remove();
       eventSubscriber = null;
     });
