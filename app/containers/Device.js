@@ -39,7 +39,7 @@ class Device extends Component {
   componentWillReceiveProps(nextProps) {
     // If user connects to device, then fetch the latest data
     if (!this.props.isConnected && nextProps.isConnected) {
-      this.props.dispatch(deviceActions.getInfo(nextProps.isConnected));
+      this.props.dispatch(deviceActions.getInfo());
     }
   }
 

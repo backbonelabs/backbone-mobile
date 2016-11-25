@@ -114,13 +114,14 @@ const deviceActions = {
       });
     };
   },
-  getInfo(isConnected) {
-    return (dispatch) => {
+  getInfo() {
+    return (dispatch, getState) => {
       const { storageKeys } = constants;
+      const { device: deviceState } = getState();
       dispatch(getInfoStart());
 
       // Get latest information if device is connected
-      if (isConnected) {
+      if (deviceState.isConnected) {
         DeviceInformationService.getDeviceInformation((err, results) => {
           if (err) {
             dispatch(getInfoError(err));
