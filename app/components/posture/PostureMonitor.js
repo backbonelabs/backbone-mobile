@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  // Vibration,
+  Vibration,
   NativeModules,
   NativeEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { debounce } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -56,13 +57,14 @@ class PostureMonitor extends Component {
     }),
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       monitoring: false,
-      slouchDeg: -90,
+      postureThreshold: this.props.user.settings.postureThreshold,
       handDeg: 0,
     };
+    this.slouchStartTime = null;
     this.postureListener = null;
     this.activityDisabledListener = null;
     this.distanceHandler = this.distanceHandler.bind(this);
@@ -70,6 +72,9 @@ class PostureMonitor extends Component {
     this.pauseSession = this.pauseSession.bind(this);
     this.stopSession = this.stopSession.bind(this);
     this.showSummary = this.showSummary.bind(this);
+    this.updatePostureThreshold = this.updatePostureThreshold.bind(this);
+    // Debounce update of user posture threshold setting to limit the number of API requests
+    this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
   }
 
   componentWillMount() {
@@ -85,7 +90,9 @@ class PostureMonitor extends Component {
 
   componentWillUnmount() {
     // End the session if it's running
-    this.stopSession();
+    SessionControlService.stop(() => {
+      // no-op
+    });
 
     // Remove the listener for posture distance data
     this.postureListener.remove();
@@ -115,30 +122,44 @@ class PostureMonitor extends Component {
   distanceHandler(event) {
     const { currentDistance } = event;
 
-    /*
-    The following was carried over from before for reference. It will need some cleaning up.
-
-    ==================================================
-
-    const { currentDistance, slouchTime } = event;
-
-    // User is slouching if currentDistance is greater than or equal to threshold
-    const isSlouching = (currentDistance >= settings.postureThreshold);
-
-    // Check if user slouch time is over slouch time threshold
-    const isOverSlouchTimeThreshold = (slouchTime >= settings.slouchTimeThreshold);
-    // If user is slouching and phone vibration is set to true, then vibrate phone
-    if (isSlouching && settings.phoneVibration && isOverSlouchTimeThreshold) {
-      Vibration.vibrate();
-    } else if (isSlouching && !settings.phoneVibration) {
-      // We may still want to do something here, even if phoneVibration isn't true
-    }
-
-    ==================================================
-     */
-
     // Calculate and update the number of degrees to rotate the pointer
     this.setState({ handDeg: distanceToDegrees(currentDistance) });
+
+    const { settings: { slouchTimeThreshold, phoneVibration } } = this.props.user;
+
+    // Check if user is slouching past their threshold.
+    // We use the postureThreshold from state instead of the user.settings object
+    // because the user may modify the threshold and resume the session before the
+    // updated threshold value is saved in the database and a response is returned
+    // from the API server to refresh the user object in the Redux store.
+    const isSlouching = currentDistance >= this.state.postureThreshold;
+
+    if (isSlouching) {
+      // User is currently slouching
+      if (this.slouchStartTime) {
+        // User was previously slouching
+        // Check if user slouched for more than the slouch time threshold
+        const isOverSlouchTimeThreshold =
+          Date.now() - this.slouchStartTime >= slouchTimeThreshold * 1000;
+
+        if (isOverSlouchTimeThreshold && phoneVibration) {
+          // User slouched for more than the threshold and has phone vibrations enabled
+          // Vibrate phone
+          Vibration.vibrate(1000);
+
+          // Clear start time to queue up a new vibration if needed
+          this.slouchStartTime = null;
+        }
+      } else {
+        // User just started slouching, capture start time
+        this.slouchStartTime = Date.now();
+      }
+    }
+
+    if (!isSlouching && this.slouchStartTime) {
+      // User stopped slouching, clear start time
+      this.slouchStartTime = null;
+    }
   }
 
   startSession() {
@@ -147,7 +168,6 @@ class PostureMonitor extends Component {
         // TODO: Implement error handling
         console.log('error', err);
       } else {
-        console.log('no error', err);
         this.setState({ monitoring: true });
       }
     });
@@ -187,14 +207,31 @@ class PostureMonitor extends Component {
     }));
   }
 
+  updatePostureThreshold(distance) {
+    this.setState({ postureThreshold: distance }, () => {
+      this.updateUserPostureThreshold(distance);
+    });
+  }
+
+  updateUserPostureThreshold(distance) {
+    // TODO: Implement
+    console.log('updateUserPostureThreshold', distance);
+  }
+
   render() {
+    const {
+      postureThreshold,
+      handDeg,
+      monitoring,
+    } = this.state;
+
     return (
       <View style={styles.container}>
         <HeadingText size={1} style={styles._timer}>
           {this.getFormattedTimeRemaining()}
         </HeadingText>
         <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
-        <Monitor degree={this.state.handDeg} slouchDetection={this.state.slouchDeg} />
+        <Monitor degree={handDeg} slouchDetection={distanceToDegrees(postureThreshold)} />
         <View style={styles.monitorRatingContainer}>
           <BodyText style={styles._monitorPoor}>Poor</BodyText>
           <BodyText style={styles._monitorGood}>Good</BodyText>
@@ -204,14 +241,14 @@ class PostureMonitor extends Component {
           Tune up or down the Backbone's slouch detection
         </SecondaryText>
         <MonitorSlider
-          value={this.state.slouchDeg}
-          onValueChange={(value) => this.setState({ slouchDeg: value })}
-          minimumValue={-180}
+          value={-postureThreshold}
+          onValueChange={value => this.updatePostureThreshold(-value)}
+          minimumValue={-0.3}
           maximumValue={0}
-          disabled={this.state.monitoring}
+          disabled={monitoring}
         />
         <View style={styles.btnContainer}>
-          { this.state.monitoring ? <MonitorButton pause onPress={this.pauseSession} /> :
+          { monitoring ? <MonitorButton pause onPress={this.pauseSession} /> :
             <MonitorButton play onPress={this.startSession} />
           }
           <MonitorButton alertsDisabled onPress={this.showSummary} />
