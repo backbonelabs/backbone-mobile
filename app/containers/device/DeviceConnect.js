@@ -22,6 +22,7 @@ class DeviceConnect extends Component {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
       popToRoute: PropTypes.func,
+      resetTo: PropTypes.func,
       getCurrentRoutes: PropTypes.func,
     }),
     isConnected: PropTypes.bool,
@@ -34,7 +35,6 @@ class DeviceConnect extends Component {
     // Not doing much in constructor, but need component lifecycle methods
     super();
     this.state = {};
-    this.cancelConnect = this.cancelConnect.bind(this);
     this.getSavedDevice = this.getSavedDevice.bind(this);
     this.goBackToScene = this.goBackToScene.bind(this);
   }
@@ -60,7 +60,7 @@ class DeviceConnect extends Component {
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Prompt user to reattempt connect upon failed attempt
       Alert.alert('Error', nextProps.errorMessage, [
-        { text: 'Cancel', onPress: () => this.props.navigator.replace(routes.postureDashboard) },
+        { text: 'Cancel', onPress: this.goBackToScene },
         { text: 'Retry', onPress: () => this.props.dispatch(deviceActions.connect()) },
       ]);
     }
@@ -79,18 +79,23 @@ class DeviceConnect extends Component {
     });
   }
 
-  cancelConnect() {
-    // TO DO: Call native module method for canceling connect
-    this.props.navigator.replace(routes.postureDashboard);
-  }
-
   // TO DO: Implement below method once figured out discrepancy
   // between navigator's routeStack and getCurrentRoutes
   goBackToScene() {
+    const deviceRoutes = {
+      CONNECT: 'deviceConnect',
+      SCAN: 'deviceScan',
+      ONBOARDING: 'onboarding',
+    };
+    const { CONNECT, SCAN, ONBOARDING } = deviceRoutes;
     const routeStack = this.props.navigator.getCurrentRoutes().reverse();
 
     for (let i = 0; i < routeStack.length; i++) {
-      if (routeStack[i].name !== 'DeviceConnect' && routeStack[i].name !== 'DeviceScan') {
+      if (routeStack[i].name === ONBOARDING) {
+        // Route to postureDashboard if user comes from onboarding
+        return this.props.navigator.resetTo(routes.postureDashboard);
+      } else if (routeStack[i].name !== CONNECT && routeStack[i].name !== SCAN) {
+        // Route to last scene before device scan/connect
         return this.props.navigator.popToRoute(routeStack[i]);
       }
     }
@@ -111,7 +116,7 @@ class DeviceConnect extends Component {
           <Button
             primary
             text="Cancel"
-            onPress={this.cancelConnect}
+            onPress={this.goBackToScene}
           />
         </View>
       </View>
