@@ -116,7 +116,11 @@ class DeviceConnect extends Component {
           <Button
             primary
             text="Cancel"
-            onPress={this.goBackToScene}
+            onPress={() => {
+              // TO DO: Call method here to cancel scan
+              this.props.dispatch(deviceActions.disconnect());
+              this.goBackToScene();
+            }}
           />
         </View>
       </View>

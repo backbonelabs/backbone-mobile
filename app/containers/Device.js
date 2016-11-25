@@ -36,6 +36,12 @@ class Device extends Component {
     this.updateFirmware = this.updateFirmware.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.isConnected && nextProps.isConnected) {
+      this.props.dispatch(deviceActions.getInfo(nextProps.isConnected));
+    }
+  }
+
   addDevice() {
     this.props.navigator.push(routes.deviceAdd);
   }
