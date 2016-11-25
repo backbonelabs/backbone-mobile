@@ -62,14 +62,14 @@ const SensorSettings = props => (
       <SecondaryText style={styles._deviceInfoText}>
         Status: { props.isConnected ? 'Connected' : 'Disconnected' }
       </SecondaryText>
-      {props.isConnected && (
+      {props.isConnected &&
         <View style={styles.batteryInfo}>
           <SecondaryText style={styles._deviceInfoText}>
-            Battery Life: {props.device && props.device.batteryLevel}%
+            Battery Life: { props.device.batteryLevel || '--' }%
           </SecondaryText>
           <Image source={batteryIcon} style={styles.batteryIcon} />
         </View>
-      )}
+      }
     </View>
     <ArrowIcon />
   </TouchableOpacity>
@@ -239,10 +239,14 @@ class Settings extends Component {
       });
     }
     // TODO: Implement appropriate logic for notification settings on Android
+  }
 
+  componentDidMount() {
     // Add listener to run logic only after scene comes into focus
-    let eventSubscriber = this.props.navigator.navigationContext.addListener('willfocus', () => {
-      this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
+    let eventSubscriber = this.props.navigator.navigationContext.addListener('didfocus', () => {
+      if (this.props.device.isConnected) {
+        this.props.dispatch(deviceActions.getInfo(this.props.device.isConnected));
+      }
       eventSubscriber.remove();
       eventSubscriber = null;
     });
