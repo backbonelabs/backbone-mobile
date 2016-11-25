@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -201,6 +202,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         // There won't be any response back from the board once it failed here
         // So if we failed initiating the characteristic writer, handle the error callback right away
         if (!status) {
+            Log.e("SessionControlService", "Error initiating session control update");
             errorCallBack.onIntCallBack(1);
         }
     }
@@ -240,11 +242,13 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                             // If we failed initiating the descriptor writer, handle the error callback
                             if (!toggleStatus) {
+                                Log.e("SessionControlService", "Error toggling notification");
                                 errorCallBack.onIntCallBack(1);
                             }
                         }
                     }
                     else {
+                        Log.e("SessionControlService", "Error writing into session control");
                         if (errorCallBack != null) {
                             errorCallBack.onIntCallBack(1);
                         }
@@ -264,6 +268,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         }
                     }
                     else {
+                        Log.e("SessionControlService", "Error writing into notification descriptor");
                         if (errorCallBack != null) {
                             // Properly handle the failure when we failed toggling the notification state
                             errorCallBack.onIntCallBack(1);
