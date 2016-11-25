@@ -22,7 +22,7 @@ const Banner = props => {
     return (
       <TouchableOpacity
         style={styles.banner}
-        onPress={() => !inProgress && props.navigator.push(routes.deviceAdd)}
+        onPress={() => !inProgress && props.navigator.push(routes.deviceConnect)}
       >
         { inProgress ?
           <View><Spinner size="small" /></View>
