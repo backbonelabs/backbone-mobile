@@ -87,18 +87,16 @@ class Device extends Component {
           <View style={styles.deviceInfoContainer}>
             <Image source={sensorSmall} style={styles.sensorImage} />
             <HeadingText size={3}>
-              Firmware Version: { (device && device.firmwareVersion) ? device.firmwareVersion
-                : 'n/a'
-              }
+              Firmware Version: { device.firmwareVersion || 'n/a' }
             </HeadingText>
-            { device && device.updateAvailable &&
+            { device.updateAvailable &&
               <BodyText style={styles._deviceInfoBodyText}>
                 (Update Available)
               </BodyText>
             }
           </View>
           <View style={styles.buttonContainer}>
-            { device && device.firmwareVersion ?
+            { device.firmwareVersion ?
               <Button primary text="UNPAIR" onPress={this.unpairDevice} />
               :
                 <Button
@@ -108,7 +106,7 @@ class Device extends Component {
                 />
             }
             { /* Only show this button if there's a firmware update available */
-              device && device.updateAvailable && (
+              device.updateAvailable && (
                 <Button
                   style={styles._updateButton}
                   text="UPDATE"
