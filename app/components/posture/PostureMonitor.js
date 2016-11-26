@@ -190,7 +190,7 @@ class PostureMonitor extends Component {
         // TODO: Implement error handling
         console.log('error', err);
       } else {
-        this.setState({ monitoring: false });
+        this.setState({ monitoring: false }, this.showSummary);
       }
     });
   }
@@ -203,7 +203,7 @@ class PostureMonitor extends Component {
     }
     this.props.dispatch(appActions.showFullModal({
       onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
-      content: <PostureSummary time="04:30" goal={minutes} />,
+      content: <PostureSummary time="04:30" goal={minutes} />, // TODO: Get session time
     }));
   }
 
