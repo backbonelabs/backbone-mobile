@@ -5,4 +5,5 @@ export default {
   title: 'My Backbone',
   component: Device,
   showBackButton: true,
+  showBanner: true,
 };
