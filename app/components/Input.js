@@ -34,14 +34,14 @@ const Input = (props) => {
       <TextInput
         ref={ref => handleRef(ref)}
         style={inputStyles}
-        placeholderTextColor={styles._$placeholderTextColor}
+        placeholderTextColor={theme.secondaryFontColor}
         underlineColorAndroid={'transparent'}
         {...remainingProps}
       />
       {Icon && iconRightName ?
         <Icon
           name={iconRightName}
-          color={styles.$color}
+          color={theme.primaryFontColor}
           size={theme.inputIconSize}
           style={styles.icon}
         />
