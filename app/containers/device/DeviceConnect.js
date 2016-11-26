@@ -43,7 +43,7 @@ class DeviceConnect extends Component {
     DeviceManagementService.getDeviceStatus((status) => {
       if (status === constants.deviceStatuses.CONNECTED) {
         // Update store, since user only able to initiate connect if isConnected is false
-        this.props.dispatch(deviceActions.connect({ isConnected: status }));
+        this.props.dispatch(deviceActions.connect({ isConnected: true }));
         this.props.navigator.replace(routes.postureDashboard);
       } else {
         this.getSavedDevice();
