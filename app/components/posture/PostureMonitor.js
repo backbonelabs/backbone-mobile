@@ -62,7 +62,7 @@ class PostureMonitor extends Component {
     this.state = {
       monitoring: false,
       postureThreshold: this.props.user.settings.postureThreshold,
-      handDeg: 0,
+      pointerPosition: 0,
     };
     this.slouchStartTime = null;
     this.postureListener = null;
@@ -123,7 +123,7 @@ class PostureMonitor extends Component {
     const { currentDistance } = event;
 
     // Calculate and update the number of degrees to rotate the pointer
-    this.setState({ handDeg: distanceToDegrees(currentDistance) });
+    this.setState({ pointerPosition: distanceToDegrees(currentDistance) });
 
     const { settings: { slouchTimeThreshold, phoneVibration } } = this.props.user;
 
@@ -221,7 +221,7 @@ class PostureMonitor extends Component {
   render() {
     const {
       postureThreshold,
-      handDeg,
+      pointerPosition,
       monitoring,
     } = this.state;
 
@@ -231,7 +231,10 @@ class PostureMonitor extends Component {
           {this.getFormattedTimeRemaining()}
         </HeadingText>
         <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
-        <Monitor degree={handDeg} slouchDetection={distanceToDegrees(postureThreshold)} />
+        <Monitor
+          pointerPosition={pointerPosition}
+          slouchPosition={distanceToDegrees(postureThreshold)}
+        />
         <View style={styles.monitorRatingContainer}>
           <BodyText style={styles._monitorPoor}>Poor</BodyText>
           <BodyText style={styles._monitorGood}>Good</BodyText>
