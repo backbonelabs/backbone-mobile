@@ -16,11 +16,13 @@ import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
 import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
-import routes from '../../routes';
+import userActions from '../../actions/user';
 import PostureSummary from './PostureSummary';
 
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
+
+// const counter = 1;
 
 class PostureMonitor extends Component {
   static propTypes = {
@@ -34,9 +36,11 @@ class PostureMonitor extends Component {
         postureThreshold: PropTypes.number,
         slouchTimeThreshold: PropTypes.number,
       }),
+      _id: PropTypes.string,
+      dailyStreak: PropTypes.array,
     }),
     navigator: PropTypes.shape({
-      resetTo: PropTypes.func,
+      pop: PropTypes.func,
     }),
   };
 
@@ -52,6 +56,7 @@ class PostureMonitor extends Component {
     this.enablePostureActivity = this.enablePostureActivity.bind(this);
     this.disablePostureActivity = this.disablePostureActivity.bind(this);
     this.showSummary = this.showSummary.bind(this);
+    this.sessionComplete = this.sessionComplete.bind(this);
   }
 
   componentWillMount() {
@@ -137,6 +142,62 @@ class PostureMonitor extends Component {
     ActivityService.disableActivity(activityName);
   }
 
+  sessionComplete() {
+    const { user: { _id, dailyStreak }, dispatch } = this.props;
+
+    const lastStreakDate = dailyStreak[dailyStreak.length - 1];
+    const updateStreak = [...dailyStreak];
+
+    // Update the user object,
+    const updateUser = userActions.updateUser({
+      _id,
+      dailyStreak: updateStreak,
+    });
+
+    // Date for current session
+    const today = new Date();
+    const session = {};
+
+    // For Testing
+
+    // if (counter === 3) {
+    //   counter = 10;
+    // } else {
+    //   counter++;
+    // }
+    // session.day = today.getDate() + counter;
+
+    // For Testing
+
+    session.day = today.getDate();
+    session.month = today.getMonth() + 1; // months start at 0
+    session.year = today.getFullYear();
+
+    // If the date for the current session is the following day
+    if (dailyStreak.length === 0) {
+      updateStreak.push(session);
+      dispatch(updateUser);
+    } else if ( // If dailyStreak is empty, add date and updateUser
+      session.day === (lastStreakDate.day + 1) &&
+      session.month === lastStreakDate.month &&
+      session.year === lastStreakDate.year
+      ) {
+      updateStreak.push(session);
+      dispatch(updateUser);
+    } else if ( // If last date is the same as current session, don't updateUser
+      session.day === lastStreakDate.day &&
+      session.month === lastStreakDate.month &&
+      session.year === lastStreakDate.year
+      ) {
+      return this.showSummary();
+    } else { // If it's not the same date or the day after, then streak is broken, reset it
+      updateStreak.length = 0;
+      dispatch(updateUser);
+    }
+
+    return this.showSummary();
+  }
+
   showSummary() {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     let minutes = Math.floor(sessionTime / 60);
@@ -144,7 +205,7 @@ class PostureMonitor extends Component {
       minutes = 0;
     }
     this.props.dispatch(appActions.showFullModal({
-      onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
+      onClose: () => this.props.navigator.pop(),
       content: <PostureSummary time="04:30" goal={minutes} />,
     }));
   }
@@ -176,7 +237,7 @@ class PostureMonitor extends Component {
           { this.state.monitoring ? <MonitorButton pause onPress={this.enablePostureActivity} /> :
             <MonitorButton play onPress={this.enablePostureActivity} />
           }
-          <MonitorButton alertsDisabled onPress={this.showSummary} />
+          <MonitorButton alertsDisabled onPress={this.sessionComplete} />
           <MonitorButton stop onPress={this.disablePostureActivity} />
         </View>
       </View>
