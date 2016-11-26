@@ -54,6 +54,7 @@ class PostureMonitor extends Component {
     }),
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
+      push: PropTypes.func,
     }),
   };
 
@@ -254,7 +255,9 @@ class PostureMonitor extends Component {
           { monitoring ? <MonitorButton pause onPress={this.pauseSession} /> :
             <MonitorButton play onPress={this.startSession} />
           }
-          <MonitorButton alertsDisabled onPress={this.showSummary} />
+          {monitoring ? <MonitorButton alertsDisabled disabled /> :
+            <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />
+          }
           <MonitorButton stop onPress={this.stopSession} />
         </View>
       </View>
