@@ -13,6 +13,7 @@ const primaryFont = 'Lato';
 const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
 const activeBorderColor = '#85181C';
+const bannerColor = '#EEE';
 
 export default {
   primaryColor,
@@ -23,6 +24,7 @@ export default {
   disabledColor: '#A9A9A9',
   iconSize,
   iconButtonSize,
+  bannerColor,
   rem: 16,
   buttonBorderRadius: 4,
   titleBarHeight,

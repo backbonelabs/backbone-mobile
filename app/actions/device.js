@@ -115,17 +115,35 @@ const deviceActions = {
     };
   },
   getInfo() {
-    return (dispatch) => {
+    return (dispatch, getState) => {
+      const { storageKeys } = constants;
+      const { device: deviceState } = getState();
       dispatch(getInfoStart());
-      DeviceInformationService.getDeviceInformation((err, results) => {
-        if (err) {
-          dispatch(getInfoError(err));
-        } else {
-          // Store device information in local storage
-          SensitiveInfo.setItem(constants.storageKeys.DEVICE, results);
-          dispatch(getInfo(results));
-        }
-      });
+
+      // Get latest information if device is connected
+      if (deviceState.isConnected) {
+        DeviceInformationService.getDeviceInformation((err, results) => {
+          if (err) {
+            dispatch(getInfoError(err));
+          } else {
+            // Store device information in local storage
+            SensitiveInfo.setItem(storageKeys.DEVICE, results);
+            dispatch(getInfo(results));
+          }
+        });
+      } else {
+        // Get locally stored device information
+        SensitiveInfo.getItem(storageKeys.DEVICE)
+          .then(device => {
+            if (device) {
+              // Update device store with locally stored device
+              dispatch(getInfo(device));
+            } else {
+              // No locally stored device, set to empty object
+              dispatch(getInfo({}));
+            }
+          });
+      }
     };
   },
 };

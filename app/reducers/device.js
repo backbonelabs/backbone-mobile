@@ -81,7 +81,6 @@ export default (state = {
       return {
         ...state,
         inProgress: false,
-        isConnected: true,
         device: action.payload,
       };
     }
@@ -89,7 +88,6 @@ export default (state = {
       return {
         ...state,
         inProgress: false,
-        isConnected: false,
         errorMessage: action.payload.message,
       };
     }
