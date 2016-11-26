@@ -15,6 +15,7 @@ import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
 import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
+import userActions from '../../actions/user';
 import routes from '../../routes';
 import PostureSummary from './PostureSummary';
 
@@ -120,6 +121,11 @@ class PostureMonitor extends Component {
     return `${minutes}:${seconds}`;
   }
 
+  /**
+   * Processes the distance data from the device to update visuals and emit alerts as necessary
+   * @param {Object} event
+   * @param {Number} event.currentDistance How far away the user is from the control point
+   */
   distanceHandler(event) {
     const { currentDistance } = event;
 
@@ -196,6 +202,9 @@ class PostureMonitor extends Component {
     });
   }
 
+  /**
+   * Displays a modal containing the session summary
+   */
   showSummary() {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     let minutes = Math.floor(sessionTime / 60);
@@ -208,15 +217,32 @@ class PostureMonitor extends Component {
     }));
   }
 
+  /**
+   * Updates the posture threshold value in the component state, and as a result,
+   * updates the visual monitor to indicate the good/bad range
+   * @param {Number} distance The distance away from the control point at which the user
+   *                          is considered slouching
+   */
   updatePostureThreshold(distance) {
     this.setState({ postureThreshold: distance }, () => {
       this.updateUserPostureThreshold(distance);
     });
   }
 
+  /**
+   * Updates the user's posture threshold setting in their profile
+   * @param {Number} distance The distance away from the control point at which the user
+   *                          is considered slouching
+   */
   updateUserPostureThreshold(distance) {
-    // TODO: Implement
-    console.log('updateUserPostureThreshold', distance);
+    const updatedUserSettings = {
+      ...this.props.user,
+      settings: {
+        ...this.props.user.settings,
+        postureThreshold: distance,
+      },
+    };
+    this.props.dispatch(userActions.updateUserSettings(updatedUserSettings));
   }
 
   render() {
