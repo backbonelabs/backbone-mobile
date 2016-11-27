@@ -1,6 +1,9 @@
 package co.backbonelabs.backbone;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.provider.Settings;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -78,5 +81,13 @@ public class UserSettingService extends ReactContextBaseJavaModule {
             callback.invoke(JSError.make(e.toString()));
             e.printStackTrace();
         }
+    }
+
+    @ReactMethod
+    public void launchAppSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", MainActivity.currentActivity.getPackageName(), null));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MainActivity.currentActivity.startActivity(intent);
     }
 }

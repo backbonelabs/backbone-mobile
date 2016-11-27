@@ -22,7 +22,7 @@ const Device = props => (
         primary
         style={styles._button}
         text="CONNECT"
-        onPress={() => props.navigator.replace(routes.deviceConnect)}
+        onPress={() => props.navigator.replace(routes.deviceScan)}
       />
       <View style={{ paddingTop: 15 }}>
         <Button

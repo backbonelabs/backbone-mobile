@@ -15,6 +15,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.JSError;
 import timber.log.Timber;
 
 public class DeviceInformationService extends ReactContextBaseJavaModule {
@@ -35,7 +36,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
         super(reactContext);
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.ACTION_CHARACTERISTIC_UPDATE);
+        filter.addAction(Constants.ACTION_CHARACTERISTIC_READ);
         reactContext.registerReceiver(bleBroadcastReceiver, filter);
     }
 
@@ -47,6 +48,11 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
         return "DeviceInformationService";
     }
 
+    /**
+     * Retrieves the device battery level and firmware version
+     * @param callback The callback will be called with an error dictionary as the first argument if there are exceptions,
+     *                 and a device information dictionary as the second argument if there are no exceptions
+     */
     @ReactMethod
     public void getDeviceInformation(final Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
@@ -65,14 +71,14 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                             wm.putString("firmwareVersion", version);
                             wm.putInt("batteryLevel", level);
 
-                            callback.invoke(wm);
+                            callback.invoke(null, wm);
                         }
                     });
                 }
             });
         }
         else {
-            callback.invoke();
+            callback.invoke(JSError.make("Not connected to a device"));
         }
     }
 
@@ -109,8 +115,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             final String action = intent.getAction();
             Timber.d("Receive Broadcast %s", action);
 
-            if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
-                Timber.d("CharacteristicUpdate");
+            if (action.equals(Constants.ACTION_CHARACTERISTIC_READ)) {
+                Timber.d("CharacteristicRead");
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
                 int status = intent.getIntExtra(Constants.EXTRA_BYTE_STATUS_VALUE, BluetoothGatt.GATT_FAILURE);
 

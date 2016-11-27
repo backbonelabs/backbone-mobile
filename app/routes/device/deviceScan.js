@@ -21,7 +21,7 @@ DeviceScanSkipButton.propTypes = {
 };
 
 export default {
-  name: 'DeviceScan',
+  name: 'deviceScan',
   title: 'Device Setup',
   component: DeviceScan,
   rightComponent: connect()(DeviceScanSkipButton),

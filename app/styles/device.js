@@ -42,6 +42,7 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
   },
   secondaryText: {
+    fontSize: 12 * widthDifference,
     marginTop: 5 * heightDifference,
   },
   spinner: {

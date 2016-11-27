@@ -14,8 +14,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
-import appActions from '../actions/app';
 import authActions from '../actions/auth';
+import deviceActions from '../actions/device';
 import routes from '../routes';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
@@ -62,10 +62,14 @@ const SensorSettings = props => (
       <SecondaryText style={styles._deviceInfoText}>
         Status: { props.isConnected ? 'Connected' : 'Disconnected' }
       </SecondaryText>
-      <View style={styles.batteryInfo}>
-        <SecondaryText style={styles._deviceInfoText}>Battery Life: 100%</SecondaryText>
-        <Image source={batteryIcon} style={styles.batteryIcon} />
-      </View>
+      {props.isConnected &&
+        <View style={styles.batteryInfo}>
+          <SecondaryText style={styles._deviceInfoText}>
+            Battery Life: { props.device.batteryLevel || '--' }%
+          </SecondaryText>
+          <Image source={batteryIcon} style={styles.batteryIcon} />
+        </View>
+      }
     </View>
     <ArrowIcon />
   </TouchableOpacity>
@@ -76,6 +80,9 @@ SensorSettings.propTypes = {
     push: PropTypes.func,
   }),
   isConnected: PropTypes.bool,
+  device: PropTypes.shape({
+    batteryLevel: PropTypes.number,
+  }),
 };
 
 const SettingsIcon = props => (
@@ -127,16 +134,30 @@ const AccountRemindersSettings = props => (
       <SettingsText text="Alerts" />
       <ArrowIcon />
     </TouchableOpacity>
-    <View style={styles.notificationsContainer}>
-      <SettingsIcon iconName="notifications" />
-      <SettingsText text="Push Notifications" />
-      <View style={styles.notificationsSwitch}>
-        <Switch
-          onValueChange={props.updateNotifications}
-          value={props.notificationsEnabled}
-        />
-      </View>
-    </View>
+    {Platform.select({
+      ios: (
+        <View style={styles.notificationsContainer}>
+          <SettingsIcon iconName="notifications" />
+          <SettingsText text="Push Notifications" />
+          <View style={styles.notificationsSwitch}>
+            <Switch
+              onValueChange={props.updateNotifications}
+              value={props.notificationsEnabled}
+            />
+          </View>
+        </View>
+      ),
+      android: (
+        <TouchableOpacity
+          style={styles.notificationsContainer}
+          onPress={() => NativeModules.UserSettingService.launchAppSettings()}
+        >
+          <SettingsIcon iconName="notifications" />
+          <SettingsText text="Push Notifications" />
+          <ArrowIcon />
+        </TouchableOpacity>
+      ),
+    })}
   </View>
 );
 
@@ -180,12 +201,19 @@ HelpSettings.propTypes = {
 
 class Settings extends Component {
   static propTypes = {
+    dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
+      navigationContext: PropTypes.shape({
+        addListener: PropTypes.func,
+      }),
     }),
-    config: PropTypes.object,
-    dispatch: PropTypes.func,
-    isConnected: PropTypes.bool,
+    app: PropTypes.shape({
+      config: PropTypes.object,
+    }),
+    device: PropTypes.shape({
+      isConnected: PropTypes.bool,
+    }),
   };
 
   constructor() {
@@ -211,9 +239,45 @@ class Settings extends Component {
     }
   }
 
+  componentDidMount() {
+    // Add listener to run logic only after scene comes into focus
+    let eventSubscriber = this.props.navigator.navigationContext.addListener('didfocus', () => {
+      this.props.dispatch(deviceActions.getInfo());
+      eventSubscriber.remove();
+      eventSubscriber = null;
+    });
+  }
+
   componentWillUnmount() {
-    // Remove app state event listener
+    // Remove listeners
     AppState.removeEventListener('change');
+  }
+
+  getDevMenu() {
+    const items = [{
+      label: 'Delete access token from local storage',
+      handler: () => SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN),
+    }, {
+      label: 'Delete user from local storage',
+      handler: () => SensitiveInfo.deleteItem(storageKeys.USER),
+    }, {
+      label: 'Disconnect device',
+      handler: () => this.props.dispatch(deviceActions.disconnect()),
+    }, {
+      label: 'Forget device',
+      handler: () => this.props.dispatch(deviceActions.forget()),
+    }];
+
+    return (
+      <View style={styles.devMenu}>
+        <BodyText>Dev menu:</BodyText>
+        {items.map((item, key) => (
+          <TouchableOpacity key={key} style={styles.devMenuItem} onPress={item.handler}>
+            <SecondaryText>{item.label}</SecondaryText>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
   }
 
   checkNotificationsPermission() {
@@ -223,15 +287,6 @@ class Settings extends Component {
       if (!!permissions.alert !== this.state.notificationsEnabled) {
         // Specifically set to boolean due to Switch prop validation
         this.setState({ notificationsEnabled: !!permissions.alert });
-      }
-    });
-  }
-
-  updateNotifications(value) {
-    this.setState({ notificationsEnabled: value }, () => {
-      // Linking scheme for iOS only
-      if (Platform.OS === 'ios') {
-        Linking.openURL('app-settings:');
       }
     });
   }
@@ -246,6 +301,8 @@ class Settings extends Component {
           onPress: () => {
             // Remove locally stored user data and reset Redux auth/user store
             this.props.dispatch(authActions.signOut());
+            // Disconnect from device
+            this.props.dispatch(deviceActions.disconnect());
             this.props.navigator.resetTo(routes.welcome);
           },
         },
@@ -253,13 +310,29 @@ class Settings extends Component {
     );
   }
 
+  updateNotifications(value) {
+    this.setState({ notificationsEnabled: value }, () => {
+      // Linking scheme for iOS only
+      if (Platform.OS === 'ios') {
+        Linking.openURL('app-settings:');
+      }
+    });
+  }
+
   render() {
-    const { isConnected, navigator, config } = this.props;
+    const {
+      device: {
+        isConnected,
+        device,
+      },
+      navigator,
+      app: { config },
+    } = this.props;
 
     return (
       <ScrollView>
         <Image source={gradientBackground20} style={styles.backgroundImage}>
-          <SensorSettings navigator={navigator} isConnected={isConnected} />
+          <SensorSettings navigator={navigator} isConnected={isConnected} device={device} />
           <AccountRemindersSettings
             navigator={navigator}
             notificationsEnabled={this.state.notificationsEnabled}
@@ -274,41 +347,15 @@ class Settings extends Component {
             />
           </View>
         </Image>
-        {config.DEV_MODE &&
-          <View style={{ marginTop: 5, borderWidth: 1 }}>
-            <BodyText>Dev menu:</BodyText>
-            <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN)}
-            >
-              <SecondaryText>Delete access token from storage</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => SensitiveInfo.deleteItem(storageKeys.USER)}
-            >
-              <SecondaryText>Delete user from storage</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.props.dispatch(appActions.disconnect())}
-            >
-              <SecondaryText>Forget device</SecondaryText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => NativeModules.DeviceManagementService.cancelConnection(response => {
-                console.log('cancelConnection response', response);
-              })}
-            >
-              <SecondaryText>Disconnect device</SecondaryText>
-            </TouchableOpacity>
-          </View>
-        }
+        {config.DEV_MODE && this.getDevMenu()}
       </ScrollView>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  const { app } = state;
-  return app;
+  const { app, device } = state;
+  return { app, device };
 };
 
 export default connect(mapStateToProps)(Settings);
