@@ -1,6 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
-import text from './text';
 
 const { widthDifference, heightDifference } = relativeDimensions;
 
@@ -10,6 +9,9 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   inputField: {
+    color: '$primaryFontColor',
+    fontFamily: '$primaryFont',
+    fontSize: 18 * widthDifference,
     borderColor: '#979797',
     borderWidth: 1,
     borderRadius: 5,
@@ -17,7 +19,6 @@ export default EStyleSheet.create({
     height: 44 * heightDifference,
     paddingHorizontal: 12.5 * widthDifference,
     paddingVertical: 10 * heightDifference,
-    ...text._body,
   },
   icon: {
     position: 'relative',

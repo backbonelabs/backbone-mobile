@@ -14,8 +14,8 @@ import styles from '../styles/profile';
 import constants from '../utils/constants';
 import ProfilePicker from '../containers/onBoardingFlow/profile/ProfilePicker';
 import Input from '../components/Input';
+import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
-import SecondaryText from '../components/SecondaryText';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 import gradientBackground20 from '../images/gradientBackground20.png';
@@ -28,9 +28,9 @@ const {
 
 const ProfileFieldTitle = props => (
   <View style={styles.profileFieldTitle}>
-    <BodyText>{props.title}</BodyText>
+    <HeadingText size={3}>{props.title}</HeadingText>
     { // Display text which signifies profile field has been edited
-      props.edited && <SecondaryText> {props.editedText}</SecondaryText> }
+      props.edited && <BodyText> {props.editedText}</BodyText> }
   </View>
 );
 
@@ -45,7 +45,7 @@ const ProfileField = props => (
   <TouchableOpacity style={styles.profileField} onPress={props.onPress}>
     <ProfileFieldTitle title={props.title} edited={props.edited} editedText="(edited)" />
     <View style={styles.profileFieldData}>
-      <SecondaryText style={styles._profileText}>{props.profileData}</SecondaryText>
+      <BodyText style={styles._profileText}>{props.profileData}</BodyText>
     </View>
   </TouchableOpacity>
 );
