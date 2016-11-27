@@ -154,7 +154,8 @@ class PostureMonitor extends Component {
 
         if (isOverSlouchTimeThreshold && phoneVibration) {
           // User slouched for more than the threshold and has phone vibrations enabled
-          // Vibrate phone
+          // Vibrate phone (on Android, vibration will last 1000ms; iOS vibration duration
+          // is fixed and defined by the system)
           Vibration.vibrate(1000);
 
           // Clear start time to queue up a new vibration if needed
