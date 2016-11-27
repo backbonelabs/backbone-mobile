@@ -161,7 +161,7 @@ class PostureMonitor extends Component {
     // For Testing
 
     // if (counter === 3) {
-    //   counter = 10;
+    //   counter = 10; // replicates a future date, should break the streak
     // } else {
     //   counter++;
     // }
