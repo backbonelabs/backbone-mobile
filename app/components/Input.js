@@ -2,7 +2,6 @@ import React from 'react';
 import { TextInput, View } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/input';
-import theme from '../styles/theme';
 
 // This is a map of font names to modules.
 // To use other fonts supported by react-native-vector-icons,
@@ -34,19 +33,19 @@ const Input = (props) => {
       <TextInput
         ref={ref => handleRef(ref)}
         style={inputStyles}
-        placeholderTextColor={theme.secondaryFontColor}
+        placeholderTextColor={styles._$placeholderTextColor}
         underlineColorAndroid={'transparent'}
         {...remainingProps}
       />
       {Icon && iconRightName ?
         <Icon
           name={iconRightName}
-          color={theme.primaryFontColor}
-          size={theme.inputIconSize}
+          color={styles.$iconColor}
+          size={styles.$inputIconSize}
           style={styles.icon}
         />
         :
-          <View style={{ ...styles._icon, width: theme.inputIconSize }} />
+          <View style={{ ...styles._icon, width: styles.$inputIconSize }} />
       }
     </View>
   );

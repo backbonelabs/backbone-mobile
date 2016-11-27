@@ -4,6 +4,9 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $placeholderTextColor: '$secondaryFontColor',
+  $iconColor: '$primaryFontColor',
+  $iconSize: '$inputIconSize',
   container: {
     flexDirection: 'row',
     alignItems: 'center',
