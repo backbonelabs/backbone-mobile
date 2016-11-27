@@ -18,7 +18,6 @@ const createTicket = payload => ({
 const createTicketError = error => ({
   type: 'CREATE_SUPPORT_TICKET__ERROR',
   payload: error,
-  error: true,
 });
 
 export default {

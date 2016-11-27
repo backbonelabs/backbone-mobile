@@ -15,6 +15,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.JSError;
 import timber.log.Timber;
 
 public class DeviceInformationService extends ReactContextBaseJavaModule {
@@ -47,6 +48,11 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
         return "DeviceInformationService";
     }
 
+    /**
+     * Retrieves the device battery level and firmware version
+     * @param callback The callback will be called with an error dictionary as the first argument if there are exceptions,
+     *                 and a device information dictionary as the second argument if there are no exceptions
+     */
     @ReactMethod
     public void getDeviceInformation(final Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
@@ -65,14 +71,14 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                             wm.putString("firmwareVersion", version);
                             wm.putInt("batteryLevel", level);
 
-                            callback.invoke(wm);
+                            callback.invoke(null, wm);
                         }
                     });
                 }
             });
         }
         else {
-            callback.invoke();
+            callback.invoke(JSError.make("Not connected to a device"));
         }
     }
 

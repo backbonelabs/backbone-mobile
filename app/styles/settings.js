@@ -113,4 +113,11 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  devMenu: {
+    borderWidth: 1,
+    padding: 10 * widthDifference,
+  },
+  devMenuItem: {
+    marginTop: 2 * heightDifference,
+  },
 });
