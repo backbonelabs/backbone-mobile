@@ -22,17 +22,20 @@ import PostureSummary from './PostureSummary';
 const { SessionControlService } = NativeModules;
 const eventEmitter = new NativeEventEmitter(SessionControlService);
 
+const MIN_POSTURE_THRESHOLD = 0.03;
+const MAX_POSTURE_THRESHOLD = 0.3;
+
 /**
  * Maps distance values to slouch degrees for determining how much to rotate
  * the monitor pointer. The degree output would range from -180 to 0, where -180
  * would have the pointer pointing horizontally left and 0 would have the pointer
- * pointing horizontally right.
+ * pointing horizontally right. The max distance range is MAX_POSTURE_THRESHOLD.
  * @param  {Number} distance Deviation from the control point
  * @return {Number}          Degree equivalent of the distance value
  */
 const distanceToDegrees = distance => {
   const minDistance = 0;
-  const maxDistance = 0.3; // This is the max distance we care for
+  const maxDistance = MAX_POSTURE_THRESHOLD;
   const minMappedDegree = 0;
   const maxMappedDegree = -180;
   const numerator = (distance - minDistance) * (maxMappedDegree - minMappedDegree);
@@ -270,10 +273,23 @@ class PostureMonitor extends Component {
         <SecondaryText style={styles._sliderTitle}>
           Tune up or down the Backbone's slouch detection
         </SecondaryText>
+        {/*
+          The allowed range for the posture distance threshold is MIN_POSTURE_THRESHOLD
+          to MAX_POSTURE_THRESHOLD. Ideally, the minimumValue and maximumValue for the
+          slider component below should be -MAX_POSTURE_THRESHOLD and -MIN_POSTURE_THRESHOLD,
+          respectively, but such a combination does not work on Android. As a result,
+          minimumValue and maximumValue are shifted by the difference between 0 and the
+          MIN_POSTURE_THRESHOLD to make maximumValue equal to 0 in order for the slider to
+          work on both Android and iOS.
+        */}
         <MonitorSlider
-          value={-postureThreshold}
-          onValueChange={value => this.updatePostureThreshold(-value)}
-          minimumValue={-0.3}
+          value={-postureThreshold + MIN_POSTURE_THRESHOLD}
+          onValueChange={value => {
+            const correctedValue = value - MIN_POSTURE_THRESHOLD;
+            // The value is rounded to 3 decimals places to prevent unexpected rounding issues
+            this.updatePostureThreshold(-correctedValue.toFixed(3));
+          }}
+          minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
           maximumValue={0}
           disabled={monitoring}
         />
