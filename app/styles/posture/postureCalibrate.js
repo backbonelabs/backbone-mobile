@@ -27,7 +27,7 @@ export default EStyleSheet.create({
   },
   image: {
     width: 131 * widthDifference,
-    height: 237 * heightDifference,
+    height: 237 * widthDifference,
     resizeMode: 'contain',
   },
   calibrationCircleContainer: {
@@ -39,7 +39,7 @@ export default EStyleSheet.create({
   calibrationCircle: {
     width: 25 * widthDifference,
     height: 25 * widthDifference,
-    borderRadius: 12.5,
+    borderRadius: 12.5 * widthDifference,
     backgroundColor: '$primaryColor',
     opacity: 0.4,
   },
@@ -55,11 +55,12 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   autoStartPreferenceLabel: {
-    flex: 0.75,
-    alignItems: 'center',
+    flex: 0.5,
+    alignItems: 'flex-end',
+    marginHorizontal: 10 * widthDifference,
   },
   autoStartPreferenceSwitch: {
-    flex: 0.25,
-    alignItems: 'center',
+    flex: 0.5,
+    alignItems: 'flex-start',
   },
 });
