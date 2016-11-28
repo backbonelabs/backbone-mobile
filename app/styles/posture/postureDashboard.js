@@ -12,7 +12,7 @@ export default EStyleSheet.create({
   header: {
     flex: 0.15,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
   },
   body: {
     flex: 0.5,
@@ -28,22 +28,22 @@ export default EStyleSheet.create({
     width: '$itemWidth',
   },
   footer: {
-    flex: 0.25,
+    flex: 0.35,
     alignItems: 'center',
   },
   dailyStreakContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dailyStreakTitle: {
-    marginBottom: 8 * heightDifference,
+    marginBottom: 10 * heightDifference,
   },
   dailyStreakBanner: {
     width: 55 * widthDifference,
     height: 86 * heightDifference,
     resizeMode: 'contain',
-  },
-  streakCounter: {
-    marginTop: -67 * heightDifference,
+    alignItems: 'center',
+    paddingTop: 20 * heightDifference,
   },
 });
