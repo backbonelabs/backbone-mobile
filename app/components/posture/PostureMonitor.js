@@ -75,6 +75,7 @@ class PostureMonitor extends Component {
     this.updatePostureThreshold = this.updatePostureThreshold.bind(this);
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
+    this.previousDistance = 0;
   }
 
   componentWillMount() {
@@ -126,9 +127,16 @@ class PostureMonitor extends Component {
    */
   distanceHandler(event) {
     const { currentDistance } = event;
+    // Apply a low pass filter to smooth out the change in distance because the accelerometer
+    // is very sensitive and can lead to a high amount of noise. Note: the alpha is not concrete
+    // and can be changed the more we test.
+    // http://blog.thomnichols.org/2011/08/smoothing-sensor-data-with-a-low-pass-filter
+    const alpha = 0.15;
+    const filteredDistance = this.previousDistance +
+      (alpha * (currentDistance - this.previousDistance));
 
     // Calculate and update the number of degrees to rotate the pointer
-    this.setState({ pointerPosition: distanceToDegrees(currentDistance) });
+    this.setState({ pointerPosition: distanceToDegrees(filteredDistance) });
 
     const { settings: { slouchTimeThreshold, phoneVibration } } = this.props.user;
 
@@ -137,7 +145,7 @@ class PostureMonitor extends Component {
     // because the user may modify the threshold and resume the session before the
     // updated threshold value is saved in the database and a response is returned
     // from the API server to refresh the user object in the Redux store.
-    const isSlouching = currentDistance >= this.state.postureThreshold;
+    const isSlouching = filteredDistance >= this.state.postureThreshold;
 
     if (isSlouching) {
       // User is currently slouching
