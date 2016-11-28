@@ -27,6 +27,11 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     width: '$itemWidth',
   },
+  carouselItemIcon: {
+    width: 130.5 * widthDifference,
+    height: 130.5 * widthDifference,
+    resizeMode: 'contain',
+  },
   footer: {
     flex: 0.35,
     alignItems: 'center',
@@ -41,9 +46,9 @@ export default EStyleSheet.create({
   },
   dailyStreakBanner: {
     width: 55 * widthDifference,
-    height: 86 * heightDifference,
+    height: 86 * widthDifference,
     resizeMode: 'contain',
     alignItems: 'center',
-    paddingTop: 20 * heightDifference,
+    paddingTop: 19 * widthDifference,
   },
 });

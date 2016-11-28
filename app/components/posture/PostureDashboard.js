@@ -29,7 +29,7 @@ const sessions = [
 
 const renderItem = (session) => (
   <View key={session.id}>
-    <Image source={session.icon} />
+    <Image style={styles.carouselItemIcon} source={session.icon} />
   </View>
 );
 
