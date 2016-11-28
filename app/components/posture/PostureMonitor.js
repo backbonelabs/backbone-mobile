@@ -131,7 +131,7 @@ class PostureMonitor extends Component {
     // is very sensitive and can lead to a high amount of noise. Note: the alpha is not concrete
     // and can be changed the more we test.
     // http://blog.thomnichols.org/2011/08/smoothing-sensor-data-with-a-low-pass-filter
-    const alpha = 0.15;
+    const alpha = 0.25;
     this.distance = this.distance + (alpha * (currentDistance - this.distance));
 
     // Calculate and update the number of degrees to rotate the pointer
