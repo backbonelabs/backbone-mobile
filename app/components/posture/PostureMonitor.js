@@ -34,13 +34,8 @@ const MAX_POSTURE_THRESHOLD = 0.3;
  * @return {Number}          Degree equivalent of the distance value
  */
 const distanceToDegrees = distance => {
-  const minDistance = 0;
-  const maxDistance = MAX_POSTURE_THRESHOLD;
-  const minMappedDegree = 0;
   const maxMappedDegree = -180;
-  const numerator = (distance - minDistance) * (maxMappedDegree - minMappedDegree);
-  const denominator = maxDistance - minDistance;
-  return Math.max(-180, (numerator / denominator) + minMappedDegree);
+  return Math.max(-180, (distance / MAX_POSTURE_THRESHOLD) * maxMappedDegree);
 };
 
 class PostureMonitor extends Component {
