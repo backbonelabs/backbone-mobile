@@ -4,6 +4,7 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 
 const { Environment, Mixpanel } = NativeModules;
+const { storageKeys } = constants;
 
 const loginStart = () => ({ type: 'LOGIN__START' });
 
@@ -68,6 +69,10 @@ export default {
               // Identify user for Mixpanel tracking
               Mixpanel.identify(body._id);
               Mixpanel.set({ $email: body.email });
+
+              // Store user in local storage
+              SensitiveInfo.setItem(storageKeys.USER, body);
+
               dispatch(login(body));
             }
           })
@@ -101,6 +106,10 @@ export default {
               Mixpanel.identify(body.user._id);
               Mixpanel.set({ $email: body.user.email });
               Mixpanel.track('signup');
+
+              // Store user in local storage
+              SensitiveInfo.setItem(storageKeys.USER, body.user);
+
               dispatch(signup(body));
             }
           })
@@ -144,8 +153,8 @@ export default {
   },
   signOut() {
     return (dispatch) => {
-      SensitiveInfo.deleteItem(constants.accessTokenStorageKey);
-      SensitiveInfo.deleteItem(constants.userStorageKey);
+      SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);
+      SensitiveInfo.deleteItem(storageKeys.USER);
       dispatch(signOut());
     };
   },
