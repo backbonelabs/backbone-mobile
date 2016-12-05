@@ -56,7 +56,6 @@ class Login extends Component {
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User successfully authenticated, save access token to local device
       SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, newAccessToken);
-      SensitiveInfo.setItem(storageKeys.USER, nextProps.user);
 
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
