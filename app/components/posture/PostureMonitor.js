@@ -18,11 +18,10 @@ import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
 import userActions from '../../actions/user';
 import PostureSummary from './PostureSummary';
+import routes from '../../routes';
 
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
-
-// let counter = 0;
 
 class PostureMonitor extends Component {
   static propTypes = {
@@ -38,9 +37,10 @@ class PostureMonitor extends Component {
       }),
       _id: PropTypes.string,
       dailyStreak: PropTypes.number,
+      lastSession: PropTypes.string,
     }),
     navigator: PropTypes.shape({
-      pop: PropTypes.func,
+      resetTo: PropTypes.func,
     }),
   };
 
@@ -144,38 +144,28 @@ class PostureMonitor extends Component {
 
   sessionComplete() {
     const { user: { _id, dailyStreak, lastSession }, dispatch } = this.props;
-
     const today = new Date();
 
-    // For Testing
-    // today.setDate(today.getDate() + counter);
-    // if (counter === 2) {
-    //   counter = 0; // replicates a different date, should break the streak
-    // } else {
-    //   counter++;
-    // }
-    // For Testing
-
     if (lastSession) {
-      const parseLastSession = new Date(Date.parse(lastSession));
-      const cloneLastSession = new Date(parseLastSession.getTime());
-      cloneLastSession.setDate(parseLastSession.getDate() + 1);
+      const userLastSession = new Date(lastSession);
+      const cloneLastSession = new Date(lastSession);
+      cloneLastSession.setDate(userLastSession.getDate() + 1);
 
       if (today.toDateString() === cloneLastSession.toDateString()) {
         // if session date is nextday from the last session
         dispatch(userActions.updateUser({
           _id,
-          lastSession: today.toDateString(),
+          lastSession: today,
           dailyStreak: dailyStreak + 1,
         }));
-      } else if (today.toDateString() === parseLastSession.toDateString()) {
+      } else if (today.toDateString() === userLastSession.toDateString()) {
         // if session date is same as last session
         return this.showSummary();
       } else {
         // reset streak
         dispatch(userActions.updateUser({
           _id,
-          lastSession: today.toDateString(),
+          lastSession: today,
           dailyStreak: 1,
         }));
       }
@@ -183,7 +173,7 @@ class PostureMonitor extends Component {
       // if first time user
       dispatch(userActions.updateUser({
         _id,
-        lastSession: today.toDateString(),
+        lastSession: today,
         dailyStreak: 1,
       }));
     }
@@ -198,7 +188,7 @@ class PostureMonitor extends Component {
       minutes = 0;
     }
     this.props.dispatch(appActions.showFullModal({
-      onClose: () => this.props.navigator.pop(),
+      onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
       content: <PostureSummary time="04:30" goal={minutes} />,
     }));
   }
