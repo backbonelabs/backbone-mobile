@@ -22,7 +22,7 @@ import PostureSummary from './PostureSummary';
 const { ActivityService } = NativeModules;
 const activityName = 'posture';
 
-// const counter = 1;
+// let counter = 0;
 
 class PostureMonitor extends Component {
   static propTypes = {
@@ -37,7 +37,7 @@ class PostureMonitor extends Component {
         slouchTimeThreshold: PropTypes.number,
       }),
       _id: PropTypes.string,
-      dailyStreak: PropTypes.array,
+      dailyStreak: PropTypes.number,
     }),
     navigator: PropTypes.shape({
       pop: PropTypes.func,
@@ -143,56 +143,49 @@ class PostureMonitor extends Component {
   }
 
   sessionComplete() {
-    const { user: { _id, dailyStreak }, dispatch } = this.props;
+    const { user: { _id, dailyStreak, lastSession }, dispatch } = this.props;
 
-    const lastStreakDate = dailyStreak[dailyStreak.length - 1];
-    const updateStreak = [...dailyStreak];
-
-    // Update the user object,
-    const updateUser = userActions.updateUser({
-      _id,
-      dailyStreak: updateStreak,
-    });
-
-    // Date for current session
     const today = new Date();
-    const session = {};
 
     // For Testing
-
-    // if (counter === 3) {
-    //   counter = 10; // replicates a future date, should break the streak
+    // today.setDate(today.getDate() + counter);
+    // if (counter === 2) {
+    //   counter = 0; // replicates a different date, should break the streak
     // } else {
     //   counter++;
     // }
-    // session.day = today.getDate() + counter;
-
     // For Testing
 
-    session.day = today.getDate();
-    session.month = today.getMonth() + 1; // months start at 0
-    session.year = today.getFullYear();
+    if (lastSession) {
+      const parseLastSession = new Date(Date.parse(lastSession));
+      const cloneLastSession = new Date(parseLastSession.getTime());
+      cloneLastSession.setDate(parseLastSession.getDate() + 1);
 
-    // If the date for the current session is the following day
-    if (dailyStreak.length === 0) {
-      updateStreak.push(session);
-      dispatch(updateUser);
-    } else if ( // If dailyStreak is empty, add date and updateUser
-      session.day === (lastStreakDate.day + 1) &&
-      session.month === lastStreakDate.month &&
-      session.year === lastStreakDate.year
-      ) {
-      updateStreak.push(session);
-      dispatch(updateUser);
-    } else if ( // If last date is the same as current session, don't updateUser
-      session.day === lastStreakDate.day &&
-      session.month === lastStreakDate.month &&
-      session.year === lastStreakDate.year
-      ) {
-      return this.showSummary();
-    } else { // If it's not the same date or the day after, then streak is broken, reset it
-      updateStreak.length = 0;
-      dispatch(updateUser);
+      if (today.toDateString() === cloneLastSession.toDateString()) {
+        // if session date is nextday from the last session
+        dispatch(userActions.updateUser({
+          _id,
+          lastSession: today.toDateString(),
+          dailyStreak: dailyStreak + 1,
+        }));
+      } else if (today.toDateString() === parseLastSession.toDateString()) {
+        // if session date is same as last session
+        return this.showSummary();
+      } else {
+        // reset streak
+        dispatch(userActions.updateUser({
+          _id,
+          lastSession: today.toDateString(),
+          dailyStreak: 1,
+        }));
+      }
+    } else {
+      // if first time user
+      dispatch(userActions.updateUser({
+        _id,
+        lastSession: today.toDateString(),
+        dailyStreak: 1,
+      }));
     }
 
     return this.showSummary();

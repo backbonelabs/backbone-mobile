@@ -228,7 +228,6 @@ class OnBoarding extends Component {
         weight.value : weight.value / constants.weight.conversionValue,
       height: height.unit === constants.height.units.IN ?
         height.value : height.value / constants.height.conversionValue,
-      dailyStreak: [], // create a property to store the streaks
     };
 
     this.props.dispatch(userActions.updateUser({

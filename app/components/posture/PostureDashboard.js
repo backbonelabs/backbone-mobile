@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  // Alert,
+  Alert,
   View,
   Image,
   TouchableOpacity,
@@ -53,7 +53,7 @@ class PostureDashboard extends Component {
     }),
     user: PropTypes.shape({
       nickname: PropTypes.string,
-      dailyStreak: PropTypes.array,
+      dailyStreak: PropTypes.number,
     }),
   };
 
@@ -99,21 +99,21 @@ class PostureDashboard extends Component {
   }
 
   start() {
-    // if (!this.props.device.isConnected) {
-    //   return Alert.alert(
-    //       'Error',
-    //       'Device not found, please connect to your Backbone before starting a session.',
-    //     [
-    //       {
-    //         text: 'Cancel',
-    //       },
-    //       {
-    //         text: 'Connect',
-    //         onPress: () => this.props.navigator.push(routes.deviceAdd),
-    //       },
-    //     ]
-    //   );
-    // }
+    if (!this.props.device.isConnected) {
+      return Alert.alert(
+          'Error',
+          'Device not found, please connect to your Backbone before starting a session.',
+        [
+          {
+            text: 'Cancel',
+          },
+          {
+            text: 'Connect',
+            onPress: () => this.props.navigator.push(routes.deviceAdd),
+          },
+        ]
+      );
+    }
 
     return this.props.navigator.push(routes.postureCalibrate);
   }
@@ -151,7 +151,7 @@ class PostureDashboard extends Component {
             <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
             <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
             <BodyText style={styles._streakCounter}>
-              { this.props.user.dailyStreak ? this.props.user.dailyStreak.length : 0 }
+              { this.props.user.dailyStreak }
             </BodyText>
           </View>
         </View>
