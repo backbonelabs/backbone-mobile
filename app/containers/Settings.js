@@ -62,14 +62,14 @@ const SensorSettings = props => (
       <SecondaryText style={styles._deviceInfoText}>
         Status: { props.isConnected ? 'Connected' : 'Disconnected' }
       </SecondaryText>
-      {props.isConnected && (
+      {props.isConnected &&
         <View style={styles.batteryInfo}>
           <SecondaryText style={styles._deviceInfoText}>
-            Battery Life: {props.device.batteryLevel}%
+            Battery Life: { props.device.batteryLevel || '--' }%
           </SecondaryText>
           <Image source={batteryIcon} style={styles.batteryIcon} />
         </View>
-      )}
+      }
     </View>
     <ArrowIcon />
   </TouchableOpacity>
@@ -204,6 +204,9 @@ class Settings extends Component {
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
+      navigationContext: PropTypes.shape({
+        addListener: PropTypes.func,
+      }),
     }),
     app: PropTypes.shape({
       config: PropTypes.object,
@@ -234,17 +237,19 @@ class Settings extends Component {
         }
       });
     }
+  }
 
-    // TODO: Implement appropriate logic for notification settings on Android
-
-    if (this.props.device.isConnected) {
-      // Get latest device information if it's currently connected
+  componentDidMount() {
+    // Add listener to run logic only after scene comes into focus
+    let eventSubscriber = this.props.navigator.navigationContext.addListener('didfocus', () => {
       this.props.dispatch(deviceActions.getInfo());
-    }
+      eventSubscriber.remove();
+      eventSubscriber = null;
+    });
   }
 
   componentWillUnmount() {
-    // Remove app state event listener
+    // Remove listeners
     AppState.removeEventListener('change');
   }
 
@@ -296,6 +301,8 @@ class Settings extends Component {
           onPress: () => {
             // Remove locally stored user data and reset Redux auth/user store
             this.props.dispatch(authActions.signOut());
+            // Disconnect from device
+            this.props.dispatch(deviceActions.disconnect());
             this.props.navigator.resetTo(routes.welcome);
           },
         },

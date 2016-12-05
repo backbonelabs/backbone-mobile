@@ -1,6 +1,6 @@
 import DeviceConnect from '../../containers/device/DeviceConnect';
 
 export default {
-  name: 'DeviceConnect',
+  name: 'deviceConnect',
   component: DeviceConnect,
 };

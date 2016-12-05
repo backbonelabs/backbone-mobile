@@ -1,7 +1,7 @@
 import DeviceScan from '../../containers/device/DeviceScan';
 
 export default {
-  name: 'DeviceScan',
+  name: 'deviceAdd',
   title: 'Device Setup',
   component: DeviceScan,
   showBackButton: true,
