@@ -8,6 +8,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
@@ -43,7 +44,6 @@ class Login extends Component {
       email: '',
       password: '',
     };
-    this.login = this.login.bind(this);
     this.autoFocus = true;
   }
 
@@ -71,6 +71,7 @@ class Login extends Component {
     }
   }
 
+  @autobind
   login() {
     if (!this.state.email || !this.state.password) {
       // Show alert if email or password is missing

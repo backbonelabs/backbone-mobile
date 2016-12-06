@@ -3,6 +3,7 @@ import {
   View,
   TouchableHighlight,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import BodyText from './BodyText';
 import styles from '../styles/button';
 
@@ -29,14 +30,14 @@ class Button extends Component {
     this.state = {
       pressStatus: false,
     };
-
-    this._onHideUnderlay = this._onHideUnderlay.bind(this);
-    this._onShowUnderlay = this._onShowUnderlay.bind(this);
   }
 
+  @autobind
   _onHideUnderlay() {
     this.setState({ pressStatus: false });
   }
+
+  @autobind
   _onShowUnderlay() {
     this.setState({ pressStatus: true });
   }

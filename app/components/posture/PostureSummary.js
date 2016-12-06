@@ -3,6 +3,7 @@ import {
   View,
   Image,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 // import SvgUri from 'react-native-svg-uri'; replace when package updates
 import BodyText from '../../components/BodyText';
 import styles from '../../styles/posture/postureSummary';
@@ -29,7 +30,6 @@ class PostureSummary extends Component {
     };
 
     this.counter = 0;
-    this.addStar = this.addStar.bind(this);
   }
 
   componentWillMount() {
@@ -40,6 +40,7 @@ class PostureSummary extends Component {
     clearInterval(this.intervalId);
   }
 
+  @autobind
   addStar() {
     const stars = { ...this.state.stars };
     stars[++this.counter] = (
