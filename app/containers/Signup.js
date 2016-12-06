@@ -7,6 +7,7 @@ import {
   Image,
   KeyboardAvoidingView,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
 import Spinner from '../components/Spinner';
@@ -39,9 +40,6 @@ class Signup extends Component {
       emailPristine: true,
       passwordPristine: true,
     };
-    this.signup = this.signup.bind(this);
-    this.onEmailChange = this.onEmailChange.bind(this);
-    this.onPasswordChange = this.onPasswordChange.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,6 +50,7 @@ class Signup extends Component {
     }
   }
 
+  @autobind
   onEmailChange(email) {
     const stateChanges = {
       validEmail: constants.emailRegex.test(email),
@@ -65,6 +64,7 @@ class Signup extends Component {
     this.setState(stateChanges);
   }
 
+  @autobind
   onPasswordChange(password) {
     if (this.state.passwordPristine) {
       return this.setState({ passwordPristine: false, password });
@@ -73,6 +73,7 @@ class Signup extends Component {
     return this.setState({ password });
   }
 
+  @autobind
   signup() {
     const { email, password } = this.state;
     this.props.dispatch(authActions.signup({ email, password }));

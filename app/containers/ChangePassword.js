@@ -5,6 +5,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import userActions from '../actions/user';
 import styles from '../styles/changePassword';
@@ -32,7 +33,6 @@ class ChangePassword extends Component {
       newPassword: '',
       confirmNewPassword: '',
     };
-    this.save = this.save.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -56,6 +56,7 @@ class ChangePassword extends Component {
     }
   }
 
+  @autobind
   save() {
     const { currentPassword, newPassword, confirmNewPassword } = this.state;
     const { user } = this.props;

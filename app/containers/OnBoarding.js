@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   // PushNotificationIOS,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import constants from '../utils/constants';
@@ -56,13 +57,6 @@ class OnBoarding extends Component {
       pickerType: null,
       // notificationsEnabled: false,
     };
-    this.saveData = this.saveData.bind(this);
-    this.nextStep = this.nextStep.bind(this);
-    this.previousStep = this.previousStep.bind(this);
-    this.setPickerType = this.setPickerType.bind(this);
-    this.updateProfile = this.updateProfile.bind(this);
-    this.stepTransitionAnimation = this.stepTransitionAnimation.bind(this);
-    this.exitOnboarding = this.exitOnboarding.bind(this);
   }
 
   // componentWillMount() {
@@ -106,6 +100,7 @@ class OnBoarding extends Component {
    * @param {String} pickerType Data picker to open. If undefined, the
    *                            data pickers will be hidden
    */
+  @autobind
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was inputting nickname
     Keyboard.dismiss();
@@ -171,6 +166,7 @@ class OnBoarding extends Component {
   }
 
   // Transitions back to previous onboarding step
+  @autobind
   previousStep() {
     this.setState({
       step: this.state.step - 1,
@@ -179,6 +175,7 @@ class OnBoarding extends Component {
   }
 
   // Transitions to next onboarding step
+  @autobind
   nextStep() {
     this.setState({
       step: this.state.step + 1,
@@ -187,6 +184,7 @@ class OnBoarding extends Component {
   }
 
   // Animates onboarding step transition
+  @autobind
   stepTransitionAnimation() {
     if (isIOS) {
       // For iOS, use Animated API to move component along the x-axis specified in valueX
@@ -204,6 +202,7 @@ class OnBoarding extends Component {
   }
 
   // Save profile data
+  @autobind
   saveData() {
     const {
       nickname,
@@ -234,6 +233,7 @@ class OnBoarding extends Component {
     }));
   }
 
+  @autobind
   exitOnboarding() {
     // Remove locally stored user data and reset Redux auth/user store
     this.props.dispatch(authActions.signOut());
@@ -246,6 +246,7 @@ class OnBoarding extends Component {
    * @param {*}       value
    * @param {Boolean} clearPickerType Whether or not to hide picker components on update
    */
+  @autobind
   updateProfile(field, value, clearPickerType) {
     const newState = { [field]: value };
     if (clearPickerType) {
