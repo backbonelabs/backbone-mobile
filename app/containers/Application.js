@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   BackAndroid,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
 import sessionActive from '../images/sessionActive.png';
@@ -76,12 +77,8 @@ class Application extends Component {
       initialRoute: null,
     };
 
-    this.configureScene = this.configureScene.bind(this);
-    this.renderScene = this.renderScene.bind(this);
-    this.navigate = this.navigate.bind(this);
     this.navigator = null; // Components should use this custom navigator object
     this.backAndroidListener = null;
-    this.handleAppStateChange = this.handleAppStateChange.bind(this);
   }
 
   componentWillMount() {
@@ -234,6 +231,7 @@ class Application extends Component {
     }, 500);
   }
 
+  @autobind
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
       // Attempt auto-connect when app is brought back into the foreground
@@ -241,10 +239,12 @@ class Application extends Component {
     }
   }
 
+  @autobind
   configureScene() {
     return CustomSceneConfig;
   }
 
+  @autobind
   navigate(route) {
     const routeStack = this.navigator.getCurrentRoutes();
     const currentRoute = routeStack[routeStack.length - 1];
@@ -254,6 +254,7 @@ class Application extends Component {
     }
   }
 
+  @autobind
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
     // Tab bar component data

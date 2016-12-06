@@ -8,10 +8,10 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
@@ -19,9 +19,6 @@ import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
 import BackBoneLogo from '../images/bblogo.png';
 import HeadingText from '../components/HeadingText';
-import constants from '../utils/constants';
-
-const { storageKeys } = constants;
 
 class Login extends Component {
   static propTypes = {
@@ -43,7 +40,6 @@ class Login extends Component {
       email: '',
       password: '',
     };
-    this.login = this.login.bind(this);
     this.autoFocus = true;
   }
 
@@ -54,10 +50,6 @@ class Login extends Component {
   componentWillReceiveProps(nextProps) {
     const newAccessToken = nextProps.auth.accessToken;
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
-      // User successfully authenticated, save access token to local device
-      SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, newAccessToken);
-      SensitiveInfo.setItem(storageKeys.USER, nextProps.user);
-
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
         this.props.navigator.replace(routes.deviceConnect);
@@ -71,6 +63,7 @@ class Login extends Component {
     }
   }
 
+  @autobind
   login() {
     if (!this.state.email || !this.state.password) {
       // Show alert if email or password is missing

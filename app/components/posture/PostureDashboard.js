@@ -4,6 +4,7 @@ import {
   View,
   Image,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import postureActions from '../../actions/posture';
@@ -49,12 +50,6 @@ class PostureDashboard extends Component {
     }),
   };
 
-  constructor() {
-    super();
-
-    this.start = this.start.bind(this);
-  }
-
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
   }
@@ -63,6 +58,7 @@ class PostureDashboard extends Component {
     this.props.dispatch(postureActions.setSessionTime(seconds));
   }
 
+  @autobind
   start() {
     if (!this.props.device.isConnected) {
       return Alert.alert(
@@ -114,7 +110,9 @@ class PostureDashboard extends Component {
           <View style={styles.dailyStreakContainer}>
             <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
             <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
-            <BodyText style={styles._streakCounter}>{this.props.user.dailyStreak || 0}</BodyText>
+            <BodyText style={styles._streakCounter}>
+              { this.props.user.dailyStreak }
+            </BodyText>
           </View>
         </View>
       </View>

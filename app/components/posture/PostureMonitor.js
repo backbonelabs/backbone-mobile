@@ -6,6 +6,7 @@ import {
   NativeEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 import { debounce } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
@@ -16,8 +17,8 @@ import Monitor from './postureMonitor/Monitor';
 import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
 import userActions from '../../actions/user';
-import routes from '../../routes';
 import PostureSummary from './PostureSummary';
+import routes from '../../routes';
 
 const { SessionControlService } = NativeModules;
 const eventEmitter = new NativeEventEmitter(SessionControlService);
@@ -50,6 +51,9 @@ class PostureMonitor extends Component {
         postureThreshold: PropTypes.number,
         slouchTimeThreshold: PropTypes.number,
       }),
+      _id: PropTypes.string,
+      dailyStreak: PropTypes.number,
+      lastSession: PropTypes.string,
     }),
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
@@ -67,12 +71,6 @@ class PostureMonitor extends Component {
     this.slouchStartTime = null;
     this.postureListener = null;
     this.activityDisabledListener = null;
-    this.distanceHandler = this.distanceHandler.bind(this);
-    this.startSession = this.startSession.bind(this);
-    this.pauseSession = this.pauseSession.bind(this);
-    this.stopSession = this.stopSession.bind(this);
-    this.showSummary = this.showSummary.bind(this);
-    this.updatePostureThreshold = this.updatePostureThreshold.bind(this);
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
     this.distance = 0;
@@ -125,6 +123,7 @@ class PostureMonitor extends Component {
    * @param {Object} event
    * @param {Number} event.currentDistance How far away the user is from the control point
    */
+  @autobind
   distanceHandler(event) {
     const { currentDistance } = event;
     // Apply a low pass filter to smooth out the change in distance because the accelerometer
@@ -175,6 +174,7 @@ class PostureMonitor extends Component {
     }
   }
 
+  @autobind
   startSession() {
     SessionControlService.start(err => {
       if (err) {
@@ -186,6 +186,7 @@ class PostureMonitor extends Component {
     });
   }
 
+  @autobind
   pauseSession() {
     SessionControlService.pause(err => {
       if (err) {
@@ -197,12 +198,38 @@ class PostureMonitor extends Component {
     });
   }
 
+  @autobind
   stopSession() {
     SessionControlService.stop(err => {
       if (err) {
         // TODO: Implement error handling
         console.log('error', err);
       } else {
+        const { user: { _id, dailyStreak, lastSession }, dispatch } = this.props;
+        const today = new Date();
+        const updateUserPayload = { _id, lastSession: today };
+
+        if (lastSession) {
+          const userLastSession = new Date(lastSession);
+          const cloneLastSession = new Date(lastSession);
+          cloneLastSession.setDate(userLastSession.getDate() + 1);
+
+          if (today.toDateString() === cloneLastSession.toDateString()) {
+            // session date is next day from the last session
+            updateUserPayload.dailyStreak = dailyStreak + 1;
+          } else if (today.toDateString() === userLastSession.toDateString()) {
+            // session date is same as last session, do not increment streak
+          } else {
+            // reset streak
+            updateUserPayload.dailyStreak = 1;
+          }
+        } else {
+          // first time user
+          updateUserPayload.dailyStreak = 1;
+        }
+
+        dispatch(userActions.updateUser(updateUserPayload));
+
         this.setState({ monitoring: false }, this.showSummary);
       }
     });
@@ -211,6 +238,7 @@ class PostureMonitor extends Component {
   /**
    * Displays a modal containing the session summary
    */
+  @autobind
   showSummary() {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     let minutes = Math.floor(sessionTime / 60);
@@ -229,6 +257,7 @@ class PostureMonitor extends Component {
    * @param {Number} distance The distance away from the control point at which the user
    *                          is considered slouching
    */
+  @autobind
   updatePostureThreshold(distance) {
     this.setState({ postureThreshold: distance }, () => {
       this.updateUserPostureThreshold(distance);

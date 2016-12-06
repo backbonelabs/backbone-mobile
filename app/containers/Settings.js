@@ -12,6 +12,7 @@ import {
   PushNotificationIOS,
   NativeModules,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
 import authActions from '../actions/auth';
@@ -221,9 +222,6 @@ class Settings extends Component {
     this.state = {
       notificationsEnabled: false,
     };
-
-    this.updateNotifications = this.updateNotifications.bind(this);
-    this.signOut = this.signOut.bind(this);
   }
 
   componentWillMount() {
@@ -291,6 +289,7 @@ class Settings extends Component {
     });
   }
 
+  @autobind
   signOut() {
     Alert.alert(
       'Sign Out',
@@ -310,6 +309,7 @@ class Settings extends Component {
     );
   }
 
+  @autobind
   updateNotifications(value) {
     this.setState({ notificationsEnabled: value }, () => {
       // Linking scheme for iOS only
