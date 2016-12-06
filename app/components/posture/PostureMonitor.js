@@ -160,7 +160,10 @@ class PostureMonitor extends Component {
         }));
       } else if (today.toDateString() === userLastSession.toDateString()) {
         // if session date is same as last session
-        return this.showSummary();
+        dispatch(userActions.updateUser({
+          _id,
+          lastSession: today,
+        }));
       } else {
         // reset streak
         dispatch(userActions.updateUser({
