@@ -114,7 +114,9 @@ class PostureDashboard extends Component {
           <View style={styles.dailyStreakContainer}>
             <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
             <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
-            <BodyText style={styles._streakCounter}>{this.props.user.dailyStreak || 0}</BodyText>
+            <BodyText style={styles._streakCounter}>
+              { this.props.user.dailyStreak }
+            </BodyText>
           </View>
         </View>
       </View>
