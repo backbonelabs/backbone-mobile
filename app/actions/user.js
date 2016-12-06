@@ -1,7 +1,10 @@
 import { NativeModules } from 'react-native';
+import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
+import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { Environment } = NativeModules;
+const { storageKeys } = constants;
 const baseUrl = `${Environment.API_SERVER_URL}/users`;
 const settingsUrl = `${baseUrl}/settings`;
 
@@ -66,6 +69,9 @@ export default {
                 new Error(body.error)
               ));
             } else {
+              // Store user in local storage
+              SensitiveInfo.setItem(storageKeys.USER, body);
+
               dispatch(fetchUser(body));
             }
           })
@@ -107,6 +113,9 @@ export default {
                 new Error(body.error)
               ));
             } else {
+              // Store updated user in local storage
+              SensitiveInfo.setItem(storageKeys.USER, body);
+
               dispatch(updateUser(body));
             }
           })
@@ -128,7 +137,7 @@ export default {
 
     return (dispatch, getState) => {
       const state = getState();
-      const { accessToken } = state.auth;
+      const { auth: { accessToken }, user: { user: oldUser } } = state;
 
       dispatch(updateUserSettingsStart());
 
@@ -145,6 +154,12 @@ export default {
                 new Error(body.error)
               ));
             }
+
+            // Store updated user in local storage
+            SensitiveInfo.setItem(storageKeys.USER, {
+              ...oldUser,
+              settings: body,
+            });
 
             return dispatch(updateUserSettings(body));
           })

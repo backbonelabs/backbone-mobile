@@ -17,14 +17,12 @@ import ProfilePicker from '../containers/onBoardingFlow/profile/ProfilePicker';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 import gradientBackground20 from '../images/gradientBackground20.png';
 
 const {
   height: heightConstants,
   weight: weightConstants,
-  storageKeys,
 } = constants;
 
 const ProfileFieldTitle = props => (
@@ -153,8 +151,6 @@ class Profile extends Component {
         // Display an alert when failing to save changed user data
         Alert.alert('Error', 'Failed to save changes, please try again');
       } else {
-        // Upon a successful user save, store updated user locally
-        SensitiveInfo.setItem(storageKeys.USER, nextProps.user);
         this._setHeightValue(nextProps.user);
         this._setWeightValue(nextProps.user);
         Alert.alert('Success', 'Profile updated');
