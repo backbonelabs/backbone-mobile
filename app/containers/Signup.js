@@ -14,12 +14,9 @@ import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import BackBoneLogo from '../images/bblogo.png';
 import BodyText from '../components/BodyText';
-
-const { storageKeys } = constants;
 
 class Signup extends Component {
   static propTypes = {
@@ -49,8 +46,6 @@ class Signup extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.accessToken && nextProps.accessToken) {
-      this.saveAccessToken(nextProps.accessToken);
-
       this.props.navigator.replace(routes.onboarding);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
@@ -76,10 +71,6 @@ class Signup extends Component {
     }
 
     return this.setState({ password });
-  }
-
-  saveAccessToken(accessToken) {
-    SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
   }
 
   signup() {

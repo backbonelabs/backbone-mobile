@@ -70,8 +70,10 @@ export default {
               Mixpanel.identify(body._id);
               Mixpanel.set({ $email: body.email });
 
-              // Store user in local storage
-              SensitiveInfo.setItem(storageKeys.USER, body);
+              const { accessToken, ...userObj } = body;
+              // Store access token and user in local storage
+              SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
+              SensitiveInfo.setItem(storageKeys.USER, userObj);
 
               dispatch(login(body));
             }
@@ -107,7 +109,8 @@ export default {
               Mixpanel.set({ $email: body.user.email });
               Mixpanel.track('signup');
 
-              // Store user in local storage
+              // Store access token and user in local storage
+              SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, body.accessToken);
               SensitiveInfo.setItem(storageKeys.USER, body.user);
 
               dispatch(signup(body));
