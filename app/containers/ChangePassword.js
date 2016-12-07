@@ -31,6 +31,7 @@ class ChangePassword extends Component {
     this.state = {
       currentPassword: '',
       newPassword: '',
+      newPasswordPristine: true,
       confirmNewPassword: '',
     };
   }
@@ -57,14 +58,20 @@ class ChangePassword extends Component {
   }
 
   @autobind
+  onPasswordChange(newPassword) {
+    if (this.state.newPasswordPristine) {
+      return this.setState({ newPasswordPristine: false, newPassword });
+    }
+
+    return this.setState({ newPassword });
+  }
+
+  @autobind
   save() {
     const { currentPassword, newPassword, confirmNewPassword } = this.state;
     const { user } = this.props;
 
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      // Show alert if any field is missing
-      Alert.alert('Missing fields');
-    } else if (
+    if (
       currentPassword.length < 8 || newPassword.length < 8 || confirmNewPassword.length < 8
       ) {
       // Show alert if any field is not 8 characters long
@@ -86,6 +93,13 @@ class ChangePassword extends Component {
   }
 
   render() {
+    const { newPassword, newPasswordPristine } = this.state;
+    const validPassword = newPassword.length >= 8;
+    const passwordIconProps = {};
+    if (!newPasswordPristine) {
+      passwordIconProps.iconRightName = validPassword ? 'check' : 'close';
+    }
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -120,11 +134,12 @@ class ChangePassword extends Component {
                       placeholder="New Password"
                       keyboardType="default"
                       value={this.state.newPassword}
-                      onChangeText={text => this.setState({ newPassword: text })}
+                      onChangeText={this.onPasswordChange}
                       onSubmitEditing={() => this.confirmNewPassword.focus()}
                       autoCorrect={false}
                       secureTextEntry
                       returnKeyType="next"
+                      {...passwordIconProps}
                     />
                   </View>
                   <View style={styles.inputContainer}>
