@@ -77,6 +77,8 @@ RCT_EXPORT_METHOD(connectToDevice) {
 
 RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)callback) {
   [self stopScanForDevices];
+  [self removeSavedDevice];
+  
   [BluetoothServiceInstance selectDevice:_deviceCollection[deviceID][@"peripheral"]];
   
   if (!BluetoothServiceInstance.currentDevice) {
@@ -142,8 +144,7 @@ RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
 
 RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   DLog(@"forget device");
-  NSUserDefaults *preference = [NSUserDefaults standardUserDefaults];
-  [preference removeObjectForKey:PREF_SAVED_DEVICE_KEY];
+  [self removeSavedDevice];
   
   [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
     if (error) {
@@ -161,6 +162,11 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   DLog(@"Remember device %@", uuid);
   NSUserDefaults *preference = [NSUserDefaults standardUserDefaults];
   [preference setObject:uuid forKey:PREF_SAVED_DEVICE_KEY];
+}
+
+- (void)removeSavedDevice {
+  NSUserDefaults *preference = [NSUserDefaults standardUserDefaults];
+  [preference removeObjectForKey:PREF_SAVED_DEVICE_KEY];
 }
 
 - (void)checkConnectTimeout {

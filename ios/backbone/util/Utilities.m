@@ -49,10 +49,10 @@
  */
 +(NSString*)timeInFormat:(double)timeInterval
 {
-    int duration = (int)timeInterval; // cast timeInterval to int - note: some precision might be lost
-    int minutes = duration / 60; //get the elapsed minutes
-    int seconds = duration % 60; //get the elapsed seconds
-    return  [NSString stringWithFormat:@"%02d:%02d", minutes, seconds]; //create a string of the elapsed time in xx:xx format for example 01:15 as 1 minute 15 seconds
+  int duration = (int)timeInterval; // cast timeInterval to int - note: some precision might be lost
+  int minutes = duration / 60; //get the elapsed minutes
+  int seconds = duration % 60; //get the elapsed seconds
+  return  [NSString stringWithFormat:@"%02d:%02d", minutes, seconds]; //create a string of the elapsed time in xx:xx format for example 01:15 as 1 minute 15 seconds
 }
 
 /*!
@@ -63,12 +63,12 @@
  */
 +(NSString *) getCurrentDate
 {
-    NSDate *currentDate = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    
-    [dateFormatter setDateFormat:DATE_FORMAT];
-    NSString *date = [dateFormatter stringFromDate:currentDate];
-    return date;
+  NSDate *currentDate = [NSDate date];
+  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+  
+  [dateFormatter setDateFormat:DATE_FORMAT];
+  NSString *date = [dateFormatter stringFromDate:currentDate];
+  return date;
 }
 
 /*!
@@ -79,12 +79,12 @@
  */
 +(NSString *) getCurrentTime
 {
-    NSDate *currentDate = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    
-    [dateFormatter setDateFormat:TIME_FORMAT];
-    NSString *date = [dateFormatter stringFromDate:currentDate];
-    return date;
+  NSDate *currentDate = [NSDate date];
+  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+  
+  [dateFormatter setDateFormat:TIME_FORMAT];
+  NSString *date = [dateFormatter stringFromDate:currentDate];
+  return date;
 }
 
 /*!
@@ -96,9 +96,9 @@
 
 +(double)secondsToHour:(double)timeInterval
 {
-    if(timeInterval>0)
-        return (timeInterval/3600.0f);
-    return 0;
+  if(timeInterval>0)
+    return (timeInterval/3600.0f);
+  return 0;
 }
 
 /*!
@@ -109,9 +109,9 @@
  */
 +(double)secondsToMinute:(double)timeInterval
 {
-    if(timeInterval>0)
-        return (timeInterval/60.0f);
-    return 0;
+  if(timeInterval>0)
+    return (timeInterval/60.0f);
+  return 0;
 }
 
 /*!
@@ -122,9 +122,9 @@
  */
 +(double)meterToKM:(double)meter
 {
-    if(meter>0)
-        return meter/1000.0f;
-    return 0;
+  if(meter>0)
+    return meter/1000.0f;
+  return 0;
 }
 
 /*!
@@ -136,31 +136,31 @@
 
 + (NSMutableData *)dataFromHexString:(NSString *)string
 {
-    NSMutableData *data = [NSMutableData new];
-    NSCharacterSet *hexSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789ABCDEF "] invertedSet];
+  NSMutableData *data = [NSMutableData new];
+  NSCharacterSet *hexSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789ABCDEF "] invertedSet];
+  
+  // Check whether the string is a valid hex string. Otherwise return empty data
+  if ([string rangeOfCharacterFromSet:hexSet].location == NSNotFound) {
     
-    // Check whether the string is a valid hex string. Otherwise return empty data
-    if ([string rangeOfCharacterFromSet:hexSet].location == NSNotFound) {
-       
-        string = [string lowercaseString];
-        unsigned char whole_byte;
-        char byte_chars[3] = {'\0','\0','\0'};
-        int i = 0;
-        int length = (int)string.length;
-        
-        while (i < length-1)
-        {
-            char c = [string characterAtIndex:i++];
-            
-            if (c < '0' || (c > '9' && c < 'a') || c > 'f')
-                continue;
-            byte_chars[0] = c;
-            byte_chars[1] = [string characterAtIndex:i++];
-            whole_byte = strtol(byte_chars, NULL, 16);
-            [data appendBytes:&whole_byte length:1];
-        }
+    string = [string lowercaseString];
+    unsigned char whole_byte;
+    char byte_chars[3] = {'\0','\0','\0'};
+    int i = 0;
+    int length = (int)string.length;
+    
+    while (i < length-1)
+    {
+      char c = [string characterAtIndex:i++];
+      
+      if (c < '0' || (c > '9' && c < 'a') || c > 'f')
+        continue;
+      byte_chars[0] = c;
+      byte_chars[1] = [string characterAtIndex:i++];
+      whole_byte = strtol(byte_chars, NULL, 16);
+      [data appendBytes:&whole_byte length:1];
     }
-    return data;
+  }
+  return data;
 }
 
 /*!
@@ -170,21 +170,21 @@
  *
  */
 + (NSString *) convertToHexFromASCII:(NSString *)ASCIIString{
+  
+  NSString *hexString = @"";
+  
+  NSData *data = [ASCIIString dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSString *tempHexString = [[[[NSString stringWithFormat:@"%@",data] stringByReplacingOccurrencesOfString:@"<" withString:@""] stringByReplacingOccurrencesOfString:@">" withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@""];
+  tempHexString = [tempHexString uppercaseString];
+  for (int i=0; i<tempHexString.length; i+=2) {
     
-    NSString *hexString = @"";
-    
-    NSData *data = [ASCIIString dataUsingEncoding:NSUTF8StringEncoding];
-    
-    NSString *tempHexString = [[[[NSString stringWithFormat:@"%@",data] stringByReplacingOccurrencesOfString:@"<" withString:@""] stringByReplacingOccurrencesOfString:@">" withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@""];
-    tempHexString = [tempHexString uppercaseString];
-    for (int i=0; i<tempHexString.length; i+=2) {
-        
-        NSString *hexValue = [tempHexString substringWithRange:NSMakeRange(i, 2)];
-        hexString = [hexString stringByAppendingString:[NSString stringWithFormat:@"0x%@ ",hexValue]];
-    }
-    
-    return hexString;
-    
+    NSString *hexValue = [tempHexString substringWithRange:NSMakeRange(i, 2)];
+    hexString = [hexString stringByAppendingString:[NSString stringWithFormat:@"0x%@ ",hexValue]];
+  }
+  
+  return hexString;
+  
 }
 
 /*!
@@ -196,20 +196,20 @@
 
 +(NSString *)convertCharacteristicValueToASCII:(NSData *)data
 {
-    NSMutableString *string = [NSMutableString stringWithString:@""];
+  NSMutableString *string = [NSMutableString stringWithString:@""];
+  
+  for (int i = 0; i < data.length; i++)
+  {
+    unsigned char byte;
+    [data getBytes:&byte range:NSMakeRange(i, 1)];
     
-    for (int i = 0; i < data.length; i++)
+    if (byte >= 32 && byte < 127)
     {
-        unsigned char byte;
-        [data getBytes:&byte range:NSMakeRange(i, 1)];
-        
-        if (byte >= 32 && byte < 127)
-        {
-            [string appendFormat:@"%c", byte];
-        }
-        
+      [string appendFormat:@"%c", byte];
     }
-    return string;
+    
+  }
+  return string;
 }
 
 /*!
@@ -220,11 +220,11 @@
  */
 +(unsigned int) getIntegerFromHexString:(NSString *)hexString
 {
-    unsigned int integerValue;
-    NSScanner* scanner = [NSScanner scannerWithString:hexString];
-    [scanner scanHexInt:&integerValue];
-    
-    return integerValue;
+  unsigned int integerValue;
+  NSScanner* scanner = [NSScanner scannerWithString:hexString];
+  [scanner scanHexInt:&integerValue];
+  
+  return integerValue;
 }
 
 /*!
@@ -236,8 +236,8 @@
 
 +(NSString *)get128BitUUIDForUUID:(CBUUID *)UUID
 {
-    NSString *uuidString = [NSString stringWithFormat:@"0000%@-0000-1000-8000-00805F9B34FB",UUID.UUIDString];
-    return [uuidString lowercaseString];
+  NSString *uuidString = [NSString stringWithFormat:@"0000%@-0000-1000-8000-00805F9B34FB",UUID.UUIDString];
+  return [uuidString lowercaseString];
 }
 
 /*!
@@ -248,17 +248,17 @@
  */
 
 +(float) convertSFLOATFromData:(int16_t)tempData{
-    
-    int16_t exponent = (tempData & 0xF000) >> 12;
-    int16_t mantissa = (int16_t)(tempData & 0x0FFF);
-    
-    if (mantissa >= 0x0800)
-        mantissa = -(0x1000 - mantissa);
-    if (exponent >= 0x08)
-        exponent = -(0x10 - exponent);
-    
-    float tempValue = (float)(mantissa*pow(10, exponent));
-    return tempValue;
+  
+  int16_t exponent = (tempData & 0xF000) >> 12;
+  int16_t mantissa = (int16_t)(tempData & 0x0FFF);
+  
+  if (mantissa >= 0x0800)
+    mantissa = -(0x1000 - mantissa);
+  if (exponent >= 0x08)
+    exponent = -(0x10 - exponent);
+  
+  float tempValue = (float)(mantissa*pow(10, exponent));
+  return tempValue;
 }
 
 /*!
@@ -267,15 +267,43 @@
  *  @discussion Method to convert 4 bytes to float
  *
  */
-+ (float) convertToFloatFromBytes:(uint8_t*)byte {
-  union byteArrayToFloat bf;
++ (float) convertToFloatFromBytes:(uint8_t*)bytes {
+  byteArrayToFloat bf;
   
-  bf.byte[0] = byte[0];
-  bf.byte[1] = byte[1];
-  bf.byte[2] = byte[2];
-  bf.byte[3] = byte[3];
+  bf.bytes[0] = bytes[0];
+  bf.bytes[1] = bytes[1];
+  bf.bytes[2] = bytes[2];
+  bf.bytes[3] = bytes[3];
   
   return bf.val;
+}
+
+/*!
+ *  @method getByteFromFloat:index:
+ *
+ *  @discussion Method to get the byte of an float value on the requested index
+ *
+ */
++ (uint8_t) getByteFromFloat:(float)val index:(int)idx {
+  byteArrayToFloat bf;
+  
+  bf.val = val;
+  
+  if (idx < 0 || idx > 3) {
+    return -1;
+  }
+  
+  return bf.bytes[idx];
+}
+
+/*!
+ *  @method getByteFromInt:index:
+ *
+ *  @discussion Method to get the byte of an integer value on the requested index
+ *
+ */
++ (uint8_t) getByteFromInt:(int)val index:(int)idx {
+  return (val >> (8 * idx)) & 0xFF;
 }
 
 @end

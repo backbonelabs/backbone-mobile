@@ -44,9 +44,29 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(start:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderBlock)callback) {
   if (BluetoothServiceInstance.currentDevice && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_STOPPED) {
+      sessionDuration = SESSION_DEFAULT_DURATION;
+      sessionDistanceThreshold = SESSION_DEFAULT_DISTANCE_THRESHOLD_UNIT;
+      sessionTimeThreshold = SESSION_DEFAULT_TIME_THRESHOLD;
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"sessionDuration"] != nil) {
+        sessionDuration = [[sessionParam objectForKey:@"sessionDuration"] intValue];
+      }
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"sessionDistanceThreshold"] != nil) {
+        sessionDistanceThreshold = [[sessionParam objectForKey:@"sessionDistanceThreshold"] intValue];
+      }
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"sessionTimeThreshold"] != nil) {
+        sessionTimeThreshold = [[sessionParam objectForKey:@"sessionTimeThreshold"] intValue];
+      }
+      
+      sessionDuration *= 60; // Convert to second from minute
+      
+      DLog(@"SessionParam %@", sessionParam);
+      
       [self toggleSessionOperation:SESSION_OPERATION_START withHandler:^(NSError * _Nullable error) {
         if (error) {
           callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
@@ -121,47 +141,73 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
 }
 
 - (void)toggleSessionOperation:(int)operation withHandler:(ErrorHandler)handler{
-  uint8_t bytes[1];
   _errorHandler = handler;
   
   currentCommand = operation;
   previousSessionState = currentSessionState;
   
-  switch (operation) {
-    case SESSION_OPERATION_START:
-      bytes[0] = SESSION_COMMAND_START;
-      currentSessionState = SESSION_STATE_RUNNING;
-      
-      distanceNotificationStatus = YES;
-      
-      break;
-    case SESSION_OPERATION_RESUME:
-      bytes[0] = SESSION_COMMAND_RESUME;
-      currentSessionState = SESSION_STATE_RUNNING;
-      
-      distanceNotificationStatus = YES;
-      
-      break;
-    case SESSION_OPERATION_PAUSE:
-      bytes[0] = SESSION_COMMAND_PAUSE;
-      currentSessionState = SESSION_STATE_PAUSED;
-      
-      distanceNotificationStatus = NO;
-      
-      break;
-    case SESSION_OPERATION_STOP:
-      bytes[0] = SESSION_COMMAND_STOP;
-      currentSessionState = SESSION_STATE_STOPPED;
-      
-      distanceNotificationStatus = NO;
-      
-      break;
+  // 'Start' operation needs additional parameters to be sent
+  if (operation == SESSION_OPERATION_START) {
+    uint8_t bytes[9];
+    
+    bytes[0] = SESSION_COMMAND_START;
+    
+    bytes[1] = [Utilities getByteFromInt:sessionDuration index:3];
+    bytes[2] = [Utilities getByteFromInt:sessionDuration index:2];
+    bytes[3] = [Utilities getByteFromInt:sessionDuration index:1];
+    bytes[4] = [Utilities getByteFromInt:sessionDuration index:0];
+    
+    bytes[5] = [Utilities getByteFromInt:sessionDistanceThreshold index:1];
+    bytes[6] = [Utilities getByteFromInt:sessionDistanceThreshold index:0];
+    
+    bytes[7] = [Utilities getByteFromInt:sessionTimeThreshold index:1];
+    bytes[8] = [Utilities getByteFromInt:sessionTimeThreshold index:0];
+    
+    currentSessionState = SESSION_STATE_RUNNING;
+    
+    distanceNotificationStatus = YES;
+    
+    NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+    
+    DLog(@"Toggle Session %@", data);
+    
+    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:self.sessionControlCharacteristic type:CBCharacteristicWriteWithResponse];
   }
-
-  NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+  else {
+    uint8_t bytes[1];
+    
+    switch (operation) {
+      case SESSION_OPERATION_RESUME:
+        bytes[0] = SESSION_COMMAND_RESUME;
+        currentSessionState = SESSION_STATE_RUNNING;
+        
+        distanceNotificationStatus = YES;
+        
+        break;
+      case SESSION_OPERATION_PAUSE:
+        bytes[0] = SESSION_COMMAND_PAUSE;
+        currentSessionState = SESSION_STATE_PAUSED;
+        
+        distanceNotificationStatus = NO;
+        
+        break;
+      case SESSION_OPERATION_STOP:
+        bytes[0] = SESSION_COMMAND_STOP;
+        currentSessionState = SESSION_STATE_STOPPED;
+        
+        distanceNotificationStatus = NO;
+        
+        break;
+    }
+    
+    NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+    
+    DLog(@"Toggle Session %@", data);
+    
+    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:self.sessionControlCharacteristic type:CBCharacteristicWriteWithResponse];
+  }
   
   DLog(@"Toggle Session State %d", operation);
-  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:self.sessionControlCharacteristic type:CBCharacteristicWriteWithResponse];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
@@ -180,6 +226,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+  DLog(@"DidUpdateValue %@", characteristic);
   if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
     if (error == nil) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
@@ -198,6 +245,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
+  DLog(@"DidUpdateNotif %@", characteristic);
   if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
     if (error) {
       DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);

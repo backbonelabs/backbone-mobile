@@ -16,6 +16,10 @@
   int previousSessionState;
   int currentCommand;
   
+  int sessionDuration;
+  int sessionDistanceThreshold;
+  int sessionTimeThreshold;
+  
   BOOL distanceNotificationStatus;
 }
 
