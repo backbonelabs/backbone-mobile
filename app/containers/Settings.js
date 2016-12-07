@@ -232,7 +232,7 @@ class Settings extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(deviceActions.getInfo());
       if (Platform.OS === 'ios') {
-      // Check if user has enabled notifications on their iOS device
+        // Check if user has enabled notifications on their iOS device
         this.checkNotificationsPermission();
 
         AppState.addEventListener('change', state => {
