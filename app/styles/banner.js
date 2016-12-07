@@ -11,7 +11,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   bannerText: {
-    padding: 4 * widthDifference,
+    marginHorizontal: 4 * widthDifference,
     color: '$primaryFontColor',
   },
 });
