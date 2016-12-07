@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   PushNotificationIOS,
   NativeModules,
+  InteractionManager,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -33,6 +34,7 @@ import notificationsIcon from '../images/settings/notificationsIcon.svg';
 import styles from '../styles/settings';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Spinner from '../components/Spinner';
 
 const { storageKeys } = constants;
 
@@ -221,28 +223,25 @@ class Settings extends Component {
     super();
     this.state = {
       notificationsEnabled: false,
+      loading: true,
     };
   }
 
-  componentWillMount() {
-    if (Platform.OS === 'ios') {
-      // Check if user has enabled notifications on their iOS device
-      this.checkNotificationsPermission();
-
-      AppState.addEventListener('change', state => {
-        if (state === 'active') {
-          this.checkNotificationsPermission();
-        }
-      });
-    }
-  }
-
   componentDidMount() {
-    // Add listener to run logic only after scene comes into focus
-    let eventSubscriber = this.props.navigator.navigationContext.addListener('didfocus', () => {
+    // Run expensive operations after the scene is loaded
+    InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(deviceActions.getInfo());
-      eventSubscriber.remove();
-      eventSubscriber = null;
+      if (Platform.OS === 'ios') {
+      // Check if user has enabled notifications on their iOS device
+        this.checkNotificationsPermission();
+
+        AppState.addEventListener('change', state => {
+          if (state === 'active') {
+            this.checkNotificationsPermission();
+          }
+        });
+      }
+      this.setState({ loading: false });
     });
   }
 
@@ -328,6 +327,10 @@ class Settings extends Component {
       navigator,
       app: { config },
     } = this.props;
+
+    if (this.state.loading) {
+      return <Spinner />;
+    }
 
     return (
       <ScrollView>
