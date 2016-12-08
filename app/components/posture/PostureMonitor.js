@@ -7,6 +7,7 @@ import {
   NativeAppEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 import { isFunction } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
@@ -53,10 +54,6 @@ class PostureMonitor extends Component {
     };
     this.postureListener = null;
     this.activityDisabledListener = null;
-    this.enablePostureActivity = this.enablePostureActivity.bind(this);
-    this.disablePostureActivity = this.disablePostureActivity.bind(this);
-    this.showSummary = this.showSummary.bind(this);
-    this.sessionComplete = this.sessionComplete.bind(this);
   }
 
   componentWillMount() {
@@ -103,6 +100,7 @@ class PostureMonitor extends Component {
     return `${minutes}:${seconds}`;
   }
 
+  @autobind
   enablePostureActivity() {
     ActivityService.enableActivity(activityName, (error) => {
       if (!error) {
@@ -138,10 +136,12 @@ class PostureMonitor extends Component {
     });
   }
 
+  @autobind
   disablePostureActivity() {
     ActivityService.disableActivity(activityName);
   }
 
+  @autobind
   sessionComplete() {
     const { user: { _id, dailyStreak, lastSession }, dispatch } = this.props;
     const today = new Date();
@@ -184,6 +184,7 @@ class PostureMonitor extends Component {
     return this.showSummary();
   }
 
+  @autobind
   showSummary() {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     let minutes = Math.floor(sessionTime / 60);

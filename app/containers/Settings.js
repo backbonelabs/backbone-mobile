@@ -11,7 +11,9 @@ import {
   TouchableOpacity,
   PushNotificationIOS,
   NativeModules,
+  InteractionManager,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
 import authActions from '../actions/auth';
@@ -32,6 +34,7 @@ import notificationsIcon from '../images/settings/notificationsIcon.svg';
 import styles from '../styles/settings';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Spinner from '../components/Spinner';
 
 const { storageKeys } = constants;
 
@@ -220,31 +223,25 @@ class Settings extends Component {
     super();
     this.state = {
       notificationsEnabled: false,
+      loading: true,
     };
-
-    this.updateNotifications = this.updateNotifications.bind(this);
-    this.signOut = this.signOut.bind(this);
-  }
-
-  componentWillMount() {
-    if (Platform.OS === 'ios') {
-      // Check if user has enabled notifications on their iOS device
-      this.checkNotificationsPermission();
-
-      AppState.addEventListener('change', state => {
-        if (state === 'active') {
-          this.checkNotificationsPermission();
-        }
-      });
-    }
   }
 
   componentDidMount() {
-    // Add listener to run logic only after scene comes into focus
-    let eventSubscriber = this.props.navigator.navigationContext.addListener('didfocus', () => {
+    // Run expensive operations after the scene is loaded
+    InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(deviceActions.getInfo());
-      eventSubscriber.remove();
-      eventSubscriber = null;
+      if (Platform.OS === 'ios') {
+        // Check if user has enabled notifications on their iOS device
+        this.checkNotificationsPermission();
+
+        AppState.addEventListener('change', state => {
+          if (state === 'active') {
+            this.checkNotificationsPermission();
+          }
+        });
+      }
+      this.setState({ loading: false });
     });
   }
 
@@ -291,6 +288,7 @@ class Settings extends Component {
     });
   }
 
+  @autobind
   signOut() {
     Alert.alert(
       'Sign Out',
@@ -310,6 +308,7 @@ class Settings extends Component {
     );
   }
 
+  @autobind
   updateNotifications(value) {
     this.setState({ notificationsEnabled: value }, () => {
       // Linking scheme for iOS only
@@ -328,6 +327,10 @@ class Settings extends Component {
       navigator,
       app: { config },
     } = this.props;
+
+    if (this.state.loading) {
+      return <Spinner />;
+    }
 
     return (
       <ScrollView>

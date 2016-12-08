@@ -6,10 +6,9 @@ import {
   Slider,
   Alert,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import userAction from '../actions/user';
-import constants from '../utils/constants';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import styles from '../styles/alerts';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
@@ -124,16 +123,8 @@ class Alerts extends Component {
     }),
   };
 
-  constructor() {
-    super();
-
-    // Attempted to use state to make switch transition smoother
-    // Still a possibility, will discuss with Kevin
-    this.state = {};
-    this.updateUserSettings = this.updateUserSettings.bind(this);
-  }
-
   // Update user settings
+  @autobind
   updateUserSettings(field, value) {
     const { settings, _id } = this.props.user;
     const updatedUserSettings = {
@@ -147,12 +138,6 @@ class Alerts extends Component {
         if (response.error) {
           // Show user error message
           Alert.alert('Error', response.payload.message);
-        } else {
-          // Store updated user settings in local storage
-          SensitiveInfo.setItem(
-            constants.storageKeys.USER,
-            Object.assign({}, this.props.user, { settings: response.payload })
-          );
         }
       });
   }

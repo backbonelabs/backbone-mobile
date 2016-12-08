@@ -3,6 +3,7 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { DeviceManagementService, DeviceInformationService } = NativeModules;
+const { deviceStatuses, storageKeys } = constants;
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
 
@@ -72,7 +73,7 @@ const deviceActions = {
     return (dispatch) => {
       // Check current connection status with Backbone device
       DeviceManagementService.getDeviceStatus((status) => {
-        if (status === constants.deviceStatuses.CONNECTED) {
+        if (status === deviceStatuses.CONNECTED) {
           // Device is connected
           dispatch(connect({ isConnected: true }));
         } else {
@@ -108,7 +109,7 @@ const deviceActions = {
           dispatch(forgetError(err));
         } else {
           // Remove device information from local storage
-          SensitiveInfo.deleteItem(constants.storageKeys.DEVICE);
+          SensitiveInfo.deleteItem(storageKeys.DEVICE);
           dispatch(forget());
         }
       });
@@ -116,7 +117,6 @@ const deviceActions = {
   },
   getInfo() {
     return (dispatch, getState) => {
-      const { storageKeys } = constants;
       const { device: deviceState } = getState();
       dispatch(getInfoStart());
 
