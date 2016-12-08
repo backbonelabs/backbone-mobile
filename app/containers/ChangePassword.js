@@ -12,6 +12,7 @@ import styles from '../styles/changePassword';
 import Input from '../components/Input';
 import Spinner from '../components/Spinner';
 import Button from '../components/Button';
+import BodyText from '../components/BodyText';
 
 class ChangePassword extends Component {
   static propTypes = {
@@ -32,7 +33,8 @@ class ChangePassword extends Component {
       currentPassword: '',
       newPassword: '',
       newPasswordPristine: true,
-      confirmNewPassword: '',
+      confirmPassword: '',
+      confirmPasswordPristine: true,
     };
   }
 
@@ -58,7 +60,7 @@ class ChangePassword extends Component {
   }
 
   @autobind
-  onPasswordChange(newPassword) {
+  onNewPasswordChange(newPassword) {
     if (this.state.newPasswordPristine) {
       return this.setState({ newPasswordPristine: false, newPassword });
     }
@@ -67,37 +69,55 @@ class ChangePassword extends Component {
   }
 
   @autobind
+  onConfirmPasswordChange(confirmPassword) {
+    if (this.state.confirmPasswordPristine) {
+      return this.setState({ confirmPasswordPristine: false, confirmPassword });
+    }
+
+    return this.setState({ confirmPassword });
+  }
+
+  @autobind
   save() {
-    const { currentPassword, newPassword, confirmNewPassword } = this.state;
+    const { currentPassword, newPassword, confirmPassword } = this.state;
     const { user } = this.props;
 
-    if (
-      currentPassword.length < 8 || newPassword.length < 8 || confirmNewPassword.length < 8
-      ) {
+    if (currentPassword.length < 8) {
       // Show alert if any field is not 8 characters long
-      Alert.alert('Password must be at least 8 characters');
-    } else if (newPassword !== confirmNewPassword) {
-      // Show alert if new and confirm password don't match
-      Alert.alert('New Password and Confirm New Password do not match');
-    } else if (newPassword === currentPassword) {
-      // Show alert if new and current password match
-      Alert.alert('New Password and Current Password cannot be the same');
-    } else {
-      return this.props.dispatch(userActions.updateUser({
-        _id: user._id,
-        password: newPassword,
-        verifyPassword: confirmNewPassword,
-        currentPassword,
-      }));
+      return Alert.alert('Current Password must be at least 8 characters');
     }
+
+    return this.props.dispatch(userActions.updateUser({
+      _id: user._id,
+      password: newPassword,
+      verifyPassword: confirmPassword,
+      currentPassword,
+    }));
   }
 
   render() {
-    const { newPassword, newPasswordPristine } = this.state;
-    const validPassword = newPassword.length >= 8;
-    const passwordIconProps = {};
+    const {
+      newPassword,
+      currentPassword,
+      confirmPassword,
+      confirmPasswordPristine,
+      newPasswordPristine,
+    } = this.state;
+    const validNewPassword = (newPassword.length >= 8) && (newPassword !== currentPassword);
+    const validConfirmPassword = (confirmPassword.length >= 8) && (confirmPassword === newPassword);
+    const newPasswordIconProps = {};
+    const confirmPasswordIconProps = {};
+    let passwordWarning;
     if (!newPasswordPristine) {
-      passwordIconProps.iconRightName = validPassword ? 'check' : 'close';
+      newPasswordIconProps.iconRightName = validNewPassword ? 'check' : 'close';
+      if ((newPassword.length > 0) && (currentPassword.length > 0)) {
+        passwordWarning = (newPassword !== currentPassword) ?
+        '' : 'New Password and Current Password cannot be the same';
+      }
+    }
+
+    if (!confirmPasswordPristine) {
+      confirmPasswordIconProps.iconRightName = validConfirmPassword ? 'check' : 'close';
     }
 
     return (
@@ -109,7 +129,7 @@ class ChangePassword extends Component {
                 <View style={styles.innerContainer}>
                   <View style={styles.inputContainer}>
                     <Input
-                      style={styles._currentPassword}
+                      style={styles._inputField}
                       autoCapitalize="none"
                       handleRef={ref => (
                         this.currentPassword = ref
@@ -124,7 +144,10 @@ class ChangePassword extends Component {
                       returnKeyType="next"
                     />
                   </View>
-                  <View style={styles.inputContainer}>
+                  <BodyText style={styles._warning}>
+                    {passwordWarning}
+                  </BodyText>
+                  <View style={[styles.inputContainer, styles.newPassword]}>
                     <Input
                       style={styles._inputField}
                       autoCapitalize="none"
@@ -134,12 +157,12 @@ class ChangePassword extends Component {
                       placeholder="New Password"
                       keyboardType="default"
                       value={this.state.newPassword}
-                      onChangeText={this.onPasswordChange}
+                      onChangeText={this.onNewPasswordChange}
                       onSubmitEditing={() => this.confirmNewPassword.focus()}
                       autoCorrect={false}
                       secureTextEntry
                       returnKeyType="next"
-                      {...passwordIconProps}
+                      {...newPasswordIconProps}
                     />
                   </View>
                   <View style={styles.inputContainer}>
@@ -152,10 +175,11 @@ class ChangePassword extends Component {
                       placeholder="Confirm New Password"
                       keyboardType="default"
                       value={this.state.confirmNewPassword}
-                      onChangeText={text => this.setState({ confirmNewPassword: text })}
+                      onChangeText={this.onConfirmPasswordChange}
                       autoCorrect={false}
                       secureTextEntry
                       returnKeyType="next"
+                      {...confirmPasswordIconProps}
                     />
                   </View>
                   <Button
@@ -165,7 +189,10 @@ class ChangePassword extends Component {
                       (
                         !this.state.currentPassword ||
                         !this.state.newPassword ||
-                        !this.state.confirmNewPassword
+                        !this.state.confirmPassword ||
+                        (newPassword === currentPassword) ||
+                        !validNewPassword ||
+                        !validConfirmPassword
                       )
                     }
                     onPress={this.save}

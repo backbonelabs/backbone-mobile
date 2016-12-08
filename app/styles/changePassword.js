@@ -20,11 +20,15 @@ export default EStyleSheet.create({
   inputField: {
     width: '90%',
   },
-  currentPassword: {
-    width: '90%',
-    marginBottom: 20 * heightDifference,
+  newPassword: {
+    marginTop: 15 * heightDifference,
   },
   saveButton: {
     marginTop: 40 * heightDifference,
+  },
+  warning: {
+    color: '$primaryColor',
+    height: 20 * heightDifference,
+    fontSize: 12,
   },
 });
