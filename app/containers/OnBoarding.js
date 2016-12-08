@@ -31,6 +31,7 @@ class OnBoarding extends Component {
     user: PropTypes.shape({
       _id: PropTypes.string,
       hasOnboarded: PropTypes.bool,
+      nickname: PropTypes.string,
     }),
     isUpdating: PropTypes.bool,
   };
@@ -94,6 +95,20 @@ class OnBoarding extends Component {
   //   // Remove notifications event listener to prevent memory leaks
   //   PushNotificationIOS.removeEventListener('register');
   // }
+
+  @autobind
+  onClose() {
+    // check if user already completed step 1
+    if (this.props.user.nickname) {
+      return this.props.navigator.push(routes.postureDashboard);
+    }
+
+    return Alert.alert(
+            'Are you sure?',
+            '\nExiting will log you out and can cause you to lose your information',
+            [{ text: 'Cancel' }, { text: 'Logout', onPress: this.exitOnboarding }]
+          );
+  }
 
   /**
    * Opens and closes the selected data picker component
@@ -261,13 +276,7 @@ class OnBoarding extends Component {
         <View style={styles.exitOnboardingIcon}>
           <TouchableOpacity
             style={styles.exitOnboardingButton}
-            onPress={() => (
-              Alert.alert(
-                'Are you sure?',
-                '\nExiting will log you out and can cause you to lose your information',
-                [{ text: 'Cancel' }, { text: 'Logout', onPress: this.exitOnboarding }]
-              )
-            )}
+            onPress={this.onCloseIt}
           >
             <Icon
               name={'close'}
