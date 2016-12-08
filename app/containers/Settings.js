@@ -16,6 +16,7 @@ import {
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import routes from '../routes';
@@ -26,25 +27,13 @@ import gradientBackground20 from '../images/gradientBackground20.png';
 import arrow from '../images/settings/arrow.svg';
 import batteryIcon from '../images/settings/batteryIcon.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
-import profileIcon from '../images/settings/profileIcon.svg';
-import alertIcon from '../images/settings/alertIcon.svg';
-import tutorialIcon from '../images/settings/tutorialIcon.svg';
-import supportIcon from '../images/settings/supportIcon.svg';
-import notificationsIcon from '../images/settings/notificationsIcon.svg';
 import styles from '../styles/settings';
+import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 
 const { storageKeys } = constants;
-
-const iconMap = {
-  profile: profileIcon,
-  alert: alertIcon,
-  tutorial: tutorialIcon,
-  support: supportIcon,
-  notifications: notificationsIcon,
-};
 
 const ArrowIcon = () => (
   <View style={styles.arrow}>
@@ -90,7 +79,7 @@ SensorSettings.propTypes = {
 
 const SettingsIcon = props => (
   <View style={styles.settingsIcon}>
-    <SvgUri source={iconMap[props.iconName]} />
+    <Icon name={props.iconName} size={styles.$settingsIconSize} color={theme.primaryColor} />
   </View>
 );
 
@@ -117,7 +106,7 @@ const AccountRemindersSettings = props => (
       style={styles.accountRemindersSettingContainer}
       onPress={() => props.navigator.push(routes.profile)}
     >
-      <SettingsIcon iconName="profile" />
+      <SettingsIcon iconName="person" />
       <SettingsText text="Profile" />
       <ArrowIcon />
     </TouchableOpacity>
@@ -125,7 +114,7 @@ const AccountRemindersSettings = props => (
       style={styles.accountRemindersSettingContainer}
       onPress={() => props.navigator.push(routes.changePassword)}
     >
-      <SettingsIcon />
+      <SettingsIcon iconName="lock" />
       <SettingsText text="Change Password" />
       <ArrowIcon />
     </TouchableOpacity>
@@ -133,14 +122,14 @@ const AccountRemindersSettings = props => (
       style={styles.accountRemindersSettingContainer}
       onPress={() => props.navigator.push(routes.alerts)}
     >
-      <SettingsIcon iconName="alert" />
+      <SettingsIcon iconName="notifications" />
       <SettingsText text="Alerts" />
       <ArrowIcon />
     </TouchableOpacity>
     {Platform.select({
       ios: (
         <View style={styles.notificationsContainer}>
-          <SettingsIcon iconName="notifications" />
+          <SettingsIcon iconName="tap-and-play" />
           <SettingsText text="Push Notifications" />
           <View style={styles.notificationsSwitch}>
             <Switch
@@ -155,7 +144,7 @@ const AccountRemindersSettings = props => (
           style={styles.notificationsContainer}
           onPress={() => NativeModules.UserSettingService.launchAppSettings()}
         >
-          <SettingsIcon iconName="notifications" />
+          <SettingsIcon iconName="tap-and-play" />
           <SettingsText text="Push Notifications" />
           <ArrowIcon />
         </TouchableOpacity>
@@ -181,7 +170,7 @@ const HelpSettings = props => (
       style={styles.helpSettingContainer}
       onPress={() => props.navigator.push(routes.howTo)}
     >
-      <SettingsIcon iconName="tutorial" />
+      <SettingsIcon iconName="live-tv" />
       <SettingsText text="How To" />
       <ArrowIcon />
     </TouchableOpacity>
@@ -189,7 +178,7 @@ const HelpSettings = props => (
       style={styles.helpSettingContainer}
       onPress={() => props.navigator.push(routes.support)}
     >
-      <SettingsIcon iconName="support" />
+      <SettingsIcon iconName="help" />
       <SettingsText text="Support" />
       <ArrowIcon />
     </TouchableOpacity>

@@ -26,6 +26,7 @@ const absoluteCenter = {
 };
 
 export default EStyleSheet.create({
+  $settingsIconSize: 24 * widthDifference,
   backgroundImage: {
     width: '100%',
     height: '100%',
@@ -71,6 +72,7 @@ export default EStyleSheet.create({
   settingsIcon: {
     flex: 0.15,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   settingsText: {
     flex: 0.72,
