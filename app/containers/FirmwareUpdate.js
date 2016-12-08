@@ -4,13 +4,22 @@ import {
   NativeModules,
   NativeEventEmitter,
 } from 'react-native';
+import {
+  MKProgress,
+  MKSpinner,
+} from 'react-native-material-kit';
 import HeadingText from '../components/HeadingText';
-import Spinner from '../components/Spinner';
+import BodyText from '../components/BodyText';
 import Button from '../components/Button';
 import styles from '../styles/firmwareUpdate';
 
 const { DeviceManagementService } = NativeModules;
 const eventEmitter = new NativeEventEmitter(DeviceManagementService);
+
+const SingleColorSpinner = MKSpinner.singleColorSpinner()
+  .withStrokeColor('red')
+  .withStyle(styles.spinner)
+  .build();
 
 export default class FirmwareUpdate extends Component {
   static propTypes = {
@@ -28,14 +37,14 @@ export default class FirmwareUpdate extends Component {
 
   componentWillMount() {
     // Listen for firmware update progress
-    this.firmwareUpdateListener = eventEmitter.addListener(
-      'UpdateProgress',
-      this.updateProgressHandler,
-    );
+    // this.firmwareUpdateListener = eventEmitter.addListener(
+    //   'UpdateProgress',
+    //   this.updateProgressHandler,
+    // );
   }
 
   componentWillUnmount() {
-    this.firmwareUpdateListener.remove();
+    // this.firmwareUpdateListener.remove();
   }
 
   updateProgressHandler(progress) {
@@ -45,13 +54,23 @@ export default class FirmwareUpdate extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ flex: 0.5, width: 300, justifyContent: 'flex-end', paddingBottom: 15 }}>
-          <HeadingText size={3} style={{ paddingBottom: 15 }}>
-            Updating status
+        <View style={styles.contentContainer}>
+          <HeadingText size={2}>
+            Update status
           </HeadingText>
-          <Spinner style={{ alignSelf: 'center', justifyContent: 'flex-start' }} />
+          <View style={styles.progressContainer}>
+            <MKProgress
+              style={{ width: 190 }}
+              progress={0.2}
+              progressColor="red"
+              buffer={1}
+              bufferColor="#CCC"
+            />
+            <SingleColorSpinner style={styles.spinner} />
+          </View>
+          <BodyText>Downloading updates: 20%</BodyText>
         </View>
-        <View style={{ flex: 0.5 }}>
+        <View style={styles.buttonContainer}>
           <Button disabled primary text="Done" />
         </View>
       </View>
