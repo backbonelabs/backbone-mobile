@@ -83,7 +83,7 @@ class ChangePassword extends Component {
     const { user } = this.props;
 
     if (currentPassword.length < 8) {
-      // Show alert if any field is not 8 characters long
+      // Show alert if current password is not 8 characters long
       return Alert.alert('Current Password must be at least 8 characters');
     }
 
@@ -158,7 +158,7 @@ class ChangePassword extends Component {
                       keyboardType="default"
                       value={this.state.newPassword}
                       onChangeText={this.onNewPasswordChange}
-                      onSubmitEditing={() => this.confirmNewPassword.focus()}
+                      onSubmitEditing={() => this.confirmPassword.focus()}
                       autoCorrect={false}
                       secureTextEntry
                       returnKeyType="next"
@@ -170,11 +170,11 @@ class ChangePassword extends Component {
                       style={styles._inputField}
                       autoCapitalize="none"
                       handleRef={ref => (
-                        this.confirmNewPassword = ref
+                        this.confirmPassword = ref
                       )}
                       placeholder="Confirm New Password"
                       keyboardType="default"
-                      value={this.state.confirmNewPassword}
+                      value={this.state.confirmPassword}
                       onChangeText={this.onConfirmPasswordChange}
                       autoCorrect={false}
                       secureTextEntry
