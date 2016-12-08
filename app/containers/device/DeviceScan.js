@@ -6,6 +6,7 @@ import {
   NativeModules,
   NativeAppEventEmitter,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../../styles/device';
@@ -35,10 +36,6 @@ class DeviceScan extends Component {
       deviceList: [],
       inProgress: false,
     };
-    this.selectDevice = this.selectDevice.bind(this);
-    // Bind initiateScanning, since corresponding Alert's onPress handler
-    // loses "this" context if user presses "Try Again" more than once
-    this.initiateScanning = this.initiateScanning.bind(this);
   }
 
   componentWillMount() {
@@ -74,6 +71,7 @@ class DeviceScan extends Component {
     DeviceManagementService.stopScanForDevices();
   }
 
+  @autobind
   initiateScanning() {
     // Initiate scanning
     DeviceManagementService.scanForDevices(error => {
@@ -94,8 +92,9 @@ class DeviceScan extends Component {
 
   /**
    * Selects a device to connect to
-   * @param {Object}  deviceData  Selected device's data
+   * @param {Object} deviceData Selected device's data
    */
+  @autobind
   selectDevice(deviceData) {
     DeviceManagementService.selectDevice(deviceData.identifier, error => {
       if (error) {
