@@ -10,7 +10,6 @@ import deviceActions from '../actions/device';
 import sensorSmall from '../images/settings/sensorSmall.png';
 import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
-import FirmwareUpdate from '../containers/FirmwareUpdate';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
 import HeadingText from '../components/HeadingText';
