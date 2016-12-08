@@ -1,5 +1,6 @@
 #import "RCTBridgeModule.h"
+#import "RCTEventEmitter.h"
 
-@interface DeviceManagementService : NSObject <RCTBridgeModule>
-  @property (nonatomic, strong) RCTBridge *bridge;
+@interface DeviceManagementService : RCTEventEmitter <RCTBridgeModule>
+
 @end
