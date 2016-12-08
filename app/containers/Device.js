@@ -4,6 +4,7 @@ import {
   View,
   Alert,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import deviceActions from '../actions/device';
 import sensorSmall from '../images/settings/sensorSmall.png';
@@ -29,14 +30,6 @@ class Device extends Component {
     }),
   };
 
-  constructor() {
-    super();
-
-    this.addDevice = this.addDevice.bind(this);
-    this.unpairDevice = this.unpairDevice.bind(this);
-    this.updateFirmware = this.updateFirmware.bind(this);
-  }
-
   componentWillReceiveProps(nextProps) {
     // If user connects to device, then fetch the latest data
     if (!this.props.isConnected && nextProps.isConnected) {
@@ -44,10 +37,12 @@ class Device extends Component {
     }
   }
 
+  @autobind
   addDevice() {
     this.props.navigator.push(routes.deviceAdd);
   }
 
+  @autobind
   unpairDevice() {
     // Prompt user to confirm that they want to unpair device
     Alert.alert(
@@ -63,6 +58,7 @@ class Device extends Component {
     );
   }
 
+  @autobind
   updateFirmware() {
     if (!this.props.isConnected) {
       Alert.alert(

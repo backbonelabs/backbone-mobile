@@ -4,6 +4,7 @@ import {
   Alert,
   NativeModules,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import routes from '../../routes';
 import styles from '../../styles/device/deviceConnect';
@@ -29,14 +30,6 @@ class DeviceConnect extends Component {
     inProgress: PropTypes.bool,
     errorMessage: PropTypes.string,
   };
-
-  constructor() {
-    // Not doing much in constructor, but need component lifecycle methods
-    super();
-    this.state = {};
-    this.getSavedDevice = this.getSavedDevice.bind(this);
-    this.goBackToScene = this.goBackToScene.bind(this);
-  }
 
   componentWillMount() {
     // Check current connection status with Backbone device
@@ -68,6 +61,7 @@ class DeviceConnect extends Component {
   }
 
   // Check whether there's a saved device
+  @autobind
   getSavedDevice() {
     DeviceManagementService.getSavedDevice((device) => {
       if (device) {
@@ -80,6 +74,7 @@ class DeviceConnect extends Component {
     });
   }
 
+  @autobind
   goBackToScene() {
     const routebackScenes = {
       device: 'device',
