@@ -30,7 +30,7 @@ const sessions = [
 
 const renderItem = (session) => (
   <View key={session.id}>
-    <Image source={session.icon} />
+    <Image source={session.icon} style={styles.sessionIcon} />
   </View>
 );
 
@@ -93,7 +93,7 @@ class PostureDashboard extends Component {
               renderItem={renderItem}
               snapOnAndroid
               sliderWidth={styles.$sliderWidth}
-              itemWidth={styles.$itemWidth}
+              itemWidth={styles.$sessionIconContainerWidth}
               slideStyle={styles.carouselItem}
               inactiveSlideScale={0.8}
               showsHorizontalScrollIndicator={false}
@@ -105,8 +105,6 @@ class PostureDashboard extends Component {
             primary
             onPress={this.start}
           />
-        </View>
-        <View style={styles.footer}>
           <View style={styles.dailyStreakContainer}>
             <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
             <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
