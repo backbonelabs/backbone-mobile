@@ -29,7 +29,6 @@ export default {
   iconButtonSize,
   inputIconSize,
   bannerColor,
-  rem: 16,
   buttonBorderRadius: 4,
   titleBarHeight,
   statusBarHeight,

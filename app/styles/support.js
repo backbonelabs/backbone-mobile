@@ -10,7 +10,7 @@ export default EStyleSheet.create({
   },
   inputField: {
     flex: 1,
-    fontSize: '1rem',
+    fontSize: 16,
     paddingHorizontal: 10 * widthDifference,
     textAlignVertical: 'top', // Android
   },

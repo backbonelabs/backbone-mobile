@@ -32,16 +32,16 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   errorMessage: {
-    fontSize: '1rem',
+    fontSize: 16,
     textAlign: 'center',
   },
   primaryText: {
     color: 'white',
-    fontSize: '1rem',
+    fontSize: 16,
     alignSelf: 'center',
   },
   secondaryText: {
-    fontSize: '0.75rem',
+    fontSize: 12,
     marginLeft: '2%',
   },
 });
