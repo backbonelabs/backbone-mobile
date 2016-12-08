@@ -20,7 +20,7 @@ export default EStyleSheet.create({
     borderRadius: 5,
     width: 235 * widthDifference,
     height: 44 * heightDifference,
-    paddingHorizontal: 12.5 * widthDifference,
+    paddingHorizontal: 25 * widthDifference,
     paddingVertical: 10 * heightDifference,
   },
   icon: {
