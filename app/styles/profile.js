@@ -34,6 +34,7 @@ export default EStyleSheet.create({
     alignItems: 'flex-end',
   },
   profileFieldInput: {
+    fontSize: 16 * widthDifference,
     right: 7.5 * widthDifference,
     borderColor: 'transparent',
     textAlign: 'right',
