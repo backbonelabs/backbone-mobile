@@ -8,10 +8,11 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
+import constants from '../utils/constants';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
@@ -19,9 +20,7 @@ import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
 import BackBoneLogo from '../images/bblogo.png';
 import HeadingText from '../components/HeadingText';
-import constants from '../utils/constants';
-
-const { storageKeys } = constants;
+import BodyText from '../components/BodyText';
 
 class Login extends Component {
   static propTypes = {
@@ -42,8 +41,10 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      validEmail: false,
+      emailPristine: true,
+      passwordPristine: true,
     };
-    this.login = this.login.bind(this);
     this.autoFocus = true;
   }
 
@@ -54,10 +55,6 @@ class Login extends Component {
   componentWillReceiveProps(nextProps) {
     const newAccessToken = nextProps.auth.accessToken;
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
-      // User successfully authenticated, save access token to local device
-      SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, newAccessToken);
-      SensitiveInfo.setItem(storageKeys.USER, nextProps.user);
-
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
         this.props.navigator.replace(routes.deviceConnect);
@@ -71,19 +68,50 @@ class Login extends Component {
     }
   }
 
-  login() {
-    if (!this.state.email || !this.state.password) {
-      // Show alert if email or password is missing
-      Alert.alert('Missing fields', `${this.state.email ? 'Password' : 'Email'} is required`);
-    } else {
-      const { email, password } = this.state;
-      this.props.dispatch(authActions.login({ email, password }));
+  @autobind
+  onEmailChange(email) {
+    const stateChanges = {
+      validEmail: constants.emailRegex.test(email),
+      email,
+    };
+
+    if (this.state.emailPristine) {
+      stateChanges.emailPristine = false;
     }
+
+    this.setState(stateChanges);
+  }
+
+  @autobind
+  onPasswordChange(password) {
+    if (this.state.passwordPristine) {
+      return this.setState({ passwordPristine: false, password });
+    }
+
+    return this.setState({ password });
+  }
+
+  @autobind
+  login() {
+    const { email, password } = this.state;
+    this.props.dispatch(authActions.login({ email, password }));
   }
 
   render() {
     const { inProgress } = this.props.auth;
     const autoFocusProp = this.autoFocus ? { autoFocus: true } : {};
+    const { email, password, validEmail, emailPristine, passwordPristine } = this.state;
+    const validPassword = password.length >= 8;
+    let passwordWarning;
+    const emailIconProps = {};
+    const passwordIconProps = {};
+    if (!emailPristine) {
+      emailIconProps.iconRightName = validEmail ? 'check' : 'close';
+    }
+    if (!passwordPristine) {
+      passwordIconProps.iconRightName = validPassword ? 'check' : 'close';
+      passwordWarning = validPassword ? '' : 'Password must be at least 8 characters';
+    }
     // The main View is composed in the TouchableWithoutFeedback to allow
     // the keyboard to be closed when tapping outside of an input field
     return (
@@ -107,11 +135,12 @@ class Login extends Component {
                         autoCapitalize="none"
                         placeholder="Email"
                         keyboardType="email-address"
-                        onChangeText={text => this.setState({ email: text })}
+                        onChangeText={this.onEmailChange}
                         onSubmitEditing={() => this.passwordField.focus()}
                         autoCorrect={false}
-                        {...autoFocusProp}
                         returnKeyType="next"
+                        {...autoFocusProp}
+                        {...emailIconProps}
                       />
                     </View>
                     <View style={styles.inputFieldContainer}>
@@ -124,19 +153,32 @@ class Login extends Component {
                         autoCapitalize="none"
                         placeholder="Password"
                         keyboardType="default"
-                        onChangeText={text => this.setState({ password: text })}
-                        onSubmitEditing={this.login}
+                        onChangeText={this.onPasswordChange}
+                        onSubmitEditing={
+                          ((!email || !validEmail) || (!password || !validPassword)) ?
+                          null
+                          :
+                            this.login
+                        }
                         autoCorrect={false}
                         secureTextEntry
                         returnKeyType="go"
+                        {...passwordIconProps}
                       />
                     </View>
+                    <BodyText style={styles._warning}>
+                      {passwordWarning}
+                    </BodyText>
                     <View style={styles.CTAContainer}>
                       <Button
                         style={styles._CTAButton}
                         text="LOGIN"
                         primary
-                        disabled={inProgress}
+                        disabled={
+                          inProgress ||
+                          ((!email || !validEmail) ||
+                          (!password || !validPassword))
+                        }
                         onPress={this.login}
                       />
                     </View>

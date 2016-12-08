@@ -46,5 +46,6 @@ export default EStyleSheet.create({
   warning: {
     color: '$primaryColor',
     textAlign: 'center',
+    height: 25 * heightDifference,
   },
 });

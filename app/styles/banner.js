@@ -9,9 +9,10 @@ export default EStyleSheet.create({
     backgroundColor: '$bannerColor',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 4 * widthDifference,
   },
   bannerText: {
-    padding: 4 * widthDifference,
+    marginHorizontal: 4 * widthDifference,
     color: '$primaryFontColor',
   },
 });
