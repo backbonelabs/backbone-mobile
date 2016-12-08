@@ -9,6 +9,7 @@ import deviceActions from '../actions/device';
 import sensorSmall from '../images/settings/sensorSmall.png';
 import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
+import FirmwareUpdate from '../containers/FirmwareUpdate';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
 import HeadingText from '../components/HeadingText';
@@ -73,7 +74,14 @@ class Device extends Component {
         ]
       );
     } else {
-      // TO DO: Call necessary method to update firmware
+      Alert.alert(
+        'Attention',
+        'You must complete the firmware update once it\nbegins!',
+        [
+          { text: 'Cancel' },
+          { text: 'Update', onPress: () => this.props.navigator.push(routes.firmwareUpdate) },
+        ]
+      );
     }
   }
 
