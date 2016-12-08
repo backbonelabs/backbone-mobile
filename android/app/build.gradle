@@ -157,6 +157,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-material-kit')
     compile project(':react-native-svg')
     compile project(':react-native-sensitive-info')
     compile fileTree(dir: "libs", include: ["*.jar"])

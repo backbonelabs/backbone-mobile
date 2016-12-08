@@ -3,6 +3,7 @@ package co.backbonelabs.backbone;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.github.xinthink.rnmk.ReactMaterialKitPackage;
 import com.horcrux.svg.RNSvgPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,6 +25,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new ReactMaterialKitPackage(),
             new RNSvgPackage(),
         new RNSensitiveInfoPackage(),
         new BackbonePackage()
