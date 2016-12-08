@@ -41,7 +41,7 @@ const Input = (props) => {
         <Icon
           name={iconRightName}
           color={styles.$iconColor}
-          size={styles.$inputIconSize}
+          size={styles.$iconSize}
           style={styles.icon}
         />
         :
