@@ -1,5 +1,5 @@
-#import "RCTBridgeModule.h"
 #import "RCTEventEmitter.h"
+#import "RCTBridgeModule.h"
 
 @interface DeviceManagementService : RCTEventEmitter <RCTBridgeModule>
 
