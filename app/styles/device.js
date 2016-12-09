@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference, widthDifference } = relativeDimensions;
+const { heightDifference, applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -14,8 +14,8 @@ export default EStyleSheet.create({
     width: '100%',
     marginVertical: 3 * heightDifference,
     paddingVertical: 20 * heightDifference,
-    paddingHorizontal: 13 * widthDifference,
-    borderWidth: 1 * widthDifference,
+    paddingHorizontal: applyWidthDifference(13),
+    borderWidth: applyWidthDifference(1),
     borderRadius: 2,
     borderColor: '#ffffff',
     flexDirection: 'row',
@@ -29,7 +29,7 @@ export default EStyleSheet.create({
         shadowRadius: 2,
         shadowOffset: {
           height: 1 * heightDifference,
-          width: 2 * widthDifference,
+          width: applyWidthDifference(2),
         },
       },
       android: {
@@ -42,7 +42,7 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
   },
   secondaryText: {
-    fontSize: 12 * widthDifference,
+    fontSize: applyWidthDifference(12),
     marginTop: 5 * heightDifference,
   },
   spinner: {

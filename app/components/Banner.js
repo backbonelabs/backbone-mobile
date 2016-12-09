@@ -12,7 +12,7 @@ import theme from '../styles/theme';
 import routes from '../routes';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 const Banner = props => {
   const { isConnected, inProgress } = props;
@@ -29,7 +29,7 @@ const Banner = props => {
           :
             <Icon
               name="error"
-              size={16 * widthDifference}
+              size={applyWidthDifference(16)}
               color={theme.primaryColor}
             />
         }

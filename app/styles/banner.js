@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   banner: {
@@ -9,10 +9,10 @@ export default EStyleSheet.create({
     backgroundColor: '$bannerColor',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 4 * widthDifference,
+    padding: applyWidthDifference(4),
   },
   bannerText: {
-    marginHorizontal: 4 * widthDifference,
+    marginHorizontal: applyWidthDifference(4),
     color: '$primaryFontColor',
   },
 });

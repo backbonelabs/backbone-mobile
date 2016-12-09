@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 const positioning = {
   flexDirection: 'row',
@@ -22,7 +22,7 @@ export default EStyleSheet.create({
   profileField: Object.assign({
     flex: 1,
     justifyContent: 'space-between',
-    paddingHorizontal: 10 * widthDifference,
+    paddingHorizontal: applyWidthDifference(10),
     borderBottomWidth: 1,
     borderColor: '#EEEEEE',
   }, positioning),
@@ -34,8 +34,8 @@ export default EStyleSheet.create({
     alignItems: 'flex-end',
   },
   profileFieldInput: {
-    fontSize: 16 * widthDifference,
-    left: 7.5 * widthDifference,
+    fontSize: applyWidthDifference(16),
+    left: applyWidthDifference(7.5),
     borderColor: 'transparent',
     textAlign: 'right',
   },

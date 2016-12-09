@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference } = relativeDimensions;
+const { heightDifference, applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -29,6 +29,6 @@ export default EStyleSheet.create({
   warning: {
     color: '$primaryColor',
     height: 20 * heightDifference,
-    fontSize: 12,
+    fontSize: applyWidthDifference(12),
   },
 });

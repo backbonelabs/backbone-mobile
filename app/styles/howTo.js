@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 const absoluteCenter = {
   alignItems: 'center',
@@ -9,8 +9,8 @@ const absoluteCenter = {
 };
 
 const relativeImageDimensions = {
-  width: 319 * widthDifference,
-  height: 239 * widthDifference,
+  width: applyWidthDifference(319),
+  height: applyWidthDifference(239),
 };
 
 export default EStyleSheet.create({
@@ -49,7 +49,7 @@ export default EStyleSheet.create({
   },
   stopIconPadding: {
     paddingVertical: 5.5 * heightDifference,
-    paddingHorizontal: 7.5 * widthDifference,
+    paddingHorizontal: applyWidthDifference(7.5),
   },
   textContainer: {
     flex: 0.1,

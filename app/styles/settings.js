@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 const bottomBorder = {
   borderBottomWidth: 1,
@@ -11,7 +11,7 @@ const bottomBorder = {
 const settingsHeader = {
   justifyContent: 'flex-end',
   ...bottomBorder,
-  paddingLeft: 15 * widthDifference,
+  paddingLeft: applyWidthDifference(15),
   paddingBottom: 5 * heightDifference,
 };
 
@@ -40,7 +40,7 @@ export default EStyleSheet.create({
     ...absoluteCenter,
   },
   sensorIcon: {
-    width: 70 * widthDifference,
+    width: applyWidthDifference(70),
     height: 59 * heightDifference,
     resizeMode: 'contain',
   },
@@ -56,11 +56,11 @@ export default EStyleSheet.create({
   },
   deviceInfoText: {
     marginVertical: 2 * heightDifference,
-    fontSize: 13,
+    fontSize: applyWidthDifference(13),
     color: '$primaryFontColor',
   },
   batteryIcon: {
-    width: 24 * widthDifference,
+    width: applyWidthDifference(24),
     height: 13 * heightDifference,
     resizeMode: 'contain',
   },
@@ -115,7 +115,7 @@ export default EStyleSheet.create({
   },
   devMenu: {
     borderWidth: 1,
-    padding: 10 * widthDifference,
+    padding: applyWidthDifference(10),
   },
   devMenuItem: {
     marginTop: 2 * heightDifference,

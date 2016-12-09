@@ -1,8 +1,8 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
-const responsiveWidthHalfCircle = 128.5 * widthDifference;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
+const responsiveWidthHalfCircle = applyWidthDifference(128.5);
 
 export default EStyleSheet.create({
   $pointerBaseHeight: 84,

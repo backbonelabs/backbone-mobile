@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 const border = {
   borderBottomWidth: 1,
@@ -26,7 +26,7 @@ export default EStyleSheet.create({
     flex: 0.08,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10 * widthDifference,
+    paddingHorizontal: applyWidthDifference(10),
     ...border,
   },
   vibrationText: {
@@ -66,10 +66,10 @@ export default EStyleSheet.create({
     flex: 0.36,
     alignItems: 'center',
     paddingTop: 15 * heightDifference,
-    paddingHorizontal: 5 * widthDifference,
+    paddingHorizontal: applyWidthDifference(5),
   },
   batteryLifeWarningText: {
     color: '$primaryFontColor',
-    fontSize: 13,
+    fontSize: applyWidthDifference(13),
   },
 });

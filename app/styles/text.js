@@ -1,35 +1,35 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   body: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 18 * widthDifference,
+    fontSize: applyWidthDifference(18),
   },
   secondary: {
     color: '$secondaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 16 * widthDifference,
+    fontSize: applyWidthDifference(16),
   },
   heading1: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 26 * widthDifference,
-    lineHeight: Math.ceil(32 * widthDifference),
+    fontSize: applyWidthDifference(26),
+    lineHeight: Math.ceil(applyWidthDifference(32)),
   },
   heading2: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 22 * widthDifference,
-    lineHeight: Math.ceil(26 * widthDifference),
+    fontSize: applyWidthDifference(22),
+    lineHeight: Math.ceil(applyWidthDifference(26)),
   },
   heading3: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: 20 * widthDifference,
-    lineHeight: Math.ceil(22 * widthDifference),
+    fontSize: applyWidthDifference(20),
+    lineHeight: Math.ceil(applyWidthDifference(22)),
   },
 });
