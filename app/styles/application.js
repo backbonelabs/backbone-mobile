@@ -47,6 +47,7 @@ export default EStyleSheet.create({
     color: '$disabledColor',
   },
   tabBarImage: {
+    height: 30 * heightDifference,
     width: applyWidthDifference(30),
     resizeMode: 'contain',
   },
