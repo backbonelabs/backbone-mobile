@@ -1,10 +1,11 @@
 import React from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import BodyText from './BodyText';
+import SecondaryText from './SecondaryText';
 
 import styles from '../styles/errors';
 
@@ -17,16 +18,16 @@ const Errors = (props) => {
         <Icon size={150} name={currentRoute.iconName.header} color="black" />
       </View>
       <View style={styles.body}>
-        <Text style={styles.errorMessage}>{currentRoute.errorMessage}</Text>
+        <BodyText style={styles.errorMessage}>{currentRoute.errorMessage}</BodyText>
       </View>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.primaryButton} onPress={currentRoute.onPress.primary}>
-          <Text style={styles.primaryText}>{currentRoute.onPressText.primary}</Text>
+          <BodyText style={styles.primaryText}>{currentRoute.onPressText.primary}</BodyText>
         </TouchableOpacity>
         { currentRoute.onPressText.secondary &&
           <TouchableOpacity style={styles.secondaryButton} onPress={currentRoute.onPress.secondary}>
             <Icon size={20} name={currentRoute.iconName.footer} color="black" />
-            <Text style={styles.secondaryText}>{currentRoute.onPressText.secondary}</Text>
+            <SecondaryText style={styles.secondaryText}>{currentRoute.onPressText.secondary}</SecondaryText>
           </TouchableOpacity>
         }
       </View>

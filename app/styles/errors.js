@@ -1,13 +1,17 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 
+const relativeCenter = {
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
 export default EStyleSheet.create({
   container: {
     flex: 1,
   },
   header: {
     flex: 0.6,
-    alignItems: 'center',
-    justifyContent: 'center',
+    ...relativeCenter,
   },
   body: {
     flex: 0.2,
@@ -15,8 +19,7 @@ export default EStyleSheet.create({
   },
   footer: {
     flex: 0.2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    ...relativeCenter,
   },
   primaryButton: {
     flex: 0.3,
@@ -27,21 +30,17 @@ export default EStyleSheet.create({
   },
   secondaryButton: {
     flex: 0.7,
-    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
+    ...relativeCenter,
   },
   errorMessage: {
-    fontSize: 16,
     textAlign: 'center',
   },
   primaryText: {
     color: 'white',
-    fontSize: 16,
     alignSelf: 'center',
   },
   secondaryText: {
-    fontSize: 12,
     marginLeft: '2%',
   },
 });
