@@ -4,6 +4,7 @@ import relativeDimensions from '../../utils/relativeDimensions';
 const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $starIconSize: applyWidthDifference(50),
   $fontColor: '#FFFFFF',
   container: {
     flex: 1,
