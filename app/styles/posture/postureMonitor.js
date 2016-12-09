@@ -5,6 +5,8 @@ const { applyWidthDifference, heightDifference } = relativeDimensions;
 const responsiveWidthHalfCircle = applyWidthDifference(128.5);
 
 export default EStyleSheet.create({
+  $sliderIconSize: applyWidthDifference(15),
+  $sliderIconPadding: applyWidthDifference(5),
   $pointerBaseHeight: 84,
   container: {
     flex: 1,
