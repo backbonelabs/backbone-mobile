@@ -20,7 +20,7 @@ const Welcome = props => (
       </View>
       <View style={styles.caption}>
         <BodyText style={styles._text}>
-          Look & feel your strongest with Backbone
+          Look and feel stronger with Backbone
         </BodyText>
       </View>
     </View>
