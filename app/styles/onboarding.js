@@ -4,7 +4,8 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $iconSize: applyWidthDifference(30),
+  $exitIconSize: applyWidthDifference(30),
+  $progressIconSize: applyWidthDifference(44),
   container: {
     flex: 1,
   },
