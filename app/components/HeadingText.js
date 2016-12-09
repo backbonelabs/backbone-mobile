@@ -15,10 +15,10 @@ const HeadingText = props => {
     ...remainingProps,
   } = props;
 
-  remainingProps.allowFontScaling = allowFontScaling;
-
   return (
-    <Text style={[styles[`_heading${size}`], style]} {...remainingProps}>{props.children}</Text>
+    <Text style={[styles[`_heading${size}`], style]} {...{ remainingProps, allowFontScaling }}>
+      {props.children}
+    </Text>
   );
 };
 

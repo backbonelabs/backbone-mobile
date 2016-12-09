@@ -19,13 +19,11 @@ class BodyText extends React.Component {
       ...remainingProps,
     } = this.props;
 
-    remainingProps.allowFontScaling = allowFontScaling;
-
     return (
       <View ref={component => { this._root = component; }}>
         <Text
           style={[styles._body, style]}
-          {...remainingProps}
+          {...{ remainingProps, allowFontScaling }}
         >
           {this.props.children}
         </Text>
