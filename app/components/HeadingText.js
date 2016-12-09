@@ -6,6 +6,7 @@ import styles from '../styles/text';
 import reusableDefaults from './utils/reusableDefaults';
 
 const { PropTypes } = React;
+const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableDefaults;
 
 const HeadingText = props => {
   const {
@@ -14,15 +15,17 @@ const HeadingText = props => {
     ...remainingProps,
   } = props;
 
+  remainingProps.allowFontScaling = allowFontScaling;
+
   return (
     <Text style={[styles[`_heading${size}`], style]} {...remainingProps}>{props.children}</Text>
   );
 };
 
-HeadingText.propTypes = Object.assign({}, reusableDefaults.propTypes, {
+HeadingText.propTypes = Object.assign({}, propTypes, {
   size: PropTypes.oneOf([1, 2, 3]).isRequired,
 });
 
-HeadingText.defaultProps = reusableDefaults.defaultProps;
+HeadingText.defaultProps = defaultProps;
 
 export default HeadingText;
