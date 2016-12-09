@@ -4,6 +4,7 @@ import relativeDimensions from '../../utils/relativeDimensions';
 const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $profileFieldIconSize: applyWidthDifference(16),
   container: {
     width: '100%',
   },
