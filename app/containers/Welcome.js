@@ -32,7 +32,7 @@ const Welcome = props => (
           text="Log In"
         />
         <Button
-          onPress={() => props.navigator.push(routes.onboarding)}
+          onPress={() => props.navigator.push(routes.signup)}
           text="Sign Up"
         />
       </View>
