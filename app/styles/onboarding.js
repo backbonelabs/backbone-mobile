@@ -1,9 +1,10 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference, widthDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $iconSize: applyWidthDifference(30),
   container: {
     flex: 1,
   },
@@ -23,7 +24,8 @@ export default EStyleSheet.create({
     flexDirection: 'row',
   },
   exitOnboardingButton: {
-    paddingHorizontal: 10 * (widthDifference * heightDifference),
+    flex: 1,
+    paddingHorizontal: applyWidthDifference(10),
     justifyContent: 'center',
   },
   exitOnboardingIcon: {

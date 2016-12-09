@@ -271,7 +271,7 @@ class OnBoarding extends Component {
           >
             <Icon
               name={'close'}
-              size={30}
+              size={styles.$iconSize}
               color={styles._exitOnboardingIconColor.backgroundColor}
             />
           </TouchableOpacity>
