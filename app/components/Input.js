@@ -45,7 +45,7 @@ const Input = (props) => {
           style={styles.icon}
         />
         :
-          <View style={{ ...styles._icon, width: styles.$inputIconSize }} />
+          <View style={{ ...styles._icon, width: styles.$iconSize }} />
       }
     </View>
   );
