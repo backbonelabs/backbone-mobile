@@ -27,7 +27,9 @@ const Errors = (props) => {
         { currentRoute.onPressText.secondary &&
           <TouchableOpacity style={styles.secondaryButton} onPress={currentRoute.onPress.secondary}>
             <Icon size={20} name={currentRoute.iconName.footer} color="black" />
-            <SecondaryText style={styles.secondaryText}>{currentRoute.onPressText.secondary}</SecondaryText>
+            <SecondaryText style={styles.secondaryText}>
+              {currentRoute.onPressText.secondary}
+            </SecondaryText>
           </TouchableOpacity>
         }
       </View>
