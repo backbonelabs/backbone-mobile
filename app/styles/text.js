@@ -18,18 +18,18 @@ export default EStyleSheet.create({
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: 26 * widthDifference,
-    lineHeight: 32 * widthDifference,
+    lineHeight: Math.ceil(32 * widthDifference),
   },
   heading2: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: 22 * widthDifference,
-    lineHeight: 26 * widthDifference,
+    lineHeight: Math.ceil(26 * widthDifference),
   },
   heading3: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: 20 * widthDifference,
-    lineHeight: 22 * widthDifference,
+    lineHeight: Math.ceil(22 * widthDifference),
   },
 });
