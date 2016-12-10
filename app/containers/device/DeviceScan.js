@@ -38,7 +38,7 @@ class DeviceScan extends Component {
       inProgress: false,
     };
 
-    this.eventListener = null;
+    this.devicesFoundListener = null;
   }
 
   componentWillMount() {
@@ -69,7 +69,7 @@ class DeviceScan extends Component {
 
   componentWillUnmount() {
     // Remove listener
-    this.eventListener.remove();
+    this.devicesFoundListener.remove();
 
     // Stop scanning for devices
     DeviceManagementService.stopScanForDevices();
