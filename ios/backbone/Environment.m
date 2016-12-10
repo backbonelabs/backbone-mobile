@@ -8,8 +8,8 @@
 RCT_EXPORT_MODULE();
 
 - (NSDictionary*)constantsToExport {
-  NSDictionary *environment = [[NSProcessInfo processInfo] environment];
-  return environment;
+  NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+  return info;
 }
 
 @end

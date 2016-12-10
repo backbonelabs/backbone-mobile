@@ -1,0 +1,9 @@
+#include "../../Pods/Target Support Files/Pods-backbone/Pods-backbone.release.xcconfig"
+
+DEV_MODE = false
+
+// Define all of the following in local.xcconfig
+API_SERVER_URL = replace me // For the protocol, use http:/$()/ or https:/$()/
+MIXPANEL_TOKEN = replace me
+
+#include "local.xcconfig"

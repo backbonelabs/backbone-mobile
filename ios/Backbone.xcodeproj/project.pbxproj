@@ -246,6 +246,8 @@
 		44970BAB1D2AC74400351480 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		465D07C7FE9F1FD781466674 /* Pods-BackboneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackboneTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BackboneTests/Pods-BackboneTests.release.xcconfig"; sourceTree = "<group>"; };
+		6600D5691DFBDA0E005D5807 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = backbone/config/Debug.xcconfig; sourceTree = "<group>"; };
+		6600D56A1DFBDA28005D5807 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = backbone/config/Release.xcconfig; sourceTree = "<group>"; };
 		6602D6891D5023A500DF3369 /* SensorDataService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SensorDataService.h; path = backbone/SensorDataService.h; sourceTree = "<group>"; };
 		6602D6961D50255D00DF3369 /* ActivityModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityModule.h; path = backbone/ActivityModule.h; sourceTree = "<group>"; };
 		6602D6971D50295300DF3369 /* SensorDataService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorDataService.m; path = backbone/SensorDataService.m; sourceTree = "<group>"; };
@@ -407,6 +409,7 @@
 		13B07FAE1A68108700A75B9A /* Backbone */ = {
 			isa = PBXGroup;
 			children = (
+				6600D5521DFBD9F1005D5807 /* config */,
 				69CCE7271DD4B01C0038157C /* util */,
 				4486A5391D89D83500F6CC40 /* Backbone.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -501,6 +504,15 @@
 				449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */,
 			);
 			name = Icons;
+			sourceTree = "<group>";
+		};
+		6600D5521DFBD9F1005D5807 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				6600D5691DFBDA0E005D5807 /* Debug.xcconfig */,
+				6600D56A1DFBDA28005D5807 /* Release.xcconfig */,
+			);
+			name = config;
 			sourceTree = "<group>";
 		};
 		665DFF591D64133C003B4449 /* Products */ = {
@@ -1188,7 +1200,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3848B81F17448DD7434B50CA /* Pods-Backbone.debug.xcconfig */;
+			baseConfigurationReference = 6600D5691DFBDA0E005D5807 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
@@ -1230,7 +1242,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F56847E096323A6B87C77054 /* Pods-Backbone.release.xcconfig */;
+			baseConfigurationReference = 6600D56A1DFBDA28005D5807 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;

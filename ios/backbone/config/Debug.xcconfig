@@ -1,0 +1,10 @@
+#include "../../Pods/Target Support Files/Pods-backbone/Pods-backbone.debug.xcconfig"
+
+DEV_MODE = true
+
+// Define all of the following in local.xcconfig
+API_SERVER_URL = http:/$()/192.168.1.1:3000 // The $() is required for Xcode to recognize the double forward slashes
+                                            // You must override the URL in local.xcconfig with your local server address
+MIXPANEL_TOKEN = replace me
+
+#include "local.xcconfig"
