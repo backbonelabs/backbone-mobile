@@ -1,16 +1,14 @@
 #import "DeviceManagementService.h"
 #import "BluetoothService.h"
 #import "RCTUtils.h"
-#import "RCTEventDispatcher.h"
 
 @implementation DeviceManagementService
-
-@synthesize bridge = _bridge;
 
 static BOOL _remembered;
 static NSMutableDictionary *_deviceCollection = nil;
 
 - (id)init {
+  self = [super init];
   if (!_deviceCollection) {
     _deviceCollection = [NSMutableDictionary new];
   }
@@ -173,12 +171,16 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   });
 }
 
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"ConnectionStatus", @"DevicesFound"];
+}
+
 - (void)deviceConnectionStatus:(NSDictionary *)status {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"ConnectionStatus" body: status];
+  [self sendEventWithName:@"ConnectionStatus" body:status];
 }
 
 - (void)devicesFound:(NSMutableArray *)deviceList {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"DevicesFound" body: deviceList];
+  [self sendEventWithName:@"DevicesFound" body:deviceList];
 }
 
 @end;
