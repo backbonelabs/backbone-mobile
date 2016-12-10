@@ -33,8 +33,10 @@ class DeviceConnect extends Component {
 
   componentWillMount() {
     // Check current connection status with Backbone device
-    DeviceManagementService.getDeviceStatus((status) => {
-      if (status === constants.deviceStatuses.CONNECTED) {
+    DeviceManagementService.getDeviceStatus((error, status) => {
+      if (error) {
+        // TODO: Handle error
+      } else if (status === constants.deviceStatuses.CONNECTED) {
         // Update store, since user only able to initiate connect if isConnected is false
         this.props.dispatch(deviceActions.connect({ isConnected: true }));
         this.props.navigator.replace(routes.postureDashboard);
@@ -63,8 +65,10 @@ class DeviceConnect extends Component {
   // Check whether there's a saved device
   @autobind
   getSavedDevice() {
-    DeviceManagementService.getSavedDevice((device) => {
-      if (device) {
+    DeviceManagementService.getSavedDevice((error, device) => {
+      if (error) {
+        // TODO: Handle error
+      } else if (device) {
         // Saved device is found, attempt to connect
         this.props.dispatch(deviceActions.connect());
       } else {

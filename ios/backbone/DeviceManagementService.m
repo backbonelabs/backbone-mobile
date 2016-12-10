@@ -45,7 +45,7 @@ RCT_EXPORT_METHOD(getSavedDevice:(RCTResponseSenderBlock)callback) {
     _remembered = NO;
   }
   
-  callback(@[[NSNumber numberWithBool:BluetoothServiceInstance.currentDevice != nil]]);
+  callback(@[[NSNull null], [NSNumber numberWithBool:BluetoothServiceInstance.currentDevice != nil]]);
 }
 
 RCT_EXPORT_METHOD(connectToDevice) {
@@ -137,7 +137,7 @@ RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
-  callback(@[[NSNumber numberWithInteger:BluetoothServiceInstance.currentDevice.state]]);
+  callback(@[[NSNull null], [NSNumber numberWithInteger:BluetoothServiceInstance.currentDevice.state]]);
 }
 
 RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {

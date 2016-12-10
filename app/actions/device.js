@@ -72,14 +72,18 @@ const deviceActions = {
   attemptAutoConnect() {
     return (dispatch) => {
       // Check current connection status with Backbone device
-      DeviceManagementService.getDeviceStatus((status) => {
-        if (status === deviceStatuses.CONNECTED) {
+      DeviceManagementService.getDeviceStatus((err, status) => {
+        if (err) {
+          // TODO: Handle error
+        } else if (status === deviceStatuses.CONNECTED) {
           // Device is connected
           dispatch(connect({ isConnected: true }));
         } else {
           // Device is not connected, check whether there is a saved device
-          DeviceManagementService.getSavedDevice((device) => {
-            if (device) {
+          DeviceManagementService.getSavedDevice((error, device) => {
+            if (error) {
+              // TODO: Handle error
+            } else if (device) {
               // There is a saved device, attempt to connect
               dispatch(deviceActions.connect());
             }
