@@ -3,8 +3,6 @@
 
 @implementation Environment
 
-@synthesize bridge = _bridge;
-
 RCT_EXPORT_MODULE();
 
 - (NSDictionary*)constantsToExport {
