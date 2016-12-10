@@ -19,7 +19,7 @@ import routes from '../../routes';
 import constants from '../../utils/constants';
 
 const { DeviceManagementService } = NativeModules;
-const nativeEvents = new NativeEventEmitter(DeviceManagementService);
+const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 const { ON, OFF } = constants.bluetoothStates;
 
 class DeviceScan extends Component {
@@ -43,9 +43,10 @@ class DeviceScan extends Component {
 
   componentWillMount() {
     // Set listener for updating deviceList with discovered devices
-    this.eventListener = nativeEvents.addListener('DevicesFound', deviceList => (
-      this.setState({ deviceList })
-    ));
+    this.devicesFoundListener = deviceManagementServiceEvents.addListener(
+      'DevicesFound',
+      deviceList => this.setState({ deviceList }),
+    );
 
     if (this.props.bluetoothState === ON) {
       // Bluetooth is on, initiate scanning
