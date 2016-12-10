@@ -69,11 +69,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     @ReactMethod
     public void scanForDevices(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
+        Timber.d("Should Scan %b", scanning);
         if (scanning) {
             callback.invoke(JSError.make("A scan has already been initiated"));
-        }
-        else if (bluetoothService.getCurrentDevice() != null) {
-            callback.invoke();
         }
         else if (!bluetoothService.getIsEnabled()) {
             callback.invoke(JSError.make("Bluetooth is not enabled"));
@@ -124,6 +122,8 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     public void selectDevice(String macAddress, Callback callback) {
         Timber.d("selectDevice " + macAddress);
         stopScanForDevices();
+        removeSavedDevice();
+
         BluetoothDevice device = deviceCollection.get(macAddress);
         if (device == null) {
             callback.invoke(JSError.make("Device not in range"));
@@ -200,11 +200,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         if (bluetoothService.getCurrentDevice() != null) {
             bluetoothService.disconnect();
 
-            SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.DEVICE_PREF_ID, MODE_PRIVATE);
-            SharedPreferences.Editor editor = preference.edit();
-
-            editor.remove(Constants.SAVED_DEVICE_PREF_KEY);
-            editor.commit();
+            removeSavedDevice();
 
             callback.invoke();
         } else {
@@ -241,6 +237,14 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void removeSavedDevice() {
+        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.DEVICE_PREF_ID, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preference.edit();
+
+        editor.remove(Constants.SAVED_DEVICE_PREF_KEY);
+        editor.commit();
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {

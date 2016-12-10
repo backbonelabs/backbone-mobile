@@ -379,6 +379,26 @@ public class Utilities {
         return ByteBuffer.wrap(data, offset, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
     }
 
+    /**
+     * Get the high-byte from a short integer
+     *
+     * @param value
+     * @return
+     */
+    public static byte getHighByteFromShort(int value) {
+        return (byte)((value >> 8) & 0xFF);
+    }
+
+    /**
+     * Get the low-byte from a short integer
+     *
+     * @param value
+     * @return
+     */
+    public static byte getLowByteFromShort(int value) {
+        return (byte)(value & 0xFF);
+    }
+
     private static final int[] table = {
             0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
             0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
