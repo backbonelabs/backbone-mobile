@@ -30,6 +30,8 @@
 		6602D6981D50295300DF3369 /* SensorDataService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6971D50295300DF3369 /* SensorDataService.m */; };
 		6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6991D502EA800DF3369 /* ActivityModule.m */; };
 		6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */; };
+		662BD3491DFC92E900CF71D1 /* Debug.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */; };
+		662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */; };
 		665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */; };
 		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
 		669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DC1D50630A00DCEFBE /* ActivityService.m */; };
@@ -254,6 +256,8 @@
 		6602D6991D502EA800DF3369 /* ActivityModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityModule.m; path = backbone/ActivityModule.m; sourceTree = "<group>"; };
 		6625BB7D1DB1E5E3009B4941 /* MixpanelModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MixpanelModule.h; path = backbone/MixpanelModule.h; sourceTree = "<group>"; };
 		6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MixpanelModule.m; path = backbone/MixpanelModule.m; sourceTree = "<group>"; };
+		662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.local.xcconfig; path = backbone/config/Debug.local.xcconfig; sourceTree = "<group>"; };
+		662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Release.local.xcconfig; path = backbone/config/Release.local.xcconfig; sourceTree = "<group>"; };
 		665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		667641251D63B8F900D45761 /* Environment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Environment.h; path = backbone/Environment.h; sourceTree = "<group>"; };
 		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
@@ -510,7 +514,9 @@
 			isa = PBXGroup;
 			children = (
 				6600D5691DFBDA0E005D5807 /* Debug.xcconfig */,
+				662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */,
 				6600D56A1DFBDA28005D5807 /* Release.xcconfig */,
+				662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */,
 			);
 			name = config;
 			sourceTree = "<group>";
@@ -948,6 +954,8 @@
 				665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */,
 				66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */,
 				449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */,
+				662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */,
+				662BD3491DFC92E900CF71D1 /* Debug.local.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
