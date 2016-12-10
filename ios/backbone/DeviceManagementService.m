@@ -8,6 +8,7 @@ static BOOL _remembered;
 static NSMutableDictionary *_deviceCollection = nil;
 
 - (id)init {
+  self = [super init];
   if (!_deviceCollection) {
     _deviceCollection = [NSMutableDictionary new];
   }
@@ -175,11 +176,11 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
 }
 
 - (void)deviceConnectionStatus:(NSDictionary *)status {
-  [self sendEventWithName:@"ConnectionStatus" body: status];
+  [self sendEventWithName:@"ConnectionStatus" body:status];
 }
 
 - (void)devicesFound:(NSMutableArray *)deviceList {
-  [self sendEventWithName:@"DevicesFound" body: deviceList];
+  [self sendEventWithName:@"DevicesFound" body:deviceList];
 }
 
 @end;
