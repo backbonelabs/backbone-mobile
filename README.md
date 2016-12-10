@@ -15,11 +15,9 @@ Then, follow the setup instructions at https://facebook.github.io/react-native/d
 
 ### iOS
 
-Before developing on your local machine, make a copy of the `backbone dev` scheme in Xcode. You can duplicate this scheme by going to Product > Scheme > Manage Schemes. You can name your duplicate scheme whatever you want, but make sure the Shared checkbox is not checked so that it will not be included in the project (since this scheme will be specific to your machine).
+Before developing on your local machine, create xcconfig files at `ios/backbone/config/Debug.local.xcconfig` and `ios/backbone/config/Release.local.xcconfig`. These are used by the Debug configuration and Release configuration, respectively, to set variables for each configuration. These local xcconfig files should **not** be checked into version control.
 
-You can use your custom scheme when running the app on your machine. Be sure to review the environment variables in the scheme. Edit the scheme, and in the Run step, and you will find the environment variables under the Arguments tab. You will most likely need to change the `API_SERVER_URL` value to the IP address that matches your machine (or where ever you are running the API server from).
-
-Ask another dev for the `MIXPANEL_TOKEN` value.
+In `Debug.local.xcconfig`, you will need to set `API_SERVER_URL` to value to the IP address that matches your machine (or where ever you are running the API server). For example, `API_SERVER_URL = http:/$()/192.168.1.1:3000`. The `$()` is required in order for Xcode to properly recognize the double forward slashes. Ask another dev for the `MIXPANEL_TOKEN` value.
 
 ### Android
 
@@ -72,6 +70,8 @@ sh buildVersion.sh
 ## Deployment
 
 ### iOS
+
+Make sure the appropriate production variables are set in `ios/backbone/config/Release.local.xcconfig`.
 
 Before uploading the app to iTunes Connect, be sure to update the marketing version number.
 
