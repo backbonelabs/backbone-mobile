@@ -2,13 +2,13 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   button: {
     justifyContent: 'center',
     backgroundColor: '$primaryColor',
-    width: 150 * widthDifference,
+    width: applyWidthDifference(150),
     height: 45 * heightDifference,
     borderRadius: 5,
   },

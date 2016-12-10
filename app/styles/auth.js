@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -14,7 +14,7 @@ export default EStyleSheet.create({
   },
   backboneLogo: {
     alignSelf: 'center',
-    width: 80 * widthDifference,
+    width: applyWidthDifference(80),
     height: 74 * heightDifference,
     resizeMode: 'contain',
   },
