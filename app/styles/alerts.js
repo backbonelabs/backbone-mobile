@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const border = {
   borderBottomWidth: 1,
@@ -70,6 +70,6 @@ export default EStyleSheet.create({
   },
   batteryLifeWarningText: {
     color: '$primaryFontColor',
-    fontSize: applyWidthDifference(13),
+    fontSize: fixedResponsiveFontSize(13),
   },
 });

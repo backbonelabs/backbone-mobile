@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   $placeholderTextColor: '$secondaryFontColor',
@@ -14,7 +14,7 @@ export default EStyleSheet.create({
   inputField: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: applyWidthDifference(18),
+    fontSize: fixedResponsiveFontSize(18),
     borderColor: '#979797',
     borderWidth: 1,
     borderRadius: 5,

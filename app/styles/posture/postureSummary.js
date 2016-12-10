@@ -1,10 +1,10 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $starIconSize: applyWidthDifference(50),
+  $starIconSize: fixedResponsiveFontSize(50),
   $fontColor: '#FFFFFF',
   container: {
     flex: 1,
@@ -34,9 +34,9 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   time: {
-    fontSize: applyWidthDifference(36),
+    fontSize: fixedResponsiveFontSize(36),
     '@media (max-width: 320)': { // iphone4's max width
-      fontSize: applyWidthDifference(25),
+      fontSize: fixedResponsiveFontSize(25),
     },
     color: '$fontColor',
   },

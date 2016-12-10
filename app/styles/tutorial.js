@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const stepButton = {
   flex: 0.25,
@@ -50,7 +50,7 @@ export default EStyleSheet.create({
     paddingRight: '10%',
   },
   paginationIcon: {
-    width: applyWidthDifference(25),
+    width: fixedResponsiveFontSize(25),
     color: 'rgba(0,0,0,0.25)',
   },
 });

@@ -1,10 +1,10 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $profileFieldIconSize: applyWidthDifference(16),
+  $profileFieldIconSize: fixedResponsiveFontSize(16),
   container: {
     width: '100%',
   },

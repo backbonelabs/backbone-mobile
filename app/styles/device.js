@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference, applyWidthDifference } = relativeDimensions;
+const { heightDifference, applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -42,13 +42,13 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
   },
   secondaryText: {
-    fontSize: applyWidthDifference(12),
+    fontSize: fixedResponsiveFontSize(12),
     marginTop: 5 * heightDifference,
   },
   spinner: {
     paddingVertical: 15 * heightDifference,
   },
   icon: {
-    height: 45 * heightDifference,
+    height: fixedResponsiveFontSize(45),
   },
 });

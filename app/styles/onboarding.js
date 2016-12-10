@@ -1,11 +1,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $exitIconSize: applyWidthDifference(30),
-  $progressIconSize: applyWidthDifference(44),
+  $exitIconSize: fixedResponsiveFontSize(30),
+  $progressIconSize: fixedResponsiveFontSize(44),
   container: {
     flex: 1,
   },

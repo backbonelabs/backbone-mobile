@@ -2,10 +2,10 @@ import { Dimensions } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $iconSize: applyWidthDifference(40),
+  $iconSize: fixedResponsiveFontSize(40),
   $windowHeight: Dimensions.get('window').height,
   container: {
     flex: 1,

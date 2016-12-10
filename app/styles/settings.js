@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 
 const bottomBorder = {
@@ -20,7 +20,7 @@ const absoluteCenter = {
 };
 
 export default EStyleSheet.create({
-  $settingsIconSize: applyWidthDifference(24),
+  $settingsIconSize: fixedResponsiveFontSize(24),
   $arrowWidth: applyWidthDifference(12),
   $arrowHeight: applyWidthDifference(23),
   backgroundImage: {
@@ -53,7 +53,7 @@ export default EStyleSheet.create({
   },
   deviceInfoText: {
     marginVertical: applyWidthDifference(2),
-    fontSize: applyWidthDifference(13),
+    fontSize: fixedResponsiveFontSize(13),
     color: '$primaryFontColor',
   },
   batteryIcon: {

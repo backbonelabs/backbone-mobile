@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const absoluteCenter = {
   alignItems: 'center',
@@ -41,11 +41,11 @@ export default EStyleSheet.create({
   },
   playIcon: {
     color: '$primaryColor',
-    height: 100 * heightDifference,
+    height: fixedResponsiveFontSize(100),
   },
   stopIcon: {
     color: '$primaryColor',
-    height: 25 * heightDifference,
+    height: fixedResponsiveFontSize(25),
   },
   stopIconPadding: {
     paddingVertical: 5.5 * heightDifference,

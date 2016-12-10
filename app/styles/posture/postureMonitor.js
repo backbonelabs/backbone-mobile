@@ -1,11 +1,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 const responsiveWidthHalfCircle = applyWidthDifference(128.5);
 
 export default EStyleSheet.create({
-  $sliderIconSize: applyWidthDifference(15),
+  $sliderIconSize: fixedResponsiveFontSize(15),
   $sliderIconPadding: applyWidthDifference(5),
   $pointerBaseHeight: 84,
   container: {
