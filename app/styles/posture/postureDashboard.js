@@ -4,7 +4,8 @@ import relativeDimensions from '../../utils/relativeDimensions';
 const { widthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $itemWidth: 130 * 1.5 * widthDifference,
+  $sessionIconSize: 130 * widthDifference,
+  $sessionIconContainerWidth: '$sessionIconSize * 1.5',
   $sliderWidth: '100%',
   container: {
     flex: 1,
@@ -15,21 +16,21 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   body: {
-    flex: 0.5,
+    flex: 0.85,
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  sessionIcon: {
+    width: '$sessionIconSize',
+    height: '$sessionIconSize',
+  },
   carouselContainer: {
-    height: '$itemWidth',
+    height: '$sessionIconSize * 1.1',
   },
   carouselItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '$itemWidth',
-  },
-  footer: {
-    flex: 0.25,
-    alignItems: 'center',
+    width: '$sessionIconContainerWidth',
   },
   dailyStreakContainer: {
     alignItems: 'center',
@@ -39,11 +40,11 @@ export default EStyleSheet.create({
     marginBottom: 8 * heightDifference,
   },
   dailyStreakBanner: {
-    width: 55 * widthDifference,
-    height: 86 * heightDifference,
+    width: 76 * widthDifference,
+    height: 100 * widthDifference,
     resizeMode: 'contain',
   },
   streakCounter: {
-    marginTop: -67 * heightDifference,
+    marginTop: -73 * widthDifference,
   },
 });

@@ -1,11 +1,11 @@
-import { NativeModules } from 'react-native';
+// import { NativeModules } from 'react-native';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
-const { Environment } = NativeModules;
+// const { Environment } = NativeModules;
 const { storageKeys } = constants;
-const baseUrl = `${Environment.API_SERVER_URL}/users`;
+const baseUrl = 'https://api.gobackbone.com/users';
 const settingsUrl = `${baseUrl}/settings`;
 
 const fetchUserStart = () => ({ type: 'FETCH_USER__START' });
