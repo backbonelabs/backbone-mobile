@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Text,
   Picker,
   Platform,
   DatePickerIOS,
@@ -12,6 +11,7 @@ import {
 import autobind from 'autobind-decorator';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoarding/profile';
+import BodyText from '../../../components/BodyText';
 
 const {
   height: heightConstants,
@@ -254,7 +254,7 @@ export default class ProfilePicker extends Component {
                 this.props.setPickerType();
               }}
             >
-              <Text style={styles.profilePickerHeaderText}>Save</Text>
+              <BodyText style={styles._profilePickerHeaderText}>Save</BodyText>
             </TouchableOpacity>
           </View>
         )}

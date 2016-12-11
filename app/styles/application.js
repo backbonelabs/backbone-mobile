@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 const absoluteCenter = {
   alignItems: 'center',
@@ -48,7 +48,7 @@ export default EStyleSheet.create({
   },
   tabBarImage: {
     height: 30 * heightDifference,
-    width: 30 * widthDifference,
+    width: applyWidthDifference(30),
     resizeMode: 'contain',
   },
 });

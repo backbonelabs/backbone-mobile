@@ -40,7 +40,7 @@ const ProfileBody = props => {
               <Icon
                 name={'check'}
                 color={styles._profileFieldIcon.color}
-                size={16}
+                size={styles.$profileFieldIconSize}
               />
             </View>
           :

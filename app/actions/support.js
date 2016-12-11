@@ -1,7 +1,7 @@
-import { NativeModules } from 'react-native';
+// import { NativeModules } from 'react-native';
 import Fetcher from '../utils/Fetcher';
 
-const { Environment } = NativeModules;
+// const { Environment } = NativeModules;
 
 const updateTicketMessage = payload => ({
   type: 'UPDATE_SUPPORT_MESSAGE',
@@ -32,7 +32,7 @@ export default {
       dispatch(createTicketStart());
 
       return Fetcher.post({
-        url: `${Environment.API_SERVER_URL}/support`,
+        url: 'https://api.gobackbone.com/support',
         headers: { Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({
           _id: user._id,

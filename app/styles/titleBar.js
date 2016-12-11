@@ -2,7 +2,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const baseTitleBarStyles = {
   flexDirection: 'row',
@@ -13,11 +13,11 @@ const baseTitleBarStyles = {
 
 const baseSideButtonStyles = {
   alignItems: 'center',
-  paddingHorizontal: 6 * widthDifference,
+  paddingHorizontal: applyWidthDifference(6),
 };
 
 export default EStyleSheet.create({
-  $leftButtonIconSize: 28 * heightDifference,
+  $leftButtonIconSize: fixedResponsiveFontSize(28),
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
@@ -47,6 +47,6 @@ export default EStyleSheet.create({
   },
   buttonIcon: {
     color: '#FFFFFF',
-    marginRight: 6 * widthDifference,
+    marginRight: applyWidthDifference(6),
   },
 });

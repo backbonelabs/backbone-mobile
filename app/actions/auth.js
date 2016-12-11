@@ -3,7 +3,7 @@ import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 
-const { Environment, Mixpanel } = NativeModules;
+const { Mixpanel } = NativeModules;
 const { storageKeys } = constants;
 
 const loginStart = () => ({ type: 'LOGIN__START' });
@@ -55,7 +55,7 @@ export default {
       dispatch(loginStart());
 
       return Fetcher.post({
-        url: `${Environment.API_SERVER_URL}/auth/login`,
+        url: 'https://api.gobackbone.com/auth/login',
         body: JSON.stringify(user),
       })
         .then(response => response.json()
@@ -93,7 +93,7 @@ export default {
       dispatch(signupStart());
 
       return Fetcher.post({
-        url: `${Environment.API_SERVER_URL}/users/`,
+        url: 'https://api.gobackbone.com/users/',
         body: JSON.stringify(user),
       })
         .then((response) => response.json()
@@ -131,7 +131,7 @@ export default {
       dispatch(passwordResetStart());
 
       return Fetcher.post({
-        url: `${Environment.API_SERVER_URL}/auth/password-reset-token`,
+        url: 'https://api.gobackbone.com/auth/password-reset-token',
         body: JSON.stringify(user),
       })
         .then((response) => {
