@@ -48,6 +48,7 @@
 #define ACCELEROMETER_CHARACTERISTIC_UUID         [CBUUID UUIDWithString:@"00010005-0000-1000-8000-00805F9B0421"]
 #define ENTER_BOOTLOADER_CHARACTERISTIC_UUID      [CBUUID UUIDWithString:@"00010006-0000-1000-8000-00805F9B0421"]
 #define FIRMWARE_VERSION_CHARACTERISTIC_UUID      [CBUUID UUIDWithString:@"00010007-0000-1000-8000-00805F9B0421"]
+#define SLOUCH_CHARACTERISTIC_UUID                [CBUUID UUIDWithString:@"00010008-0000-1000-8000-00805F9B0421"]
 #define BATTERY_LEVEL_CHARACTERISTIC_UUID         [CBUUID UUIDWithString:@"2A19"]
 #define BOOTLOADER_CHARACTERISTIC_UUID            [CBUUID UUIDWithString:@"00060001-F8CE-11E4-ABF4-0002A5D5C51B"]
 
@@ -74,6 +75,10 @@
 #define SESSION_DEFAULT_DURATION 5 // Session duration in minutes
 #define SESSION_DEFAULT_DISTANCE_THRESHOLD_UNIT 1000 // Distance threshold in ten thousandths of a unit
 #define SESSION_DEFAULT_TIME_THRESHOLD 3 // Time threshold in seconds
+
+#define VIBRATION_DEFAULT_PATTERN     1 // Number of times the motor should vibrate [0-3]
+#define VIBRATION_DEFAULT_SPEED       50 // Speed of motor vibration [0-255]
+#define VIBRATION_DEFAULT_DURATION    20 // Duration of motor vibration in tens of milliseconds [0-255]
 
 /*
  Bootloader Specifics

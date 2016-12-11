@@ -51,6 +51,10 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
       sessionDistanceThreshold = SESSION_DEFAULT_DISTANCE_THRESHOLD_UNIT;
       sessionTimeThreshold = SESSION_DEFAULT_TIME_THRESHOLD;
       
+      vibrationPattern = VIBRATION_DEFAULT_PATTERN;
+      vibrationSpeed = VIBRATION_DEFAULT_SPEED;
+      vibrationDuration = VIBRATION_DEFAULT_DURATION;
+      
       if (sessionParam != nil && [sessionParam objectForKey:@"sessionDuration"] != nil) {
         sessionDuration = [[sessionParam objectForKey:@"sessionDuration"] intValue];
       }
@@ -63,9 +67,22 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
         sessionTimeThreshold = [[sessionParam objectForKey:@"sessionTimeThreshold"] intValue];
       }
       
+      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationPattern"] != nil) {
+        vibrationPattern = [[sessionParam objectForKey:@"vibrationPattern"] intValue];
+      }
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationSpeed"] != nil) {
+        vibrationSpeed = [[sessionParam objectForKey:@"vibrationSpeed"] intValue];
+      }
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationDuration"] != nil) {
+        vibrationDuration = [[sessionParam objectForKey:@"vibrationDuration"] intValue];
+      }
+      
       sessionDuration *= 60; // Convert to second from minute
       
       DLog(@"SessionParam %@", sessionParam);
+      DLog(@"SessionExtra %d %d %d %d %d %d", sessionDuration, sessionDistanceThreshold, sessionTimeThreshold, vibrationPattern, vibrationSpeed, vibrationDuration);
       
       [self toggleSessionOperation:SESSION_OPERATION_START withHandler:^(NSError * _Nullable error) {
         if (error) {
@@ -148,7 +165,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   
   // 'Start' operation needs additional parameters to be sent
   if (operation == SESSION_OPERATION_START) {
-    uint8_t bytes[9];
+    uint8_t bytes[12];
     
     bytes[0] = SESSION_COMMAND_START;
     
@@ -162,6 +179,35 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     
     bytes[7] = [Utilities getByteFromInt:sessionTimeThreshold index:1];
     bytes[8] = [Utilities getByteFromInt:sessionTimeThreshold index:0];
+    
+    bytes[9] = vibrationPattern;
+    bytes[10] = vibrationSpeed;
+    bytes[11] = vibrationDuration;
+    
+    currentSessionState = SESSION_STATE_RUNNING;
+    
+    distanceNotificationStatus = YES;
+    
+    NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+    
+    DLog(@"Toggle Session %@", data);
+    
+    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:self.sessionControlCharacteristic type:CBCharacteristicWriteWithResponse];
+  }
+  else if (operation == SESSION_OPERATION_RESUME) {
+    uint8_t bytes[8];
+    
+    bytes[0] = SESSION_COMMAND_RESUME;
+    
+    bytes[1] = [Utilities getByteFromInt:sessionDistanceThreshold index:1];
+    bytes[2] = [Utilities getByteFromInt:sessionDistanceThreshold index:0];
+    
+    bytes[3] = [Utilities getByteFromInt:sessionTimeThreshold index:1];
+    bytes[4] = [Utilities getByteFromInt:sessionTimeThreshold index:0];
+    
+    bytes[5] = vibrationPattern;
+    bytes[6] = vibrationSpeed;
+    bytes[7] = vibrationDuration;
     
     currentSessionState = SESSION_STATE_RUNNING;
     
@@ -177,13 +223,6 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     uint8_t bytes[1];
     
     switch (operation) {
-      case SESSION_OPERATION_RESUME:
-        bytes[0] = SESSION_COMMAND_RESUME;
-        currentSessionState = SESSION_STATE_RUNNING;
-        
-        distanceNotificationStatus = YES;
-        
-        break;
       case SESSION_OPERATION_PAUSE:
         bytes[0] = SESSION_COMMAND_PAUSE;
         currentSessionState = SESSION_STATE_PAUSED;
@@ -288,6 +327,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+  DLog(@"Has write %@ %@", characteristic, error);
   if ([characteristic.UUID isEqual:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
     if (error) {
       DLog(@"Error writing to characteristic: %@ %@", characteristic.UUID, error.localizedDescription);

@@ -20,6 +20,10 @@
   int sessionDistanceThreshold;
   int sessionTimeThreshold;
   
+  int vibrationPattern;
+  int vibrationSpeed;
+  int vibrationDuration;
+  
   BOOL distanceNotificationStatus;
 }
 
