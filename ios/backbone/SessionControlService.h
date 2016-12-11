@@ -25,12 +25,16 @@
   int vibrationDuration;
   
   BOOL distanceNotificationStatus;
+  BOOL statisticNotificationStatus;
+  BOOL slouchNotificationStatus;
 }
 
 @property (nonatomic, strong) RCTBridge *bridge;
 
 @property (nonatomic, readonly) CBCharacteristic *sessionControlCharacteristic;
 @property (nonatomic, readonly) CBCharacteristic *distanceCharacteristic;
+@property (nonatomic, readonly) CBCharacteristic *slouchCharacteristic;
+@property (nonatomic, readonly) CBCharacteristic *sessionStatisticCharacteristic;
 
 + (SessionControlService *)getSessionControlService;
 

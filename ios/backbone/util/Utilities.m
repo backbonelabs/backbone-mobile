@@ -262,20 +262,37 @@
 }
 
 /*!
- *  @method convertBytesToFloat:
+ *  @method convertToFloatFromBytes:
  *
  *  @discussion Method to convert 4 bytes to float
  *
  */
-+ (float) convertToFloatFromBytes:(uint8_t*)bytes {
-  byteArrayToFloat bf;
++ (float) convertToFloatFromBytes:(uint8_t*)bytes offset:(int)idx {
+  byteArrayUnion bf;
   
-  bf.bytes[0] = bytes[0];
-  bf.bytes[1] = bytes[1];
-  bf.bytes[2] = bytes[2];
-  bf.bytes[3] = bytes[3];
+  bf.bytes[0] = bytes[idx];
+  bf.bytes[1] = bytes[idx + 1];
+  bf.bytes[2] = bytes[idx + 2];
+  bf.bytes[3] = bytes[idx + 3];
   
-  return bf.val;
+  return bf.floatVal;
+}
+
+/*!
+ *  @method convertToIntFromBytes:
+ *
+ *  @discussion Method to convert 4 bytes to integer
+ *
+ */
++ (int) convertToIntFromBytes:(uint8_t*)bytes offset:(int)idx {
+  byteArrayUnion bf;
+  
+  bf.bytes[0] = bytes[idx];
+  bf.bytes[1] = bytes[idx + 1];
+  bf.bytes[2] = bytes[idx + 2];
+  bf.bytes[3] = bytes[idx + 3];
+  
+  return bf.intVal;
 }
 
 /*!
@@ -285,9 +302,9 @@
  *
  */
 + (uint8_t) getByteFromFloat:(float)val index:(int)idx {
-  byteArrayToFloat bf;
+  byteArrayUnion bf;
   
-  bf.val = val;
+  bf.floatVal = val;
   
   if (idx < 0 || idx > 3) {
     return -1;

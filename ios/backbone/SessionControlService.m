@@ -42,6 +42,10 @@
   return [SessionControlService getSessionControlService];
 }
 
+//- (NSArray<NSString *> *)supportedEvents {
+//  return @[@"PostureDistance", @"SessionStatistics", @"SlouchStatus"];
+//}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderBlock)callback) {
@@ -163,7 +167,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   currentCommand = operation;
   previousSessionState = currentSessionState;
   
-  // 'Start' operation needs additional parameters to be sent
+  // 'Start' and 'Resume' operations require additional parameters to be sent
   if (operation == SESSION_OPERATION_START) {
     uint8_t bytes[12];
     
@@ -187,6 +191,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     currentSessionState = SESSION_STATE_RUNNING;
     
     distanceNotificationStatus = YES;
+    slouchNotificationStatus = YES;
+    statisticNotificationStatus = YES;
     
     NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
     
@@ -212,6 +218,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     currentSessionState = SESSION_STATE_RUNNING;
     
     distanceNotificationStatus = YES;
+    slouchNotificationStatus = YES;
     
     NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
     
@@ -228,6 +235,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
         currentSessionState = SESSION_STATE_PAUSED;
         
         distanceNotificationStatus = NO;
+        slouchNotificationStatus = NO;
         
         break;
       case SESSION_OPERATION_STOP:
@@ -235,6 +243,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
         currentSessionState = SESSION_STATE_STOPPED;
         
         distanceNotificationStatus = NO;
+        slouchNotificationStatus = NO;
         
         break;
     }
@@ -249,6 +258,32 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   DLog(@"Toggle Session State %d", operation);
 }
 
+- (void)revertOperation {
+  // Revert as needed
+  switch (previousSessionState) {
+    case SESSION_STATE_STOPPED:
+      // Stop the current session since there was an error creating the new session
+      [self toggleSessionOperation:SESSION_OPERATION_STOP withHandler:nil];
+      break;
+    case SESSION_STATE_PAUSED:
+      // Revert back to pause the current session since the resume operation went wrong
+      [self toggleSessionOperation:SESSION_OPERATION_PAUSE withHandler:nil];
+      break;
+    case SESSION_STATE_RUNNING:
+      if (currentCommand == SESSION_OPERATION_STOP) {
+        // Session is stopped anyway, so there's no point reverting it back, as that would create a completely new session.
+        // React should decide how to handle this case, ie. we can let the user to retry turning off the notification.
+      }
+      else if (currentCommand == SESSION_OPERATION_PAUSE) {
+        // Pausing was not successfully completed, so we resume the current session
+        [self toggleSessionOperation:SESSION_OPERATION_RESUME withHandler:nil];
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
   DLog(@"[SessionControl] Did Discover Characteristic with error: %@", error);
   
@@ -260,29 +295,63 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       else if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
         _distanceCharacteristic = characteristic;
       }
+      else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
+        _slouchCharacteristic = characteristic;
+      }
+      else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
+        _sessionStatisticCharacteristic = characteristic;
+      }
     }
   }
 }
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
   DLog(@"DidUpdateValue %@", characteristic);
-  if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
-    if (error == nil) {
+  if (error == nil) {
+    if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
       DLog(@"DistanceRawValue %x %x %x %x", dataPointer[0], dataPointer[1], dataPointer[2], dataPointer[3]);
       
-      float currentDistance = [Utilities convertToFloatFromBytes:dataPointer];
+      float currentDistance = [Utilities convertToFloatFromBytes:dataPointer offset:0];
       
       [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
-                                                                                  @"currentDistance": [NSNumber numberWithFloat:currentDistance]
-                                                                                  }];
+                                                        @"currentDistance": [NSNumber numberWithFloat:currentDistance]
+                                                        }];
     }
-    else {
+    else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
+      uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
       
+      int flags = [Utilities convertToIntFromBytes:dataPointer offset:0];
+      int totalDuration = [Utilities convertToIntFromBytes:dataPointer offset:4];
+      int slouchTime = [Utilities convertToIntFromBytes:dataPointer offset:8];
+      
+      // Check the Least-Significant Bit of the flags to retrieve the current session state
+      bool hasActiveSession = (flags % 2 == 1);
+      
+      [self.bridge.eventDispatcher sendAppEventWithName:@"SessionStatistics" body:@{
+                                                          @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
+                                                          @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
+                                                          @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
+                                                          }];
+      
+      // Disable statistic notification after we receive it
+      statisticNotificationStatus = NO;
+      [BluetoothServiceInstance.currentDevice setNotifyValue:statisticNotificationStatus forCharacteristic:self.distanceCharacteristic];
+    }
+    else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
+      uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
+      
+      bool isSlouching = (dataPointer[0] % 2 == 1);
+      
+      [self.bridge.eventDispatcher sendAppEventWithName:@"SlouchStatus" body:@{
+                                                     @"isSlouching": [NSNumber numberWithBool:isSlouching]
+                                                     }];
     }
   }
 }
 
+// Notifications are enabled one by one, with the following order: Distance, Slouch, Statistic
+// Failure on any of them will result in operation reversal
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
   DLog(@"DidUpdateNotif %@", characteristic);
   if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
@@ -293,29 +362,35 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
         _errorHandler(error);
       }
       
-      // Revert as needed
-      switch (previousSessionState) {
-        case SESSION_STATE_STOPPED:
-          // Stop the current session since there was an error creating the new session
-          [self toggleSessionOperation:SESSION_OPERATION_STOP withHandler:nil];
-          break;
-        case SESSION_STATE_PAUSED:
-          // Revert back to pause the current session since the resume operation went wrong
-          [self toggleSessionOperation:SESSION_OPERATION_PAUSE withHandler:nil];
-          break;
-        case SESSION_STATE_RUNNING:
-          if (currentCommand == SESSION_OPERATION_STOP) {
-            // Session is stopped anyway, so there's no point reverting it back, as that would create a completely new session.
-            // React should decide how to handle this case, ie. we can let the user to retry turning off the notification.
-          }
-          else if (currentCommand == SESSION_OPERATION_PAUSE) {
-            // Pausing was not successfully completed, so we resume the current session
-            [self toggleSessionOperation:SESSION_OPERATION_RESUME withHandler:nil];
-          }
-          break;
-        default:
-          break;
+      [self revertOperation];
+    }
+    else {
+      [BluetoothServiceInstance.currentDevice setNotifyValue:slouchNotificationStatus forCharacteristic:self.slouchCharacteristic];
+    }
+  }
+  else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
+    if (error) {
+      DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
+      
+      if (_errorHandler) {
+        _errorHandler(error);
       }
+      
+      [self revertOperation];
+    }
+    else {
+      [BluetoothServiceInstance.currentDevice setNotifyValue:statisticNotificationStatus forCharacteristic:self.sessionStatisticCharacteristic];
+    }
+  }
+  else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
+    if (error) {
+      DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
+      
+      if (_errorHandler) {
+        _errorHandler(error);
+      }
+      
+      [self revertOperation];
     }
     else {
       // Session control is fully updated, return callback with no error

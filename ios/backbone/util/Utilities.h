@@ -37,8 +37,9 @@
 
 typedef union {
   uint8_t bytes[4];
-  float val;
-} byteArrayToFloat;
+  float floatVal;
+  int intVal;
+} byteArrayUnion;
 
 @interface Utilities : NSObject
 
@@ -145,12 +146,20 @@ typedef union {
 
 
 /*!
- *  @method convertBytesToFloat:
+ *  @method convertToFloatFromBytes:
  *
- *  @discussion Method to convert 4 bytes to float
+ *  @discussion Method to convert 4 bytes from the specified offset to float
  *
  */
-+ (float) convertToFloatFromBytes:(uint8_t*)bytes;
++ (float) convertToFloatFromBytes:(uint8_t*)bytes offset:(int)idx;
+
+/*!
+ *  @method convertToIntFromBytes:
+ *
+ *  @discussion Method to convert 4 bytes from the specified offset to integer
+ *
+ */
++ (int) convertToIntFromBytes:(uint8_t*)bytes offset:(int)idx;
 
 /*!
  *  @method getByteFromFloat:index:
