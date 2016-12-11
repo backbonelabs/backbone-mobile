@@ -380,23 +380,13 @@ public class Utilities {
     }
 
     /**
-     * Get the high-byte from a short integer
+     * Get the byte of an integer value on the requested index
      *
      * @param value
      * @return
      */
-    public static byte getHighByteFromShort(int value) {
-        return (byte)((value >> 8) & 0xFF);
-    }
-
-    /**
-     * Get the low-byte from a short integer
-     *
-     * @param value
-     * @return
-     */
-    public static byte getLowByteFromShort(int value) {
-        return (byte)(value & 0xFF);
+    public static byte getByteFromInt(int value, int index) {
+        return (byte)((value >> (8 * index)) & 0xFF);
     }
 
     private static final int[] table = {

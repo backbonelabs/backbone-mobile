@@ -12,6 +12,7 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 import co.backbonelabs.backbone.util.Constants;
@@ -47,9 +48,13 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         reactContext.registerReceiver(bleBroadcastReceiver, filter);
     }
 
-    private int currentSessionState = Constants.SESSION_STATE.STOPPED;
-    private int previousSessionState = Constants.SESSION_STATE.STOPPED;
+    private int currentSessionState = Constants.SESSION_STATES.STOPPED;
+    private int previousSessionState = Constants.SESSION_STATES.STOPPED;
     private int currentCommand;
+
+    private int sessionDuration = Constants.SESSION_DEFAULT_DURATION;
+    private int sessionDistanceThreshold = Constants.SESSION_DEFAULT_DISTANCE_THRESHOLD_UNIT;
+    private int sessionTimeThreshold = Constants.SESSION_DEFAULT_TIME_THRESHOLD;
 
     private boolean distanceNotificationStatus;
 
@@ -61,14 +66,32 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void start(final Callback callback) {
+    public void start(ReadableMap sessionParam, final Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
 
-        if (bluetoothService.getCurrentDevice() != null
+        if (bluetoothService.isDeviceReady()
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
-            if (currentSessionState == Constants.SESSION_STATE.STOPPED) {
-                toggleSessionOperation(Constants.SESSION_OPERATION.START, new Constants.IntCallBack() {
+            if (currentSessionState == Constants.SESSION_STATES.STOPPED) {
+                sessionDuration = Constants.SESSION_DEFAULT_DURATION;
+                sessionDistanceThreshold = Constants.SESSION_DEFAULT_DISTANCE_THRESHOLD_UNIT;
+                sessionTimeThreshold = Constants.SESSION_DEFAULT_TIME_THRESHOLD;
+
+                if (sessionParam != null && sessionParam.hasKey("sessionDuration")) {
+                    sessionDuration = sessionParam.getInt("sessionDuration");
+                }
+
+                if (sessionParam != null && sessionParam.hasKey("sessionDistanceThreshold")) {
+                    sessionDistanceThreshold = sessionParam.getInt("sessionDistanceThreshold");
+                }
+
+                if (sessionParam != null && sessionParam.hasKey("sessionTimeThreshold")) {
+                    sessionTimeThreshold = sessionParam.getInt("sessionTimeThreshold");
+                }
+
+                sessionDuration *= 60; // Convert to second from minute
+
+                toggleSessionOperation(Constants.SESSION_OPERATIONS.START, new Constants.IntCallBack() {
                     @Override
                     public void onIntCallBack(int val) {
                         if (val == 0) {
@@ -80,8 +103,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     }
                 });
             }
-            else if (currentSessionState == Constants.SESSION_STATE.PAUSED) {
-                toggleSessionOperation(Constants.SESSION_OPERATION.RESUME, new Constants.IntCallBack() {
+            else if (currentSessionState == Constants.SESSION_STATES.PAUSED) {
+                toggleSessionOperation(Constants.SESSION_OPERATIONS.RESUME, new Constants.IntCallBack() {
                     @Override
                     public void onIntCallBack(int val) {
                         if (val == 0) {
@@ -109,8 +132,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         if (bluetoothService.getCurrentDevice() != null
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
-            if (currentSessionState == Constants.SESSION_STATE.RUNNING) {
-                toggleSessionOperation(Constants.SESSION_OPERATION.PAUSE, new Constants.IntCallBack() {
+            if (currentSessionState == Constants.SESSION_STATES.RUNNING) {
+                toggleSessionOperation(Constants.SESSION_OPERATIONS.PAUSE, new Constants.IntCallBack() {
                     @Override
                     public void onIntCallBack(int val) {
                         if (val == 0) {
@@ -138,8 +161,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         if (bluetoothService.getCurrentDevice() != null
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
-            if (currentSessionState == Constants.SESSION_STATE.RUNNING || currentSessionState == Constants.SESSION_STATE.PAUSED) {
-                toggleSessionOperation(Constants.SESSION_OPERATION.STOP, new Constants.IntCallBack() {
+            if (currentSessionState == Constants.SESSION_STATES.RUNNING || currentSessionState == Constants.SESSION_STATES.PAUSED) {
+                toggleSessionOperation(Constants.SESSION_OPERATIONS.STOP, new Constants.IntCallBack() {
                     @Override
                     public void onIntCallBack(int val) {
                         if (val == 0) {
@@ -162,42 +185,62 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
     private void toggleSessionOperation(int operation, Constants.IntCallBack errCallBack) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
-        byte[] commandBytes = new byte[1];
 
         previousSessionState = currentSessionState;
         currentCommand = operation;
         errorCallBack = errCallBack;
 
-        switch (operation) {
-            case Constants.SESSION_OPERATION.START:
-                commandBytes[0] = Constants.SESSION_COMMAND.START;
-                currentSessionState = Constants.SESSION_STATE.RUNNING;
-                distanceNotificationStatus = true;
+        boolean status = false;
 
-                break;
-            case Constants.SESSION_OPERATION.RESUME:
-                commandBytes[0] = Constants.SESSION_COMMAND.RESUME;
-                currentSessionState = Constants.SESSION_STATE.RUNNING;
-                distanceNotificationStatus = true;
+        if (operation == Constants.SESSION_OPERATIONS.START) {
+            byte[] commandBytes = new byte[9];
 
-                break;
-            case Constants.SESSION_OPERATION.PAUSE:
-                commandBytes[0] = Constants.SESSION_COMMAND.PAUSE;
-                currentSessionState = Constants.SESSION_STATE.PAUSED;
-                distanceNotificationStatus = false;
+            commandBytes[0] = Constants.SESSION_COMMANDS.START;
 
-                break;
-            case Constants.SESSION_OPERATION.STOP:
-                commandBytes[0] = Constants.SESSION_COMMAND.STOP;
-                currentSessionState = Constants.SESSION_STATE.STOPPED;
-                distanceNotificationStatus = false;
+            commandBytes[1] = Utilities.getByteFromInt(sessionDuration, 3);
+            commandBytes[2] = Utilities.getByteFromInt(sessionDuration, 2);
+            commandBytes[3] = Utilities.getByteFromInt(sessionDuration, 1);
+            commandBytes[4] = Utilities.getByteFromInt(sessionDuration, 0);
 
-                break;
+            commandBytes[5] = Utilities.getByteFromInt(sessionDistanceThreshold, 1);
+            commandBytes[6] = Utilities.getByteFromInt(sessionDistanceThreshold, 0);
+
+            commandBytes[7] = Utilities.getByteFromInt(sessionTimeThreshold, 1);
+            commandBytes[8] = Utilities.getByteFromInt(sessionTimeThreshold, 0);
+
+            currentSessionState = Constants.SESSION_STATES.RUNNING;
+            distanceNotificationStatus = true;
+
+            status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
+        }
+        else  {
+            byte[] commandBytes = new byte[1];
+
+            switch (operation) {
+                case Constants.SESSION_OPERATIONS.RESUME:
+                    commandBytes[0] = Constants.SESSION_COMMANDS.RESUME;
+                    currentSessionState = Constants.SESSION_STATES.RUNNING;
+                    distanceNotificationStatus = true;
+
+                    break;
+                case Constants.SESSION_OPERATIONS.PAUSE:
+                    commandBytes[0] = Constants.SESSION_COMMANDS.PAUSE;
+                    currentSessionState = Constants.SESSION_STATES.PAUSED;
+                    distanceNotificationStatus = false;
+
+                    break;
+                case Constants.SESSION_OPERATIONS.STOP:
+                    commandBytes[0] = Constants.SESSION_COMMANDS.STOP;
+                    currentSessionState = Constants.SESSION_STATES.STOPPED;
+                    distanceNotificationStatus = false;
+
+                    break;
+            }
+
+            status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
         }
 
         Timber.d("Toggle Session Control %d", operation);
-
-        boolean status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
 
         // There won't be any response back from the board once it failed here
         // So if we failed initiating the characteristic writer, handle the error callback right away
@@ -275,22 +318,22 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                             // Revert as needed
                             switch (previousSessionState) {
-                                case Constants.SESSION_STATE.STOPPED:
+                                case Constants.SESSION_STATES.STOPPED:
                                     // Stop the current session since there was an error creating the new session
-                                    toggleSessionOperation(Constants.SESSION_OPERATION.STOP, null);
+                                    toggleSessionOperation(Constants.SESSION_OPERATIONS.STOP, null);
                                     break;
-                                case Constants.SESSION_STATE.PAUSED:
+                                case Constants.SESSION_STATES.PAUSED:
                                     // Revert back to pause the current session since the resume operation went wrong
-                                    toggleSessionOperation(Constants.SESSION_OPERATION.PAUSE, null);
+                                    toggleSessionOperation(Constants.SESSION_OPERATIONS.PAUSE, null);
                                     break;
-                                case Constants.SESSION_STATE.RUNNING:
-                                    if (currentCommand == Constants.SESSION_OPERATION.STOP) {
+                                case Constants.SESSION_STATES.RUNNING:
+                                    if (currentCommand == Constants.SESSION_OPERATIONS.STOP) {
                                         // Session is stopped anyway, so there's no point reverting it back, as that would create a completely new session.
                                         // React should decide how to handle this case, ie. we can let the user to retry turning off the notification.
                                     }
-                                    else if (currentCommand == Constants.SESSION_OPERATION.PAUSE) {
+                                    else if (currentCommand == Constants.SESSION_OPERATIONS.PAUSE) {
                                         // Pausing was not successfully completed, so we resume the current session
-                                        toggleSessionOperation(Constants.SESSION_OPERATION.RESUME, null);
+                                        toggleSessionOperation(Constants.SESSION_OPERATIONS.RESUME, null);
                                     }
                                     break;
                                 default:
