@@ -98,6 +98,26 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
       }];
     }
     else if (currentSessionState == SESSION_STATE_PAUSED) {
+      if (sessionParam != nil && [sessionParam objectForKey:@"sessionDistanceThreshold"] != nil) {
+        sessionDistanceThreshold = [[sessionParam objectForKey:@"sessionDistanceThreshold"] intValue];
+      }
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"sessionTimeThreshold"] != nil) {
+        sessionTimeThreshold = [[sessionParam objectForKey:@"sessionTimeThreshold"] intValue];
+      }
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationPattern"] != nil) {
+        vibrationPattern = [[sessionParam objectForKey:@"vibrationPattern"] intValue];
+      }
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationSpeed"] != nil) {
+        vibrationSpeed = [[sessionParam objectForKey:@"vibrationSpeed"] intValue];
+      }
+      
+      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationDuration"] != nil) {
+        vibrationDuration = [[sessionParam objectForKey:@"vibrationDuration"] intValue];
+      }
+      
       [self toggleSessionOperation:SESSION_OPERATION_RESUME withHandler:^(NSError * _Nullable error) {
         if (error) {
           callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
