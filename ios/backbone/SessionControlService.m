@@ -315,8 +315,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       float currentDistance = [Utilities convertToFloatFromBytes:dataPointer offset:0];
       
       [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
-                                                        @"currentDistance": [NSNumber numberWithFloat:currentDistance]
-                                                        }];
+                                                                                  @"currentDistance": [NSNumber numberWithFloat:currentDistance]
+                                                                                  }];
     }
     else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
@@ -329,14 +329,23 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       bool hasActiveSession = (flags % 2 == 1);
       
       [self.bridge.eventDispatcher sendAppEventWithName:@"SessionStatistics" body:@{
-                                                          @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
-                                                          @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
-                                                          @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
-                                                          }];
+                                                                                    @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
+                                                                                    @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
+                                                                                    @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
+                                                                                    }];
       
-      // Disable statistic notification after we receive it
+      // This notification indicates the end of a session
+      // So we have to disable all notifications after we receive it
+      _errorHandler = nil;
+      currentSessionState = SESSION_STATE_STOPPED;
+      
+      distanceNotificationStatus = NO;
+      slouchNotificationStatus = NO;
       statisticNotificationStatus = NO;
-      [BluetoothServiceInstance.currentDevice setNotifyValue:statisticNotificationStatus forCharacteristic:self.distanceCharacteristic];
+      
+      [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
+      [BluetoothServiceInstance.currentDevice setNotifyValue:statisticNotificationStatus forCharacteristic:self.sessionStatisticCharacteristic];
+      [BluetoothServiceInstance.currentDevice setNotifyValue:slouchNotificationStatus forCharacteristic:self.slouchCharacteristic];
     }
     else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
@@ -344,8 +353,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       bool isSlouching = (dataPointer[0] % 2 == 1);
       
       [self.bridge.eventDispatcher sendAppEventWithName:@"SlouchStatus" body:@{
-                                                     @"isSlouching": [NSNumber numberWithBool:isSlouching]
-                                                     }];
+                                                                               @"isSlouching": [NSNumber numberWithBool:isSlouching]
+                                                                               }];
     }
   }
 }
@@ -360,9 +369,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        [self revertOperation];
       }
-      
-      [self revertOperation];
     }
     else {
       [BluetoothServiceInstance.currentDevice setNotifyValue:slouchNotificationStatus forCharacteristic:self.slouchCharacteristic];
@@ -374,9 +382,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        [self revertOperation];
       }
-      
-      [self revertOperation];
     }
     else {
       [BluetoothServiceInstance.currentDevice setNotifyValue:statisticNotificationStatus forCharacteristic:self.sessionStatisticCharacteristic];
@@ -388,9 +395,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        [self revertOperation];
       }
-      
-      [self revertOperation];
     }
     else {
       // Session control is fully updated, return callback with no error
