@@ -1,10 +1,10 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $sessionIconSize: 130 * widthDifference,
+  $sessionIconSize: applyWidthDifference(130),
   $sessionIconContainerWidth: '$sessionIconSize * 1.5',
   $sliderWidth: '100%',
   container: {
@@ -40,11 +40,11 @@ export default EStyleSheet.create({
     marginBottom: 8 * heightDifference,
   },
   dailyStreakBanner: {
-    width: 76 * widthDifference,
-    height: 100 * widthDifference,
+    width: applyWidthDifference(76),
+    height: applyWidthDifference(100),
     resizeMode: 'contain',
   },
   streakCounter: {
-    marginTop: -73 * widthDifference,
+    marginTop: applyWidthDifference(-73),
   },
 });

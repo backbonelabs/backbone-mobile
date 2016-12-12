@@ -4,7 +4,7 @@ import {
   View,
   Alert,
   NativeModules,
-  NativeAppEventEmitter,
+  NativeEventEmitter,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -19,6 +19,7 @@ import routes from '../../routes';
 import constants from '../../utils/constants';
 
 const { DeviceManagementService } = NativeModules;
+const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 const { ON, OFF } = constants.bluetoothStates;
 
 class DeviceScan extends Component {
@@ -36,13 +37,16 @@ class DeviceScan extends Component {
       deviceList: [],
       inProgress: false,
     };
+
+    this.devicesFoundListener = null;
   }
 
   componentWillMount() {
     // Set listener for updating deviceList with discovered devices
-    NativeAppEventEmitter.addListener('DevicesFound', deviceList => (
-      this.setState({ deviceList })
-    ));
+    this.devicesFoundListener = deviceManagementServiceEvents.addListener(
+      'DevicesFound',
+      deviceList => this.setState({ deviceList }),
+    );
 
     if (this.props.bluetoothState === ON) {
       // Bluetooth is on, initiate scanning
@@ -65,9 +69,9 @@ class DeviceScan extends Component {
 
   componentWillUnmount() {
     // Remove listener
-    NativeAppEventEmitter.removeAllListeners('DevicesFound');
+    this.devicesFoundListener.remove();
 
-    // Stop scanning
+    // Stop scanning for devices
     DeviceManagementService.stopScanForDevices();
   }
 

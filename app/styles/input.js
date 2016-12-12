@@ -1,29 +1,31 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   $placeholderTextColor: '$secondaryFontColor',
-  $color: '$primaryFontColor',
+  $iconColor: '$primaryFontColor',
+  $iconSize: '$inputIconSize',
   container: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   inputField: {
-    color: '$color',
-    fontSize: '1rem',
+    color: '$primaryFontColor',
+    fontFamily: '$primaryFont',
+    fontSize: fixedResponsiveFontSize(18),
     borderColor: '#979797',
     borderWidth: 1,
     borderRadius: 5,
-    width: 235 * widthDifference,
+    width: applyWidthDifference(235),
     height: 44 * heightDifference,
-    paddingHorizontal: 20 * widthDifference,
+    paddingHorizontal: applyWidthDifference(25),
     paddingVertical: 10 * heightDifference,
   },
   icon: {
     position: 'relative',
-    right: 20 * widthDifference,
+    right: applyWidthDifference(25),
   },
   disabled: {
     color: '$disabledColor',

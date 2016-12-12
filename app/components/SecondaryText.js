@@ -6,7 +6,9 @@ import styles from '../styles/text';
 import reusableDefaults from './utils/reusableDefaults';
 
 const SecondaryText = props => (
-  <Text style={[styles._secondary, props.style]}>{props.children}</Text>
+  <Text style={[styles._secondary, props.style]} {...reusableDefaults.fontScalingProps}>
+    {props.children}
+  </Text>
 );
 
 SecondaryText.propTypes = reusableDefaults.propTypes;
