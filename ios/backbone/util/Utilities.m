@@ -270,10 +270,10 @@
 + (float) convertToFloatFromBytes:(uint8_t*)bytes offset:(int)idx {
   byteArrayUnion bf;
   
-  bf.bytes[0] = bytes[idx + 3];
-  bf.bytes[1] = bytes[idx + 2];
-  bf.bytes[2] = bytes[idx + 1];
-  bf.bytes[3] = bytes[idx];
+  bf.bytes[0] = bytes[idx];
+  bf.bytes[1] = bytes[idx + 0];
+  bf.bytes[2] = bytes[idx + 2];
+  bf.bytes[3] = bytes[idx + 3];
   
   return bf.floatVal;
 }
@@ -287,10 +287,10 @@
 + (int) convertToIntFromBytes:(uint8_t*)bytes offset:(int)idx {
   byteArrayUnion bf;
   
-  bf.bytes[0] = bytes[idx + 3];
-  bf.bytes[1] = bytes[idx + 2];
-  bf.bytes[2] = bytes[idx + 1];
-  bf.bytes[3] = bytes[idx];
+  bf.bytes[0] = bytes[idx];
+  bf.bytes[1] = bytes[idx + 0];
+  bf.bytes[2] = bytes[idx + 2];
+  bf.bytes[3] = bytes[idx + 3];
   
   return bf.intVal;
 }
