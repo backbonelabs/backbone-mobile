@@ -49,7 +49,7 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderBlock)callback) {
-  if (BluetoothServiceInstance.currentDevice && self.sessionControlCharacteristic && self.distanceCharacteristic) {
+  if ([BluetoothServiceInstance isDeviceReady] && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_STOPPED) {
       sessionDuration = SESSION_DEFAULT_DURATION;
       sessionDistanceThreshold = SESSION_DEFAULT_DISTANCE_THRESHOLD_UNIT;
@@ -138,7 +138,7 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
 }
 
 RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
-  if (BluetoothServiceInstance.currentDevice && self.sessionControlCharacteristic && self.distanceCharacteristic) {
+  if ([BluetoothServiceInstance isDeviceReady] && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_RUNNING) {
       [self toggleSessionOperation:SESSION_OPERATION_PAUSE withHandler:^(NSError * _Nullable error) {
         if (error) {
@@ -160,7 +160,7 @@ RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
-  if (BluetoothServiceInstance.currentDevice && self.sessionControlCharacteristic && self.distanceCharacteristic) {
+  if ([BluetoothServiceInstance isDeviceReady] && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_RUNNING || currentSessionState == SESSION_STATE_PAUSED) {
       [self toggleSessionOperation:SESSION_OPERATION_STOP withHandler:^(NSError * _Nullable error) {
         if (error) {
