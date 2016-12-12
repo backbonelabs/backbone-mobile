@@ -52,8 +52,8 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
   if ([BluetoothServiceInstance isDeviceReady] && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_STOPPED) {
       sessionDuration = SESSION_DEFAULT_DURATION;
-      sessionDistanceThreshold = SESSION_DEFAULT_DISTANCE_THRESHOLD_UNIT;
-      sessionTimeThreshold = SESSION_DEFAULT_TIME_THRESHOLD;
+      sessionDistanceThreshold = SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
+      sessionTimeThreshold = SLOUCH_DEFAULT_TIME_THRESHOLD;
       
       vibrationPattern = VIBRATION_DEFAULT_PATTERN;
       vibrationSpeed = VIBRATION_DEFAULT_SPEED;
@@ -63,12 +63,12 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
         sessionDuration = [[sessionParam objectForKey:@"sessionDuration"] intValue];
       }
       
-      if (sessionParam != nil && [sessionParam objectForKey:@"sessionDistanceThreshold"] != nil) {
-        sessionDistanceThreshold = [[sessionParam objectForKey:@"sessionDistanceThreshold"] intValue];
+      if (sessionParam != nil && [sessionParam objectForKey:@"slouchDistanceThreshold"] != nil) {
+        sessionDistanceThreshold = [[sessionParam objectForKey:@"slouchDistanceThreshold"] intValue];
       }
       
-      if (sessionParam != nil && [sessionParam objectForKey:@"sessionTimeThreshold"] != nil) {
-        sessionTimeThreshold = [[sessionParam objectForKey:@"sessionTimeThreshold"] intValue];
+      if (sessionParam != nil && [sessionParam objectForKey:@"slouchTimeThreshold"] != nil) {
+        sessionTimeThreshold = [[sessionParam objectForKey:@"slouchTimeThreshold"] intValue];
       }
       
       if (sessionParam != nil && [sessionParam objectForKey:@"vibrationPattern"] != nil) {
@@ -98,12 +98,12 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
       }];
     }
     else if (currentSessionState == SESSION_STATE_PAUSED) {
-      if (sessionParam != nil && [sessionParam objectForKey:@"sessionDistanceThreshold"] != nil) {
-        sessionDistanceThreshold = [[sessionParam objectForKey:@"sessionDistanceThreshold"] intValue];
+      if (sessionParam != nil && [sessionParam objectForKey:@"slouchDistanceThreshold"] != nil) {
+        sessionDistanceThreshold = [[sessionParam objectForKey:@"slouchDistanceThreshold"] intValue];
       }
       
-      if (sessionParam != nil && [sessionParam objectForKey:@"sessionTimeThreshold"] != nil) {
-        sessionTimeThreshold = [[sessionParam objectForKey:@"sessionTimeThreshold"] intValue];
+      if (sessionParam != nil && [sessionParam objectForKey:@"slouchTimeThreshold"] != nil) {
+        sessionTimeThreshold = [[sessionParam objectForKey:@"slouchTimeThreshold"] intValue];
       }
       
       if (sessionParam != nil && [sessionParam objectForKey:@"vibrationPattern"] != nil) {

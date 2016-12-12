@@ -271,7 +271,7 @@
   byteArrayUnion bf;
   
   bf.bytes[0] = bytes[idx];
-  bf.bytes[1] = bytes[idx + 0];
+  bf.bytes[1] = bytes[idx + 1];
   bf.bytes[2] = bytes[idx + 2];
   bf.bytes[3] = bytes[idx + 3];
   
@@ -288,7 +288,7 @@
   byteArrayUnion bf;
   
   bf.bytes[0] = bytes[idx];
-  bf.bytes[1] = bytes[idx + 0];
+  bf.bytes[1] = bytes[idx + 1];
   bf.bytes[2] = bytes[idx + 2];
   bf.bytes[3] = bytes[idx + 3];
   
