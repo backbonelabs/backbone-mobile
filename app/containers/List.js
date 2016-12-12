@@ -36,6 +36,7 @@ export default class List extends Component {
   render() {
     return (
       <ListView
+        style={this.props.onPressRow ? {} : { opacity: 0.25 }}
         dataSource={this.state.dataSource}
         renderRow={this.renderRow}
         enableEmptySections
