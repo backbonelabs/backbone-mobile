@@ -141,6 +141,7 @@ class DeviceScan extends Component {
 
   render() {
     const { inProgress, deviceList } = this.state;
+    const { bluetoothStates } = constants;
 
     return (
       <View style={styles.container}>
@@ -150,7 +151,9 @@ class DeviceScan extends Component {
         <List
           dataBlob={deviceList}
           formatRowData={this.formatDeviceRow}
-          onPressRow={this.selectDevice}
+          onPressRow={
+            this.props.bluetoothState === bluetoothStates.CONNECTED ? this.selectDevice : null
+          }
         />
       </View>
     );
