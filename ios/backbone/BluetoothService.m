@@ -208,6 +208,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   
   if (error) {
     if (self.disconnectHandler != nil) {
+      self.currentDevice = nil;
       self.disconnectHandler(error);
     }
   }

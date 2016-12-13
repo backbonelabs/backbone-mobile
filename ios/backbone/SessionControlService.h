@@ -27,6 +27,9 @@
   BOOL distanceNotificationStatus;
   BOOL statisticNotificationStatus;
   BOOL slouchNotificationStatus;
+  
+  BOOL forceStoppedSession;
+  BOOL notificationStateChanged;
 }
 
 @property (nonatomic, strong) RCTBridge *bridge;

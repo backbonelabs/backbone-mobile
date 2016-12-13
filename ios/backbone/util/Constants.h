@@ -78,12 +78,12 @@
 #define SESSION_COMMAND_STOP      0x03
 
 #define SESSION_DEFAULT_DURATION 5 // Session duration in minutes
-#define SLOUCH_DEFAULT_DISTANCE_THRESHOLD 1000 // Distance threshold in ten thousandths of a unit
+#define SLOUCH_DEFAULT_DISTANCE_THRESHOLD 2000 // Distance threshold in ten thousandths of a unit
 #define SLOUCH_DEFAULT_TIME_THRESHOLD 3 // Time threshold in seconds
 
 #define VIBRATION_DEFAULT_PATTERN     1 // Number of times the motor should vibrate [0-3]
 #define VIBRATION_DEFAULT_SPEED       50 // Speed of motor vibration [0-255]
-#define VIBRATION_DEFAULT_DURATION    20 // Duration of motor vibration in tens of milliseconds [0-255]
+#define VIBRATION_DEFAULT_DURATION    50 // Duration of motor vibration in tens of milliseconds [0-255]
 
 /*
  Bootloader Specifics

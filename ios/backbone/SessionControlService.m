@@ -42,15 +42,17 @@
   return [SessionControlService getSessionControlService];
 }
 
-//- (NSArray<NSString *> *)supportedEvents {
-//  return @[@"PostureDistance", @"SessionStatistics", @"SlouchStatus"];
-//}
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"PostureDistance", @"SessionStatistics", @"SlouchStatus"];
+}
 
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderBlock)callback) {
   if ([BluetoothServiceInstance isDeviceReady] && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_STOPPED) {
+      forceStoppedSession = NO;
+      
       sessionDuration = SESSION_DEFAULT_DURATION;
       sessionDistanceThreshold = SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
       sessionTimeThreshold = SLOUCH_DEFAULT_TIME_THRESHOLD;
@@ -162,6 +164,8 @@ RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   if ([BluetoothServiceInstance isDeviceReady] && self.sessionControlCharacteristic && self.distanceCharacteristic) {
     if (currentSessionState == SESSION_STATE_RUNNING || currentSessionState == SESSION_STATE_PAUSED) {
+      forceStoppedSession = YES;
+      
       [self toggleSessionOperation:SESSION_OPERATION_STOP withHandler:^(NSError * _Nullable error) {
         if (error) {
           callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
@@ -356,16 +360,18 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       // This notification indicates the end of a session
       // So we have to disable all notifications after we receive it
-      _errorHandler = nil;
-      currentSessionState = SESSION_STATE_STOPPED;
-      
-      distanceNotificationStatus = NO;
-      slouchNotificationStatus = NO;
-      statisticNotificationStatus = NO;
-      
-      [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
-      [BluetoothServiceInstance.currentDevice setNotifyValue:statisticNotificationStatus forCharacteristic:self.sessionStatisticCharacteristic];
-      [BluetoothServiceInstance.currentDevice setNotifyValue:slouchNotificationStatus forCharacteristic:self.slouchCharacteristic];
+      // Only perform the following statements when the session naturally finished
+      if (!forceStoppedSession) {
+        _errorHandler = nil;
+        
+        currentSessionState = SESSION_STATE_STOPPED;
+        
+        distanceNotificationStatus = NO;
+        slouchNotificationStatus = NO;
+        statisticNotificationStatus = NO;
+        
+        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
+      }
     }
     else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
@@ -402,6 +408,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        
+        notificationStateChanged = YES;
         [self revertOperation];
       }
     }
@@ -415,6 +423,8 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        
+        notificationStateChanged = YES;
         [self revertOperation];
       }
     }
@@ -438,8 +448,10 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       }
     }
     else {
-      if (_errorHandler) {
-        // No error, so we proceed to toggling distance notification
+      if (_errorHandler || notificationStateChanged) {
+        // No error, so we proceed to toggling distance notification when needed
+        notificationStateChanged = NO;
+        
         [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:self.distanceCharacteristic];
       }
       else {
