@@ -14,7 +14,7 @@ export default class List extends Component {
 
   constructor(props) {
     super(props);
-    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.ds = new ListView.DataSource({ rowHasChanged: () => true });
     this.state = { dataSource: this.ds.cloneWithRows(this.props.dataBlob) };
   }
 
@@ -24,13 +24,14 @@ export default class List extends Component {
 
   @autobind
   renderRow(rowData) {
-    return (
+    return this.props.onPressRow ?
       <TouchableOpacity
-        onPress={() => this.props.onPressRow && this.props.onPressRow(rowData)}
+        onPress={() => this.props.onPressRow(rowData)}
       >
         { this.props.formatRowData(rowData) }
       </TouchableOpacity>
-    );
+      :
+        this.props.formatRowData(rowData);
   }
 
   render() {
