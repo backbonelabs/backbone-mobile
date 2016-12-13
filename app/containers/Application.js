@@ -6,7 +6,6 @@ import {
   Image,
   StatusBar,
   Navigator,
-  DeviceEventEmitter,
   NativeModules,
   NativeEventEmitter,
   Platform,
@@ -139,11 +138,7 @@ class Application extends Component {
       }
     };
 
-    if (isiOS) {
-      this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
-    } else {
-      this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
-    }
+    this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
