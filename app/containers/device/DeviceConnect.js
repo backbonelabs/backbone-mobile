@@ -42,7 +42,7 @@ class DeviceConnect extends Component {
     if (deviceUUID) {
       this.props.dispatch(deviceActions.connect(deviceUUID));
     } else {
-      this.props.navigator.replace(routes.deviceScan);
+      this.props.navigator.push(routes.deviceScan);
     }
   }
 
