@@ -134,6 +134,7 @@ class Application extends Component {
       });
 
       if (state === bluetoothStates.OFF) {
+        this.props.dispatch(deviceActions.disconnect());
         Alert.alert('Error', 'Bluetooth is off');
       }
     };
