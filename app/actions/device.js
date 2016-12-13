@@ -4,7 +4,7 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { DeviceManagementService, DeviceInformationService } = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
-const { deviceStatuses, storageKeys } = constants;
+const { storageKeys } = constants;
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
 
@@ -67,31 +67,12 @@ const getInfoError = error => ({
 });
 
 const deviceActions = {
-  connect() {
+  connect(deviceUUID) {
     return (dispatch) => {
       dispatch(connectStart());
       setConnectEventListener(dispatch);
-      DeviceManagementService.connectToDevice();
-    };
-  },
-  attemptAutoConnect() {
-    return (dispatch) => {
-      // Check current connection status with Backbone device
-      DeviceManagementService.getDeviceStatus((status) => {
-        if (status === deviceStatuses.CONNECTED) {
-          // Device is connected
-          dispatch(connect({ isConnected: true }));
-        } else {
-          // Device is not connected, check whether there is a saved device
-          DeviceManagementService.getSavedDevice((device) => {
-            if (device) {
-              // There is a saved device, attempt to connect
-              dispatch(deviceActions.connect());
-            }
-            // Do nothing if there is no saved device
-          });
-        }
-      });
+      // Connect to device with specified UUID
+      DeviceManagementService.connectToDevice(deviceUUID);
     };
   },
   disconnect() {
@@ -109,7 +90,8 @@ const deviceActions = {
   forget() {
     return (dispatch) => {
       dispatch(forgetStart());
-      DeviceManagementService.forgetDevice(err => {
+      // Disconnect device before attempting to forget
+      DeviceManagementService.cancelConnection(err => {
         if (err) {
           dispatch(forgetError(err));
         } else {
@@ -143,6 +125,9 @@ const deviceActions = {
             if (device) {
               // Update device store with locally stored device
               dispatch(getInfo(device));
+
+              // Attempt to connect to locally stored device
+              dispatch(deviceActions.connect(device.UUID));
             } else {
               // No locally stored device, set to empty object
               dispatch(getInfo({}));
