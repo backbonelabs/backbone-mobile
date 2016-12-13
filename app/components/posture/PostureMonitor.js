@@ -84,6 +84,8 @@ class PostureMonitor extends Component {
     };
     this.slouchStartTime = null;
     this.postureListener = null;
+    this.slouchListener = null;
+    this.statsListener = null;
     this.activityDisabledListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
@@ -92,10 +94,13 @@ class PostureMonitor extends Component {
 
   componentWillMount() {
     // Set up listener for posture distance data
-    this.postureListener = eventEmitter.addListener(
-      'PostureDistance',
-      this.distanceHandler
-    );
+    this.postureListener = eventEmitter.addListener('PostureDistance', this.distanceHandler);
+
+    // Set up listener for slouch event
+    this.slouchListener = eventEmitter.addListener('SlouchStatus', this.slouchHandler);
+
+    // Set up listener for session statistics event
+    this.statsListener = eventEmitter.addListener('SessionStatistics', this.statsHandler);
 
     // Automatically start the session on mount
     this.startSession();
@@ -107,8 +112,10 @@ class PostureMonitor extends Component {
       // no-op
     });
 
-    // Remove the listener for posture distance data
+    // Remove listeners
     this.postureListener.remove();
+    this.slouchListener.remove();
+    this.statsListener.remove();
   }
 
   /**
@@ -133,7 +140,7 @@ class PostureMonitor extends Component {
   }
 
   /**
-   * Processes the distance data from the device to update visuals and emit alerts as necessary
+   * Updates the pointer based on the distance away from the control point
    * @param {Object} event
    * @param {Number} event.currentDistance How far away the user is from the control point
    */
@@ -189,6 +196,26 @@ class PostureMonitor extends Component {
     const { currentDistance } = event;
     console.log('currentDistance', currentDistance);
     this.setState({ pointerPosition: distanceToDegrees(currentDistance) });
+  }
+
+  // TODO: Implement
+  /**
+   *
+   */
+  @autobind
+  slouchHandler(event) {
+    const { isSlouching } = event;
+    console.log('isSlouching', isSlouching);
+  }
+
+  // TODO: Implement
+  /**
+   *
+   */
+  @autobind
+  statsHandler(event) {
+    const { totalDuration, slouchTime } = event;
+    console.log('stats', { totalDuration, slouchTime });
   }
 
   @autobind
