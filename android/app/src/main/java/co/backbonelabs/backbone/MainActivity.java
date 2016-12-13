@@ -36,22 +36,25 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
         // Bind the service when the activity is created
         getApplicationContext().bindService(new Intent(this, MetaWearBleService.class),
                 this, Context.BIND_AUTO_CREATE);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
         currentActivity = this;
     }
 
     @Override
+    protected void onResume() {
+        Timber.d("onResume");
+        super.onResume();
+    }
+
+    @Override
     protected void onPause() {
+        Timber.d("onPause");
         super.onPause();
-        currentActivity = null;
     }
 
     @Override
     public void onDestroy() {
+        Timber.d("onDestroy");
         super.onDestroy();
 
         BluetoothService bluetoothService = BluetoothService.getInstance();

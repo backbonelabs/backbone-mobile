@@ -82,8 +82,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Timber.d("broadcastReceiver onReceive");
             final String action = intent.getAction();
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                Timber.d("broadcastReceiver onReceive ACTION_STATE_CHANGED");
                 state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("state", bluetoothStateMap.get(state, -1));
@@ -355,8 +357,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                 @Override
                 public void run() {
                     Timber.d("Found %s", device.getName());
-                    currentDevice = device;
-
                     scanCallBack.onDeviceFound(device, rssi);
                 }
             });
@@ -542,11 +542,11 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     public void onHostPause() {
         // Activity `onPause`
         Timber.d("onHostPause");
-        reactContext.unregisterReceiver(broadcastReceiver);
     }
 
     @Override
     public void onHostDestroy() {
         // Activity `onDestroy`
+        Timber.d("onHostDestroy");
     }
 }
