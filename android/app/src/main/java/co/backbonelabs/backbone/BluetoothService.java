@@ -361,8 +361,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                 @Override
                 public void run() {
                     Timber.d("Found %s", device.getName());
-                    currentDevice = device;
-
                     scanCallBack.onDeviceFound(device, rssi);
                 }
             });
