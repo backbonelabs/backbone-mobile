@@ -60,6 +60,7 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
         BluetoothService bluetoothService = BluetoothService.getInstance();
         // Disconnect from device
         if (bluetoothService.getCurrentDevice() != null) {
+            bluetoothService.setShouldCloseGatt(true);
             bluetoothService.disconnect();
         }
 

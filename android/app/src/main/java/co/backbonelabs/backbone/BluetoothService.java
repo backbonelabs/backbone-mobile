@@ -79,6 +79,8 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private HashMap<UUID, Boolean> serviceMap;
     private HashMap<UUID, BluetoothGattCharacteristic> characteristicMap;
 
+    private boolean shouldCloseGatt = false;
+
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -185,6 +187,12 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
                 serviceMap.clear();
                 characteristicMap.clear();
+
+                // Gatt should only be closed when we no longer need it, ie. when the app is about to be terminated
+                if (shouldCloseGatt && bleGatt != null) {
+                    bleGatt.close();
+                    bleGatt = null;
+                }
 //                reconnectDevice();
             }
         }
@@ -421,16 +429,13 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     /**
-     * Disconnects an established connection, or cancels a connection attempt currently in progress,
-     * and then closes and forgets the GATT client
+     * Disconnects an established connection, or cancels a connection attempt currently in progress
      */
     public void disconnect() {
         Timber.d("disconnect()");
         if (bleGatt != null) {
-            Timber.d("About to disconnect and close");
+            Timber.d("About to disconnect");
             bleGatt.disconnect();
-            bleGatt.close();
-            bleGatt = null;
         }
     }
 
@@ -438,6 +443,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         if (currentDevice != null) {
             connectDevice(currentDevice, null);
         }
+    }
+
+    public void setShouldCloseGatt(boolean state) {
+        shouldCloseGatt = state;
     }
 
     public int getDeviceState() {
