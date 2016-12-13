@@ -67,6 +67,7 @@ public class Constants {
         int OFF = 0;
         int INITIATED = 1;
         int ON = 2;
+        int UPDATED = 3;
     }
 
     public interface BOOTLOADER_COMMANDS {
@@ -170,10 +171,12 @@ public class Constants {
     public interface CHARACTERISTIC_UUIDS {
         UUID SESSION_CONTROL_CHARACTERISTIC = UUID.fromString("00010001-0000-1000-8000-00805F9B0421");
         UUID MOTOR_CONTROL_CHARACTERISTIC = UUID.fromString("00010002-0000-1000-8000-00805F9B0421");
+        UUID SESSION_STATISTIC_CHARACTERISTIC = UUID.fromString("00010003-0000-1000-8000-00805F9B0421");
         UUID DISTANCE_CHARACTERISTIC = UUID.fromString("00010004-0000-1000-8000-00805F9B0421");
         UUID ACCELEROMETER_CHARACTERISTIC = UUID.fromString("00010005-0000-1000-8000-00805F9B0421");
         UUID ENTER_BOOTLOADER_CHARACTERISTIC = UUID.fromString("00010006-0000-1000-8000-00805F9B0421");
         UUID FIRMWARE_VERSION_CHARACTERISTIC = UUID.fromString("00010007-0000-1000-8000-00805F9B0421");
+        UUID SLOUCH_CHARACTERISTIC = UUID.fromString("00010008-0000-1000-8000-00805F9B0421");
         UUID BATTERY_LEVEL_CHARACTERISTIC = UUID.fromString("00002A19-0000-1000-8000-00805F9B34FB");
         UUID BOOTLOADER_CHARACTERISTIC = UUID.fromString("00060001-F8CE-11E4-ABF4-0002A5D5C51B");
     }
@@ -189,11 +192,12 @@ public class Constants {
     public final static int MAX_BLE_ACTION_ATTEMPT = 50;
 
     public final static int SESSION_DEFAULT_DURATION = 5; // Session duration in minutes
-    public final static int SESSION_DEFAULT_DISTANCE_THRESHOLD_UNIT = 1000; // Distance threshold in ten thousandths of a unit
-    public final static int SESSION_DEFAULT_TIME_THRESHOLD = 3; // Time threshold in seconds
+    public final static int SLOUCH_DEFAULT_DISTANCE_THRESHOLD_UNIT = 1000; // Distance threshold in ten thousandths of a unit
+    public final static int SLOUCH_DEFAULT_TIME_THRESHOLD = 3; // Time threshold in seconds
 
-//    public final static byte DEFAULT_VIBRATION_SPEED = 50; // 0-255
-//    public final static int DEFAULT_VIBRATION_DURATION = 1000; // in milliseconds, max. 65535
+    public final static byte VIBRATION_DEFAULT_PATTERN = 1; // Number of times the motor should vibrate [0-3]
+    public final static byte VIBRATION_DEFAULT_SPEED = 50; // Speed of motor vibration [0-255]
+    public final static int VIBRATION_DEFAULT_DURATION = 50; // Duration of motor vibration in tens of milliseconds [0-255]
 
     public final static String ACTION_CHARACTERISTIC_FOUND = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_FOUND";
     public final static String ACTION_CHARACTERISTIC_UPDATE = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_UPDATE";
