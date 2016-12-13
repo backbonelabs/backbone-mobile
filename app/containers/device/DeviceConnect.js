@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Alert,
-  NativeModules,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -11,15 +10,19 @@ import styles from '../../styles/device/deviceConnect';
 import deviceActions from '../../actions/device';
 import Spinner from '../../components/Spinner';
 import HeadingText from '../../components/HeadingText';
-import constants from '../../utils/constants';
-
-const { DeviceManagementService } = NativeModules;
 
 const { PropTypes } = React;
 
 class DeviceConnect extends Component {
   static propTypes = {
+    device: PropTypes.shape({
+      UUID: PropTypes.string,
+    }),
+    currentRoute: PropTypes.shape({
+      deviceUUID: PropTypes.string,
+    }),
     navigator: PropTypes.shape({
+      push: PropTypes.func,
       replace: PropTypes.func,
       popToRoute: PropTypes.func,
       resetTo: PropTypes.func,
@@ -32,16 +35,15 @@ class DeviceConnect extends Component {
   };
 
   componentWillMount() {
-    // Check current connection status with Backbone device
-    DeviceManagementService.getDeviceStatus((status) => {
-      if (status === constants.deviceStatuses.CONNECTED) {
-        // Update store, since user only able to initiate connect if isConnected is false
-        this.props.dispatch(deviceActions.connect({ isConnected: true }));
-        this.props.navigator.replace(routes.postureDashboard);
-      } else {
-        this.getSavedDevice();
-      }
-    });
+    const { device, currentRoute } = this.props;
+    const deviceUUID = device.UUID || currentRoute.deviceUUID;
+
+    // If deviceUUID is truthy, attempt to connect to specified device
+    if (deviceUUID) {
+      this.props.dispatch(deviceActions.connect(deviceUUID));
+    } else {
+      this.props.navigator.replace(routes.deviceScan);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -52,26 +54,16 @@ class DeviceConnect extends Component {
         { text: 'Continue', onPress: this.goBackToScene },
       ]);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
+      const deviceUUID = nextProps.device.UUID || nextProps.currentRoute.deviceUUID;
       // Prompt user to reattempt connect upon failed attempt
       Alert.alert('Error', nextProps.errorMessage, [
         { text: 'Cancel', onPress: this.goBackToScene },
-        { text: 'Retry', onPress: () => this.props.dispatch(deviceActions.connect()) },
+        {
+          text: 'Retry',
+          onPress: () => this.props.dispatch(deviceActions.connect(deviceUUID)),
+        },
       ]);
     }
-  }
-
-  // Check whether there's a saved device
-  @autobind
-  getSavedDevice() {
-    DeviceManagementService.getSavedDevice((device) => {
-      if (device) {
-        // Saved device is found, attempt to connect
-        this.props.dispatch(deviceActions.connect());
-      } else {
-        // There's no device, route to scene for scanning
-        this.props.navigator.replace(routes.deviceScan);
-      }
-    });
   }
 
   @autobind
