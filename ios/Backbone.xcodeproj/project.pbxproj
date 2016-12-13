@@ -48,6 +48,7 @@
 		7593D56BEF6AA0DB5D4CE824 /* libPods-BackboneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B98A4387B7B289536F06F13 /* libPods-BackboneTests.a */; };
 		7779D69F1C23415988AEFB18 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BCFC5E6C6634C03AB0BF3CF /* libRNSVG.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		A65BD31ED9994A898ACBF5C9 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECA1D787A08044BBA44E1B49 /* libRNFS.a */; };
 		D588726279044FBADFEDDBA8 /* libPods-Backbone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */; };
 		DD17425AA8FE457DBB106C3B /* libRCTMaterialKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D043792CA549D3BB787C04 /* libRCTMaterialKit.a */; };
 /* End PBXBuildFile section */
@@ -130,13 +131,6 @@
 			remoteGlobalIDString = 8A1B8E771B22E4E300DB45C2;
 			remoteInfo = RCTMaterialKit;
 		};
-		445776501DF9D72B0044EE04 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 447B8FFC1DB8227100AC7E71 /* RCTPushNotification.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 2DD0EFE61DA8533A00B0C975;
-			remoteInfo = "RCTPushNotification-tvOS";
-		};
 		447B90061DB8227100AC7E71 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 447B8FFC1DB8227100AC7E71 /* RCTPushNotification.xcodeproj */;
@@ -150,6 +144,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 0CF68AC11AF0540F00FF9E5C;
 			remoteInfo = ART;
+		};
+		44D6011F1DFFBBC80047E26E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F28B03032A7847F5B4EB9821 /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
 		};
 		665DFF671D64133C003B4449 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -309,7 +310,9 @@
 		DA52C71F0A0E7C42181CF4E2 /* libPods-backboneTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-backboneTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8C30241D6554EC5B00B4397 /* RCTMaterialKit.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTMaterialKit.xcodeproj; path = "../node_modules/react-native-material-kit/iOS/RCTMaterialKit.xcodeproj"; sourceTree = "<group>"; };
 		E9D043792CA549D3BB787C04 /* libRCTMaterialKit.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTMaterialKit.a; sourceTree = "<group>"; };
+		ECA1D787A08044BBA44E1B49 /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		F234579A5E10506AFD7A9FBB /* libPods-backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F28B03032A7847F5B4EB9821 /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		F56847E096323A6B87C77054 /* Pods-Backbone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Backbone.release.xcconfig"; path = "Pods/Target Support Files/Pods-Backbone/Pods-Backbone.release.xcconfig"; sourceTree = "<group>"; };
 		FA82F51D47DD3D3714546443 /* Pods-backbone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-backbone.release.xcconfig"; path = "Pods/Target Support Files/Pods-backbone/Pods-backbone.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -344,6 +347,7 @@
 				D588726279044FBADFEDDBA8 /* libPods-Backbone.a in Frameworks */,
 				7779D69F1C23415988AEFB18 /* libRNSVG.a in Frameworks */,
 				DD17425AA8FE457DBB106C3B /* libRCTMaterialKit.a in Frameworks */,
+				A65BD31ED9994A898ACBF5C9 /* libRNFS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,6 +540,14 @@
 			name = Icons;
 			sourceTree = "<group>";
 		};
+		44D601071DFFBBC80047E26E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				44D601201DFFBBC80047E26E /* libRNFS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		6600D5521DFBD9F1005D5807 /* config */ = {
 			isa = PBXGroup;
 			children = (
@@ -601,6 +613,7 @@
 				A8DEF1D880EB4E44A485BA5A /* RNSensitiveInfo.xcodeproj */,
 				0EB5FF1395A0413CB8426F9C /* RNSVG.xcodeproj */,
 				E8C30241D6554EC5B00B4397 /* RCTMaterialKit.xcodeproj */,
+				F28B03032A7847F5B4EB9821 /* RNFS.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -795,6 +808,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 44D601071DFFBBC80047E26E /* Products */;
+					ProjectRef = F28B03032A7847F5B4EB9821 /* RNFS.xcodeproj */;
+				},
+				{
 					ProductGroup = 665DFF591D64133C003B4449 /* Products */;
 					ProjectRef = A8DEF1D880EB4E44A485BA5A /* RNSensitiveInfo.xcodeproj */;
 				},
@@ -882,13 +899,6 @@
 			remoteRef = 4457764A1DF9D72B0044EE04 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		445776511DF9D72B0044EE04 /* libRCTPushNotification-tvOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libRCTPushNotification-tvOS.a";
-			remoteRef = 445776501DF9D72B0044EE04 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		447B90071DB8227100AC7E71 /* libRCTPushNotification.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -901,6 +911,13 @@
 			fileType = archive.ar;
 			path = libART.a;
 			remoteRef = 44970BAF1D2AC74400351480 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		44D601201DFFBBC80047E26E /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = 44D6011F1DFFBBC80047E26E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		665DFF681D64133C003B4449 /* libRNSensitiveInfo.a */ = {
@@ -1221,6 +1238,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1243,6 +1261,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1279,6 +1298,7 @@
 					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-material-kit/iOS/RCTMaterialKit",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				INFOPLIST_FILE = backbone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1321,6 +1341,7 @@
 					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-material-kit/iOS/RCTMaterialKit",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				INFOPLIST_FILE = backbone/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1384,6 +1405,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sensitive-info/ios/RNSensitiveInfo/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-material-kit/iOS/RCTMaterialKit",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1432,6 +1454,7 @@
 					"$(SRCROOT)/../node_modules/react-native-sensitive-info/ios/RNSensitiveInfo/**",
 					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-material-kit/iOS/RCTMaterialKit",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
