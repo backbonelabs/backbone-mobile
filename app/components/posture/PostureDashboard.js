@@ -4,6 +4,7 @@ import {
   View,
   Image,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import postureActions from '../../actions/posture';
@@ -29,7 +30,7 @@ const sessions = [
 
 const renderItem = (session) => (
   <View key={session.id}>
-    <Image style={styles.carouselItemIcon} source={session.icon} />
+    <Image source={session.icon} style={styles.sessionIcon} />
   </View>
 );
 
@@ -49,12 +50,6 @@ class PostureDashboard extends Component {
     }),
   };
 
-  constructor() {
-    super();
-
-    this.start = this.start.bind(this);
-  }
-
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
   }
@@ -63,6 +58,7 @@ class PostureDashboard extends Component {
     this.props.dispatch(postureActions.setSessionTime(seconds));
   }
 
+  @autobind
   start() {
     if (!this.props.device.isConnected) {
       return Alert.alert(
@@ -97,7 +93,7 @@ class PostureDashboard extends Component {
               renderItem={renderItem}
               snapOnAndroid
               sliderWidth={styles.$sliderWidth}
-              itemWidth={styles.$itemWidth}
+              itemWidth={styles.$sessionIconContainerWidth}
               slideStyle={styles.carouselItem}
               inactiveSlideScale={0.8}
               showsHorizontalScrollIndicator={false}
@@ -109,13 +105,12 @@ class PostureDashboard extends Component {
             primary
             onPress={this.start}
           />
-        </View>
-        <View style={styles.footer}>
           <View style={styles.dailyStreakContainer}>
             <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
-            <Image source={DailyStreakBanner} style={styles.dailyStreakBanner}>
-              <BodyText>{this.props.user.dailyStreak || 0}</BodyText>
-            </Image>
+            <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
+            <BodyText style={styles._streakCounter}>
+              { this.props.user.dailyStreak }
+            </BodyText>
           </View>
         </View>
       </View>

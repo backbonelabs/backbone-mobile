@@ -1,4 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../../utils/relativeDimensions';
+
+const { fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -7,14 +10,14 @@ export default EStyleSheet.create({
     flexDirection: 'column',
   },
   steps: {
-    fontSize: 120,
+    fontSize: fixedResponsiveFontSize(120),
     marginTop: -110,
     marginBottom: 60,
     color: '#f86c41',
     fontWeight: '500',
   },
   stepsText: {
-    fontSize: 24,
+    fontSize: fixedResponsiveFontSize(24),
     marginTop: -275,
     marginBottom: 100,
     color: '#9da2a7',
@@ -22,13 +25,13 @@ export default EStyleSheet.create({
   },
   timer: {
     marginTop: 5,
-    fontSize: 53,
+    fontSize: fixedResponsiveFontSize(53),
     fontFamily: 'Helvetica',
     color: '#f86c41',
     fontWeight: '500',
   },
   timerText: {
-    fontSize: 24,
+    fontSize: fixedResponsiveFontSize(24),
     marginTop: 40,
     color: '#9da2a7',
     alignItems: 'center',

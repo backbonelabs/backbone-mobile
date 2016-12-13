@@ -1,9 +1,10 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $profileFieldIconSize: fixedResponsiveFontSize(16),
   container: {
     width: '100%',
   },
@@ -23,7 +24,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   gender: {
-    marginHorizontal: 15 * widthDifference,
+    marginHorizontal: applyWidthDifference(15),
     alignItems: 'center',
   },
   genderText: {
@@ -31,7 +32,7 @@ export default EStyleSheet.create({
     textAlign: 'center',
   },
   genderIcon: {
-    width: 50 * widthDifference,
+    width: applyWidthDifference(50),
     height: 50 * heightDifference,
     resizeMode: 'contain',
   },
@@ -49,7 +50,7 @@ export default EStyleSheet.create({
     width: '65%',
     borderWidth: 1,
     borderRadius: 5,
-    paddingLeft: 15 * widthDifference,
+    paddingLeft: applyWidthDifference(15),
     borderColor: '#979797',
     justifyContent: 'center',
   },
@@ -92,8 +93,8 @@ export default EStyleSheet.create({
   },
   profilePickerHeaderButton: {
     flex: 1,
-    paddingHorizontal: 15 * widthDifference,
-    marginRight: 5 * widthDifference,
+    paddingHorizontal: applyWidthDifference(15),
+    marginRight: applyWidthDifference(5),
     justifyContent: 'center',
   },
 });

@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Text,
   Picker,
   Platform,
   DatePickerIOS,
@@ -9,8 +8,10 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoarding/profile';
+import BodyText from '../../../components/BodyText';
 
 const {
   height: heightConstants,
@@ -79,12 +80,6 @@ export default class ProfilePicker extends Component {
         return -1;
       }),
     };
-
-    this._heightLabel = this._heightLabel.bind(this);
-    this._weightLabel = this._weightLabel.bind(this);
-    this._valueChangeHandler = this._valueChangeHandler.bind(this);
-    this._heightTypeChangeHandler = this._heightTypeChangeHandler.bind(this);
-    this._weightTypeChangeHandler = this._weightTypeChangeHandler.bind(this);
   }
 
   componentWillMount() {
@@ -120,19 +115,23 @@ export default class ProfilePicker extends Component {
     }
   }
 
+  @autobind
   _heightLabel(value) {
     return this.state.currentUnit === heightConstants.units.IN ?
       `${Math.floor(value / 12)}ft ${value % 12}in` : `${value}cm`;
   }
 
+  @autobind
   _weightLabel(value) {
     return `${value}${constants.weightUnitIdToLabel[this.state.currentUnit].toLowerCase()}`;
   }
 
+  @autobind
   _valueChangeHandler(value) {
     this.setState({ currentValue: value });
   }
 
+  @autobind
   _heightTypeChangeHandler(unit) {
     const { currentValue, currentUnit } = this.state;
     if (unit !== currentUnit) {
@@ -149,6 +148,7 @@ export default class ProfilePicker extends Component {
     }
   }
 
+  @autobind
   _weightTypeChangeHandler(unit) {
     const { currentValue, currentUnit } = this.state;
     if (unit !== currentUnit) {
@@ -254,7 +254,7 @@ export default class ProfilePicker extends Component {
                 this.props.setPickerType();
               }}
             >
-              <Text style={styles.profilePickerHeaderText}>Save</Text>
+              <BodyText style={styles._profilePickerHeaderText}>Save</BodyText>
             </TouchableOpacity>
           </View>
         )}

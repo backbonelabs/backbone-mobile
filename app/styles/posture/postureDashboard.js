@@ -1,10 +1,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $itemWidth: 130 * 1.5 * widthDifference,
+  $sessionIconSize: applyWidthDifference(130),
+  $sessionIconContainerWidth: '$sessionIconSize * 1.5',
   $sliderWidth: '100%',
   container: {
     flex: 1,
@@ -15,26 +16,21 @@ export default EStyleSheet.create({
     justifyContent: 'flex-end',
   },
   body: {
-    flex: 0.5,
+    flex: 0.85,
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  sessionIcon: {
+    width: '$sessionIconSize',
+    height: '$sessionIconSize',
+  },
   carouselContainer: {
-    height: '$itemWidth',
+    height: '$sessionIconSize * 1.1',
   },
   carouselItem: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '$itemWidth',
-  },
-  carouselItemIcon: {
-    width: 130.5 * widthDifference,
-    height: 130.5 * widthDifference,
-    resizeMode: 'contain',
-  },
-  footer: {
-    flex: 0.35,
-    alignItems: 'center',
+    width: '$sessionIconContainerWidth',
   },
   dailyStreakContainer: {
     flex: 1,
@@ -45,10 +41,11 @@ export default EStyleSheet.create({
     marginBottom: 10 * heightDifference,
   },
   dailyStreakBanner: {
-    width: 55 * widthDifference,
-    height: 86 * widthDifference,
+    width: applyWidthDifference(76),
+    height: applyWidthDifference(100),
     resizeMode: 'contain',
-    alignItems: 'center',
-    paddingTop: 19 * widthDifference,
+  },
+  streakCounter: {
+    marginTop: applyWidthDifference(-73),
   },
 });

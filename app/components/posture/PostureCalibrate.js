@@ -5,6 +5,7 @@ import {
   Animated,
   Switch,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import styles from '../../styles/posture/postureCalibrate';
 import routes from '../../routes';
 import HeadingText from '../HeadingText';
@@ -31,10 +32,6 @@ export default class PostureCalibrate extends Component {
       fadeAnim: [new Animated.Value(0.4)],
       isCountingDown: false,
     };
-
-    this.startAnimation = this.startAnimation.bind(this);
-    this.animationCallback = this.animationCallback.bind(this);
-    this.toggleAutoStart = this.toggleAutoStart.bind(this);
   }
 
   componentDidMount() {
@@ -65,6 +62,7 @@ export default class PostureCalibrate extends Component {
    * to animate the opacity, and the Animated.Values are stored in the state's fadeAnim array
    * @param {Number} index=0 Index of the calibration circle to animate
    */
+  @autobind
   startAnimation(index = 0) {
     // Use Animated timing function in order to perform opacity
     // fade animation over the span of 1 second.
@@ -82,6 +80,7 @@ export default class PostureCalibrate extends Component {
    * Handles post-animation calibration logic
    * @param {Object} result Includes a `finished` property indicating whether the animation finished
    */
+  @autobind
   animationCallback({ finished }) {
     if (finished) {
       // Add new Animated.Value in order to properly animate
@@ -109,6 +108,7 @@ export default class PostureCalibrate extends Component {
    * new preference will be stored on the device for subsequent sessions
    * @param {Boolean} autoStart
    */
+  @autobind
   toggleAutoStart(autoStart) {
     SensitiveInfo.setItem(storageKeys.CALIBRATION_AUTO_START, autoStart);
     this.setState({ autoStart });

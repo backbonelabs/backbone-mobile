@@ -1,18 +1,12 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+
 
 const bottomBorder = {
   borderBottomWidth: 1,
   borderColor: '#EEEEEE',
-};
-
-const settingsHeader = {
-  justifyContent: 'flex-end',
-  ...bottomBorder,
-  paddingLeft: 15 * widthDifference,
-  paddingBottom: 5 * heightDifference,
 };
 
 const centerRowItems = {
@@ -26,12 +20,15 @@ const absoluteCenter = {
 };
 
 export default EStyleSheet.create({
+  $settingsIconSize: fixedResponsiveFontSize(24),
+  $arrowWidth: applyWidthDifference(12),
+  $arrowHeight: applyWidthDifference(23),
   backgroundImage: {
     width: '100%',
     height: '100%',
   },
   sensorSettingsContainer: {
-    flex: 0.18,
+    height: applyWidthDifference(100),
     flexDirection: 'row',
     ...bottomBorder,
   },
@@ -40,84 +37,63 @@ export default EStyleSheet.create({
     ...absoluteCenter,
   },
   sensorIcon: {
-    width: 70 * widthDifference,
-    height: 59 * heightDifference,
+    width: applyWidthDifference(70),
+    height: applyWidthDifference(59),
     resizeMode: 'contain',
   },
   sensorTextTitle: {
-    marginBottom: 2 * heightDifference,
+    marginBottom: applyWidthDifference(2),
   },
   sensorText: {
-    flex: 0.52,
+    flex: 0.45,
     justifyContent: 'center',
   },
   batteryInfo: {
     ...centerRowItems,
   },
   deviceInfoText: {
-    marginVertical: 2 * heightDifference,
-    fontSize: 13,
+    marginVertical: applyWidthDifference(2),
+    fontSize: fixedResponsiveFontSize(13),
     color: '$primaryFontColor',
   },
   batteryIcon: {
-    width: 24 * widthDifference,
-    height: 13 * heightDifference,
+    width: applyWidthDifference(24),
+    height: applyWidthDifference(13),
     resizeMode: 'contain',
   },
-  arrow: {
-    flex: 0.13,
+  settingsHeader: {
+    ...bottomBorder,
+    paddingLeft: applyWidthDifference(15),
+    paddingTop: applyWidthDifference(15),
+    paddingBottom: applyWidthDifference(5),
+  },
+  settingsRow: {
+    height: applyWidthDifference(48),
+    ...centerRowItems,
+    ...bottomBorder,
+  },
+  settingsLeftIcon: {
+    flex: 0.15,
     ...absoluteCenter,
   },
-  settingsIcon: {
-    flex: 0.15,
-    alignItems: 'center',
-  },
   settingsText: {
-    flex: 0.72,
+    flex: 0.65,
   },
-  accountRemindersContainer: {
-    flex: 0.32,
-    ...bottomBorder,
-  },
-  accountRemindersHeader: {
-    flex: 0.25,
-    ...settingsHeader,
-  },
-  accountRemindersSettingContainer: {
-    flex: 0.25,
-    ...centerRowItems,
-    ...bottomBorder,
-  },
-  helpContainer: {
-    flex: 0.23,
-  },
-  notificationsContainer: {
-    flex: 0.26,
-    ...centerRowItems,
-  },
-  notificationsSwitch: {
-    flex: 0.2,
-    alignItems: 'center',
-  },
-  helpSettingsHeader: {
-    flex: 0.33,
-    ...settingsHeader,
-  },
-  helpSettingContainer: {
-    flex: 0.34,
-    ...centerRowItems,
-    ...bottomBorder,
+  settingsRightIcon: {
+    flex: 0.20,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingRight: applyWidthDifference(10),
   },
   buttonContainer: {
-    flex: 0.27,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    ...absoluteCenter,
   },
   devMenu: {
     borderWidth: 1,
-    padding: 10 * widthDifference,
+    padding: applyWidthDifference(10),
   },
   devMenuItem: {
-    marginTop: 2 * heightDifference,
+    marginTop: applyWidthDifference(2),
   },
 });

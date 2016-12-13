@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -26,8 +26,8 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    width: 131 * widthDifference,
-    height: 237 * widthDifference,
+    width: applyWidthDifference(131),
+    height: applyWidthDifference(237),
     resizeMode: 'contain',
   },
   calibrationCircleContainer: {
@@ -37,9 +37,9 @@ export default EStyleSheet.create({
     justifyContent: 'space-around',
   },
   calibrationCircle: {
-    width: 25 * widthDifference,
-    height: 25 * widthDifference,
-    borderRadius: 12.5 * widthDifference,
+    width: applyWidthDifference(25),
+    height: applyWidthDifference(25),
+    borderRadius: 12.5,
     backgroundColor: '$primaryColor',
     opacity: 0.4,
   },
@@ -57,7 +57,7 @@ export default EStyleSheet.create({
   autoStartPreferenceLabel: {
     flex: 0.5,
     alignItems: 'flex-end',
-    marginHorizontal: 10 * widthDifference,
+    marginHorizontal: applyWidthDifference(10),
   },
   autoStartPreferenceSwitch: {
     flex: 0.5,

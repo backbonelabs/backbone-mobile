@@ -1,8 +1,10 @@
-import { NativeModules, NativeAppEventEmitter } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
 const { DeviceManagementService, DeviceInformationService } = NativeModules;
+const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
+const { deviceStatuses, storageKeys } = constants;
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
 
@@ -17,13 +19,17 @@ const connectError = payload => ({
 });
 
 function setConnectEventListener(dispatch) {
-  NativeAppEventEmitter.once('ConnectionStatus', status => {
-    if (status.message) {
-      dispatch(connectError(status));
-    } else {
-      dispatch(connect(status));
+  const connectionStatusListener = deviceManagementServiceEvents.addListener(
+    'ConnectionStatus',
+    status => {
+      if (status.message) {
+        dispatch(connectError(status));
+      } else {
+        dispatch(connect(status));
+      }
+      connectionStatusListener.remove();
     }
-  });
+  );
 }
 
 const disconnectStart = () => ({ type: 'DEVICE_DISCONNECT__START' });
@@ -72,7 +78,7 @@ const deviceActions = {
     return (dispatch) => {
       // Check current connection status with Backbone device
       DeviceManagementService.getDeviceStatus((status) => {
-        if (status === constants.deviceStatuses.CONNECTED) {
+        if (status === deviceStatuses.CONNECTED) {
           // Device is connected
           dispatch(connect({ isConnected: true }));
         } else {
@@ -108,7 +114,7 @@ const deviceActions = {
           dispatch(forgetError(err));
         } else {
           // Remove device information from local storage
-          SensitiveInfo.deleteItem(constants.storageKeys.DEVICE);
+          SensitiveInfo.deleteItem(storageKeys.DEVICE);
           dispatch(forget());
         }
       });
@@ -116,7 +122,6 @@ const deviceActions = {
   },
   getInfo() {
     return (dispatch, getState) => {
-      const { storageKeys } = constants;
       const { device: deviceState } = getState();
       dispatch(getInfoStart());
 

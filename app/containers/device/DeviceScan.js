@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-
 import {
   View,
   Alert,
   NativeModules,
-  NativeAppEventEmitter,
+  NativeEventEmitter,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../../styles/device';
@@ -18,7 +18,8 @@ import routes from '../../routes';
 import constants from '../../utils/constants';
 
 const { DeviceManagementService } = NativeModules;
-const { ON, OFF } = constants.bluetoothStates;
+const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
+const { ON, OFF, TURNING_ON, TURNING_OFF } = constants.bluetoothStates;
 
 class DeviceScan extends Component {
   static propTypes = {
@@ -35,17 +36,16 @@ class DeviceScan extends Component {
       deviceList: [],
       inProgress: false,
     };
-    this.selectDevice = this.selectDevice.bind(this);
-    // Bind initiateScanning, since corresponding Alert's onPress handler
-    // loses "this" context if user presses "Try Again" more than once
-    this.initiateScanning = this.initiateScanning.bind(this);
+
+    this.devicesFoundListener = null;
   }
 
   componentWillMount() {
     // Set listener for updating deviceList with discovered devices
-    NativeAppEventEmitter.addListener('DevicesFound', deviceList => (
-      this.setState({ deviceList })
-    ));
+    this.devicesFoundListener = deviceManagementServiceEvents.addListener(
+      'DevicesFound',
+      deviceList => this.setState({ deviceList }),
+    );
 
     if (this.props.bluetoothState === ON) {
       // Bluetooth is on, initiate scanning
@@ -57,10 +57,14 @@ class DeviceScan extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.bluetoothState === OFF && nextProps.bluetoothState === ON) {
+    const currentBluetoothState = this.props.bluetoothState;
+    const newBluetoothState = nextProps.bluetoothState;
+    if ((currentBluetoothState === OFF || currentBluetoothState === TURNING_ON)
+      && newBluetoothState === ON) {
       // User has switched Bluetooth on, initiate scanning
       this.initiateScanning();
-    } else if (this.props.bluetoothState === ON && nextProps.bluetoothState === OFF) {
+    } else if (currentBluetoothState === ON &&
+      (newBluetoothState === OFF || newBluetoothState === TURNING_OFF)) {
       // User has switched Bluetooth off, stop scanning
       this.setState({ inProgress: false }, DeviceManagementService.stopScanForDevices);
     }
@@ -68,12 +72,13 @@ class DeviceScan extends Component {
 
   componentWillUnmount() {
     // Remove listener
-    NativeAppEventEmitter.removeAllListeners('DevicesFound');
+    this.devicesFoundListener.remove();
 
-    // Stop scanning
+    // Stop scanning for devices
     DeviceManagementService.stopScanForDevices();
   }
 
+  @autobind
   initiateScanning() {
     // Initiate scanning
     DeviceManagementService.scanForDevices(error => {
@@ -94,8 +99,9 @@ class DeviceScan extends Component {
 
   /**
    * Selects a device to connect to
-   * @param {Object}  deviceData  Selected device's data
+   * @param {Object} deviceData Selected device's data
    */
+  @autobind
   selectDevice(deviceData) {
     DeviceManagementService.selectDevice(deviceData.identifier, error => {
       if (error) {

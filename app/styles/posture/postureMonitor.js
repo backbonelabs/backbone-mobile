@@ -1,10 +1,12 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
-const responsiveWidthHalfCircle = 128.5 * widthDifference;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
+const responsiveWidthHalfCircle = applyWidthDifference(128.5);
 
 export default EStyleSheet.create({
+  $sliderIconSize: fixedResponsiveFontSize(15),
+  $sliderIconPadding: applyWidthDifference(5),
   $pointerBaseHeight: 84,
   container: {
     flex: 1,
@@ -64,32 +66,32 @@ export default EStyleSheet.create({
     alignSelf: 'center',
   },
   monitorPoor: {
-    marginLeft: 26 * widthDifference,
-    marginRight: 212 * widthDifference,
+    marginLeft: applyWidthDifference(26),
+    marginRight: applyWidthDifference(212),
   },
   monitorGood: {
-    marginRight: 27 * widthDifference,
+    marginRight: applyWidthDifference(27),
   },
   sliderTitle: {
     textAlign: 'center',
     alignSelf: 'center',
-    width: 296 * widthDifference,
+    width: applyWidthDifference(296),
   },
   sliderContainer: {
-    width: 296 * widthDifference,
+    width: applyWidthDifference(296),
     marginBottom: 50 * heightDifference,
     alignSelf: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
   btnContainer: {
-    width: 350 * widthDifference,
+    width: applyWidthDifference(350),
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent: 'space-around',
   },
   monitorBtn: {
-    width: 75 * widthDifference,
+    width: applyWidthDifference(75),
     height: 75 * heightDifference,
     resizeMode: 'contain',
   },
@@ -101,8 +103,8 @@ export default EStyleSheet.create({
     height: responsiveWidthHalfCircle,
     width: (responsiveWidthHalfCircle * 2),
     position: 'absolute',
-    top: 7.5 * widthDifference,
-    left: 7.5 * widthDifference,
+    top: applyWidthDifference(7.5),
+    left: applyWidthDifference(7.5),
     alignSelf: 'center',
     alignItems: 'center',
     borderWidth: 0,

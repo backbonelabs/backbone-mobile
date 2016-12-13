@@ -66,7 +66,7 @@ class AnimatedStar extends Component {
   render() {
     return (
       <Animated.View style={[styles.starWrap, this.getHeartAnimationStyle(), this.props.style]}>
-        <Icon name="star" size={50} color="#F0B24B" />
+        <Icon name="star" size={styles.$starIconSize} color="#F0B24B" />
       </Animated.View>
     );
   }

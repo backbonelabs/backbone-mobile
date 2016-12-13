@@ -3,17 +3,16 @@ import {
   Alert,
   AppState,
   View,
-  Text,
   Image,
   StatusBar,
   Navigator,
-  DeviceEventEmitter,
   NativeModules,
   NativeEventEmitter,
   Platform,
   TouchableOpacity,
   BackAndroid,
 } from 'react-native';
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
 import sessionActive from '../images/sessionActive.png';
@@ -24,6 +23,7 @@ import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import FullModal from '../components/FullModal';
+import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
 import Banner from '../components/Banner';
@@ -76,12 +76,8 @@ class Application extends Component {
       initialRoute: null,
     };
 
-    this.configureScene = this.configureScene.bind(this);
-    this.renderScene = this.renderScene.bind(this);
-    this.navigate = this.navigate.bind(this);
     this.navigator = null; // Components should use this custom navigator object
     this.backAndroidListener = null;
-    this.handleAppStateChange = this.handleAppStateChange.bind(this);
   }
 
   componentWillMount() {
@@ -141,11 +137,7 @@ class Application extends Component {
       }
     };
 
-    if (isiOS) {
-      this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
-    } else {
-      this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
-    }
+    this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -234,6 +226,7 @@ class Application extends Component {
     }, 500);
   }
 
+  @autobind
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
       // Attempt auto-connect when app is brought back into the foreground
@@ -241,10 +234,12 @@ class Application extends Component {
     }
   }
 
+  @autobind
   configureScene() {
     return CustomSceneConfig;
   }
 
+  @autobind
   navigate(route) {
     const routeStack = this.navigator.getCurrentRoutes();
     const currentRoute = routeStack[routeStack.length - 1];
@@ -254,6 +249,7 @@ class Application extends Component {
     }
   }
 
+  @autobind
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
     // Tab bar component data
@@ -291,7 +287,7 @@ class Application extends Component {
                 onPress={() => !isSameRoute && this.navigator.push(routes[value.routeName])}
               >
                 <Image source={imageSource} style={styles.tabBarImage} />
-                <Text style={{ color: tabBarTextColor }}>{ value.name }</Text>
+                <SecondaryText style={{ color: tabBarTextColor }}>{ value.name }</SecondaryText>
               </TouchableOpacity>
             );
           })
