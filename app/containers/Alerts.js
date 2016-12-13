@@ -164,7 +164,7 @@ class Alerts extends Component {
         <View style={styles.batteryLifeWarningContainer}>
           <SecondaryText style={styles._batteryLifeWarningText}>
             Increasing the vibration strength and pattern of
-            your Backbone will decrease the battery life
+            your Backbone will decrease its battery life
           </SecondaryText>
         </View>
       </Image>

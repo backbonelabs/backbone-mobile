@@ -30,6 +30,8 @@
 		6602D6981D50295300DF3369 /* SensorDataService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6971D50295300DF3369 /* SensorDataService.m */; };
 		6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6991D502EA800DF3369 /* ActivityModule.m */; };
 		6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */; };
+		662BD3491DFC92E900CF71D1 /* Debug.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */; };
+		662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */; };
 		665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */; };
 		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
 		669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DC1D50630A00DCEFBE /* ActivityService.m */; };
@@ -156,6 +158,13 @@
 			remoteGlobalIDString = BF8FCF941BFFB184000FCD37;
 			remoteInfo = RNSensitiveInfo;
 		};
+		66B19FAA1DFB888C00984067 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 447B8FFC1DB8227100AC7E71 /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2DD0EFE61DA8533A00B0C975;
+			remoteInfo = "RCTPushNotification-tvOS";
+		};
 		66FEFCA01DCBD70400B8174C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */;
@@ -254,12 +263,16 @@
 		44970BAB1D2AC74400351480 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		465D07C7FE9F1FD781466674 /* Pods-BackboneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackboneTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BackboneTests/Pods-BackboneTests.release.xcconfig"; sourceTree = "<group>"; };
+		6600D5691DFBDA0E005D5807 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = backbone/config/Debug.xcconfig; sourceTree = "<group>"; };
+		6600D56A1DFBDA28005D5807 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = backbone/config/Release.xcconfig; sourceTree = "<group>"; };
 		6602D6891D5023A500DF3369 /* SensorDataService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SensorDataService.h; path = backbone/SensorDataService.h; sourceTree = "<group>"; };
 		6602D6961D50255D00DF3369 /* ActivityModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityModule.h; path = backbone/ActivityModule.h; sourceTree = "<group>"; };
 		6602D6971D50295300DF3369 /* SensorDataService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorDataService.m; path = backbone/SensorDataService.m; sourceTree = "<group>"; };
 		6602D6991D502EA800DF3369 /* ActivityModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityModule.m; path = backbone/ActivityModule.m; sourceTree = "<group>"; };
 		6625BB7D1DB1E5E3009B4941 /* MixpanelModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MixpanelModule.h; path = backbone/MixpanelModule.h; sourceTree = "<group>"; };
 		6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MixpanelModule.m; path = backbone/MixpanelModule.m; sourceTree = "<group>"; };
+		662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.local.xcconfig; path = backbone/config/Debug.local.xcconfig; sourceTree = "<group>"; };
+		662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Release.local.xcconfig; path = backbone/config/Release.local.xcconfig; sourceTree = "<group>"; };
 		665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		667641251D63B8F900D45761 /* Environment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Environment.h; path = backbone/Environment.h; sourceTree = "<group>"; };
 		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
@@ -418,6 +431,7 @@
 		13B07FAE1A68108700A75B9A /* Backbone */ = {
 			isa = PBXGroup;
 			children = (
+				6600D5521DFBD9F1005D5807 /* config */,
 				69CCE7271DD4B01C0038157C /* util */,
 				4486A5391D89D83500F6CC40 /* Backbone.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -500,7 +514,7 @@
 			isa = PBXGroup;
 			children = (
 				447B90071DB8227100AC7E71 /* libRCTPushNotification.a */,
-				445776511DF9D72B0044EE04 /* libRCTPushNotification-tvOS.a */,
+				66B19FAB1DFB888C00984067 /* libRCTPushNotification-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -520,6 +534,17 @@
 				449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */,
 			);
 			name = Icons;
+			sourceTree = "<group>";
+		};
+		6600D5521DFBD9F1005D5807 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				6600D5691DFBDA0E005D5807 /* Debug.xcconfig */,
+				662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */,
+				6600D56A1DFBDA28005D5807 /* Release.xcconfig */,
+				662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */,
+			);
+			name = config;
 			sourceTree = "<group>";
 		};
 		665DFF591D64133C003B4449 /* Products */ = {
@@ -885,6 +910,13 @@
 			remoteRef = 665DFF671D64133C003B4449 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		66B19FAB1DFB888C00984067 /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = 66B19FAA1DFB888C00984067 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		66FEFCA11DCBD70400B8174C /* libRCTImage-tvOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -967,6 +999,8 @@
 				665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */,
 				66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */,
 				449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */,
+				662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */,
+				662BD3491DFC92E900CF71D1 /* Debug.local.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1221,13 +1255,13 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3848B81F17448DD7434B50CA /* Pods-Backbone.debug.xcconfig */;
+			baseConfigurationReference = 6600D5691DFBDA0E005D5807 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 101;
+				CURRENT_PROJECT_VERSION = 116;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
@@ -1264,13 +1298,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F56847E096323A6B87C77054 /* Pods-Backbone.release.xcconfig */;
+			baseConfigurationReference = 6600D56A1DFBDA28005D5807 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 101;
+				CURRENT_PROJECT_VERSION = 116;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

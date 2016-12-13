@@ -16,6 +16,7 @@ import {
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import SvgUri from 'react-native-svg-uri';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import routes from '../routes';
@@ -26,29 +27,17 @@ import gradientBackground20 from '../images/gradientBackground20.png';
 import arrow from '../images/settings/arrow.svg';
 import batteryIcon from '../images/settings/batteryIcon.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
-import profileIcon from '../images/settings/profileIcon.svg';
-import alertIcon from '../images/settings/alertIcon.svg';
-import tutorialIcon from '../images/settings/tutorialIcon.svg';
-import supportIcon from '../images/settings/supportIcon.svg';
-import notificationsIcon from '../images/settings/notificationsIcon.svg';
 import styles from '../styles/settings';
+import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 
 const { storageKeys } = constants;
 
-const iconMap = {
-  profile: profileIcon,
-  alert: alertIcon,
-  tutorial: tutorialIcon,
-  support: supportIcon,
-  notifications: notificationsIcon,
-};
-
 const ArrowIcon = () => (
-  <View style={styles.arrow}>
-    <SvgUri source={arrow} />
+  <View style={styles.settingsRightIcon}>
+    <SvgUri source={arrow} width={styles.$arrowWidth} height={styles.$arrowHeight} />
   </View>
 );
 
@@ -89,8 +78,8 @@ SensorSettings.propTypes = {
 };
 
 const SettingsIcon = props => (
-  <View style={styles.settingsIcon}>
-    <SvgUri source={iconMap[props.iconName]} />
+  <View style={styles.settingsLeftIcon}>
+    <Icon name={props.iconName} size={styles.$settingsIconSize} color={theme.primaryColor} />
   </View>
 );
 
@@ -109,40 +98,40 @@ SettingsText.propTypes = {
 };
 
 const AccountRemindersSettings = props => (
-  <View style={styles.accountRemindersContainer}>
-    <View style={styles.accountRemindersHeader}>
+  <View>
+    <View style={styles.settingsHeader}>
       <BodyText>ACCOUNT & REMINDERS</BodyText>
     </View>
     <TouchableOpacity
-      style={styles.accountRemindersSettingContainer}
+      style={styles.settingsRow}
       onPress={() => props.navigator.push(routes.profile)}
     >
-      <SettingsIcon iconName="profile" />
+      <SettingsIcon iconName="person" />
       <SettingsText text="Profile" />
       <ArrowIcon />
     </TouchableOpacity>
     <TouchableOpacity
-      style={styles.accountRemindersSettingContainer}
+      style={styles.settingsRow}
       onPress={() => props.navigator.push(routes.changePassword)}
     >
-      <SettingsIcon />
+      <SettingsIcon iconName="lock" />
       <SettingsText text="Change Password" />
       <ArrowIcon />
     </TouchableOpacity>
     <TouchableOpacity
-      style={styles.accountRemindersSettingContainer}
+      style={styles.settingsRow}
       onPress={() => props.navigator.push(routes.alerts)}
     >
-      <SettingsIcon iconName="alert" />
+      <SettingsIcon iconName="notifications" />
       <SettingsText text="Alerts" />
       <ArrowIcon />
     </TouchableOpacity>
     {Platform.select({
       ios: (
-        <View style={styles.notificationsContainer}>
-          <SettingsIcon iconName="notifications" />
+        <View style={styles.settingsRow}>
+          <SettingsIcon iconName="tap-and-play" />
           <SettingsText text="Push Notifications" />
-          <View style={styles.notificationsSwitch}>
+          <View style={styles.settingsRightIcon}>
             <Switch
               onValueChange={props.updateNotifications}
               value={props.notificationsEnabled}
@@ -152,10 +141,10 @@ const AccountRemindersSettings = props => (
       ),
       android: (
         <TouchableOpacity
-          style={styles.notificationsContainer}
+          style={styles.settingsRow}
           onPress={() => NativeModules.UserSettingService.launchAppSettings()}
         >
-          <SettingsIcon iconName="notifications" />
+          <SettingsIcon iconName="tap-and-play" />
           <SettingsText text="Push Notifications" />
           <ArrowIcon />
         </TouchableOpacity>
@@ -173,23 +162,23 @@ AccountRemindersSettings.propTypes = {
 };
 
 const HelpSettings = props => (
-  <View style={styles.helpContainer}>
-    <View style={styles.helpSettingsHeader}>
+  <View>
+    <View style={styles.settingsHeader}>
       <BodyText>HELP</BodyText>
     </View>
     <TouchableOpacity
-      style={styles.helpSettingContainer}
+      style={styles.settingsRow}
       onPress={() => props.navigator.push(routes.howTo)}
     >
-      <SettingsIcon iconName="tutorial" />
+      <SettingsIcon iconName="live-tv" />
       <SettingsText text="How To" />
       <ArrowIcon />
     </TouchableOpacity>
     <TouchableOpacity
-      style={styles.helpSettingContainer}
+      style={styles.settingsRow}
       onPress={() => props.navigator.push(routes.support)}
     >
-      <SettingsIcon iconName="support" />
+      <SettingsIcon iconName="help" />
       <SettingsText text="Support" />
       <ArrowIcon />
     </TouchableOpacity>
