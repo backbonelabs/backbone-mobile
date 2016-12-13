@@ -30,19 +30,23 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
   }
   
   DLog(@"Attempting to connect to %@", BluetoothServiceInstance.currentDevice);
-  [BluetoothServiceInstance connectDevice:BluetoothServiceInstance.currentDevice completionBlock:^(NSError * _Nullable error) {
-    if (error) {
-      NSDictionary *makeError = RCTMakeError(@"Failed to connect to device", nil, @{
-                                                                                    @"domain": error.domain,
-                                                                                    @"code": [NSNumber numberWithLong:error.code],
-                                                                                    @"userInfo": error.userInfo,
-                                                                                    });
-      [self deviceConnectionStatus:makeError];
-    } else {
-      [self deviceConnectionStatus:@{@"isConnected": @YES}];
-    }
   
-  }];
+  // Only attempt a connect if device is defined
+  if (BluetoothServiceInstance.currentDevice) {
+    [BluetoothServiceInstance connectDevice:BluetoothServiceInstance.currentDevice completionBlock:^(NSError * _Nullable error) {
+      if (error) {
+        NSDictionary *makeError = RCTMakeError(@"Failed to connect to device", nil, @{
+                                                                                      @"domain": error.domain,
+                                                                                      @"code": [NSNumber numberWithLong:error.code],
+                                                                                      @"userInfo": error.userInfo,
+                                                                                      });
+        [self deviceConnectionStatus:makeError];
+      } else {
+        [self deviceConnectionStatus:@{@"isConnected": @YES}];
+      }
+      
+    }];
+  }
   
   [self checkConnectTimeout];
 }
