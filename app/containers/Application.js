@@ -159,8 +159,8 @@ class Application extends Component {
           // Check if there is already a user profile in the Redux store
           if (this.props.user._id) {
             // There is a user profile in the Redux store
-            // Attempt to auto connect to device
-            this.props.dispatch(deviceActions.attemptAutoConnect());
+            // Fetch device info
+            this.props.dispatch(deviceActions.getInfo());
 
             // Set initial route to posture dashboard
             this.setInitialRoute(routes.postureDashboard);
@@ -179,8 +179,8 @@ class Application extends Component {
 
                   if (user.hasOnboarded) {
                     // User completed onboarding
-                    // Attempt to auto connect to device
-                    this.props.dispatch(deviceActions.attemptAutoConnect());
+                    // Fetch device info
+                    this.props.dispatch(deviceActions.getInfo());
 
                     // Set initial route to posture dashboard
                     this.setInitialRoute(routes.postureDashboard);
@@ -234,8 +234,8 @@ class Application extends Component {
   @autobind
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
-      // Attempt auto-connect when app is brought back into the foreground
-      this.props.dispatch(deviceActions.attemptAutoConnect());
+      // Fetch device info when app comes back into foreground
+      this.props.dispatch(deviceActions.getInfo());
     }
   }
 
