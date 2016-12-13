@@ -39,6 +39,7 @@
 		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
 		66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */; };
+		690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 690A06151DF8544E00EAC570 /* OTAFileParser.m */; };
 		690F1C5B1DB8FF5100AE2E98 /* UserSettingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */; };
 		697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 697D0FE71DA3DCDC00F6FF13 /* StepModule.m */; };
 		699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 699262611DE58A28003FBBC7 /* SessionControlService.m */; };
@@ -269,6 +270,8 @@
 		669B151C1D51458700DCEFBE /* SensorNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorNotifications.m; path = backbone/SensorNotifications.m; sourceTree = "<group>"; };
 		66F918791DA9F82B00649391 /* Lato.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Lato.ttf; path = ../android/app/src/main/assets/fonts/Lato.ttf; sourceTree = "<group>"; };
 		66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "backbone/Launch Screen.storyboard"; sourceTree = "<group>"; };
+		690A06141DF8544E00EAC570 /* OTAFileParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTAFileParser.h; sourceTree = "<group>"; };
+		690A06151DF8544E00EAC570 /* OTAFileParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTAFileParser.m; sourceTree = "<group>"; };
 		690F1C591DB8FF5100AE2E98 /* UserSettingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserSettingService.h; path = backbone/UserSettingService.h; sourceTree = "<group>"; };
 		690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserSettingService.m; path = backbone/UserSettingService.m; sourceTree = "<group>"; };
 		697D0FE61DA3DCDC00F6FF13 /* StepModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StepModule.h; path = backbone/StepModule.h; sourceTree = "<group>"; };
@@ -541,6 +544,8 @@
 			isa = PBXGroup;
 			children = (
 				69CCE7281DD4B01C0038157C /* Constants.h */,
+				690A06141DF8544E00EAC570 /* OTAFileParser.h */,
+				690A06151DF8544E00EAC570 /* OTAFileParser.m */,
 				69CCE7291DD4B01C0038157C /* Utilities.h */,
 				69CCE72A1DD4B01C0038157C /* Utilities.m */,
 			);
@@ -1143,6 +1148,7 @@
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
 				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
 				4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */,
+				690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
