@@ -39,6 +39,20 @@ const distanceToDegrees = distance => {
   return Math.max(-180, (distance / MAX_POSTURE_THRESHOLD) * maxMappedDegree);
 };
 
+/**
+ * Converts a decimal number less than 1 to a magnitude of 10,000
+ * @param  {Number} decimal
+ * @return {Number}         If decimal is greater than or equal to 1, decimal will be returned.
+ *                          Otherwise, the return value will be the decimal multiplied by 10,000.
+ */
+const decimalToTenThousandths = decimal => {
+  if (decimal >= 1) {
+    // No-op if input is greater than or equal to 1
+    return decimal;
+  }
+  return decimal * 10000;
+};
+
 class PostureMonitor extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
@@ -181,7 +195,7 @@ class PostureMonitor extends Component {
   startSession() {
     SessionControlService.start({
       sessionDuration: 1, // TODO: Use session duration
-      slouchDistanceThreshold: this.state.postureThreshold, // TODO: Convert to ten thousandths
+      slouchDistanceThreshold: decimalToTenThousandths(this.state.postureThreshold),
     }, err => {
       if (err) {
         // TODO: Implement error handling
