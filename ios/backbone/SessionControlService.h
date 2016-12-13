@@ -17,11 +17,26 @@
   int previousSessionState;
   int currentCommand;
   
+  int sessionDuration;
+  int sessionDistanceThreshold;
+  int sessionTimeThreshold;
+  
+  int vibrationPattern;
+  int vibrationSpeed;
+  int vibrationDuration;
+  
   BOOL distanceNotificationStatus;
+  BOOL statisticNotificationStatus;
+  BOOL slouchNotificationStatus;
+  
+  BOOL forceStoppedSession;
+  BOOL notificationStateChanged;
 }
 
 @property (nonatomic, readonly) CBCharacteristic *sessionControlCharacteristic;
 @property (nonatomic, readonly) CBCharacteristic *distanceCharacteristic;
+@property (nonatomic, readonly) CBCharacteristic *slouchCharacteristic;
+@property (nonatomic, readonly) CBCharacteristic *sessionStatisticCharacteristic;
 
 + (SessionControlService *)getSessionControlService;
 

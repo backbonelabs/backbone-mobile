@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference } = relativeDimensions;
+const { heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -20,11 +20,15 @@ export default EStyleSheet.create({
   inputField: {
     width: '90%',
   },
-  currentPassword: {
-    width: '90%',
-    marginBottom: 20 * heightDifference,
+  newPassword: {
+    marginTop: 15 * heightDifference,
   },
   saveButton: {
     marginTop: 40 * heightDifference,
+  },
+  warning: {
+    color: '$primaryColor',
+    height: 20 * heightDifference,
+    fontSize: fixedResponsiveFontSize(12),
   },
 });

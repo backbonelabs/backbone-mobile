@@ -3,11 +3,9 @@ import {
   Alert,
   AppState,
   View,
-  Text,
   Image,
   StatusBar,
   Navigator,
-  DeviceEventEmitter,
   NativeModules,
   NativeEventEmitter,
   Platform,
@@ -25,6 +23,7 @@ import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import FullModal from '../components/FullModal';
+import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
 import Banner from '../components/Banner';
@@ -138,11 +137,7 @@ class Application extends Component {
       }
     };
 
-    if (isiOS) {
-      this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
-    } else {
-      this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
-    }
+    this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -292,7 +287,7 @@ class Application extends Component {
                 onPress={() => !isSameRoute && this.navigator.push(routes[value.routeName])}
               >
                 <Image source={imageSource} style={styles.tabBarImage} />
-                <Text style={{ color: tabBarTextColor }}>{ value.name }</Text>
+                <SecondaryText style={{ color: tabBarTextColor }}>{ value.name }</SecondaryText>
               </TouchableOpacity>
             );
           })

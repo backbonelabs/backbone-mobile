@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 
 const { PropTypes } = React;
 
@@ -14,4 +15,9 @@ const defaultProps = {
   style: {},
 };
 
-export default { propTypes, defaultProps };
+const fontScalingProps = Platform.select({
+  ios: { allowFontScaling: false },
+  android: {},
+});
+
+export default { propTypes, defaultProps, fontScalingProps };

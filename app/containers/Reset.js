@@ -33,6 +33,7 @@ class Reset extends Component {
       email: null,
       emailPristine: true,
       validEmail: false,
+      showIcon: true,
     };
   }
 
@@ -67,13 +68,14 @@ class Reset extends Component {
 
   @autobind
   sendPasswordResetRequest() {
+    this.setState({ showIcon: false });
     this.props.dispatch(authActions.reset({ email: this.state.email }));
   }
 
   render() {
-    const { email, validEmail, emailPristine } = this.state;
+    const { email, validEmail, emailPristine, showIcon } = this.state;
     const emailIconProps = {};
-    if (!emailPristine) {
+    if (!emailPristine && showIcon) {
       emailIconProps.iconRightName = validEmail ? 'check' : 'close';
     }
 

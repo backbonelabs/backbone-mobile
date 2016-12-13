@@ -1,4 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   list: {
@@ -9,7 +12,7 @@ export default EStyleSheet.create({
     borderBottomColor: 'black',
   },
   listItemText: {
-    fontSize: 18,
+    fontSize: fixedResponsiveFontSize(18),
     color: 'white',
     textAlign: 'center',
   },

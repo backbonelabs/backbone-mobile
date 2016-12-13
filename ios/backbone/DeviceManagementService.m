@@ -1,16 +1,14 @@
 #import "DeviceManagementService.h"
 #import "BluetoothService.h"
 #import "RCTUtils.h"
-#import "RCTEventDispatcher.h"
 
 @implementation DeviceManagementService
-
-@synthesize bridge = _bridge;
 
 static BOOL _remembered;
 static NSMutableDictionary *_deviceCollection = nil;
 
 - (id)init {
+  self = [super init];
   if (!_deviceCollection) {
     _deviceCollection = [NSMutableDictionary new];
   }
@@ -77,6 +75,8 @@ RCT_EXPORT_METHOD(connectToDevice) {
 
 RCT_EXPORT_METHOD(selectDevice:(NSString *)deviceID:(RCTResponseSenderBlock)callback) {
   [self stopScanForDevices];
+  [self removeSavedDevice];
+  
   [BluetoothServiceInstance selectDevice:_deviceCollection[deviceID][@"peripheral"]];
   
   if (!BluetoothServiceInstance.currentDevice) {
@@ -142,8 +142,7 @@ RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
 
 RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   DLog(@"forget device");
-  NSUserDefaults *preference = [NSUserDefaults standardUserDefaults];
-  [preference removeObjectForKey:PREF_SAVED_DEVICE_KEY];
+  [self removeSavedDevice];
   
   [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
     if (error) {
@@ -163,6 +162,11 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   [preference setObject:uuid forKey:PREF_SAVED_DEVICE_KEY];
 }
 
+- (void)removeSavedDevice {
+  NSUserDefaults *preference = [NSUserDefaults standardUserDefaults];
+  [preference removeObjectForKey:PREF_SAVED_DEVICE_KEY];
+}
+
 - (void)checkConnectTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if (BluetoothServiceInstance.currentDevice.state != CBPeripheralStateConnected) {
@@ -173,12 +177,16 @@ RCT_EXPORT_METHOD(forgetDevice:(RCTResponseSenderBlock)callback) {
   });
 }
 
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"ConnectionStatus", @"DevicesFound"];
+}
+
 - (void)deviceConnectionStatus:(NSDictionary *)status {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"ConnectionStatus" body: status];
+  [self sendEventWithName:@"ConnectionStatus" body:status];
 }
 
 - (void)devicesFound:(NSMutableArray *)deviceList {
-  [self.bridge.eventDispatcher sendAppEventWithName:@"DevicesFound" body: deviceList];
+  [self sendEventWithName:@"DevicesFound" body:deviceList];
 }
 
 @end;

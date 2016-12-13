@@ -5,14 +5,22 @@ import styles from '../.././../styles/posture/postureMonitor';
 
 const MonitorSlider = (props) => (
   <View style={styles.sliderContainer}>
-    <Icon name="minus" size={15} style={{ paddingRight: 5 }} />
+    <Icon
+      name="minus"
+      size={styles.$sliderIconSize}
+      style={{ paddingRight: styles.$sliderIconPadding }}
+    />
     <View style={{ flex: 1 }}>
       <Slider
         minimumTrackTintColor={'#ED1C24'}
         {...props}
       />
     </View>
-    <Icon name="plus" size={15} style={{ paddingLeft: 5 }} />
+    <Icon
+      name="plus"
+      size={styles.$sliderIconSize}
+      style={{ paddingLeft: styles.$sliderIconPadding }}
+    />
   </View>
 );
 

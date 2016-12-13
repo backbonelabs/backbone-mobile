@@ -102,7 +102,7 @@ class Signup extends Component {
                 <View style={styles.innerContainer}>
                   <Image source={BackBoneLogo} style={styles.backboneLogo} />
                   <BodyText style={styles._headingText}>
-                    Look & feel your strongest with Backbone
+                    Look and feel stronger with Backbone
                   </BodyText>
                   <View style={styles.formContainer}>
                     <View style={styles.inputFieldContainer}>

@@ -1,12 +1,15 @@
 import { Dimensions, Navigator } from 'react-native';
 import relativeDimensions from '../utils/relativeDimensions';
 
+const { fixedResponsiveFontSize, heightDifference } = relativeDimensions;
+
 const { width: screenWidth } = Dimensions.get('window');
 const statusBarHeight = Navigator.NavigationBar.Styles.General.StatusBarHeight;
-const titleBarHeight = 44 * relativeDimensions.heightDifference;
+const titleBarHeight = 44 * heightDifference;
 const totalNavHeight = statusBarHeight + titleBarHeight;
 const iconSize = 0.08 * screenWidth;
 const iconButtonSize = 1.5 * iconSize;
+const inputIconSize = fixedResponsiveFontSize(16);
 
 const primaryColor = '#ED1C24';
 const primaryFont = 'Lato';
@@ -24,8 +27,8 @@ export default {
   disabledColor: '#A9A9A9',
   iconSize,
   iconButtonSize,
+  inputIconSize,
   bannerColor,
-  rem: 16,
   buttonBorderRadius: 4,
   titleBarHeight,
   statusBarHeight,
