@@ -100,21 +100,12 @@ class DeviceScan extends Component {
    */
   @autobind
   selectDevice(deviceData) {
-    DeviceManagementService.selectDevice(deviceData.identifier, error => {
-      if (error) {
-        Alert.alert(
-          'Error',
-          'Unable to connect',
-          [
-            { text: 'Cancel' },
-            { text: 'Try Again', onPress: () => this.selectDevice(deviceData) },
-          ],
-        );
-      } else {
-        // Attempt connect to selected device
-        this.props.navigator.replace(routes.deviceConnect);
-      }
-    });
+    // Stop scanning, since device has been selected
+    DeviceManagementService.stopScanForDevices();
+    // Send user back to DeviceConnect route with selected device UUID
+    this.props.navigator.replace(
+      Object.assign({}, routes.deviceConnect, { deviceUUID: deviceData.identifier })
+    );
   }
 
  /**
