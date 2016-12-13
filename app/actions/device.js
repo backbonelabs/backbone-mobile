@@ -76,15 +76,18 @@ const deviceActions = {
     };
   },
   disconnect() {
-    return (dispatch) => {
-      dispatch(disconnectStart());
-      DeviceManagementService.cancelConnection(err => {
-        if (err) {
-          dispatch(disconnectError(err));
-        } else {
-          dispatch(disconnect());
-        }
-      });
+    return (dispatch, getState) => {
+      // Attempt disconnect only if device is connected
+      if (getState().device.isConnected) {
+        dispatch(disconnectStart());
+        DeviceManagementService.cancelConnection(err => {
+          if (err) {
+            dispatch(disconnectError(err));
+          } else {
+            dispatch(disconnect());
+          }
+        });
+      }
     };
   },
   forget() {

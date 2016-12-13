@@ -83,7 +83,7 @@ RCT_EXPORT_METHOD(stopScanForDevices) {
 
 RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
   DLog(@"Cancel device connection and any running scanning");
-  [BluetoothServiceInstance stopScan];
+  [self stopScanForDevices];
   
   [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
     if (error) {
