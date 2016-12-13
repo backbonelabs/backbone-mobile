@@ -1,10 +1,15 @@
-import { NativeModules, NativeEventEmitter } from 'react-native';
+import {
+  NativeModules,
+  NativeEventEmitter,
+} from 'react-native';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import firmware from '../utils/firmware';
 
 const { DeviceManagementService, DeviceInformationService } = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 const { deviceStatuses, storageKeys } = constants;
+const { compareFirmware } = firmware;
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
 
@@ -131,9 +136,20 @@ const deviceActions = {
           if (err) {
             dispatch(getInfoError(err));
           } else {
-            // Store device information in local storage
-            SensitiveInfo.setItem(storageKeys.DEVICE, results);
-            dispatch(getInfo(results));
+            // Clone results in order to mutate
+            const resultsClone = { ...results, updateAvailable: false };
+
+            // If there's new firmware, set updateAvailable to true
+            compareFirmware(results.firmwareVersion)
+              .then(updateAvailable => {
+                if (updateAvailable) {
+                  resultsClone.updateAvailable = true;
+                }
+
+                // Store device information in local storage
+                SensitiveInfo.setItem(storageKeys.DEVICE, resultsClone);
+                dispatch(getInfo(resultsClone));
+              });
           }
         });
       } else {
@@ -141,8 +157,19 @@ const deviceActions = {
         SensitiveInfo.getItem(storageKeys.DEVICE)
           .then(device => {
             if (device) {
-              // Update device store with locally stored device
-              dispatch(getInfo(device));
+              // Clone device in order to mutate
+              const deviceClone = { ...device, updateAvailable: false };
+
+              // If there's new firmware, set updateAvailable to true
+              compareFirmware(device.firmwareVersion)
+                .then(updateAvailable => {
+                  if (updateAvailable) {
+                    deviceClone.updateAvailable = true;
+                  }
+
+                  // Update device store with locally stored device
+                  dispatch(getInfo(deviceClone));
+                });
             } else {
               // No locally stored device, set to empty object
               dispatch(getInfo({}));
