@@ -1,5 +1,5 @@
 #import "BluetoothService.h"
-//#import "BootLoaderService.h"
+#import "BootLoaderService.h"
 #import "RCTUtils.h"
 #import "SensorDataService.h"
 
@@ -206,16 +206,28 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   DLog(@"disconnect %@ %@", peripheral, error);
   [_servicesFound removeAllObjects];
   
-  if (error) {
-    if (self.disconnectHandler != nil) {
-      self.currentDevice = nil;
-      self.disconnectHandler(error);
-    }
+  if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_INITIATED) {
+    DLog(@"Reconnect %@", self.currentDevice);
+    // Reconnect right away to proceed with the actual firmware update
+    [self.centralManager connectPeripheral:self.currentDevice options:nil];
+  }
+  else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
+    DLog(@"Reconnect Updated %@", self.currentDevice);
+    // Firmware upgrade finished, reconnect to the normal Backbone service
+    [self.centralManager connectPeripheral:self.currentDevice options:nil];
   }
   else {
-    if (self.disconnectHandler != nil){
-      self.currentDevice = nil;
-      self.disconnectHandler(nil);
+    if (error) {
+      if (self.disconnectHandler != nil) {
+        self.currentDevice = nil;
+        self.disconnectHandler(error);
+      }
+    }
+    else {
+      if (self.disconnectHandler != nil){
+        self.currentDevice = nil;
+        self.disconnectHandler(nil);
+      }
     }
   }
 }
@@ -272,7 +284,15 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   // Check if all required services are ready
   if (self.currentDeviceMode == DEVICE_MODE_BACKBONE) {
     if ([_servicesFound count] == 2) {
-      self.connectHandler(nil);
+      // Check for pending notification of a successful firmware update
+      if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
+        // Successfully restarted after upgrading firmware
+        DLog(@"Firmware Updated Successfully");
+        [[BootLoaderService getBootLoaderService] firmwareUpdated];
+      }
+      else {
+        self.connectHandler(nil);
+      }
     }
   }
   else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
