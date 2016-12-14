@@ -99,6 +99,7 @@
 #define FIRMWARE_UPDATE_STATE_BEGIN                 0
 #define FIRMWARE_UPDATE_STATE_END_SUCCESS           1
 #define FIRMWARE_UPDATE_STATE_END_ERROR             2
+#define FIRMWARE_UPDATE_STATE_PENDING               3
 
 #define COMMAND_START_BYTE    0x01
 #define COMMAND_END_BYTE      0x17

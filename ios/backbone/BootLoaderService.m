@@ -50,6 +50,10 @@
 
 RCT_EXPORT_MODULE();
 
+/**
+ Restart the device into the BootLoader service mode by entering the secret code
+ @param path This is the absolute path indicating the location of the downloaded firmware file
+ */
 RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   if ([BluetoothServiceInstance isDeviceReady] && _enterBootLoaderCharacteristic != nil && path != nil) {
 //    DLog(@"TestFile %@", path);
@@ -74,21 +78,17 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   }
 }
 
-- (void)enterBootLoaderMode {
-  // The device will be disconnected right after sending this command
-  // So we have to update its state in order to let the BluetoothService handle the disconnection properly
-  _bootLoaderState = BOOTLOADER_STATE_INITIATED;
+/**
+ Start the actual firmware upload to the device
+ This method is called only after the device is already in the BootLoader service mode
+ */
+RCT_EXPORT_METHOD(startFirmwareUpload) {
+  if (![BluetoothServiceInstance isDeviceReady] || _bootLoaderCharacteristic == nil) {
+    [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_SERVICE];
+    
+    return;
+  }
   
-  const uint8_t bytes[] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
-  NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
-  
-  DLog(@"EnterBootLoad");
-  hasPendingUpdate = YES;
-  
-  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:_enterBootLoaderCharacteristic type:CBCharacteristicWriteWithResponse];
-}
-
-- (void)startFirmwareUpload {
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_BEGIN];
   DLog(@"Bootloader Ready");
   
@@ -116,6 +116,8 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
         [self writeValueToCharacteristicWithData:data bootLoaderCommandCode:COMMAND_ENTER_BOOTLOADER];
       }
       else if (error) {
+        DLog(@"Invalid File");
+        [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_FILE];
       }
     }];
   }
@@ -123,6 +125,20 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
     DLog(@"Not exist");
     [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_FILE];
   }
+}
+
+- (void)enterBootLoaderMode {
+  // The device will be disconnected right after sending this command
+  // So we have to update its state in order to let the BluetoothService handle the disconnection properly
+  _bootLoaderState = BOOTLOADER_STATE_INITIATED;
+  
+  const uint8_t bytes[] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
+  NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+  
+  DLog(@"EnterBootLoad");
+  hasPendingUpdate = YES;
+  
+  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:_enterBootLoaderCharacteristic type:CBCharacteristicWriteWithResponse];
 }
 
 - (void)writeValueToCharacteristicWithData:(NSData*)data bootLoaderCommandCode:(unsigned short)commandCode {
@@ -318,9 +334,9 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
             [self startFirmwareUpload];
           }
           else {
-            // Device started in bootloader mode, possibly due to errors on the previous firmware upload
-            // Inform React to retry firmware upload
-            
+            // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
+            // Inform React to retry failed firmware upload
+            [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_PENDING];
           }
         }
       }
