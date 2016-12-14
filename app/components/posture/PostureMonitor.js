@@ -57,7 +57,7 @@ class PostureMonitor extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     posture: PropTypes.shape({
-      sessionTimeSeconds: PropTypes.number,
+      sessionTimeSeconds: PropTypes.number.isRequired,
     }),
     user: PropTypes.shape({
       settings: PropTypes.shape({
@@ -231,7 +231,7 @@ class PostureMonitor extends Component {
   @autobind
   startSession() {
     SessionControlService.start({
-      sessionDuration: 1, // TODO: Use session duration
+      sessionDuration: Math.floor(this.props.posture.sessionTimeSeconds / 60),
       slouchDistanceThreshold: decimalToTenThousandths(this.state.postureThreshold),
     }, err => {
       if (err) {
