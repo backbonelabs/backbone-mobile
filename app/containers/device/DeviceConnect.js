@@ -16,10 +16,10 @@ const { PropTypes } = React;
 class DeviceConnect extends Component {
   static propTypes = {
     device: PropTypes.shape({
-      UUID: PropTypes.string,
+      identifier: PropTypes.string,
     }),
     currentRoute: PropTypes.shape({
-      deviceUUID: PropTypes.string,
+      deviceIdentifier: PropTypes.string,
     }),
     navigator: PropTypes.shape({
       push: PropTypes.func,
@@ -36,11 +36,11 @@ class DeviceConnect extends Component {
 
   componentWillMount() {
     const { device, currentRoute } = this.props;
-    const deviceUUID = device.UUID || currentRoute.deviceUUID;
+    const deviceIdentifier = device.identifier || currentRoute.deviceIdentifier;
 
-    // If deviceUUID is truthy, attempt to connect to specified device
-    if (deviceUUID) {
-      this.props.dispatch(deviceActions.connect(deviceUUID));
+    // If deviceIdentifier is truthy, attempt to connect to specified device
+    if (deviceIdentifier) {
+      this.props.dispatch(deviceActions.connect(deviceIdentifier));
     } else {
       this.props.navigator.push(routes.deviceScan);
     }
@@ -54,13 +54,16 @@ class DeviceConnect extends Component {
         { text: 'Continue', onPress: this.goBackToScene },
       ]);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      const deviceUUID = nextProps.device.UUID || nextProps.currentRoute.deviceUUID;
+      const deviceIdentifier = (
+        nextProps.device.identifier || nextProps.currentRoute.deviceIdentifier
+      );
+
       // Prompt user to reattempt connect upon failed attempt
       Alert.alert('Error', nextProps.errorMessage, [
         { text: 'Cancel', onPress: this.goBackToScene },
         {
           text: 'Retry',
-          onPress: () => this.props.dispatch(deviceActions.connect(deviceUUID)),
+          onPress: () => this.props.dispatch(deviceActions.connect(deviceIdentifier)),
         },
       ]);
     }

@@ -105,9 +105,9 @@ class DeviceScan extends Component {
   selectDevice(deviceData) {
     // Stop scanning, since device has been selected
     DeviceManagementService.stopScanForDevices();
-    // Send user back to DeviceConnect route with selected device UUID
+    // Send user back to DeviceConnect route with selected device identifier
     this.props.navigator.replace(
-      Object.assign({}, routes.deviceConnect, { deviceUUID: deviceData.identifier })
+      Object.assign({}, routes.deviceConnect, { deviceIdentifier: deviceData.identifier })
     );
   }
 
