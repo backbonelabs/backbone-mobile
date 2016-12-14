@@ -62,8 +62,8 @@ class PostureDashboard extends Component {
   start() {
     if (!this.props.device.isConnected) {
       return Alert.alert(
-          'Error',
-          'Please connect to your Backbone before starting a session.',
+        'Error',
+        'Please connect to your Backbone before starting a session.',
         [
           {
             text: 'Cancel',
