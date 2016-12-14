@@ -60,11 +60,19 @@ class PostureSummary extends Component {
   }
 
   render() {
-    const goodPostureMinutes = Math.floor(this.props.goodPostureTime / 60);
-    const goodPostureSeconds = this.props.goodPostureTime % 60;
-    const goodPostureMinutesPadded = (new Array(3).join('0') + goodPostureMinutes).slice(-2);
-    const goodPostureSecondsPadded = (new Array(3).join('0') + goodPostureSeconds).slice(-2);
-    const goodPostureTimeString = `${goodPostureMinutesPadded}:${goodPostureSecondsPadded}`;
+    const { goodPostureTime } = this.props;
+    const goodPostureHours = Math.floor(goodPostureTime / 3600);
+    const goodPostureMinutes = Math.floor((goodPostureTime - (goodPostureHours * 3600)) / 60);
+    const goodPostureSeconds = goodPostureTime % 60;
+
+    const goodPostureTimeStringArray = ['', '', `${goodPostureSeconds} sec`];
+    if (goodPostureHours) {
+      goodPostureTimeStringArray[0] = `${goodPostureHours} hr`;
+    }
+    if (goodPostureMinutes) {
+      goodPostureTimeStringArray[1] = `${goodPostureMinutes} min`;
+    }
+    const goodPostureTimeString = goodPostureTimeStringArray.join(' ');
 
     return (
       <View style={styles.container}>
@@ -72,7 +80,7 @@ class PostureSummary extends Component {
           <View style={styles.summary}>
             <View style={styles.summaryOuter} />
             <View style={styles.summaryInner}>
-              <BodyText style={styles._time}>{goodPostureTimeString} mins</BodyText>
+              <BodyText style={styles._time}>{goodPostureTimeString}</BodyText>
               <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
             </View>
             <View style={styles.summaryOuter}>
