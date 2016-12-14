@@ -6,6 +6,7 @@ import {
 import autobind from 'autobind-decorator';
 // import SvgUri from 'react-native-svg-uri'; replace when package updates
 import BodyText from '../../components/BodyText';
+import HeadingText from '../../components/HeadingText';
 import styles from '../../styles/posture/postureSummary';
 import theme from '../../styles/theme';
 // import summarySvg from '../../images/session/summaryCircle.svg'; replace when package updates
@@ -80,8 +81,10 @@ class PostureSummary extends Component {
           <View style={styles.summary}>
             <View style={styles.summaryOuter} />
             <View style={styles.summaryInner}>
-              <BodyText style={styles._time}>{goodPostureTimeString}</BodyText>
-              <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
+              <HeadingText size={2} style={styles._goodPostureTime}>
+                {goodPostureTimeString}
+              </HeadingText>
+              <BodyText style={styles._goodPostureTimeBodyText}>of excellent posture</BodyText>
             </View>
             <View style={styles.summaryOuter}>
               {
