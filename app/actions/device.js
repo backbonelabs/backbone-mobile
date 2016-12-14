@@ -18,7 +18,7 @@ const connectError = payload => ({
   payload,
 });
 
-function setConnectEventListener(dispatch) {
+function setConnectEventListener(dispatch, getInfo) {
   const connectionStatusListener = deviceManagementServiceEvents.addListener(
     'ConnectionStatus',
     status => {
@@ -26,6 +26,8 @@ function setConnectEventListener(dispatch) {
         dispatch(connectError(status));
       } else {
         dispatch(connect(status));
+        // Call getInfo to fetch latest device information
+        dispatch(getInfo());
       }
       connectionStatusListener.remove();
     }
@@ -67,12 +69,12 @@ const getInfoError = error => ({
 });
 
 const deviceActions = {
-  connect(deviceUUID) {
+  connect(deviceIdentifier) {
     return (dispatch) => {
       dispatch(connectStart());
-      setConnectEventListener(dispatch);
-      // Connect to device with specified UUID
-      DeviceManagementService.connectToDevice(deviceUUID);
+      setConnectEventListener(dispatch, deviceActions.getInfo);
+      // Connect to device with specified identifier
+      DeviceManagementService.connectToDevice(deviceIdentifier);
     };
   },
   disconnect() {
@@ -126,11 +128,8 @@ const deviceActions = {
         SensitiveInfo.getItem(storageKeys.DEVICE)
           .then(device => {
             if (device) {
-              // Update device store with locally stored device
-              dispatch(getInfo(device));
-
               // Attempt to connect to locally stored device
-              dispatch(deviceActions.connect(device.UUID));
+              dispatch(deviceActions.connect(device.identifier));
             } else {
               // No locally stored device, set to empty object
               dispatch(getInfo({}));
