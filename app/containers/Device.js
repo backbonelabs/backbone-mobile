@@ -68,6 +68,11 @@ class Device extends Component {
           { text: 'Connect', onPress: this.addDevice },
         ]
       );
+    } else if (this.props.device.batteryLevel <= 15) {
+      Alert.alert(
+        'Battery Low',
+        'Charge your Backbone to at least 15% power before updating.',
+      );
     } else {
       Alert.alert(
         'Attention',
