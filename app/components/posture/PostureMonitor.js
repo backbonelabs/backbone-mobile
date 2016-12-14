@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Alert,
   View,
   Vibration,
   NativeModules,
@@ -229,14 +230,31 @@ class PostureMonitor extends Component {
   }
 
   @autobind
+  sessionCommandErrorAlert({ message, retryAction, cancelAction }) {
+    Alert.alert(
+      'Error',
+      message,
+      [{
+        text: 'Cancel',
+        onPress: cancelAction,
+      }, {
+        text: 'Retry',
+        onPress: retryAction,
+      }]
+    );
+  }
+
+  @autobind
   startSession() {
     SessionControlService.start({
       sessionDuration: Math.floor(this.props.posture.sessionTimeSeconds / 60),
       slouchDistanceThreshold: decimalToTenThousandths(this.state.postureThreshold),
     }, err => {
       if (err) {
-        // TODO: Implement error handling
-        console.log('error', err);
+        this.sessionCommandErrorAlert({
+          message: 'An error occurred while attempting to start the session.',
+          retryAction: this.startSession,
+        });
       } else {
         this.setState({ monitoring: true });
       }
@@ -247,8 +265,10 @@ class PostureMonitor extends Component {
   pauseSession() {
     SessionControlService.pause(err => {
       if (err) {
-        // TODO: Implement error handling
-        console.log('error', err);
+        this.sessionCommandErrorAlert({
+          message: 'An error occurred while attempting to pause the session.',
+          retryAction: this.pauseSession,
+        });
       } else {
         this.setState({ monitoring: false });
       }
@@ -259,8 +279,10 @@ class PostureMonitor extends Component {
   stopSession() {
     SessionControlService.stop(err => {
       if (err) {
-        // TODO: Implement error handling
-        console.log('error', err);
+        this.sessionCommandErrorAlert({
+          message: 'An error occurred while attempting to stop the session.',
+          retryAction: this.stopSession,
+        });
       } else {
         this.saveUserSession();
         this.setState({ monitoring: false });
@@ -336,7 +358,6 @@ class PostureMonitor extends Component {
    *                          is considered slouching
    */
   updateUserPostureThreshold(distance) {
-    console.log('updating user posture threshold setting', distance);
     const updatedUserSettings = {
       ...this.props.user,
       settings: {
