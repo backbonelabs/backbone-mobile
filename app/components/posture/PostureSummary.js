@@ -18,8 +18,8 @@ const getRandomNumber = (min, max) => (
 
 class PostureSummary extends Component {
   static propTypes = {
-    time: PropTypes.string,
-    goal: PropTypes.number,
+    goodPostureTime: PropTypes.number.isRequired,
+    goal: PropTypes.number.isRequired,
   }
   constructor() {
     super();
@@ -60,13 +60,19 @@ class PostureSummary extends Component {
   }
 
   render() {
+    const goodPostureMinutes = Math.floor(this.props.goodPostureTime / 60);
+    const goodPostureSeconds = this.props.goodPostureTime % 60;
+    const goodPostureMinutesPadded = (new Array(3).join('0') + goodPostureMinutes).slice(-2);
+    const goodPostureSecondsPadded = (new Array(3).join('0') + goodPostureSeconds).slice(-2);
+    const goodPostureTimeString = `${goodPostureMinutesPadded}:${goodPostureSecondsPadded}`;
+
     return (
       <View style={styles.container}>
         <Image source={summaryCircle} style={styles.summaryCircle}>
           <View style={styles.summary}>
             <View style={styles.summaryOuter} />
             <View style={styles.summaryInner}>
-              <BodyText style={styles._time}>{this.props.time} mins</BodyText>
+              <BodyText style={styles._time}>{goodPostureTimeString} mins</BodyText>
               <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
             </View>
             <View style={styles.summaryOuter}>

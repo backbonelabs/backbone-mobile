@@ -81,6 +81,8 @@ class PostureMonitor extends Component {
       monitoring: false,
       postureThreshold: this.props.user.settings.postureThreshold,
       pointerPosition: 0,
+      totalDuration: 0, // in seconds
+      slouchTime: 0, // in seconds
     };
     this.slouchStartTime = null;
     this.postureListener = null;
@@ -208,14 +210,22 @@ class PostureMonitor extends Component {
     console.log('isSlouching', isSlouching);
   }
 
-  // TODO: Implement
   /**
-   *
+   * Processes session statistics and displays a summary.
+   * @param {Object} event
+   * @param {Number} event.totalDuration Total elapsed time of the session, in seconds
+   * @param {Number} event.slouchTime    Total slouch time, in seconds
    */
   @autobind
   statsHandler(event) {
     const { totalDuration, slouchTime } = event;
     console.log('stats', { totalDuration, slouchTime });
+    this.saveUserSession();
+    this.setState({
+      monitoring: false,
+      totalDuration,
+      slouchTime,
+    }, this.showSummary);
   }
 
   @autobind
@@ -252,34 +262,41 @@ class PostureMonitor extends Component {
         // TODO: Implement error handling
         console.log('error', err);
       } else {
-        const { user: { _id, dailyStreak, lastSession }, dispatch } = this.props;
-        const today = new Date();
-        const updateUserPayload = { _id, lastSession: today };
-
-        if (lastSession) {
-          const userLastSession = new Date(lastSession);
-          const cloneLastSession = new Date(lastSession);
-          cloneLastSession.setDate(userLastSession.getDate() + 1);
-
-          if (today.toDateString() === cloneLastSession.toDateString()) {
-            // session date is next day from the last session
-            updateUserPayload.dailyStreak = dailyStreak + 1;
-          } else if (today.toDateString() === userLastSession.toDateString()) {
-            // session date is same as last session, do not increment streak
-          } else {
-            // reset streak
-            updateUserPayload.dailyStreak = 1;
-          }
-        } else {
-          // first time user
-          updateUserPayload.dailyStreak = 1;
-        }
-
-        dispatch(userActions.updateUser(updateUserPayload));
-
-        this.setState({ monitoring: false }, this.showSummary);
+        this.saveUserSession();
+        this.setState({ monitoring: false });
       }
     });
+  }
+
+  /**
+   * Updates a user's last session date and updates their daily streak as needed
+   */
+  @autobind
+  saveUserSession() {
+    const { user: { _id, dailyStreak, lastSession }, dispatch } = this.props;
+    const today = new Date();
+    const updateUserPayload = { _id, lastSession: today };
+
+    if (lastSession) {
+      const userLastSession = new Date(lastSession);
+      const cloneLastSession = new Date(lastSession);
+      cloneLastSession.setDate(userLastSession.getDate() + 1);
+
+      if (today.toDateString() === cloneLastSession.toDateString()) {
+        // Session date is next day from the last session
+        updateUserPayload.dailyStreak = dailyStreak + 1;
+      } else if (today.toDateString() === userLastSession.toDateString()) {
+        // Session date is same as last session, do not increment streak
+      } else {
+        // Reset streak
+        updateUserPayload.dailyStreak = 1;
+      }
+    } else {
+      // First-time user
+      updateUserPayload.dailyStreak = 1;
+    }
+
+    dispatch(userActions.updateUser(updateUserPayload));
   }
 
   /**
@@ -288,13 +305,15 @@ class PostureMonitor extends Component {
   @autobind
   showSummary() {
     const sessionTime = this.props.posture.sessionTimeSeconds;
-    let minutes = Math.floor(sessionTime / 60);
+    let goalMinutes = Math.floor(sessionTime / 60);
     if (sessionTime === Infinity) {
-      minutes = 0;
+      goalMinutes = 0;
     }
+
+    const { slouchTime, totalDuration } = this.state;
     this.props.dispatch(appActions.showFullModal({
       onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
-      content: <PostureSummary time="04:30" goal={minutes} />, // TODO: Get session time
+      content: <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={goalMinutes} />,
     }));
   }
 
