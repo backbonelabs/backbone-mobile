@@ -79,6 +79,7 @@ class PostureMonitor extends Component {
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
       push: PropTypes.func,
+      pop: PropTypes.func,
     }),
   };
 
@@ -235,17 +236,23 @@ class PostureMonitor extends Component {
     }, this.showSummary);
   }
 
-  @autobind
-  sessionCommandErrorAlert({ message, retryAction, cancelAction }) {
+  sessionCommandAlert({
+    title = 'Error',
+    message,
+    leftLabel = 'Cancel',
+    leftAction,
+    rightLabel = 'OK',
+    rightAction,
+  }) {
     Alert.alert(
-      'Error',
+      title,
       message,
       [{
-        text: 'Cancel',
-        onPress: cancelAction,
+        text: leftLabel,
+        onPress: leftAction,
       }, {
-        text: 'Retry',
-        onPress: retryAction,
+        text: rightLabel,
+        onPress: rightAction,
       }]
     );
   }
@@ -257,9 +264,10 @@ class PostureMonitor extends Component {
       slouchDistanceThreshold: decimalToTenThousandths(this.state.postureThreshold),
     }, err => {
       if (err) {
-        this.sessionCommandErrorAlert({
+        this.sessionCommandAlert({
           message: 'An error occurred while attempting to start the session.',
-          retryAction: this.startSession,
+          rightLabel: 'Retry',
+          rightAction: this.startSession,
         });
       } else {
         this.setState({ sessionState: sessionStates.RUNNING });
@@ -271,9 +279,10 @@ class PostureMonitor extends Component {
   pauseSession() {
     SessionControlService.pause(err => {
       if (err) {
-        this.sessionCommandErrorAlert({
+        this.sessionCommandAlert({
           message: 'An error occurred while attempting to pause the session.',
-          retryAction: this.pauseSession,
+          rightLabel: 'Retry',
+          rightAction: this.pauseSession,
         });
       } else {
         this.setState({ sessionState: sessionStates.PAUSED });
@@ -283,17 +292,27 @@ class PostureMonitor extends Component {
 
   @autobind
   stopSession() {
-    SessionControlService.stop(err => {
-      if (err) {
-        this.sessionCommandErrorAlert({
-          message: 'An error occurred while attempting to stop the session.',
-          retryAction: this.stopSession,
-        });
-      } else {
-        this.saveUserSession();
-        this.setState({ sessionState: sessionStates.STOPPED });
-      }
-    });
+    if (this.state.sessionState === sessionStates.STOPPED) {
+      // There is no active session
+      this.sessionCommandAlert({
+        title: 'Exit',
+        message: 'Are you sure you want to leave?',
+        rightAction: this.props.navigator.pop,
+      });
+    } else {
+      SessionControlService.stop(err => {
+        if (err) {
+          this.sessionCommandAlert({
+            message: 'An error occurred while attempting to stop the session.',
+            rightLabel: 'Retry',
+            rightAction: this.stopSession,
+          });
+        } else {
+          this.saveUserSession();
+          this.setState({ sessionState: sessionStates.STOPPED });
+        }
+      });
+    }
   }
 
   /**
