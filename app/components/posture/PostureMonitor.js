@@ -54,6 +54,12 @@ const decimalToTenThousandths = decimal => {
   return decimal * 10000;
 };
 
+const sessionStates = {
+  STOPPED: 0,
+  RUNNING: 1,
+  PAUSED: 2,
+};
+
 class PostureMonitor extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
@@ -79,7 +85,7 @@ class PostureMonitor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      monitoring: false,
+      sessionState: sessionStates.STOPPED,
       postureThreshold: this.props.user.settings.postureThreshold,
       pointerPosition: 0,
       totalDuration: 0, // in seconds
@@ -223,7 +229,7 @@ class PostureMonitor extends Component {
     console.log('stats', { totalDuration, slouchTime });
     this.saveUserSession();
     this.setState({
-      monitoring: false,
+      sessionState: sessionStates.STOPPED,
       totalDuration,
       slouchTime,
     }, this.showSummary);
@@ -256,7 +262,7 @@ class PostureMonitor extends Component {
           retryAction: this.startSession,
         });
       } else {
-        this.setState({ monitoring: true });
+        this.setState({ sessionState: sessionStates.RUNNING });
       }
     });
   }
@@ -270,7 +276,7 @@ class PostureMonitor extends Component {
           retryAction: this.pauseSession,
         });
       } else {
-        this.setState({ monitoring: false });
+        this.setState({ sessionState: sessionStates.PAUSED });
       }
     });
   }
@@ -285,7 +291,7 @@ class PostureMonitor extends Component {
         });
       } else {
         this.saveUserSession();
-        this.setState({ monitoring: false });
+        this.setState({ sessionState: sessionStates.STOPPED });
       }
     });
   }
@@ -372,7 +378,7 @@ class PostureMonitor extends Component {
     const {
       postureThreshold,
       pointerPosition,
-      monitoring,
+      sessionState,
     } = this.state;
 
     return (
@@ -411,14 +417,16 @@ class PostureMonitor extends Component {
           }}
           minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
           maximumValue={0}
-          disabled={monitoring}
+          disabled={sessionState === sessionStates.RUNNING}
         />
         <View style={styles.btnContainer}>
-          { monitoring ? <MonitorButton pause onPress={this.pauseSession} /> :
-            <MonitorButton play onPress={this.startSession} />
+          {sessionState === sessionStates.RUNNING ?
+            <MonitorButton pause onPress={this.pauseSession} /> :
+              <MonitorButton play onPress={this.startSession} />
           }
-          {monitoring ? <MonitorButton alertsDisabled disabled /> :
-            <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />
+          {sessionState === sessionStates.RUNNING ?
+            <MonitorButton alertsDisabled disabled /> :
+              <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />
           }
           <MonitorButton stop onPress={this.stopSession} />
         </View>
