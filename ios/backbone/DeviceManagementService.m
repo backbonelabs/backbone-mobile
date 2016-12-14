@@ -108,8 +108,10 @@ RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if (BluetoothServiceInstance.currentDevice.state != CBPeripheralStateConnected) {
       DLog(@"Connection timeout");
-      NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, nil);
-      [self deviceConnectionStatus:makeError];
+      [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
+        NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, nil);
+        [self deviceConnectionStatus:makeError];
+      }];
     }
   });
 }
