@@ -4,6 +4,7 @@ import {
   Image,
 } from 'react-native';
 import autobind from 'autobind-decorator';
+import { compact } from 'lodash';
 // import SvgUri from 'react-native-svg-uri'; replace when package updates
 import BodyText from '../../components/BodyText';
 import HeadingText from '../../components/HeadingText';
@@ -73,7 +74,7 @@ class PostureSummary extends Component {
     if (goodPostureMinutes) {
       goodPostureTimeStringArray[1] = `${goodPostureMinutes} min`;
     }
-    const goodPostureTimeString = goodPostureTimeStringArray.join(' ');
+    const goodPostureTimeString = compact(goodPostureTimeStringArray).join(' ');
 
     return (
       <View style={styles.container}>
