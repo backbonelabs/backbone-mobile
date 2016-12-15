@@ -45,7 +45,7 @@
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"firmwareUploadProgress", @"FirmwareUpdateStatus"];
+  return @[@"FirmwareUploadProgress", @"FirmwareUpdateStatus"];
 }
 
 RCT_EXPORT_MODULE();
