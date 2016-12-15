@@ -3,30 +3,28 @@ package co.backbonelabs.backbone;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.EventEmitter;
 import co.backbonelabs.backbone.util.JSError;
 import timber.log.Timber;
 
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private boolean scanning;
-    private ReactContext reactContext;
+    private ReactApplicationContext reactContext;
 
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -80,7 +78,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                     }
 
                     // Emit device array to JS
-                    sendEvent(reactContext, "DevicesFound", deviceList);
+                    EventEmitter.send(reactContext, "DevicesFound", deviceList);
                 }
             });
 
@@ -110,7 +108,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", true);
                     wm.putNull("message");
-                    sendEvent(reactContext, "ConnectionStatus", wm);
+                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
                 }
 
                 @Override
@@ -119,7 +117,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", false);
                     wm.putNull("message");
-                    sendEvent(reactContext, "ConnectionStatus", wm);
+                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
                 }
             });
 
@@ -128,7 +126,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             // Could not retrieve a valid device
             WritableMap wm = Arguments.createMap();
             wm.putString("message", "Not a valid device");
-            sendEvent(reactContext, "ConnectionStatus", wm);
+            EventEmitter.send(reactContext, "ConnectionStatus", wm);
         }
     }
 
@@ -174,26 +172,12 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", false);
                     wm.putString("message", "Device took too long to connect");
-                    sendEvent(reactContext, "ConnectionStatus", wm);
+                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
                 }
             }
         };
 
         handler.postDelayed(runnable, interval);
-    }
-
-    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-        Timber.d("sendEvent " + eventName);
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
-    }
-
-    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableArray params) {
-        Timber.d("sendEvent " + eventName);
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
     }
 
     @Override
