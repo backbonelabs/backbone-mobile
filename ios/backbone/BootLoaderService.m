@@ -70,35 +70,14 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
     else {
       _firmwareFilePath = [path copy];
       
-      [self enterBootLoaderMode];
-    }
-  }
-  else  {
-    [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_SERVICE];
-  }
-}
-
-/**
- Start the actual firmware upload to the device
- This method is called only after the device is already in the BootLoader service mode
- */
-RCT_EXPORT_METHOD(startFirmwareUpload:(NSString*)path) {
-  if ([BluetoothServiceInstance isDeviceReady] && _enterBootLoaderCharacteristic != nil && path != nil) {
-//    DLog(@"TestFile %@", path);
-//    NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-//    NSString* path2 = [documentsPath stringByAppendingPathComponent:@"Backbone.cyacd"];
-//    path = path2;
-//    DLog(@"TestFile %@", path2);
-    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path];
-    
-    if (!fileExists) {
-      DLog(@"Failed to initialize. File not exists! %@", path);
-      [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_FILE];
-    }
-    else {
-      _firmwareFilePath = [path copy];
-      
-      [self prepareFirmwareFile];
+      if (_bootLoaderState == BOOTLOADER_STATE_OFF) {
+        // Restart into the BootLoader service before proceeding
+        [self enterBootLoaderMode];
+      }
+      else if (_bootLoaderState == BOOTLOADER_STATE_ON) {
+        // Device is already in the BootLoader service, so we proceed with the firmware upload
+        [self prepareFirmwareFile];
+      }
     }
   }
   else  {
@@ -335,11 +314,7 @@ RCT_EXPORT_METHOD(startFirmwareUpload:(NSString*)path) {
       for (CBCharacteristic *characteristic in service.characteristics) {
         if ([characteristic.UUID isEqual:ENTER_BOOTLOADER_CHARACTERISTIC_UUID]) {
           _enterBootLoaderCharacteristic = characteristic;
-//          
-//          NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-//          NSString* filePath = [documentsPath stringByAppendingPathComponent:@"Backbone.cyacd"];
-//          
-//          DLog(@"File readt %@", filePath);
+          _bootLoaderState = BOOTLOADER_STATE_OFF;
         }
       }
     }
