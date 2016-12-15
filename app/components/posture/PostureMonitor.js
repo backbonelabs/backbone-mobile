@@ -41,18 +41,12 @@ const distanceToDegrees = distance => {
 };
 
 /**
- * Converts a decimal number less than 1 to a magnitude of 10,000
- * @param  {Number} decimal
- * @return {Number}         If decimal is greater than or equal to 1, decimal will be returned.
- *                          Otherwise, the return value will be the decimal multiplied by 10,000.
+ * Returns a number at a given magnitude
+ * @param  {Number} number    The original number
+ * @param  {Number} magnitude The order of magnitude
+ * @return {Number}           The number at the provided order of magnitude
  */
-const decimalToTenThousandths = decimal => {
-  if (decimal >= 1) {
-    // No-op if input is greater than or equal to 1
-    return decimal;
-  }
-  return decimal * 10000;
-};
+const numberMagnitude = (number, magnitude) => number * Math.pow(10, magnitude);
 
 const sessionStates = {
   STOPPED: 0,
@@ -269,7 +263,11 @@ class PostureMonitor extends Component {
   startSession() {
     SessionControlService.start({
       sessionDuration: Math.floor(this.props.posture.sessionTimeSeconds / 60),
-      slouchDistanceThreshold: decimalToTenThousandths(this.state.postureThreshold),
+      // The slouch distance threshold needs to be in ten thousandths of a unit.
+      // For example, to set it to 0.2, the input must be 2000.
+      // We use Math.floor because sometimes JS will return a double floating point value,
+      // which is incompatible with the firmware.
+      slouchDistanceThreshold: Math.floor(numberMagnitude(this.state.postureThreshold, 4)),
     }, err => {
       if (err) {
         this.sessionCommandAlert({
