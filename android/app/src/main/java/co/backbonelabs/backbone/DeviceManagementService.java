@@ -39,8 +39,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         return "DeviceManagementService";
     }
 
-    private HashMap<String, BluetoothDevice> deviceCollection;
-
     @ReactMethod
     public void scanForDevices(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
@@ -55,7 +53,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         }
         else {
             scanning = true;
-            deviceCollection = new HashMap<String, BluetoothDevice>();
+            final HashMap<String, BluetoothDevice> deviceCollection = new HashMap<String, BluetoothDevice>();
 
             Timber.d("Starting scan");
             bluetoothService.startScanForBLEDevices(new BluetoothService.DeviceScanCallBack() {
