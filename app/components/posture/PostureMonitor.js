@@ -65,6 +65,8 @@ class PostureMonitor extends Component {
         phoneVibration: PropTypes.bool,
         postureThreshold: PropTypes.number,
         slouchTimeThreshold: PropTypes.number,
+        vibrationStrength: PropTypes.number,
+        vibrationPattern: PropTypes.oneOf([1, 2, 3]),
       }),
       _id: PropTypes.string,
       dailyStreak: PropTypes.number,
@@ -79,6 +81,7 @@ class PostureMonitor extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       sessionState: sessionStates.STOPPED,
       postureThreshold: this.props.user.settings.postureThreshold,
@@ -223,6 +226,8 @@ class PostureMonitor extends Component {
       // We use Math.floor because sometimes JS will return a double floating point value,
       // which is incompatible with the firmware.
       slouchDistanceThreshold: Math.floor(numberMagnitude(this.state.postureThreshold, 4)),
+      vibrationSpeed: this.props.user.settings.vibrationStrength,
+      vibrationPattern: this.props.user.settings.vibrationPattern,
     }, err => {
       if (err) {
         this.sessionCommandAlert({
