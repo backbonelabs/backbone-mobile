@@ -164,7 +164,7 @@ class PostureMonitor extends Component {
   slouchHandler(event) {
     const { isSlouching } = event;
     // TODO: Implement final UX for slouch events
-    if (this.props.user.settings.phoneVibration) {
+    if (isSlouching && this.props.user.settings.phoneVibration) {
       // User enabled phone vibration alerts
       // Start a single 1-second phone vibration (the 1-second duration only affects Android;
       // the iOS vibration duration is fixed and defined by the system)
