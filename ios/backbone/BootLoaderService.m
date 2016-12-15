@@ -82,17 +82,50 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
  Start the actual firmware upload to the device
  This method is called only after the device is already in the BootLoader service mode
  */
-RCT_EXPORT_METHOD(startFirmwareUpload) {
-  if (![BluetoothServiceInstance isDeviceReady] || _bootLoaderCharacteristic == nil) {
-    [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_SERVICE];
+RCT_EXPORT_METHOD(startFirmwareUpload:(NSString*)path) {
+  if ([BluetoothServiceInstance isDeviceReady] && _enterBootLoaderCharacteristic != nil && path != nil) {
+//    DLog(@"TestFile %@", path);
+//    NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+//    NSString* path2 = [documentsPath stringByAppendingPathComponent:@"Backbone.cyacd"];
+//    path = path2;
+//    DLog(@"TestFile %@", path2);
+    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path];
     
-    return;
+    if (!fileExists) {
+      DLog(@"Failed to initialize. File not exists! %@", path);
+      [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_FILE];
+    }
+    else {
+      _firmwareFilePath = [path copy];
+      
+      [self prepareFirmwareFile];
+    }
   }
+  else  {
+    [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_SERVICE];
+  }
+}
+
+- (void)enterBootLoaderMode {
+  // The device will be disconnected right after sending this command
+  // So we have to update its state in order to let the BluetoothService handle the disconnection properly
+  _bootLoaderState = BOOTLOADER_STATE_INITIATED;
   
+  const uint8_t bytes[] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
+  NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+  
+  DLog(@"EnterBootLoad");
+  hasPendingUpdate = YES;
+  
+  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:_enterBootLoaderCharacteristic type:CBCharacteristicWriteWithResponse];
+}
+
+- (void)prepareFirmwareFile {
+  DLog(@"Bootloader is ready, proceed with preparing the firmware file");
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_BEGIN];
-  DLog(@"Bootloader Ready");
   
-  // Check if the firmware file exist locally
+  // Once again check if the firmware file exist locally to prevent missing file
+  // while transitioning from Backbone to BootLoader service
   BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:_firmwareFilePath];
   
   if (fileExists) {
@@ -102,6 +135,9 @@ RCT_EXPORT_METHOD(startFirmwareUpload) {
         DLog(@"Valid Firmware");
         _fileHeaderDictionary = header;
         _firmWareRowDataArray = rowData;
+        currentIndex = 0;
+        hasPendingUpdate = NO;
+        [_commandArray removeAllObjects];
         
         [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:_bootLoaderCharacteristic];
         
@@ -125,20 +161,6 @@ RCT_EXPORT_METHOD(startFirmwareUpload) {
     DLog(@"Not exist");
     [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_FILE];
   }
-}
-
-- (void)enterBootLoaderMode {
-  // The device will be disconnected right after sending this command
-  // So we have to update its state in order to let the BluetoothService handle the disconnection properly
-  _bootLoaderState = BOOTLOADER_STATE_INITIATED;
-  
-  const uint8_t bytes[] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
-  NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
-  
-  DLog(@"EnterBootLoad");
-  hasPendingUpdate = YES;
-  
-  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:_enterBootLoaderCharacteristic type:CBCharacteristicWriteWithResponse];
 }
 
 - (void)writeValueToCharacteristicWithData:(NSData*)data bootLoaderCommandCode:(unsigned short)commandCode {
@@ -208,8 +230,7 @@ RCT_EXPORT_METHOD(startFirmwareUpload) {
   }
 }
 
-- (NSData*)createCommandPacketWithCommand:(uint8_t)commandCode dataLength:(unsigned short)dataLength data:(NSDictionary*)packetDataDictionary
-{
+- (NSData*)createCommandPacketWithCommand:(uint8_t)commandCode dataLength:(unsigned short)dataLength data:(NSDictionary*)packetDataDictionary {
   DLog(@"CreateCommandCode %x", commandCode);
   NSData *data = [NSData new];
   
@@ -331,7 +352,7 @@ RCT_EXPORT_METHOD(startFirmwareUpload) {
           _bootLoaderState = BOOTLOADER_STATE_ON;
           
           if (hasPendingUpdate) {
-            [self startFirmwareUpload];
+            [self prepareFirmwareFile];
           }
           else {
             // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
@@ -374,7 +395,7 @@ RCT_EXPORT_METHOD(startFirmwareUpload) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
       NSString *errorCode = [NSString stringWithFormat:@"0x%2x", dataPointer[1]];
       errorCode = [errorCode stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-      
+      DLog(@"Error code: %@", errorCode);
       // Checking the error code from the response
       if ([errorCode isEqualToString:BOOTLOADER_CODE_SUCCESS]) {
         if ([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_ENTER_BOOTLOADER)]) {
@@ -471,7 +492,6 @@ RCT_EXPORT_METHOD(startFirmwareUpload) {
       else {
         if ([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_PROGRAM_ROW)]) {
           _isWriteRowDataSuccess = NO;
-          DLog(@"%@ %@", error, errorCode);
         }
         else if ([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_SEND_DATA)]) {
           _isWritePacketDataSuccess = NO;
