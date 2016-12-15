@@ -97,13 +97,23 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
 
+-(void)emitDeviceState {
+  if (self.currentDevice == nil) return;
+  
+  DLog(@"Emitting device state: %d", (int)_currentDevice.state);
+  NSDictionary *stateUpdate = @{
+                                @"state": @(_currentDevice.state)
+                                };
+  [self sendEventWithName:@"DeviceState" body:stateUpdate];
+}
+
 + (BOOL)getIsEnabled {
   return [BluetoothService getBluetoothService].state == CBCentralManagerStatePoweredOn;
 }
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"BluetoothState"];
+  return @[@"BluetoothState", @"DeviceState"];
 }
 
 - (void)startObserving {
@@ -229,6 +239,9 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
         self.disconnectHandler(nil);
       }
     }
+    
+    // Emit the device disconnection event
+    [self emitDeviceState];
   }
 }
 
@@ -292,12 +305,16 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       }
       else {
         self.connectHandler(nil);
+        
+        [self emitDeviceState];
       }
     }
   }
   else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
     if ([_servicesFound count] == 1) {
       self.connectHandler(nil);
+      
+      [self emitDeviceState];
     }
   }
   
