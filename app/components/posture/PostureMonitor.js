@@ -208,14 +208,22 @@ class PostureMonitor extends Component {
     this.setState({ pointerPosition: distanceToDegrees(currentDistance) });
   }
 
-  // TODO: Implement
   /**
+   * Handles a slouch event.
    *
+   * NOTE: THIS IS NOT COMPLETELY IMPLEMENTED AND WILL
+   * UNDERGO CHANGES BASED ON HOW WE WANT TO TAILOR THE UX.
    */
   @autobind
   slouchHandler(event) {
     const { isSlouching } = event;
     console.log('isSlouching', isSlouching);
+    // TODO: Implement final UX for slouch events
+    if (this.props.user.settings.phoneVibration) {
+      // User enabled phone vibration alerts
+      // Start a single 1-second phone vibration
+      Vibration.vibrate(1000);
+    }
   }
 
   /**
