@@ -124,6 +124,7 @@ class DeviceScan extends Component {
    * Formats device data into a list item row
    * @param {Object}  rowData  Device data for a single row
    */
+  @autobind
   formatDeviceRow(rowData) {
     return (
       <View style={styles.cardStyle}>
@@ -144,6 +145,7 @@ class DeviceScan extends Component {
 
   render() {
     const { inProgress, deviceList } = this.state;
+    const { bluetoothStates } = constants;
 
     return (
       <View style={styles.container}>
@@ -153,7 +155,9 @@ class DeviceScan extends Component {
         <List
           dataBlob={deviceList}
           formatRowData={this.formatDeviceRow}
-          onPressRow={this.selectDevice}
+          onPressRow={
+            this.props.bluetoothState === bluetoothStates.ON ? this.selectDevice : null
+          }
         />
       </View>
     );
