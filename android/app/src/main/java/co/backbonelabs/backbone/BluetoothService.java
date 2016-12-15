@@ -217,7 +217,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                         Timber.d("Found Backbone Device");
 
                         if (characteristics != null && characteristics.size() > 0) {
-                            Timber.d("Add Servis %s", serviceUuid.toString());
+                            Timber.d("Add Service %s", serviceUuid.toString());
                             serviceMap.put(serviceUuid, true);
                         }
                     }
@@ -226,7 +226,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                         Timber.d("Found Bootloader");
 
                         if (characteristics != null && characteristics.size() > 0) {
-                            Timber.d("Add Servis %s", serviceUuid.toString());
+                            Timber.d("Add Service %s", serviceUuid.toString());
                             serviceMap.put(serviceUuid, true);
                         }
                     }
@@ -236,19 +236,18 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
                         characteristicMap.put(characteristic.getUuid(), characteristic);
 
-                        String characteristicUUID = characteristic.getUuid().toString();
-                        Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
-                        Bundle mBundle = new Bundle();
-                        mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
-                        intent.putExtras(mBundle);
-                        reactContext.sendBroadcast(intent);
+//                        String characteristicUUID = characteristic.getUuid().toString();
+//                        Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
+//                        Bundle mBundle = new Bundle();
+//                        mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
+//                        intent.putExtras(mBundle);
+//                        reactContext.sendBroadcast(intent);
                     }
                 }
             }
 
+            Timber.d("serviceMap size: %d", serviceMap.size());
             if (currentDeviceMode == Constants.DEVICE_MODES.BACKBONE) {
-                Timber.d("ServiceMap %d", serviceMap.size());
-
                 if (serviceMap.size() == 2) {
                     connectionCallBack.onDeviceConnected();
                 }
@@ -436,7 +435,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     public boolean toggleCharacteristicNotification(UUID characteristicUUID, boolean state) {
         boolean status = false;
 
-        if (!characteristicMap.containsKey(characteristicUUID)) {
+        if (!hasCharacteristic(characteristicUUID)) {
             Timber.d("Characteristic Not Found!");
         }
         else {
@@ -462,7 +461,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     public void readCharacteristic(UUID characteristicUUID) {
-        if (!characteristicMap.containsKey(characteristicUUID)) {
+        if (!hasCharacteristic(characteristicUUID)) {
             Timber.d("Characteristic not found!");
         }        
         else {
@@ -475,7 +474,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     public boolean writeToCharacteristic(UUID characteristicUUID, byte[] data) {
         boolean writeStatus = false;
 
-        if (!characteristicMap.containsKey(characteristicUUID)) {
+        if (!hasCharacteristic(characteristicUUID)) {
             Timber.d("Characteristic not found!");
         }
         else {

@@ -52,9 +52,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     private int previousSessionState = Constants.SESSION_STATES.STOPPED;
     private int currentCommand;
 
-    private int sessionDuration = Constants.SESSION_DEFAULT_DURATION;
-    private int slouchDistanceThreshold = Constants.SLOUCH_DEFAULT_DISTANCE_THRESHOLD_UNIT;
-    private int slouchTimeThreshold = Constants.SLOUCH_DEFAULT_TIME_THRESHOLD;
+    private int sessionDuration;
+    private int slouchDistanceThreshold;
+    private int slouchTimeThreshold;
 
     private int vibrationPattern;
     private int vibrationSpeed;
@@ -85,7 +85,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 forceStoppedSession = false;
 
                 sessionDuration = Constants.SESSION_DEFAULT_DURATION;
-                slouchDistanceThreshold = Constants.SLOUCH_DEFAULT_DISTANCE_THRESHOLD_UNIT;
+                slouchDistanceThreshold = Constants.SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
                 slouchTimeThreshold = Constants.SLOUCH_DEFAULT_TIME_THRESHOLD;
 
                 vibrationPattern = Constants.VIBRATION_DEFAULT_PATTERN;
@@ -299,7 +299,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     currentSessionState = Constants.SESSION_STATES.PAUSED;
                     distanceNotificationStatus = false;
                     slouchNotificationStatus = false;
-                    statisticNotificationStatus = false;
+                    statisticNotificationStatus = true;
 
                     break;
                 case Constants.SESSION_OPERATIONS.STOP:

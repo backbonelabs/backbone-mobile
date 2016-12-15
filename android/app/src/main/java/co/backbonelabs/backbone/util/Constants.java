@@ -192,11 +192,11 @@ public class Constants {
     public final static int MAX_BLE_ACTION_ATTEMPT = 50;
 
     public final static int SESSION_DEFAULT_DURATION = 5; // Session duration in minutes
-    public final static int SLOUCH_DEFAULT_DISTANCE_THRESHOLD_UNIT = 1000; // Distance threshold in ten thousandths of a unit
+    public final static int SLOUCH_DEFAULT_DISTANCE_THRESHOLD = 2000; // Distance threshold in ten thousandths of a unit
     public final static int SLOUCH_DEFAULT_TIME_THRESHOLD = 3; // Time threshold in seconds
 
-    public final static byte VIBRATION_DEFAULT_PATTERN = 1; // Number of times the motor should vibrate [0-3]
-    public final static byte VIBRATION_DEFAULT_SPEED = 50; // Speed of motor vibration [0-255]
+    public final static int VIBRATION_DEFAULT_PATTERN = 1; // Number of times the motor should vibrate [0-3]
+    public final static int VIBRATION_DEFAULT_SPEED = 50; // Speed of motor vibration [0-255]
     public final static int VIBRATION_DEFAULT_DURATION = 50; // Duration of motor vibration in tens of milliseconds [0-255]
 
     public final static String ACTION_CHARACTERISTIC_FOUND = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_FOUND";
