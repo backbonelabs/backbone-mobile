@@ -25,7 +25,9 @@ const sessions = [
   { id: '10min', durationSeconds: 10 * 60, icon: Icon10Min },
   { id: '15min', durationSeconds: 15 * 60, icon: Icon15Min },
   { id: '20min', durationSeconds: 20 * 60, icon: Icon20Min },
-  { id: 'infinity', durationSeconds: Infinity, icon: IconInfinity },
+  { id: 'infinity', durationSeconds: Infinity, icon: IconInfinity }, // TODO: Set proper
+                                                                     // duration based on
+                                                                     // firmware requirements
 ];
 
 const renderItem = (session) => (

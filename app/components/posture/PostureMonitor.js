@@ -150,55 +150,7 @@ class PostureMonitor extends Component {
    */
   @autobind
   distanceHandler(event) {
-    // const { currentDistance } = event;
-    // // Apply a low pass filter to smooth out the change in distance because the accelerometer
-    // // is very sensitive and can lead to a high amount of noise. Note: the alpha is not concrete
-    // // and can be changed the more we test.
-    // // http://blog.thomnichols.org/2011/08/smoothing-sensor-data-with-a-low-pass-filter
-    // const alpha = 0.40;
-    // this.distance = this.distance + (alpha * (currentDistance - this.distance));
-
-    // // Calculate and update the number of degrees to rotate the pointer
-    // this.setState({ pointerPosition: distanceToDegrees(this.distance) });
-
-    // const { settings: { slouchTimeThreshold, phoneVibration } } = this.props.user;
-
-    // // Check if user is slouching past their threshold.
-    // // We use the postureThreshold from state instead of the user.settings object
-    // // because the user may modify the threshold and resume the session before the
-    // // updated threshold value is saved in the database and a response is returned
-    // // from the API server to refresh the user object in the Redux store.
-    // const isSlouching = this.distance >= this.state.postureThreshold;
-
-    // if (isSlouching) {
-    //   // User is currently slouching
-    //   if (this.slouchStartTime) {
-    //     // User was previously slouching
-    //     // Check if user slouched for more than the slouch time threshold
-    //     const isOverSlouchTimeThreshold =
-    //       Date.now() - this.slouchStartTime >= slouchTimeThreshold * 1000;
-
-    //     if (isOverSlouchTimeThreshold && phoneVibration) {
-    //       // User slouched for more than the threshold and has phone vibrations enabled
-    //       // Vibrate phone (on Android, vibration will last 1000ms; iOS vibration duration
-    //       // is fixed and defined by the system)
-    //       Vibration.vibrate(1000);
-
-    //       // Clear start time to queue up a new vibration if needed
-    //       this.slouchStartTime = null;
-    //     }
-    //   } else {
-    //     // User just started slouching, capture start time
-    //     this.slouchStartTime = Date.now();
-    //   }
-    // }
-
-    // if (!isSlouching && this.slouchStartTime) {
-    //   // User stopped slouching, clear start time
-    //   this.slouchStartTime = null;
-    // }
     const { currentDistance } = event;
-    console.log('currentDistance', currentDistance);
     this.setState({ pointerPosition: distanceToDegrees(currentDistance) });
   }
 
@@ -211,11 +163,11 @@ class PostureMonitor extends Component {
   @autobind
   slouchHandler(event) {
     const { isSlouching } = event;
-    console.log('isSlouching', isSlouching);
     // TODO: Implement final UX for slouch events
     if (this.props.user.settings.phoneVibration) {
       // User enabled phone vibration alerts
-      // Start a single 1-second phone vibration
+      // Start a single 1-second phone vibration (the 1-second duration only affects Android;
+      // the iOS vibration duration is fixed and defined by the system)
       Vibration.vibrate(1000);
     }
   }
@@ -229,7 +181,6 @@ class PostureMonitor extends Component {
   @autobind
   statsHandler(event) {
     const { totalDuration, slouchTime } = event;
-    console.log('stats', { totalDuration, slouchTime });
     this.saveUserSession();
     this.setState({
       sessionState: sessionStates.STOPPED,
@@ -263,6 +214,10 @@ class PostureMonitor extends Component {
   startSession() {
     SessionControlService.start({
       sessionDuration: Math.floor(this.props.posture.sessionTimeSeconds / 60),
+      // We use the postureThreshold from state instead of the user.settings object
+      // because the user may modify the threshold and resume the session before the
+      // updated threshold value is saved in the database and a response is returned
+      // from the API server to refresh the user object in the Redux store.
       // The slouch distance threshold needs to be in ten thousandths of a unit.
       // For example, to set it to 0.2, the input must be 2000.
       // We use Math.floor because sometimes JS will return a double floating point value,
