@@ -21,10 +21,9 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
   // Check whether specified device is in list of saved peripherals
   NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:deviceID];
   NSArray *savedDevices = [BluetoothServiceInstance.centralManager retrievePeripheralsWithIdentifiers:@[uuid]];
-  
   if (savedDevices && [savedDevices count] > 0) {
     [BluetoothServiceInstance selectDevice:savedDevices[0]];
-  } else {
+  } else if (_deviceCollection[deviceID]) {
     // Connect to a "scanned device"
     [BluetoothServiceInstance selectDevice:_deviceCollection[deviceID][@"peripheral"]];
   }
@@ -46,9 +45,11 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
       }
       
     }];
+    [self checkConnectTimeout];
+  } else {
+    // There is no valid device
+    [self deviceConnectionStatus:RCTMakeError(@"Not a valid device", nil, nil)];
   }
-  
-  [self checkConnectTimeout];
 }
 
 RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
