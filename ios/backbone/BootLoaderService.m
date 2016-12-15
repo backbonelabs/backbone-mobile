@@ -45,7 +45,7 @@
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"FirmwareUpdateProgress", @"FirmwareUpdateStatus"];
+  return @[@"firmwareUploadProgress", @"FirmwareUpdateStatus"];
 }
 
 RCT_EXPORT_MODULE();
@@ -353,12 +353,12 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   if ([characteristic.UUID isEqual:BOOTLOADER_CHARACTERISTIC_UUID]) {
     if (error == nil) {
       if ([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_EXIT_BOOTLOADER)]) {
-        DLog(@"Firmware Updated!");
-        [self firmwareUpdateSuccess];
+        DLog(@"Firmware Uploaded!");
+        [self firmwareUploadSuccess];
       }
     }
     else {
-      [self firmwareUpdateFailed];
+      [self firmwareUploadFailed];
     }
   }
 }
@@ -388,7 +388,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
             [self writeValueToCharacteristicWithData:data bootLoaderCommandCode:COMMAND_GET_FLASH_SIZE];
           }
           else {
-            [self firmwareUpdateFailed];
+            [self firmwareUploadFailed];
           }
         }
         else if ([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_GET_FLASH_SIZE)]) {
@@ -434,7 +434,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
             fileWritingProgress = (int)floor(percentage);
             
             DLog(@"Update Percentage : %.0f%%", percentage);
-            [self refreshFirmwareUpdateProgress];
+            [self firmwareUploadProgress];
             
             // Writing the next line from file
             if (currentIndex < _firmWareRowDataArray.count) {
@@ -447,7 +447,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
             }
           }
           else {
-            [self firmwareUpdateFailed];
+            [self firmwareUploadFailed];
           }
         }
         else if([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_VERIFY_CHECKSUM)]) {
@@ -460,7 +460,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
             [self writeValueToCharacteristicWithData:exitBootloaderCommandData bootLoaderCommandCode:COMMAND_EXIT_BOOTLOADER];
           }
           else {
-            [self firmwareUpdateFailed];
+            [self firmwareUploadFailed];
           }
         }
       }
@@ -472,13 +472,13 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
           _isWritePacketDataSuccess = NO;
         }
         
-        [self firmwareUpdateFailed];
+        [self firmwareUploadFailed];
       }
       
       [_commandArray removeObjectAtIndex:0];
     }
     else {
-      [self firmwareUpdateFailed];
+      [self firmwareUploadFailed];
     }
   }
 }
@@ -514,7 +514,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
     [self writeCurrentRowDataArrayAtIndex:index];
   }
   else {
-    [self firmwareUpdateFailed];
+    [self firmwareUploadFailed];
   }
 }
 
@@ -544,24 +544,19 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   }
 }
 
-- (void)firmwareUpdateSuccess {
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSError *error;
-  
+- (void)firmwareUploadSuccess {
   // Delete the firmware file after a successful update
   // NOTE: Keep it commented for development purposes to preserve the file for multiple tests
+//  NSFileManager *fileManager = [NSFileManager defaultManager];
+//  NSError *error;
 //  bool success = [fileManager removeItemAtPath:_firmwareFilePath error:&error];
 //  DLog(@"success delete %d %@", success, error);
   
   _bootLoaderState = BOOTLOADER_STATE_UPDATED;
-  hasPendingUpdate = NO;
-  currentIndex = 0;
 }
 
-- (void)firmwareUpdateFailed {
-  currentIndex = 0;
-  hasPendingUpdate = NO;
-  
+- (void)firmwareUploadFailed {
+  // Do any other cleanups here if needed
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_END_ERROR];
 }
 
@@ -571,13 +566,13 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_END_SUCCESS];
 }
 
-- (void)refreshFirmwareUpdateProgress {
-  DLog(@"Firmware Update Progress %d", fileWritingProgress);
-  [self sendEventWithName:@"FirmwareUpdateProgress" body:@{@"percentage" : @(fileWritingProgress)}];
+- (void)firmwareUploadProgress {
+  DLog(@"Firmware Upload Progress %d", fileWritingProgress);
+  [self sendEventWithName:@"FirmwareUploadProgress" body:@{@"percentage" : @(fileWritingProgress)}];
 }
 
 - (void)firmwareUpdateStatus:(int)status {
-  DLog(@"Firmware State %d", status);
+  DLog(@"Firmware Update State %d", status);
   [self sendEventWithName:@"FirmwareUpdateStatus" body:@{@"status" : @(status)}];
 }
 
