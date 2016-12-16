@@ -57,7 +57,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
     public void getDeviceInformation(final Callback callback) {
         final BluetoothService bluetoothService = BluetoothService.getInstance();
 
-        if (bluetoothService.getCurrentDevice() != null && bluetoothService.getDeviceState() == BluetoothProfile.STATE_CONNECTED) {
+        if (bluetoothService.isDeviceReady()) {
             retrieveFirmwareVersion(new Constants.StringCallBack() {
                 @Override
                 public void onStringCallBack(final String version) {

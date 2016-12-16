@@ -42,11 +42,9 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     @ReactMethod
     public void scanForDevices(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
+        Timber.d("Should Scan %b", scanning);
         if (scanning) {
             callback.invoke(JSError.make("A scan has already been initiated"));
-        }
-        else if (bluetoothService.getCurrentDevice() != null) {
-            callback.invoke();
         }
         else if (!bluetoothService.getIsEnabled()) {
             callback.invoke(JSError.make("Bluetooth is not enabled"));

@@ -373,10 +373,32 @@ public class Utilities {
      * Convert byte array to float
      *
      * @param data
+     * @param offset
      * @return
      */
     public static float getFloatFromByteArray(byte[] data, int offset) {
         return ByteBuffer.wrap(data, offset, 4).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+    }
+
+    /**
+     * Convert byte array to int
+     *
+     * @param data
+     * @param offset
+     * @return
+     */
+    public static int getIntFromByteArray(byte[] data, int offset) {
+        return ByteBuffer.wrap(data, offset, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
+    }
+
+    /**
+     * Get the byte of an integer value on the requested index
+     *
+     * @param value
+     * @return
+     */
+    public static byte getByteFromInt(int value, int index) {
+        return (byte)((value >> (8 * index)) & 0xFF);
     }
 
     private static final int[] table = {

@@ -28,7 +28,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
@@ -71,6 +70,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     };
 
     private BluetoothDevice currentDevice = null;
+    private int currentDeviceMode = Constants.DEVICE_MODES.UNKNOWN;
 
     private ReactContext reactContext;
     private BluetoothAdapter bluetoothAdapter;
@@ -78,6 +78,8 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
     private HashMap<UUID, Boolean> serviceMap;
     private HashMap<UUID, BluetoothGattCharacteristic> characteristicMap;
+
+    private boolean shouldCloseGatt = false;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -183,6 +185,12 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Timber.d("Device Disconnected");
 
+                if (shouldCloseGatt) {
+                    bleGatt.close();
+                    bleGatt = null;
+                }
+
+                currentDevice = null;
                 serviceMap.clear();
                 characteristicMap.clear();
 //                reconnectDevice();
@@ -204,63 +212,56 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
                     List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
 
-                    if (characteristics != null && characteristics.size() > 0) {
-                        serviceMap.put(serviceUuid, true);
-                    }
-
-                    if (serviceMap.size() == 2) {
-                        connectionCallBack.onDeviceConnected();
-                    }
-
                     if (serviceUuid.equals(Constants.SERVICE_UUIDS.BACKBONE_SERVICE) || serviceUuid.equals(Constants.SERVICE_UUIDS.BATTERY_SERVICE)) {
+                        currentDeviceMode = Constants.DEVICE_MODES.BACKBONE;
                         Timber.d("Found Backbone Device");
-                        for (BluetoothGattCharacteristic characteristic : characteristics) {
-                            Timber.d(macAddress + " service: " + service.getUuid() + " characteristic: " + characteristic.getUuid());
 
-                            characteristicMap.put(characteristic.getUuid(), characteristic);
-
-                            String characteristicUUID = characteristic.getUuid().toString();
-                            Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
-                            Bundle mBundle = new Bundle();
-                            mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
-                            intent.putExtras(mBundle);
-                            reactContext.sendBroadcast(intent);
-
-                            if (characteristic.getUuid().equals(Constants.CHARACTERISTIC_UUIDS.ENTER_BOOTLOADER_CHARACTERISTIC)) {
-
-                            }
-                            else if (characteristic.getUuid().equals(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC)) {
-                                // toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, true);
-                            }
+                        if (characteristics != null && characteristics.size() > 0) {
+                            Timber.d("Add Service %s", serviceUuid.toString());
+                            serviceMap.put(serviceUuid, true);
                         }
                     }
                     else if (serviceUuid.equals(Constants.SERVICE_UUIDS.BOOTLOADER_SERVICE)) {
+                        currentDeviceMode = Constants.DEVICE_MODES.BOOTLOADER;
                         Timber.d("Found Bootloader");
-                        for (BluetoothGattCharacteristic characteristic : characteristics) {
-                            Timber.d(macAddress + " service: " + service.getUuid() + " characteristic: " + characteristic.getUuid());
 
-                            characteristicMap.put(characteristic.getUuid(), characteristic);
-
-                            // String characteristicUUID = characteristic.getUuid().toString();
-                            // Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
-                            // Bundle mBundle = new Bundle();
-                            // mBundle.putString(Constants.EXTRA_CHARACTERISTIC_UUID, characteristicUUID);
-                            // intent.putExtras(mBundle);
-                            // reactContext.sendBroadcast(intent);
+                        if (characteristics != null && characteristics.size() > 0) {
+                            Timber.d("Add Service %s", serviceUuid.toString());
+                            serviceMap.put(serviceUuid, true);
                         }
+                    }
+
+                    for (BluetoothGattCharacteristic characteristic : characteristics) {
+                        Timber.d(macAddress + " service: " + service.getUuid() + " characteristic: " + characteristic.getUuid());
+
+                        characteristicMap.put(characteristic.getUuid(), characteristic);
+
+//                        String characteristicUUID = characteristic.getUuid().toString();
+//                        Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
+//                        Bundle mBundle = new Bundle();
+//                        mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
+//                        intent.putExtras(mBundle);
+//                        reactContext.sendBroadcast(intent);
                     }
                 }
             }
-            // Close GATT client to release resources
-//                            Timber.d("Closing GATT client");
-//                            gatt.close();
+
+            Timber.d("serviceMap size: %d", serviceMap.size());
+            if (currentDeviceMode == Constants.DEVICE_MODES.BACKBONE) {
+                if (serviceMap.size() == 2) {
+                    connectionCallBack.onDeviceConnected();
+                }
+            }
+            else if (currentDeviceMode == Constants.DEVICE_MODES.BOOTLOADER) {
+                if (serviceMap.size() == 1) {
+                    connectionCallBack.onDeviceConnected();
+                }
+            }
         }
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic, int status) {
-            String serviceUUID = characteristic.getService().getUuid().toString();
-
             String characteristicUUID = characteristic.getUuid().toString();
 
             Timber.d("DidRead %s", characteristicUUID);
@@ -282,8 +283,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
-            String serviceUUID = characteristic.getService().getUuid().toString();
-
             String characteristicUUID = characteristic.getUuid().toString();
             Timber.d("DidChanged %s", characteristicUUID);
 
@@ -295,29 +294,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
             intent.putExtras(mBundle);
             reactContext.sendBroadcast(intent);
-
-//            if (characteristicUUID.equalsIgnoreCase(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC.toString())) {
-                // final Intent intent = new Intent(Constants.ACTION_BOOTLOADER_UPDATE);
-                // Bundle mBundle = new Bundle();
-                // // Putting the byte value read for GATT Db
-                // mBundle.putByteArray(Constants.EXTRA_BYTE_VALUE,
-                //         characteristic.getValue());
-                // mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE,
-                //         characteristic.getUuid().toString());
-                // mBundle.putInt(Constants.EXTRA_BYTE_INSTANCE_VALUE,
-                //         characteristic.getInstanceId());
-                // mBundle.putString(Constants.EXTRA_BYTE_SERVICE_UUID_VALUE,
-                //         characteristic.getService().getUuid().toString());
-                // mBundle.putInt(Constants.EXTRA_BYTE_SERVICE_INSTANCE_VALUE,
-                //         characteristic.getService().getInstanceId());
-
-                // String hexValue = Utilities.ByteArraytoHex(characteristic.getValue());
-
-                // intent.putExtras(mBundle);
-                // reactContext.sendBroadcast(intent);
-
-                // Timber.d("Broadcast %s : %s", characteristicUUID, hexValue);
-//            }
         }
 
         @Override
@@ -429,8 +405,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         if (bleGatt != null) {
             Timber.d("About to disconnect and close");
             bleGatt.disconnect();
-            bleGatt.close();
-            bleGatt = null;
         }
     }
 
@@ -438,6 +412,15 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         if (currentDevice != null) {
             connectDevice(currentDevice, null);
         }
+    }
+
+    public void setShouldCloseGatt(boolean state) {
+        shouldCloseGatt = state;
+    }
+
+    public boolean isDeviceReady() {
+        return currentDevice != null && deviceState == BluetoothProfile.STATE_CONNECTED;
+//        return currentDevice != null && deviceState == BluetoothProfile.STATE_CONNECTED && isDeviceBonded();
     }
 
     public int getDeviceState() {
@@ -452,7 +435,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     public boolean toggleCharacteristicNotification(UUID characteristicUUID, boolean state) {
         boolean status = false;
 
-        if (!characteristicMap.containsKey(characteristicUUID)) {
+        if (!hasCharacteristic(characteristicUUID)) {
             Timber.d("Characteristic Not Found!");
         }
         else {
@@ -478,7 +461,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     public void readCharacteristic(UUID characteristicUUID) {
-        if (!characteristicMap.containsKey(characteristicUUID)) {
+        if (!hasCharacteristic(characteristicUUID)) {
             Timber.d("Characteristic not found!");
         }        
         else {
@@ -491,7 +474,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     public boolean writeToCharacteristic(UUID characteristicUUID, byte[] data) {
         boolean writeStatus = false;
 
-        if (!characteristicMap.containsKey(characteristicUUID)) {
+        if (!hasCharacteristic(characteristicUUID)) {
             Timber.d("Characteristic not found!");
         }
         else {
