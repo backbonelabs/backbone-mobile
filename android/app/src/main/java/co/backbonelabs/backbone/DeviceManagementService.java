@@ -2,35 +2,29 @@ package co.backbonelabs.backbone;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
-import android.content.SharedPreferences;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.EventEmitter;
 import co.backbonelabs.backbone.util.JSError;
 import timber.log.Timber;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
-    private static final String TAG = "DeviceManagementService";
     private boolean scanning;
-    private ReactContext reactContext;
+    private ReactApplicationContext reactContext;
 
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -45,27 +39,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         return "DeviceManagementService";
     }
 
-    private HashMap<String, BluetoothDevice> deviceCollection;
-
-    @ReactMethod
-    public void getSavedDevice(Callback callback) {
-        BluetoothService bluetoothService = BluetoothService.getInstance();
-        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.DEVICE_PREF_ID, MODE_PRIVATE);
-
-        String address = preference.getString(Constants.SAVED_DEVICE_PREF_KEY, "");
-        Timber.d("GetSaved %s", address);
-        BluetoothDevice device = bluetoothService.getCurrentDevice();
-
-        if (address != null && address.length() > 0) {
-            Timber.d("reconnect %s", address);
-            device = bluetoothService.findDeviceByAddress(address);
-
-            bluetoothService.selectDevice(device);
-        }
-
-        callback.invoke(device != null);
-    }
-
     @ReactMethod
     public void scanForDevices(Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
@@ -78,7 +51,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         }
         else {
             scanning = true;
-            deviceCollection = new HashMap<String, BluetoothDevice>();
+            final HashMap<String, BluetoothDevice> deviceCollection = new HashMap<String, BluetoothDevice>();
 
             Timber.d("Starting scan");
             bluetoothService.startScanForBLEDevices(new BluetoothService.DeviceScanCallBack() {
@@ -101,7 +74,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                     }
 
                     // Emit device array to JS
-                    sendEvent(reactContext, "DevicesFound", deviceList);
+                    EventEmitter.send(reactContext, "DevicesFound", deviceList);
                 }
             });
 
@@ -119,48 +92,38 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     }
 
     @ReactMethod
-    public void selectDevice(String macAddress, Callback callback) {
-        Timber.d("selectDevice " + macAddress);
-        stopScanForDevices();
-        removeSavedDevice();
-
-        BluetoothDevice device = deviceCollection.get(macAddress);
-        if (device == null) {
-            callback.invoke(JSError.make("Device not in range"));
-        } else {
-            BluetoothService.getInstance().selectDevice(device);
-
-            callback.invoke();
-        }
-    }
-
-    @ReactMethod
-    public void connectToDevice() {
-        Timber.d("connectToDevice");
+    public void connectToDevice(String identifier) {
+        Timber.d("connectToDevice %s", identifier);
         final BluetoothService bluetoothService = BluetoothService.getInstance();
-        bluetoothService.connectDevice(bluetoothService.getCurrentDevice(), new BluetoothService.DeviceConnectionCallBack() {
-            @Override
-            public void onDeviceConnected() {
-                Timber.d("DeviceConnected");
-                WritableMap wm = Arguments.createMap();
-                wm.putBoolean("isConnected", true);
-                wm.putNull("message");
-                sendEvent(reactContext, "ConnectionStatus", wm);
+        BluetoothDevice device = bluetoothService.findDeviceByAddress(identifier);
+        if (device != null) {
+            bluetoothService.connectDevice(device, new BluetoothService.DeviceConnectionCallBack() {
+                @Override
+                public void onDeviceConnected() {
+                    Timber.d("DeviceConnected");
+                    WritableMap wm = Arguments.createMap();
+                    wm.putBoolean("isConnected", true);
+                    wm.putNull("message");
+                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
+                }
 
-                rememberDevice(BluetoothService.getInstance().getCurrentDevice().getAddress());
-            }
+                @Override
+                public void onDeviceDisconnected() {
+                    Timber.d("DeviceDisconnected");
+                    WritableMap wm = Arguments.createMap();
+                    wm.putBoolean("isConnected", false);
+                    wm.putNull("message");
+                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
+                }
+            });
 
-            @Override
-            public void onDeviceDisconnected() {
-                Timber.d("DeviceDisconnected");
-                WritableMap wm = Arguments.createMap();
-                wm.putBoolean("isConnected", false);
-                wm.putNull("message");
-                sendEvent(reactContext, "ConnectionStatus", wm);
-            }
-        });
-
-        checkConnectTimeout();
+            checkConnectTimeout();
+        } else {
+            // Could not retrieve a valid device
+            WritableMap wm = Arguments.createMap();
+            wm.putString("message", "Not a valid device");
+            EventEmitter.send(reactContext, "ConnectionStatus", wm);
+        }
     }
 
     /**
@@ -173,7 +136,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         Timber.d("Cancel device connection and any running scan");
         try {
             final BluetoothService bluetoothService = BluetoothService.getInstance();
-            bluetoothService.stopScan();
+            stopScanForDevices();
             bluetoothService.disconnect();
             callback.invoke();
         } catch (Exception e) {
@@ -193,21 +156,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         }
     }
 
-    @ReactMethod
-    public void forgetDevice(Callback callback) {
-        BluetoothService bluetoothService = BluetoothService.getInstance();
-
-        if (bluetoothService.getCurrentDevice() != null) {
-            bluetoothService.disconnect();
-
-            removeSavedDevice();
-
-            callback.invoke();
-        } else {
-            callback.invoke(JSError.make("Currently not connected to a device"));
-        }
-    }
-
     private void checkConnectTimeout() {
         int interval = 1000 * 10; // 10 seconds of timeout
         Handler handler = new Handler();
@@ -216,49 +164,16 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 Timber.d("Check connection timeout");
                 if (BluetoothService.getInstance().getDeviceState() != BluetoothProfile.STATE_CONNECTED) {
                     Timber.d("Device connection timeout");
+                    BluetoothService.getInstance().disconnect();
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", false);
                     wm.putString("message", "Device took too long to connect");
-                    sendEvent(reactContext, "ConnectionStatus", wm);
+                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
                 }
             }
         };
 
         handler.postDelayed(runnable, interval);
-    }
-
-    private void rememberDevice(String address) {
-        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.DEVICE_PREF_ID, MODE_PRIVATE);
-        SharedPreferences.Editor editor = preference.edit();
-
-        try {
-            editor.putString(Constants.SAVED_DEVICE_PREF_KEY, address);
-            editor.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void removeSavedDevice() {
-        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.DEVICE_PREF_ID, MODE_PRIVATE);
-        SharedPreferences.Editor editor = preference.edit();
-
-        editor.remove(Constants.SAVED_DEVICE_PREF_KEY);
-        editor.commit();
-    }
-
-    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-        Timber.d("sendEvent " + eventName);
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
-    }
-
-    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableArray params) {
-        Timber.d("sendEvent " + eventName);
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
     }
 
     @Override
