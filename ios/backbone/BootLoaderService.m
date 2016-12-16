@@ -55,7 +55,7 @@ RCT_EXPORT_MODULE();
  @param path This is the absolute path indicating the location of the downloaded firmware file
  */
 RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
-  if ([BluetoothServiceInstance isDeviceReady] && _enterBootLoaderCharacteristic != nil && path != nil) {
+  if ([BluetoothServiceInstance isDeviceReady] && path != nil) {
 //    DLog(@"TestFile %@", path);
 //    NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
 //    NSString* path2 = [documentsPath stringByAppendingPathComponent:@"Backbone.cyacd"];
@@ -71,12 +71,25 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
       _firmwareFilePath = [path copy];
       
       if (_bootLoaderState == BOOTLOADER_STATE_OFF) {
-        // Restart into the BootLoader service before proceeding
-        [self enterBootLoaderMode];
+        if (_enterBootLoaderCharacteristic != nil) {
+          // Restart into the BootLoader service before proceeding
+          [self enterBootLoaderMode];
+        }
+        else {
+          [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_SERVICE];
+        }
       }
       else if (_bootLoaderState == BOOTLOADER_STATE_ON) {
-        // Device is already in the BootLoader service, so we proceed with the firmware upload
-        [self prepareFirmwareFile];
+        if (_bootLoaderCharacteristic != nil) {
+          // Device is already in the BootLoader service, so we proceed with the firmware upload
+          [self prepareFirmwareFile];
+        }
+        else {
+          [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_SERVICE];
+        }
+      }
+      else {
+        [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_SERVICE];
       }
     }
   }
