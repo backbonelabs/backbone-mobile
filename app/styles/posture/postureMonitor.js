@@ -35,7 +35,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     height: totalPointerWidth,
-    width: `${totalPointerLength * 2} - ${applyWidthDifference(8)}`,
+    width: (totalPointerLength * 2) - applyWidthDifference(8),
     marginTop: totalPointerWidth * -0.5,
   },
   base: {
