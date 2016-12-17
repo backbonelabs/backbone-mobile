@@ -327,7 +327,6 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
       for (CBCharacteristic *characteristic in service.characteristics) {
         if ([characteristic.UUID isEqual:ENTER_BOOTLOADER_CHARACTERISTIC_UUID]) {
           _enterBootLoaderCharacteristic = characteristic;
-          _bootLoaderState = BOOTLOADER_STATE_OFF;
         }
       }
     }
