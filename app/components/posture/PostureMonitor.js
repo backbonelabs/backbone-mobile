@@ -88,14 +88,11 @@ class PostureMonitor extends Component {
       totalDuration: 0, // in seconds
       slouchTime: 0, // in seconds
     };
-    this.slouchStartTime = null;
     this.postureListener = null;
     this.slouchListener = null;
     this.statsListener = null;
-    this.activityDisabledListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
-    this.distance = 0;
   }
 
   componentWillMount() {
