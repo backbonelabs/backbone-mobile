@@ -62,15 +62,14 @@ class PostureMonitor extends Component {
     }),
     user: PropTypes.shape({
       settings: PropTypes.shape({
-        phoneVibration: PropTypes.bool,
-        postureThreshold: PropTypes.number,
-        slouchTimeThreshold: PropTypes.number,
-        vibrationStrength: PropTypes.number,
-        vibrationPattern: PropTypes.oneOf([1, 2, 3]),
-      }),
-      _id: PropTypes.string,
-      dailyStreak: PropTypes.number,
-      lastSession: PropTypes.string,
+        phoneVibration: PropTypes.bool.isRequired,
+        postureThreshold: PropTypes.number.isRequired,
+        vibrationStrength: PropTypes.number.isRequired,
+        vibrationPattern: PropTypes.oneOf([1, 2, 3]).isRequired,
+      }).isRequired,
+      _id: PropTypes.string.isRequired,
+      dailyStreak: PropTypes.number.isRequired,
+      lastSession: PropTypes.string.isRequired,
     }),
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
