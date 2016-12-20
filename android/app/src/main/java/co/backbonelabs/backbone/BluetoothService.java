@@ -187,9 +187,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     // Enable bigger sized packet to be sent by changing the MTU size to 512
                     // This results in faster speed especially in firmware upload
                     // Only for Lollipop and above devices
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        exchangeGattMtu(512);
-                    }
+                    exchangeGattMtu(512);
 
                     gatt.discoverServices();
                 }
@@ -558,17 +556,19 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     private void exchangeGattMtu(int mtu) {
-        int retry = 5;
-        boolean status = false;
-        while (!status && retry > 0) {
-            status = bleGatt.requestMtu(mtu);
-            retry--;
-        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int retry = 5;
+            boolean status = false;
+            while (!status && retry > 0) {
+                status = bleGatt.requestMtu(mtu);
+                retry--;
+            }
 
-        try {
-            Thread.sleep(1000, 0);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            try {
+                Thread.sleep(1000, 0);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
