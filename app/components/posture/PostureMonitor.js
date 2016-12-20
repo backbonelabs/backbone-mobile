@@ -69,7 +69,7 @@ class PostureMonitor extends Component {
       }).isRequired,
       _id: PropTypes.string.isRequired,
       dailyStreak: PropTypes.number.isRequired,
-      lastSession: PropTypes.string.isRequired,
+      lastSession: PropTypes.string,
     }),
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
