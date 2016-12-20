@@ -153,7 +153,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
     private void firmwareUpdateStatus(int status) {
         Timber.d("Firmware Update State: %d", status);
         WritableMap wm = Arguments.createMap();
-        wm.putInt("state", status);
+        wm.putInt("status", status);
         sendEvent(reactContext, "FirmwareUpdateStatus", wm);
     }
 
