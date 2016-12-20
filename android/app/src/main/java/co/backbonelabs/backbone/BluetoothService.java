@@ -13,6 +13,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.SparseIntArray;
@@ -34,6 +35,7 @@ import java.util.MissingFormatArgumentException;
 import java.util.UUID;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.Utilities;
 import timber.log.Timber;
 
 public class BluetoothService extends ReactContextBaseJavaModule implements LifecycleEventListener {
@@ -175,25 +177,52 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            deviceState = newState;
             Timber.d("DeviceState %d", newState);
 
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Timber.d("Device Connected");
-                gatt.discoverServices();
-            }
-            else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Timber.d("Device Disconnected");
+            if (deviceState != newState) {
+                deviceState = newState;
 
-                if (shouldCloseGatt) {
-                    bleGatt.close();
-                    bleGatt = null;
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    Timber.d("Device Connected");
+                    // Enable bigger sized packet to be sent by changing the MTU size to 512
+                    // This results in faster speed especially in firmware upload
+                    // Only for Lollipop and above devices
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        exchangeGattMtu(512);
+                    }
+
+                    gatt.discoverServices();
                 }
+                else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    Timber.d("Device Disconnected");
 
-                currentDevice = null;
-                serviceMap.clear();
-                characteristicMap.clear();
-//                reconnectDevice();
+                    serviceMap.clear();
+                    characteristicMap.clear();
+
+                    if (shouldCloseGatt) {
+                        bleGatt.close();
+                        bleGatt = null;
+                        currentDevice = null;
+                    }
+                    else {
+                        BootLoaderService bootLoaderService = BootLoaderService.getInstance();
+
+                        if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.INITIATED) {
+                            Timber.d("Reconnect Device");
+                            // Reconnect right away to proceed with the actual firmware update
+                            reconnectDevice();
+                        }
+                        else if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPDATED) {
+                            Timber.d("Reconnect Device Updated");
+                            reconnectDevice();
+                        }
+                        else {
+                            currentDevice = null;
+                        }
+
+                        emitDeviceState();
+                    }
+                }
             }
         }
 
@@ -236,12 +265,12 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
                         characteristicMap.put(characteristic.getUuid(), characteristic);
 
-//                        String characteristicUUID = characteristic.getUuid().toString();
-//                        Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
-//                        Bundle mBundle = new Bundle();
-//                        mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
-//                        intent.putExtras(mBundle);
-//                        reactContext.sendBroadcast(intent);
+                        String characteristicUUID = characteristic.getUuid().toString();
+                        Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
+                        intent.putExtras(mBundle);
+                        reactContext.sendBroadcast(intent);
                     }
                 }
             }
@@ -249,12 +278,26 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             Timber.d("serviceMap size: %d", serviceMap.size());
             if (currentDeviceMode == Constants.DEVICE_MODES.BACKBONE) {
                 if (serviceMap.size() == 2) {
-                    connectionCallBack.onDeviceConnected();
+                    // Check for pending notification of a successful firmware update
+                    BootLoaderService bootLoaderService = BootLoaderService.getInstance();
+
+                    if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPDATED) {
+                        // Successfully restarted after upgrading firmware
+                        Timber.d("Firmware Updated Successfully");
+                        bootLoaderService.firmwareUpdated();
+                    }
+                    else {
+                        connectionCallBack.onDeviceConnected();
+
+                        emitDeviceState();
+                    }
                 }
             }
             else if (currentDeviceMode == Constants.DEVICE_MODES.BOOTLOADER) {
                 if (serviceMap.size() == 1) {
                     connectionCallBack.onDeviceConnected();
+
+                    emitDeviceState();
                 }
             }
         }
@@ -396,6 +439,14 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         stopScan();
     }
 
+    private void emitDeviceState() {
+        if (currentDevice == null) return;
+        Timber.d("Emit Device State: %d", deviceState);
+        WritableMap wm = Arguments.createMap();
+        wm.putInt("state", deviceState);
+        sendEvent(reactContext, "DeviceState", wm);
+    }
+
     /**
      * Disconnects an established connection, or cancels a connection attempt currently in progress,
      * and then closes and forgets the GATT client
@@ -478,7 +529,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             Timber.d("Characteristic not found!");
         }
         else {
-            Timber.d("Write to %s", characteristicUUID.toString());
+            Timber.d("Write to %s %s", characteristicUUID.toString(), Utilities.ByteArraytoHex(data));
             BluetoothGattCharacteristic characteristic = characteristicMap.get(characteristicUUID);
 
             // Since Android's GATT class only allows 1 write operation at a time,
@@ -486,8 +537,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             // when there is another GATT operation still running.
             // In most cases, it should succeed right away.
             int counter = Constants.MAX_BLE_ACTION_ATTEMPT;
+            characteristic.setValue(data);
+
             do {
-                characteristic.setValue(data);
                 characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                 writeStatus = bleGatt.writeCharacteristic(characteristic);
 
@@ -503,6 +555,21 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         }
 
         return writeStatus;
+    }
+
+    private void exchangeGattMtu(int mtu) {
+        int retry = 5;
+        boolean status = false;
+        while (!status && retry > 0) {
+            status = bleGatt.requestMtu(mtu);
+            retry--;
+        }
+
+        try {
+            Thread.sleep(1000, 0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
