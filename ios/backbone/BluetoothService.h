@@ -17,6 +17,7 @@
 @property (nonatomic, strong) CBPeripheral *currentDevice;
 
 @property int state;
+@property int currentDeviceMode;
 
 + (BluetoothService *)getBluetoothService;
 - (id)initService;
@@ -33,6 +34,8 @@
 - (void)selectDevice:(CBPeripheral*)device;
 - (void)connectDevice:(CBPeripheral*)device completionBlock:(ErrorHandler)completionHandler;
 - (void)disconnectDevice:(ErrorHandler)completionHandler;
+
+- (BOOL)isDeviceReady;
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
 @end

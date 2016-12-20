@@ -39,12 +39,14 @@
 		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
 		66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */; };
+		690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 690A06151DF8544E00EAC570 /* OTAFileParser.m */; };
 		690F1C5B1DB8FF5100AE2E98 /* UserSettingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */; };
 		697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 697D0FE71DA3DCDC00F6FF13 /* StepModule.m */; };
 		699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 699262611DE58A28003FBBC7 /* SessionControlService.m */; };
 		69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */; };
 		69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */; };
 		69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 69CCE72A1DD4B01C0038157C /* Utilities.m */; };
+		69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69EB80541E0170E200A29ADA /* BootLoaderService.m */; };
 		7593D56BEF6AA0DB5D4CE824 /* libPods-BackboneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B98A4387B7B289536F06F13 /* libPods-BackboneTests.a */; };
 		7779D69F1C23415988AEFB18 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BCFC5E6C6634C03AB0BF3CF /* libRNSVG.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -285,6 +287,8 @@
 		669B151C1D51458700DCEFBE /* SensorNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorNotifications.m; path = backbone/SensorNotifications.m; sourceTree = "<group>"; };
 		66F918791DA9F82B00649391 /* Lato.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Lato.ttf; path = ../android/app/src/main/assets/fonts/Lato.ttf; sourceTree = "<group>"; };
 		66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "backbone/Launch Screen.storyboard"; sourceTree = "<group>"; };
+		690A06141DF8544E00EAC570 /* OTAFileParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTAFileParser.h; sourceTree = "<group>"; };
+		690A06151DF8544E00EAC570 /* OTAFileParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTAFileParser.m; sourceTree = "<group>"; };
 		690F1C591DB8FF5100AE2E98 /* UserSettingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserSettingService.h; path = backbone/UserSettingService.h; sourceTree = "<group>"; };
 		690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserSettingService.m; path = backbone/UserSettingService.m; sourceTree = "<group>"; };
 		697D0FE61DA3DCDC00F6FF13 /* StepModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StepModule.h; path = backbone/StepModule.h; sourceTree = "<group>"; };
@@ -298,6 +302,8 @@
 		69CCE7281DD4B01C0038157C /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		69CCE7291DD4B01C0038157C /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		69CCE72A1DD4B01C0038157C /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
+		69EB80531E0170E200A29ADA /* BootLoaderService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BootLoaderService.h; path = backbone/BootLoaderService.h; sourceTree = "<group>"; };
+		69EB80541E0170E200A29ADA /* BootLoaderService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BootLoaderService.m; path = backbone/BootLoaderService.m; sourceTree = "<group>"; };
 		69FCAED01DB67B8E007712A4 /* Backbone-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Backbone-Prefix.pch"; path = "backbone/Backbone-Prefix.pch"; sourceTree = "<group>"; };
 		6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -452,6 +458,8 @@
 				6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */,
 				4457C4AF1D60273200F05D92 /* BluetoothService.h */,
 				4457C4B01D60273200F05D92 /* BluetoothService.m */,
+				69EB80531E0170E200A29ADA /* BootLoaderService.h */,
+				69EB80541E0170E200A29ADA /* BootLoaderService.m */,
 				69A002ED1DDCA13B002C47FB /* DeviceInformationService.h */,
 				69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */,
 				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
@@ -579,6 +587,8 @@
 			isa = PBXGroup;
 			children = (
 				69CCE7281DD4B01C0038157C /* Constants.h */,
+				690A06141DF8544E00EAC570 /* OTAFileParser.h */,
+				690A06151DF8544E00EAC570 /* OTAFileParser.m */,
 				69CCE7291DD4B01C0038157C /* Utilities.h */,
 				69CCE72A1DD4B01C0038157C /* Utilities.m */,
 			);
@@ -1191,6 +1201,7 @@
 				6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */,
 				699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */,
 				667641271D63B90800D45761 /* Environment.m in Sources */,
+				69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */,
@@ -1205,6 +1216,7 @@
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
 				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
 				4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */,
+				690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1280,7 +1292,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 116;
+				CURRENT_PROJECT_VERSION = 121;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
@@ -1324,7 +1336,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 116;
+				CURRENT_PROJECT_VERSION = 121;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

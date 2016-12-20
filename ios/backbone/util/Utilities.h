@@ -35,10 +35,11 @@
 #import "Constants.h"
 #import <UIKit/UIKit.h>
 
-union byteArrayToFloat {
-  uint8_t byte[4];
-  float val;
-};
+typedef union {
+  uint8_t bytes[4];
+  float floatVal;
+  int intVal;
+} byteArrayUnion;
 
 @interface Utilities : NSObject
 
@@ -143,13 +144,37 @@ union byteArrayToFloat {
 
 + (NSString *) convertToHexFromASCII:(NSString *)ASCIIString;
 
+
 /*!
- *  @method convertBytesToFloat:
+ *  @method convertToFloatFromBytes:
  *
- *  @discussion Method to convert 4 bytes to float
+ *  @discussion Method to convert 4 bytes from the specified offset to float
  *
  */
-+ (float) convertToFloatFromBytes:(uint8_t*)byte;
-//+ (float) convertToFloatFromByte0:(uint8_t)byte0 byte1:(uint8_t)byte1 byte2:(uint8_t)byte2 byte3:(uint8_t)byte3;
++ (float) convertToFloatFromBytes:(uint8_t*)bytes offset:(int)idx;
+
+/*!
+ *  @method convertToIntFromBytes:
+ *
+ *  @discussion Method to convert 4 bytes from the specified offset to integer
+ *
+ */
++ (int) convertToIntFromBytes:(uint8_t*)bytes offset:(int)idx;
+
+/*!
+ *  @method getByteFromFloat:index:
+ *
+ *  @discussion Method to get the byte of an float value on the requested index
+ *
+ */
++ (uint8_t) getByteFromFloat:(float)val index:(int)idx;
+
+/*!
+ *  @method getByteFromInt:index:
+ *
+ *  @discussion Method to get the byte of an integer value on the requested index
+ *
+ */
++ (uint8_t) getByteFromInt:(int)val index:(int)idx;
 
 @end

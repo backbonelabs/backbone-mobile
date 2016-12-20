@@ -8,8 +8,8 @@ import firmware from '../utils/firmware';
 
 const { DeviceManagementService, DeviceInformationService } = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
-const { deviceStatuses, storageKeys } = constants;
 const { compareFirmware } = firmware;
+const { storageKeys } = constants;
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
 
@@ -23,7 +23,7 @@ const connectError = payload => ({
   payload,
 });
 
-function setConnectEventListener(dispatch) {
+function setConnectEventListener(dispatch, getInfo) {
   const connectionStatusListener = deviceManagementServiceEvents.addListener(
     'ConnectionStatus',
     status => {
@@ -31,6 +31,8 @@ function setConnectEventListener(dispatch) {
         dispatch(connectError(status));
       } else {
         dispatch(connect(status));
+        // Call getInfo to fetch latest device information
+        dispatch(getInfo());
       }
       connectionStatusListener.remove();
     }
@@ -72,49 +74,34 @@ const getInfoError = error => ({
 });
 
 const deviceActions = {
-  connect() {
+  connect(deviceIdentifier) {
     return (dispatch) => {
       dispatch(connectStart());
-      setConnectEventListener(dispatch);
-      DeviceManagementService.connectToDevice();
-    };
-  },
-  attemptAutoConnect() {
-    return (dispatch) => {
-      // Check current connection status with Backbone device
-      DeviceManagementService.getDeviceStatus((status) => {
-        if (status === deviceStatuses.CONNECTED) {
-          // Device is connected
-          dispatch(connect({ isConnected: true }));
-        } else {
-          // Device is not connected, check whether there is a saved device
-          DeviceManagementService.getSavedDevice((device) => {
-            if (device) {
-              // There is a saved device, attempt to connect
-              dispatch(deviceActions.connect());
-            }
-            // Do nothing if there is no saved device
-          });
-        }
-      });
+      setConnectEventListener(dispatch, deviceActions.getInfo);
+      // Connect to device with specified identifier
+      DeviceManagementService.connectToDevice(deviceIdentifier);
     };
   },
   disconnect() {
-    return (dispatch) => {
-      dispatch(disconnectStart());
-      DeviceManagementService.cancelConnection(err => {
-        if (err) {
-          dispatch(disconnectError(err));
-        } else {
-          dispatch(disconnect());
-        }
-      });
+    return (dispatch, getState) => {
+      // Attempt disconnect only if device is connected
+      if (getState().device.isConnected) {
+        dispatch(disconnectStart());
+        DeviceManagementService.cancelConnection(err => {
+          if (err) {
+            dispatch(disconnectError(err));
+          } else {
+            dispatch(disconnect());
+          }
+        });
+      }
     };
   },
   forget() {
     return (dispatch) => {
       dispatch(forgetStart());
-      DeviceManagementService.forgetDevice(err => {
+      // Disconnect device before attempting to forget
+      DeviceManagementService.cancelConnection(err => {
         if (err) {
           dispatch(forgetError(err));
         } else {
@@ -170,6 +157,8 @@ const deviceActions = {
                   // Update device store with locally stored device
                   dispatch(getInfo(deviceClone));
                 });
+              // Attempt to connect to locally stored device
+              dispatch(deviceActions.connect(device.identifier));
             } else {
               // No locally stored device, set to empty object
               dispatch(getInfo({}));
