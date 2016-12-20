@@ -226,11 +226,21 @@ class PostureMonitor extends Component {
       vibrationPattern: this.props.user.settings.vibrationPattern,
     }, err => {
       if (err) {
-        this.sessionCommandAlert({
-          message: 'An error occurred while attempting to start the session.',
-          rightLabel: 'Retry',
-          rightAction: this.startSession,
-        });
+        const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
+        const message = `An error occurred while attempting to ${verb} the session.`;
+        if (this.state.sessionState === sessionStates.STOPPED) {
+          // No session has been started, which means the initial autostart failed, so we should
+          // just navigate back since there is nothing else the user can do in this scene
+          Alert.alert('Error', message);
+          this.props.navigator.pop();
+        } else {
+          // A session was already started, so an error here would be for resuming the session
+          this.sessionCommandAlert({
+            message,
+            rightLabel: 'Retry',
+            rightAction: this.startSession,
+          });
+        }
       } else {
         this.setState({ sessionState: sessionStates.RUNNING });
       }
@@ -254,6 +264,7 @@ class PostureMonitor extends Component {
 
   @autobind
   stopSession() {
+    // TODO: Decide how we want to allow the user to leave the scene if the stop operation fails
     if (this.state.sessionState === sessionStates.STOPPED) {
       // There is no active session
       this.sessionCommandAlert({
