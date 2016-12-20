@@ -4,8 +4,10 @@ import {
   Image,
 } from 'react-native';
 import autobind from 'autobind-decorator';
+import { compact } from 'lodash';
 // import SvgUri from 'react-native-svg-uri'; replace when package updates
 import BodyText from '../../components/BodyText';
+import HeadingText from '../../components/HeadingText';
 import styles from '../../styles/posture/postureSummary';
 import theme from '../../styles/theme';
 // import summarySvg from '../../images/session/summaryCircle.svg'; replace when package updates
@@ -18,8 +20,8 @@ const getRandomNumber = (min, max) => (
 
 class PostureSummary extends Component {
   static propTypes = {
-    time: PropTypes.string,
-    goal: PropTypes.number,
+    goodPostureTime: PropTypes.number.isRequired,
+    goal: PropTypes.number.isRequired,
   }
   constructor() {
     super();
@@ -60,14 +62,30 @@ class PostureSummary extends Component {
   }
 
   render() {
+    const { goodPostureTime } = this.props;
+    const goodPostureHours = Math.floor(goodPostureTime / 3600);
+    const goodPostureMinutes = Math.floor((goodPostureTime - (goodPostureHours * 3600)) / 60);
+    const goodPostureSeconds = goodPostureTime % 60;
+
+    const goodPostureTimeStringArray = ['', '', `${goodPostureSeconds} sec`];
+    if (goodPostureHours) {
+      goodPostureTimeStringArray[0] = `${goodPostureHours} hr`;
+    }
+    if (goodPostureMinutes) {
+      goodPostureTimeStringArray[1] = `${goodPostureMinutes} min`;
+    }
+    const goodPostureTimeString = compact(goodPostureTimeStringArray).join(' ');
+
     return (
       <View style={styles.container}>
         <Image source={summaryCircle} style={styles.summaryCircle}>
           <View style={styles.summary}>
             <View style={styles.summaryOuter} />
             <View style={styles.summaryInner}>
-              <BodyText style={styles._time}>{this.props.time} mins</BodyText>
-              <BodyText style={styles._timeBodyText}>of excellent posture</BodyText>
+              <HeadingText size={2} style={styles._goodPostureTime}>
+                {goodPostureTimeString}
+              </HeadingText>
+              <BodyText style={styles._goodPostureTimeBodyText}>of excellent posture</BodyText>
             </View>
             <View style={styles.summaryOuter}>
               {
