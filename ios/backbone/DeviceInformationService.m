@@ -48,7 +48,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
   if ([BluetoothServiceInstance isDeviceReady]) {
     [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
       [self retrieveBatteryLevel:^(int value) {
-        callback(@[[NSNull null], @{@"firmwareVersion" : str, @"batteryLevel" : @(value)}]);
+        callback(@[[NSNull null], @{@"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
       }];
     }];
   }
