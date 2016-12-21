@@ -287,7 +287,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                                 if (status.equalsIgnoreCase("00")) {
                                     /**
                                      * Program Row Status Verified
-                                     * Sending Next coommand
+                                     * Sending Next command
                                      */
                                     OTAFlashRowModel modelData = flashRowList.get(rowNumber);
                                     long rowMSB = Long.parseLong(modelData.mRowNo.substring(0, 2), 16);
@@ -310,13 +310,13 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                         String result = hexValue.trim().replace(" ", "");
                         String response = result.substring(RESPONSE_START, RESPONSE_END);
                         String checksum = result.substring(DATA_START, DATA_END);
-                        int reponseBytes = Integer.parseInt(response, RADIX);
-                        switch (reponseBytes) {
+                        int responseBytes = Integer.parseInt(response, RADIX);
+                        switch (responseBytes) {
                             case CASE_SUCCESS:
                                 if (response.equalsIgnoreCase("00")) {
                                     /**
                                      * Program Row Status Verified
-                                     * Sending Next coommand
+                                     * Sending Next command
                                      */
                                     OTAFlashRowModel modelData = flashRowList.get(rowNumber);
                                     long rowMSB = Long.parseLong(modelData.mRowNo.substring(0, 2), 16);
@@ -379,7 +379,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                                 if (checkSumStatus.equalsIgnoreCase("01")) {
                                     /**
                                      * Verify Status Verified
-                                     * Sending Exit bootloader coommand
+                                     * Sending Exit bootloader command
                                      */
                                     OTAExitBootloaderCmd(checkSumType);
                                     currentCommandCode = EXIT_BOOTLOADER;
