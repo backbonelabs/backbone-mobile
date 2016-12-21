@@ -37,9 +37,6 @@
 @property (nonatomic) uint8_t checkSum;
 @property (nonatomic) BOOL isApplicationValid;
 
-@property (nonatomic, readonly) CBCharacteristic *enterBootLoaderCharacteristic;
-@property (nonatomic, readonly) CBCharacteristic *bootLoaderCharacteristic;
-
 + (BootLoaderService *)getBootLoaderService;
 
 - (id)initService;

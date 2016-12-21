@@ -56,11 +56,11 @@ RCT_EXPORT_MODULE();
  */
 RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   if ([BluetoothServiceInstance isDeviceReady] && path != nil) {
-//    DLog(@"TestFile %@", path);
-//    NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-//    NSString* path2 = [documentsPath stringByAppendingPathComponent:@"Backbone.cyacd"];
-//    path = path2;
-//    DLog(@"TestFile %@", path2);
+    DLog(@"TestFile %@", path);
+    NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSString* path2 = [documentsPath stringByAppendingPathComponent:@"Backbone.cyacd"];
+    path = path2;
+    DLog(@"TestFile %@", path2);
     BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path];
     
     if (!fileExists) {
@@ -71,7 +71,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
       _firmwareFilePath = [path copy];
       
       if (_bootLoaderState == BOOTLOADER_STATE_OFF) {
-        if (_enterBootLoaderCharacteristic != nil) {
+        if ([BluetoothServiceInstance getCharacteristicByUUID:ENTER_BOOTLOADER_CHARACTERISTIC_UUID] != nil) {
           // Restart into the BootLoader service before proceeding
           [self enterBootLoaderMode];
         }
@@ -80,7 +80,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
         }
       }
       else if (_bootLoaderState == BOOTLOADER_STATE_ON) {
-        if (_bootLoaderCharacteristic != nil) {
+        if ([BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID] != nil) {
           // Device is already in the BootLoader service, so we proceed with the firmware upload
           [self prepareFirmwareFile];
         }
@@ -109,7 +109,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   DLog(@"EnterBootLoad");
   hasPendingUpdate = YES;
   
-  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:_enterBootLoaderCharacteristic type:CBCharacteristicWriteWithResponse];
+  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ENTER_BOOTLOADER_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
 }
 
 - (void)prepareFirmwareFile {
@@ -131,7 +131,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
         hasPendingUpdate = NO;
         [_commandArray removeAllObjects];
         
-        [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:_bootLoaderCharacteristic];
+        [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID]];
         
         if ([[_fileHeaderDictionary objectForKey:CHECKSUM_TYPE] integerValue]) {
           _checkSumType = CRC_16;
@@ -156,13 +156,13 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
 }
 
 - (void)writeValueToCharacteristicWithData:(NSData*)data bootLoaderCommandCode:(unsigned short)commandCode {
-  if (data != nil && _bootLoaderCharacteristic != nil) {
+  if (data != nil && [BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID] != nil) {
     if (commandCode) {
       [_commandArray addObject:@(commandCode)];
     }
     
     DLog(@"Write Command %x %@", commandCode, BluetoothServiceInstance.currentDevice);
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:_bootLoaderCharacteristic type:CBCharacteristicWriteWithResponse];
+    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
   }
 }
 
@@ -322,20 +322,20 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
   DLog(@"Did Discover Characteristic with error: %@", error);
   
-  if ([service.UUID isEqual:BACKBONE_SERVICE_UUID]) {
-    if (error == nil) {
-      for (CBCharacteristic *characteristic in service.characteristics) {
-        if ([characteristic.UUID isEqual:ENTER_BOOTLOADER_CHARACTERISTIC_UUID]) {
-          _enterBootLoaderCharacteristic = characteristic;
-        }
-      }
-    }
-  }
-  else if ([service.UUID isEqual:BOOTLOADER_SERVICE_UUID]) {
+//  if ([service.UUID isEqual:BACKBONE_SERVICE_UUID]) {
+//    if (error == nil) {
+//      for (CBCharacteristic *characteristic in service.characteristics) {
+//        if ([characteristic.UUID isEqual:ENTER_BOOTLOADER_CHARACTERISTIC_UUID]) {
+//          _enterBootLoaderCharacteristic = characteristic;
+//        }
+//      }
+//    }
+//  }
+  if ([service.UUID isEqual:BOOTLOADER_SERVICE_UUID]) {
     if (error == nil) {
       for (CBCharacteristic *characteristic in service.characteristics) {
         if ([characteristic.UUID isEqual:BOOTLOADER_CHARACTERISTIC_UUID]) {
-          _bootLoaderCharacteristic = characteristic;
+//          _bootLoaderCharacteristic = characteristic;
           _bootLoaderState = BOOTLOADER_STATE_ON;
           
           if (hasPendingUpdate) {
