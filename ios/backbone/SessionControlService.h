@@ -7,10 +7,11 @@
 //
 
 #import <CoreBluetooth/CoreBluetooth.h>
+#import "RCTEventEmitter.h"
 #import "RCTBridgeModule.h"
 #import "Constants.h"
 
-@interface SessionControlService : NSObject <RCTBridgeModule, CBPeripheralDelegate> {
+@interface SessionControlService : RCTEventEmitter <RCTBridgeModule, CBPeripheralDelegate> {
   ErrorHandler _errorHandler;
   int currentSessionState;
   int previousSessionState;
@@ -31,8 +32,6 @@
   BOOL forceStoppedSession;
   BOOL notificationStateChanged;
 }
-
-@property (nonatomic, strong) RCTBridge *bridge;
 
 @property (nonatomic, readonly) CBCharacteristic *sessionControlCharacteristic;
 @property (nonatomic, readonly) CBCharacteristic *distanceCharacteristic;

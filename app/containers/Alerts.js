@@ -49,10 +49,9 @@ const VibrationSettings = props => (
       </View>
       <View style={styles.slider}>
         <Slider
-          // TO DO: Update when values for vibrationStrength are finalized
-          minimumValue={0.1}
-          maximumValue={1}
-          step={0.1}
+          minimumValue={20}
+          maximumValue={100}
+          step={10}
           thumbImage={thumbImage}
           trackImage={trackImage}
           value={props.user.settings.vibrationStrength}
