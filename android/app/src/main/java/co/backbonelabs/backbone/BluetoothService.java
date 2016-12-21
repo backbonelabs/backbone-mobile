@@ -78,8 +78,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private HashMap<UUID, Boolean> serviceMap;
     private HashMap<UUID, BluetoothGattCharacteristic> characteristicMap;
 
-    private boolean shouldCloseGatt = false;
-
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -475,10 +473,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         if (currentDevice != null) {
             connectDevice(currentDeviceIdentifier, null);
         }
-    }
-
-    public void setShouldCloseGatt(boolean state) {
-        shouldCloseGatt = state;
     }
 
     public boolean isDeviceReady() {
