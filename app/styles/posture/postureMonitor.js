@@ -4,6 +4,9 @@ import relativeDimensions from '../../utils/relativeDimensions';
 const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 const responsiveWidthHalfCircle = applyWidthDifference(128.5);
 
+const totalPointerWidth = applyWidthDifference(10);
+const totalPointerLength = applyWidthDifference(88);
+
 export default EStyleSheet.create({
   $sliderIconSize: fixedResponsiveFontSize(15),
   $sliderIconPadding: applyWidthDifference(5),
@@ -27,33 +30,35 @@ export default EStyleSheet.create({
     },
   },
   monitorPointerContainer: {
+    flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',
-    height: '$pointerBaseHeight * 2',
-    bottom: '$pointerBaseHeight',
-    marginBottom: '$pointerBaseHeight * -2',
+    justifyContent: 'flex-end',
+    height: totalPointerWidth,
+    width: (totalPointerLength * 2) - applyWidthDifference(8),
+    marginTop: totalPointerWidth * -0.5,
   },
   base: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: applyWidthDifference(8),
+    height: applyWidthDifference(8),
+    borderRadius: applyWidthDifference(4),
     backgroundColor: '$primaryFontColor',
   },
   hand: {
-    width: 2,
-    height: 70,
+    height: applyWidthDifference(2),
+    width: applyWidthDifference(70),
     backgroundColor: '$primaryFontColor',
   },
   point: {
     backgroundColor: 'transparent',
-    borderTopWidth: 0,
-    borderRightWidth: 5,
-    borderBottomWidth: 10,
-    borderLeftWidth: 5,
-    borderTopColor: 'transparent',
+    borderRightWidth: 0,
+    borderTopWidth: applyWidthDifference(5),
+    borderLeftWidth: applyWidthDifference(10),
+    borderBottomWidth: applyWidthDifference(5),
     borderRightColor: 'transparent',
-    borderBottomColor: '$primaryFontColor',
-    borderLeftColor: 'transparent',
+    borderTopColor: 'transparent',
+    borderLeftColor: '$primaryFontColor',
+    borderBottomColor: 'transparent',
   },
   monitorTitle: {
     textAlign: 'center',

@@ -13,7 +13,7 @@ const { applyWidthDifference } = relativeDimensions;
 const responsiveWidth = applyWidthDifference(136);
 
 const Monitor = (props) => {
-  const { degree, slouchDetection } = props;
+  const { pointerPosition, slouchPosition } = props;
 
   return (
     <View style={{ alignSelf: 'center' }}>
@@ -39,25 +39,30 @@ const Monitor = (props) => {
       <View style={styles.halfCircleOuterContainer}>
         <View
           style={[
-            { transform: [{ rotate: `${slouchDetection}deg` }] },
+            { transform: [{ rotate: `${slouchPosition}deg` }] },
             styles.halfCircleInnerContainer,
           ]}
         >
           <View style={styles.halfCircle} />
         </View>
       </View>
-      <View style={[{ transform: [{ rotate: `${degree}deg` }] }, styles.monitorPointerContainer]}>
-        <View style={styles.point} />
-        <View style={styles.hand} />
+      <View
+        style={[
+          { transform: [{ rotate: `${pointerPosition}deg` }] },
+          styles.monitorPointerContainer,
+        ]}
+      >
         <View style={styles.base} />
+        <View style={styles.hand} />
+        <View style={styles.point} />
       </View>
     </View>
   );
 };
 
 Monitor.propTypes = {
-  degree: PropTypes.number,
-  slouchDetection: PropTypes.number,
+  pointerPosition: PropTypes.number,
+  slouchPosition: PropTypes.number,
 };
 
 export default Monitor;
