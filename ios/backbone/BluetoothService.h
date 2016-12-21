@@ -7,6 +7,7 @@
   BOOL _isObserving;
   NSDictionary *stateMap;
   NSMutableDictionary *_servicesFound;
+  NSMutableDictionary *_characteristicMap;
   NSMutableArray *_characteristicDelegates;
 }
 
@@ -36,6 +37,7 @@
 - (void)disconnectDevice:(ErrorHandler)completionHandler;
 
 - (BOOL)isDeviceReady;
+- (CBCharacteristic*)getCharacteristicByUUID:(CBUUID*)uuid;
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
 @end
