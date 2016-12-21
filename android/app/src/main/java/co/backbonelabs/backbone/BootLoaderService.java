@@ -6,20 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.EventEmitter;
 import co.backbonelabs.backbone.util.OTAFileParser;
 import co.backbonelabs.backbone.util.OTAFlashRowModel;
 import co.backbonelabs.backbone.util.Utilities;
@@ -32,7 +30,7 @@ import static co.backbonelabs.backbone.util.Constants.BOOTLOADER_ERROR_CONSTANTS
 
 public class BootLoaderService extends ReactContextBaseJavaModule implements OTAFileParser.FileReadStatusUpdater {
     private static BootLoaderService instance = null;
-    private ReactContext reactContext;
+    private ReactApplicationContext reactContext;
 
     private int bootLoaderState;
     private boolean hasPendingUpdate;
@@ -147,14 +145,14 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
         Timber.d("Firmware Upload Progress: %d", fileWritingProgress);
         WritableMap wm = Arguments.createMap();
         wm.putInt("percentage", fileWritingProgress);
-        sendEvent(reactContext, "FirmwareUploadProgress", wm);
+        EventEmitter.send(reactContext, "FirmwareUploadProgress", wm);
     }
 
     private void firmwareUpdateStatus(int status) {
         Timber.d("Firmware Update State: %d", status);
         WritableMap wm = Arguments.createMap();
         wm.putInt("status", status);
-        sendEvent(reactContext, "FirmwareUpdateStatus", wm);
+        EventEmitter.send(reactContext, "FirmwareUpdateStatus", wm);
     }
 
     public void firmwareUpdated() {
@@ -184,10 +182,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
             if (action.equals(Constants.ACTION_CHARACTERISTIC_FOUND)) {
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
 
-                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.ENTER_BOOTLOADER_CHARACTERISTIC.toString())) {
-                    bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ENTER_BOOTLOADER_CHARACTERISTIC, true);
-                }
-                else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC.toString())) {
+                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC.toString())) {
 //                    if (!bluetoothService.getBondedState()) {
 //                        bluetoothService.pairDevice();
 //                    }
@@ -205,199 +200,202 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                 }
             }
             else if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
-                Timber.d("Bootloader Value Update");
                 byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
+                String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
 
-                String hexValue = Utilities.ByteArraytoHex(responseArray);
+                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC.toString())) {
+                    Timber.d("Bootloader Value Update");
+                    String hexValue = Utilities.ByteArraytoHex(responseArray);
 
-                Timber.d("hexValue %s", hexValue);
-                switch (currentCommandCode) {
-                    case Constants.BOOTLOADER_COMMANDS.ENTER_BOOTLOADER: {
-                        String result = hexValue.trim().replace(" ", "");
-                        String response = result.substring(RESPONSE_START, RESPONSE_END);
+                    Timber.d("hexValue %s", hexValue);
+                    switch (currentCommandCode) {
+                        case Constants.BOOTLOADER_COMMANDS.ENTER_BOOTLOADER: {
+                            String result = hexValue.trim().replace(" ", "");
+                            String response = result.substring(RESPONSE_START, RESPONSE_END);
 
-                        int reponseBytes = Integer.parseInt(response, RADIX);
-                        switch (reponseBytes) {
-                            case CASE_SUCCESS:
-                                String siliconID = result.substring(SILICON_ID_START, SILICON_ID_END);
-                                String siliconRev = result.substring(SILICON_REV_START, SILICON_REV_END);
+                            int reponseBytes = Integer.parseInt(response, RADIX);
+                            switch (reponseBytes) {
+                                case CASE_SUCCESS:
+                                    String siliconID = result.substring(SILICON_ID_START, SILICON_ID_END);
+                                    String siliconRev = result.substring(SILICON_REV_START, SILICON_REV_END);
 
-                                if (siliconID.equalsIgnoreCase(currentSiliconID) && siliconRev.equalsIgnoreCase(currentSiliconRev)) {
-                                    OTAFlashRowModel modelData = flashRowList.get(0);
-                                    byte[] data = new byte[1];
-                                    data[0] = (byte) modelData.mArrayId;
-                                    currentArrayID = Byte.valueOf(data[0]);
+                                    if (siliconID.equalsIgnoreCase(currentSiliconID) && siliconRev.equalsIgnoreCase(currentSiliconRev)) {
+                                        OTAFlashRowModel modelData = flashRowList.get(0);
+                                        byte[] data = new byte[1];
+                                        data[0] = (byte) modelData.mArrayId;
+                                        currentArrayID = Byte.valueOf(data[0]);
 
-                                    /**
-                                     * Writing the next command
-                                     * Changing the shared preference value
-                                     */
-                                    int dataLength = data.length;
-                                    OTAGetFlashSizeCmd(data, checkSumType, dataLength);
+                                        /**
+                                         * Writing the next command
+                                         * Changing the shared preference value
+                                         */
+                                        int dataLength = data.length;
+                                        OTAGetFlashSizeCmd(data, checkSumType, dataLength);
 
-                                    currentCommandCode = GET_FLASH_SIZE;
-                                }
-                                break;
-                            default:
-                                break;
+                                        currentCommandCode = GET_FLASH_SIZE;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
                         break;
-                    case GET_FLASH_SIZE: {
-                        String result = hexValue.trim().replace(" ", "");
-                        String response = result.substring(RESPONSE_START, RESPONSE_END);
+                        case GET_FLASH_SIZE: {
+                            String result = hexValue.trim().replace(" ", "");
+                            String response = result.substring(RESPONSE_START, RESPONSE_END);
 
-                        int reponseBytes = Integer.parseInt(response, RADIX);
-                        switch (reponseBytes) {
-                            case CASE_SUCCESS:
-                                startRow = Utilities.swap(Integer.parseInt(result.substring(START_ROW_START, START_ROW_END), RADIX));
-                                endRow = Utilities.swap(Integer.parseInt(result.substring(END_ROW_START, END_ROW_END), RADIX));
+                            int reponseBytes = Integer.parseInt(response, RADIX);
+                            switch (reponseBytes) {
+                                case CASE_SUCCESS:
+                                    startRow = Utilities.swap(Integer.parseInt(result.substring(START_ROW_START, START_ROW_END), RADIX));
+                                    endRow = Utilities.swap(Integer.parseInt(result.substring(END_ROW_START, END_ROW_END), RADIX));
 
-                                writeProgrammableData(rowNumber);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                        break;
-                    case SEND_DATA: {
-                        String result = hexValue.trim().replace(" ", "");
-                        String response = result.substring(RESPONSE_START, RESPONSE_END);
-                        String status = result.substring(STATUS_START, STATUS_END);
-                        int reponseBytes = Integer.parseInt(response, RADIX);
-                        switch (reponseBytes) {
-                            case CASE_SUCCESS:
-                                if (status.equalsIgnoreCase("00")) {
                                     writeProgrammableData(rowNumber);
-                                }
-                                break;
-                            default:
-
-                                break;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
                         break;
-                    case PROGRAM_ROW: {
-                        String result = hexValue.trim().replace(" ", "");
-                        String response = result.substring(RESPONSE_START, RESPONSE_END);
-                        String status = result.substring(STATUS_START, STATUS_END);
-                        int reponseBytes = Integer.parseInt(response, RADIX);
-                        switch (reponseBytes) {
-                            case CASE_SUCCESS:
-                                if (status.equalsIgnoreCase("00")) {
-                                    /**
-                                     * Program Row Status Verified
-                                     * Sending Next command
-                                     */
-                                    OTAFlashRowModel modelData = flashRowList.get(rowNumber);
-                                    long rowMSB = Long.parseLong(modelData.mRowNo.substring(0, 2), 16);
-                                    long rowLSB = Long.parseLong(modelData.mRowNo.substring(2, 4), 16);
-
-                                    /**
-                                     * Writing the next command
-                                     * Changing the shared preference value
-                                     */
-                                    OTAVerifyRowCmd(rowMSB, rowLSB, modelData, checkSumType);
-                                    currentCommandCode = VERIFY_ROW;
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                        break;
-                    case VERIFY_ROW: {
-                        String result = hexValue.trim().replace(" ", "");
-                        String response = result.substring(RESPONSE_START, RESPONSE_END);
-                        String checksum = result.substring(DATA_START, DATA_END);
-                        int responseBytes = Integer.parseInt(response, RADIX);
-                        switch (responseBytes) {
-                            case CASE_SUCCESS:
-                                if (response.equalsIgnoreCase("00")) {
-                                    /**
-                                     * Program Row Status Verified
-                                     * Sending Next command
-                                     */
-                                    OTAFlashRowModel modelData = flashRowList.get(rowNumber);
-                                    long rowMSB = Long.parseLong(modelData.mRowNo.substring(0, 2), 16);
-                                    long rowLSB = Long.parseLong(modelData.mRowNo.substring(2, 4), 16);
-
-                                    byte[] checkSumVerify = new byte[6];
-                                    checkSumVerify[0] = (byte) modelData.mRowCheckSum;
-                                    checkSumVerify[1] = (byte) modelData.mArrayId;
-                                    checkSumVerify[2] = (byte) rowMSB;
-                                    checkSumVerify[3] = (byte) rowLSB;
-                                    checkSumVerify[4] = (byte) (modelData.mDataLength);
-                                    checkSumVerify[5] = (byte) ((modelData.mDataLength) >> 8);
-                                    String fileCheckSumCalculated = Integer.toHexString(Utilities.calculateCheckSumVerifyRow(6, checkSumVerify));
-                                    int fileCheckSumCalculatedLength = fileCheckSumCalculated.length();
-                                    String fileCheckSumByte = null;
-
-                                    if (fileCheckSumCalculatedLength >= 2) {
-                                        fileCheckSumByte = fileCheckSumCalculated.substring((fileCheckSumCalculatedLength - 2),
-                                                fileCheckSumCalculatedLength);
-                                    } else {
-                                        fileCheckSumByte = "0" + fileCheckSumCalculated;
+                        case SEND_DATA: {
+                            String result = hexValue.trim().replace(" ", "");
+                            String response = result.substring(RESPONSE_START, RESPONSE_END);
+                            String status = result.substring(STATUS_START, STATUS_END);
+                            int reponseBytes = Integer.parseInt(response, RADIX);
+                            switch (reponseBytes) {
+                                case CASE_SUCCESS:
+                                    if (status.equalsIgnoreCase("00")) {
+                                        writeProgrammableData(rowNumber);
                                     }
+                                    break;
+                                default:
 
-                                    if (fileCheckSumByte.equalsIgnoreCase(checksum)) {
-                                        rowNumber = rowNumber + 1;
+                                    break;
+                            }
+                        }
+                        break;
+                        case PROGRAM_ROW: {
+                            String result = hexValue.trim().replace(" ", "");
+                            String response = result.substring(RESPONSE_START, RESPONSE_END);
+                            String status = result.substring(STATUS_START, STATUS_END);
+                            int reponseBytes = Integer.parseInt(response, RADIX);
+                            switch (reponseBytes) {
+                                case CASE_SUCCESS:
+                                    if (status.equalsIgnoreCase("00")) {
+                                        /**
+                                         * Program Row Status Verified
+                                         * Sending Next command
+                                         */
+                                        OTAFlashRowModel modelData = flashRowList.get(rowNumber);
+                                        long rowMSB = Long.parseLong(modelData.mRowNo.substring(0, 2), 16);
+                                        long rowLSB = Long.parseLong(modelData.mRowNo.substring(2, 4), 16);
 
-                                        // Update upload progress
-                                        fileWritingProgress = (int)((rowNumber * 1.0 / fileTotalLines) * 100);
-                                        firmwareUploadProgress();
+                                        /**
+                                         * Writing the next command
+                                         * Changing the shared preference value
+                                         */
+                                        OTAVerifyRowCmd(rowMSB, rowLSB, modelData, checkSumType);
+                                        currentCommandCode = VERIFY_ROW;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        break;
+                        case VERIFY_ROW: {
+                            String result = hexValue.trim().replace(" ", "");
+                            String response = result.substring(RESPONSE_START, RESPONSE_END);
+                            String checksum = result.substring(DATA_START, DATA_END);
+                            int responseBytes = Integer.parseInt(response, RADIX);
+                            switch (responseBytes) {
+                                case CASE_SUCCESS:
+                                    if (response.equalsIgnoreCase("00")) {
+                                        /**
+                                         * Program Row Status Verified
+                                         * Sending Next command
+                                         */
+                                        OTAFlashRowModel modelData = flashRowList.get(rowNumber);
+                                        long rowMSB = Long.parseLong(modelData.mRowNo.substring(0, 2), 16);
+                                        long rowLSB = Long.parseLong(modelData.mRowNo.substring(2, 4), 16);
 
-                                        if (rowNumber < flashRowList.size()) {
-                                            writeProgrammableData(rowNumber);
+                                        byte[] checkSumVerify = new byte[6];
+                                        checkSumVerify[0] = (byte) modelData.mRowCheckSum;
+                                        checkSumVerify[1] = (byte) modelData.mArrayId;
+                                        checkSumVerify[2] = (byte) rowMSB;
+                                        checkSumVerify[3] = (byte) rowLSB;
+                                        checkSumVerify[4] = (byte) (modelData.mDataLength);
+                                        checkSumVerify[5] = (byte) ((modelData.mDataLength) >> 8);
+                                        String fileCheckSumCalculated = Integer.toHexString(Utilities.calculateCheckSumVerifyRow(6, checkSumVerify));
+                                        int fileCheckSumCalculatedLength = fileCheckSumCalculated.length();
+                                        String fileCheckSumByte = null;
+
+                                        if (fileCheckSumCalculatedLength >= 2) {
+                                            fileCheckSumByte = fileCheckSumCalculated.substring((fileCheckSumCalculatedLength - 2),
+                                                    fileCheckSumCalculatedLength);
+                                        } else {
+                                            fileCheckSumByte = "0" + fileCheckSumCalculated;
                                         }
 
-                                        if (rowNumber == flashRowList.size()) {
-                                            /**
-                                             * Writing the next command
-                                             * Changing the shared preference value
-                                             */
-                                            currentCommandCode = VERIFY_CHECK_SUM;
-                                            OTAVerifyCheckSumCmd(checkSumType);
-                                        }
-                                    } else {
+                                        if (fileCheckSumByte.equalsIgnoreCase(checksum)) {
+                                            rowNumber = rowNumber + 1;
 
+                                            // Update upload progress
+                                            fileWritingProgress = (int)((rowNumber * 1.0 / fileTotalLines) * 100);
+                                            firmwareUploadProgress();
+
+                                            if (rowNumber < flashRowList.size()) {
+                                                writeProgrammableData(rowNumber);
+                                            }
+
+                                            if (rowNumber == flashRowList.size()) {
+                                                /**
+                                                 * Writing the next command
+                                                 * Changing the shared preference value
+                                                 */
+                                                currentCommandCode = VERIFY_CHECK_SUM;
+                                                OTAVerifyCheckSumCmd(checkSumType);
+                                            }
+                                        } else {
+
+                                        }
                                     }
-                                }
-                                break;
-                            default:
-                                break;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
                         break;
-                    case VERIFY_CHECK_SUM: {
-                        String result = hexValue.trim().replace(" ", "");
-                        String response = result.substring(RESPONSE_START, RESPONSE_END);
-                        String checkSumStatus = result.substring(CHECKSUM_START, CHECKSUM_END);
-                        int reponseBytes = Integer.parseInt(response, RADIX);
-                        switch (reponseBytes) {
-                            case CASE_SUCCESS:
-                                if (checkSumStatus.equalsIgnoreCase("01")) {
-                                    /**
-                                     * Verify Status Verified
-                                     * Sending Exit bootloader command
-                                     */
-                                    OTAExitBootloaderCmd(checkSumType);
-                                    currentCommandCode = EXIT_BOOTLOADER;
-                                }
-                                break;
-                            default:
-                                break;
+                        case VERIFY_CHECK_SUM: {
+                            String result = hexValue.trim().replace(" ", "");
+                            String response = result.substring(RESPONSE_START, RESPONSE_END);
+                            String checkSumStatus = result.substring(CHECKSUM_START, CHECKSUM_END);
+                            int reponseBytes = Integer.parseInt(response, RADIX);
+                            switch (reponseBytes) {
+                                case CASE_SUCCESS:
+                                    if (checkSumStatus.equalsIgnoreCase("01")) {
+                                        /**
+                                         * Verify Status Verified
+                                         * Sending Exit bootloader command
+                                         */
+                                        OTAExitBootloaderCmd(checkSumType);
+                                        currentCommandCode = EXIT_BOOTLOADER;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
                         break;
-                    case EXIT_BOOTLOADER: {
-                        Timber.d("Firmware Upgrade Success");
-                        String response = hexValue.trim().replace(" ", "");
+                        case EXIT_BOOTLOADER: {
+                            Timber.d("Firmware Upgrade Success");
+                            String response = hexValue.trim().replace(" ", "");
 //                        BluetoothService.getInstance().unpairDevice();
-                        BluetoothService.getInstance().disconnect();
+                            BluetoothService.getInstance().disconnect();
+                        }
+                        default:
+                            break;
                     }
-                    default:
-                        break;
                 }
             }
             else if (action.equals(Constants.ACTION_CHARACTERISTIC_WRITE)) {
@@ -740,12 +738,5 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
         commandBytes[BYTE_PACKET_END] = (byte) PACKET_END;
         Timber.d("OTAExitBootloaderCmd");
         BluetoothService.getInstance().writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC, commandBytes);
-    }
-
-    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-        Timber.d("sendEvent");
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
     }
 }
