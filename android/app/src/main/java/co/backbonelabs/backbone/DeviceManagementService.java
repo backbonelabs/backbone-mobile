@@ -97,7 +97,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         final BluetoothService bluetoothService = BluetoothService.getInstance();
         BluetoothDevice device = bluetoothService.findDeviceByAddress(identifier);
         if (device != null) {
-            bluetoothService.connectDevice(device, new BluetoothService.DeviceConnectionCallBack() {
+            bluetoothService.connectDevice(identifier, new BluetoothService.DeviceConnectionCallBack() {
                 @Override
                 public void onDeviceConnected() {
                     Timber.d("DeviceConnected");
