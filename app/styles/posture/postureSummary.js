@@ -33,14 +33,10 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  time: {
-    fontSize: fixedResponsiveFontSize(36),
-    '@media (max-width: 320)': { // iphone4's max width
-      fontSize: fixedResponsiveFontSize(25),
-    },
+  goodPostureTime: {
     color: '$fontColor',
   },
-  timeBodyText: {
+  goodPostureTimeBodyText: {
     color: '$fontColor',
   },
   goal: {

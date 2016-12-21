@@ -46,6 +46,7 @@
 		69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */; };
 		69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */; };
 		69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 69CCE72A1DD4B01C0038157C /* Utilities.m */; };
+		69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69EB80541E0170E200A29ADA /* BootLoaderService.m */; };
 		7593D56BEF6AA0DB5D4CE824 /* libPods-BackboneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B98A4387B7B289536F06F13 /* libPods-BackboneTests.a */; };
 		7779D69F1C23415988AEFB18 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BCFC5E6C6634C03AB0BF3CF /* libRNSVG.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -285,6 +286,8 @@
 		69CCE7281DD4B01C0038157C /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		69CCE7291DD4B01C0038157C /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		69CCE72A1DD4B01C0038157C /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
+		69EB80531E0170E200A29ADA /* BootLoaderService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BootLoaderService.h; path = backbone/BootLoaderService.h; sourceTree = "<group>"; };
+		69EB80541E0170E200A29ADA /* BootLoaderService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BootLoaderService.m; path = backbone/BootLoaderService.m; sourceTree = "<group>"; };
 		69FCAED01DB67B8E007712A4 /* Backbone-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Backbone-Prefix.pch"; path = "backbone/Backbone-Prefix.pch"; sourceTree = "<group>"; };
 		6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -433,6 +436,8 @@
 				6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */,
 				4457C4AF1D60273200F05D92 /* BluetoothService.h */,
 				4457C4B01D60273200F05D92 /* BluetoothService.m */,
+				69EB80531E0170E200A29ADA /* BootLoaderService.h */,
+				69EB80541E0170E200A29ADA /* BootLoaderService.m */,
 				69A002ED1DDCA13B002C47FB /* DeviceInformationService.h */,
 				69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */,
 				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
@@ -1134,6 +1139,7 @@
 				6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */,
 				699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */,
 				667641271D63B90800D45761 /* Environment.m in Sources */,
+				69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */,
@@ -1220,7 +1226,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 119;
+				CURRENT_PROJECT_VERSION = 122;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
@@ -1262,7 +1268,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 119;
+				CURRENT_PROJECT_VERSION = 122;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
