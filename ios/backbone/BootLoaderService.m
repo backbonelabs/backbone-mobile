@@ -56,11 +56,11 @@ RCT_EXPORT_MODULE();
  */
 RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   if ([BluetoothServiceInstance isDeviceReady] && path != nil) {
-    DLog(@"TestFile %@", path);
-    NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-    NSString* path2 = [documentsPath stringByAppendingPathComponent:@"Backbone.cyacd"];
-    path = path2;
-    DLog(@"TestFile %@", path2);
+//    DLog(@"TestFile %@", path);
+//    NSString* documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+//    NSString* path2 = [documentsPath stringByAppendingPathComponent:@"Backbone.cyacd"];
+//    path = path2;
+//    DLog(@"TestFile %@", path2);
     BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:path];
     
     if (!fileExists) {
