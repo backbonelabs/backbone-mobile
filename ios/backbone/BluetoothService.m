@@ -222,9 +222,11 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
     [self.centralManager connectPeripheral:self.currentDevice options:nil];
   }
   else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
-    DLog(@"Reconnect Updated %@", self.currentDevice);
-    // Firmware upgrade finished, reconnect to the normal Backbone service
-    [self.centralManager connectPeripheral:self.currentDevice options:nil];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+      DLog(@"Reconnect Updated %@", self.currentDevice);
+      // Firmware upgrade finished, reconnect to the normal Backbone service
+      [self.centralManager connectPeripheral:self.currentDevice options:nil];
+    });
   }
   else {
     if (error) {
@@ -301,6 +303,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
         // Successfully restarted after upgrading firmware
         DLog(@"Firmware Updated Successfully");
+        DLog(@"CURRENT DEVICE %i", self.currentDeviceMode);
         [[BootLoaderService getBootLoaderService] firmwareUpdated];
       }
       else {
