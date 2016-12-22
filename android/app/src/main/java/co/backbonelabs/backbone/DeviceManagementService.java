@@ -162,7 +162,8 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         Runnable runnable = new Runnable(){
             public void run() {
                 Timber.d("Check connection timeout");
-                if (BluetoothService.getInstance().getDeviceState() != BluetoothProfile.STATE_CONNECTED) {
+                if (BluetoothService.getInstance().getDeviceState() != BluetoothProfile.STATE_CONNECTED
+                        && BootLoaderService.getInstance().getBootLoaderState() == Constants.BOOTLOADER_STATES.OFF) {
                     Timber.d("Device connection timeout");
                     BluetoothService.getInstance().disconnect();
                     WritableMap wm = Arguments.createMap();
