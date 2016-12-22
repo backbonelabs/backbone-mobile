@@ -2,19 +2,17 @@ import {
   NativeModules,
   NativeEventEmitter,
 } from 'react-native';
-import ReactNativeFS from 'react-native-fs';
 import Fetcher from '../utils/Fetcher';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
 const {
   Environment,
-  BootLoaderService,
   DeviceManagementService,
   DeviceInformationService,
 } = NativeModules;
 const { storageKeys } = constants;
-const firmwareUrl = { url: `${Environment.API_SERVER_URL}/firmware` };
+const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
@@ -43,6 +41,30 @@ function setConnectEventListener(dispatch, getInfo) {
       connectionStatusListener.remove();
     }
   );
+}
+
+function checkFirmware(firmwareVersion) {
+  // Fetch device firmware details
+  return Fetcher.get({ url: firmwareUrl })
+    .then(res => res.json()
+      .then(body => {
+        let updateAvailable = false;
+        // Split firmware versions into array for digit-by-digit comparison
+        const newFirmware = body.version.split('.');
+        const currentFirmware = firmwareVersion.split('.');
+
+        // Check and compare each of the firmware version digits in order
+        // Use for loop, since forEach can't be interrupted
+        for (let i = 0; i < newFirmware.length; i++) {
+          if (newFirmware[i] > currentFirmware[i]) {
+            updateAvailable = true;
+            break;
+          }
+        }
+
+        return updateAvailable;
+      })
+    );
 }
 
 const disconnectStart = () => ({ type: 'DEVICE_DISCONNECT__START' });
@@ -133,7 +155,7 @@ const deviceActions = {
             const resultsClone = { ...results, updateAvailable: false };
 
             // If there's new firmware, set updateAvailable to true
-            deviceActions.checkFirmware(results.firmwareVersion)
+            checkFirmware(results.firmwareVersion)
               .then(updateAvailable => {
                 if (updateAvailable) {
                   resultsClone.updateAvailable = true;
@@ -154,7 +176,7 @@ const deviceActions = {
               const deviceClone = { ...device, updateAvailable: false };
 
               // If there's new firmware, set updateAvailable to true
-              deviceActions.checkFirmware(device.firmwareVersion)
+              checkFirmware(device.firmwareVersion)
                 .then(updateAvailable => {
                   if (updateAvailable) {
                     deviceClone.updateAvailable = true;
@@ -172,49 +194,6 @@ const deviceActions = {
           });
       }
     };
-  },
-  checkFirmware(firmwareVersion) {
-    // Fetch device firmware details
-    return Fetcher.get(firmwareUrl)
-      .then(res => res.json()
-        .then(body => {
-          let updateAvailable = false;
-          // Split firmware versions into array for digit-by-digit comparison
-          const newFirmware = body.version.split('.');
-          const currentFirmware = firmwareVersion.split('.');
-
-          // Check and compare each of the firmware version digits in order
-          // Use for loop, since forEach can't be interrupted
-          for (let i = 0; i < newFirmware.length; i++) {
-            if (newFirmware[i] > currentFirmware[i]) {
-              updateAvailable = true;
-              break;
-            }
-          }
-
-          return updateAvailable;
-        })
-      );
-  },
-  downloadFirmware() {
-    // Store local filepath to firmware
-    const firmwareFilepath = `${ReactNativeFS.DocumentDirectoryPath}/Backbone.cyacd`;
-
-    return Fetcher.get(firmwareUrl)
-      .then(res => res.json()
-        .then(body => (
-          ReactNativeFS.downloadFile({
-            fromUrl: body.url,
-            toFile: firmwareFilepath,
-          })
-        ))
-        .then(result => result.promise.then(downloadResult => {
-          // Successful file download attempt
-          if (downloadResult.statusCode === 200) {
-            BootLoaderService.initiateFirmwareUpdate(firmwareFilepath);
-          }
-        }))
-      );
   },
 };
 
