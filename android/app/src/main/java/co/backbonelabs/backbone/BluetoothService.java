@@ -191,6 +191,24 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     serviceMap.clear();
                     characteristicMap.clear();
 
+                    try {
+                        Method refreshMethod = bleGatt.getClass().getMethod("refresh", null);
+                        if (refreshMethod != null) {
+                            Timber.d("Clearing cache of GATT services");
+                            boolean clearStatus = ((boolean)refreshMethod.invoke(bleGatt));
+                            Timber.d("Cache clear %b", clearStatus);
+                        }
+                    } catch (Exception localException) {
+                        Timber.e(localException, "Couldn't find refresh method");
+                    }
+
+                    // Set up some delay to finish the cache clearing before closing the GATT
+                    try {
+                        Thread.sleep(1000, 0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                     bleGatt.close();
                     bleGatt = null;
 
@@ -454,15 +472,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         currentDeviceIdentifier = currentDevice.getAddress();
 
         bleGatt = currentDevice.connectGatt(getCurrentActivity(), false, gattCallback);
-        try {
-            Method refreshMethod = bleGatt.getClass().getMethod("refresh", null);
-            if (refreshMethod != null) {
-                Timber.d("Clearing cache of GATT services");
-                refreshMethod.invoke(bleGatt);
-            }
-        } catch (Exception localException) {
-            Timber.e(localException, "Couldn't find refresh method");
-        }
 
         if (callBack != null) {
             connectionCallBack = callBack;
