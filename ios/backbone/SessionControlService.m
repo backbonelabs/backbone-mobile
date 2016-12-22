@@ -338,9 +338,9 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       float currentDistance = [Utilities convertToFloatFromBytes:dataPointer offset:0];
       
-      [self.bridge.eventDispatcher sendAppEventWithName:@"PostureDistance" body:@{
-                                                                                  @"currentDistance": [NSNumber numberWithFloat:currentDistance]
-                                                                                  }];
+      [self sendEventWithName:@"PostureDistance" body:@{
+                                                        @"currentDistance": [NSNumber numberWithFloat:currentDistance]
+                                                        }];
     }
     else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
@@ -352,11 +352,11 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       // Check the Least-Significant Bit of the flags to retrieve the current session state
       bool hasActiveSession = (flags % 2 == 1);
       
-      [self.bridge.eventDispatcher sendAppEventWithName:@"SessionStatistics" body:@{
-                                                                                    @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
-                                                                                    @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
-                                                                                    @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
-                                                                                    }];
+      [self sendEventWithName:@"SessionStatistics" body:@{
+                                                          @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
+                                                          @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
+                                                          @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
+                                                          }];
       
       // This notification indicates the end of a session
       // So we have to disable all notifications after we receive it
@@ -378,9 +378,9 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       
       bool isSlouching = (dataPointer[0] % 2 == 1);
       
-      [self.bridge.eventDispatcher sendAppEventWithName:@"SlouchStatus" body:@{
-                                                                               @"isSlouching": [NSNumber numberWithBool:isSlouching]
-                                                                               }];
+      [self sendEventWithName:@"SlouchStatus" body:@{
+                                                     @"isSlouching": [NSNumber numberWithBool:isSlouching]
+                                                     }];
     }
   }
 }

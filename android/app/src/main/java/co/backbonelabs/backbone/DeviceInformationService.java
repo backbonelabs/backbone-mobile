@@ -55,7 +55,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void getDeviceInformation(final Callback callback) {
-        BluetoothService bluetoothService = BluetoothService.getInstance();
+        final BluetoothService bluetoothService = BluetoothService.getInstance();
 
         if (bluetoothService.isDeviceReady()) {
             retrieveFirmwareVersion(new Constants.StringCallBack() {
@@ -68,6 +68,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                         public void onIntCallBack(int level) {
                             Timber.d("Found battery %d", level);
                             WritableMap wm = Arguments.createMap();
+                            wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
                             wm.putString("firmwareVersion", version);
                             wm.putInt("batteryLevel", level);
 
