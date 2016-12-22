@@ -19,10 +19,10 @@ import styles from '../styles/firmwareUpdate';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
 
-const { firmwareStatuses: {
-  FIRMWARE_UPDATE_STATE_BEGIN,
-  FIRMWARE_UPDATE_STATE_END_SUCCESS,
-  FIRMWARE_UPDATE_STATE_END_ERROR,
+const { firmwareUpdateStates: {
+  BEGIN,
+  END_SUCCESS,
+  END_ERROR,
 } } = constants;
 
 const { BootLoaderService, Environment } = NativeModules;
@@ -99,14 +99,14 @@ class FirmwareUpdate extends Component {
   firmwareUpdateStatusHandler(status) {
     const { status: firmwareStatus } = status;
     // Firmware update begins
-    if (firmwareStatus === FIRMWARE_UPDATE_STATE_BEGIN) {
+    if (firmwareStatus === BEGIN) {
       this.setState({ isUpdating: true });
     } else if (
       // Firmware update ends
-      firmwareStatus === FIRMWARE_UPDATE_STATE_END_SUCCESS ||
-      firmwareStatus === FIRMWARE_UPDATE_STATE_END_ERROR
+      firmwareStatus === END_SUCCESS ||
+      firmwareStatus === END_ERROR
     ) {
-      const firmwareUpdateSuccess = firmwareStatus === FIRMWARE_UPDATE_STATE_END_SUCCESS;
+      const firmwareUpdateSuccess = firmwareStatus === END_SUCCESS;
       const firmwareAlert = firmwareUpdateSuccess ?
       { title: 'Success', message: 'You have successfully updated your Backbone!' }
       :
