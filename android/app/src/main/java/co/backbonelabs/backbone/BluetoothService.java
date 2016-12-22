@@ -26,6 +26,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
@@ -204,11 +205,14 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     BootLoaderService bootLoaderService = BootLoaderService.getInstance();
 
                     if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.INITIATED) {
+                        Timber.d("Disconnected while in BOOTLOADER_STATES.INITIATED");
                         Timber.d("Reconnect Device");
                         // Reconnect right away to proceed with the actual firmware update
                         reconnectDevice();
+
                     }
                     else if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPDATED) {
+                        Timber.d("Disconnected while in BOOTLOADER_STATES.UPDATED");
                         Timber.d("Reconnect Device Updated");
                         reconnectDevice();
                     }
@@ -273,6 +277,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             Timber.d("serviceMap size: %d", serviceMap.size());
             if (currentDeviceMode == Constants.DEVICE_MODES.BACKBONE) {
                 if (serviceMap.size() == 2) {
+                    Timber.d("Found all services in Backbone mode");
                     // Check for pending notification of a successful firmware update
                     BootLoaderService bootLoaderService = BootLoaderService.getInstance();
 
@@ -290,6 +295,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             }
             else if (currentDeviceMode == Constants.DEVICE_MODES.BOOTLOADER) {
                 if (serviceMap.size() == 1) {
+                    Timber.d("Found all services in Bootloader mode");
                     connectionCallBack.onDeviceConnected();
 
                     emitDeviceState();
@@ -377,6 +383,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             }
 
             // Discover services after MTU update has been attempted, no matter what the status is
+            Timber.d("Discovering services...");
             gatt.discoverServices();
         }
     };
@@ -440,7 +447,17 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             return;
         }
 
+        Timber.d("Connecting to GATT server");
         bleGatt = currentDevice.connectGatt(getCurrentActivity(), false, gattCallback);
+        try {
+            Method refreshMethod = bleGatt.getClass().getMethod("refresh", null);
+            if (refreshMethod != null) {
+                Timber.d("Clearing cache of GATT services");
+                refreshMethod.invoke(bleGatt);
+            }
+        } catch (Exception localException) {
+            Timber.e(localException, "Couldn't find refresh method");
+        }
 
         if (callBack != null) {
             connectionCallBack = callBack;
@@ -564,7 +581,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     private void exchangeGattMtu(int mtu) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int retry = 5;
             boolean status = false;
             while (!status && retry > 0) {
