@@ -287,7 +287,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                         bootLoaderService.firmwareUpdated();
                     }
                     else {
-                        connectionCallBack.onDeviceConnected();
+                        if (connectionCallBack != null) {
+                            connectionCallBack.onDeviceConnected();
+                        }
 
                         emitDeviceState();
                     }
@@ -296,7 +298,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             else if (currentDeviceMode == Constants.DEVICE_MODES.BOOTLOADER) {
                 if (serviceMap.size() == 1) {
                     Timber.d("Found all services in Bootloader mode");
-                    connectionCallBack.onDeviceConnected();
+                    if (connectionCallBack != null) {
+                        connectionCallBack.onDeviceConnected();
+                    }
 
                     emitDeviceState();
                 }
