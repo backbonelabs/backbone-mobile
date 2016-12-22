@@ -151,15 +151,11 @@ const deviceActions = {
           if (err) {
             dispatch(getInfoError(err));
           } else {
-            // Clone results in order to mutate
-            const resultsClone = { ...results, updateAvailable: false };
-
             // If there's new firmware, set updateAvailable to true
             checkFirmware(results.firmwareVersion)
               .then(updateAvailable => {
-                if (updateAvailable) {
-                  resultsClone.updateAvailable = true;
-                }
+                // Clone device in order to add updateAvailable property
+                const resultsClone = { ...results, updateAvailable };
 
                 // Store device information in local storage
                 SensitiveInfo.setItem(storageKeys.DEVICE, resultsClone);
@@ -172,17 +168,12 @@ const deviceActions = {
         SensitiveInfo.getItem(storageKeys.DEVICE)
           .then(device => {
             if (device) {
-              // Clone device in order to mutate
-              const deviceClone = { ...device, updateAvailable: false };
-
-              // If there's new firmware, set updateAvailable to true
               checkFirmware(device.firmwareVersion)
                 .then(updateAvailable => {
-                  if (updateAvailable) {
-                    deviceClone.updateAvailable = true;
-                  }
+                  // Clone device in order to add updateAvailable property
+                  const deviceClone = { ...device, updateAvailable };
 
-                  // Update device store with locally stored device
+                  // Update device store
                   dispatch(getInfo(deviceClone));
                 });
               // Attempt to connect to locally stored device
