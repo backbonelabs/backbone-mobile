@@ -76,7 +76,7 @@ class Device extends Component {
     } else {
       Alert.alert(
         'Attention',
-        'You must complete the firmware update once it\nbegins!',
+        'You must complete the firmware update once it begins!',
         [
           { text: 'Cancel' },
           { text: 'Update', onPress: () => this.props.navigator.push(routes.firmwareUpdate) },
