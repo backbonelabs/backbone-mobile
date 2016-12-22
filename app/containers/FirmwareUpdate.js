@@ -11,10 +11,10 @@ import {
 } from 'react-native-material-kit';
 import autobind from 'autobind-decorator';
 import ReactNativeFS from 'react-native-fs';
+import { connect } from 'react-redux';
 import deviceActions from '../actions/device';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
-import Button from '../components/Button';
 import styles from '../styles/firmwareUpdate';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
@@ -30,15 +30,16 @@ const eventEmitter = new NativeEventEmitter(BootLoaderService);
 const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
 
 const SingleColorSpinner = MKSpinner.singleColorSpinner()
-  .withStrokeColor('red')
+  .withStrokeColor(styles.$spinnerColor)
   .withStyle(styles.spinner)
   .build();
 
-export default class FirmwareUpdate extends Component {
+class FirmwareUpdate extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       pop: PropTypes.func,
     }),
+    dispatch: PropTypes.func,
   }
 
   constructor() {
@@ -112,9 +113,9 @@ export default class FirmwareUpdate extends Component {
 
       // Firmware update has finished, display firmware update status message
       this.setState({ isUpdating: false }, () => {
-        // If firmware was successful, get latest device info and store locally
         if (firmwareUpdateSuccess) {
-          deviceActions.getInfo();
+          // If firmware was successful, get and update store to latest device info
+          this.props.dispatch(deviceActions.getInfo());
         }
 
         Alert.alert(
@@ -128,6 +129,7 @@ export default class FirmwareUpdate extends Component {
 
   @autobind
   firmwareUploadProgressHandler(progress) {
+    // Set state to firmware progress percentage
     this.setState({ updateProgress: progress.percentage });
   }
 
@@ -135,27 +137,24 @@ export default class FirmwareUpdate extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.contentContainer}>
-          <HeadingText size={2}>
-            Update status
-          </HeadingText>
+          <HeadingText size={2}>Update status</HeadingText>
           <View style={styles.progressContainer}>
             <MKProgress
               style={styles.progressBar}
               progress={this.state.updateProgress / 100}
-              progressColor="red"
+              progressColor={styles.$progressColor}
               buffer={1}
-              bufferColor="#CCC"
+              bufferColor={styles.$bufferColor}
             />
             { this.state.isUpdating === FIRMWARE_UPDATE_STATE_BEGIN &&
               <SingleColorSpinner style={styles.spinner} />
             }
           </View>
-          <BodyText>Downloading updates: {this.state.updateProgress}%</BodyText>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button disabled primary text="Done" />
+          <BodyText>Progress: {this.state.updateProgress}%</BodyText>
         </View>
       </View>
     );
   }
 }
+
+export default connect()(FirmwareUpdate);

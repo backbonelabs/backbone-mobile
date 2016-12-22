@@ -4,6 +4,9 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $spinnerColor: '$primaryColor',
+  $progressColor: '$primaryColor',
+  $bufferColor: '#CCC',
   container: {
     flex: 1,
     alignSelf: 'center',
@@ -25,8 +28,5 @@ export default EStyleSheet.create({
   },
   progressBar: {
     width: applyWidthDifference(190),
-  },
-  buttonContainer: {
-    alignItems: 'center',
   },
 });
