@@ -99,9 +99,11 @@ class FirmwareUpdate extends Component {
   @autobind
   firmwareUpdateStatusHandler(status) {
     const { status: firmwareStatus } = status;
+    // Firmware update begins
     if (firmwareStatus === FIRMWARE_UPDATE_STATE_BEGIN) {
       this.setState({ isUpdating: true });
     } else if (
+      // Firmware update ends
       firmwareStatus === FIRMWARE_UPDATE_STATE_END_SUCCESS ||
       firmwareStatus === FIRMWARE_UPDATE_STATE_END_ERROR
     ) {
@@ -146,9 +148,7 @@ class FirmwareUpdate extends Component {
               buffer={1}
               bufferColor={styles.$bufferColor}
             />
-            { this.state.isUpdating === FIRMWARE_UPDATE_STATE_BEGIN &&
-              <SingleColorSpinner style={styles.spinner} />
-            }
+            {this.state.isUpdating && <SingleColorSpinner style={styles.spinner} />}
           </View>
           <BodyText>Progress: {this.state.updateProgress}%</BodyText>
         </View>
