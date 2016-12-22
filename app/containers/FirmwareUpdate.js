@@ -30,7 +30,6 @@ const eventEmitter = new NativeEventEmitter(BootLoaderService);
 const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
 
 const SingleColorSpinner = MKSpinner.singleColorSpinner()
-  .withStrokeColor(styles.$spinnerColor)
   .withStyle(styles.spinner)
   .build();
 
@@ -148,7 +147,9 @@ class FirmwareUpdate extends Component {
               buffer={1}
               bufferColor={styles.$bufferColor}
             />
-            {this.state.isUpdating && <SingleColorSpinner style={styles.spinner} />}
+            {this.state.isUpdating &&
+              <SingleColorSpinner strokeColor={styles.$spinnerColor} style={styles.spinner} />
+            }
           </View>
           <BodyText>Progress: {this.state.updateProgress}%</BodyText>
         </View>
