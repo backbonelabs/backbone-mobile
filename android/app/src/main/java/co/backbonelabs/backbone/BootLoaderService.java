@@ -213,8 +213,8 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                             String result = hexValue.trim().replace(" ", "");
                             String response = result.substring(RESPONSE_START, RESPONSE_END);
 
-                            int reponseBytes = Integer.parseInt(response, RADIX);
-                            switch (reponseBytes) {
+                            int responseBytes = Integer.parseInt(response, RADIX);
+                            switch (responseBytes) {
                                 case CASE_SUCCESS:
                                     String siliconID = result.substring(SILICON_ID_START, SILICON_ID_END);
                                     String siliconRev = result.substring(SILICON_REV_START, SILICON_REV_END);
@@ -244,8 +244,8 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                             String result = hexValue.trim().replace(" ", "");
                             String response = result.substring(RESPONSE_START, RESPONSE_END);
 
-                            int reponseBytes = Integer.parseInt(response, RADIX);
-                            switch (reponseBytes) {
+                            int responseBytes = Integer.parseInt(response, RADIX);
+                            switch (responseBytes) {
                                 case CASE_SUCCESS:
                                     startRow = Utilities.swap(Integer.parseInt(result.substring(START_ROW_START, START_ROW_END), RADIX));
                                     endRow = Utilities.swap(Integer.parseInt(result.substring(END_ROW_START, END_ROW_END), RADIX));
@@ -261,8 +261,8 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                             String result = hexValue.trim().replace(" ", "");
                             String response = result.substring(RESPONSE_START, RESPONSE_END);
                             String status = result.substring(STATUS_START, STATUS_END);
-                            int reponseBytes = Integer.parseInt(response, RADIX);
-                            switch (reponseBytes) {
+                            int responseBytes = Integer.parseInt(response, RADIX);
+                            switch (responseBytes) {
                                 case CASE_SUCCESS:
                                     if (status.equalsIgnoreCase("00")) {
                                         writeProgrammableData(rowNumber);
@@ -278,8 +278,8 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                             String result = hexValue.trim().replace(" ", "");
                             String response = result.substring(RESPONSE_START, RESPONSE_END);
                             String status = result.substring(STATUS_START, STATUS_END);
-                            int reponseBytes = Integer.parseInt(response, RADIX);
-                            switch (reponseBytes) {
+                            int responseBytes = Integer.parseInt(response, RADIX);
+                            switch (responseBytes) {
                                 case CASE_SUCCESS:
                                     if (status.equalsIgnoreCase("00")) {
                                         /**
@@ -370,8 +370,8 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                             String result = hexValue.trim().replace(" ", "");
                             String response = result.substring(RESPONSE_START, RESPONSE_END);
                             String checkSumStatus = result.substring(CHECKSUM_START, CHECKSUM_END);
-                            int reponseBytes = Integer.parseInt(response, RADIX);
-                            switch (reponseBytes) {
+                            int responseBytes = Integer.parseInt(response, RADIX);
+                            switch (responseBytes) {
                                 case CASE_SUCCESS:
                                     if (checkSumStatus.equalsIgnoreCase("01")) {
                                         /**
