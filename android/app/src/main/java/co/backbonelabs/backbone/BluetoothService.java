@@ -439,15 +439,16 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         return device;
     }
 
-    public void connectDevice(String identifier, DeviceConnectionCallBack callBack) {
-        currentDeviceIdentifier = identifier;
-        currentDevice = findDeviceByAddress(currentDeviceIdentifier);
-
-        if (currentDevice == null) {
+    public void connectDevice(BluetoothDevice device, DeviceConnectionCallBack callBack) {
+        if (device == null) {
             return;
         }
 
         Timber.d("Connecting to GATT server");
+
+        currentDevice = device;
+        currentDeviceIdentifier = currentDevice.getAddress();
+
         bleGatt = currentDevice.connectGatt(getCurrentActivity(), false, gattCallback);
         try {
             Method refreshMethod = bleGatt.getClass().getMethod("refresh", null);
@@ -488,7 +489,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
     public void reconnectDevice() {
         if (currentDevice != null) {
-            connectDevice(currentDeviceIdentifier, null);
+            connectDevice(currentDevice, null);
         }
     }
 
@@ -581,9 +582,11 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     private void exchangeGattMtu(int mtu) {
+        boolean status = false;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int retry = 5;
-            boolean status = false;
+
             while (!status && retry > 0) {
                 status = bleGatt.requestMtu(mtu);
                 retry--;
@@ -594,6 +597,11 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (!status) {
+            // Failed updating MTU, proceed to discovering services
+            bleGatt.discoverServices();
         }
     }
 
