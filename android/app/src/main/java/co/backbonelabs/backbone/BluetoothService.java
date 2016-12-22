@@ -595,12 +595,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                 status = bleGatt.requestMtu(mtu);
                 retry--;
             }
-
-            try {
-                Thread.sleep(1000, 0);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
 
         if (!status) {
