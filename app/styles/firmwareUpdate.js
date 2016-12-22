@@ -1,4 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -6,19 +9,22 @@ export default EStyleSheet.create({
     alignSelf: 'center',
   },
   contentContainer: {
-    marginVertical: 40,
+    marginVertical: applyWidthDifference(40),
     justifyContent: 'flex-end',
   },
   spinner: {
-    height: 15,
-    width: 15,
+    height: applyWidthDifference(15),
+    width: applyWidthDifference(15),
   },
   progressContainer: {
-    width: 215,
+    width: applyWidthDifference(215),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 15,
+    marginVertical: applyWidthDifference(15),
+  },
+  progressBar: {
+    width: applyWidthDifference(190),
   },
   buttonContainer: {
     alignItems: 'center',
