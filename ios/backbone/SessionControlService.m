@@ -47,10 +47,10 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderBlock)callback) {
-  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID] != nil) {
+  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
     if (currentSessionState == SESSION_STATE_STOPPED) {
       forceStoppedSession = NO;
       
@@ -141,10 +141,10 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
 }
 
 RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
-  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID] != nil) {
+  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
     if (currentSessionState == SESSION_STATE_RUNNING) {
       [self toggleSessionOperation:SESSION_OPERATION_PAUSE withHandler:^(NSError * _Nullable error) {
         if (error) {
@@ -166,10 +166,10 @@ RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
-  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID] != nil) {
+  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
     if (currentSessionState == SESSION_STATE_RUNNING || currentSessionState == SESSION_STATE_PAUSED) {
       forceStoppedSession = YES;
       

@@ -45,8 +45,8 @@ RCT_EXPORT_MODULE();
                  and a device information dictionary as the second argument if there are no exceptions
  */
 RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
-  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID] != nil
-      && [BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID] != nil) {
+  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]) {
     [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
       [self retrieveBatteryLevel:^(int value) {
         callback(@[[NSNull null], @{@"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
@@ -62,7 +62,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
 - (void)retrieveFirmwareVersion:(StringHandler)handler {
   _firmwareVersionHandler = handler;
   
-  if (![BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID] != nil) {
+  if (![BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]) {
     _firmwareVersionHandler(@"");
   }
   else {
@@ -73,7 +73,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
 - (void)retrieveBatteryLevel:(IntHandler)handler {
   _batteryLevelHandler = handler;
   
-  if (![BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID] != nil) {
+  if (![BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]) {
     _batteryLevelHandler(-1);
   }
   else {

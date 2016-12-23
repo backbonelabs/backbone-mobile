@@ -71,7 +71,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
       _firmwareFilePath = [path copy];
       
       if (_bootLoaderState == BOOTLOADER_STATE_OFF) {
-        if ([BluetoothServiceInstance getCharacteristicByUUID:ENTER_BOOTLOADER_CHARACTERISTIC_UUID] != nil) {
+        if ([BluetoothServiceInstance getCharacteristicByUUID:ENTER_BOOTLOADER_CHARACTERISTIC_UUID]) {
           // Restart into the BootLoader service before proceeding
           [self enterBootLoaderMode];
         }
@@ -80,7 +80,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
         }
       }
       else if (_bootLoaderState == BOOTLOADER_STATE_ON) {
-        if ([BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID] != nil) {
+        if ([BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID]) {
           // Device is already in the BootLoader service, so we proceed with the firmware upload
           [self prepareFirmwareFile];
         }
@@ -156,7 +156,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
 }
 
 - (void)writeValueToCharacteristicWithData:(NSData*)data bootLoaderCommandCode:(unsigned short)commandCode {
-  if (data != nil && [BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID] != nil) {
+  if (data != nil && [BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID]) {
     if (commandCode) {
       [_commandArray addObject:@(commandCode)];
     }
