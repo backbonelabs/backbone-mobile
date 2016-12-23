@@ -56,7 +56,7 @@ function checkFirmware(firmwareVersion) {
         // Check and compare each of the firmware version digits in order
         // Use for loop, since forEach can't be interrupted
         for (let i = 0; i < newFirmware.length; i++) {
-          if (newFirmware[i] > currentFirmware[i]) {
+          if (parseInt(newFirmware[i], 10) > parseInt(currentFirmware[i], 10)) {
             updateAvailable = true;
             break;
           }
