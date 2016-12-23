@@ -135,11 +135,13 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
     /**
      * Returns the current Bluetooth state (based on the custom state map) to a callback
-     * @param callback The Bluetooth state is passed in the second argument
+     * @param callback The Bluetooth state is passed in the second argument as a key of a map
      */
     @ReactMethod
     public void getState(Callback callback) {
-        callback.invoke(null, bluetoothStateMap.get(state, -1));
+        WritableMap response = Arguments.createMap();
+        response.putInt("state", bluetoothStateMap.get(state, -1));
+        callback.invoke(null, response);
     }
 
     /**
