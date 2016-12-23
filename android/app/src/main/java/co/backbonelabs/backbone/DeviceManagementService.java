@@ -141,7 +141,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             callback.invoke();
         } catch (Exception e) {
             e.printStackTrace();
-            callback.invoke(JSError.make(e.getMessage()));
+            callback.invoke(JSError.make("Failed to disconnect"));
         }
     }
 
