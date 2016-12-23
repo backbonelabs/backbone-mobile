@@ -33,11 +33,6 @@
   BOOL notificationStateChanged;
 }
 
-@property (nonatomic, readonly) CBCharacteristic *sessionControlCharacteristic;
-@property (nonatomic, readonly) CBCharacteristic *distanceCharacteristic;
-@property (nonatomic, readonly) CBCharacteristic *slouchCharacteristic;
-@property (nonatomic, readonly) CBCharacteristic *sessionStatisticCharacteristic;
-
 + (SessionControlService *)getSessionControlService;
 
 - (id)initService;

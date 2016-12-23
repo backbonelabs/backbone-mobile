@@ -37,6 +37,7 @@
                };
   
   _servicesFound = [NSMutableDictionary new];
+  _characteristicMap = [NSMutableDictionary new];
   
   self.centralManager = [[CBCentralManager alloc]
                          initWithDelegate:self
@@ -177,6 +178,11 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   return self.currentDevice != nil && self.currentDevice.state == CBPeripheralStateConnected;
 }
 
+- (CBCharacteristic*)getCharacteristicByUUID:(CBUUID *)uuid {
+  if (uuid == nil) return nil;
+  return _characteristicMap[uuid];
+}
+
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
   DLog(@"New Device %@", peripheral);
 //  BackboneDevice *device = [BackboneDevice new];
@@ -215,6 +221,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 - (void) centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
   DLog(@"disconnect %@ %@", peripheral, error);
   [_servicesFound removeAllObjects];
+  [_characteristicMap removeAllObjects];
   
   if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_INITIATED) {
     DLog(@"Reconnect %@", self.currentDevice);
@@ -320,6 +327,11 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       
       [self emitDeviceState];
     }
+  }
+  
+  // BluetoothService should keep track of currently active services and characteristics
+  for (CBCharacteristic *characteristic in service.characteristics) {
+    [_characteristicMap setObject:characteristic forKey:characteristic.UUID];
   }
   
   if ([_characteristicDelegates count] > 0) {
