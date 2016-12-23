@@ -120,9 +120,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             checkConnectTimeout();
         } else {
             // Could not retrieve a valid device
-            WritableMap wm = Arguments.createMap();
-            wm.putString("message", "Not a valid device");
-            EventEmitter.send(reactContext, "ConnectionStatus", wm);
+            EventEmitter.send(reactContext, "ConnectionStatus", JSError.make("Not a valid device"));
         }
     }
 
