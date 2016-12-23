@@ -311,11 +311,13 @@ class PostureMonitor extends Component {
       if (today.toDateString() === cloneLastSession.toDateString()) {
         // Session date is next day from the last session
         updateUserPayload.dailyStreak = dailyStreak + 1;
+        this.trackDailyStreak(updateUserPayload.dailyStreak, dailyStreak);
       } else if (today.toDateString() === userLastSession.toDateString()) {
         // Session date is same as last session, do not increment streak
       } else {
         // Reset streak
         updateUserPayload.dailyStreak = 1;
+        this.trackDailyStreak(updateUserPayload.dailyStreak, dailyStreak);
       }
     } else {
       // First-time user
@@ -325,16 +327,33 @@ class PostureMonitor extends Component {
     dispatch(userActions.updateUser(updateUserPayload));
   }
 
+  /**
+   * Tracks a user's posture session on Mixpanel
+   */
   @autobind
   trackUserSession(completedSession) {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     const { slouchTime, totalDuration } = this.state;
-    // Track posture session event and its include session statistics
+
     Mixpanel.trackWithProperties('postureSession', {
       sessionTime,
       totalDuration,
       slouchTime,
       completedSession,
+    });
+  }
+
+  /**
+   * Tracks a user's dailyStreak on Mixpanel
+   */
+  @autobind
+  trackDailyStreak(current, previous) {
+    Mixpanel.trackWithProperties('dailyStreak', {
+      // If we see that a user is no longer on a streak, we can look at the
+      // current and previous streak properties and see where the drop off is
+      streak: current >= previous,
+      current,
+      previous,
     });
   }
 
