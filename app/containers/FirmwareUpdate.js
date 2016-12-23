@@ -90,6 +90,8 @@ class FirmwareUpdate extends Component {
           // Successful file download attempt
           if (downloadResult.statusCode === 200) {
             BootLoaderService.initiateFirmwareUpdate(firmwareFilepath);
+          } else {
+            this.failedUpdateHandler();
           }
         }))
       );
@@ -98,32 +100,17 @@ class FirmwareUpdate extends Component {
   @autobind
   firmwareUpdateStatusHandler(status) {
     const { status: firmwareStatus } = status;
-    // Firmware update begins
+
     if (firmwareStatus === BEGIN) {
       this.setState({ isUpdating: true });
-    } else if (
-      // Firmware update ends
-      firmwareStatus === END_SUCCESS ||
-      firmwareStatus === END_ERROR
-    ) {
-      const firmwareUpdateSuccess = firmwareStatus === END_SUCCESS;
-      const firmwareAlert = firmwareUpdateSuccess ?
-      { title: 'Success', message: 'You have successfully updated your Backbone!' }
-      :
-      { title: 'Failed', message: 'Your Backbone update has failed, please try again.' };
-
+    } else if (firmwareStatus === END_SUCCESS || firmwareStatus === END_ERROR) {
       // Firmware update has finished, display firmware update status message
       this.setState({ isUpdating: false }, () => {
-        if (firmwareUpdateSuccess) {
-          // If firmware was successful, get and update store to latest device info
-          this.props.dispatch(deviceActions.getInfo());
+        if (firmwareStatus === END_SUCCESS) {
+          this.successfulUpdateHandler();
+        } else {
+          this.failedUpdateHandler();
         }
-
-        Alert.alert(
-          firmwareAlert.title,
-          firmwareAlert.message,
-          [{ text: 'OK', onPress: this.props.navigator.pop }]
-        );
       });
     }
   }
@@ -132,6 +119,27 @@ class FirmwareUpdate extends Component {
   firmwareUploadProgressHandler(progress) {
     // Set state to firmware progress percentage
     this.setState({ updateProgress: progress.percentage });
+  }
+
+  @autobind
+  successfulUpdateHandler() {
+    // Initiate getting of latest device information
+    this.props.dispatch(deviceActions.getInfo());
+
+    Alert.alert(
+      'Success',
+      'You have successfully updated your Backbone!',
+      [{ text: 'OK', onPress: this.props.navigator.pop }]
+    );
+  }
+
+  @autobind
+  failedUpdateHandler() {
+    Alert.alert(
+      'Failed',
+      'Your Backbone update has failed, please try again.',
+      [{ text: 'OK', onPress: this.props.navigator.pop }]
+    );
   }
 
   render() {
