@@ -338,10 +338,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             Bundle mBundle = new Bundle();
 
             mBundle.putInt(Constants.EXTRA_BYTE_STATUS_VALUE, status);
+            mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE,  characteristicUUID);
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 mBundle.putByteArray(Constants.EXTRA_BYTE_VALUE, characteristic.getValue());
-                mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE,  characteristicUUID);
             }
 
             intent.putExtras(mBundle);
