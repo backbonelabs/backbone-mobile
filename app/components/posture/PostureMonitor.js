@@ -21,7 +21,7 @@ import userActions from '../../actions/user';
 import PostureSummary from './PostureSummary';
 import routes from '../../routes';
 
-const { SessionControlService } = NativeModules;
+const { SessionControlService, Mixpanel } = NativeModules;
 const eventEmitter = new NativeEventEmitter(SessionControlService);
 
 const MIN_POSTURE_THRESHOLD = 0.03;
@@ -270,7 +270,10 @@ class PostureMonitor extends Component {
       this.sessionCommandAlert({
         title: 'Exit',
         message: 'Are you sure you want to leave?',
-        rightAction: this.props.navigator.pop,
+        rightAction: () => {
+          this.trackUserSession(false);
+          this.props.navigator.pop();
+        },
       });
     } else {
       SessionControlService.stop(err => {
@@ -319,6 +322,21 @@ class PostureMonitor extends Component {
     dispatch(userActions.updateUser(updateUserPayload));
   }
 
+  @autobind
+  trackUserSession(completedSession) {
+    const sessionTime = this.props.posture.sessionTimeSeconds;
+    const { slouchTime, totalDuration } = this.state;
+    // Specify user to track event for
+    Mixpanel.identify(this.props.user._id);
+    // Track posture session event and its include session statistics
+    Mixpanel.trackWithProperties('postureSession', {
+      sessionTime,
+      totalDuration,
+      slouchTime,
+      completedSession,
+    });
+  }
+
   /**
    * Displays a modal containing the session summary
    */
@@ -331,6 +349,8 @@ class PostureMonitor extends Component {
     }
 
     const { slouchTime, totalDuration } = this.state;
+
+    this.trackUserSession(true);
     this.props.dispatch(appActions.showFullModal({
       onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
       content: <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={goalMinutes} />,
