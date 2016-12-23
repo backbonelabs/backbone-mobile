@@ -20,9 +20,12 @@ import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
 
 const { firmwareUpdateStates: {
+  INVALID_SERVICE,
+  INVALID_FILE,
   BEGIN,
   END_SUCCESS,
   END_ERROR,
+  PENDING,
 } } = constants;
 
 const { BootLoaderService, Environment } = NativeModules;
@@ -103,15 +106,16 @@ class FirmwareUpdate extends Component {
 
     if (firmwareStatus === BEGIN) {
       this.setState({ isUpdating: true });
-    } else if (firmwareStatus === END_SUCCESS || firmwareStatus === END_ERROR) {
+    } else if (firmwareStatus === END_SUCCESS) {
       // Firmware update has finished, display firmware update status message
-      this.setState({ isUpdating: false }, () => {
-        if (firmwareStatus === END_SUCCESS) {
-          this.successfulUpdateHandler();
-        } else {
-          this.failedUpdateHandler();
-        }
-      });
+      this.setState({ isUpdating: false }, this.successfulUpdateHandler);
+    } else if (
+      firmwareStatus === END_ERROR ||
+      firmwareStatus === INVALID_FILE ||
+      firmwareStatus === INVALID_SERVICE ||
+      firmwareStatus === PENDING
+    ) {
+      this.setState({ isUpdating: false }, this.failedUpdateHandler);
     }
   }
 
