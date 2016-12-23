@@ -59,6 +59,7 @@ class Device extends Component {
 
   @autobind
   updateFirmware() {
+    const { batteryLevel } = this.props.device;
     if (!this.props.isConnected) {
       Alert.alert(
           'Error',
@@ -68,8 +69,20 @@ class Device extends Component {
           { text: 'Connect', onPress: this.addDevice },
         ]
       );
+    } else if (batteryLevel >= 0 && batteryLevel <= 15) {
+      Alert.alert(
+        'Battery Low',
+        'Charge your Backbone to at least 15% power before updating.',
+      );
     } else {
-      // TO DO: Call necessary method to update firmware
+      Alert.alert(
+        'Attention',
+        'You must complete the firmware update once it begins!',
+        [
+          { text: 'Cancel' },
+          { text: 'Update', onPress: () => this.props.navigator.push(routes.firmwareUpdate) },
+        ]
+      );
     }
   }
 

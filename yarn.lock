@@ -778,6 +778,10 @@ balanced-match@^0.4.1:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
 
+base-64@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
+
 base62@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/base62/-/base62-1.1.1.tgz#974e82c11bd5e00816b508a7ed9c7b9086c9db6b"
@@ -3576,6 +3580,10 @@ qs@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-4.0.0.tgz#c31d9b74ec27df75e543a86c78728ed8d4623607"
 
+ramda@~0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.21.0.tgz#a001abedb3ff61077d4ff1d577d44de77e8d0a35"
+
 random-bytes@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/random-bytes/-/random-bytes-1.0.0.tgz#4f68a1dc0ae58bd3fb95848c30324db75d64360b"
@@ -3623,11 +3631,24 @@ react-native-extended-stylesheet@0.3.0:
     css-mediaquery "^0.1.2"
     object-resolve-path "^1.1.0"
 
+react-native-fs:
+  version "2.0.1-rc.2"
+  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.0.1-rc.2.tgz#e7e00b1d5c48c52c4ca8cd76b4ea62440ae54082"
+  dependencies:
+    base-64 "^0.1.0"
+    utf8 "^2.1.1"
+
 react-native-keyboard-aware-scroll-view@0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/react-native-keyboard-aware-scroll-view/-/react-native-keyboard-aware-scroll-view-0.2.3.tgz#6f19f39daf41a16caa08a2820773e9a43aa0dc8e"
   dependencies:
     react-timer-mixin "^0.13.3"
+
+react-native-material-kit:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-material-kit/-/react-native-material-kit-0.3.3.tgz#5471c7171c40a2d27cf03cb3d1bdacd54b69e00a"
+  dependencies:
+    ramda "~0.21.0"
 
 react-native-sensitive-info@3.0.2:
   version "3.0.2"
@@ -4542,6 +4563,10 @@ user-home@^2.0.0:
   resolved "https://registry.yarnpkg.com/user-home/-/user-home-2.0.0.tgz#9c70bfd8169bc1dcbf48604e0f04b8b49cde9e9f"
   dependencies:
     os-homedir "^1.0.0"
+
+utf8@^2.1.1:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/utf8/-/utf8-2.1.2.tgz#1fa0d9270e9be850d9b05027f63519bf46457d96"
 
 util-deprecate@^1.0.2, util-deprecate@~1.0.1, util-deprecate@1.0.2:
   version "1.0.2"

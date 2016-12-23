@@ -311,6 +311,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
         // Successfully restarted after upgrading firmware
         DLog(@"Firmware Updated Successfully");
+        DLog(@"CURRENT DEVICE %i", self.currentDeviceMode);
         [[BootLoaderService getBootLoaderService] firmwareUpdated];
       }
       else {
