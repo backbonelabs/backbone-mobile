@@ -122,7 +122,7 @@ class FirmwareUpdate extends Component {
         Alert.alert(
           firmwareAlert.title,
           firmwareAlert.message,
-          [{ text: 'OK', onPress: () => this.props.navigator.pop() }]
+          [{ text: 'OK', onPress: this.props.navigator.pop }]
         );
       });
     }
