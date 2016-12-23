@@ -38,6 +38,7 @@ const { bluetoothStates, storageKeys } = constants;
 const {
   BluetoothService: Bluetooth,
   Environment,
+  Mixpanel,
 } = NativeModules;
 
 const BluetoothService = new NativeEventEmitter(Bluetooth);
@@ -158,6 +159,9 @@ class Application extends Component {
             // Fetch device info
             this.props.dispatch(deviceActions.getInfo());
 
+            // Specify user account to track event for
+            Mixpanel.identify(this.props.user._id);
+
             // Set initial route to posture dashboard
             this.setInitialRoute(routes.postureDashboard);
           } else {
@@ -171,6 +175,9 @@ class Application extends Component {
                     type: 'FETCH_USER',
                     payload: user,
                   });
+
+                  // Specify user account to track event for
+                  Mixpanel.identify(user._id);
 
 
                   if (user.hasOnboarded) {

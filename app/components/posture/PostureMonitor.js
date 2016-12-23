@@ -93,9 +93,6 @@ class PostureMonitor extends Component {
     this.statsListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
-
-    // Specify user account to track event for
-    Mixpanel.identify(this.props.user._id);
   }
 
   componentWillMount() {
