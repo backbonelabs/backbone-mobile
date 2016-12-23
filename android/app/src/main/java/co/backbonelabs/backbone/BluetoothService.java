@@ -13,8 +13,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.SparseIntArray;
 
 import com.facebook.react.bridge.Arguments;
@@ -22,18 +22,19 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
 import java.util.UUID;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.EventEmitter;
+import co.backbonelabs.backbone.util.Utilities;
 import timber.log.Timber;
 
 public class BluetoothService extends ReactContextBaseJavaModule implements LifecycleEventListener {
@@ -50,8 +51,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             instance = new BluetoothService(reactContext);
             instance.serviceMap = new HashMap<>();
             instance.characteristicMap = new HashMap<>();
-
-//            BootLoaderService.getInstance(reactContext);
         }
         return instance;
     }
@@ -70,16 +69,15 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     };
 
     private BluetoothDevice currentDevice = null;
+    private String currentDeviceIdentifier;
     private int currentDeviceMode = Constants.DEVICE_MODES.UNKNOWN;
 
-    private ReactContext reactContext;
+    private ReactApplicationContext reactContext;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothGatt bleGatt;
 
     private HashMap<UUID, Boolean> serviceMap;
     private HashMap<UUID, BluetoothGattCharacteristic> characteristicMap;
-
-    private boolean shouldCloseGatt = false;
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -91,7 +89,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                 state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("state", bluetoothStateMap.get(state, -1));
-                sendEvent(reactContext, "BluetoothState", wm);
+                EventEmitter.send(reactContext, "BluetoothState", wm);
             }
         }
     };
@@ -175,25 +173,73 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            deviceState = newState;
             Timber.d("DeviceState %d", newState);
 
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Timber.d("Device Connected");
-                gatt.discoverServices();
-            }
-            else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                Timber.d("Device Disconnected");
+            if (deviceState != newState) {
+                deviceState = newState;
 
-                if (shouldCloseGatt) {
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    Timber.d("Device Connected");
+                    // Enable bigger sized packet to be sent by changing the MTU size to 512
+                    // This results in faster speed especially in firmware upload
+                    // Only for Lollipop and above devices
+                    exchangeGattMtu(512);
+                }
+                else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    Timber.d("Device Disconnected");
+
+                    serviceMap.clear();
+                    characteristicMap.clear();
+
+                    try {
+                        Method refreshMethod = bleGatt.getClass().getMethod("refresh", null);
+                        if (refreshMethod != null) {
+                            Timber.d("Clearing cache of GATT services");
+                            boolean clearStatus = ((boolean)refreshMethod.invoke(bleGatt));
+                            Timber.d("Cache clear %b", clearStatus);
+                        }
+                    } catch (Exception localException) {
+                        Timber.e(localException, "Couldn't find refresh method");
+                    }
+
+                    // Set up some delay to finish the cache clearing before closing the GATT
+                    try {
+                        Thread.sleep(1000, 0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                     bleGatt.close();
                     bleGatt = null;
-                }
 
-                currentDevice = null;
-                serviceMap.clear();
-                characteristicMap.clear();
-//                reconnectDevice();
+                    // GATT should be closed on all disconnect event to clear up the connection pool
+                    // Set some delay for closing GATT
+                    try {
+                        Thread.sleep(1000, 0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    BootLoaderService bootLoaderService = BootLoaderService.getInstance();
+
+                    if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.INITIATED) {
+                        Timber.d("Disconnected while in BOOTLOADER_STATES.INITIATED");
+                        Timber.d("Reconnect Device");
+                        // Reconnect right away to proceed with the actual firmware update
+                        reconnectDevice();
+
+                    }
+                    else if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPDATED) {
+                        Timber.d("Disconnected while in BOOTLOADER_STATES.UPDATED");
+                        Timber.d("Reconnect Device Updated");
+                        reconnectDevice();
+                    }
+                    else {
+                        currentDevice = null;
+                    }
+
+                    emitDeviceState();
+                }
             }
         }
 
@@ -236,12 +282,12 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
                         characteristicMap.put(characteristic.getUuid(), characteristic);
 
-//                        String characteristicUUID = characteristic.getUuid().toString();
-//                        Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
-//                        Bundle mBundle = new Bundle();
-//                        mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
-//                        intent.putExtras(mBundle);
-//                        reactContext.sendBroadcast(intent);
+                        String characteristicUUID = characteristic.getUuid().toString();
+                        Intent intent = new Intent(Constants.ACTION_CHARACTERISTIC_FOUND);
+                        Bundle mBundle = new Bundle();
+                        mBundle.putString(Constants.EXTRA_BYTE_UUID_VALUE, characteristicUUID);
+                        intent.putExtras(mBundle);
+                        reactContext.sendBroadcast(intent);
                     }
                 }
             }
@@ -249,12 +295,32 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             Timber.d("serviceMap size: %d", serviceMap.size());
             if (currentDeviceMode == Constants.DEVICE_MODES.BACKBONE) {
                 if (serviceMap.size() == 2) {
-                    connectionCallBack.onDeviceConnected();
+                    Timber.d("Found all services in Backbone mode");
+                    // Check for pending notification of a successful firmware update
+                    BootLoaderService bootLoaderService = BootLoaderService.getInstance();
+
+                    if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPDATED) {
+                        // Successfully restarted after upgrading firmware
+                        Timber.d("Firmware Updated Successfully");
+                        bootLoaderService.firmwareUpdated();
+                    }
+                    else {
+                        if (connectionCallBack != null) {
+                            connectionCallBack.onDeviceConnected();
+                        }
+
+                        emitDeviceState();
+                    }
                 }
             }
             else if (currentDeviceMode == Constants.DEVICE_MODES.BOOTLOADER) {
                 if (serviceMap.size() == 1) {
-                    connectionCallBack.onDeviceConnected();
+                    Timber.d("Found all services in Bootloader mode");
+                    if (connectionCallBack != null) {
+                        connectionCallBack.onDeviceConnected();
+                    }
+
+                    emitDeviceState();
                 }
             }
         }
@@ -328,6 +394,20 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             intent.putExtras(mBundle);
             reactContext.sendBroadcast(intent);
         }
+
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Timber.d("MTU successfully updated");
+            }
+            else {
+                Timber.d("Error updating MTU: Code %d", status);
+            }
+
+            // Discover services after MTU update has been attempted, no matter what the status is
+            Timber.d("Discovering services...");
+            gatt.discoverServices();
+        }
     };
 
     private BluetoothAdapter.LeScanCallback bleScanCallback = new BluetoothAdapter.LeScanCallback() {
@@ -386,7 +466,11 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             return;
         }
 
+        Timber.d("Connecting to GATT server");
+
         currentDevice = device;
+        currentDeviceIdentifier = currentDevice.getAddress();
+
         bleGatt = currentDevice.connectGatt(getCurrentActivity(), false, gattCallback);
 
         if (callBack != null) {
@@ -394,6 +478,14 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         }
 
         stopScan();
+    }
+
+    private void emitDeviceState() {
+        if (currentDevice == null) return;
+        Timber.d("Emit Device State: %d", deviceState);
+        WritableMap wm = Arguments.createMap();
+        wm.putInt("state", deviceState);
+        EventEmitter.send(reactContext, "DeviceState", wm);
     }
 
     /**
@@ -412,10 +504,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         if (currentDevice != null) {
             connectDevice(currentDevice, null);
         }
-    }
-
-    public void setShouldCloseGatt(boolean state) {
-        shouldCloseGatt = state;
     }
 
     public boolean isDeviceReady() {
@@ -478,7 +566,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             Timber.d("Characteristic not found!");
         }
         else {
-            Timber.d("Write to %s", characteristicUUID.toString());
+            Timber.d("Write to %s %s", characteristicUUID.toString(), Utilities.ByteArraytoHex(data));
             BluetoothGattCharacteristic characteristic = characteristicMap.get(characteristicUUID);
 
             // Since Android's GATT class only allows 1 write operation at a time,
@@ -486,8 +574,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             // when there is another GATT operation still running.
             // In most cases, it should succeed right away.
             int counter = Constants.MAX_BLE_ACTION_ATTEMPT;
+            characteristic.setValue(data);
+
             do {
-                characteristic.setValue(data);
                 characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
                 writeStatus = bleGatt.writeCharacteristic(characteristic);
 
@@ -505,11 +594,22 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         return writeStatus;
     }
 
-    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-        Timber.d("sendEvent");
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
+    private void exchangeGattMtu(int mtu) {
+        boolean status = false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int retry = 5;
+
+            while (!status && retry > 0) {
+                status = bleGatt.requestMtu(mtu);
+                retry--;
+            }
+        }
+
+        if (!status) {
+            // Failed updating MTU, proceed to discovering services
+            bleGatt.discoverServices();
+        }
     }
 
     @Override
