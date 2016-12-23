@@ -17,9 +17,6 @@
 
 @property (nonatomic, strong) RCTBridge *bridge;
 
-@property (nonatomic, readonly) CBCharacteristic *batteryLevelCharacteristic;
-@property (nonatomic, readonly) CBCharacteristic *firmwareVersionCharacteristic;
-
 + (DeviceInformationService *)getDeviceInformationService;
 
 - (id)initService;
