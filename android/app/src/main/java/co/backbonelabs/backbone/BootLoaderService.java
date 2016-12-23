@@ -389,9 +389,6 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                         break;
                         case EXIT_BOOTLOADER: {
                             Timber.d("Firmware Upgrade Success");
-                            // Report full 100% upload completion
-                            fileWritingProgress = 100;
-                            firmwareUploadProgress();
 //                        BluetoothService.getInstance().unpairDevice();
                             BluetoothService.getInstance().disconnect();
                         }
@@ -408,6 +405,10 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (currentCommandCode == EXIT_BOOTLOADER) {
                             Timber.d("Firmware updated!");
+                            // Report full 100% upload completion
+                            fileWritingProgress = 100;
+                            firmwareUploadProgress();
+                            
                             firmwareUploadSuccess();
                         }
                     }
