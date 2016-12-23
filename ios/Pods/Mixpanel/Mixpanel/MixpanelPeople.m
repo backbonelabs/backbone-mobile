@@ -12,6 +12,10 @@
 #import "MixpanelPrivate.h"
 #import "MPLogger.h"
 
+#if defined(MIXPANEL_WATCH_EXTENSION)
+#import "MixpanelWatchProperties.h"
+#endif
+
 @implementation MixpanelPeople
 
 - (instancetype)initWithMixpanel:(Mixpanel *)mixpanel
@@ -30,9 +34,18 @@
     return [NSString stringWithFormat:@"<MixpanelPeople: %p %@>", (void *)self, (strongMixpanel ? strongMixpanel.apiToken : @"")];
 }
 
+- (NSString *)deviceSystemVersion {
+#if defined(MIXPANEL_WATCH_EXTENSION)
+    return [MixpanelWatchProperties systemVersion];
+#else
+    return [UIDevice currentDevice].systemVersion;
+#endif
+}
+
 - (NSDictionary *)collectAutomaticPeopleProperties
 {
-    NSMutableDictionary *p = [NSMutableDictionary dictionaryWithDictionary:@{@"$ios_version": [UIDevice currentDevice].systemVersion,
+    NSMutableDictionary *p = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                                             @"$ios_version": [self deviceSystemVersion],
                                                                              @"$ios_lib_version": [Mixpanel libVersion],
                                                                              }];
     NSDictionary *infoDictionary = [NSBundle mainBundle].infoDictionary;
@@ -103,7 +116,7 @@
 
             [strongMixpanel archivePeople];
         });
-#if defined(MIXPANEL_APP_EXTENSION)
+#if MIXPANEL_FLUSH_IMMEDIATELY
         [strongMixpanel flush];
 #endif
     }
@@ -138,7 +151,7 @@
 
 - (void)removePushDeviceToken:(NSData *)deviceToken
 {
-    NSDictionary *properties = @{@"$ios_devices": @[[MixpanelPeople pushDeviceTokenToString:deviceToken]]};
+    NSDictionary *properties = @{@"$ios_devices": [MixpanelPeople pushDeviceTokenToString:deviceToken]};
     [self addPeopleRecordToQueueWithAction:@"$remove" andProperties:properties];
 }
 
