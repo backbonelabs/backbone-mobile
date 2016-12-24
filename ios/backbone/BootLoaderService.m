@@ -9,7 +9,6 @@
 #import "BootLoaderService.h"
 #import "BluetoothService.h"
 #import "RCTUtils.h"
-#import "RCTEventDispatcher.h"
 #import "OTAFileParser.h"
 #import "Utilities.h"
 
