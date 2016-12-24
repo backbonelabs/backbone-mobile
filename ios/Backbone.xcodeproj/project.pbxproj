@@ -34,7 +34,6 @@
 		662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */; };
 		665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */; };
 		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
-		669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B14DC1D50630A00DCEFBE /* ActivityService.m */; };
 		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
 		66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */; };
@@ -278,8 +277,6 @@
 		665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		667641251D63B8F900D45761 /* Environment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Environment.h; path = backbone/Environment.h; sourceTree = "<group>"; };
 		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
-		669B14D01D50626500DCEFBE /* ActivityService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityService.h; path = backbone/ActivityService.h; sourceTree = "<group>"; };
-		669B14DC1D50630A00DCEFBE /* ActivityService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityService.m; path = backbone/ActivityService.m; sourceTree = "<group>"; };
 		669B15191D51439E00DCEFBE /* SensorNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SensorNotifications.h; path = backbone/SensorNotifications.h; sourceTree = "<group>"; };
 		669B151C1D51458700DCEFBE /* SensorNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorNotifications.m; path = backbone/SensorNotifications.m; sourceTree = "<group>"; };
 		66F918791DA9F82B00649391 /* Lato.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Lato.ttf; path = ../android/app/src/main/assets/fonts/Lato.ttf; sourceTree = "<group>"; };
@@ -473,8 +470,6 @@
 				697D0FE71DA3DCDC00F6FF13 /* StepModule.m */,
 				69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */,
 				69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */,
-				669B14D01D50626500DCEFBE /* ActivityService.h */,
-				669B14DC1D50630A00DCEFBE /* ActivityService.m */,
 				690F1C591DB8FF5100AE2E98 /* UserSettingService.h */,
 				690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */,
 			);
@@ -1205,7 +1200,6 @@
 				69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */,
 				69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */,
 				6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */,
-				669B14DD1D50630A00DCEFBE /* ActivityService.m in Sources */,
 				69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */,
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
 				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
