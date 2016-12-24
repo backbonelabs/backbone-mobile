@@ -1,8 +1,12 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import constants from '../utils/constants';
+import Mixpanel from '../utils/Mixpanel';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
-const { DeviceManagementService, DeviceInformationService } = NativeModules;
+const {
+  DeviceManagementService,
+  DeviceInformationService,
+} = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 const { storageKeys } = constants;
 
@@ -24,6 +28,12 @@ function setConnectEventListener(dispatch, getInfo) {
     status => {
       if (status.message) {
         dispatch(connectError(status));
+        Mixpanel.trackError({
+          path: 'app/actions/device',
+          nativeModuleMethod: `setConnectEventListener/
+            deviceManagementServiceEvents.addListener`,
+          errorContent: status,
+        });
       } else {
         dispatch(connect(status));
         // Call getInfo to fetch latest device information
@@ -85,6 +95,12 @@ const deviceActions = {
         DeviceManagementService.cancelConnection(err => {
           if (err) {
             dispatch(disconnectError(err));
+            Mixpanel.trackError({
+              path: 'app/actions/device',
+              nativeModuleMethod: `deviceActions.disconnect/
+                DeviceManagementService.cancelConnection`,
+              errorContent: err,
+            });
           } else {
             dispatch(disconnect());
           }
@@ -99,6 +115,12 @@ const deviceActions = {
       DeviceManagementService.cancelConnection(err => {
         if (err) {
           dispatch(forgetError(err));
+          Mixpanel.trackError({
+            path: 'app/actions/device',
+            nativeModuleMethod: `deviceActions.forget/
+              DeviceManagementService.cancelConnection`,
+            errorContent: err,
+          });
         } else {
           // Remove device information from local storage
           SensitiveInfo.deleteItem(storageKeys.DEVICE);
@@ -117,6 +139,12 @@ const deviceActions = {
         DeviceInformationService.getDeviceInformation((err, results) => {
           if (err) {
             dispatch(getInfoError(err));
+            Mixpanel.trackError({
+              path: 'app/actions/device',
+              nativeModuleMethod: `deviceActions.getInfo/
+                DeviceManagementService.getDeviceInformation`,
+              errorContent: err,
+            });
           } else {
             // Store device information in local storage
             SensitiveInfo.setItem(storageKeys.DEVICE, results);
