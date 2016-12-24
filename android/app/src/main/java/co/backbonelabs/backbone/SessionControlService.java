@@ -366,12 +366,13 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
 
                     float currentDistance = Utilities.getFloatFromByteArray(responseArray, 0);
+                    int timeElapsed = Utilities.getIntFromByteArray(responseArray, 4);
 
                     WritableMap wm = Arguments.createMap();
                     wm.putDouble("currentDistance", currentDistance);
+                    wm.putInt("timeElapsed", timeElapsed);
+                    Timber.d("PostureDistance data %s", wm);
                     EventEmitter.send(reactContext, "PostureDistance", wm);
-
-                    Timber.d("Distance %f", currentDistance);
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SLOUCH_CHARACTERISTIC.toString())) {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);

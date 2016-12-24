@@ -41,7 +41,7 @@
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"PostureDistance", @"SessionStatistics", @"SlouchStatus"];
+  return @[@"SessionData", @"SessionStatistics", @"SlouchStatus"];
 }
 
 RCT_EXPORT_MODULE();
@@ -344,10 +344,14 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       DLog(@"DistanceRawValue %x %x %x %x", dataPointer[0], dataPointer[1], dataPointer[2], dataPointer[3]);
       
       float currentDistance = [Utilities convertToFloatFromBytes:dataPointer offset:0];
+      int timeElapsed = [Utilities convertToIntFromBytes:dataPointer offset:4];
       
-      [self sendEventWithName:@"PostureDistance" body:@{
-                                                        @"currentDistance": [NSNumber numberWithFloat:currentDistance]
-                                                        }];
+      NSDictionary *sessionData = @{
+                                  @"currentDistance": [NSNumber numberWithFloat:currentDistance],
+                                  @"timeElapsed": [NSNumber numberWithInt:timeElapsed]
+                                  };
+      DLog(@"SessionData %@", sessionData);
+      [self sendEventWithName:@"SessionData" body:sessionData];
     }
     else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
