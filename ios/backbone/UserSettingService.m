@@ -9,7 +9,6 @@
 #import "UserSettingService.h"
 #import <Foundation/Foundation.h>
 #import "RCTUtils.h"
-#import "RCTEventDispatcher.h"
 #import "Constants.h"
 
 @implementation UserSettingService
