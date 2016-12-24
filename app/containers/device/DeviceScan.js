@@ -16,6 +16,7 @@ import SecondaryText from '../../components/SecondaryText';
 import theme from '../../styles/theme';
 import routes from '../../routes';
 import constants from '../../utils/constants';
+import Mixpanel from '../../utils/Mixpanel';
 
 const { DeviceManagementService } = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
@@ -91,6 +92,12 @@ class DeviceScan extends Component {
             { text: 'Try Again', onPress: this.initiateScanning },
           ],
         );
+
+        Mixpanel.trackError({
+          path: 'app/containers/device/DeviceScan',
+          functionChain: 'initiateScanning/DeviceManagementService.scanForDevices',
+          errorContent: error,
+        });
       } else {
         this.setState({ inProgress: true });
       }
