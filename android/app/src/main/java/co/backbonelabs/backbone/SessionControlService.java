@@ -80,7 +80,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
         if (bluetoothService.isDeviceReady()
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
-                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
+                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC)) {
             if (currentSessionState == Constants.SESSION_STATES.STOPPED) {
                 forceStoppedSession = false;
 
@@ -178,7 +178,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
         if (bluetoothService.isDeviceReady()
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
-                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
+                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC)) {
             if (currentSessionState == Constants.SESSION_STATES.RUNNING) {
                 toggleSessionOperation(Constants.SESSION_OPERATIONS.PAUSE, new Constants.IntCallBack() {
                     @Override
@@ -207,7 +207,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
         if (bluetoothService.isDeviceReady()
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
-                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC)) {
+                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC)) {
             if (currentSessionState == Constants.SESSION_STATES.RUNNING || currentSessionState == Constants.SESSION_STATES.PAUSED) {
                 forceStoppedSession = true;
 
@@ -362,7 +362,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 Timber.d("CharacteristicUpdate");
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
 
-                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC.toString())) {
+                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC.toString())) {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
 
                     float currentDistance = Utilities.getFloatFromByteArray(responseArray, 0);
@@ -409,7 +409,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         statisticNotificationStatus = false;
                         slouchNotificationStatus = false;
 
-                        bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC, distanceNotificationStatus);
+                        bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, distanceNotificationStatus);
                     }
                 }
             }
@@ -423,7 +423,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                             // Session state updated, so we proceed to toggle the notification state
                             notificationStateChanged = false;
 
-                            boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC, distanceNotificationStatus);
+                            boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, distanceNotificationStatus);
 
                             // If we failed initiating the descriptor writer, handle the error callback
                             if (!toggleStatus && errorCallBack != null) {
@@ -446,7 +446,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
                 int status = intent.getIntExtra(Constants.EXTRA_BYTE_STATUS_VALUE, BluetoothGatt.GATT_FAILURE);
 
-                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.DISTANCE_CHARACTERISTIC.toString())) {
+                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (errorCallBack != null) {
                             boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SLOUCH_CHARACTERISTIC, slouchNotificationStatus);
