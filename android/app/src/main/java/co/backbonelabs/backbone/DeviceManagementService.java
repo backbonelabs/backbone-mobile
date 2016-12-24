@@ -145,17 +145,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         }
     }
 
-    @ReactMethod
-    public void getDeviceStatus(Callback callback) {
-        BluetoothService bluetoothService = BluetoothService.getInstance();
-
-        if (bluetoothService.getCurrentDevice() != null) {
-            callback.invoke(bluetoothService.getDeviceState() == BluetoothProfile.STATE_CONNECTED ? Constants.DEVICE_STATUSES.CONNECTED : Constants.DEVICE_STATUSES.DISCONNECTED);
-        } else {
-            callback.invoke(Constants.DEVICE_STATUSES.DISCONNECTED);
-        }
-    }
-
     private void checkConnectTimeout() {
         int interval = 1000 * 10; // 10 seconds of timeout
         Handler handler = new Handler();

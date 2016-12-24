@@ -101,10 +101,6 @@ RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
   }];
 }
 
-RCT_EXPORT_METHOD(getDeviceStatus:(RCTResponseSenderBlock)callback) {
-  callback(@[[NSNull null], [NSNumber numberWithInteger:BluetoothServiceInstance.currentDevice.state]]);
-}
-
 - (void)checkConnectTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if (BluetoothServiceInstance.currentDevice.state != CBPeripheralStateConnected) {
