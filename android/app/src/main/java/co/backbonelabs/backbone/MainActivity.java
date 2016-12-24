@@ -1,20 +1,13 @@
 package co.backbonelabs.backbone;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 
 import com.facebook.react.ReactActivity;
-import com.mbientlab.metawear.MetaWearBleService;
 
 import timber.log.Timber;
 
-public class MainActivity extends ReactActivity implements ServiceConnection {
-    public static MetaWearBleService.LocalBinder metaWearServiceBinder;
+public class MainActivity extends ReactActivity {
     public static Activity currentActivity;
     private NotificationService notificationService;
 
@@ -32,10 +25,6 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
 
         // Set up NotificationService
         notificationService = new NotificationService(getApplicationContext());
-
-        // Bind the service when the activity is created
-        getApplicationContext().bindService(new Intent(this, MetaWearBleService.class),
-                this, Context.BIND_AUTO_CREATE);
 
         currentActivity = this;
     }
@@ -58,26 +47,12 @@ public class MainActivity extends ReactActivity implements ServiceConnection {
         super.onDestroy();
 
         BluetoothService bluetoothService = BluetoothService.getInstance();
-        bluetoothService.setShouldCloseGatt(true);
 
         // Disconnect from device
         if (bluetoothService.getCurrentDevice() != null) {
             bluetoothService.disconnect();
         }
-
-        // Unbind the service when the activity is destroyed
-        getApplicationContext().unbindService(this);
     }
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        // Typecast the binder to the service's LocalBinder class
-        metaWearServiceBinder = (MetaWearBleService.LocalBinder) service;
-        metaWearServiceBinder.executeOnUiThread();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) { }
 
     /**
      * Returns the name of the main component registered from JavaScript.

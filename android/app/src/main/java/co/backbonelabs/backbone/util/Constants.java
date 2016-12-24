@@ -58,11 +58,6 @@ public class Constants {
         int STOP = 0x03;
     }
 
-//    public interface VIBRATION_COMMANDS {
-//        int START = 0x01;
-//        int STOP = 0x00;
-//    }
-
     public interface BOOTLOADER_STATES {
         int OFF = 0;
         int INITIATED = 1;
@@ -78,6 +73,15 @@ public class Constants {
         int PROGRAM_ROW = 0x39;
         int VERIFY_ROW = 0x3A;
         int EXIT_BOOTLOADER = 0x3B;
+    }
+
+    public interface FIRMWARE_UPDATE_STATES {
+        int INVALID_SERVICE = -2;
+        int INVALID_FILE = -1;
+        int BEGIN = 0;
+        int END_SUCCESS = 1;
+        int END_ERROR = 2;
+        int PENDING = 3;
     }
 
     public interface BOOTLOADER_BYTE_TYPES {
@@ -204,14 +208,10 @@ public class Constants {
     public final static String ACTION_CHARACTERISTIC_READ = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_READ";
     public final static String ACTION_CHARACTERISTIC_WRITE = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_WRITE";
     public final static String ACTION_DESCRIPTOR_WRITE = "co.backbonelabs.backbone.intent.action.DESCRIPTOR_WRITE";
-    public final static String ACTION_BOOTLOADER_UPDATE = "co.backbonelabs.backbone.intent.action.BOOTLOADER_UPDATE";
 
     public final static String EXTRA_BYTE_VALUE = "co.backbonelabs.backbone.extra.BYTE_VALUE";
     public final static String EXTRA_BYTE_UUID_VALUE = "co.backbonelabs.backbone.extra.BYTE_UUID_VALUE";
     public final static String EXTRA_BYTE_STATUS_VALUE = "co.backbonelabs.backbone.extra.BYTE_STATUS_VALUE";
-//    public final static String EXTRA_BYTE_INSTANCE_VALUE = "co.backbonelabs.backbone.extra.BYTE_INSTANCE_VALUE";
-//    public final static String EXTRA_BYTE_SERVICE_UUID_VALUE = "co.backbonelabs.backbone.extra.BYTE_SERVICE_UUID_VALUE";
-//    public final static String EXTRA_BYTE_SERVICE_INSTANCE_VALUE = "co.backbonelabs.backbone.extra.BYTE_SERVICE_INSTANCE_VALUE";
 
     public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805F9B34FB";
 
