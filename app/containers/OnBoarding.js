@@ -280,7 +280,7 @@ class OnBoarding extends Component {
           >
             <Icon
               name={'close'}
-              size={30}
+              size={styles.$exitIconSize}
               color={styles._exitOnboardingIconColor.backgroundColor}
             />
           </TouchableOpacity>
@@ -292,7 +292,7 @@ class OnBoarding extends Component {
               <Icon
                 key={key}
                 name={this.state.step > key ? 'check-square-o' : 'square-o'}
-                size={44}
+                size={styles.$progressIconSize}
                 color={styles._progressIcon.backgroundColor}
               />
             ))

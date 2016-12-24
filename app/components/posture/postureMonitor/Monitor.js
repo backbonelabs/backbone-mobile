@@ -9,11 +9,11 @@ import { View } from 'react-native';
 import styles from '../.././../styles/posture/postureMonitor';
 import relativeDimensions from '../../../utils/relativeDimensions';
 
-const { widthDifference } = relativeDimensions;
-const responsiveWidth = 136 * widthDifference;
+const { applyWidthDifference } = relativeDimensions;
+const responsiveWidth = applyWidthDifference(136);
 
 const Monitor = (props) => {
-  const { degree, slouchDetection } = props;
+  const { pointerPosition, slouchPosition } = props;
 
   return (
     <View style={{ alignSelf: 'center' }}>
@@ -30,34 +30,39 @@ const Monitor = (props) => {
         <Circle
           cx={responsiveWidth}
           cy={responsiveWidth}
-          r={130 * widthDifference}
+          r={applyWidthDifference(130)}
           stroke="#231F20"
-          strokeWidth={3 * widthDifference}
+          strokeWidth={applyWidthDifference(3)}
           fill="url(#grad)"
         />
       </Svg>
       <View style={styles.halfCircleOuterContainer}>
         <View
           style={[
-            { transform: [{ rotate: `${slouchDetection}deg` }] },
+            { transform: [{ rotate: `${slouchPosition}deg` }] },
             styles.halfCircleInnerContainer,
           ]}
         >
           <View style={styles.halfCircle} />
         </View>
       </View>
-      <View style={[{ transform: [{ rotate: `${degree}deg` }] }, styles.monitorPointerContainer]}>
-        <View style={styles.point} />
-        <View style={styles.hand} />
+      <View
+        style={[
+          { transform: [{ rotate: `${pointerPosition}deg` }] },
+          styles.monitorPointerContainer,
+        ]}
+      >
         <View style={styles.base} />
+        <View style={styles.hand} />
+        <View style={styles.point} />
       </View>
     </View>
   );
 };
 
 Monitor.propTypes = {
-  degree: PropTypes.number,
-  slouchDetection: PropTypes.number,
+  pointerPosition: PropTypes.number,
+  slouchPosition: PropTypes.number,
 };
 
 export default Monitor;

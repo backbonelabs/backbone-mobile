@@ -25,6 +25,14 @@ export default {
     CONNECTED: 2,
     DISCONNECTING: 3,
   },
+  firmwareUpdateStates: {
+    INVALID_SERVICE: -2,
+    INVALID_FILE: -1,
+    BEGIN: 0,
+    END_SUCCESS: 1,
+    END_ERROR: 2,
+    PENDING: 3,
+  },
   heightUnitIdToLabel: {
     1: 'IN',
     2: 'CM',

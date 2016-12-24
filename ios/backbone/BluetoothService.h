@@ -7,6 +7,7 @@
   BOOL _isObserving;
   NSDictionary *stateMap;
   NSMutableDictionary *_servicesFound;
+  NSMutableDictionary *_characteristicMap;
   NSMutableArray *_characteristicDelegates;
 }
 
@@ -17,6 +18,7 @@
 @property (nonatomic, strong) CBPeripheral *currentDevice;
 
 @property int state;
+@property int currentDeviceMode;
 
 + (BluetoothService *)getBluetoothService;
 - (id)initService;
@@ -33,6 +35,9 @@
 - (void)selectDevice:(CBPeripheral*)device;
 - (void)connectDevice:(CBPeripheral*)device completionBlock:(ErrorHandler)completionHandler;
 - (void)disconnectDevice:(ErrorHandler)completionHandler;
+
+- (BOOL)isDeviceReady;
+- (CBCharacteristic*)getCharacteristicByUUID:(CBUUID*)uuid;
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
 @end

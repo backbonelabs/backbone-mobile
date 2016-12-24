@@ -1,9 +1,19 @@
-import { NativeModules, NativeAppEventEmitter } from 'react-native';
+import {
+  NativeModules,
+  NativeEventEmitter,
+} from 'react-native';
+import Fetcher from '../utils/Fetcher';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
-const { DeviceManagementService, DeviceInformationService } = NativeModules;
-const { deviceStatuses, storageKeys } = constants;
+const {
+  Environment,
+  DeviceManagementService,
+  DeviceInformationService,
+} = NativeModules;
+const { storageKeys } = constants;
+const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
+const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
 
@@ -17,14 +27,44 @@ const connectError = payload => ({
   payload,
 });
 
-function setConnectEventListener(dispatch) {
-  NativeAppEventEmitter.once('ConnectionStatus', status => {
-    if (status.message) {
-      dispatch(connectError(status));
-    } else {
-      dispatch(connect(status));
+function setConnectEventListener(dispatch, getInfo) {
+  const connectionStatusListener = deviceManagementServiceEvents.addListener(
+    'ConnectionStatus',
+    status => {
+      if (status.message) {
+        dispatch(connectError(status));
+      } else {
+        dispatch(connect(status));
+        // Call getInfo to fetch latest device information
+        dispatch(getInfo());
+      }
+      connectionStatusListener.remove();
     }
-  });
+  );
+}
+
+function checkFirmware(firmwareVersion) {
+  // Fetch device firmware details
+  return Fetcher.get({ url: firmwareUrl })
+    .then(res => res.json()
+      .then(body => {
+        let updateAvailable = false;
+        // Split firmware versions into array for digit-by-digit comparison
+        const newFirmware = body.version.split('.');
+        const currentFirmware = firmwareVersion.split('.');
+
+        // Check and compare each of the firmware version digits in order
+        // Use for loop, since forEach can't be interrupted
+        for (let i = 0; i < newFirmware.length; i++) {
+          if (parseInt(newFirmware[i], 10) > parseInt(currentFirmware[i], 10)) {
+            updateAvailable = true;
+            break;
+          }
+        }
+
+        return updateAvailable;
+      })
+    );
 }
 
 const disconnectStart = () => ({ type: 'DEVICE_DISCONNECT__START' });
@@ -62,53 +102,34 @@ const getInfoError = error => ({
 });
 
 const deviceActions = {
-  connect() {
+  connect(deviceIdentifier) {
     return (dispatch) => {
       dispatch(connectStart());
-      setConnectEventListener(dispatch);
-      DeviceManagementService.connectToDevice();
-    };
-  },
-  attemptAutoConnect() {
-    return (dispatch) => {
-      // Check current connection status with Backbone device
-      DeviceManagementService.getDeviceStatus((err, status) => {
-        if (err) {
-          // TODO: Handle error
-        } else if (status === deviceStatuses.CONNECTED) {
-          // Device is connected
-          dispatch(connect({ isConnected: true }));
-        } else {
-          // Device is not connected, check whether there is a saved device
-          DeviceManagementService.getSavedDevice((error, device) => {
-            if (error) {
-              // TODO: Handle error
-            } else if (device) {
-              // There is a saved device, attempt to connect
-              dispatch(deviceActions.connect());
-            }
-            // Do nothing if there is no saved device
-          });
-        }
-      });
+      setConnectEventListener(dispatch, deviceActions.getInfo);
+      // Connect to device with specified identifier
+      DeviceManagementService.connectToDevice(deviceIdentifier);
     };
   },
   disconnect() {
-    return (dispatch) => {
-      dispatch(disconnectStart());
-      DeviceManagementService.cancelConnection(err => {
-        if (err) {
-          dispatch(disconnectError(err));
-        } else {
-          dispatch(disconnect());
-        }
-      });
+    return (dispatch, getState) => {
+      // Attempt disconnect only if device is connected
+      if (getState().device.isConnected) {
+        dispatch(disconnectStart());
+        DeviceManagementService.cancelConnection(err => {
+          if (err) {
+            dispatch(disconnectError(err));
+          } else {
+            dispatch(disconnect());
+          }
+        });
+      }
     };
   },
   forget() {
     return (dispatch) => {
       dispatch(forgetStart());
-      DeviceManagementService.forgetDevice(err => {
+      // Disconnect device before attempting to forget
+      DeviceManagementService.cancelConnection(err => {
         if (err) {
           dispatch(forgetError(err));
         } else {
@@ -130,9 +151,16 @@ const deviceActions = {
           if (err) {
             dispatch(getInfoError(err));
           } else {
-            // Store device information in local storage
-            SensitiveInfo.setItem(storageKeys.DEVICE, results);
-            dispatch(getInfo(results));
+            // If there's new firmware, set updateAvailable to true
+            checkFirmware(results.firmwareVersion)
+              .then(updateAvailable => {
+                // Clone device in order to add updateAvailable property
+                const resultsClone = { ...results, updateAvailable };
+
+                // Store device information in local storage
+                SensitiveInfo.setItem(storageKeys.DEVICE, resultsClone);
+                dispatch(getInfo(resultsClone));
+              });
           }
         });
       } else {
@@ -140,8 +168,16 @@ const deviceActions = {
         SensitiveInfo.getItem(storageKeys.DEVICE)
           .then(device => {
             if (device) {
-              // Update device store with locally stored device
-              dispatch(getInfo(device));
+              checkFirmware(device.firmwareVersion)
+                .then(updateAvailable => {
+                  // Clone device in order to add updateAvailable property
+                  const deviceClone = { ...device, updateAvailable };
+
+                  // Update device store
+                  dispatch(getInfo(deviceClone));
+                });
+              // Attempt to connect to locally stored device
+              dispatch(deviceActions.connect(device.identifier));
             } else {
               // No locally stored device, set to empty object
               dispatch(getInfo({}));

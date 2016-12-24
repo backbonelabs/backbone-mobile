@@ -1,7 +1,8 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+
 
 const bottomBorder = {
   borderBottomWidth: 1,
@@ -19,15 +20,15 @@ const absoluteCenter = {
 };
 
 export default EStyleSheet.create({
-  $settingsIconSize: 24 * widthDifference,
-  $arrowWidth: 12 * widthDifference,
-  $arrowHeight: 23 * widthDifference,
+  $settingsIconSize: fixedResponsiveFontSize(24),
+  $arrowWidth: applyWidthDifference(12),
+  $arrowHeight: applyWidthDifference(23),
   backgroundImage: {
     width: '100%',
     height: '100%',
   },
   sensorSettingsContainer: {
-    height: 100 * widthDifference,
+    height: applyWidthDifference(100),
     flexDirection: 'row',
     ...bottomBorder,
   },
@@ -36,12 +37,12 @@ export default EStyleSheet.create({
     ...absoluteCenter,
   },
   sensorIcon: {
-    width: 70 * widthDifference,
-    height: 59 * widthDifference,
+    width: applyWidthDifference(70),
+    height: applyWidthDifference(59),
     resizeMode: 'contain',
   },
   sensorTextTitle: {
-    marginBottom: 2 * widthDifference,
+    marginBottom: applyWidthDifference(2),
   },
   sensorText: {
     flex: 0.45,
@@ -51,23 +52,23 @@ export default EStyleSheet.create({
     ...centerRowItems,
   },
   deviceInfoText: {
-    marginVertical: 2 * widthDifference,
-    fontSize: 13,
+    marginVertical: applyWidthDifference(2),
+    fontSize: fixedResponsiveFontSize(13),
     color: '$primaryFontColor',
   },
   batteryIcon: {
-    width: 24 * widthDifference,
-    height: 13 * widthDifference,
+    width: applyWidthDifference(24),
+    height: applyWidthDifference(13),
     resizeMode: 'contain',
   },
   settingsHeader: {
     ...bottomBorder,
-    paddingLeft: 15 * widthDifference,
-    paddingTop: 15 * widthDifference,
-    paddingBottom: 5 * widthDifference,
+    paddingLeft: applyWidthDifference(15),
+    paddingTop: applyWidthDifference(15),
+    paddingBottom: applyWidthDifference(5),
   },
   settingsRow: {
-    height: 48 * widthDifference,
+    height: applyWidthDifference(48),
     ...centerRowItems,
     ...bottomBorder,
   },
@@ -82,7 +83,7 @@ export default EStyleSheet.create({
     flex: 0.20,
     alignItems: 'flex-end',
     justifyContent: 'center',
-    paddingRight: 10 * widthDifference,
+    paddingRight: applyWidthDifference(10),
   },
   buttonContainer: {
     flex: 1,
@@ -90,9 +91,9 @@ export default EStyleSheet.create({
   },
   devMenu: {
     borderWidth: 1,
-    padding: 10 * widthDifference,
+    padding: applyWidthDifference(10),
   },
   devMenuItem: {
-    marginTop: 2 * widthDifference,
+    marginTop: applyWidthDifference(2),
   },
 });

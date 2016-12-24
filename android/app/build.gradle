@@ -104,7 +104,7 @@ android {
         applicationId "co.backbonelabs.backbone"
         minSdkVersion 18 // Android 4.3, required for BLE
         targetSdkVersion 22
-        versionCode 92
+        versionCode 108
         versionName "1.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -157,12 +157,13 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fs')
+    compile project(':react-native-material-kit')
     compile project(':react-native-svg')
     compile project(':react-native-sensitive-info')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
-    compile "com.mbientlab:metawear:2.6.0"
     compile "com.mixpanel.android:mixpanel-android:4.+"
     compile "com.jakewharton.timber:timber:4.3.1"
     compile "com.facebook.fresco:animated-gif:0.11.0"

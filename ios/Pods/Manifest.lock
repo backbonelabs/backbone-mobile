@@ -1,23 +1,14 @@
 PODS:
-  - Bolts/Tasks (1.8.4)
-  - FastCoding (3.2.1)
-  - Metawear-iOSAPI (2.6.1):
-    - Bolts/Tasks (~> 1.8.4)
-    - FastCoding (~> 3.2.1)
-  - Mixpanel (3.0.2):
-    - Mixpanel/Mixpanel (= 3.0.2)
-  - Mixpanel/Mixpanel (3.0.2)
+  - Mixpanel (3.0.8):
+    - Mixpanel/Mixpanel (= 3.0.8)
+  - Mixpanel/Mixpanel (3.0.8)
 
 DEPENDENCIES:
-  - Metawear-iOSAPI
   - Mixpanel
 
 SPEC CHECKSUMS:
-  Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
-  FastCoding: ed46c83ba23d048aafa0251972a1e1fc1cfc58ed
-  Metawear-iOSAPI: e911bd9875b758e60a64be9fba44eda8846ac159
-  Mixpanel: 0e4f1f9a2ac612b589b2894830038418c2587428
+  Mixpanel: 550a23d5dd95f8e9cda21e697661ffddbc8da46b
 
-PODFILE CHECKSUM: f6257bbcc22c95ec9e95019f5b1965b466a08906
+PODFILE CHECKSUM: 4c137f7b98316ab4d541a1b3fb02f3cbcfd9be85
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.1

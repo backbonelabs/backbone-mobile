@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   background: {
@@ -10,8 +10,8 @@ export default EStyleSheet.create({
   },
   inputField: {
     flex: 1,
-    fontSize: '1rem',
-    paddingHorizontal: 10 * widthDifference,
+    fontSize: fixedResponsiveFontSize(18),
+    paddingHorizontal: applyWidthDifference(10),
     textAlignVertical: 'top', // Android
   },
   confirmationMessageContainer: {
@@ -20,7 +20,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   confirmationMessageImage: {
-    width: 80 * widthDifference,
+    width: applyWidthDifference(80),
     height: 84 * heightDifference,
     resizeMode: 'contain',
     marginBottom: 40 * heightDifference,

@@ -1,10 +1,15 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
-const responsiveWidthHalfCircle = 128.5 * widthDifference;
+const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
+const responsiveWidthHalfCircle = applyWidthDifference(128.5);
+
+const totalPointerWidth = applyWidthDifference(10);
+const totalPointerLength = applyWidthDifference(88);
 
 export default EStyleSheet.create({
+  $sliderIconSize: fixedResponsiveFontSize(15),
+  $sliderIconPadding: applyWidthDifference(5),
   $pointerBaseHeight: 84,
   container: {
     flex: 1,
@@ -25,33 +30,35 @@ export default EStyleSheet.create({
     },
   },
   monitorPointerContainer: {
+    flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',
-    height: '$pointerBaseHeight * 2',
-    bottom: '$pointerBaseHeight',
-    marginBottom: '$pointerBaseHeight * -2',
+    justifyContent: 'flex-end',
+    height: totalPointerWidth,
+    width: (totalPointerLength * 2) - applyWidthDifference(8),
+    marginTop: totalPointerWidth * -0.5,
   },
   base: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: applyWidthDifference(8),
+    height: applyWidthDifference(8),
+    borderRadius: applyWidthDifference(4),
     backgroundColor: '$primaryFontColor',
   },
   hand: {
-    width: 2,
-    height: 70,
+    height: applyWidthDifference(2),
+    width: applyWidthDifference(70),
     backgroundColor: '$primaryFontColor',
   },
   point: {
     backgroundColor: 'transparent',
-    borderTopWidth: 0,
-    borderRightWidth: 5,
-    borderBottomWidth: 10,
-    borderLeftWidth: 5,
-    borderTopColor: 'transparent',
+    borderRightWidth: 0,
+    borderTopWidth: applyWidthDifference(5),
+    borderLeftWidth: applyWidthDifference(10),
+    borderBottomWidth: applyWidthDifference(5),
     borderRightColor: 'transparent',
-    borderBottomColor: '$primaryFontColor',
-    borderLeftColor: 'transparent',
+    borderTopColor: 'transparent',
+    borderLeftColor: '$primaryFontColor',
+    borderBottomColor: 'transparent',
   },
   monitorTitle: {
     textAlign: 'center',
@@ -64,32 +71,32 @@ export default EStyleSheet.create({
     alignSelf: 'center',
   },
   monitorPoor: {
-    marginLeft: 26 * widthDifference,
-    marginRight: 212 * widthDifference,
+    marginLeft: applyWidthDifference(26),
+    marginRight: applyWidthDifference(212),
   },
   monitorGood: {
-    marginRight: 27 * widthDifference,
+    marginRight: applyWidthDifference(27),
   },
   sliderTitle: {
     textAlign: 'center',
     alignSelf: 'center',
-    width: 296 * widthDifference,
+    width: applyWidthDifference(296),
   },
   sliderContainer: {
-    width: 296 * widthDifference,
+    width: applyWidthDifference(296),
     marginBottom: 50 * heightDifference,
     alignSelf: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
   btnContainer: {
-    width: 350 * widthDifference,
+    width: applyWidthDifference(350),
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent: 'space-around',
   },
   monitorBtn: {
-    width: 75 * widthDifference,
+    width: applyWidthDifference(75),
     height: 75 * heightDifference,
     resizeMode: 'contain',
   },
@@ -101,8 +108,8 @@ export default EStyleSheet.create({
     height: responsiveWidthHalfCircle,
     width: (responsiveWidthHalfCircle * 2),
     position: 'absolute',
-    top: 7.5 * widthDifference,
-    left: 7.5 * widthDifference,
+    top: applyWidthDifference(7.5),
+    left: applyWidthDifference(7.5),
     alignSelf: 'center',
     alignItems: 'center',
     borderWidth: 0,

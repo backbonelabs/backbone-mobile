@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { widthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 const absoluteCenter = {
   alignItems: 'center',
@@ -31,7 +31,7 @@ export default EStyleSheet.create({
     color: '$primaryColor',
   },
   tabBar: {
-    height: 62 * heightDifference,
+    height: applyWidthDifference(60),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -47,8 +47,8 @@ export default EStyleSheet.create({
     color: '$disabledColor',
   },
   tabBarImage: {
-    height: 30 * heightDifference,
-    width: 30 * widthDifference,
+    height: applyWidthDifference(30),
+    width: applyWidthDifference(30),
     resizeMode: 'contain',
   },
 });

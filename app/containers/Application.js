@@ -3,11 +3,9 @@ import {
   Alert,
   AppState,
   View,
-  Text,
   Image,
   StatusBar,
   Navigator,
-  DeviceEventEmitter,
   NativeModules,
   NativeEventEmitter,
   Platform,
@@ -25,6 +23,7 @@ import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import FullModal from '../components/FullModal';
+import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
 import Banner from '../components/Banner';
@@ -134,15 +133,12 @@ class Application extends Component {
       });
 
       if (state === bluetoothStates.OFF) {
+        this.props.dispatch(deviceActions.disconnect());
         Alert.alert('Error', 'Bluetooth is off');
       }
     };
 
-    if (isiOS) {
-      this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
-    } else {
-      this.bluetoothListener = DeviceEventEmitter.addListener('BluetoothState', handler);
-    }
+    this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -159,8 +155,8 @@ class Application extends Component {
           // Check if there is already a user profile in the Redux store
           if (this.props.user._id) {
             // There is a user profile in the Redux store
-            // Attempt to auto connect to device
-            this.props.dispatch(deviceActions.attemptAutoConnect());
+            // Fetch device info
+            this.props.dispatch(deviceActions.getInfo());
 
             // Set initial route to posture dashboard
             this.setInitialRoute(routes.postureDashboard);
@@ -179,8 +175,8 @@ class Application extends Component {
 
                   if (user.hasOnboarded) {
                     // User completed onboarding
-                    // Attempt to auto connect to device
-                    this.props.dispatch(deviceActions.attemptAutoConnect());
+                    // Fetch device info
+                    this.props.dispatch(deviceActions.getInfo());
 
                     // Set initial route to posture dashboard
                     this.setInitialRoute(routes.postureDashboard);
@@ -234,8 +230,8 @@ class Application extends Component {
   @autobind
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
-      // Attempt auto-connect when app is brought back into the foreground
-      this.props.dispatch(deviceActions.attemptAutoConnect());
+      // Fetch device info when app comes back into foreground
+      this.props.dispatch(deviceActions.getInfo());
     }
   }
 
@@ -292,7 +288,7 @@ class Application extends Component {
                 onPress={() => !isSameRoute && this.navigator.push(routes[value.routeName])}
               >
                 <Image source={imageSource} style={styles.tabBarImage} />
-                <Text style={{ color: tabBarTextColor }}>{ value.name }</Text>
+                <SecondaryText style={{ color: tabBarTextColor }}>{ value.name }</SecondaryText>
               </TouchableOpacity>
             );
           })
