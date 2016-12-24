@@ -30,7 +30,7 @@ function setConnectEventListener(dispatch, getInfo) {
         dispatch(connectError(status));
         Mixpanel.trackError({
           path: 'app/actions/device',
-          nativeModuleMethod: `setConnectEventListener/
+          functionChain: `setConnectEventListener/
             deviceManagementServiceEvents.addListener`,
           errorContent: status,
         });
@@ -97,7 +97,7 @@ const deviceActions = {
             dispatch(disconnectError(err));
             Mixpanel.trackError({
               path: 'app/actions/device',
-              nativeModuleMethod: `deviceActions.disconnect/
+              functionChain: `deviceActions.disconnect/
                 DeviceManagementService.cancelConnection`,
               errorContent: err,
             });
@@ -117,7 +117,7 @@ const deviceActions = {
           dispatch(forgetError(err));
           Mixpanel.trackError({
             path: 'app/actions/device',
-            nativeModuleMethod: `deviceActions.forget/
+            functionChain: `deviceActions.forget/
               DeviceManagementService.cancelConnection`,
             errorContent: err,
           });
@@ -141,7 +141,7 @@ const deviceActions = {
             dispatch(getInfoError(err));
             Mixpanel.trackError({
               path: 'app/actions/device',
-              nativeModuleMethod: `deviceActions.getInfo/
+              functionChain: `deviceActions.getInfo/
                 DeviceManagementService.getDeviceInformation`,
               errorContent: err,
             });
