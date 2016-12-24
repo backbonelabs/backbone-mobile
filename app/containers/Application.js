@@ -105,16 +105,12 @@ class Application extends Component {
     }
 
     // Get initial Bluetooth state
-    Bluetooth.getState((error, state) => {
-      if (!error) {
-        this.props.dispatch({
-          type: 'UPDATE_BLUETOOTH_STATE',
-          payload: state,
-        });
-      } else {
-        Alert.alert('Error', error);
-      }
-    });
+    Bluetooth.getState((error, { state }) =>
+      this.props.dispatch({
+        type: 'UPDATE_BLUETOOTH_STATE',
+        payload: state,
+      })
+    );
 
     // For Android only, check if Bluetooth is enabled.
     // If not, display prompt for user to enable Bluetooth.
