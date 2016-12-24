@@ -41,14 +41,14 @@
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"PostureDistance", @"SessionStatistics", @"SlouchStatus"];
+  return @[@"SessionData", @"SessionStatistics", @"SlouchStatus"];
 }
 
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderBlock)callback) {
   if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]
-      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
     if (currentSessionState == SESSION_STATE_STOPPED) {
@@ -142,7 +142,7 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
 
 RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
   if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]
-      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
     if (currentSessionState == SESSION_STATE_RUNNING) {
@@ -167,7 +167,7 @@ RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
 
 RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]
-      && [BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
     if (currentSessionState == SESSION_STATE_RUNNING || currentSessionState == SESSION_STATE_PAUSED) {
@@ -323,7 +323,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
 //      if ([characteristic.UUID isEqual:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
 //        _sessionControlCharacteristic = characteristic;
 //      }
-//      else if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
+//      else if ([characteristic.UUID isEqual:SESSION_DATA_CHARACTERISTIC_UUID]) {
 //        _distanceCharacteristic = characteristic;
 //      }
 //      else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
@@ -339,15 +339,19 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
   DLog(@"DidUpdateValue %@", characteristic);
   if (error == nil) {
-    if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
+    if ([characteristic.UUID isEqual:SESSION_DATA_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
       DLog(@"DistanceRawValue %x %x %x %x", dataPointer[0], dataPointer[1], dataPointer[2], dataPointer[3]);
       
       float currentDistance = [Utilities convertToFloatFromBytes:dataPointer offset:0];
+      int timeElapsed = [Utilities convertToIntFromBytes:dataPointer offset:4];
       
-      [self sendEventWithName:@"PostureDistance" body:@{
-                                                        @"currentDistance": [NSNumber numberWithFloat:currentDistance]
-                                                        }];
+      NSDictionary *sessionData = @{
+                                  @"currentDistance": [NSNumber numberWithFloat:currentDistance],
+                                  @"timeElapsed": [NSNumber numberWithInt:timeElapsed]
+                                  };
+      DLog(@"SessionData %@", sessionData);
+      [self sendEventWithName:@"SessionData" body:sessionData];
     }
     else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
@@ -377,7 +381,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
         slouchNotificationStatus = NO;
         statisticNotificationStatus = NO;
         
-        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID]];
+        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
       }
     }
     else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
@@ -396,7 +400,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
 // Failure on any of them will result in operation reversal
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
   DLog(@"DidUpdateNotif %@", characteristic);
-  if ([characteristic.UUID isEqual:DISTANCE_CHARACTERISTIC_UUID]) {
+  if ([characteristic.UUID isEqual:SESSION_DATA_CHARACTERISTIC_UUID]) {
     if (error) {
       DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
       
@@ -459,7 +463,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
         // No error, so we proceed to toggling distance notification when needed
         notificationStateChanged = NO;
         
-        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DISTANCE_CHARACTERISTIC_UUID]];
+        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
       }
       else {
         // For reverting, no need toggling the notification on the same state.
