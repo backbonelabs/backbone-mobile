@@ -27,6 +27,7 @@ public class BackbonePackage implements ReactPackage {
         modules.add(new EnvironmentModule(reactContext));
         modules.add(new Mixpanel(reactContext));
         modules.add(BluetoothService.getInstance(reactContext));
+        modules.add(BootLoaderService.getInstance(reactContext));
         modules.add(new DeviceManagementService(reactContext));
         modules.add(DeviceInformationService.getInstance(reactContext));
         modules.add(SessionControlService.getInstance(reactContext));

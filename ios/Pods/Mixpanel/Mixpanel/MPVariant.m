@@ -372,7 +372,20 @@ static NSMapTable *originalCache;
         self.swizzleClass = swizzleClass;
 
         if (!swizzleSelector) {
-            swizzleSelector = NSSelectorFromString(@"didMoveToWindow");
+            BOOL shouldUseLayoutSubviews = NO;
+            NSArray *classesToUseLayoutSubviews = @[[UITableViewCell class], [UINavigationBar class]];
+            for (Class klass in classesToUseLayoutSubviews) {
+                if ([self.swizzleClass isSubclassOfClass:klass] ||
+                    [self.path pathContainsObjectOfClass:klass]) {
+                    shouldUseLayoutSubviews = YES;
+                    break;
+                }
+            }
+            if (shouldUseLayoutSubviews) {
+                swizzleSelector = NSSelectorFromString(@"layoutSubviews");
+            } else {
+                swizzleSelector = NSSelectorFromString(@"didMoveToWindow");
+            }
         }
         self.swizzleSelector = swizzleSelector;
 
@@ -574,6 +587,10 @@ static NSMapTable *originalCache;
                     }
                 }
                 @try {
+                    // This check is done to avoid moving and resizing UI components that you are not allowed to change.
+                    if ([NSStringFromSelector(selector) isEqualToString:@"setFrame:"] && ![o isKindOfClass:[UINavigationBar class]]) {
+                        ((UIView *)o).translatesAutoresizingMaskIntoConstraints = YES;
+                    }
                     [invocation invokeWithTarget:o];
                 }
                 @catch (NSException *exception) {
