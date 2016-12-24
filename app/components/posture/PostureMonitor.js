@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-import { debounce } from 'lodash';
+import { compact, debounce } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -123,9 +123,9 @@ class PostureMonitor extends Component {
   }
 
   /**
-   * Displays the session time remaining/elapsed in M:SS format. For timed sessions, the time
-   * remaining will be displayed. For untimed sessions, the time elapsed will be displayed.
-   * @return {String} Time remaining/elapsed in M:SS format
+   * Displays the session time remaining/elapsed in H:MM:SS or M:SS format. For timed sessions,
+   * the time remaining will be displayed. For untimed sessions, the time elapsed will be displayed.
+   * @return {String} Time remaining/elapsed in H:MM:SS or M:SS format
    */
   getFormattedTimeRemaining() {
     const totalSessionTime = this.props.posture.sessionTimeSeconds;
@@ -133,12 +133,23 @@ class PostureMonitor extends Component {
     const totalSeconds = totalSessionTime === Infinity ?
                                                 timeElapsed :
                                                 totalSessionTime - timeElapsed;
-    const minutes = Math.floor(totalSeconds / 60);
-    let seconds = totalSeconds - (minutes * 60);
-    if (seconds < 10) {
-      seconds = `0${seconds}`;
-    }
-    return `${minutes}:${seconds}`;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+    const seconds = totalSeconds % 60;
+
+    const lpad = number => {
+      if (number < 10) {
+        return `0${number}`;
+      }
+      return number;
+    };
+
+    const timeArray = [
+      hours,
+      hours ? lpad(minutes) : minutes,
+      lpad(seconds),
+    ];
+    return compact(timeArray).join(':');
   }
 
   /**
