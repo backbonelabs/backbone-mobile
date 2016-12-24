@@ -20,8 +20,9 @@ import appActions from '../../actions/app';
 import userActions from '../../actions/user';
 import PostureSummary from './PostureSummary';
 import routes from '../../routes';
+import Mixpanel from '../../utils/Mixpanel';
 
-const { SessionControlService, Mixpanel } = NativeModules;
+const { SessionControlService } = NativeModules;
 const eventEmitter = new NativeEventEmitter(SessionControlService);
 
 const MIN_POSTURE_THRESHOLD = 0.03;
@@ -240,6 +241,12 @@ class PostureMonitor extends Component {
             rightLabel: 'Retry',
             rightAction: this.startSession,
           });
+
+          Mixpanel.trackError({
+            path: 'app/components/posture/PostureMonitor',
+            functionChain: 'startSession/SessionControlService.start',
+            errorContent: err,
+          });
         }
       } else {
         this.setState({ sessionState: sessionStates.RUNNING });
@@ -255,6 +262,12 @@ class PostureMonitor extends Component {
           message: 'An error occurred while attempting to pause the session.',
           rightLabel: 'Retry',
           rightAction: this.pauseSession,
+        });
+
+        Mixpanel.trackError({
+          path: 'app/components/posture/PostureMonitor',
+          functionChain: 'pauseSession/SessionControlService.pause',
+          errorContent: err,
         });
       } else {
         this.setState({ sessionState: sessionStates.PAUSED });
@@ -282,6 +295,12 @@ class PostureMonitor extends Component {
             message: 'An error occurred while attempting to stop the session.',
             rightLabel: 'Retry',
             rightAction: this.stopSession,
+          });
+
+          Mixpanel.trackError({
+            path: 'app/components/posture/PostureMonitor',
+            functionChain: 'stopSession/SessionControlService.stop',
+            errorContent: err,
           });
         } else {
           this.saveUserSession();
