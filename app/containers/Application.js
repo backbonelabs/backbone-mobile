@@ -32,13 +32,13 @@ import styles from '../styles/application';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Mixpanel from '../utils/Mixpanel';
 
 const { bluetoothStates, storageKeys } = constants;
 
 const {
   BluetoothService: Bluetooth,
   Environment,
-  Mixpanel,
 } = NativeModules;
 
 const BluetoothService = new NativeEventEmitter(Bluetooth);
@@ -114,6 +114,12 @@ class Application extends Component {
         });
       } else {
         Alert.alert('Error', error);
+
+        Mixpanel.trackError({
+          path: 'app/containers/Application',
+          functionChain: 'componentWillMount/Bluetooth.getState',
+          errorContent: error,
+        });
       }
     });
 
