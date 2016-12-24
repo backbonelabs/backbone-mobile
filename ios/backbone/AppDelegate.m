@@ -8,7 +8,6 @@
  */
 
 #import "AppDelegate.h"
-#import "PostureModule.h"
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 #import "Mixpanel/Mixpanel.h"
@@ -67,15 +66,11 @@
 // Handler for when the app is active in the foreground
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   DLog(@"applicationDidBecomeActive");
-  // Prevent posture module from sending local notifications if the app is in the foreground
-  [PostureModule setShouldSendNotifications:false];
 }
 
 // Handler for when the app is in the background
 - (void)applicationDidEnterBackground:(UIApplication *)application {
   DLog(@"applicationDidEnterBackground");
-  // Allow posture module to send local notifications if the app switches to the background
-  [PostureModule setShouldSendNotifications:true];
 }
 
 // Handler for application termination
