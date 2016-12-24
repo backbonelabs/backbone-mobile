@@ -87,8 +87,9 @@ class PostureMonitor extends Component {
       pointerPosition: 0,
       totalDuration: 0, // in seconds
       slouchTime: 0, // in seconds
+      timeElapsed: 0, // in seconds
     };
-    this.postureListener = null;
+    this.sessionDataListener = null;
     this.slouchListener = null;
     this.statsListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
@@ -97,7 +98,7 @@ class PostureMonitor extends Component {
 
   componentWillMount() {
     // Set up listener for posture distance data
-    this.postureListener = eventEmitter.addListener('PostureDistance', this.distanceHandler);
+    this.sessionDataListener = eventEmitter.addListener('SessionData', this.sessionDataHandler);
 
     // Set up listener for slouch event
     this.slouchListener = eventEmitter.addListener('SlouchStatus', this.slouchHandler);
@@ -116,7 +117,7 @@ class PostureMonitor extends Component {
     });
 
     // Remove listeners
-    this.postureListener.remove();
+    this.sessionDataListener.remove();
     this.slouchListener.remove();
     this.statsListener.remove();
   }
@@ -127,15 +128,13 @@ class PostureMonitor extends Component {
    * @return {String} Time remaining/elapsed in M:SS format
    */
   getFormattedTimeRemaining() {
-    // TODO: Update to display correct time remaining for timed sessions and time elapsed for
-    // untimed sessions. This can be done after the device is programmed to stream time data.
-    // For now, it just displays the chosen session time.
-    const secondsRemaining = this.props.posture.sessionTimeSeconds;
-    if (secondsRemaining === Infinity) {
-      return '-:--';
-    }
-    const minutes = Math.floor(secondsRemaining / 60);
-    let seconds = secondsRemaining - (minutes * 60);
+    const totalSessionTime = this.props.posture.sessionTimeSeconds;
+    const timeElapsed = this.state.timeElapsed;
+    const totalSeconds = totalSessionTime === Infinity ?
+                                                timeElapsed :
+                                                totalSessionTime - timeElapsed;
+    const minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds - (minutes * 60);
     if (seconds < 10) {
       seconds = `0${seconds}`;
     }
@@ -143,14 +142,18 @@ class PostureMonitor extends Component {
   }
 
   /**
-   * Updates the pointer based on the distance away from the control point
+   * Updates the pointer based on the distance away from the control point and the time
    * @param {Object} event
    * @param {Number} event.currentDistance How far away the user is from the control point
+   * @param {Number} event.timeElapsed     Number of seconds the session has been running
    */
   @autobind
-  distanceHandler(event) {
-    const { currentDistance } = event;
-    this.setState({ pointerPosition: distanceToDegrees(currentDistance) });
+  sessionDataHandler(event) {
+    const { currentDistance, timeElapsed } = event;
+    this.setState({
+      pointerPosition: distanceToDegrees(currentDistance),
+      timeElapsed,
+    });
   }
 
   /**
