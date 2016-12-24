@@ -2,8 +2,9 @@ import { NativeModules } from 'react-native';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
+import Mixpanel from '../utils/Mixpanel';
 
-const { Environment, Mixpanel } = NativeModules;
+const { Environment } = NativeModules;
 const { storageKeys } = constants;
 
 const loginStart = () => ({ type: 'LOGIN__START' });
