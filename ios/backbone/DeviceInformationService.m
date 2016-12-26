@@ -9,7 +9,6 @@
 #import "DeviceInformationService.h"
 #import "BluetoothService.h"
 #import "RCTUtils.h"
-#import "RCTEventDispatcher.h"
 #import "Utilities.h"
 
 @implementation DeviceInformationService
