@@ -120,9 +120,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             checkConnectTimeout();
         } else {
             // Could not retrieve a valid device
-            WritableMap wm = Arguments.createMap();
-            wm.putString("message", "Not a valid device");
-            EventEmitter.send(reactContext, "ConnectionStatus", wm);
+            EventEmitter.send(reactContext, "ConnectionStatus", JSError.make("Not a valid device"));
         }
     }
 
@@ -141,18 +139,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             callback.invoke();
         } catch (Exception e) {
             e.printStackTrace();
-            callback.invoke(JSError.make(e.getMessage()));
-        }
-    }
-
-    @ReactMethod
-    public void getDeviceStatus(Callback callback) {
-        BluetoothService bluetoothService = BluetoothService.getInstance();
-
-        if (bluetoothService.getCurrentDevice() != null) {
-            callback.invoke(bluetoothService.getDeviceState() == BluetoothProfile.STATE_CONNECTED ? Constants.DEVICE_STATUSES.CONNECTED : Constants.DEVICE_STATUSES.DISCONNECTED);
-        } else {
-            callback.invoke(Constants.DEVICE_STATUSES.DISCONNECTED);
+            callback.invoke(JSError.make("Failed to disconnect"));
         }
     }
 

@@ -27,6 +27,8 @@
   
   _characteristicDelegates = [NSMutableArray new];
   
+  _state = CBCentralManagerStateUnknown;
+  
   stateMap = @{
                @"0": [NSNumber numberWithInteger:-1],
                @"1": [NSNumber numberWithInteger:1],
@@ -59,13 +61,14 @@
 
 RCT_EXPORT_MODULE();
 
+/**
+ Returns the current Bluetooth state (based on the custom state map) to a callback
+ @param callback The Bluetooth state is passed in the second argument as a key of a dictionary
+ */
 RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
-  if (_state) {
-    callback(@[[NSNull null], [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]]);
-  } else {
-    NSDictionary *makeError = RCTMakeError(@"Error with Bluetooth", nil, @{@"state": [NSNull null]});
-    callback(@[makeError]);
-  }
+  callback(@[[NSNull null], @{
+                              @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]
+                              }]);
 }
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {

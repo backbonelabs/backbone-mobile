@@ -106,7 +106,7 @@ class Application extends Component {
     }
 
     // Get initial Bluetooth state
-    Bluetooth.getState((error, state) => {
+    Bluetooth.getState((error, { state }) => {
       if (!error) {
         this.props.dispatch({
           type: 'UPDATE_BLUETOOTH_STATE',
