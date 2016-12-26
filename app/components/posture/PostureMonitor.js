@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-import { compact, debounce } from 'lodash';
+import { debounce } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -130,9 +130,9 @@ class PostureMonitor extends Component {
   getFormattedTimeRemaining() {
     const totalSessionTime = this.props.posture.sessionTimeSeconds;
     const timeElapsed = this.state.timeElapsed;
-    const totalSeconds = totalSessionTime === Infinity ?
-                                                timeElapsed :
-                                                totalSessionTime - timeElapsed;
+    const totalSeconds = totalSessionTime === 0 ?
+                          timeElapsed :
+                          totalSessionTime - timeElapsed;
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
     const seconds = totalSeconds % 60;
@@ -144,12 +144,16 @@ class PostureMonitor extends Component {
       return number;
     };
 
-    const timeArray = [
-      hours,
-      hours ? lpad(minutes) : minutes,
-      lpad(seconds),
-    ];
-    return compact(timeArray).join(':');
+    const timeArray = [];
+    if (hours) {
+      timeArray[0] = hours;
+      timeArray[1] = lpad(minutes);
+      timeArray[2] = lpad(seconds);
+    } else {
+      timeArray[0] = minutes;
+      timeArray[1] = lpad(seconds);
+    }
+    return timeArray.join(':');
   }
 
   /**
@@ -339,11 +343,7 @@ class PostureMonitor extends Component {
   @autobind
   showSummary() {
     const sessionTime = this.props.posture.sessionTimeSeconds;
-    let goalMinutes = Math.floor(sessionTime / 60);
-    if (sessionTime === Infinity) {
-      goalMinutes = 0;
-    }
-
+    const goalMinutes = Math.floor(sessionTime / 60);
     const { slouchTime, totalDuration } = this.state;
     this.props.dispatch(appActions.showFullModal({
       onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
