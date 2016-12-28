@@ -144,6 +144,9 @@ class Application extends Component {
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
 
+    // Allows us to differentiate between development / production events
+    Mixpanel.registerSuperProperties({ DEV_MODE: Environment.DEV_MODE === 'true' });
+
     // Check if there is a stored access token. An access token
     // would have been saved on a previously successful login
     SensitiveInfo.getItem(storageKeys.ACCESS_TOKEN)
@@ -178,7 +181,6 @@ class Application extends Component {
 
                   // Specify user account to track event for
                   Mixpanel.identify(user._id);
-
 
                   if (user.hasOnboarded) {
                     // User completed onboarding
