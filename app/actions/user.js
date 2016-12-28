@@ -2,6 +2,7 @@ import { NativeModules } from 'react-native';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
 const { storageKeys } = constants;
@@ -113,8 +114,28 @@ export default {
                 new Error(body.error)
               ));
             } else {
+              const {
+                gender,
+                heightUnitPreference,
+                weightUnitPreference,
+              } = userUpdateFields;
+
               // Store updated user in local storage
               SensitiveInfo.setItem(storageKeys.USER, body);
+
+              // Update user profile on Mixpanel
+              Mixpanel.set({
+                ...userUpdateFields,
+                gender: gender === constants.gender.male ? 'male' : 'female',
+                heightUnitPreference: heightUnitPreference === constants.height.units.IN ?
+                  'IN'
+                  :
+                    'CM',
+                weightUnitPreference: weightUnitPreference === constants.weight.units.LB ?
+                  'LB'
+                  :
+                    'KG',
+              });
 
               dispatch(updateUser(body));
             }
