@@ -36,8 +36,7 @@ function setConnectEventListener(dispatch, getInfo) {
         dispatch(connectError(status));
         Mixpanel.trackError({
           path: 'app/actions/device',
-          stackTrace: `setConnectEventListener/
-            deviceManagementServiceEvents.addListener`,
+          stackTrace: ['setConnectEventListener', 'deviceManagementServiceEvents.addListener'],
           errorContent: status,
         });
       } else {
@@ -127,8 +126,7 @@ const deviceActions = {
             dispatch(disconnectError(err));
             Mixpanel.trackError({
               path: 'app/actions/device',
-              stackTrace: `deviceActions.disconnect/
-                DeviceManagementService.cancelConnection`,
+              stackTrace: ['deviceActions.disconnect', 'DeviceManagementService.cancelConnection'],
               errorContent: err,
             });
           } else {
@@ -147,8 +145,7 @@ const deviceActions = {
           dispatch(forgetError(err));
           Mixpanel.trackError({
             path: 'app/actions/device',
-            stackTrace: `deviceActions.forget/
-              DeviceManagementService.cancelConnection`,
+            stackTrace: ['deviceActions.forget', 'DeviceManagementService.cancelConnection'],
             errorContent: err,
           });
         } else {
@@ -171,8 +168,7 @@ const deviceActions = {
             dispatch(getInfoError(err));
             Mixpanel.trackError({
               path: 'app/actions/device',
-              stackTrace: `deviceActions.getInfo/
-                DeviceManagementService.getDeviceInformation`,
+              stackTrace: ['deviceActions.getInfo', 'DeviceManagementService.getDeviceInformation'],
               errorContent: err,
             });
           } else {
