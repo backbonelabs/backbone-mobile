@@ -117,7 +117,7 @@ class Application extends Component {
 
         Mixpanel.trackError({
           path: 'app/containers/Application',
-          functionChain: 'componentWillMount/Bluetooth.getState',
+          stackTrace: 'componentWillMount/Bluetooth.getState',
           errorContent: error,
         });
       }

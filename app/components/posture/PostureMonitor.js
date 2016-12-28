@@ -258,7 +258,7 @@ class PostureMonitor extends Component {
 
           Mixpanel.trackError({
             path: 'app/components/posture/PostureMonitor',
-            functionChain: 'startSession/SessionControlService.start',
+            stackTrace: 'startSession/SessionControlService.start',
             errorContent: err,
           });
         }
@@ -280,7 +280,7 @@ class PostureMonitor extends Component {
 
         Mixpanel.trackError({
           path: 'app/components/posture/PostureMonitor',
-          functionChain: 'pauseSession/SessionControlService.pause',
+          stackTrace: 'pauseSession/SessionControlService.pause',
           errorContent: err,
         });
       } else {
@@ -313,7 +313,7 @@ class PostureMonitor extends Component {
 
           Mixpanel.trackError({
             path: 'app/components/posture/PostureMonitor',
-            functionChain: 'stopSession/SessionControlService.stop',
+            stackTrace: 'stopSession/SessionControlService.stop',
             errorContent: err,
           });
         } else {
