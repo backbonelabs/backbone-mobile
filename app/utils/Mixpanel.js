@@ -37,8 +37,9 @@ export default {
   },
 
   /**
-   * Tracks an error event
-   * @param  {Object}  properties  An object containing properties relevant to the event
+   * Tracks an error event and its properties
+   * @param  {Object}  properties  An error event property object which contains the error
+   *                               message, stack trace, bluetooth state properties and more.
    */
   trackError(properties) {
     // Track Bluetooth status to identify potential BT-related issues
@@ -48,5 +49,13 @@ export default {
         ...properties,
       });
     });
+  },
+
+  /**
+   * Registers super properties, which Mixpanel will include with every event
+   * @param  {Object}  properties  An object containing properties to pass on every event
+   */
+  registerSuperProperties(properties) {
+    Mixpanel.registerSuperProperties(properties);
   },
 };
