@@ -47,8 +47,9 @@ export default class HowTo extends Component {
   trackContentView(videoProperties) {
     const { title, description } = videoProperties;
     Mixpanel.trackWithProperties('contentView', {
-      contentType: 'video',
-      videoProperties: { title, description },
+      type: 'video',
+      title,
+      description,
     });
   }
 
