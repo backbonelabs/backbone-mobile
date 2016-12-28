@@ -255,13 +255,13 @@ class PostureMonitor extends Component {
             rightLabel: 'Retry',
             rightAction: this.startSession,
           });
-
-          Mixpanel.trackError({
-            path: 'app/components/posture/PostureMonitor',
-            stackTrace: ['startSession', 'SessionControlService.start'],
-            errorContent: err,
-          });
         }
+
+        Mixpanel.trackError({
+          path: 'app/components/posture/PostureMonitor',
+          stackTrace: ['startSession', 'SessionControlService.start'],
+          errorContent: err,
+        });
       } else {
         this.setState({ sessionState: sessionStates.RUNNING });
       }
@@ -341,17 +341,20 @@ class PostureMonitor extends Component {
       if (today.toDateString() === cloneLastSession.toDateString()) {
         // Session date is next day from the last session
         updateUserPayload.dailyStreak = dailyStreak + 1;
-        this.trackDailyStreak(updateUserPayload.dailyStreak, dailyStreak);
       } else if (today.toDateString() === userLastSession.toDateString()) {
         // Session date is same as last session, do not increment streak
       } else {
         // Reset streak
         updateUserPayload.dailyStreak = 1;
-        this.trackDailyStreak(updateUserPayload.dailyStreak, dailyStreak);
       }
     } else {
       // First-time user
       updateUserPayload.dailyStreak = 1;
+    }
+
+    // If lastSession doesn't equal the current dailyStreak, then track the change in Mixpanel
+    if (lastSession !== updateUserPayload.dailyStreak) {
+      this.trackDailyStreak(updateUserPayload.dailyStreak, dailyStreak);
     }
 
     dispatch(userActions.updateUser(updateUserPayload));
@@ -381,7 +384,7 @@ class PostureMonitor extends Component {
     Mixpanel.trackWithProperties('dailyStreak', {
       // If we see that a user is no longer on a streak, we can look at the
       // current and previous streak properties and see where the drop off is
-      streak: current >= previous,
+      activeStreak: current >= previous,
       current,
       previous,
     });
