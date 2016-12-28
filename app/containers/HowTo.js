@@ -73,7 +73,7 @@ export default class HowTo extends Component {
                         pressedItem: currentlyPlaying ? null : key,
                       }, () => (
                         // Track only if video isn't currently playing
-                        !currentlyPlaying && this.trackContentView(value)
+                        this.state.pressedItem !== null && this.trackContentView(value)
                       ))
                     )}
                   >
