@@ -127,7 +127,7 @@ class PostureMonitor extends Component {
    * the time remaining will be displayed. For untimed sessions, the time elapsed will be displayed.
    * @return {String} Time remaining/elapsed in H:MM:SS or M:SS format
    */
-  getFormattedTimeRemaining() {
+  getFormattedTime() {
     const totalSessionTime = this.props.posture.sessionTimeSeconds;
     const timeElapsed = this.state.timeElapsed;
     const totalSeconds = totalSessionTime === 0 ?
@@ -390,7 +390,7 @@ class PostureMonitor extends Component {
     return (
       <View style={styles.container}>
         <HeadingText size={1} style={styles._timer}>
-          {this.getFormattedTimeRemaining()}
+          {this.getFormattedTime()}
         </HeadingText>
         <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
         <Monitor
