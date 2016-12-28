@@ -35,9 +35,9 @@ function setConnectEventListener(dispatch, getInfo) {
       if (status.message) {
         dispatch(connectError(status));
         Mixpanel.trackError({
+          message: status.message,
           path: 'app/actions/device',
           stackTrace: ['setConnectEventListener', 'deviceManagementServiceEvents.addListener'],
-          errorContent: status,
         });
       } else {
         dispatch(connect(status));
@@ -125,9 +125,9 @@ const deviceActions = {
           if (err) {
             dispatch(disconnectError(err));
             Mixpanel.trackError({
+              message: err.message,
               path: 'app/actions/device',
               stackTrace: ['deviceActions.disconnect', 'DeviceManagementService.cancelConnection'],
-              errorContent: err,
             });
           } else {
             dispatch(disconnect());
@@ -144,9 +144,9 @@ const deviceActions = {
         if (err) {
           dispatch(forgetError(err));
           Mixpanel.trackError({
+            message: err.message,
             path: 'app/actions/device',
             stackTrace: ['deviceActions.forget', 'DeviceManagementService.cancelConnection'],
-            errorContent: err,
           });
         } else {
           // Remove device information from local storage
@@ -167,9 +167,9 @@ const deviceActions = {
           if (err) {
             dispatch(getInfoError(err));
             Mixpanel.trackError({
+              message: err.message,
               path: 'app/actions/device',
               stackTrace: ['deviceActions.getInfo', 'DeviceManagementService.getDeviceInformation'],
-              errorContent: err,
             });
           } else {
             // If there's new firmware, set updateAvailable to true

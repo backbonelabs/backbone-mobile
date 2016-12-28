@@ -258,9 +258,9 @@ class PostureMonitor extends Component {
         }
 
         Mixpanel.trackError({
+          message: err.message,
           path: 'app/components/posture/PostureMonitor',
           stackTrace: ['startSession', 'SessionControlService.start'],
-          errorContent: err,
         });
       } else {
         this.setState({ sessionState: sessionStates.RUNNING });
@@ -279,9 +279,9 @@ class PostureMonitor extends Component {
         });
 
         Mixpanel.trackError({
+          message: err.message,
           path: 'app/components/posture/PostureMonitor',
           stackTrace: ['pauseSession', 'SessionControlService.pause'],
-          errorContent: err,
         });
       } else {
         this.setState({ sessionState: sessionStates.PAUSED });
@@ -309,9 +309,9 @@ class PostureMonitor extends Component {
           });
 
           Mixpanel.trackError({
+            message: err.message,
             path: 'app/components/posture/PostureMonitor',
             stackTrace: ['stopSession', 'SessionControlService.stop'],
-            errorContent: err,
           });
         } else {
           this.saveUserSession();

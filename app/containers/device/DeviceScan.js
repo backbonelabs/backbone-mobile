@@ -94,9 +94,9 @@ class DeviceScan extends Component {
         );
 
         Mixpanel.trackError({
+          message: error.message,
           path: 'app/containers/device/DeviceScan',
           stackTrace: ['initiateScanning', 'DeviceManagementService.scanForDevices'],
-          errorContent: error,
         });
       } else {
         this.setState({ inProgress: true });
