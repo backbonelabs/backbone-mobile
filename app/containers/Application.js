@@ -114,12 +114,6 @@ class Application extends Component {
         });
       } else {
         Alert.alert('Error', error);
-
-        Mixpanel.trackError({
-          path: 'app/containers/Application',
-          stackTrace: ['componentWillMount', 'Bluetooth.getState'],
-          errorContent: error,
-        });
       }
     });
 
