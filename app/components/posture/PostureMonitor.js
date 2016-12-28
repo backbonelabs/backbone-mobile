@@ -297,10 +297,7 @@ class PostureMonitor extends Component {
       this.sessionCommandAlert({
         title: 'Exit',
         message: 'Are you sure you want to leave?',
-        rightAction: () => {
-          this.trackUserSession(false);
-          this.props.navigator.pop();
-        },
+        rightAction: this.props.navigator.pop,
       });
     } else {
       SessionControlService.stop(err => {
@@ -364,7 +361,7 @@ class PostureMonitor extends Component {
    * Tracks a user's posture session on Mixpanel
    */
   @autobind
-  trackUserSession(completedSession) {
+  trackUserSession() {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     const { slouchTime, totalDuration } = this.state;
 
@@ -372,7 +369,7 @@ class PostureMonitor extends Component {
       sessionTime,
       totalDuration,
       slouchTime,
-      completedSession,
+      completedSession: sessionTime === 0 || totalDuration === sessionTime,
     });
   }
 
@@ -403,7 +400,7 @@ class PostureMonitor extends Component {
 
     const { slouchTime, totalDuration } = this.state;
 
-    this.trackUserSession(true);
+    this.trackUserSession();
     this.props.dispatch(appActions.showFullModal({
       onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
       content: <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={goalMinutes} />,
