@@ -258,7 +258,7 @@ class PostureMonitor extends Component {
         }
 
         Mixpanel.trackError({
-          message: err.message,
+          errorContent: err,
           path: 'app/components/posture/PostureMonitor',
           stackTrace: ['startSession', 'SessionControlService.start'],
         });
@@ -279,7 +279,7 @@ class PostureMonitor extends Component {
         });
 
         Mixpanel.trackError({
-          message: err.message,
+          errorContent: err,
           path: 'app/components/posture/PostureMonitor',
           stackTrace: ['pauseSession', 'SessionControlService.pause'],
         });
@@ -309,7 +309,7 @@ class PostureMonitor extends Component {
           });
 
           Mixpanel.trackError({
-            message: err.message,
+            errorContent: err,
             path: 'app/components/posture/PostureMonitor',
             stackTrace: ['stopSession', 'SessionControlService.stop'],
           });
@@ -350,7 +350,7 @@ class PostureMonitor extends Component {
     }
 
     // If lastSession doesn't equal the current dailyStreak, then track the change in Mixpanel
-    if (lastSession !== updateUserPayload.dailyStreak) {
+    if (dailyStreak !== updateUserPayload.dailyStreak) {
       this.trackDailyStreak(updateUserPayload.dailyStreak, dailyStreak);
     }
 
