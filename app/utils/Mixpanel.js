@@ -38,14 +38,15 @@ export default {
 
   /**
    * Tracks an error event and its properties
-   * @param  {Object}  properties  An error event property object which contains the error
-   *                               message, stack trace, bluetooth state properties and more.
+   * @param  {Object}  properties  An error event property object which contains the error message,
+   *                               stack trace, file path, bluetooth state properties, and anything
+   *                               else that you feel would be relevant to the error event.
    */
   trackError(properties) {
     // Track Bluetooth status to identify potential BT-related issues
-    BluetoothService.getState((error, state) => {
+    BluetoothService.getState((error, { state }) => {
       Mixpanel.trackWithProperties('reactNativeError', {
-        bluetoothState: error || state.state,
+        bluetoothState: state,
         ...properties,
       });
     });
