@@ -67,9 +67,37 @@ export default {
                 new Error(body.error)
               ));
             } else {
+              let mixpanelProfileProps = { $email: body.email };
+              const {
+                nickname,
+                height,
+                heightUnitPreference,
+                weight,
+                weightUnitPreference,
+                birthdate,
+                gender,
+              } = body;
+
+              if (body.hasOnboarded) {
+                mixpanelProfileProps = Object.assign(mixpanelProfileProps, {
+                  nickname,
+                  gender,
+                  birthdate,
+                  height,
+                  heightUnitPreference: heightUnitPreference === constants.height.units.IN ?
+                    'IN'
+                    :
+                      'CM',
+                  weight,
+                  weightUnitPreference: weightUnitPreference === constants.weight.units.LB ?
+                    'LB'
+                    :
+                      'KG',
+                });
+              }
               // Identify user for Mixpanel tracking
               Mixpanel.identify(body._id);
-              Mixpanel.set({ $email: body.email });
+              Mixpanel.set(mixpanelProfileProps);
 
               const { accessToken, ...userObj } = body;
               // Store access token and user in local storage
