@@ -314,7 +314,6 @@ class PostureMonitor extends Component {
             stackTrace: ['stopSession', 'SessionControlService.stop'],
           });
         } else {
-          this.saveUserSession();
           this.setState({ sessionState: sessionStates.STOPPED });
         }
       });
