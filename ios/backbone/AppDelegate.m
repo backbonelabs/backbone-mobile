@@ -19,18 +19,18 @@
 {
   // Cancel all prior notifications
   [application cancelAllLocalNotifications];
-  
+
   // Register notification types
   UIUserNotificationType types = (UIUserNotificationType) (UIUserNotificationTypeSound | UIUserNotificationTypeAlert);
   UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types
                                                                                        categories:nil];
   [application registerUserNotificationSettings:notificationSettings];
 
-  NSDictionary *environment = [[NSProcessInfo processInfo] environment];
-  
+  NSDictionary *environment = [[NSBundle mainBundle] infoDictionary];
+
   // Generate singleton instance of the Mixpanel API
   [Mixpanel sharedInstanceWithToken:[environment valueForKey:@"MIXPANEL_TOKEN"]];
-  
+
   // Launch React Native app
   NSURL *jsCodeLocation;
 
@@ -75,7 +75,7 @@
 
 // Handler for application termination
 - (void)applicationWillTerminate:(UIApplication *)application {
-  
+
 }
 
 @end
