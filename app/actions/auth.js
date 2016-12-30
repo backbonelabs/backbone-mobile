@@ -67,39 +67,13 @@ export default {
                 new Error(body.error)
               ));
             } else {
-              let mixpanelProfileProps = { $email: body.email };
-              const {
-                nickname,
-                height,
-                heightUnitPreference,
-                weight,
-                weightUnitPreference,
-                birthdate,
-                gender,
-              } = body;
+              const { _id, accessToken, ...userObj } = body;
 
-              if (body.hasOnboarded) {
-                mixpanelProfileProps = Object.assign(mixpanelProfileProps, {
-                  nickname,
-                  gender,
-                  birthdate,
-                  height,
-                  heightUnitPreference: heightUnitPreference === constants.height.units.IN ?
-                    'IN'
-                    :
-                      'CM',
-                  weight,
-                  weightUnitPreference: weightUnitPreference === constants.weight.units.LB ?
-                    'LB'
-                    :
-                      'KG',
-                });
-              }
               // Identify user for Mixpanel tracking
-              Mixpanel.identify(body._id);
-              Mixpanel.set(mixpanelProfileProps);
+              Mixpanel.identify(_id);
 
-              const { accessToken, ...userObj } = body;
+              // Update user profile on Mixpanel
+              Mixpanel.setUserProperties(userObj);
               // Store access token and user in local storage
               SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
               SensitiveInfo.setItem(storageKeys.USER, userObj);
@@ -135,7 +109,9 @@ export default {
             } else {
               // Identify user for Mixpanel tracking
               Mixpanel.identify(body.user._id);
-              Mixpanel.set({ $email: body.user.email });
+
+              // Update user profile on Mixpanel
+              Mixpanel.setUserProperties(body.user);
               Mixpanel.track('signup');
 
               // Store access token and user in local storage

@@ -114,28 +114,11 @@ export default {
                 new Error(body.error)
               ));
             } else {
-              const {
-                gender,
-                heightUnitPreference,
-                weightUnitPreference,
-              } = userUpdateFields;
-
               // Store updated user in local storage
               SensitiveInfo.setItem(storageKeys.USER, body);
 
               // Update user profile on Mixpanel
-              Mixpanel.set({
-                ...userUpdateFields,
-                gender: gender === constants.gender.male ? 'male' : 'female',
-                heightUnitPreference: heightUnitPreference === constants.height.units.IN ?
-                  'IN'
-                  :
-                    'CM',
-                weightUnitPreference: weightUnitPreference === constants.weight.units.LB ?
-                  'LB'
-                  :
-                    'KG',
-              });
+              Mixpanel.setUserProperties(userUpdateFields);
 
               dispatch(updateUser(body));
             }
@@ -169,6 +152,11 @@ export default {
       })
         .then(response => response.json()
           .then((body) => {
+            const userObj = {
+              ...oldUser,
+              settings: body,
+            };
+
             if (body.error) {
               // Error received from API server
               return dispatch(updateUserSettingsError(
@@ -177,10 +165,10 @@ export default {
             }
 
             // Store updated user in local storage
-            SensitiveInfo.setItem(storageKeys.USER, {
-              ...oldUser,
-              settings: body,
-            });
+            SensitiveInfo.setItem(storageKeys.USER, userObj);
+
+            // Update user profile on Mixpanel
+            Mixpanel.setUserProperties(userObj);
 
             return dispatch(updateUserSettings(body));
           })
