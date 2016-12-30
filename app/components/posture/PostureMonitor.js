@@ -226,8 +226,12 @@ class PostureMonitor extends Component {
 
   @autobind
   startSession() {
-    if (this.props.user.settings.vibrationPattern == null) {
-      this.props.user.settings.vibrationPattern = 1;
+    let tmpVibrationPattern = 1;
+
+    if (!this.props.user.settings.backboneVibration) {
+      tmpVibrationPattern = 0;
+    } else if (this.props.user.settings.vibrationPattern != null) {
+      tmpVibrationPattern = this.props.user.settings.vibrationPattern;
     }
 
     SessionControlService.start({
@@ -242,8 +246,7 @@ class PostureMonitor extends Component {
       // which is incompatible with the firmware.
       slouchDistanceThreshold: Math.floor(numberMagnitude(this.state.postureThreshold, 4)),
       vibrationSpeed: this.props.user.settings.vibrationStrength,
-      vibrationPattern: (this.props.user.settings.backboneVibration ?
-        this.props.user.settings.vibrationPattern : 0),
+      vibrationPattern: tmpVibrationPattern,
     }, err => {
       if (err) {
         const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
