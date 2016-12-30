@@ -226,6 +226,10 @@ class PostureMonitor extends Component {
 
   @autobind
   startSession() {
+    if (this.props.user.settings.vibrationPattern == null) {
+      this.props.user.settings.vibrationPattern = 1;
+    }
+
     SessionControlService.start({
       sessionDuration: Math.floor(this.props.posture.sessionTimeSeconds / 60),
       // We use the postureThreshold from state instead of the user.settings object
