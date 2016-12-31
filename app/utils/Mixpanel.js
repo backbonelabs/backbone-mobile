@@ -29,7 +29,6 @@ export default {
     const userClone = Object.assign({ ...user }, { ...user.settings });
     const { gender, heightUnitPreference, weightUnitPreference } = user;
     const { height, weight } = constants;
-    const formattedGender = gender === constants.gender.male ? 'male' : 'female';
 
     // Delete unwanted profile properties
     [
@@ -46,14 +45,18 @@ export default {
 
 
     map(userClone, (value, key) => {
-      if (value || value === false) {
+      if (value !== undefined && value !== null) {
         if (key === 'email') {
           // Set Mixpanel special property $email and delete unused email property
           userClone.$email = user[key];
           delete userClone[key];
-        } else if (value && key === 'gender') {
+        } else if (key === 'createdAt') {
+          // Set Mixpanel special property $create and delete unused createdAt property
+          userClone.$created = user[key];
+          delete userClone[key];
+        } else if (key === 'gender') {
           // Change gender from integer to word equivalent ("male" / "female")
-          userClone.gender = formattedGender;
+          userClone.gender = gender === constants.gender.male ? 'male' : 'female';
         } else if (key === 'height') {
           // Change heightUnitPreference from integer to word equivalent ("IN" / "CM")
           userClone.heightUnitPreference = heightUnitPreference === height.units.IN ? 'IN' : 'CM';

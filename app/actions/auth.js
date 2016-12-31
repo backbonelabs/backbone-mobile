@@ -74,6 +74,7 @@ export default {
 
               // Update user profile on Mixpanel
               Mixpanel.setUserProperties(userObj);
+
               // Store access token and user in local storage
               SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
               SensitiveInfo.setItem(storageKeys.USER, userObj);
