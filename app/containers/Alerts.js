@@ -4,7 +4,6 @@ import {
   Image,
   Switch,
   Slider,
-  Alert,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -132,13 +131,7 @@ class Alerts extends Component {
     };
 
     // Update app store and user account to reflect new settings
-    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings))
-      .then(response => {
-        if (response.error) {
-          // Show user error message
-          Alert.alert('Error', response.payload.message);
-        }
-      });
+    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings));
   }
 
   render() {
