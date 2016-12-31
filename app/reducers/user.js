@@ -72,9 +72,7 @@ export default (state = {
         isUpdating: false,
         user: {
           ...state.user,
-          settings: {
-            ...action.payload,
-          },
+          settings: action.payload,
         },
         errorMessage: null,
       };
@@ -83,7 +81,11 @@ export default (state = {
       return {
         ...state,
         isUpdating: false,
-        errorMessage: action.payload.message,
+        errorMessage: action.payload.error.message,
+        user: {
+          ...state.user,
+          settings: action.payload.settings,
+        },
       };
     }
     case 'SIGNUP': {

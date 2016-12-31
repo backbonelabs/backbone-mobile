@@ -155,7 +155,8 @@ export default {
               ));
             }
 
-            // Store updated user in local storage
+            // Store updated user in local
+            // Q: Keep this call to be in sync with DB data?
             SensitiveInfo.setItem(storageKeys.USER, {
               ...oldUser,
               settings: body,
@@ -164,12 +165,19 @@ export default {
             return dispatch(updateUserSettings(body));
           })
         )
-        .catch(() => (
+        .catch(() => {
+          // API request failed, store settings locally
+          SensitiveInfo.setItem(storageKeys.USER, {
+            ...oldUser,
+            settings,
+          });
+
           // Network error
-          dispatch(updateUserSettingsError(
-            new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
+          return dispatch(updateUserSettingsError({
+            error: new Error('We are encountering server issues. Please try again later.'),
+            settings,
+          }));
+        });
     };
   },
   prepareUserUpdate,
