@@ -239,7 +239,7 @@ class PostureMonitor extends Component {
       slouchDistanceThreshold: Math.floor(numberMagnitude(this.state.postureThreshold, 4)),
       vibrationSpeed: this.props.user.settings.vibrationStrength,
       vibrationPattern: this.props.user.settings.backboneVibration ?
-      this.props.user.settings.vibrationPattern : 0,
+                          this.props.user.settings.vibrationPattern : 0,
     }, err => {
       if (err) {
         const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
