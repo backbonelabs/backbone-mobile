@@ -65,6 +65,7 @@ class PostureMonitor extends Component {
         phoneVibration: PropTypes.bool.isRequired,
         postureThreshold: PropTypes.number.isRequired,
         vibrationStrength: PropTypes.number.isRequired,
+        backboneVibration: PropTypes.bool.isRequired,
         vibrationPattern: PropTypes.oneOf([1, 2, 3]).isRequired,
       }).isRequired,
       _id: PropTypes.string.isRequired,
@@ -241,7 +242,8 @@ class PostureMonitor extends Component {
       // which is incompatible with the firmware.
       slouchDistanceThreshold: Math.floor(numberMagnitude(this.state.postureThreshold, 4)),
       vibrationSpeed: this.props.user.settings.vibrationStrength,
-      vibrationPattern: this.props.user.settings.vibrationPattern,
+      vibrationPattern: this.props.user.settings.backboneVibration ?
+                          this.props.user.settings.vibrationPattern : 0,
     }, err => {
       if (err) {
         const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
