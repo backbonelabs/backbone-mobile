@@ -118,7 +118,7 @@ export default {
               SensitiveInfo.setItem(storageKeys.USER, body);
 
               // Update user profile on Mixpanel
-              Mixpanel.setUserProperties(userUpdateFields);
+              Mixpanel.setUserProperties(body);
 
               dispatch(updateUser(body));
             }
