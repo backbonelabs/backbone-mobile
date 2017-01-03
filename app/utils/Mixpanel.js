@@ -26,22 +26,23 @@ export default {
    * @param  {Object}  userDetails  User profile properties
    */
   setUserProperties(user) {
-    const userClone = Object.assign({ ...user }, { ...user.settings });
     const { gender, heightUnitPreference, weightUnitPreference } = user;
+    const userClone = {
+      email: user.email,
+      createdAt: user.createdAt,
+      gender,
+      height: user.height,
+      heightUnitPreference,
+      weight: user.weight,
+      weightUnitPreference,
+      birthdate: user.birthdate,
+      dailyStreak: user.dailyStreak,
+      hasOnboarded: user.hasOnboarded,
+      isConfirmed: user.isConfirmed,
+      lastSession: user.lastSession,
+      ...user.settings,
+    };
     const { height, weight } = constants;
-
-    // Delete unwanted profile properties
-    [
-      '_id',
-      'confirmationToken',
-      'confirmationTokenExpiry',
-      'firstName',
-      'lastName',
-      'nickname',
-      'settings',
-    ].forEach(value => {
-      delete userClone[value];
-    });
 
 
     map(userClone, (value, key) => {
@@ -59,10 +60,12 @@ export default {
           userClone.gender = gender === constants.gender.male ? 'male' : 'female';
         } else if (key === 'height') {
           // Change heightUnitPreference from integer to word equivalent ("IN" / "CM")
-          userClone.heightUnitPreference = heightUnitPreference === height.units.IN ? 'IN' : 'CM';
+          userClone.heightUnitPreference = heightUnitPreference === height.units.IN ?
+            'IN' : 'CM';
         } else if (key === 'weight') {
           // Change heightUnitPreference from integer to word equivalent ("LB" / "KG")
-          userClone.weightUnitPreference = weightUnitPreference === weight.units.LB ? 'LB' : 'KG';
+          userClone.weightUnitPreference = weightUnitPreference === weight.units.LB ?
+            'LB' : 'KG';
         }
       } else {
         if (key === 'weight' || key === 'height') {
