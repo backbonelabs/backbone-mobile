@@ -26,15 +26,15 @@ export default {
    * @param  {Object}  userDetails  User profile properties
    */
   setUserProperties(user) {
-    const { gender, heightUnitPreference, weightUnitPreference } = user;
+    // Specify Mixpanel properties to save
     const userClone = {
       email: user.email,
+      gender: user.gender,
       createdAt: user.createdAt,
-      gender,
       height: user.height,
-      heightUnitPreference,
+      heightUnitPreference: user.heightUnitPreference,
       weight: user.weight,
-      weightUnitPreference,
+      weightUnitPreference: user.weightUnitPreference,
       birthdate: user.birthdate,
       dailyStreak: user.dailyStreak,
       hasOnboarded: user.hasOnboarded,
@@ -43,6 +43,7 @@ export default {
       ...user.settings,
     };
     const { height, weight } = constants;
+    const { gender, heightUnitPreference, weightUnitPreference } = user;
 
 
     map(userClone, (value, key) => {
