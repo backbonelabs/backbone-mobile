@@ -18,12 +18,14 @@ RCT_EXPORT_MODULE();
 
 /**
  Send a local push notification
+ @param title The title to be displayed on the push notification
  @param message The message to be displayed on the push notification
  */
-RCT_EXPORT_METHOD(sendLocalNotification:(NSString*)message) {
+RCT_EXPORT_METHOD(sendLocalNotification:(NSString*)title message:(NSString*)message) {
   UILocalNotification *localNotification = [[UILocalNotification alloc] init];
   
   if (localNotification) {
+    localNotification.alertTitle = NSLocalizedString(title, nil);
     localNotification.alertBody = NSLocalizedString(message, nil);
     localNotification.soundName = UILocalNotificationDefaultSoundName;
     

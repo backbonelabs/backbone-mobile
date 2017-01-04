@@ -184,15 +184,19 @@ class PostureMonitor extends Component {
   slouchHandler(event) {
     const { isSlouching } = event;
     // TODO: Implement final UX for slouch events
-    if (isSlouching && AppState.currentState === 'background') {
-      NotificationService.sendLocalNotification('Your posture is not optimal!');
-    }
+    if (isSlouching) {
+      if (AppState.currentState === 'background') {
+        // Send out slouch detection notification only on background mode
+        NotificationService.sendLocalNotification('Bad Posture Detected',
+          'Get back upright to look and feel stronger');
+      }
 
-    if (isSlouching && this.props.user.settings.phoneVibration) {
-      // User enabled phone vibration alerts
-      // Start a single 1-second phone vibration (the 1-second duration only affects Android;
-      // the iOS vibration duration is fixed and defined by the system)
-      Vibration.vibrate(1000);
+      if (this.props.user.settings.phoneVibration) {
+        // User enabled phone vibration alerts
+        // Start a single 1-second phone vibration (the 1-second duration only affects Android;
+        // the iOS vibration duration is fixed and defined by the system)
+        Vibration.vibrate(1000);
+      }
     }
   }
 

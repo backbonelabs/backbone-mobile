@@ -33,11 +33,12 @@ public class NotificationService extends ReactContextBaseJavaModule {
 
     /**
      * Send a local notification
-     * @param message The message to be displayed on the local notification
+     * @param title The first text line to be displayed on the local notification
+     * @param message The second text line to be displayed on the local notification
      */
     @ReactMethod
-    public void sendLocalNotification(String message) {
-        sendNotification(Constants.POSTURE_NOTIFICATION_ID, message);
+    public void sendLocalNotification(String title, String message) {
+        sendNotification(Constants.POSTURE_NOTIFICATION_ID, title, message);
     }
 
     /**
