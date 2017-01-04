@@ -26,15 +26,17 @@ export default {
    * @param  {Object}  userDetails  User profile properties
    */
   setUserProperties(user) {
-    // Specify Mixpanel properties to save
-    const userClone = {
-      email: user.email,
-      gender: user.gender,
-      createdAt: user.createdAt,
+    const { gender, height, weight } = constants;
+
+    // Specify Mixpanel profile properties to set
+    const userProperties = {
+      $email: user.email,
+      gender: user.gender && (user.gender === gender.male ? 'male' : 'female'),
+      $created: user.createdAt,
       height: user.height,
-      heightUnitPreference: user.heightUnitPreference,
+      heightUnitPreference: user.heightUnitPreference === height.units.IN ? 'IN' : 'CM',
       weight: user.weight,
-      weightUnitPreference: user.weightUnitPreference,
+      weightUnitPreference: user.weightUnitPreference === weight.units.LB ? 'LB' : 'KG',
       birthdate: user.birthdate,
       dailyStreak: user.dailyStreak,
       hasOnboarded: user.hasOnboarded,
@@ -42,45 +44,20 @@ export default {
       lastSession: user.lastSession,
       ...user.settings,
     };
-    const { height, weight } = constants;
-    const { gender, heightUnitPreference, weightUnitPreference } = user;
 
-
-    map(userClone, (value, key) => {
-      if (value !== undefined && value !== null) {
-        if (key === 'email') {
-          // Set Mixpanel special property $email and delete unused email property
-          userClone.$email = user[key];
-          delete userClone[key];
-        } else if (key === 'createdAt') {
-          // Set Mixpanel special property $create and delete unused createdAt property
-          userClone.$created = user[key];
-          delete userClone[key];
-        } else if (key === 'gender') {
-          // Change gender from integer to word equivalent ("male" / "female")
-          userClone.gender = gender === constants.gender.male ? 'male' : 'female';
-        } else if (key === 'height') {
-          // Change heightUnitPreference from integer to word equivalent ("IN" / "CM")
-          userClone.heightUnitPreference = heightUnitPreference === height.units.IN ?
-            'IN' : 'CM';
-        } else if (key === 'weight') {
-          // Change heightUnitPreference from integer to word equivalent ("LB" / "KG")
-          userClone.weightUnitPreference = weightUnitPreference === weight.units.LB ?
-            'LB' : 'KG';
-        }
-      } else {
+    // Remove empty properties
+    map(userProperties, (value, key) => {
+      if (value === undefined || value === null) {
+        delete userProperties[key];
         if (key === 'weight' || key === 'height') {
-          // These unit preference properties will never be undefined
-          // Remove them if their measurement values are undefined
-          delete userClone[`${key}UnitPreference`];
+          // Remove unit preferences if their measurement values are not defined
+          delete userProperties[`${key}UnitPreference`];
         }
-
-        // Remove properties with undefined values
-        delete userClone[key];
       }
     });
 
-    this.set(userClone);
+    // Set Mixpanel profile properties
+    this.set(userProperties);
   },
 
   /**
