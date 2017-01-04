@@ -8,11 +8,36 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
-public class NotificationService {
-    private static Context context;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 
-    public NotificationService(Context context) {
-        NotificationService.context = context;
+import co.backbonelabs.backbone.util.Constants;
+
+public class NotificationService extends ReactContextBaseJavaModule {
+    private static ReactApplicationContext context;
+
+    /**
+     * Public constructor
+     * @param reactContext
+     */
+    public NotificationService(ReactApplicationContext reactContext) {
+        super(reactContext);
+        NotificationService.context = reactContext;
+    }
+
+    @Override
+    public String getName() {
+        return "NotificationService";
+    }
+
+    /**
+     * Send a local notification
+     * @param message The message to be displayed on the local notification
+     */
+    @ReactMethod
+    public void sendLocalNotification(String message) {
+        sendNotification(Constants.POSTURE_NOTIFICATION_ID, message);
     }
 
     /**
