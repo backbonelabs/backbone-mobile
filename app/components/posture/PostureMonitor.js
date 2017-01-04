@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
+  AppState,
   View,
   Vibration,
   NativeModules,
@@ -22,7 +23,7 @@ import PostureSummary from './PostureSummary';
 import routes from '../../routes';
 import Mixpanel from '../../utils/Mixpanel';
 
-const { SessionControlService } = NativeModules;
+const { SessionControlService, NotificationService } = NativeModules;
 const eventEmitter = new NativeEventEmitter(SessionControlService);
 
 const MIN_POSTURE_THRESHOLD = 0.03;
@@ -183,6 +184,10 @@ class PostureMonitor extends Component {
   slouchHandler(event) {
     const { isSlouching } = event;
     // TODO: Implement final UX for slouch events
+    if (isSlouching && AppState.currentState === 'background') {
+      NotificationService.sendLocalNotification('Your posture is not optimal!');
+    }
+
     if (isSlouching && this.props.user.settings.phoneVibration) {
       // User enabled phone vibration alerts
       // Start a single 1-second phone vibration (the 1-second duration only affects Android;
