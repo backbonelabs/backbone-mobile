@@ -32,6 +32,7 @@ import styles from '../styles/application';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Mixpanel from '../utils/Mixpanel';
 
 const { bluetoothStates, storageKeys } = constants;
 
@@ -105,12 +106,16 @@ class Application extends Component {
     }
 
     // Get initial Bluetooth state
-    Bluetooth.getState((error, { state }) =>
-      this.props.dispatch({
-        type: 'UPDATE_BLUETOOTH_STATE',
-        payload: state,
-      })
-    );
+    Bluetooth.getState((error, { state }) => {
+      if (!error) {
+        this.props.dispatch({
+          type: 'UPDATE_BLUETOOTH_STATE',
+          payload: state,
+        });
+      } else {
+        Alert.alert('Error', error);
+      }
+    });
 
     // For Android only, check if Bluetooth is enabled.
     // If not, display prompt for user to enable Bluetooth.
@@ -139,6 +144,9 @@ class Application extends Component {
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
 
+    // Allows us to differentiate between development / production events
+    Mixpanel.registerSuperProperties({ DEV_MODE: Environment.DEV_MODE === 'true' });
+
     // Check if there is a stored access token. An access token
     // would have been saved on a previously successful login
     SensitiveInfo.getItem(storageKeys.ACCESS_TOKEN)
@@ -154,6 +162,9 @@ class Application extends Component {
             // Fetch device info
             this.props.dispatch(deviceActions.getInfo());
 
+            // Specify user account to track event for
+            Mixpanel.identify(this.props.user._id);
+
             // Set initial route to posture dashboard
             this.setInitialRoute(routes.postureDashboard);
           } else {
@@ -168,6 +179,8 @@ class Application extends Component {
                     payload: user,
                   });
 
+                  // Specify user account to track event for
+                  Mixpanel.identify(user._id);
 
                   if (user.hasOnboarded) {
                     // User completed onboarding

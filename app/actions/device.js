@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import Fetcher from '../utils/Fetcher';
 import constants from '../utils/constants';
+import Mixpanel from '../utils/Mixpanel';
 import SensitiveInfo from '../utils/SensitiveInfo';
 
 const {
@@ -33,6 +34,11 @@ function setConnectEventListener(dispatch, getInfo) {
     status => {
       if (status.message) {
         dispatch(connectError(status));
+        Mixpanel.trackError({
+          errorContent: status,
+          path: 'app/actions/device',
+          stackTrace: ['setConnectEventListener', 'deviceManagementServiceEvents.addListener'],
+        });
       } else {
         dispatch(connect(status));
         // Call getInfo to fetch latest device information
@@ -118,6 +124,11 @@ const deviceActions = {
         DeviceManagementService.cancelConnection(err => {
           if (err) {
             dispatch(disconnectError(err));
+            Mixpanel.trackError({
+              errorContent: err,
+              path: 'app/actions/device',
+              stackTrace: ['deviceActions.disconnect', 'DeviceManagementService.cancelConnection'],
+            });
           } else {
             dispatch(disconnect());
           }
@@ -132,6 +143,11 @@ const deviceActions = {
       DeviceManagementService.cancelConnection(err => {
         if (err) {
           dispatch(forgetError(err));
+          Mixpanel.trackError({
+            errorContent: err,
+            path: 'app/actions/device',
+            stackTrace: ['deviceActions.forget', 'DeviceManagementService.cancelConnection'],
+          });
         } else {
           // Remove device information from local storage
           SensitiveInfo.deleteItem(storageKeys.DEVICE);
@@ -150,6 +166,11 @@ const deviceActions = {
         DeviceInformationService.getDeviceInformation((err, results) => {
           if (err) {
             dispatch(getInfoError(err));
+            Mixpanel.trackError({
+              errorContent: err,
+              path: 'app/actions/device',
+              stackTrace: ['deviceActions.getInfo', 'DeviceManagementService.getDeviceInformation'],
+            });
           } else {
             // If there's new firmware, set updateAvailable to true
             checkFirmware(results.firmwareVersion)

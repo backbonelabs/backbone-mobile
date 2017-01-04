@@ -2,6 +2,7 @@ import { NativeModules } from 'react-native';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
 const { storageKeys } = constants;
@@ -116,6 +117,9 @@ export default {
               // Store updated user in local storage
               SensitiveInfo.setItem(storageKeys.USER, body);
 
+              // Update user profile on Mixpanel
+              Mixpanel.setUserProperties(body);
+
               dispatch(updateUser(body));
             }
           })
@@ -148,6 +152,11 @@ export default {
       })
         .then(response => response.json()
           .then((body) => {
+            const userObj = {
+              ...oldUser,
+              settings: body,
+            };
+
             if (body.error) {
               // Error received from API server
               return dispatch(updateUserSettingsError(
@@ -156,10 +165,10 @@ export default {
             }
 
             // Store updated user in local storage
-            SensitiveInfo.setItem(storageKeys.USER, {
-              ...oldUser,
-              settings: body,
-            });
+            SensitiveInfo.setItem(storageKeys.USER, userObj);
+
+            // Update user profile on Mixpanel
+            Mixpanel.setUserProperties(userObj);
 
             return dispatch(updateUserSettings(body));
           })
