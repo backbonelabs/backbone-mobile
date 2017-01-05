@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
+  AppState,
   View,
   Vibration,
   NativeModules,
@@ -20,8 +21,9 @@ import appActions from '../../actions/app';
 import userActions from '../../actions/user';
 import PostureSummary from './PostureSummary';
 import routes from '../../routes';
+import Mixpanel from '../../utils/Mixpanel';
 
-const { SessionControlService } = NativeModules;
+const { SessionControlService, NotificationService } = NativeModules;
 const eventEmitter = new NativeEventEmitter(SessionControlService);
 
 const MIN_POSTURE_THRESHOLD = 0.03;
@@ -182,11 +184,19 @@ class PostureMonitor extends Component {
   slouchHandler(event) {
     const { isSlouching } = event;
     // TODO: Implement final UX for slouch events
-    if (isSlouching && this.props.user.settings.phoneVibration) {
-      // User enabled phone vibration alerts
-      // Start a single 1-second phone vibration (the 1-second duration only affects Android;
-      // the iOS vibration duration is fixed and defined by the system)
-      Vibration.vibrate(1000);
+    if (isSlouching) {
+      if (AppState.currentState === 'background') {
+        // Send out slouch detection notification only on background mode
+        NotificationService.sendLocalNotification('Bad posture detected',
+          'Get back upright to look and feel stronger');
+      }
+
+      if (this.props.user.settings.phoneVibration) {
+        // User enabled phone vibration alerts
+        // Start a single 1-second phone vibration (the 1-second duration only affects Android;
+        // the iOS vibration duration is fixed and defined by the system)
+        Vibration.vibrate(1000);
+      }
     }
   }
 
@@ -261,6 +271,12 @@ class PostureMonitor extends Component {
             rightAction: this.startSession,
           });
         }
+
+        Mixpanel.trackError({
+          errorContent: err,
+          path: 'app/components/posture/PostureMonitor',
+          stackTrace: ['startSession', 'SessionControlService.start'],
+        });
       } else {
         this.setState({ sessionState: sessionStates.RUNNING });
       }
@@ -275,6 +291,12 @@ class PostureMonitor extends Component {
           message: 'An error occurred while attempting to pause the session.',
           rightLabel: 'Retry',
           rightAction: this.pauseSession,
+        });
+
+        Mixpanel.trackError({
+          errorContent: err,
+          path: 'app/components/posture/PostureMonitor',
+          stackTrace: ['pauseSession', 'SessionControlService.pause'],
         });
       } else {
         this.setState({ sessionState: sessionStates.PAUSED });
@@ -300,8 +322,13 @@ class PostureMonitor extends Component {
             rightLabel: 'Retry',
             rightAction: this.stopSession,
           });
+
+          Mixpanel.trackError({
+            errorContent: err,
+            path: 'app/components/posture/PostureMonitor',
+            stackTrace: ['stopSession', 'SessionControlService.stop'],
+          });
         } else {
-          this.saveUserSession();
           this.setState({ sessionState: sessionStates.STOPPED });
         }
       });
@@ -336,7 +363,42 @@ class PostureMonitor extends Component {
       updateUserPayload.dailyStreak = 1;
     }
 
+    // If lastSession doesn't equal the current dailyStreak, then track the change in Mixpanel
+    if (dailyStreak !== updateUserPayload.dailyStreak) {
+      this.trackDailyStreak(updateUserPayload.dailyStreak, dailyStreak);
+    }
+
     dispatch(userActions.updateUser(updateUserPayload));
+  }
+
+  /**
+   * Tracks a user's posture session on Mixpanel
+   */
+  @autobind
+  trackUserSession() {
+    const sessionTime = this.props.posture.sessionTimeSeconds;
+    const { slouchTime, totalDuration } = this.state;
+
+    Mixpanel.trackWithProperties('postureSession', {
+      sessionTime,
+      totalDuration,
+      slouchTime,
+      completedSession: sessionTime === 0 || totalDuration === sessionTime,
+    });
+  }
+
+  /**
+   * Tracks a user's dailyStreak on Mixpanel
+   */
+  @autobind
+  trackDailyStreak(current, previous) {
+    Mixpanel.trackWithProperties('dailyStreak', {
+      // If we see that a user is no longer on a streak, we can look at the
+      // current and previous streak properties and see where the drop off is
+      activeStreak: current >= previous,
+      current,
+      previous,
+    });
   }
 
   /**
@@ -347,6 +409,8 @@ class PostureMonitor extends Component {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     const goalMinutes = Math.floor(sessionTime / 60);
     const { slouchTime, totalDuration } = this.state;
+
+    this.trackUserSession();
     this.props.dispatch(appActions.showFullModal({
       onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
       content: <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={goalMinutes} />,

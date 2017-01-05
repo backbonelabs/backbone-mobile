@@ -42,6 +42,7 @@
 		697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 697D0FE71DA3DCDC00F6FF13 /* StepModule.m */; };
 		699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 699262611DE58A28003FBBC7 /* SessionControlService.m */; };
 		69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */; };
+		69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69AAF58E1E1D6314005FD0BF /* NotificationService.m */; };
 		69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */; };
 		69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 69CCE72A1DD4B01C0038157C /* Utilities.m */; };
 		69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69EB80541E0170E200A29ADA /* BootLoaderService.m */; };
@@ -291,6 +292,8 @@
 		699262611DE58A28003FBBC7 /* SessionControlService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SessionControlService.m; path = backbone/SessionControlService.m; sourceTree = "<group>"; };
 		69A002ED1DDCA13B002C47FB /* DeviceInformationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeviceInformationService.h; path = backbone/DeviceInformationService.h; sourceTree = "<group>"; };
 		69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DeviceInformationService.m; path = backbone/DeviceInformationService.m; sourceTree = "<group>"; };
+		69AAF58D1E1D6314005FD0BF /* NotificationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotificationService.h; path = backbone/NotificationService.h; sourceTree = "<group>"; };
+		69AAF58E1E1D6314005FD0BF /* NotificationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotificationService.m; path = backbone/NotificationService.m; sourceTree = "<group>"; };
 		69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalNotificationManager.h; path = backbone/LocalNotificationManager.h; sourceTree = "<group>"; };
 		69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalNotificationManager.m; path = backbone/LocalNotificationManager.m; sourceTree = "<group>"; };
 		69CCE7281DD4B01C0038157C /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -454,6 +457,8 @@
 				4457C4B01D60273200F05D92 /* BluetoothService.m */,
 				69EB80531E0170E200A29ADA /* BootLoaderService.h */,
 				69EB80541E0170E200A29ADA /* BootLoaderService.m */,
+				69AAF58D1E1D6314005FD0BF /* NotificationService.h */,
+				69AAF58E1E1D6314005FD0BF /* NotificationService.m */,
 				69A002ED1DDCA13B002C47FB /* DeviceInformationService.h */,
 				69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */,
 				446AF7F71D53DB1200F85785 /* DeviceManagementService.h */,
@@ -1196,6 +1201,7 @@
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */,
 				697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */,
+				69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */,
 				690F1C5B1DB8FF5100AE2E98 /* UserSettingService.m in Sources */,
 				69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */,
 				69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */,
@@ -1280,7 +1286,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 133;
+				CURRENT_PROJECT_VERSION = 135;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
@@ -1321,7 +1327,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 133;
+				CURRENT_PROJECT_VERSION = 135;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";

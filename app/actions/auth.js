@@ -2,8 +2,9 @@ import { NativeModules } from 'react-native';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
+import Mixpanel from '../utils/Mixpanel';
 
-const { Environment, Mixpanel } = NativeModules;
+const { Environment } = NativeModules;
 const { storageKeys } = constants;
 
 const loginStart = () => ({ type: 'LOGIN__START' });
@@ -66,11 +67,14 @@ export default {
                 new Error(body.error)
               ));
             } else {
-              // Identify user for Mixpanel tracking
-              Mixpanel.identify(body._id);
-              Mixpanel.set({ $email: body.email });
+              const { _id, accessToken, ...userObj } = body;
 
-              const { accessToken, ...userObj } = body;
+              // Identify user for Mixpanel tracking
+              Mixpanel.identify(_id);
+
+              // Update user profile on Mixpanel
+              Mixpanel.setUserProperties(userObj);
+
               // Store access token and user in local storage
               SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
               SensitiveInfo.setItem(storageKeys.USER, userObj);
@@ -106,7 +110,9 @@ export default {
             } else {
               // Identify user for Mixpanel tracking
               Mixpanel.identify(body.user._id);
-              Mixpanel.set({ $email: body.user.email });
+
+              // Update user profile on Mixpanel
+              Mixpanel.setUserProperties(body.user);
               Mixpanel.track('signup');
 
               // Store access token and user in local storage
