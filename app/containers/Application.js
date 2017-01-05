@@ -34,7 +34,7 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Mixpanel from '../utils/Mixpanel';
 
-const { bluetoothStates, storageKeys } = constants;
+const { bluetoothStates, deviceStatuses, storageKeys } = constants;
 
 const {
   BluetoothService,
@@ -140,6 +140,14 @@ class Application extends Component {
     };
 
     this.bluetoothListener = BluetoothServiceEvents.addListener('BluetoothState', handler);
+
+    // Handle changes in the device connection status at the app level
+    this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
+      if (state === deviceStatuses.DISCONNECTED) {
+        // Dispatch disconnect action when the device is disconnected
+        this.props.dispatch(deviceActions.didDisconnect());
+      }
+    });
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
