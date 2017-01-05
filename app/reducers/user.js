@@ -81,10 +81,10 @@ export default (state = {
       return {
         ...state,
         isUpdating: false,
-        errorMessage: action.payload.error.message,
+        errorMessage: action.payload.message,
         user: {
           ...state.user,
-          settings: action.payload.settings,
+          settings: action.payload.settings || state.user.settings,
         },
       };
     }
