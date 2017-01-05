@@ -38,7 +38,7 @@ public class NotificationService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void sendLocalNotification(String title, String message) {
-        sendNotification(Constants.POSTURE_NOTIFICATION_ID, title, message);
+        sendNotification(Constants.NOTIFICATION_IDS.SLOUCH_NOTIFICATION, title, message);
     }
 
     /**

@@ -14,6 +14,7 @@ public class Constants {
     }
 
     public interface NOTIFICATION_IDS {
+        int SLOUCH_NOTIFICATION = 100;
         int FOREGROUND_SERVICE = 101;
     }
 
@@ -218,6 +219,4 @@ public class Constants {
     public static final String DEVICE_PREF_ID = "co.backbonelabs.backbone.DEVICE_PREF_ID";
     public static final String USER_PREF_ID = "co.backbonelabs.backbone.USER_PREF_ID";
     public static final String SAVED_DEVICE_PREF_KEY = "co.backbonelabs.backbone.SAVED_DEVICE_PREF_KEY";
-
-    public static final int POSTURE_NOTIFICATION_ID = 1;
 }
