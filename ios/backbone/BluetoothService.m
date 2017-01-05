@@ -244,12 +244,14 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       if (self.disconnectHandler != nil) {
         self.currentDevice = nil;
         self.disconnectHandler(error);
+        self.disconnectHandler = nil;
       }
     }
     else {
-      if (self.disconnectHandler != nil){
+      if (self.disconnectHandler != nil) {
         self.currentDevice = nil;
         self.disconnectHandler(nil);
+        self.disconnectHandler = nil;
       }
     }
     
