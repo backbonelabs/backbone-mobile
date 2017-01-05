@@ -363,8 +363,8 @@ class PostureMonitor extends Component {
       updateUserPayload.dailyStreak = 1;
     }
 
-    // If lastSession doesn't equal the current dailyStreak, then track the change in Mixpanel
-    if (dailyStreak !== updateUserPayload.dailyStreak) {
+    // If daily streak needs to be updated, track the change in Mixpanel
+    if (updateUserPayload.dailyStreak && dailyStreak !== updateUserPayload.dailyStreak) {
       this.trackDailyStreak(updateUserPayload.dailyStreak, dailyStreak);
     }
 
