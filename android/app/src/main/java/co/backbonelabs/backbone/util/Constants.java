@@ -14,6 +14,7 @@ public class Constants {
     }
 
     public interface NOTIFICATION_IDS {
+        int SLOUCH_NOTIFICATION = 100;
         int FOREGROUND_SERVICE = 101;
     }
 

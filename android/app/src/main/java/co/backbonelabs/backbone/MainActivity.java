@@ -23,9 +23,6 @@ public class MainActivity extends ReactActivity {
             Timber.plant(new Timber.DebugTree());
         }
 
-        // Set up NotificationService
-        notificationService = new NotificationService(getApplicationContext());
-
         currentActivity = this;
     }
 
