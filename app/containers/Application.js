@@ -34,14 +34,16 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Mixpanel from '../utils/Mixpanel';
 
-const { bluetoothStates, storageKeys } = constants;
+const { bluetoothStates, deviceStatuses, storageKeys } = constants;
 
 const {
-  BluetoothService: Bluetooth,
+  BluetoothService,
   Environment,
+  SessionControlService,
 } = NativeModules;
 
-const BluetoothService = new NativeEventEmitter(Bluetooth);
+const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
+const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -106,7 +108,7 @@ class Application extends Component {
     }
 
     // Get initial Bluetooth state
-    Bluetooth.getState((error, { state }) => {
+    BluetoothService.getState((error, { state }) => {
       if (!error) {
         this.props.dispatch({
           type: 'UPDATE_BLUETOOTH_STATE',
@@ -122,8 +124,8 @@ class Application extends Component {
     // This cannot be done on the BluetoothService module side
     // compared to iOS.
     if (!isiOS) {
-      Bluetooth.getIsEnabled()
-        .then(isEnabled => !isEnabled && Bluetooth.enable());
+      BluetoothService.getIsEnabled()
+        .then(isEnabled => !isEnabled && BluetoothService.enable());
     }
 
     // Set up a handler that will process Bluetooth state changes
@@ -139,7 +141,35 @@ class Application extends Component {
       }
     };
 
-    this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
+    this.bluetoothListener = BluetoothServiceEvents.addListener('BluetoothState', handler);
+
+    // Handle changes in the device connection status at the app level
+    this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
+      switch (state) {
+        case deviceStatuses.CONNECTED:
+          // Retrieve session state
+          SessionControlService.getSessionState();
+          break;
+        default:
+          // no-op
+      }
+    });
+
+    // Handle SessionState events
+    this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
+      if (event.hasActiveSession) {
+        // There is an active session, check if we're on the PostureMonitor scene
+        if (this.navigator) {
+          const routeStack = this.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+          if (currentRoute.name !== routes.postureMonitor.name) {
+            // Not currently on the PostureMonitor scene
+            // Navigate to PostureMonitor
+            this.navigate(routes.postureMonitor);
+          }
+        }
+      }
+    });
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -216,6 +246,12 @@ class Application extends Component {
     if (this.backAndroidListener) {
       this.backAndroidListener.remove();
     }
+    if (this.deviceStateListener) {
+      this.deviceStateListener.remove();
+    }
+    if (this.sessionStateListener) {
+      this.sessionStateListener.remove();
+    }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
@@ -241,6 +277,9 @@ class Application extends Component {
     if (currentAppState === 'active') {
       // Fetch device info when app comes back into foreground
       this.props.dispatch(deviceActions.getInfo());
+
+      // Retrieve session state
+      SessionControlService.getSessionState();
     }
   }
 
