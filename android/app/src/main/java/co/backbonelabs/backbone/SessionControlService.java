@@ -406,8 +406,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     WritableMap wm = Arguments.createMap();
                     wm.putDouble("currentDistance", currentDistance);
                     wm.putInt("timeElapsed", timeElapsed);
-                    Timber.d("PostureDistance data %s", wm);
-                    EventEmitter.send(reactContext, "PostureDistance", wm);
+                    Timber.d("SessionData data %s", wm);
+                    EventEmitter.send(reactContext, "SessionData", wm);
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SLOUCH_CHARACTERISTIC.toString())) {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
