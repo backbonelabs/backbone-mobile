@@ -31,6 +31,8 @@
   
   BOOL forceStoppedSession;
   BOOL notificationStateChanged;
+  
+  BOOL requestedReadSessionStatistics;
 }
 
 + (SessionControlService *)getSessionControlService;

@@ -32,6 +32,8 @@
   previousSessionState = SESSION_STATE_STOPPED;
   currentSessionState = SESSION_STATE_STOPPED;
   
+  requestedReadSessionStatistics = NO;
+  
   return self;
 }
 
@@ -40,7 +42,7 @@
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"SessionData", @"SessionStatistics", @"SlouchStatus"];
+  return @[@"SessionData", @"SessionStatistics", @"SessionState", @"SlouchStatus"];
 }
 
 RCT_EXPORT_MODULE();
@@ -188,6 +190,19 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   }
   else {
     callback(@[RCTMakeError(@"Session Control is not ready", nil, nil)]);
+  }
+}
+
+/**
+ Reads from the session statistic characteristic. This is an asynchronous operation.
+ The results will be emitted through a SessionState event to JS.
+ */
+RCT_EXPORT_METHOD(getSessionState) {
+  CBCharacteristic *sessionStatistics = [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID];
+
+  if ([BluetoothServiceInstance isDeviceReady] && sessionStatistics) {
+    requestedReadSessionStatistics = YES;
+    [BluetoothServiceInstance.currentDevice readValueForCharacteristic:sessionStatistics];
   }
 }
 
@@ -367,6 +382,16 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
                                                           @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
                                                           @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
                                                           }];
+      
+      if (requestedReadSessionStatistics) {
+        // Session statistics were retrieved from a read request, emit SessionState event
+        requestedReadSessionStatistics = NO;
+        [self sendEventWithName:@"SessionState" body:@{
+                                                       @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
+                                                       @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
+                                                       @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
+                                                       }];
+      }
       
       // This notification indicates the end of a session
       // So we have to disable all notifications after we receive it

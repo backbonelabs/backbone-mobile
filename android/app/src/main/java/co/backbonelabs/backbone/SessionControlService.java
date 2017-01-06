@@ -41,7 +41,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
 
         IntentFilter filter = new IntentFilter();
-//        filter.addAction(Constants.ACTION_CHARACTERISTIC_FOUND);
+        filter.addAction(Constants.ACTION_CHARACTERISTIC_READ);
         filter.addAction(Constants.ACTION_CHARACTERISTIC_UPDATE);
         filter.addAction(Constants.ACTION_CHARACTERISTIC_WRITE);
         filter.addAction(Constants.ACTION_DESCRIPTOR_WRITE);
@@ -232,6 +232,20 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * Reads from the session statistic characteristic. This is an asynchronous operation.
+     * The results will be emitted through a SessionState event to JS.
+     */
+    @ReactMethod
+    public void getSessionState() {
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+
+        if (bluetoothService.isDeviceReady() &&
+                bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC)) {
+            bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC);
+        }
+    }
+
     private void toggleSessionOperation(int operation, Constants.IntCallBack errCallBack) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
 
@@ -358,7 +372,28 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             final String action = intent.getAction();
             Timber.d("Receive Broadcast %s", action);
 
-            if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
+            if (action.equals(Constants.ACTION_CHARACTERISTIC_READ)) {
+                Timber.d("CharacteristicRead");
+                String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
+
+                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
+                    byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
+
+                    int flags = Utilities.getIntFromByteArray(responseArray, 0);
+                    int totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
+                    int slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
+
+                    boolean hasActiveSession = (flags % 2 == 1);
+
+                    WritableMap wm = Arguments.createMap();
+                    wm.putBoolean("hasActiveSession", hasActiveSession);
+                    wm.putInt("totalDuration", totalDuration);
+                    wm.putInt("slouchTime", slouchTime);
+                    Timber.d("SessionState data %s", wm);
+                    EventEmitter.send(reactContext, "SessionState", wm);
+                }
+            }
+            else if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
                 Timber.d("CharacteristicUpdate");
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
 
