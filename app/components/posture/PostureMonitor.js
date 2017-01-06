@@ -21,9 +21,12 @@ import appActions from '../../actions/app';
 import userActions from '../../actions/user';
 import PostureSummary from './PostureSummary';
 import routes from '../../routes';
+import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
+import SensitiveInfo from '../../utils/SensitiveInfo';
 
 const { SessionControlService, NotificationService } = NativeModules;
+const { storageKeys } = constants;
 const eventEmitter = new NativeEventEmitter(SessionControlService);
 
 const MIN_POSTURE_THRESHOLD = 0.03;
@@ -160,6 +163,26 @@ class PostureMonitor extends Component {
   }
 
   /**
+   * Keeps track of the session state and parameters
+   * @param {Object} session
+   * @param {Number} session.state      Session state
+   * @param {Object} session.parameters Session parameters
+   */
+  @autobind
+  setSessionState(session) {
+    const { state, parameters } = session;
+    if (state === sessionStates.RUNNING && parameters) {
+      // Store session parameters in local storage in case the app exits
+      // and relaunches while the session is still running on the device
+      SensitiveInfo.setItem(storageKeys.SESSION_PARAMETERS, parameters);
+    } else if (state === sessionStates.STOPPED) {
+      // Remove session parameters from local storage
+      SensitiveInfo.deleteItem(storageKeys.SESSION_PARAMETERS);
+    }
+    this.setState({ sessionState: state });
+  }
+
+  /**
    * Updates the pointer based on the distance away from the control point and the time
    * @param {Object} event
    * @param {Number} event.currentDistance How far away the user is from the control point
@@ -240,7 +263,7 @@ class PostureMonitor extends Component {
 
   @autobind
   startSession() {
-    SessionControlService.start({
+    const sessionParameters = {
       sessionDuration: Math.floor(this.props.posture.sessionTimeSeconds / 60),
       // We use the postureThreshold from state instead of the user.settings object
       // because the user may modify the threshold and resume the session before the
@@ -254,7 +277,9 @@ class PostureMonitor extends Component {
       vibrationSpeed: this.props.user.settings.vibrationStrength,
       vibrationPattern: this.props.user.settings.backboneVibration ?
                           this.props.user.settings.vibrationPattern : 0,
-    }, err => {
+    };
+
+    SessionControlService.start(sessionParameters, err => {
       if (err) {
         const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
         const message = `An error occurred while attempting to ${verb} the session.`;
@@ -278,7 +303,10 @@ class PostureMonitor extends Component {
           stackTrace: ['startSession', 'SessionControlService.start'],
         });
       } else {
-        this.setState({ sessionState: sessionStates.RUNNING });
+        this.setSessionState({
+          state: sessionStates.RUNNING,
+          parameters: sessionParameters,
+        });
       }
     });
   }
@@ -299,7 +327,7 @@ class PostureMonitor extends Component {
           stackTrace: ['pauseSession', 'SessionControlService.pause'],
         });
       } else {
-        this.setState({ sessionState: sessionStates.PAUSED });
+        this.setSessionState({ state: sessionStates.PAUSED });
       }
     });
   }
@@ -329,7 +357,7 @@ class PostureMonitor extends Component {
             stackTrace: ['stopSession', 'SessionControlService.stop'],
           });
         } else {
-          this.setState({ sessionState: sessionStates.STOPPED });
+          this.setSessionState({ state: sessionStates.STOPPED });
         }
       });
     }
