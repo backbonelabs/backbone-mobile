@@ -261,6 +261,7 @@ RCT_EXPORT_METHOD(getSessionState) {
     
     distanceNotificationStatus = YES;
     slouchNotificationStatus = YES;
+    statisticNotificationStatus = YES;
     
     NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
     
