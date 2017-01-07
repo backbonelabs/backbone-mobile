@@ -143,9 +143,13 @@ class Application extends Component {
 
     // Handle changes in the device connection status at the app level
     this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
-      if (state === deviceStatuses.DISCONNECTED) {
-        // Dispatch disconnect action when the device is disconnected
-        this.props.dispatch(deviceActions.didDisconnect());
+      switch (state) {
+        case deviceStatuses.DISCONNECTED:
+          // Dispatch disconnect action when the device is disconnected
+          this.props.dispatch(deviceActions.didDisconnect());
+          break;
+        default:
+          // no-op
       }
     });
 
