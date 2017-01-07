@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-import { debounce } from 'lodash';
+import { debounce, isEqual } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -65,6 +65,15 @@ class PostureMonitor extends Component {
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
     }),
+    sessionState: PropTypes.shape({
+      sessionState: PropTypes.number,
+      timeElapsed: PropTypes.number,
+      slouchTime: PropTypes.number,
+      sessionDuration: PropTypes.number,
+      slouchDistanceThreshold: PropTypes.number,
+      vibrationSpeed: PropTypes.number,
+      vibrationPattern: PropTypes.oneOf([1, 2, 3]),
+    }),
     user: PropTypes.shape({
       settings: PropTypes.shape({
         phoneVibration: PropTypes.bool.isRequired,
@@ -94,6 +103,19 @@ class PostureMonitor extends Component {
       totalDuration: 0, // in seconds
       slouchTime: 0, // in seconds
       timeElapsed: 0, // in seconds
+      sessionDuration: Math.floor(this.props.posture.sessionTimeSeconds / 60), // in minutes
+
+      // The slouch distance threshold needs to be in ten thousandths of a unit.
+      // For example, to represent a distance threshold of 0.2, the value must be 2000.
+      // We use Math.floor because sometimes JS will return a double floating point value,
+      // which is incompatible with the firmware.
+      slouchDistanceThreshold: Math.floor(
+                                numberMagnitude(this.props.user.settings.postureThreshold, 4)
+                              ),
+      vibrationSpeed: this.props.user.settings.vibrationStrength,
+      vibrationPattern: this.props.user.settings.backboneVibration ?
+                          this.props.user.settings.vibrationPattern : 0,
+      ...this.props.sessionState,
     };
     this.sessionDataListener = null;
     this.slouchListener = null;
@@ -112,8 +134,40 @@ class PostureMonitor extends Component {
     // Set up listener for session statistics event
     this.statsListener = eventEmitter.addListener('SessionStatistics', this.statsHandler);
 
-    // Automatically start the session on mount
-    this.startSession();
+    const { sessionState } = this.state;
+    if (sessionState === sessionStates.PAUSED) {
+      // There is an active session that's paused
+      // Sync app to a paused state
+      this.pauseSession();
+    } else if (sessionState === sessionStates.RUNNING) {
+      // There is an active session that's running
+      // Sync app to a running state
+      this.resumeSession();
+    } else {
+      // There is no active session
+      // Automatically start a new session
+      this.startSession();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.user.settings, nextProps.user.settings)) {
+      // User settings changed
+      // Store new settings in component store because we use the store values for
+      // starting and resuming a session
+      const {
+        postureThreshold,
+        vibrationStrength,
+        backboneVibration,
+        vibrationPattern,
+      } = nextProps.user.settings;
+
+      this.setState({
+        sessionDuration: Math.floor(numberMagnitude(postureThreshold, 4)),
+        vibrationSpeed: vibrationStrength,
+        vibrationPattern: backboneVibration ? vibrationPattern : 0,
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -171,13 +225,16 @@ class PostureMonitor extends Component {
   @autobind
   setSessionState(session) {
     const { state, parameters } = session;
-    if (state === sessionStates.RUNNING && parameters) {
-      // Store session parameters in local storage in case the app exits
-      // and relaunches while the session is still running on the device
-      SensitiveInfo.setItem(storageKeys.SESSION_PARAMETERS, parameters);
+    if ((state === sessionStates.RUNNING || state === sessionStates.PAUSED) && parameters) {
+      // Store session state in local storage in case the app exits
+      // and relaunches while the session is still active on the device
+      SensitiveInfo.setItem(storageKeys.SESSION_STATE, {
+        state,
+        parameters,
+      });
     } else if (state === sessionStates.STOPPED) {
-      // Remove session parameters from local storage
-      SensitiveInfo.deleteItem(storageKeys.SESSION_PARAMETERS);
+      // Remove session state from local storage
+      SensitiveInfo.deleteItem(storageKeys.SESSION_STATE);
     }
     this.setState({ sessionState: state });
   }
@@ -237,7 +294,10 @@ class PostureMonitor extends Component {
       sessionState: sessionStates.STOPPED,
       totalDuration,
       slouchTime,
-    }, this.showSummary);
+    }, () => {
+      this.setSessionState({ state: sessionStates.STOPPED });
+      this.showSummary();
+    });
   }
 
   sessionCommandAlert({
@@ -263,20 +323,22 @@ class PostureMonitor extends Component {
 
   @autobind
   startSession() {
+    const {
+      sessionDuration,
+      slouchDistanceThreshold,
+      vibrationSpeed,
+      vibrationPattern,
+    } = this.state;
+
     const sessionParameters = {
-      sessionDuration: Math.floor(this.props.posture.sessionTimeSeconds / 60),
+      sessionDuration,
       // We use the postureThreshold from state instead of the user.settings object
       // because the user may modify the threshold and resume the session before the
       // updated threshold value is saved in the database and a response is returned
       // from the API server to refresh the user object in the Redux store.
-      // The slouch distance threshold needs to be in ten thousandths of a unit.
-      // For example, to set it to 0.2, the input must be 2000.
-      // We use Math.floor because sometimes JS will return a double floating point value,
-      // which is incompatible with the firmware.
-      slouchDistanceThreshold: Math.floor(numberMagnitude(this.state.postureThreshold, 4)),
-      vibrationSpeed: this.props.user.settings.vibrationStrength,
-      vibrationPattern: this.props.user.settings.backboneVibration ?
-                          this.props.user.settings.vibrationPattern : 0,
+      slouchDistanceThreshold,
+      vibrationSpeed,
+      vibrationPattern,
     };
 
     SessionControlService.start(sessionParameters, err => {
@@ -327,7 +389,59 @@ class PostureMonitor extends Component {
           stackTrace: ['pauseSession', 'SessionControlService.pause'],
         });
       } else {
-        this.setSessionState({ state: sessionStates.PAUSED });
+        this.setSessionState({
+          state: sessionStates.PAUSED,
+          parameters: {
+            sessionDuration: this.state.sessionDuration,
+            slouchDistanceThreshold: this.state.slouchDistanceThreshold,
+            vibrationSpeed: this.state.vibrationSpeed,
+            vibrationPattern: this.state.vibrationPattern,
+          },
+        });
+      }
+    });
+  }
+
+  @autobind
+  resumeSession() {
+    const {
+      sessionDuration,
+      slouchDistanceThreshold,
+      vibrationSpeed,
+      vibrationPattern,
+    } = this.state;
+
+    const sessionParameters = {
+      // We use the postureThreshold from state instead of the user.settings object
+      // because the user may modify the threshold and resume the session before the
+      // updated threshold value is saved in the database and a response is returned
+      // from the API server to refresh the user object in the Redux store.
+      slouchDistanceThreshold,
+      vibrationSpeed,
+      vibrationPattern,
+    };
+
+    SessionControlService.resume(sessionParameters, err => {
+      if (err) {
+        this.sessionCommandAlert({
+          message: 'An error occurred while attempting to resume the session.',
+          rightLabel: 'Retry',
+          rightAction: this.resumeSession,
+        });
+
+        Mixpanel.trackError({
+          errorContent: err,
+          path: 'app/components/posture/PostureMonitor',
+          stackTrace: ['resumeSession', 'SessionControlService.resume'],
+        });
+      } else {
+        this.setSessionState({
+          state: sessionStates.RUNNING,
+          parameters: {
+            sessionDuration,
+            ...sessionParameters,
+          },
+        });
       }
     });
   }
@@ -434,14 +548,13 @@ class PostureMonitor extends Component {
    */
   @autobind
   showSummary() {
-    const sessionTime = this.props.posture.sessionTimeSeconds;
-    const goalMinutes = Math.floor(sessionTime / 60);
-    const { slouchTime, totalDuration } = this.state;
+    const { sessionDuration, slouchTime, totalDuration } = this.state;
 
     this.trackUserSession();
     this.props.dispatch(appActions.showFullModal({
       onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
-      content: <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={goalMinutes} />,
+      content:
+        <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
     }));
   }
 
@@ -453,7 +566,10 @@ class PostureMonitor extends Component {
    */
   @autobind
   updatePostureThreshold(distance) {
-    this.setState({ postureThreshold: distance }, () => {
+    this.setState({
+      postureThreshold: distance,
+      slouchDistanceThreshold: Math.floor(numberMagnitude(distance, 4)),
+    }, () => {
       this.updateUserPostureThreshold(distance);
     });
   }
@@ -480,6 +596,15 @@ class PostureMonitor extends Component {
       pointerPosition,
       sessionState,
     } = this.state;
+
+    const getPlayPauseButton = () => {
+      if (sessionState === sessionStates.STOPPED) {
+        return <MonitorButton play onPress={this.startSession} />;
+      } else if (sessionState === sessionStates.RUNNING) {
+        return <MonitorButton pause onPress={this.pauseSession} />;
+      }
+      return <MonitorButton play onPress={this.resumeSession} />;
+    };
 
     return (
       <View style={styles.container}>
@@ -520,10 +645,7 @@ class PostureMonitor extends Component {
           disabled={sessionState === sessionStates.RUNNING}
         />
         <View style={styles.btnContainer}>
-          {sessionState === sessionStates.RUNNING ?
-            <MonitorButton pause onPress={this.pauseSession} /> :
-              <MonitorButton play onPress={this.startSession} />
-          }
+          {getPlayPauseButton()}
           {sessionState === sessionStates.RUNNING ?
             <MonitorButton alertsDisabled disabled /> :
               <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />

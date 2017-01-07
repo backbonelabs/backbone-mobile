@@ -22,6 +22,7 @@ import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
+import postureActions from '../actions/posture';
 import FullModal from '../components/FullModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
@@ -164,8 +165,28 @@ class Application extends Component {
           const currentRoute = routeStack[routeStack.length - 1];
           if (currentRoute.name !== routes.postureMonitor.name) {
             // Not currently on the PostureMonitor scene
-            // Navigate to PostureMonitor
-            this.navigate(routes.postureMonitor);
+            // Navigate to PostureMonitor to resume session using previous session parameters
+            SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+              .then(sessionState => {
+                const parameters = {};
+                if (sessionState) {
+                  Object.assign(parameters, sessionState.parameters);
+                  this.props.dispatch(
+                    postureActions.setSessionTime(sessionState.parameters.sessionDuration * 60)
+                  );
+                }
+                this.navigate({
+                  ...routes.postureMonitor,
+                  props: {
+                    sessionState: {
+                      ...parameters,
+                      sessionState: sessionState.state,
+                      timeElapsed: event.totalDuration,
+                      slouchTime: event.slouchTime,
+                    },
+                  },
+                });
+              });
           }
         }
       }
@@ -379,7 +400,7 @@ class Application extends Component {
         </FullModal>
         { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.show ? hiddenStyles : {}, { flex: 1 }]}>
-          <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
+          <RouteComponent navigator={this.navigator} currentRoute={route} {...route.props} />
           { route.showTabBar && TabBar }
         </View>
       </View>
