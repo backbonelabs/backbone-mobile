@@ -52,13 +52,13 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     private int previousSessionState = Constants.SESSION_STATES.STOPPED;
     private int currentCommand;
 
-    private int sessionDuration;
-    private int slouchDistanceThreshold;
-    private int slouchTimeThreshold;
+    private int sessionDuration = Constants.SESSION_DEFAULT_DURATION;
+    private int slouchDistanceThreshold = Constants.SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
+    private int slouchTimeThreshold = Constants.SLOUCH_DEFAULT_TIME_THRESHOLD;
 
-    private int vibrationPattern;
-    private int vibrationSpeed;
-    private int vibrationDuration;
+    private int vibrationPattern = Constants.VIBRATION_DEFAULT_PATTERN;
+    private int vibrationSpeed = Constants.VIBRATION_DEFAULT_SPEED;
+    private int vibrationDuration = Constants.VIBRATION_DEFAULT_DURATION;
 
     private boolean distanceNotificationStatus;
     private boolean statisticNotificationStatus;
@@ -82,14 +82,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC)) {
             forceStoppedSession = false;
-
-            sessionDuration = Constants.SESSION_DEFAULT_DURATION;
-            slouchDistanceThreshold = Constants.SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
-            slouchTimeThreshold = Constants.SLOUCH_DEFAULT_TIME_THRESHOLD;
-
-            vibrationPattern = Constants.VIBRATION_DEFAULT_PATTERN;
-            vibrationSpeed = Constants.VIBRATION_DEFAULT_SPEED;
-            vibrationDuration = Constants.VIBRATION_DEFAULT_DURATION;
 
             if (sessionParam != null && sessionParam.hasKey("sessionDuration")) {
                 sessionDuration = sessionParam.getInt("sessionDuration");

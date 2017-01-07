@@ -29,6 +29,14 @@
   DLog(@"SessionControl init");
   [BluetoothServiceInstance addCharacteristicDelegate:self];
   
+  sessionDuration = SESSION_DEFAULT_DURATION;
+  sessionDistanceThreshold = SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
+  sessionTimeThreshold = SLOUCH_DEFAULT_TIME_THRESHOLD;
+  
+  vibrationPattern = VIBRATION_DEFAULT_PATTERN;
+  vibrationSpeed = VIBRATION_DEFAULT_SPEED;
+  vibrationDuration = VIBRATION_DEFAULT_DURATION;
+  
   previousSessionState = SESSION_STATE_STOPPED;
   currentSessionState = SESSION_STATE_STOPPED;
   
@@ -53,14 +61,6 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
       && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
     forceStoppedSession = NO;
-    
-    sessionDuration = SESSION_DEFAULT_DURATION;
-    sessionDistanceThreshold = SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
-    sessionTimeThreshold = SLOUCH_DEFAULT_TIME_THRESHOLD;
-    
-    vibrationPattern = VIBRATION_DEFAULT_PATTERN;
-    vibrationSpeed = VIBRATION_DEFAULT_SPEED;
-    vibrationDuration = VIBRATION_DEFAULT_DURATION;
       
     if (sessionParam != nil && [sessionParam objectForKey:@"sessionDuration"] != nil) {
       sessionDuration = [[sessionParam objectForKey:@"sessionDuration"] intValue];
