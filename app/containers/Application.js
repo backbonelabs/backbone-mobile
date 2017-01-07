@@ -228,6 +228,9 @@ class Application extends Component {
     if (this.backAndroidListener) {
       this.backAndroidListener.remove();
     }
+    if (this.deviceStateListener) {
+      this.deviceStateListener.remove();
+    }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
