@@ -126,8 +126,8 @@ class Application extends Component {
         .then(isEnabled => !isEnabled && BluetoothService.enable());
     }
 
-    // Set up a handler that will process Bluetooth state changes
-    const handler = ({ state }) => {
+    // Handle changes from the Bluetooth adapter
+    this.bluetoothListener = BluetoothServiceEvents.addListener('BluetoothState', ({ state }) => {
       this.props.dispatch({
         type: 'UPDATE_BLUETOOTH_STATE',
         payload: state,
@@ -137,9 +137,7 @@ class Application extends Component {
         this.props.dispatch(deviceActions.disconnect());
         Alert.alert('Error', 'Bluetooth is off');
       }
-    };
-
-    this.bluetoothListener = BluetoothServiceEvents.addListener('BluetoothState', handler);
+    });
 
     // Handle changes in the device connection status at the app level
     this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
