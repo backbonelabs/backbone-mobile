@@ -4,7 +4,6 @@ import {
   Image,
   Switch,
   Slider,
-  Alert,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -111,30 +110,21 @@ class Alerts extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     user: PropTypes.shape({
-      user: PropTypes.shape({
-        _id: PropTypes.string,
-        settings: PropTypes.shape({
-          slouchTimeThreshold: PropTypes.number,
-          postureThreshold: PropTypes.number,
-          backboneVibration: PropTypes.bool,
-          phoneVibration: PropTypes.bool,
-          vibrationPattern: PropTypes.number,
-        }),
+      _id: PropTypes.string,
+      settings: PropTypes.shape({
+        slouchTimeThreshold: PropTypes.number,
+        postureThreshold: PropTypes.number,
+        backboneVibration: PropTypes.bool,
+        phoneVibration: PropTypes.bool,
+        vibrationPattern: PropTypes.number,
       }),
-      errorMessage: PropTypes.string,
     }),
   };
-
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
-      Alert.alert(nextProps.user.errorMessage);
-    }
-  }
 
   // Update user settings
   @autobind
   updateUserSettings(field, value) {
-    const { settings, _id } = this.props.user.user;
+    const { settings, _id } = this.props.user;
     const updatedUserSettings = {
       _id,
       settings: Object.assign({}, settings, { [field]: value }),
@@ -145,7 +135,7 @@ class Alerts extends Component {
   }
 
   render() {
-    const { user } = this.props.user;
+    const { user } = this.props;
 
     return (
       <Image source={gradientBackground20} style={styles.backgroundImage}>
@@ -175,7 +165,7 @@ class Alerts extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
+  const { user: { user } } = state;
   return { user };
 };
 
