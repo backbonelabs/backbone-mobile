@@ -238,6 +238,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     }
                     else {
                         currentDevice = null;
+                        deviceState = BluetoothProfile.STATE_DISCONNECTED;
                     }
 
                     emitDeviceState();
@@ -483,7 +484,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     private void emitDeviceState() {
-        if (currentDevice == null) return;
         Timber.d("Emit Device State: %d", deviceState);
         WritableMap wm = Arguments.createMap();
         wm.putInt("state", deviceState);
