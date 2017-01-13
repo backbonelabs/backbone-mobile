@@ -75,10 +75,6 @@ function checkFirmware(firmwareVersion) {
 
 const disconnectStart = () => ({ type: 'DEVICE_DISCONNECT__START' });
 
-const disconnect = () => ({
-  type: 'DEVICE_DISCONNECT',
-});
-
 const disconnectError = error => ({
   type: 'DEVICE_DISCONNECT__ERROR',
   payload: error,
@@ -116,6 +112,9 @@ const deviceActions = {
       DeviceManagementService.connectToDevice(deviceIdentifier);
     };
   },
+  didDisconnect() {
+    return { type: 'DEVICE_DISCONNECT' };
+  },
   disconnect() {
     return (dispatch, getState) => {
       // Attempt disconnect only if device is connected
@@ -130,7 +129,7 @@ const deviceActions = {
               stackTrace: ['deviceActions.disconnect', 'DeviceManagementService.cancelConnection'],
             });
           } else {
-            dispatch(disconnect());
+            dispatch(deviceActions.didDisconnect());
           }
         });
       }

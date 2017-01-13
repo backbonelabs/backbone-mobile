@@ -34,14 +34,14 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Mixpanel from '../utils/Mixpanel';
 
-const { bluetoothStates, storageKeys } = constants;
+const { bluetoothStates, deviceStatuses, storageKeys } = constants;
 
 const {
-  BluetoothService: Bluetooth,
+  BluetoothService,
   Environment,
 } = NativeModules;
 
-const BluetoothService = new NativeEventEmitter(Bluetooth);
+const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -106,7 +106,7 @@ class Application extends Component {
     }
 
     // Get initial Bluetooth state
-    Bluetooth.getState((error, { state }) => {
+    BluetoothService.getState((error, { state }) => {
       if (!error) {
         this.props.dispatch({
           type: 'UPDATE_BLUETOOTH_STATE',
@@ -122,12 +122,12 @@ class Application extends Component {
     // This cannot be done on the BluetoothService module side
     // compared to iOS.
     if (!isiOS) {
-      Bluetooth.getIsEnabled()
-        .then(isEnabled => !isEnabled && Bluetooth.enable());
+      BluetoothService.getIsEnabled()
+        .then(isEnabled => !isEnabled && BluetoothService.enable());
     }
 
-    // Set up a handler that will process Bluetooth state changes
-    const handler = ({ state }) => {
+    // Handle changes from the Bluetooth adapter
+    this.bluetoothListener = BluetoothServiceEvents.addListener('BluetoothState', ({ state }) => {
       this.props.dispatch({
         type: 'UPDATE_BLUETOOTH_STATE',
         payload: state,
@@ -137,9 +137,19 @@ class Application extends Component {
         this.props.dispatch(deviceActions.disconnect());
         Alert.alert('Error', 'Bluetooth is off');
       }
-    };
+    });
 
-    this.bluetoothListener = BluetoothService.addListener('BluetoothState', handler);
+    // Handle changes in the device connection status at the app level
+    this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
+      switch (state) {
+        case deviceStatuses.DISCONNECTED:
+          // Dispatch disconnect action when the device is disconnected
+          this.props.dispatch(deviceActions.didDisconnect());
+          break;
+        default:
+          // no-op
+      }
+    });
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -215,6 +225,9 @@ class Application extends Component {
     }
     if (this.backAndroidListener) {
       this.backAndroidListener.remove();
+    }
+    if (this.deviceStateListener) {
+      this.deviceStateListener.remove();
     }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
