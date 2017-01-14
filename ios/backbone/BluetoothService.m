@@ -102,11 +102,11 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 }
 
 -(void)emitDeviceState {
-  if (self.currentDevice == nil) return;
+  int deviceState = (int)(self.currentDevice == nil ? CBPeripheralStateDisconnected : _currentDevice.state);
   
-  DLog(@"Emitting device state: %d", (int)_currentDevice.state);
+  DLog(@"Emitting device state: %d", deviceState);
   NSDictionary *stateUpdate = @{
-                                @"state": @(_currentDevice.state)
+                                @"state": @(deviceState)
                                 };
   [self sendEventWithName:@"DeviceState" body:stateUpdate];
 }
