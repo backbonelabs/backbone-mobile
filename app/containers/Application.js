@@ -151,6 +151,9 @@ class Application extends Component {
       }
     });
 
+    // Add a listener to the ConnectionStatus event
+    this.props.dispatch(deviceActions.setupConnectEventListener());
+
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
 

@@ -28,27 +28,6 @@ const connectError = payload => ({
   payload,
 });
 
-function setConnectEventListener(dispatch, getInfo) {
-  const connectionStatusListener = deviceManagementServiceEvents.addListener(
-    'ConnectionStatus',
-    status => {
-      if (status.message) {
-        dispatch(connectError(status));
-        Mixpanel.trackError({
-          errorContent: status,
-          path: 'app/actions/device',
-          stackTrace: ['setConnectEventListener', 'deviceManagementServiceEvents.addListener'],
-        });
-      } else {
-        dispatch(connect(status));
-        // Call getInfo to fetch latest device information
-        dispatch(getInfo());
-      }
-      connectionStatusListener.remove();
-    }
-  );
-}
-
 function checkFirmware(firmwareVersion) {
   // Fetch device firmware details
   return Fetcher.get({ url: firmwareUrl })
@@ -107,9 +86,29 @@ const deviceActions = {
   connect(deviceIdentifier) {
     return (dispatch) => {
       dispatch(connectStart());
-      setConnectEventListener(dispatch, deviceActions.getInfo);
       // Connect to device with specified identifier
       DeviceManagementService.connectToDevice(deviceIdentifier);
+    };
+  },
+  setupConnectEventListener() {
+    return (dispatch) => {
+      deviceManagementServiceEvents.addListener(
+        'ConnectionStatus',
+        status => {
+          if (status.message) {
+            dispatch(connectError(status));
+            Mixpanel.trackError({
+              errorContent: status,
+              path: 'app/actions/device',
+              stackTrace: ['setConnectEventListener', 'deviceManagementServiceEvents.addListener'],
+            });
+          } else {
+            dispatch(connect(status));
+            // Call getInfo to fetch latest device information
+            dispatch(deviceActions.getInfo());
+          }
+        }
+      );
     };
   },
   didDisconnect() {
