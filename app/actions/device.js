@@ -94,6 +94,8 @@ const deviceActions = {
         dispatch(connectError(status));
       } else {
         dispatch(connect(status));
+        // Call getInfo to fetch latest device information
+        dispatch(deviceActions.getInfo());
       }
     };
   },

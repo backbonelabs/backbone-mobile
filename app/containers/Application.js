@@ -163,9 +163,6 @@ class Application extends Component {
             path: 'app/containers/Application',
             stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
           });
-        } else {
-          // Call getInfo to fetch latest device information
-          this.props.dispatch(deviceActions.getInfo());
         }
       }
     );
