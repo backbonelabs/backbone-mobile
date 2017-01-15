@@ -1,6 +1,5 @@
 import {
   NativeModules,
-  NativeEventEmitter,
 } from 'react-native';
 import Fetcher from '../utils/Fetcher';
 import constants from '../utils/constants';
@@ -14,7 +13,6 @@ const {
 } = NativeModules;
 const { storageKeys } = constants;
 const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
-const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
 
@@ -90,25 +88,13 @@ const deviceActions = {
       DeviceManagementService.connectToDevice(deviceIdentifier);
     };
   },
-  setupConnectEventListener() {
+  connectStatus(status) {
     return (dispatch) => {
-      deviceManagementServiceEvents.addListener(
-        'ConnectionStatus',
-        status => {
-          if (status.message) {
-            dispatch(connectError(status));
-            Mixpanel.trackError({
-              errorContent: status,
-              path: 'app/actions/device',
-              stackTrace: ['setConnectEventListener', 'deviceManagementServiceEvents.addListener'],
-            });
-          } else {
-            dispatch(connect(status));
-            // Call getInfo to fetch latest device information
-            dispatch(deviceActions.getInfo());
-          }
-        }
-      );
+      if (status.message) {
+        dispatch(connectError(status));
+      } else {
+        dispatch(connect(status));
+      }
     };
   },
   didDisconnect() {

@@ -38,10 +38,12 @@ const { bluetoothStates, deviceStatuses, storageKeys } = constants;
 
 const {
   BluetoothService,
+  DeviceManagementService,
   Environment,
 } = NativeModules;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
+const DeviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -152,7 +154,21 @@ class Application extends Component {
     });
 
     // Add a listener to the ConnectionStatus event
-    this.props.dispatch(deviceActions.setupConnectEventListener());
+    this.connectionStatusListener = DeviceManagementServiceEvents.addListener('ConnectionStatus',
+      status => {
+        this.props.dispatch(deviceActions.connectStatus(status));
+        if (status.message) {
+          Mixpanel.trackError({
+            errorContent: status,
+            path: 'app/containers/Application',
+            stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
+          });
+        } else {
+          // Call getInfo to fetch latest device information
+          this.props.dispatch(deviceActions.getInfo());
+        }
+      }
+    );
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -231,6 +247,9 @@ class Application extends Component {
     }
     if (this.deviceStateListener) {
       this.deviceStateListener.remove();
+    }
+    if (this.connectionStatusListener) {
+      this.connectionStatusListener.remove();
     }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
