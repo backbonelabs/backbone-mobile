@@ -111,6 +111,11 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ENTER_BOOTLOADER_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
 }
 
+- (void)exitBootLoaderMode {
+  NSData *exitBootloaderCommandData = [self createCommandPacketWithCommand:COMMAND_EXIT_BOOTLOADER dataLength:0 data:nil];
+  [self writeValueToCharacteristicWithData:exitBootloaderCommandData bootLoaderCommandCode:COMMAND_EXIT_BOOTLOADER];
+}
+
 - (void)prepareFirmwareFile {
   DLog(@"Bootloader is ready, proceed with preparing the firmware file");
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_BEGIN];
@@ -335,15 +340,22 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
       for (CBCharacteristic *characteristic in service.characteristics) {
         if ([characteristic.UUID isEqual:BOOTLOADER_CHARACTERISTIC_UUID]) {
 //          _bootLoaderCharacteristic = characteristic;
-          _bootLoaderState = BOOTLOADER_STATE_ON;
-
-          if (hasPendingUpdate) {
-            [self prepareFirmwareFile];
+          if (_bootLoaderState == BOOTLOADER_STATE_ON) {
+            // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
+            // Device couldn't reset back to normal services, so firmware upload is needed
+            [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_PENDING];
           }
           else {
-            // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
-            // Inform React to retry failed firmware upload
-            [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_PENDING];
+            _bootLoaderState = BOOTLOADER_STATE_ON;
+            
+            if (hasPendingUpdate) {
+              [self prepareFirmwareFile];
+            }
+            else {
+              // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
+              // Try to exit bootloader mode and return to normal Backbone services
+              [self exitBootLoaderMode];
+            }
           }
         }
       }
@@ -364,8 +376,13 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   if ([characteristic.UUID isEqual:BOOTLOADER_CHARACTERISTIC_UUID]) {
     if (error == nil) {
       if ([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_EXIT_BOOTLOADER)]) {
-        DLog(@"Firmware Uploaded!");
-        [self firmwareUploadSuccess];
+        if (_bootLoaderState == BOOTLOADER_STATE_UPLOADING) {
+          DLog(@"Firmware Uploaded!");
+          [self firmwareUploadSuccess];
+        }
+        else {
+          DLog(@"Device Mode Restart Success");
+        }
       }
     }
     else {
