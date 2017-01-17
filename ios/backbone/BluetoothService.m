@@ -28,6 +28,7 @@
   _characteristicDelegates = [NSMutableArray new];
   
   _state = CBCentralManagerStateUnknown;
+  _currentDeviceMode = DEVICE_MODE_UNKNOWN;
   
   stateMap = @{
                @"0": [NSNumber numberWithInteger:-1],
@@ -174,6 +175,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
   else {
     self.disconnectHandler(nil);
+    self.disconnectHandler = nil;
   }
 }
 
@@ -218,7 +220,9 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(nullable NSError *)error {
   DLog(@"Did fail connect %@", error);
-  self.connectHandler(error);
+  if (self.connectHandler) {
+    self.connectHandler(error);
+  }
 }
 
 - (void) centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
@@ -230,6 +234,13 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
     DLog(@"Reconnect %@", self.currentDevice);
     // Reconnect right away to proceed with the actual firmware update
     [self.centralManager connectPeripheral:self.currentDevice options:nil];
+  }
+  else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON) {
+    // Reconnect after switching back to normal services
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+      DLog(@"Reconnect Restart %@", self.currentDevice);
+      [self.centralManager connectPeripheral:self.currentDevice options:nil];
+    });
   }
   else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
     // Delay of 3 seconds added before reconnecting
@@ -319,20 +330,25 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
         DLog(@"CURRENT DEVICE %i", self.currentDeviceMode);
         [[BootLoaderService getBootLoaderService] firmwareUpdated];
       }
-      else {
+      else if (self.connectHandler) {
         self.connectHandler(nil);
-        
+        self.connectHandler = nil;
         [self emitDeviceState];
       }
     }
   }
-  else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
-    if ([_servicesFound count] == 1) {
-      self.connectHandler(nil);
-      
-      [self emitDeviceState];
-    }
-  }
+//  else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
+//    if ([_servicesFound count] == 1) {
+//      if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_OFF) {
+//        // Device booted into BootLoaderMode outside of firmware update flow
+//        // In this case, the app should attempt to issue an Exit command to retry resetting into normal services
+//      }
+//      else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON) {
+//        // The attempt to reset back into normal services failed
+//        // The app should inform the React side to initiate firmware update flow
+//      }
+//    }
+//  }
   
   // BluetoothService should keep track of currently active services and characteristics
   for (CBCharacteristic *characteristic in service.characteristics) {
