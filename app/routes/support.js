@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
 import Support from '../containers/Support';
 import supportActions from '../actions/support';
@@ -13,7 +13,10 @@ const SupportSubmit = props => {
 
   return props.supportMessage ? (
     <TouchableOpacity
-      onPress={() => props.dispatch(supportActions.createTicket(props.supportMessage))}
+      onPress={() => {
+        Keyboard.dismiss();
+        return props.dispatch(supportActions.createTicket(props.supportMessage))
+      }}
     >
       {props.inProgress ?
         <Spinner color="#FFFFFF" /> : text}
