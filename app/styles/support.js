@@ -4,7 +4,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
-  background: {
+  container: {
     height: '100%',
     width: '100%',
   },

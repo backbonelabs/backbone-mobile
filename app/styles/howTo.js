@@ -14,11 +14,6 @@ const relativeImageDimensions = {
 };
 
 export default EStyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: null,
-  },
   howToContainer: {
     flex: 1,
     alignItems: 'center',

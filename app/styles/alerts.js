@@ -14,7 +14,7 @@ const sliderStyle = {
 };
 
 export default EStyleSheet.create({
-  backgroundImage: {
+  container: {
     width: '100%',
     height: '100%',
   },
