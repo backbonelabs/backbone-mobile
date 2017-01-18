@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Alert,
-  Image,
   Switch,
   Slider,
 } from 'react-native';
@@ -14,7 +13,6 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import thumbImage from '../images/settings/thumbImage.png';
 import trackImage from '../images/settings/trackImage.png';
-import gradientBackground20 from '../images/gradientBackground20.png';
 
 const VibrationToggle = props => (
   <View style={styles.vibrationContainer}>
@@ -152,7 +150,7 @@ class Alerts extends Component {
     const { user } = this.props.user;
 
     return (
-      <Image source={gradientBackground20} style={styles.backgroundImage}>
+      <View style={styles.container}>
         <View style={styles.spacerContainer} />
         <VibrationToggle
           user={user}
@@ -173,7 +171,7 @@ class Alerts extends Component {
             your Backbone will decrease its battery life
           </SecondaryText>
         </View>
-      </Image>
+      </View>
     );
   }
 }

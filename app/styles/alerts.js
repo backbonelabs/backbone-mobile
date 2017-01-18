@@ -14,9 +14,8 @@ const sliderStyle = {
 };
 
 export default EStyleSheet.create({
-  backgroundImage: {
-    width: '100%',
-    height: '100%',
+  container: {
+    flex: 1,
   },
   spacerContainer: {
     flex: 0.09,
