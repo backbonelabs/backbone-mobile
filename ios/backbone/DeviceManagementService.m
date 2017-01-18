@@ -41,7 +41,7 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
                                                                                       });
         [self deviceConnectionStatus:makeError];
       } else {
-        [self deviceConnectionStatus:@{@"isConnected": @YES}];
+        [self deviceConnectionStatus:@{@"isConnected": @YES, @"deviceMode": @(BluetoothServiceInstance.currentDeviceMode)}];
       }
       
     }];
