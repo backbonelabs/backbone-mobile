@@ -143,6 +143,8 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
         else {
           _checkSumType = CHECK_SUM;
         }
+        
+        _bootLoaderState = BOOTLOADER_STATE_UPLOADING;
 
         NSData *data = [self createCommandPacketWithCommand:COMMAND_ENTER_BOOTLOADER dataLength:0 data:nil];
         [self writeValueToCharacteristicWithData:data bootLoaderCommandCode:COMMAND_ENTER_BOOTLOADER];

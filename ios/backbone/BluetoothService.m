@@ -222,6 +222,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   DLog(@"Did fail connect %@", error);
   if (self.connectHandler) {
     self.connectHandler(error);
+    self.connectHandler = nil;
   }
 }
 
@@ -323,6 +324,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   // Check if all required services are ready
   if (self.currentDeviceMode == DEVICE_MODE_BACKBONE) {
     if ([_servicesFound count] == 2) {
+      [BootLoaderService getBootLoaderService].bootLoaderState = BOOTLOADER_STATE_OFF;
       // Check for pending notification of a successful firmware update
       if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
         // Successfully restarted after upgrading firmware
@@ -337,18 +339,23 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       }
     }
   }
-//  else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
-//    if ([_servicesFound count] == 1) {
-//      if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_OFF) {
-//        // Device booted into BootLoaderMode outside of firmware update flow
-//        // In this case, the app should attempt to issue an Exit command to retry resetting into normal services
-//      }
-//      else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON) {
-//        // The attempt to reset back into normal services failed
-//        // The app should inform the React side to initiate firmware update flow
-//      }
-//    }
-//  }
+  else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
+    if ([_servicesFound count] == 1) {
+      if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_OFF) {
+        // Device booted into BootLoaderMode outside of firmware update flow
+        // In this case, the app should attempt to issue an Exit command to retry resetting into normal services
+      }
+      else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON) {
+        // The attempt to reset back into normal services failed
+        // The app should inform the React side to initiate firmware update flow
+        if (self.connectHandler) {
+          self.connectHandler(nil);
+          self.connectHandler = nil;
+          [self emitDeviceState];
+        }
+      }
+    }
+  }
   
   // BluetoothService should keep track of currently active services and characteristics
   for (CBCharacteristic *characteristic in service.characteristics) {
