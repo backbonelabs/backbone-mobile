@@ -34,7 +34,7 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Mixpanel from '../utils/Mixpanel';
 
-const { bluetoothStates, deviceStatuses, storageKeys } = constants;
+const { bluetoothStates, deviceModes, deviceStatuses, storageKeys } = constants;
 
 const {
   BluetoothService,
@@ -163,6 +163,14 @@ class Application extends Component {
             path: 'app/containers/Application',
             stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
           });
+        } else {
+          Alert.alert('mode', status.deviceMode.toString());
+          // Check the current device mode to show relevant UI
+          if (status.deviceMode == deviceModes.BOOTLOADER) {
+            // When the device failed to load the normal Backbone services,
+            // we should proceed to show firmware update related UI
+            
+          }
         }
       }
     );

@@ -19,6 +19,11 @@ export default {
     DISCONNECTING: 8,
     TURNING_OFF: 9,
   },
+  deviceModes: {
+    UNKNOWN: 0,
+    BACKBONE: 1,
+    BOOTLOADER: 2,
+  },
   deviceStatuses: {
     DISCONNECTED: 0,
     CONNECTING: 1,
