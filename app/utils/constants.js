@@ -36,7 +36,6 @@ export default {
     BEGIN: 0,
     END_SUCCESS: 1,
     END_ERROR: 2,
-    PENDING: 3,
   },
   heightUnitIdToLabel: {
     1: 'IN',
