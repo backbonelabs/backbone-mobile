@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 import appActions from '../actions/app';
 import supportActions from '../actions/support';
 import HeadingText from '../components/HeadingText';
-import gradientBackground20 from '../images/gradientBackground20.png';
 import sendout from '../images/settings/sendout.png';
 import styles from '../styles/support';
 
@@ -62,7 +61,7 @@ class Support extends Component {
 
   render() {
     const mainContent = (
-      <Image source={gradientBackground20} style={styles.background}>
+      <View style={styles.container}>
         <TextInput
           style={styles.inputField}
           placeholder="Message here"
@@ -70,7 +69,7 @@ class Support extends Component {
           autoFocus
           onChangeText={text => this.props.dispatch(supportActions.updateMessage(text))}
         />
-      </Image>
+      </View>
     );
 
     return (
