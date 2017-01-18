@@ -163,13 +163,9 @@ class Application extends Component {
             path: 'app/containers/Application',
             stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
           });
-        } else {
-          Alert.alert('mode', status.deviceMode.toString());
-          // Check the current device mode to show relevant UI
-          if (status.deviceMode === deviceModes.BOOTLOADER) {
-            // When the device failed to load the normal Backbone services,
-            // we should proceed to show firmware update related UI
-          }
+        } else if (status.deviceMode === deviceModes.BOOTLOADER) {
+          // When the device failed to load the normal Backbone services,
+          // we should proceed to show firmware update related UI
         }
       }
     );
