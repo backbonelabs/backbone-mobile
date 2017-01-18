@@ -23,7 +23,6 @@ import routes from '../routes';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
-import gradientBackground20 from '../images/gradientBackground20.png';
 import arrow from '../images/settings/arrow.svg';
 import batteryIcon from '../images/settings/batteryIcon.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
@@ -323,7 +322,7 @@ class Settings extends Component {
 
     return (
       <ScrollView>
-        <Image source={gradientBackground20} style={styles.backgroundImage}>
+        <View style={styles.container}>
           <SensorSettings navigator={navigator} isConnected={isConnected} device={device} />
           <AccountRemindersSettings
             navigator={navigator}
@@ -338,7 +337,7 @@ class Settings extends Component {
               onPress={this.signOut}
             />
           </View>
-        </Image>
+        </View>
         {config.DEV_MODE && this.getDevMenu()}
       </ScrollView>
     );
