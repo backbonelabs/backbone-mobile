@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
+  Alert,
   Image,
   Switch,
   Slider,
-  Alert,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -111,38 +111,45 @@ class Alerts extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     user: PropTypes.shape({
-      _id: PropTypes.string,
-      settings: PropTypes.shape({
-        slouchTimeThreshold: PropTypes.number,
-        postureThreshold: PropTypes.number,
-        backboneVibration: PropTypes.bool,
-        phoneVibration: PropTypes.bool,
-        vibrationPattern: PropTypes.number,
+      user: PropTypes.shape({
+        _id: PropTypes.string,
+        settings: PropTypes.shape({
+          slouchTimeThreshold: PropTypes.number,
+          postureThreshold: PropTypes.number,
+          backboneVibration: PropTypes.bool,
+          phoneVibration: PropTypes.bool,
+          vibrationPattern: PropTypes.number,
+        }),
       }),
+      errorMessage: PropTypes.string,
     }),
   };
+
+  componentWillReceiveProps(nextProps) {
+    // Check if errorMessage is present in nextProps
+    if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
+      // Check if API error prevented settings update
+      if (this.props.user.user.settings === nextProps.user.user.settings) {
+        Alert.alert('Error', 'Your settings were NOT saved, please try again.');
+      }
+    }
+  }
 
   // Update user settings
   @autobind
   updateUserSettings(field, value) {
-    const { settings, _id } = this.props.user;
+    const { settings, _id } = this.props.user.user;
     const updatedUserSettings = {
       _id,
       settings: Object.assign({}, settings, { [field]: value }),
     };
 
     // Update app store and user account to reflect new settings
-    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings))
-      .then(response => {
-        if (response.error) {
-          // Show user error message
-          Alert.alert('Error', response.payload.message);
-        }
-      });
+    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings));
   }
 
   render() {
-    const { user } = this.props;
+    const { user } = this.props.user;
 
     return (
       <Image source={gradientBackground20} style={styles.backgroundImage}>
@@ -172,7 +179,7 @@ class Alerts extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user: { user } } = state;
+  const { user } = state;
   return { user };
 };
 
