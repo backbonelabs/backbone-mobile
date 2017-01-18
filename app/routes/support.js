@@ -15,7 +15,7 @@ const SupportSubmit = props => {
     <TouchableOpacity
       onPress={() => {
         Keyboard.dismiss();
-        return props.dispatch(supportActions.createTicket(props.supportMessage))
+        return props.dispatch(supportActions.createTicket(props.supportMessage));
       }}
     >
       {props.inProgress ?
