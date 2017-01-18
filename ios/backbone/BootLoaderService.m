@@ -345,7 +345,6 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
           if (_bootLoaderState == BOOTLOADER_STATE_ON) {
             // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
             // Device couldn't reset back to normal services, so firmware upload is needed
-            [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_PENDING];
           }
           else {
             _bootLoaderState = BOOTLOADER_STATE_ON;
