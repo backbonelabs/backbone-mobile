@@ -42,6 +42,8 @@
   _servicesFound = [NSMutableDictionary new];
   _characteristicMap = [NSMutableDictionary new];
   
+  _shouldRestart = NO;
+  
   self.centralManager = [[CBCentralManager alloc]
                          initWithDelegate:self
                          queue:nil
@@ -94,7 +96,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
 }
 
--(void)emitCentralState {
+- (void)emitCentralState {
   DLog(@"Emitting central state: %i", _state);
   NSDictionary *stateUpdate = @{
                                 @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]
@@ -102,7 +104,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
 
--(void)emitDeviceState {
+- (void)emitDeviceState {
   int deviceState = (int)(self.currentDevice == nil ? CBPeripheralStateDisconnected : _currentDevice.state);
   
   DLog(@"Emitting device state: %d", deviceState);
@@ -236,7 +238,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
     // Reconnect right away to proceed with the actual firmware update
     [self.centralManager connectPeripheral:self.currentDevice options:nil];
   }
-  else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON) {
+  else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON && _shouldRestart) {
     // Reconnect after switching back to normal services
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
       DLog(@"Reconnect Restart %@", self.currentDevice);
@@ -314,12 +316,14 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
 }
 
--(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
   DLog(@"Found Characteristics");
   
   if (service.characteristics && service.characteristics.count > 0) {
     [_servicesFound setObject:@(YES) forKey:service.UUID.UUIDString];
   }
+  
+  if (_shouldRestart) _shouldRestart = NO;
   
   // Check if all required services are ready
   if (self.currentDeviceMode == DEVICE_MODE_BACKBONE) {
@@ -344,10 +348,12 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_OFF) {
         // Device booted into BootLoaderMode outside of firmware update flow
         // In this case, the app should attempt to issue an Exit command to retry resetting into normal services
+        _shouldRestart = YES;
       }
       else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON) {
         // The attempt to reset back into normal services failed
         // The app should inform the React side to initiate firmware update flow
+        _shouldRestart = NO;
         if (self.connectHandler) {
           self.connectHandler(nil);
           self.connectHandler = nil;
@@ -385,7 +391,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
 }
 
--(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
   if ([_characteristicDelegates count] > 0) {
     for (id<CBPeripheralDelegate> delegate in _characteristicDelegates) {
       if ([delegate respondsToSelector:@selector(peripheral:didUpdateValueForCharacteristic:error:)]) {

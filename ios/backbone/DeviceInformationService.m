@@ -101,7 +101,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
 //  }
 }
 
--(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
   if ([characteristic.UUID isEqual:FIRMWARE_VERSION_CHARACTERISTIC_UUID]) {
     if (!error) {
       uint8_t *data = (uint8_t*) [characteristic.value bytes];
