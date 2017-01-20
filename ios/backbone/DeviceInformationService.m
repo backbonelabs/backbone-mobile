@@ -44,13 +44,19 @@ RCT_EXPORT_MODULE();
                  and a device information dictionary as the second argument if there are no exceptions
  */
 RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
-  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]
-      && [BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]) {
-    [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
-      [self retrieveBatteryLevel:^(int value) {
-        callback(@[[NSNull null], @{@"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
+  if ([BluetoothServiceInstance isDeviceReady]) {
+    if ([BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]
+        && [BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]) {
+      [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
+        [self retrieveBatteryLevel:^(int value) {
+          callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
+        }];
       }];
-    }];
+    }
+    else {
+      // Required characteristics are not available, return default values
+      callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : @"", @"batteryLevel" : @(-1), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
+    }
   }
   else {
     NSDictionary *makeError = RCTMakeError(@"Not connected to a device", nil, nil);
@@ -95,7 +101,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
 //  }
 }
 
--(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
   if ([characteristic.UUID isEqual:FIRMWARE_VERSION_CHARACTERISTIC_UUID]) {
     if (!error) {
       uint8_t *data = (uint8_t*) [characteristic.value bytes];

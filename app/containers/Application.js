@@ -34,14 +34,16 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Mixpanel from '../utils/Mixpanel';
 
-const { bluetoothStates, deviceStatuses, storageKeys } = constants;
+const { bluetoothStates, deviceModes, deviceStatuses, storageKeys } = constants;
 
 const {
   BluetoothService,
+  DeviceManagementService,
   Environment,
 } = NativeModules;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
+const DeviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -151,6 +153,29 @@ class Application extends Component {
       }
     });
 
+    // Add a listener to the ConnectionStatus event
+    this.connectionStatusListener = DeviceManagementServiceEvents.addListener('ConnectionStatus',
+      status => {
+        this.props.dispatch(deviceActions.connectStatus(status));
+        if (status.message) {
+          Mixpanel.trackError({
+            errorContent: status,
+            path: 'app/containers/Application',
+            stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
+          });
+        } else if (status.deviceMode === deviceModes.BOOTLOADER) {
+          // When the device failed to load the normal Backbone services,
+          // we should proceed to show firmware update related UI
+          Alert.alert('Error', 'There is something wrong with your Backbone. ' +
+            'Perform an update now to continue using your Backbone.', [
+            { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
+            { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
+            ]
+          );
+        }
+      }
+    );
+
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
 
@@ -228,6 +253,9 @@ class Application extends Component {
     }
     if (this.deviceStateListener) {
       this.deviceStateListener.remove();
+    }
+    if (this.connectionStatusListener) {
+      this.connectionStatusListener.remove();
     }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }

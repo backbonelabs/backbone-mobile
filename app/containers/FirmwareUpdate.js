@@ -25,7 +25,6 @@ const { firmwareUpdateStates: {
   BEGIN,
   END_SUCCESS,
   END_ERROR,
-  PENDING,
 } } = constants;
 
 const { BootLoaderService, Environment } = NativeModules;
@@ -112,8 +111,7 @@ class FirmwareUpdate extends Component {
     } else if (
       firmwareStatus === END_ERROR ||
       firmwareStatus === INVALID_FILE ||
-      firmwareStatus === INVALID_SERVICE ||
-      firmwareStatus === PENDING
+      firmwareStatus === INVALID_SERVICE
     ) {
       this.setState({ isUpdating: false }, this.failedUpdateHandler);
     }

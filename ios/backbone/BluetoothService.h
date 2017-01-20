@@ -5,6 +5,7 @@
 
 @interface BluetoothService : RCTEventEmitter <CBCentralManagerDelegate, CBPeripheralDelegate, RCTBridgeModule> {
   BOOL _isObserving;
+  BOOL _shouldRestart;
   NSDictionary *stateMap;
   NSMutableDictionary *_servicesFound;
   NSMutableDictionary *_characteristicMap;
