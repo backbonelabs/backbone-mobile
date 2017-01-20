@@ -341,7 +341,6 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
     if (error == nil) {
       for (CBCharacteristic *characteristic in service.characteristics) {
         if ([characteristic.UUID isEqual:BOOTLOADER_CHARACTERISTIC_UUID]) {
-//          _bootLoaderCharacteristic = characteristic;
           if (_bootLoaderState == BOOTLOADER_STATE_ON) {
             // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
             // Device couldn't reset back to normal services, so firmware upload is needed
@@ -361,7 +360,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
         }
       }
 
-      if (_bootLoaderState != BOOTLOADER_STATE_ON) {
+      if (![BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID]) {
         [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_INVALID_SERVICE];
       }
     }
@@ -382,7 +381,7 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
           [self firmwareUploadSuccess];
         }
         else {
-          DLog(@"Device Mode Restart Success");
+          DLog(@"Exiting Bootloader with no firmware update");
         }
       }
     }

@@ -339,8 +339,9 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       else if (self.connectHandler) {
         self.connectHandler(nil);
         self.connectHandler = nil;
-        [self emitDeviceState];
       }
+      
+      [self emitDeviceState];
     }
   }
   else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
@@ -354,11 +355,13 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
         // The attempt to reset back into normal services failed
         // The app should inform the React side to initiate firmware update flow
         _shouldRestart = NO;
+        
         if (self.connectHandler) {
           self.connectHandler(nil);
           self.connectHandler = nil;
-          [self emitDeviceState];
         }
+        
+        [self emitDeviceState];
       }
     }
   }
