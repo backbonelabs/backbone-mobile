@@ -13,7 +13,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import styles from '../styles/auth';
 import Spinner from '../components/Spinner';
-import BackBoneLogo from '../images/bblogo.png';
+import BackBoneLogo from '../images/logo.png';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import constants from '../utils/constants';
