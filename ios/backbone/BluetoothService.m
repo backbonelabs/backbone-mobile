@@ -339,11 +339,10 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
         self.connectHandler(nil);
         self.connectHandler = nil;
       }
-      
+        
+      [BootLoaderService getBootLoaderService].bootLoaderState = BOOTLOADER_STATE_OFF;
       [self emitDeviceState];
     }
-    
-    [BootLoaderService getBootLoaderService].bootLoaderState = BOOTLOADER_STATE_OFF;
   }
   else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
     if ([_servicesFound count] == 1) {
