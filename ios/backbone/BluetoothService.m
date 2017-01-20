@@ -328,7 +328,6 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   // Check if all required services are ready
   if (self.currentDeviceMode == DEVICE_MODE_BACKBONE) {
     if ([_servicesFound count] == 2) {
-      [BootLoaderService getBootLoaderService].bootLoaderState = BOOTLOADER_STATE_OFF;
       // Check for pending notification of a successful firmware update
       if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
         // Successfully restarted after upgrading firmware
@@ -343,6 +342,8 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       
       [self emitDeviceState];
     }
+    
+    [BootLoaderService getBootLoaderService].bootLoaderState = BOOTLOADER_STATE_OFF;
   }
   else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
     if ([_servicesFound count] == 1) {
