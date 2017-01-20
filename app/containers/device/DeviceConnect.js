@@ -50,9 +50,7 @@ class DeviceConnect extends Component {
     // If isConnected is true, then alert the user that the
     // device has successfully connected to their smartphone
     if (!this.props.isConnected && nextProps.isConnected) {
-      Alert.alert('Success', 'Connected', [
-        { text: 'Continue', onPress: this.goBackToScene },
-      ]);
+      this.goBackToScene();
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       const deviceIdentifier = (
         nextProps.device.identifier || nextProps.currentRoute.deviceIdentifier
