@@ -166,6 +166,12 @@ class Application extends Component {
         } else if (status.deviceMode === deviceModes.BOOTLOADER) {
           // When the device failed to load the normal Backbone services,
           // we should proceed to show firmware update related UI
+          Alert.alert('Error', 'There is something wrong with your Backbone. ' +
+            'Perform an update now to continue using your Backbone.', [
+            { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
+            { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
+            ]
+          );
         }
       }
     );
