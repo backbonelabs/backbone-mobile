@@ -9,6 +9,7 @@ static NSMutableDictionary *_deviceCollection = nil;
 - (id)init {
   self = [super init];
   if (!_deviceCollection) {
+    _hasPendingConnection = NO;
     _deviceCollection = [NSMutableDictionary new];
   }
   
@@ -44,7 +45,10 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
         [self deviceConnectionStatus:@{@"isConnected": @YES, @"deviceMode": @(BluetoothServiceInstance.currentDeviceMode)}];
       }
       
+      _hasPendingConnection = NO;
     }];
+    
+    _hasPendingConnection = YES;
     [self checkConnectTimeout];
   } else {
     // There is no valid device
@@ -103,8 +107,10 @@ RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
 
 - (void)checkConnectTimeout {
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-    if (BluetoothServiceInstance.currentDevice.state != CBPeripheralStateConnected) {
+    if (_hasPendingConnection) {
       DLog(@"Connection timeout");
+      _hasPendingConnection = NO;
+      
       [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
         NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, nil);
         [self deviceConnectionStatus:makeError];
