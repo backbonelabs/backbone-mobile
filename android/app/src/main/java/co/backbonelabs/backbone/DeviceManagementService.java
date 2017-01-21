@@ -24,6 +24,7 @@ import timber.log.Timber;
 
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private boolean scanning;
+    private boolean hasPendingConnection = false;
     private ReactApplicationContext reactContext;
 
     public DeviceManagementService(ReactApplicationContext reactContext) {
@@ -93,7 +94,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void connectToDevice(String identifier) {
-        Timber.d("connectToDevice %s", identifier);
+        Timber.d("connectToDevice %s %d", identifier, BluetoothService.getInstance().getDeviceState());
         final BluetoothService bluetoothService = BluetoothService.getInstance();
         BluetoothDevice device = bluetoothService.findDeviceByAddress(identifier);
         if (device != null) {
@@ -101,8 +102,10 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 @Override
                 public void onDeviceConnected() {
                     Timber.d("DeviceConnected");
+                    hasPendingConnection = false;
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", true);
+                    wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
                     wm.putNull("message");
                     EventEmitter.send(reactContext, "ConnectionStatus", wm);
                 }
@@ -110,6 +113,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 @Override
                 public void onDeviceDisconnected() {
                     Timber.d("DeviceDisconnected");
+                    hasPendingConnection = false;
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", false);
                     wm.putNull("message");
@@ -117,6 +121,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 }
             });
 
+            hasPendingConnection = true;
             checkConnectTimeout();
         } else {
             // Could not retrieve a valid device
@@ -149,9 +154,10 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         Runnable runnable = new Runnable(){
             public void run() {
                 Timber.d("Check connection timeout");
-                if (BluetoothService.getInstance().getDeviceState() != BluetoothProfile.STATE_CONNECTED
-                        && BootLoaderService.getInstance().getBootLoaderState() == Constants.BOOTLOADER_STATES.OFF) {
-                    Timber.d("Device connection timeout");
+                if (hasPendingConnection && !BluetoothService.getInstance().isShouldRestart()) {
+                    Timber.d("Device connection timeout %b", hasPendingConnection);
+                    hasPendingConnection = false;
+
                     BluetoothService.getInstance().disconnect();
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", false);

@@ -57,28 +57,39 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
     public void getDeviceInformation(final Callback callback) {
         final BluetoothService bluetoothService = BluetoothService.getInstance();
 
-        if (bluetoothService.isDeviceReady()
-                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC)
-                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC)) {
-            retrieveFirmwareVersion(new Constants.StringCallBack() {
-                @Override
-                public void onStringCallBack(final String version) {
-                    Timber.d("Found version %s", version);
+        if (bluetoothService.isDeviceReady()) {
+            if (bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC)
+                    && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC)) {
+                retrieveFirmwareVersion(new Constants.StringCallBack() {
+                    @Override
+                    public void onStringCallBack(final String version) {
+                        Timber.d("Found version %s", version);
 
-                    retrieveBatteryLevel(new Constants.IntCallBack() {
-                        @Override
-                        public void onIntCallBack(int level) {
-                            Timber.d("Found battery %d", level);
-                            WritableMap wm = Arguments.createMap();
-                            wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
-                            wm.putString("firmwareVersion", version);
-                            wm.putInt("batteryLevel", level);
+                        retrieveBatteryLevel(new Constants.IntCallBack() {
+                            @Override
+                            public void onIntCallBack(int level) {
+                                Timber.d("Found battery %d", level);
+                                WritableMap wm = Arguments.createMap();
+                                wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
+                                wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
+                                wm.putString("firmwareVersion", version);
+                                wm.putInt("batteryLevel", level);
 
-                            callback.invoke(null, wm);
-                        }
-                    });
-                }
-            });
+                                callback.invoke(null, wm);
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                WritableMap wm = Arguments.createMap();
+                wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
+                wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
+                wm.putString("firmwareVersion", "");
+                wm.putInt("batteryLevel", -1);
+
+                callback.invoke(null, wm);
+            }
         }
         else {
             callback.invoke(JSError.make("Not connected to a device"));
