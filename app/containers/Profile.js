@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Image,
   Alert,
   Keyboard,
   TouchableOpacity,
@@ -18,7 +17,6 @@ import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
-import gradientBackground20 from '../images/gradientBackground20.png';
 
 const {
   height: heightConstants,
@@ -396,7 +394,7 @@ class Profile extends Component {
     return (
       <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <Image source={gradientBackground20} style={styles.backgroundImage}>
+          <View style={styles.container}>
             { isFetching || isUpdating ?
               <Spinner style={{ flex: 1 }} />
               :
@@ -471,7 +469,7 @@ class Profile extends Component {
                 />
               }
             </View>
-          </Image>
+          </View>
         </TouchableWithoutFeedback>
       </KeyboardAwareScrollView>
     );

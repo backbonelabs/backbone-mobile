@@ -23,7 +23,7 @@ export default EStyleSheet.create({
   $settingsIconSize: fixedResponsiveFontSize(24),
   $arrowWidth: applyWidthDifference(12),
   $arrowHeight: applyWidthDifference(23),
-  backgroundImage: {
+  container: {
     width: '100%',
     height: '100%',
   },

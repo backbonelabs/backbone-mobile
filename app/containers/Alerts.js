@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Image,
+  Alert,
   Switch,
   Slider,
-  Alert,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -14,7 +13,6 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import thumbImage from '../images/settings/thumbImage.png';
 import trackImage from '../images/settings/trackImage.png';
-import gradientBackground20 from '../images/gradientBackground20.png';
 
 const VibrationToggle = props => (
   <View style={styles.vibrationContainer}>
@@ -111,41 +109,48 @@ class Alerts extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     user: PropTypes.shape({
-      _id: PropTypes.string,
-      settings: PropTypes.shape({
-        slouchTimeThreshold: PropTypes.number,
-        postureThreshold: PropTypes.number,
-        backboneVibration: PropTypes.bool,
-        phoneVibration: PropTypes.bool,
-        vibrationPattern: PropTypes.number,
+      user: PropTypes.shape({
+        _id: PropTypes.string,
+        settings: PropTypes.shape({
+          slouchTimeThreshold: PropTypes.number,
+          postureThreshold: PropTypes.number,
+          backboneVibration: PropTypes.bool,
+          phoneVibration: PropTypes.bool,
+          vibrationPattern: PropTypes.number,
+        }),
       }),
+      errorMessage: PropTypes.string,
     }),
   };
+
+  componentWillReceiveProps(nextProps) {
+    // Check if errorMessage is present in nextProps
+    if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
+      // Check if API error prevented settings update
+      if (this.props.user.user.settings === nextProps.user.user.settings) {
+        Alert.alert('Error', 'Your settings were NOT saved, please try again.');
+      }
+    }
+  }
 
   // Update user settings
   @autobind
   updateUserSettings(field, value) {
-    const { settings, _id } = this.props.user;
+    const { settings, _id } = this.props.user.user;
     const updatedUserSettings = {
       _id,
       settings: Object.assign({}, settings, { [field]: value }),
     };
 
     // Update app store and user account to reflect new settings
-    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings))
-      .then(response => {
-        if (response.error) {
-          // Show user error message
-          Alert.alert('Error', response.payload.message);
-        }
-      });
+    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings));
   }
 
   render() {
-    const { user } = this.props;
+    const { user } = this.props.user;
 
     return (
-      <Image source={gradientBackground20} style={styles.backgroundImage}>
+      <View style={styles.container}>
         <View style={styles.spacerContainer} />
         <VibrationToggle
           user={user}
@@ -166,13 +171,13 @@ class Alerts extends Component {
             your Backbone will decrease its battery life
           </SecondaryText>
         </View>
-      </Image>
+      </View>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  const { user: { user } } = state;
+  const { user } = state;
   return { user };
 };
 

@@ -16,7 +16,7 @@ import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
 import constants from '../utils/constants';
-import BackBoneLogo from '../images/bblogo.png';
+import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 
 class Signup extends Component {

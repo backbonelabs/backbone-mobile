@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import Button from '../components/Button';
-import logo from '../images/bblogo.png';
+import logo from '../images/logo.png';
 import styles from '../styles/welcome';
 import routes from '../routes';
 
