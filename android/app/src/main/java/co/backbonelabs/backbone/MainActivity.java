@@ -47,7 +47,7 @@ public class MainActivity extends ReactActivity {
 
         // Disconnect from device
         if (bluetoothService.getCurrentDevice() != null) {
-            bluetoothService.disconnect();
+            bluetoothService.disconnect(null);
         }
     }
 
