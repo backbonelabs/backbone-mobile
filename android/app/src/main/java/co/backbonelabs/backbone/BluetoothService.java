@@ -116,7 +116,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     private DeviceScanCallBack scanCallBack;
-    private DeviceConnectionCallBack connectionCallBack;
+    private DeviceConnectionCallBack connectionCallBack = null, disconnectCallBack = null;
 
     /**
      * Retrieves the BluetoothAdapter
@@ -179,11 +179,16 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             Timber.d("DeviceState %d %d", newState, status);
 
             if (status == 133) {
+                // Set up some delay before another connect attempt
+                try {
+                    Thread.sleep(1000, 0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 // Device was not yet ready, retry the connection
                 connectDevice(currentDevice, connectionCallBack);
             }
-
-            if (deviceState != newState) {
+            else if (deviceState != newState) {
                 deviceState = newState;
 
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
@@ -223,7 +228,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     // GATT should be closed on all disconnect event to clear up the connection pool
                     // Set some delay for closing GATT and device transition
                     try {
-                        Thread.sleep(2000, 0);
+                        Thread.sleep(1500, 0);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -250,6 +255,11 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     else {
                         currentDevice = null;
                         deviceState = BluetoothProfile.STATE_DISCONNECTED;
+
+                        if (disconnectCallBack != null) {
+                            disconnectCallBack.onDeviceDisconnected();
+                            disconnectCallBack = null;
+                        }
 
                         emitDeviceState();
                     }
@@ -517,10 +527,15 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
      * Disconnects an established connection, or cancels a connection attempt currently in progress,
      * and then closes and forgets the GATT client
      */
-    public void disconnect() {
+    public void disconnect(DeviceConnectionCallBack callback) {
         Timber.d("disconnect()");
         if (bleGatt != null) {
             Timber.d("About to disconnect and close");
+
+            if (callback != null) {
+                disconnectCallBack = callback;
+            }
+
             bleGatt.disconnect();
         }
     }

@@ -402,7 +402,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                         case EXIT_BOOTLOADER: {
                             Timber.d("Firmware Upgrade Success");
 //                        BluetoothService.getInstance().unpairDevice();
-                            BluetoothService.getInstance().disconnect();
+                            BluetoothService.getInstance().disconnect(null);
                         }
                         default:
                             break;
@@ -425,7 +425,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                                 firmwareUploadSuccess();
                             }
                             else {
-                                Timber.d("Device Mode Restart Success");
+                                Timber.d("Exiting Bootloader with no firmware update");
                             }
                         }
                     }

@@ -135,13 +135,23 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
      *                 Otherwise, it will be invoked with no arguments.
      */
     @ReactMethod
-    public void cancelConnection(Callback callback) {
+    public void cancelConnection(final Callback callback) {
         Timber.d("Cancel device connection and any running scan");
         try {
             final BluetoothService bluetoothService = BluetoothService.getInstance();
             stopScanForDevices();
-            bluetoothService.disconnect();
-            callback.invoke();
+            bluetoothService.disconnect(new BluetoothService.DeviceConnectionCallBack() {
+                @Override
+                public void onDeviceConnected() {
+                }
+
+                @Override
+                public void onDeviceDisconnected() {
+                    Timber.d("Connection Cancelled");
+                    hasPendingConnection = false;
+                    callback.invoke();
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             callback.invoke(JSError.make("Failed to disconnect"));
@@ -158,7 +168,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                     Timber.d("Device connection timeout %b", hasPendingConnection);
                     hasPendingConnection = false;
 
-                    BluetoothService.getInstance().disconnect();
+                    BluetoothService.getInstance().disconnect(null);
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", false);
                     wm.putString("message", "Device took too long to connect");
