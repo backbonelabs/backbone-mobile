@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference } = relativeDimensions;
+const { heightDifference } = relativeDimensions;
 
 const absoluteCenter = {
   alignItems: 'center',
@@ -11,12 +11,11 @@ const absoluteCenter = {
 export default EStyleSheet.create({
   howToContainer: {
     borderBottomWidth: 1,
-    borderColor: '$activeBorderColor',
-    paddingVertical: applyWidthDifference(15),
+    borderColor: '$primaryColor',
+    paddingVertical: 15 * heightDifference,
   },
   textContainer: {
-    flex: 0.1,
-    paddingVertical: applyWidthDifference(10),
+    paddingVertical: 10 * heightDifference,
     ...absoluteCenter,
   },
 });
