@@ -21,7 +21,4 @@ export default EStyleSheet.create({
     paddingVertical: applyWidthDifference(10),
     ...absoluteCenter,
   },
-  image: {
-    width: applyWidthDifference(375),
-  },
 });
