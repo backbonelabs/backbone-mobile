@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 const absoluteCenter = {
   alignItems: 'center',
@@ -9,13 +9,19 @@ const absoluteCenter = {
 };
 
 export default EStyleSheet.create({
+  scrollView: {
+    alignItems: 'center',
+  },
   howToContainer: {
     borderBottomWidth: 1,
     borderColor: '$primaryColor',
-    paddingVertical: 15 * heightDifference,
+    paddingVertical: applyWidthDifference(15),
   },
   textContainer: {
-    paddingVertical: 10 * heightDifference,
+    paddingVertical: applyWidthDifference(10),
     ...absoluteCenter,
+  },
+  image: {
+    width: applyWidthDifference(375),
   },
 });

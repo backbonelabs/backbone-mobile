@@ -17,14 +17,17 @@ const howToContent = [
 ];
 
 const HowTo = () => (
-  <ScrollView>
+  <ScrollView
+    removeClippedSubviews={false}
+    contentContainerStyle={styles.scrollView}
+  >
     {
       howToContent.map((value, key) => (
         <View key={key} style={styles.howToContainer}>
           <View style={styles.textContainer}>
             <HeadingText size={2}>{value.title}</HeadingText>
           </View>
-          <Image source={value.image} />
+          <Image style={styles.image} source={value.image} />
         </View>
       ))
     }
