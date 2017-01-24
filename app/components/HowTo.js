@@ -4,6 +4,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import styles from '../styles/howTo';
 import HeadingText from '../components/HeadingText';
 import howToUseBackbone from '../images/howTo/howToUseBackbone.png';
@@ -36,7 +37,10 @@ const HowTo = () => (
   >
     {
       howToContent.map((value, key) => (
-        <View key={key} style={styles.howToContainer}>
+        <View
+          key={key}
+          style={EStyleSheet.child(styles, 'howToContainer', key, howToContent.length)}
+        >
           <View style={styles.textContainer}>
             <HeadingText size={2}>{value.title}</HeadingText>
           </View>

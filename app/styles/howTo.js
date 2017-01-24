@@ -17,6 +17,9 @@ export default EStyleSheet.create({
     borderColor: '$primaryColor',
     paddingVertical: applyWidthDifference(15),
   },
+  'howToContainer:last-child': {
+    borderBottomWidth: 0,
+  },
   textContainer: {
     paddingVertical: applyWidthDifference(10),
     ...absoluteCenter,
