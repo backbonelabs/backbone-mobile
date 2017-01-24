@@ -6,27 +6,27 @@ import {
 } from 'react-native';
 import styles from '../styles/howTo';
 import HeadingText from '../components/HeadingText';
-import section1 from '../images/howTo/section1.png';
-import section2 from '../images/howTo/section2.png';
-import section3 from '../images/howTo/section3.png';
+import howToUseBackbone from '../images/howTo/howToUseBackbone.png';
+import howToStartSession from '../images/howTo/howToStartSession.png';
+import howToGetBestResults from '../images/howTo/howToGetBestResults.png';
 import relativeDimensions from '../utils/relativeDimensions';
 
 const { applyWidthDifference } = relativeDimensions;
 const howToContent = [{
-  image: section1,
+  image: howToUseBackbone,
   title: 'Use Your Backbone',
   width: applyWidthDifference(375),
-  height: applyWidthDifference(1464),
+  height: applyWidthDifference(1423),
 }, {
-  image: section2,
+  image: howToStartSession,
   title: 'Start a Posture Session',
   width: applyWidthDifference(375),
-  height: applyWidthDifference(768),
+  height: applyWidthDifference(590),
 }, {
-  image: section3,
+  image: howToGetBestResults,
   title: 'Get the Best Results',
   width: applyWidthDifference(375),
-  height: applyWidthDifference(755),
+  height: applyWidthDifference(517),
 }];
 
 const HowTo = () => (
