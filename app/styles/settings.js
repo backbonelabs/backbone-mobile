@@ -3,7 +3,6 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
-
 const bottomBorder = {
   borderBottomWidth: 1,
   borderColor: '#EEEEEE',
@@ -25,7 +24,6 @@ export default EStyleSheet.create({
   $arrowHeight: applyWidthDifference(23),
   container: {
     width: '100%',
-    height: '100%',
   },
   sensorSettingsContainer: {
     height: applyWidthDifference(100),
@@ -86,6 +84,7 @@ export default EStyleSheet.create({
     paddingRight: applyWidthDifference(10),
   },
   buttonContainer: {
+    marginVertical: applyWidthDifference(40),
     flex: 1,
     ...absoluteCenter,
   },
