@@ -33,6 +33,7 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 
 const { storageKeys } = constants;
+const { UserSettingService, Environment } = NativeModules;
 
 const ArrowIcon = () => (
   <View style={styles.settingsRightIcon}>
@@ -141,7 +142,7 @@ const AccountRemindersSettings = props => (
       android: (
         <TouchableOpacity
           style={styles.settingsRow}
-          onPress={() => NativeModules.UserSettingService.launchAppSettings()}
+          onPress={() => UserSettingService.launchAppSettings()}
         >
           <SettingsIcon iconName="tap-and-play" />
           <SettingsText text="Push Notifications" />
@@ -158,6 +159,26 @@ AccountRemindersSettings.propTypes = {
   navigator: PropTypes.shape({
     push: PropTypes.func,
   }),
+};
+
+const openPrivacyPolicy = () => {
+  const url = `${Environment.WEB_SERVER_URL}/privacy-policy`;
+  Linking.canOpenURL(url)
+    .then(supported => {
+      if (supported) {
+        return Linking.openURL(url);
+      }
+      throw new Error();
+    })
+    .catch(() => {
+      // This catch handler will handle rejections from Linking.openURL as well
+      // as when the user's phone doesn't have any apps to open the URL
+      Alert.alert(
+        'Privacy Policy',
+        'We could not launch your browser. You can read the privacy policy ' +
+        'by visiting ' + Environment.WEB_SERVER_URL + '/privacy-policy.',
+      );
+    });
 };
 
 const HelpSettings = props => (
@@ -179,6 +200,14 @@ const HelpSettings = props => (
     >
       <SettingsIcon iconName="help" />
       <SettingsText text="Support" />
+      <ArrowIcon />
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.settingsRow}
+      onPress={openPrivacyPolicy}
+    >
+      <SettingsIcon iconName="description" />
+      <SettingsText text="Privacy Policy" />
       <ArrowIcon />
     </TouchableOpacity>
   </View>

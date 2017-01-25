@@ -91,6 +91,7 @@ Properties localProperties = new Properties()
 localProperties.load(project.file("local.properties").newDataInputStream())
 def API_SERVER_URL = localProperties.getProperty("API_SERVER_URL")
 def MIXPANEL_TOKEN = localProperties.getProperty("MIXPANEL_TOKEN")
+def WEB_SERVER_URL = localProperties.getProperty("WEB_SERVER_URL")
 def RELEASE_STORE_FILE = localProperties.getProperty("RELEASE_STORE_FILE")
 def RELEASE_KEY_ALIAS = localProperties.getProperty("RELEASE_KEY_ALIAS")
 def RELEASE_STORE_PASSWORD = localProperties.getProperty("RELEASE_STORE_PASSWORD")
@@ -131,11 +132,13 @@ android {
             buildConfigField "String", "API_SERVER_URL", API_SERVER_URL
             buildConfigField "String", "DEV_MODE", '"true"'
             buildConfigField "String", "MIXPANEL_TOKEN", MIXPANEL_TOKEN
+            buildConfigField "String", "WEB_SERVER_URL", WEB_SERVER_URL
         }
         release {
             buildConfigField "String", "API_SERVER_URL", '"https://api.gobackbone.com"'
             buildConfigField "String", "DEV_MODE", '"false"'
             buildConfigField "String", "MIXPANEL_TOKEN", MIXPANEL_TOKEN
+            buildConfigField "String", "WEB_SERVER_URL", '"https://gobackbone.com"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release

@@ -6,6 +6,9 @@ import {
   Keyboard,
   Image,
   KeyboardAvoidingView,
+  Linking,
+  TouchableOpacity,
+  NativeModules,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -15,9 +18,12 @@ import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
+import SecondaryText from '../components/SecondaryText';
 import constants from '../utils/constants';
 import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
+
+const { Environment } = NativeModules;
 
 class Signup extends Component {
   static propTypes = {
@@ -77,6 +83,26 @@ class Signup extends Component {
   signup() {
     const { email, password } = this.state;
     this.props.dispatch(authActions.signup({ email, password }));
+  }
+
+  openPrivacyPolicy() {
+    const url = `${Environment.WEB_SERVER_URL}/privacy-policy`;
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (supported) {
+          return Linking.openURL(url);
+        }
+        throw new Error();
+      })
+      .catch(() => {
+        // This catch handler will handle rejections from Linking.openURL as well
+        // as when the user's phone doesn't have any apps to open the URL
+        Alert.alert(
+          'Privacy Policy',
+          'We could not launch your browser. You can read the privacy policy ' +
+          'by visiting ' + Environment.WEB_SERVER_URL + '/privacy-policy.',
+        );
+      });
   }
 
   render() {
@@ -162,6 +188,14 @@ class Signup extends Component {
                         onPress={this.signup}
                       />
                     </View>
+                    <TouchableOpacity
+                      onPress={this.openPrivacyPolicy}
+                      activeOpacity={0.4}
+                    >
+                      <SecondaryText style={styles._forgotPassword}>
+                        Privacy policy
+                      </SecondaryText>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </KeyboardAvoidingView>

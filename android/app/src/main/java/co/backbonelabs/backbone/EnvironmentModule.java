@@ -22,6 +22,7 @@ public class EnvironmentModule extends ReactContextBaseJavaModule {
         constants.put("API_SERVER_URL", BuildConfig.API_SERVER_URL);
         constants.put("DEV_MODE", BuildConfig.DEV_MODE);
         constants.put("MIXPANEL_TOKEN", BuildConfig.MIXPANEL_TOKEN);
+        constants.put("WEB_SERVER_URL", BuildConfig.WEB_SERVER_URL);
         return constants;
     }
 }
