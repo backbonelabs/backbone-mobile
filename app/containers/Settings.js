@@ -175,7 +175,7 @@ const openPrivacyPolicy = () => {
       // as when the user's phone doesn't have any apps to open the URL
       Alert.alert(
         'Privacy Policy',
-        'We could not launch your browser. You can read the privacy policy ' +
+        'We could not launch your browser. You can read the privacy policy ' + // eslint-disable-line prefer-template, max-len
         'by visiting ' + Environment.WEB_SERVER_URL + '/privacy-policy.',
       );
     });
