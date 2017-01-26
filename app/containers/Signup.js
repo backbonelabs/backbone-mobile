@@ -113,7 +113,7 @@ class Signup extends Component {
   }
 
   openPrivacyPolicy() {
-    const url = `${Environment.WEB_SERVER_URL}/privacy-policy`;
+    const url = `${Environment.WEB_SERVER_URL}/legal/privacy`;
     Linking.canOpenURL(url)
       .then(supported => {
         if (supported) {
