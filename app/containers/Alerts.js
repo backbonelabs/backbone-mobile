@@ -116,12 +116,34 @@ class Alerts extends Component {
           postureThreshold: PropTypes.number,
           backboneVibration: PropTypes.bool,
           phoneVibration: PropTypes.bool,
+          vibrationStrength: PropTypes.number,
           vibrationPattern: PropTypes.number,
         }),
       }),
       errorMessage: PropTypes.string,
     }),
   };
+
+  constructor(props) {
+    super(props);
+    const {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+    } = this.props.user.user.settings;
+
+    // Maintain settings in component state because the user settings object
+    // will change back and forth during the asynchronous action for updating
+    // the user settings in the backend, and that will cause a flicker/lag in
+    // the UI when modifying each setting
+    this.state = {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+    };
+  }
 
   componentWillReceiveProps(nextProps) {
     // Check if errorMessage is present in nextProps
