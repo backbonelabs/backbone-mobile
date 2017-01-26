@@ -161,6 +161,26 @@ AccountRemindersSettings.propTypes = {
   }),
 };
 
+const openTOS = () => {
+  const url = `${Environment.WEB_SERVER_URL}/legal/terms`;
+  Linking.canOpenURL(url)
+    .then(supported => {
+      if (supported) {
+        return Linking.openURL(url);
+      }
+      throw new Error();
+    })
+    .catch(() => {
+      // This catch handler will handle rejections from Linking.openURL as well
+      // as when the user's phone doesn't have any apps to open the URL
+      Alert.alert(
+        'Terms of Service',
+        'We could not launch your browser. You can read the Terms of Service ' + // eslint-disable-line prefer-template, max-len
+        'by visiting ' + url + '.',
+      );
+    });
+};
+
 const openPrivacyPolicy = () => {
   const url = `${Environment.WEB_SERVER_URL}/legal/privacy`;
   Linking.canOpenURL(url)
@@ -208,6 +228,14 @@ const HelpSettings = props => (
     >
       <SettingsIcon iconName="description" />
       <SettingsText text="Privacy Policy" />
+      <ArrowIcon />
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.settingsRow}
+      onPress={openTOS}
+    >
+      <SettingsIcon iconName="description" />
+      <SettingsText text="Terms of Service" />
       <ArrowIcon />
     </TouchableOpacity>
   </View>
