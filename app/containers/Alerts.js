@@ -75,7 +75,9 @@ class Alerts extends Component {
       phoneVibration,
     };
 
-    // Debounce update of user settings setting to limit the number of API requests
+    // Debounce state update to smoothen quick slider value changes
+    this.updateSetting = debounce(this.updateSetting, 50);
+    // Debounce user profile update to limit the number of API requests
     this.updateUserSettings = debounce(this.updateUserSettings, 1000);
   }
 
