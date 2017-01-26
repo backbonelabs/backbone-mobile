@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
+import { debounce } from 'lodash';
 import userAction from '../actions/user';
 import styles from '../styles/alerts';
 import BodyText from '../components/BodyText';
@@ -22,7 +23,7 @@ const VibrationToggle = props => (
     <View style={styles.vibrationSwitch}>
       <Switch
         value={props.user.settings[props.settingName]}
-        onValueChange={value => props.updateUserSettings(props.settingName, value)}
+        onValueChange={value => props.onChange(props.settingName, value)}
       />
     </View>
   </View>
@@ -34,7 +35,7 @@ VibrationToggle.propTypes = {
       phoneVibration: PropTypes.bool,
     }),
   }),
-  updateUserSettings: PropTypes.func,
+  onChange: PropTypes.func,
   text: PropTypes.string.isRequired,
   settingName: PropTypes.string.isRequired,
 };
@@ -53,7 +54,7 @@ const VibrationSettings = props => (
           thumbImage={thumbImage}
           trackImage={trackImage}
           value={props.user.settings.vibrationStrength}
-          onValueChange={value => props.updateUserSettings('vibrationStrength', value)}
+          onValueChange={value => props.onChange('vibrationStrength', value)}
         />
       </View>
       <View style={styles.sliderDetails}>
@@ -77,7 +78,7 @@ const VibrationSettings = props => (
           thumbImage={thumbImage}
           trackImage={trackImage}
           value={props.user.settings.vibrationPattern}
-          onValueChange={value => props.updateUserSettings('vibrationPattern', value)}
+          onValueChange={value => props.onChange('vibrationPattern', value)}
         />
       </View>
       <View style={styles.sliderDetails}>
@@ -102,7 +103,7 @@ VibrationSettings.propTypes = {
       vibrationPattern: PropTypes.number,
     }),
   }),
-  updateUserSettings: PropTypes.func,
+  onChange: PropTypes.func,
 };
 
 class Alerts extends Component {
@@ -143,6 +144,9 @@ class Alerts extends Component {
       vibrationPattern,
       phoneVibration,
     };
+
+    // Debounce update of user settings setting to limit the number of API requests
+    this.updateUserSettings = debounce(this.updateUserSettings, 1000);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -155,15 +159,22 @@ class Alerts extends Component {
     }
   }
 
-  // Update user settings
   @autobind
-  updateUserSettings(field, value) {
+  updateSetting(field, value) {
+    this.setState({ [field]: value });
     const { settings, _id } = this.props.user.user;
-    const updatedUserSettings = {
+    this.updateUserSettings({
       _id,
       settings: Object.assign({}, settings, { [field]: value }),
-    };
+    });
+  }
 
+  /**
+   * Update user settings in the backend
+   * @param {Object} updatedUserSettings New user settings
+   */
+  @autobind
+  updateUserSettings(updatedUserSettings) {
     // Update app store and user account to reflect new settings
     this.props.dispatch(userAction.updateUserSettings(updatedUserSettings));
   }
@@ -176,14 +187,14 @@ class Alerts extends Component {
         <View style={styles.spacerContainer} />
         <VibrationToggle
           user={user}
-          updateUserSettings={this.updateUserSettings}
+          onChange={this.updateSetting}
           text="Backbone Vibration"
           settingName="backboneVibration"
         />
-        <VibrationSettings user={user} updateUserSettings={this.updateUserSettings} />
+        <VibrationSettings user={user} onChange={this.updateSetting} />
         <VibrationToggle
           user={user}
-          updateUserSettings={this.updateUserSettings}
+          onChange={this.updateSetting}
           text="Phone Vibration"
           settingName="phoneVibration"
         />
