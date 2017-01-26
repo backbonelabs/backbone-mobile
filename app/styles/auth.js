@@ -4,6 +4,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $checkboxColor: '$primaryColor',
   container: {
     flex: 1,
     alignItems: 'center',
@@ -33,6 +34,13 @@ export default EStyleSheet.create({
   },
   inputField: {
     width: '90%',
+  },
+  TOSContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  TOSLink: {
+    textDecorationLine: 'underline',
   },
   CTAContainer: {
     marginVertical: 16 * heightDifference,
