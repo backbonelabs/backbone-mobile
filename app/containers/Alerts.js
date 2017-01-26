@@ -15,7 +15,7 @@ import SecondaryText from '../components/SecondaryText';
 import thumbImage from '../images/settings/thumbImage.png';
 import trackImage from '../images/settings/trackImage.png';
 
-const VibrationToggle = props => (
+const AlertToggle = props => (
   <View style={styles.vibrationContainer}>
     <View style={styles.vibrationText}>
       <BodyText>{props.text}</BodyText>
@@ -29,7 +29,7 @@ const VibrationToggle = props => (
   </View>
 );
 
-VibrationToggle.propTypes = {
+AlertToggle.propTypes = {
   user: PropTypes.shape({
     settings: PropTypes.shape({
       phoneVibration: PropTypes.bool,
@@ -40,7 +40,7 @@ VibrationToggle.propTypes = {
   settingName: PropTypes.string.isRequired,
 };
 
-const VibrationSettings = props => (
+const AlertSlider = props => (
   <View style={styles.vibrationSettingsContainer}>
     <View style={styles.sliderContainer}>
       <View style={styles.sliderText}>
@@ -96,7 +96,7 @@ const VibrationSettings = props => (
   </View>
 );
 
-VibrationSettings.propTypes = {
+AlertSlider.propTypes = {
   user: PropTypes.shape({
     settings: PropTypes.shape({
       vibrationStrength: PropTypes.number,
@@ -185,14 +185,14 @@ class Alerts extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.spacerContainer} />
-        <VibrationToggle
+        <AlertToggle
           user={user}
           onChange={this.updateSetting}
           text="Backbone Vibration"
           settingName="backboneVibration"
         />
-        <VibrationSettings user={user} onChange={this.updateSetting} />
-        <VibrationToggle
+        <AlertSlider user={user} onChange={this.updateSetting} />
+        <AlertToggle
           user={user}
           onChange={this.updateSetting}
           text="Phone Vibration"
