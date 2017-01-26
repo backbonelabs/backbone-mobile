@@ -78,7 +78,7 @@ class Alerts extends Component {
     // Debounce state update to smoothen quick slider value changes
     this.updateSetting = debounce(this.updateSetting, 50);
     // Debounce user profile update to limit the number of API requests
-    this.updateUserSettings = debounce(this.updateUserSettings, 1000);
+    this.updateUserSettingsFromState = debounce(this.updateUserSettingsFromState, 1000);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -94,21 +94,19 @@ class Alerts extends Component {
   @autobind
   updateSetting(field, value) {
     this.setState({ [field]: value });
-    const { settings, _id } = this.props.user.user;
-    this.updateUserSettings({
-      _id,
-      settings: Object.assign({}, settings, { [field]: value }),
-    });
+    this.updateUserSettingsFromState();
   }
 
   /**
    * Update user settings in the backend
-   * @param {Object} updatedUserSettings New user settings
    */
   @autobind
-  updateUserSettings(updatedUserSettings) {
-    // Update app store and user account to reflect new settings
-    this.props.dispatch(userAction.updateUserSettings(updatedUserSettings));
+  updateUserSettingsFromState() {
+    const { _id, settings } = this.props.user.user;
+    this.props.dispatch(userAction.updateUserSettings({
+      _id,
+      settings: Object.assign({}, settings, this.state),
+    }));
   }
 
   render() {
