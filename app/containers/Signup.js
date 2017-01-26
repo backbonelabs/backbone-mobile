@@ -210,12 +210,12 @@ class Signup extends Component {
                         onCheckedChange={this.onTOSChange}
                         checked={this.state.acceptedTOS}
                       />
-                      <BodyText>I accept the</BodyText>
+                      <BodyText>I accept the </BodyText>
                       <TouchableOpacity
                         onPress={this.openTOS}
                         activeOpacity={0.4}
                       >
-                        <BodyText style={styles._TOSLink}> Terms of Service</BodyText>
+                        <BodyText style={styles._TOSLink}>Terms of Service</BodyText>
                       </TouchableOpacity>
                     </View>
                     <View style={styles.CTAContainer}>
