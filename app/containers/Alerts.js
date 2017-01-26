@@ -22,7 +22,7 @@ const AlertToggle = props => (
     </View>
     <View style={styles.vibrationSwitch}>
       <Switch
-        value={props.user.settings[props.settingName]}
+        value={props.value}
         onValueChange={value => props.onChange(props.settingName, value)}
       />
     </View>
@@ -30,80 +30,10 @@ const AlertToggle = props => (
 );
 
 AlertToggle.propTypes = {
-  user: PropTypes.shape({
-    settings: PropTypes.shape({
-      phoneVibration: PropTypes.bool,
-    }),
-  }),
+  value: PropTypes.bool,
   onChange: PropTypes.func,
   text: PropTypes.string.isRequired,
   settingName: PropTypes.string.isRequired,
-};
-
-const AlertSlider = props => (
-  <View style={styles.vibrationSettingsContainer}>
-    <View style={styles.sliderContainer}>
-      <View style={styles.sliderText}>
-        <BodyText>Vibration Strength</BodyText>
-      </View>
-      <View style={styles.slider}>
-        <Slider
-          minimumValue={20}
-          maximumValue={100}
-          step={10}
-          thumbImage={thumbImage}
-          trackImage={trackImage}
-          value={props.user.settings.vibrationStrength}
-          onValueChange={value => props.onChange('vibrationStrength', value)}
-        />
-      </View>
-      <View style={styles.sliderDetails}>
-        <View style={{ flex: 0.5 }}>
-          <SecondaryText style={styles._sliderDetailsText}>Low</SecondaryText>
-        </View>
-        <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
-          <SecondaryText style={styles._sliderDetailsText}>High</SecondaryText>
-        </View>
-      </View>
-    </View>
-    <View style={styles.sliderContainer}>
-      <View style={styles.sliderText}>
-        <BodyText>Vibration Pattern (Buzzes)</BodyText>
-      </View>
-      <View style={styles.slider}>
-        <Slider
-          minimumValue={1}
-          maximumValue={3}
-          step={1}
-          thumbImage={thumbImage}
-          trackImage={trackImage}
-          value={props.user.settings.vibrationPattern}
-          onValueChange={value => props.onChange('vibrationPattern', value)}
-        />
-      </View>
-      <View style={styles.sliderDetails}>
-        <View style={{ flex: 0.33 }}>
-          <SecondaryText style={styles._sliderDetailsText}>1</SecondaryText>
-        </View>
-        <View style={{ flex: 0.33, alignItems: 'center' }}>
-          <SecondaryText style={styles._sliderDetailsText}>2</SecondaryText>
-        </View>
-        <View style={{ flex: 0.33, alignItems: 'flex-end' }}>
-          <SecondaryText style={styles._sliderDetailsText}>3</SecondaryText>
-        </View>
-      </View>
-    </View>
-  </View>
-);
-
-AlertSlider.propTypes = {
-  user: PropTypes.shape({
-    settings: PropTypes.shape({
-      vibrationStrength: PropTypes.number,
-      vibrationPattern: PropTypes.number,
-    }),
-  }),
-  onChange: PropTypes.func,
 };
 
 class Alerts extends Component {
@@ -180,20 +110,77 @@ class Alerts extends Component {
   }
 
   render() {
-    const { user } = this.props.user;
+    const {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+    } = this.state;
 
     return (
       <View style={styles.container}>
         <View style={styles.spacerContainer} />
         <AlertToggle
-          user={user}
+          value={backboneVibration}
           onChange={this.updateSetting}
           text="Backbone Vibration"
           settingName="backboneVibration"
         />
-        <AlertSlider user={user} onChange={this.updateSetting} />
+        <View style={styles.vibrationSettingsContainer}>
+          <View style={styles.sliderContainer}>
+            <View style={styles.sliderText}>
+              <BodyText>Vibration Strength</BodyText>
+            </View>
+            <View style={styles.slider}>
+              <Slider
+                minimumValue={20}
+                maximumValue={100}
+                step={10}
+                thumbImage={thumbImage}
+                trackImage={trackImage}
+                value={vibrationStrength}
+                onValueChange={value => this.updateSetting('vibrationStrength', value)}
+              />
+            </View>
+            <View style={styles.sliderDetails}>
+              <View style={{ flex: 0.5 }}>
+                <SecondaryText style={styles._sliderDetailsText}>Low</SecondaryText>
+              </View>
+              <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
+                <SecondaryText style={styles._sliderDetailsText}>High</SecondaryText>
+              </View>
+            </View>
+          </View>
+          <View style={styles.sliderContainer}>
+            <View style={styles.sliderText}>
+              <BodyText>Vibration Pattern (Buzzes)</BodyText>
+            </View>
+            <View style={styles.slider}>
+              <Slider
+                minimumValue={1}
+                maximumValue={3}
+                step={1}
+                thumbImage={thumbImage}
+                trackImage={trackImage}
+                value={vibrationPattern}
+                onValueChange={value => this.updateSetting('vibrationPattern', value)}
+              />
+            </View>
+            <View style={styles.sliderDetails}>
+              <View style={{ flex: 0.33 }}>
+                <SecondaryText style={styles._sliderDetailsText}>1</SecondaryText>
+              </View>
+              <View style={{ flex: 0.33, alignItems: 'center' }}>
+                <SecondaryText style={styles._sliderDetailsText}>2</SecondaryText>
+              </View>
+              <View style={{ flex: 0.33, alignItems: 'flex-end' }}>
+                <SecondaryText style={styles._sliderDetailsText}>3</SecondaryText>
+              </View>
+            </View>
+          </View>
+        </View>
         <AlertToggle
-          user={user}
+          value={phoneVibration}
           onChange={this.updateSetting}
           text="Phone Vibration"
           settingName="phoneVibration"
