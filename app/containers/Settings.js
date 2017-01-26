@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
-import SvgUri from 'react-native-svg-uri';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -23,7 +22,7 @@ import routes from '../routes';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
-import arrow from '../images/settings/arrow.svg';
+import arrow from '../images/settings/arrow.png';
 import batteryIcon from '../images/settings/batteryIcon.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
 import styles from '../styles/settings';
@@ -37,7 +36,7 @@ const { UserSettingService, Environment } = NativeModules;
 
 const ArrowIcon = () => (
   <View style={styles.settingsRightIcon}>
-    <SvgUri source={arrow} width={styles.$arrowWidth} height={styles.$arrowHeight} />
+    <Image source={arrow} style={styles.arrowIcon} />
   </View>
 );
 

@@ -20,8 +20,6 @@ const absoluteCenter = {
 
 export default EStyleSheet.create({
   $settingsIconSize: fixedResponsiveFontSize(24),
-  $arrowWidth: applyWidthDifference(12),
-  $arrowHeight: applyWidthDifference(23),
   container: {
     width: '100%',
   },
@@ -82,6 +80,11 @@ export default EStyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
     paddingRight: applyWidthDifference(10),
+  },
+  arrowIcon: {
+    width: applyWidthDifference(12),
+    height: applyWidthDifference(23),
+    resizeMode: 'contain',
   },
   buttonContainer: {
     marginVertical: applyWidthDifference(40),
