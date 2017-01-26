@@ -86,7 +86,7 @@ class Signup extends Component {
   }
 
   openPrivacyPolicy() {
-    const url = `${Environment.WEB_SERVER_URL}/privacy-policy`;
+    const url = `${Environment.WEB_SERVER_URL}/legal/privacy`;
     Linking.canOpenURL(url)
       .then(supported => {
         if (supported) {
@@ -100,7 +100,7 @@ class Signup extends Component {
         Alert.alert(
           'Privacy Policy',
           'We could not launch your browser. You can read the privacy policy ' + // eslint-disable-line prefer-template, max-len
-          'by visiting ' + Environment.WEB_SERVER_URL + '/privacy-policy.',
+          'by visiting ' + url + '.',
         );
       });
   }
