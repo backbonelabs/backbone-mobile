@@ -29,6 +29,7 @@ export default EStyleSheet.create({
   title: {
     flex: 0.50,
     color: '#FFFFFF',
+    backgroundColor: 'transparent',
     textAlign: 'center',
   },
   sideContainers: {
