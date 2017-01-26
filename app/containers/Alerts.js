@@ -76,7 +76,7 @@ class Alerts extends Component {
     };
 
     // Debounce state update to smoothen quick slider value changes
-    this.updateSetting = debounce(this.updateSetting, 50);
+    this.updateSetting = debounce(this.updateSetting, 150);
     // Debounce user profile update to limit the number of API requests
     this.updateUserSettingsFromState = debounce(this.updateUserSettingsFromState, 1000);
   }
