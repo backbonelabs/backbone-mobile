@@ -187,8 +187,8 @@ class PostureMonitor extends Component {
     if (isSlouching) {
       if (AppState.currentState === 'background') {
         // Send out slouch detection notification only on background mode
-        NotificationService.sendLocalNotification('Bad posture detected',
-          'Get back upright to look and feel stronger');
+        NotificationService.sendLocalNotification('Bad Posture Detected',
+          'Fix your posture to look and feel your best!');
       }
 
       if (this.props.user.settings.phoneVibration) {
