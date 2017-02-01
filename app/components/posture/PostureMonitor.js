@@ -115,8 +115,9 @@ class PostureMonitor extends Component {
       vibrationSpeed: this.props.user.settings.vibrationStrength,
       vibrationPattern: this.props.user.settings.backboneVibration ?
                           this.props.user.settings.vibrationPattern : 0,
-      ...this.props.sessionState,
+      ...this.props.sessionState, // Session parameters from a previous active session, if any
     };
+
     this.sessionDataListener = null;
     this.slouchListener = null;
     this.statsListener = null;
@@ -332,7 +333,7 @@ class PostureMonitor extends Component {
 
     const sessionParameters = {
       sessionDuration,
-      // We use the postureThreshold from state instead of the user.settings object
+      // We use the slouchDistanceThreshold from state instead of user.settings.postureThreshold
       // because the user may modify the threshold and resume the session before the
       // updated threshold value is saved in the database and a response is returned
       // from the API server to refresh the user object in the Redux store.
@@ -412,7 +413,7 @@ class PostureMonitor extends Component {
     } = this.state;
 
     const sessionParameters = {
-      // We use the postureThreshold from state instead of the user.settings object
+      // We use the slouchDistanceThreshold from state instead of user.settings.postureThreshold
       // because the user may modify the threshold and resume the session before the
       // updated threshold value is saved in the database and a response is returned
       // from the API server to refresh the user object in the Redux store.
