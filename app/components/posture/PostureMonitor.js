@@ -328,7 +328,6 @@ class PostureMonitor extends Component {
 
   @autobind
   stopSession() {
-    // TODO: Decide how we want to allow the user to leave the scene if the stop operation fails
     if (this.state.sessionState === sessionStates.STOPPED) {
       // There is no active session
       this.sessionCommandAlert({
@@ -341,6 +340,8 @@ class PostureMonitor extends Component {
         if (err) {
           this.sessionCommandAlert({
             message: 'An error occurred while attempting to stop the session.',
+            centerButtonLabel: 'Leave',
+            centerButtonAction: this.props.navigator.pop,
             rightButtonLabel: 'Retry',
             rightButtonAction: this.stopSession,
           });
