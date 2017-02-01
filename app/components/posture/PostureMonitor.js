@@ -217,25 +217,47 @@ class PostureMonitor extends Component {
     }, this.showSummary);
   }
 
+  /**
+   * Displays an alert with at least two buttons
+   * @param  {Object}   options
+   * @param  {String}   options.title              Title for the alert, defaults to 'Error'
+   * @param  {String}   options.message            Main body message for the alert
+   * @param  {String}   options.leftButtonLabel    Label for left button, defaults to 'Cancel'
+   * @param  {Function} options.leftButtonAction   Action for left button
+   * @param  {String}   options.centerButtonLabel  Label for center button. If undefined, the center
+   *                                               button will not be displayed.
+   * @param  {Function} options.centerButtonAction Action for center button
+   * @param  {String}   options.rightButtonLabel   Label for right button, defaults to 'OK'
+   * @param  {Function} options.rightButtonAction  Action for right button
+   */
   sessionCommandAlert({
     title = 'Error',
     message,
-    leftLabel = 'Cancel',
-    leftAction,
-    rightLabel = 'OK',
-    rightAction,
+    leftButtonLabel = 'Cancel',
+    leftButtonAction,
+    centerButtonLabel,
+    centerButtonAction,
+    rightButtonLabel = 'OK',
+    rightButtonAction,
   }) {
-    Alert.alert(
-      title,
-      message,
-      [{
-        text: leftLabel,
-        onPress: leftAction,
-      }, {
-        text: rightLabel,
-        onPress: rightAction,
-      }]
-    );
+    const buttons = [{
+      text: leftButtonLabel,
+      onPress: leftButtonAction,
+    }, {
+      text: rightButtonLabel,
+      onPress: rightButtonAction,
+    }];
+
+    if (centerButtonLabel) {
+      const rightButton = buttons[1];
+      buttons[1] = {
+        text: centerButtonLabel,
+        onPress: centerButtonAction,
+      };
+      buttons[2] = rightButton;
+    }
+
+    Alert.alert(title, message, buttons);
   }
 
   @autobind
@@ -267,8 +289,8 @@ class PostureMonitor extends Component {
           // A session was already started, so an error here would be for resuming the session
           this.sessionCommandAlert({
             message,
-            rightLabel: 'Retry',
-            rightAction: this.startSession,
+            rightButtonLabel: 'Retry',
+            rightButtonAction: this.startSession,
           });
         }
 
@@ -289,8 +311,8 @@ class PostureMonitor extends Component {
       if (err) {
         this.sessionCommandAlert({
           message: 'An error occurred while attempting to pause the session.',
-          rightLabel: 'Retry',
-          rightAction: this.pauseSession,
+          rightButtonLabel: 'Retry',
+          rightButtonAction: this.pauseSession,
         });
 
         Mixpanel.trackError({
@@ -312,15 +334,15 @@ class PostureMonitor extends Component {
       this.sessionCommandAlert({
         title: 'Exit',
         message: 'Are you sure you want to leave?',
-        rightAction: this.props.navigator.pop,
+        rightButtonAction: this.props.navigator.pop,
       });
     } else {
       SessionControlService.stop(err => {
         if (err) {
           this.sessionCommandAlert({
             message: 'An error occurred while attempting to stop the session.',
-            rightLabel: 'Retry',
-            rightAction: this.stopSession,
+            rightButtonLabel: 'Retry',
+            rightButtonAction: this.stopSession,
           });
 
           Mixpanel.trackError({
