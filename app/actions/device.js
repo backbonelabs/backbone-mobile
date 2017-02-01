@@ -47,7 +47,7 @@ function checkFirmware(firmwareVersion) {
 
         return updateAvailable;
       })
-    );
+    ).catch(() => false);
 }
 
 const disconnectStart = () => ({ type: 'DEVICE_DISCONNECT__START' });
