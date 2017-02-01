@@ -164,7 +164,7 @@ class PostureMonitor extends Component {
       } = nextProps.user.settings;
 
       this.setState({
-        sessionDuration: Math.floor(numberMagnitude(postureThreshold, 4)),
+        slouchDistanceThreshold: Math.floor(numberMagnitude(postureThreshold, 4)),
         vibrationSpeed: vibrationStrength,
         vibrationPattern: backboneVibration ? vibrationPattern : 0,
       });
