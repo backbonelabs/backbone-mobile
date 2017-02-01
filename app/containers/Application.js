@@ -171,12 +171,12 @@ class Application extends Component {
             // Not currently on the PostureMonitor scene
             // Navigate to PostureMonitor to resume session using previous session parameters
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)
-              .then(sessionState => {
+              .then(prevSessionState => {
                 const parameters = {};
-                if (sessionState) {
-                  Object.assign(parameters, sessionState.parameters);
+                if (prevSessionState) {
+                  Object.assign(parameters, prevSessionState.parameters);
                   this.props.dispatch(
-                    postureActions.setSessionTime(sessionState.parameters.sessionDuration * 60)
+                    postureActions.setSessionTime(prevSessionState.parameters.sessionDuration * 60)
                   );
                 }
                 this.navigate({
@@ -184,7 +184,7 @@ class Application extends Component {
                   props: {
                     sessionState: {
                       ...parameters,
-                      sessionState: sessionState.state,
+                      sessionState: prevSessionState.state,
                       timeElapsed: event.totalDuration,
                       slouchTime: event.slouchTime,
                     },
