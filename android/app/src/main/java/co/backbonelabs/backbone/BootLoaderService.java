@@ -82,6 +82,11 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
     }
 
     @ReactMethod
+    public void setHasPendingUpdate(final boolean state) {
+        hasPendingUpdate = state;
+    }
+
+    @ReactMethod
     public void initiateFirmwareUpdate(final String path) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
 
@@ -128,6 +133,8 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
         return bootLoaderState;
     }
 
+    public boolean getHasPendingUpdate() { return hasPendingUpdate; }
+
     private void firmwareUploadSuccess() {
         // Delete the firmware file after a successful update
         // NOTE: Keep it commented for development purposes to preserve the file for multiple tests
@@ -166,7 +173,6 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
         BluetoothService bluetoothService = BluetoothService.getInstance();
 
         bootLoaderState = Constants.BOOTLOADER_STATES.INITIATED;
-        hasPendingUpdate = true;
 
         byte[] commandBytes = new byte[]{0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, (byte)0x88};
 

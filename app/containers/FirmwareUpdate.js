@@ -67,10 +67,12 @@ class FirmwareUpdate extends Component {
       this.firmwareUploadProgressHandler,
     );
 
+    BootLoaderService.setHasPendingUpdate(true);
     this.updateFirmware();
   }
 
   componentWillUnmount() {
+    BootLoaderService.setHasPendingUpdate(false);
     this.firmwareUpdateStatus.remove();
     this.firmwareUploadProgress.remove();
   }
