@@ -348,7 +348,7 @@ RCT_EXPORT_METHOD(getSessionState) {
 //  }
 }
 
--(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
   DLog(@"DidUpdateValue %@", characteristic);
   if (error == nil) {
     if ([characteristic.UUID isEqual:SESSION_DATA_CHARACTERISTIC_UUID]) {

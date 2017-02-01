@@ -123,6 +123,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
         }
     }
 
+    public void setBootLoaderState(int state) { bootLoaderState = state; }
     public int getBootLoaderState() {
         return bootLoaderState;
     }
@@ -172,6 +173,10 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
         bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.ENTER_BOOTLOADER_CHARACTERISTIC, commandBytes);
     }
 
+    private void exitBootLoaderMode() {
+        OTAExitBootloaderCmd("00");
+    }
+
     private final BroadcastReceiver bleBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -186,14 +191,21 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
 //                    if (!bluetoothService.getBondedState()) {
 //                        bluetoothService.pairDevice();
 //                    }
-
-                    bootLoaderState = Constants.BOOTLOADER_STATES.ON;
-
-                    if (hasPendingUpdate) {
-                        prepareFirmwareFile();
+                    if (bootLoaderState == Constants.BOOTLOADER_STATES.ON) {
+                        // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
+                        // Device couldn't reset back to normal services, so firmware upload is needed
                     }
                     else {
-                        firmwareUpdateStatus(Constants.FIRMWARE_UPDATE_STATES.PENDING);
+                        bootLoaderState = Constants.BOOTLOADER_STATES.ON;
+
+                        if (hasPendingUpdate) {
+                            prepareFirmwareFile();
+                        }
+                        else {
+                            // Device started in bootloader mode from the beginning, possibly due to errors on the previous firmware upload
+                            // Try to exit bootloader mode and return to normal Backbone services
+                            exitBootLoaderMode();
+                        }
                     }
 
                     bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC, true);
@@ -390,7 +402,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                         case EXIT_BOOTLOADER: {
                             Timber.d("Firmware Upgrade Success");
 //                        BluetoothService.getInstance().unpairDevice();
-                            BluetoothService.getInstance().disconnect();
+                            BluetoothService.getInstance().disconnect(null);
                         }
                         default:
                             break;
@@ -404,12 +416,17 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.BOOTLOADER_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (currentCommandCode == EXIT_BOOTLOADER) {
-                            Timber.d("Firmware updated!");
-                            // Report full 100% upload completion
-                            fileWritingProgress = 100;
-                            firmwareUploadProgress();
-                            
-                            firmwareUploadSuccess();
+                            if (bootLoaderState == Constants.BOOTLOADER_STATES.UPLOADING) {
+                                Timber.d("Firmware updated!");
+                                // Report full 100% upload completion
+                                fileWritingProgress = 100;
+                                firmwareUploadProgress();
+
+                                firmwareUploadSuccess();
+                            }
+                            else {
+                                Timber.d("Exiting Bootloader with no firmware update");
+                            }
                         }
                     }
                     else {
@@ -477,6 +494,8 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
         // File parsed, ready to upload the firmware file
         if (fileTotalLines == fileLine) {
             Timber.d("File read complete");
+            bootLoaderState = Constants.BOOTLOADER_STATES.UPLOADING;
+
             currentCommandCode = ENTER_BOOTLOADER;
             OTAEnterBootLoaderCmd(checkSumType);
         }

@@ -28,6 +28,7 @@
   _characteristicDelegates = [NSMutableArray new];
   
   _state = CBCentralManagerStateUnknown;
+  _currentDeviceMode = DEVICE_MODE_UNKNOWN;
   
   stateMap = @{
                @"0": [NSNumber numberWithInteger:-1],
@@ -40,6 +41,8 @@
   
   _servicesFound = [NSMutableDictionary new];
   _characteristicMap = [NSMutableDictionary new];
+  
+  _shouldRestart = NO;
   
   self.centralManager = [[CBCentralManager alloc]
                          initWithDelegate:self
@@ -93,7 +96,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
 }
 
--(void)emitCentralState {
+- (void)emitCentralState {
   DLog(@"Emitting central state: %i", _state);
   NSDictionary *stateUpdate = @{
                                 @"state": [stateMap valueForKey:[NSString stringWithFormat:@"%d", _state]]
@@ -101,12 +104,12 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   [self sendEventWithName:@"BluetoothState" body:stateUpdate];
 }
 
--(void)emitDeviceState {
-  if (self.currentDevice == nil) return;
+- (void)emitDeviceState {
+  int deviceState = (int)(self.currentDevice == nil ? CBPeripheralStateDisconnected : _currentDevice.state);
   
-  DLog(@"Emitting device state: %d", (int)_currentDevice.state);
+  DLog(@"Emitting device state: %d", deviceState);
   NSDictionary *stateUpdate = @{
-                                @"state": @(_currentDevice.state)
+                                @"state": @(deviceState)
                                 };
   [self sendEventWithName:@"DeviceState" body:stateUpdate];
 }
@@ -174,6 +177,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
   else {
     self.disconnectHandler(nil);
+    self.disconnectHandler = nil;
   }
 }
 
@@ -218,7 +222,10 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(nullable NSError *)error {
   DLog(@"Did fail connect %@", error);
-  self.connectHandler(error);
+  if (self.connectHandler) {
+    self.connectHandler(error);
+    self.connectHandler = nil;
+  }
 }
 
 - (void) centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
@@ -230,6 +237,13 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
     DLog(@"Reconnect %@", self.currentDevice);
     // Reconnect right away to proceed with the actual firmware update
     [self.centralManager connectPeripheral:self.currentDevice options:nil];
+  }
+  else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON && _shouldRestart) {
+    // Reconnect after switching back to normal services
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+      DLog(@"Reconnect Restart %@", self.currentDevice);
+      [self.centralManager connectPeripheral:self.currentDevice options:nil];
+    });
   }
   else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPDATED) {
     // Delay of 3 seconds added before reconnecting
@@ -244,12 +258,14 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
       if (self.disconnectHandler != nil) {
         self.currentDevice = nil;
         self.disconnectHandler(error);
+        self.disconnectHandler = nil;
       }
     }
     else {
-      if (self.disconnectHandler != nil){
+      if (self.disconnectHandler != nil) {
         self.currentDevice = nil;
         self.disconnectHandler(nil);
+        self.disconnectHandler = nil;
       }
     }
     
@@ -300,12 +316,14 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
 }
 
--(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
   DLog(@"Found Characteristics");
   
   if (service.characteristics && service.characteristics.count > 0) {
     [_servicesFound setObject:@(YES) forKey:service.UUID.UUIDString];
   }
+  
+  if (_shouldRestart) _shouldRestart = NO;
   
   // Check if all required services are ready
   if (self.currentDeviceMode == DEVICE_MODE_BACKBONE) {
@@ -317,18 +335,34 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
         DLog(@"CURRENT DEVICE %i", self.currentDeviceMode);
         [[BootLoaderService getBootLoaderService] firmwareUpdated];
       }
-      else {
+      else if (self.connectHandler) {
         self.connectHandler(nil);
-        
-        [self emitDeviceState];
+        self.connectHandler = nil;
       }
+        
+      [BootLoaderService getBootLoaderService].bootLoaderState = BOOTLOADER_STATE_OFF;
+      [self emitDeviceState];
     }
   }
   else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
     if ([_servicesFound count] == 1) {
-      self.connectHandler(nil);
-      
-      [self emitDeviceState];
+      if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_OFF) {
+        // Device booted into BootLoaderMode outside of firmware update flow
+        // In this case, the app should attempt to issue an Exit command to retry resetting into normal services
+        _shouldRestart = YES;
+      }
+      else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_ON) {
+        // The attempt to reset back into normal services failed
+        // The app should inform the React side to initiate firmware update flow
+        _shouldRestart = NO;
+        
+        if (self.connectHandler) {
+          self.connectHandler(nil);
+          self.connectHandler = nil;
+        }
+        
+        [self emitDeviceState];
+      }
     }
   }
   
@@ -360,7 +394,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
 }
 
--(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
   if ([_characteristicDelegates count] > 0) {
     for (id<CBPeripheralDelegate> delegate in _characteristicDelegates) {
       if ([delegate respondsToSelector:@selector(peripheral:didUpdateValueForCharacteristic:error:)]) {

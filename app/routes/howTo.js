@@ -1,4 +1,4 @@
-import HowTo from '../containers/HowTo';
+import HowTo from '../components/HowTo';
 
 export default {
   name: 'howTo',

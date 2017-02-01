@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react';
-import { Image, View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { isFunction } from 'lodash';
 import appActions from '../actions/app';
-import gradientBackground20 from '../images/gradientBackground20.png';
 import styles from '../styles/fullModal';
 
 const FullModal = props => (
   props.show ? (
-    <Image source={gradientBackground20} style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
@@ -27,7 +26,7 @@ const FullModal = props => (
         </TouchableOpacity>
       </View>
       {props.children}
-    </Image>
+    </View>
   ) : null
 );
 

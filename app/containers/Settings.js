@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
-import SvgUri from 'react-native-svg-uri';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -23,8 +22,7 @@ import routes from '../routes';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
-import gradientBackground20 from '../images/gradientBackground20.png';
-import arrow from '../images/settings/arrow.svg';
+import arrow from '../images/settings/arrow.png';
 import batteryIcon from '../images/settings/batteryIcon.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
 import styles from '../styles/settings';
@@ -34,10 +32,11 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 
 const { storageKeys } = constants;
+const { UserSettingService, Environment } = NativeModules;
 
 const ArrowIcon = () => (
   <View style={styles.settingsRightIcon}>
-    <SvgUri source={arrow} width={styles.$arrowWidth} height={styles.$arrowHeight} />
+    <Image source={arrow} style={styles.arrowIcon} />
   </View>
 );
 
@@ -142,7 +141,7 @@ const AccountRemindersSettings = props => (
       android: (
         <TouchableOpacity
           style={styles.settingsRow}
-          onPress={() => NativeModules.UserSettingService.launchAppSettings()}
+          onPress={() => UserSettingService.launchAppSettings()}
         >
           <SettingsIcon iconName="tap-and-play" />
           <SettingsText text="Push Notifications" />
@@ -159,6 +158,26 @@ AccountRemindersSettings.propTypes = {
   navigator: PropTypes.shape({
     push: PropTypes.func,
   }),
+};
+
+const openPrivacyPolicy = () => {
+  const url = `${Environment.WEB_SERVER_URL}/legal/privacy`;
+  Linking.canOpenURL(url)
+    .then(supported => {
+      if (supported) {
+        return Linking.openURL(url);
+      }
+      throw new Error();
+    })
+    .catch(() => {
+      // This catch handler will handle rejections from Linking.openURL as well
+      // as when the user's phone doesn't have any apps to open the URL
+      Alert.alert(
+        'Privacy Policy',
+        'We could not launch your browser. You can read the Privacy Policy ' + // eslint-disable-line prefer-template, max-len
+        'by visiting ' + url + '.',
+      );
+    });
 };
 
 const HelpSettings = props => (
@@ -180,6 +199,14 @@ const HelpSettings = props => (
     >
       <SettingsIcon iconName="help" />
       <SettingsText text="Support" />
+      <ArrowIcon />
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.settingsRow}
+      onPress={openPrivacyPolicy}
+    >
+      <SettingsIcon iconName="description" />
+      <SettingsText text="Privacy Policy" />
       <ArrowIcon />
     </TouchableOpacity>
   </View>
@@ -323,7 +350,7 @@ class Settings extends Component {
 
     return (
       <ScrollView>
-        <Image source={gradientBackground20} style={styles.backgroundImage}>
+        <View style={styles.container}>
           <SensorSettings navigator={navigator} isConnected={isConnected} device={device} />
           <AccountRemindersSettings
             navigator={navigator}
@@ -338,7 +365,7 @@ class Settings extends Component {
               onPress={this.signOut}
             />
           </View>
-        </Image>
+        </View>
         {config.DEV_MODE && this.getDevMenu()}
       </ScrollView>
     );

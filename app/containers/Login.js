@@ -18,7 +18,7 @@ import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
-import BackBoneLogo from '../images/bblogo.png';
+import BackBoneLogo from '../images/logo.png';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 

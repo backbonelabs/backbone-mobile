@@ -41,6 +41,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private static BluetoothService instance = null;
     private int deviceState = BluetoothProfile.STATE_DISCONNECTED;
     private int state;
+    private boolean shouldRestart = false;
 
     public static BluetoothService getInstance() {
         return instance;
@@ -115,7 +116,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     private DeviceScanCallBack scanCallBack;
-    private DeviceConnectionCallBack connectionCallBack;
+    private DeviceConnectionCallBack connectionCallBack = null, disconnectCallBack = null;
 
     /**
      * Retrieves the BluetoothAdapter
@@ -175,9 +176,19 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            Timber.d("DeviceState %d", newState);
+            Timber.d("DeviceState %d %d", newState, status);
 
-            if (deviceState != newState) {
+            if (status == 133) {
+                // Set up some delay before another connect attempt
+                try {
+                    Thread.sleep(1000, 0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // Device was not yet ready, retry the connection
+                connectDevice(currentDevice, connectionCallBack);
+            }
+            else if (deviceState != newState) {
                 deviceState = newState;
 
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
@@ -215,9 +226,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     bleGatt = null;
 
                     // GATT should be closed on all disconnect event to clear up the connection pool
-                    // Set some delay for closing GATT
+                    // Set some delay for closing GATT and device transition
                     try {
-                        Thread.sleep(1000, 0);
+                        Thread.sleep(1500, 0);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -231,6 +242,11 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                         reconnectDevice();
 
                     }
+                    else if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.ON && shouldRestart) {
+                        Timber.d("Disconnected while in BOOTLOADER_STATES.ON");
+                        Timber.d("Reconnect Restart");
+                        reconnectDevice();
+                    }
                     else if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPDATED) {
                         Timber.d("Disconnected while in BOOTLOADER_STATES.UPDATED");
                         Timber.d("Reconnect Device Updated");
@@ -238,9 +254,15 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     }
                     else {
                         currentDevice = null;
-                    }
+                        deviceState = BluetoothProfile.STATE_DISCONNECTED;
 
-                    emitDeviceState();
+                        if (disconnectCallBack != null) {
+                            disconnectCallBack.onDeviceDisconnected();
+                            disconnectCallBack = null;
+                        }
+
+                        emitDeviceState();
+                    }
                 }
             }
         }
@@ -253,6 +275,8 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Timber.d(macAddress + " GATT_SUCCESS");
+                if (shouldRestart) shouldRestart = false;
+
                 List<BluetoothGattService> services = gatt.getServices();
                 for (BluetoothGattService service : services) {
                     UUID serviceUuid = service.getUuid();
@@ -295,12 +319,12 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             }
 
             Timber.d("serviceMap size: %d", serviceMap.size());
+            BootLoaderService bootLoaderService = BootLoaderService.getInstance();
+
             if (currentDeviceMode == Constants.DEVICE_MODES.BACKBONE) {
                 if (serviceMap.size() == 2) {
                     Timber.d("Found all services in Backbone mode");
                     // Check for pending notification of a successful firmware update
-                    BootLoaderService bootLoaderService = BootLoaderService.getInstance();
-
                     if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPDATED) {
                         // Successfully restarted after upgrading firmware
                         Timber.d("Firmware Updated Successfully");
@@ -309,20 +333,30 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     else {
                         if (connectionCallBack != null) {
                             connectionCallBack.onDeviceConnected();
+                            connectionCallBack = null;
                         }
-
-                        emitDeviceState();
                     }
+
+                    bootLoaderService.setBootLoaderState(Constants.BOOTLOADER_STATES.OFF);
+                    emitDeviceState();
                 }
             }
             else if (currentDeviceMode == Constants.DEVICE_MODES.BOOTLOADER) {
                 if (serviceMap.size() == 1) {
-                    Timber.d("Found all services in Bootloader mode");
-                    if (connectionCallBack != null) {
-                        connectionCallBack.onDeviceConnected();
+                    if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.OFF) {
+                        shouldRestart = true;
                     }
+                    else if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.ON) {
+                        shouldRestart = false;
 
-                    emitDeviceState();
+                        if (connectionCallBack != null) {
+                            connectionCallBack.onDeviceConnected();
+                            connectionCallBack = null;
+                        }
+
+                        emitDeviceState();
+                    }
+                    Timber.d("Found all services in Bootloader mode");
                 }
             }
         }
@@ -483,7 +517,6 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     private void emitDeviceState() {
-        if (currentDevice == null) return;
         Timber.d("Emit Device State: %d", deviceState);
         WritableMap wm = Arguments.createMap();
         wm.putInt("state", deviceState);
@@ -494,10 +527,15 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
      * Disconnects an established connection, or cancels a connection attempt currently in progress,
      * and then closes and forgets the GATT client
      */
-    public void disconnect() {
+    public void disconnect(DeviceConnectionCallBack callback) {
         Timber.d("disconnect()");
         if (bleGatt != null) {
             Timber.d("About to disconnect and close");
+
+            if (callback != null) {
+                disconnectCallBack = callback;
+            }
+
             bleGatt.disconnect();
         }
     }
@@ -516,6 +554,14 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     public int getDeviceState() {
         Timber.d("GetDeviceState %d", deviceState);
         return deviceState;
+    }
+
+    public int getCurrentDeviceMode() {
+        return currentDeviceMode;
+    }
+
+    public boolean isShouldRestart() {
+        return shouldRestart;
     }
 
     public boolean hasCharacteristic(UUID characteristicUUID) {

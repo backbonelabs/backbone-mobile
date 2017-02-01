@@ -1,6 +1,5 @@
 import {
   NativeModules,
-  NativeEventEmitter,
 } from 'react-native';
 import Fetcher from '../utils/Fetcher';
 import constants from '../utils/constants';
@@ -14,7 +13,6 @@ const {
 } = NativeModules;
 const { storageKeys } = constants;
 const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
-const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
 
@@ -27,27 +25,6 @@ const connectError = payload => ({
   type: 'DEVICE_CONNECT__ERROR',
   payload,
 });
-
-function setConnectEventListener(dispatch, getInfo) {
-  const connectionStatusListener = deviceManagementServiceEvents.addListener(
-    'ConnectionStatus',
-    status => {
-      if (status.message) {
-        dispatch(connectError(status));
-        Mixpanel.trackError({
-          errorContent: status,
-          path: 'app/actions/device',
-          stackTrace: ['setConnectEventListener', 'deviceManagementServiceEvents.addListener'],
-        });
-      } else {
-        dispatch(connect(status));
-        // Call getInfo to fetch latest device information
-        dispatch(getInfo());
-      }
-      connectionStatusListener.remove();
-    }
-  );
-}
 
 function checkFirmware(firmwareVersion) {
   // Fetch device firmware details
@@ -74,10 +51,6 @@ function checkFirmware(firmwareVersion) {
 }
 
 const disconnectStart = () => ({ type: 'DEVICE_DISCONNECT__START' });
-
-const disconnect = () => ({
-  type: 'DEVICE_DISCONNECT',
-});
 
 const disconnectError = error => ({
   type: 'DEVICE_DISCONNECT__ERROR',
@@ -111,10 +84,23 @@ const deviceActions = {
   connect(deviceIdentifier) {
     return (dispatch) => {
       dispatch(connectStart());
-      setConnectEventListener(dispatch, deviceActions.getInfo);
       // Connect to device with specified identifier
       DeviceManagementService.connectToDevice(deviceIdentifier);
     };
+  },
+  connectStatus(status) {
+    return (dispatch) => {
+      if (status.message) {
+        dispatch(connectError(status));
+      } else {
+        dispatch(connect(status));
+        // Call getInfo to fetch latest device information
+        dispatch(deviceActions.getInfo());
+      }
+    };
+  },
+  didDisconnect() {
+    return { type: 'DEVICE_DISCONNECT' };
   },
   disconnect() {
     return (dispatch, getState) => {
@@ -130,7 +116,7 @@ const deviceActions = {
               stackTrace: ['deviceActions.disconnect', 'DeviceManagementService.cancelConnection'],
             });
           } else {
-            dispatch(disconnect());
+            dispatch(deviceActions.didDisconnect());
           }
         });
       }

@@ -63,7 +63,8 @@ public class Constants {
         int OFF = 0;
         int INITIATED = 1;
         int ON = 2;
-        int UPDATED = 3;
+        int UPLOADING = 3;
+        int UPDATED = 4;
     }
 
     public interface BOOTLOADER_COMMANDS {
@@ -82,7 +83,6 @@ public class Constants {
         int BEGIN = 0;
         int END_SUCCESS = 1;
         int END_ERROR = 2;
-        int PENDING = 3;
     }
 
     public interface BOOTLOADER_BYTE_TYPES {

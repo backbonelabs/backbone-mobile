@@ -20,6 +20,11 @@ export default {
     DISCONNECTING: 8,
     TURNING_OFF: 9,
   },
+  deviceModes: {
+    UNKNOWN: 0,
+    BACKBONE: 1,
+    BOOTLOADER: 2,
+  },
   deviceStatuses: {
     DISCONNECTED: 0,
     CONNECTING: 1,
@@ -32,7 +37,6 @@ export default {
     BEGIN: 0,
     END_SUCCESS: 1,
     END_ERROR: 2,
-    PENDING: 3,
   },
   heightUnitIdToLabel: {
     1: 'IN',

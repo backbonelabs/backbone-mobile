@@ -7,11 +7,6 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
   },
-  backgroundImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
   deviceInfoContainer: {
     flex: 0.55,
     alignItems: 'center',

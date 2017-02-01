@@ -173,12 +173,21 @@ export default {
             return dispatch(updateUserSettings(body));
           })
         )
-        .catch(() => (
+        .catch(() => {
+          const userUpdateError = new Error(
+            'We\'re encountering server issues. Settings saved locally.'
+          );
+          userUpdateError.settings = settings;
+
+          // API request failed, store settings locally
+          SensitiveInfo.setItem(storageKeys.USER, {
+            ...oldUser,
+            settings,
+          });
+
           // Network error
-          dispatch(updateUserSettingsError(
-            new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
+          return dispatch(updateUserSettingsError(userUpdateError));
+        });
     };
   },
   prepareUserUpdate,
