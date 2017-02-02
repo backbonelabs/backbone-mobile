@@ -249,12 +249,10 @@ class PostureMonitor extends Component {
     }];
 
     if (centerButtonLabel) {
-      const rightButton = buttons[1];
-      buttons[1] = {
+      buttons.splice(1, 0, {
         text: centerButtonLabel,
         onPress: centerButtonAction,
-      };
-      buttons[2] = rightButton;
+      });
     }
 
     Alert.alert(title, message, buttons);
