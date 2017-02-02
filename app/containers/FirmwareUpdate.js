@@ -96,7 +96,7 @@ class FirmwareUpdate extends Component {
             this.failedUpdateHandler();
           }
         })
-        // Handle network request error for firmware download attempt
+        // Handle network request error for firmware download
         .catch(this.failedUpdateHandler))
       )
       // Handle network request error for getting firmware URL
