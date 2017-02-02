@@ -13,7 +13,7 @@ export default EStyleSheet.create({
   header: {
     flex: 0.15,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
   },
   body: {
     flex: 0.85,
@@ -33,11 +33,12 @@ export default EStyleSheet.create({
     width: '$sessionIconContainerWidth',
   },
   dailyStreakContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dailyStreakTitle: {
-    marginBottom: 8 * heightDifference,
+    marginBottom: 10 * heightDifference,
   },
   dailyStreakBanner: {
     width: applyWidthDifference(76),

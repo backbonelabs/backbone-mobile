@@ -156,7 +156,7 @@ export default class PostureCalibrate extends Component {
           <View style={styles.autoStartPreferenceContainer}>
             <View style={styles.autoStartPreferenceLabel}>
               <SecondaryText>
-                Automatically start calibration next time
+                Auto-Start
               </SecondaryText>
             </View>
             <View style={styles.autoStartPreferenceSwitch}>

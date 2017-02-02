@@ -27,7 +27,7 @@ export default EStyleSheet.create({
   },
   image: {
     width: applyWidthDifference(131),
-    height: 237 * heightDifference,
+    height: applyWidthDifference(237),
     resizeMode: 'contain',
   },
   calibrationCircleContainer: {
@@ -55,11 +55,12 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   autoStartPreferenceLabel: {
-    flex: 0.75,
-    alignItems: 'center',
+    flex: 0.5,
+    alignItems: 'flex-end',
+    marginHorizontal: applyWidthDifference(10),
   },
   autoStartPreferenceSwitch: {
-    flex: 0.25,
-    alignItems: 'center',
+    flex: 0.5,
+    alignItems: 'flex-start',
   },
 });
