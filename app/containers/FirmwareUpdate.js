@@ -127,6 +127,8 @@ class FirmwareUpdate extends Component {
 
   @autobind
   successfulUpdateHandler() {
+    BootLoaderService.setHasPendingUpdate(false);
+
     // Initiate getting of latest device information
     this.props.dispatch(deviceActions.getInfo());
 
@@ -139,6 +141,8 @@ class FirmwareUpdate extends Component {
 
   @autobind
   failedUpdateHandler() {
+    BootLoaderService.setHasPendingUpdate(false);
+
     Alert.alert(
       'Failed',
       'Your Backbone update has failed, please try again.',
