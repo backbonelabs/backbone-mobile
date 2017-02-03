@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
 
+import co.backbonelabs.backbone.util.Constants;
 import timber.log.Timber;
 
 public class MainActivity extends ReactActivity {
@@ -48,6 +49,18 @@ public class MainActivity extends ReactActivity {
         // Disconnect from device
         if (bluetoothService.getCurrentDevice() != null) {
             bluetoothService.disconnect(null);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        BootLoaderService bootLoaderService = BootLoaderService.getInstance();
+        if (bootLoaderService.getHasPendingUpdate()) {
+            Timber.d("Firmware update on progress, back-button disabled");
+        }
+        else {
+            Timber.d("Back-button enabled");
+            super.onBackPressed();
         }
     }
 
