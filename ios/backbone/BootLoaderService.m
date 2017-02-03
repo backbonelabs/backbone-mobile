@@ -97,6 +97,10 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   }
 }
 
+RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
+  hasPendingUpdate = state;
+}
+
 - (void)enterBootLoaderMode {
   // The device will be disconnected right after sending this command
   // So we have to update its state in order to let the BluetoothService handle the disconnection properly
@@ -106,7 +110,6 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
   NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
 
   DLog(@"EnterBootLoad");
-  hasPendingUpdate = YES;
 
   [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ENTER_BOOTLOADER_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
 }
@@ -132,7 +135,6 @@ RCT_EXPORT_METHOD(initiateFirmwareUpdate:(NSString*)path) {
         _fileHeaderDictionary = header;
         _firmWareRowDataArray = rowData;
         currentIndex = 0;
-        hasPendingUpdate = NO;
         [_commandArray removeAllObjects];
 
         [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID]];
