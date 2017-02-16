@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   NativeModules,
 } from 'react-native';
+import { MKCheckbox } from 'react-native-material-kit';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
@@ -18,7 +19,6 @@ import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
-import SecondaryText from '../components/SecondaryText';
 import constants from '../utils/constants';
 import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
@@ -45,6 +45,7 @@ class Signup extends Component {
       validEmail: false,
       emailPristine: true,
       passwordPristine: true,
+      acceptedTOS: false,
     };
   }
 
@@ -80,9 +81,34 @@ class Signup extends Component {
   }
 
   @autobind
+  onTOSChange(event) {
+    this.setState({ acceptedTOS: event.checked });
+  }
+
+  @autobind
   signup() {
     const { email, password } = this.state;
     this.props.dispatch(authActions.signup({ email, password }));
+  }
+
+  openTOS() {
+    const url = `${Environment.WEB_SERVER_URL}/legal/terms`;
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (supported) {
+          return Linking.openURL(url);
+        }
+        throw new Error();
+      })
+      .catch(() => {
+        // This catch handler will handle rejections from Linking.openURL as well
+        // as when the user's phone doesn't have any apps to open the URL
+        Alert.alert(
+          'Terms of Service',
+          'We could not launch your browser. You can read the Terms of Service ' + // eslint-disable-line prefer-template, max-len
+          'by visiting ' + url + '.',
+        );
+      });
   }
 
   openPrivacyPolicy() {
@@ -106,7 +132,14 @@ class Signup extends Component {
   }
 
   render() {
-    const { email, password, validEmail, emailPristine, passwordPristine } = this.state;
+    const {
+      email,
+      password,
+      validEmail,
+      emailPristine,
+      passwordPristine,
+      acceptedTOS,
+    } = this.state;
     const validPassword = password.length >= 8;
     let passwordWarning;
     const emailIconProps = {};
@@ -160,21 +193,41 @@ class Signup extends Component {
                         placeholder="Password"
                         keyboardType="default"
                         onChangeText={this.onPasswordChange}
-                        onSubmitEditing={
-                          ((!email || !validEmail) || (!password || !validPassword)) ?
-                          null
-                          :
-                            this.signup
-                        }
                         autoCorrect={false}
                         secureTextEntry
-                        returnKeyType="go"
                         {...passwordIconProps}
                       />
                     </View>
                     <BodyText style={styles._warning}>
                       {passwordWarning}
                     </BodyText>
+                    <View style={styles.legalOuterContainer}>
+                      <View style={styles.legalInnerContainer}>
+                        <MKCheckbox
+                          borderOnColor={styles.$checkboxColor}
+                          fillColor={styles.$checkboxColor}
+                          rippleColor="rgba(255, 255, 255, 0)"
+                          onCheckedChange={this.onTOSChange}
+                          checked={this.state.acceptedTOS}
+                        />
+                      </View>
+                      <View style={styles.legalInnerContainer}>
+                        <BodyText>I agree to the </BodyText>
+                        <TouchableOpacity
+                          onPress={this.openTOS}
+                          activeOpacity={0.4}
+                        >
+                          <BodyText style={styles._legalLink}>Terms of Service</BodyText>
+                        </TouchableOpacity>
+                        <BodyText> and </BodyText>
+                        <TouchableOpacity
+                          onPress={this.openPrivacyPolicy}
+                          activeOpacity={0.4}
+                        >
+                          <BodyText style={styles._legalLink}>Privacy Policy</BodyText>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
                     <View style={styles.CTAContainer}>
                       <Button
                         style={styles._CTAButton}
@@ -182,20 +235,13 @@ class Signup extends Component {
                         primary
                         disabled={
                           this.props.inProgress ||
-                          ((!email || !validEmail) ||
-                          (!password || !validPassword))
+                          !email || !validEmail ||
+                          !password || !validPassword ||
+                          !acceptedTOS
                         }
                         onPress={this.signup}
                       />
                     </View>
-                    <TouchableOpacity
-                      onPress={this.openPrivacyPolicy}
-                      activeOpacity={0.4}
-                    >
-                      <SecondaryText style={styles._forgotPassword}>
-                        Privacy policy
-                      </SecondaryText>
-                    </TouchableOpacity>
                   </View>
                 </View>
               </KeyboardAvoidingView>
