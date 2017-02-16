@@ -19,7 +19,6 @@ import authActions from '../actions/auth';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
-import SecondaryText from '../components/SecondaryText';
 import constants from '../utils/constants';
 import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
@@ -202,21 +201,32 @@ class Signup extends Component {
                     <BodyText style={styles._warning}>
                       {passwordWarning}
                     </BodyText>
-                    <View style={styles.TOSContainer}>
-                      <MKCheckbox
-                        borderOnColor={styles.$checkboxColor}
-                        fillColor={styles.$checkboxColor}
-                        rippleColor="rgba(255, 255, 255, 0)"
-                        onCheckedChange={this.onTOSChange}
-                        checked={this.state.acceptedTOS}
-                      />
-                      <BodyText>I accept the </BodyText>
-                      <TouchableOpacity
-                        onPress={this.openTOS}
-                        activeOpacity={0.4}
-                      >
-                        <BodyText style={styles._TOSLink}>Terms of Service</BodyText>
-                      </TouchableOpacity>
+                    <View style={styles.legalOuterContainer}>
+                      <View style={styles.legalInnerContainer}>
+                        <MKCheckbox
+                          borderOnColor={styles.$checkboxColor}
+                          fillColor={styles.$checkboxColor}
+                          rippleColor="rgba(255, 255, 255, 0)"
+                          onCheckedChange={this.onTOSChange}
+                          checked={this.state.acceptedTOS}
+                        />
+                      </View>
+                      <View style={styles.legalInnerContainer}>
+                        <BodyText>I agree to the </BodyText>
+                        <TouchableOpacity
+                          onPress={this.openTOS}
+                          activeOpacity={0.4}
+                        >
+                          <BodyText style={styles._legalLink}>Terms of Service</BodyText>
+                        </TouchableOpacity>
+                        <BodyText> and </BodyText>
+                        <TouchableOpacity
+                          onPress={this.openPrivacyPolicy}
+                          activeOpacity={0.4}
+                        >
+                          <BodyText style={styles._legalLink}>Privacy Policy</BodyText>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                     <View style={styles.CTAContainer}>
                       <Button
@@ -232,14 +242,6 @@ class Signup extends Component {
                         onPress={this.signup}
                       />
                     </View>
-                    <TouchableOpacity
-                      onPress={this.openPrivacyPolicy}
-                      activeOpacity={0.4}
-                    >
-                      <SecondaryText style={styles._forgotPassword}>
-                        Privacy Policy
-                      </SecondaryText>
-                    </TouchableOpacity>
                   </View>
                 </View>
               </KeyboardAvoidingView>

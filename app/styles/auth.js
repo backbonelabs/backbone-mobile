@@ -35,11 +35,15 @@ export default EStyleSheet.create({
   inputField: {
     width: '90%',
   },
-  TOSContainer: {
+  legalOuterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  TOSLink: {
+  legalInnerContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  legalLink: {
     textDecorationLine: 'underline',
   },
   CTAContainer: {
