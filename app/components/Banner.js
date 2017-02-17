@@ -12,16 +12,16 @@ import theme from '../styles/theme';
 import routes from '../routes';
 
 const Banner = props => {
-  const { isConnected, inProgress } = props;
+  const { isConnected, isConnecting } = props;
 
   if (!isConnected) {
-    const bannerText = inProgress ? 'Connecting...' : 'Backbone not connected';
+    const bannerText = isConnecting ? 'Connecting...' : 'Backbone not connected';
     return (
       <TouchableOpacity
         style={styles.banner}
-        onPress={() => !inProgress && props.navigator.push(routes.deviceConnect)}
+        onPress={() => !isConnecting && props.navigator.push(routes.deviceConnect)}
       >
-        { inProgress ?
+        { isConnecting ?
           <View><Spinner size="small" /></View>
           :
             <Icon
@@ -41,7 +41,7 @@ const { PropTypes } = React;
 
 Banner.propTypes = {
   isConnected: PropTypes.bool,
-  inProgress: PropTypes.bool,
+  isConnecting: PropTypes.bool,
   navigator: PropTypes.shape({
     push: PropTypes.func,
   }),
