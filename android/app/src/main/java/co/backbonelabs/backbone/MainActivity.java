@@ -2,6 +2,7 @@ package co.backbonelabs.backbone;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.facebook.react.ReactActivity;
 
@@ -11,6 +12,8 @@ import timber.log.Timber;
 public class MainActivity extends ReactActivity {
     public static Activity currentActivity;
     private NotificationService notificationService;
+    private Handler idleTimerHandler = new Handler();
+    private Runnable idleTimerRunnable = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +34,39 @@ public class MainActivity extends ReactActivity {
     protected void onResume() {
         Timber.d("onResume");
         super.onResume();
+
+        if (idleTimerRunnable != null) {
+            Timber.d("Cancel idle timer");
+            idleTimerHandler.removeCallbacks(idleTimerRunnable);
+            idleTimerRunnable = null;
+        }
     }
 
     @Override
     protected void onPause() {
         Timber.d("onPause");
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Timber.d("onStop");
+        super.onStop();
+
+        idleTimerRunnable = new Runnable(){
+            public void run() {
+                Timber.d("Check idle state");
+                if (!SessionControlService.getInstance().hasActiveSession()) {
+                    // No active session found, disconnect from the device to save battery
+                    Timber.d("Disconnect on idle");
+                    BluetoothService.getInstance().disconnect(null);
+                }
+
+                idleTimerRunnable = null;
+            }
+        };
+
+        idleTimerHandler.postDelayed(idleTimerRunnable, Constants.MAX_IDLE_DURATION * 1000);
     }
 
     @Override

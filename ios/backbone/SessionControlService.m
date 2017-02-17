@@ -39,6 +39,10 @@
   return [SessionControlService getSessionControlService];
 }
 
+- (BOOL)hasActiveSession {
+  return currentSessionState == SESSION_STATE_RUNNING || currentSessionState == SESSION_STATE_PAUSED;
+}
+
 - (NSArray<NSString *> *)supportedEvents {
   return @[@"SessionData", @"SessionStatistics", @"SlouchStatus"];
 }

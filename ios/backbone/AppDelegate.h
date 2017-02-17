@@ -9,7 +9,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate> {
+  NSTimer *_idleTimer;
+  UIBackgroundTaskIdentifier backgroundUpdateTask;
+}
 
 @property (nonatomic, strong) UIWindow *window;
 
