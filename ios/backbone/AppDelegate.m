@@ -8,6 +8,8 @@
  */
 
 #import "AppDelegate.h"
+#import "BluetoothService.h"
+#import "SessionControlService.h"
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 #import "Mixpanel/Mixpanel.h"
@@ -68,9 +70,42 @@
   DLog(@"applicationDidBecomeActive");
 }
 
+// Handler for when the app is about to return to the foreground
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+  DLog(@"applicationWillEnterForeground");
+  if (_idleTimer) {
+    DLog(@"Cancel idle timer");
+    [[UIApplication sharedApplication] endBackgroundTask:backgroundUpdateTask];
+    [_idleTimer invalidate];
+    _idleTimer = nil;
+  }
+}
+
+- (void)checkIdleState {
+  DLog(@"Check idle state");
+  if (![[SessionControlService getSessionControlService] hasActiveSession]) {
+    // No active session found, disconnect from the device to save battery
+    DLog(@"Disconnect on idle");
+    [BluetoothServiceInstance disconnectDevice:nil];
+  }
+  
+  // Cleanups on the timer and notify that we no longer need the background support for timers
+  _idleTimer = nil;
+  [[UIApplication sharedApplication] endBackgroundTask:backgroundUpdateTask];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+  DLog(@"applicationWillResignActive");
+}
+
 // Handler for when the app is in the background
 - (void)applicationDidEnterBackground:(UIApplication *)application {
   DLog(@"applicationDidEnterBackground");
+  backgroundUpdateTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+    [[UIApplication sharedApplication] endBackgroundTask:backgroundUpdateTask];
+  }];
+  
+  _idleTimer = [NSTimer scheduledTimerWithTimeInterval:MAX_IDLE_DURATION target:self selector:@selector(checkIdleState) userInfo:nil repeats:NO];
 }
 
 // Handler for application termination
