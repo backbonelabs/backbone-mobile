@@ -232,6 +232,10 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         }
     }
 
+    public boolean hasActiveSession() {
+        return currentSessionState == Constants.SESSION_STATES.RUNNING || currentSessionState == Constants.SESSION_STATES.PAUSED;
+    }
+
     private void toggleSessionOperation(int operation, Constants.IntCallBack errCallBack) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
 

@@ -36,5 +36,6 @@
 + (SessionControlService *)getSessionControlService;
 
 - (id)initService;
+- (BOOL)hasActiveSession;
 
 @end
