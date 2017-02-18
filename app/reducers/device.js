@@ -1,6 +1,7 @@
 export default (state = {
   inProgress: false,
   device: {},
+  isConnecting: false,
   isConnected: false,
   errorMessage: null,
 }, action) => {
@@ -8,7 +9,7 @@ export default (state = {
     case 'DEVICE_CONNECT__START': {
       return {
         ...state,
-        inProgress: true,
+        isConnecting: true,
         isConnected: false,
         errorMessage: null,
       };
@@ -16,14 +17,14 @@ export default (state = {
     case 'DEVICE_CONNECT': {
       return {
         ...state,
-        inProgress: false,
+        isConnecting: false,
         isConnected: action.payload.isConnected,
       };
     }
     case 'DEVICE_CONNECT__ERROR': {
       return {
         ...state,
-        inProgress: false,
+        isConnecting: false,
         errorMessage: action.payload.message,
       };
     }
