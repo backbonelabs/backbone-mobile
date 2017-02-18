@@ -41,7 +41,6 @@ class PostureDashboard extends Component {
       push: PropTypes.func,
     }),
     device: PropTypes.shape({
-      inProgress: PropTypes.bool,
       isConnected: PropTypes.bool,
     }),
     user: PropTypes.shape({
