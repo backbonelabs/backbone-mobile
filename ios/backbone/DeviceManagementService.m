@@ -92,17 +92,22 @@ RCT_EXPORT_METHOD(stopScanForDevices) {
 
 RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
   DLog(@"Cancel device connection and any running scanning");
-  [self stopScanForDevices];
+  if (![BluetoothServiceInstance isDeviceReady]) {
+    DLog(@"Device is not connected, do not attempt any BLE actions and respond with no error");
+    callback(@[[NSNull null]]);
+  } else {
+    [self stopScanForDevices];
   
-  [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
-    if (error) {
-      NSDictionary *makeError = RCTMakeError(@"Failed to disconnect", nil, nil);
-      callback(@[makeError]);
-    }
-    else {
-      callback(@[[NSNull null]]);
-    }
-  }];
+    [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
+      if (error) {
+        NSDictionary *makeError = RCTMakeError(@"Failed to disconnect", nil, nil);
+        callback(@[makeError]);
+      }
+      else {
+        callback(@[[NSNull null]]);
+      }
+    }];
+  }
 }
 
 - (void)checkConnectTimeout {

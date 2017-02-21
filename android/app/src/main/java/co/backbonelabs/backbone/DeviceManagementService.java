@@ -137,24 +137,29 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     @ReactMethod
     public void cancelConnection(final Callback callback) {
         Timber.d("Cancel device connection and any running scan");
-        try {
-            final BluetoothService bluetoothService = BluetoothService.getInstance();
-            stopScanForDevices();
-            bluetoothService.disconnect(new BluetoothService.DeviceConnectionCallBack() {
-                @Override
-                public void onDeviceConnected() {
-                }
+        final BluetoothService bluetoothService = BluetoothService.getInstance();
+        if (!bluetoothService.isDeviceReady()) {
+            Timber.d("Device is not connected, do not attempt any BLE actions and respond with no error");
+            callback.invoke();
+        } else {
+            try {
+                stopScanForDevices();
+                bluetoothService.disconnect(new BluetoothService.DeviceConnectionCallBack() {
+                    @Override
+                    public void onDeviceConnected() {
+                    }
 
-                @Override
-                public void onDeviceDisconnected() {
-                    Timber.d("Connection Cancelled");
-                    hasPendingConnection = false;
-                    callback.invoke();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            callback.invoke(JSError.make("Failed to disconnect"));
+                    @Override
+                    public void onDeviceDisconnected() {
+                        Timber.d("Connection Cancelled");
+                        hasPendingConnection = false;
+                        callback.invoke();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                callback.invoke(JSError.make("Failed to disconnect"));
+            }
         }
     }
 
