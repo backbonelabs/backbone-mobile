@@ -159,6 +159,11 @@ const deviceActions = {
               stackTrace: ['deviceActions.getInfo', 'DeviceManagementService.getDeviceInformation'],
             });
           } else {
+            // Send battery reading to Mixpanel
+            Mixpanel.trackWithProperties('batteryReading', {
+              percentage: results.batteryLevel,
+            });
+
             // If there's new firmware, set updateAvailable to true
             checkFirmware(results.firmwareVersion)
               .then(updateAvailable => {
