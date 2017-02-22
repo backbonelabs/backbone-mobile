@@ -224,6 +224,10 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         }
     }
 
+    public boolean hasActiveSession() {
+        return currentSessionState == Constants.SESSION_STATES.RUNNING || currentSessionState == Constants.SESSION_STATES.PAUSED;
+    }
+
     /**
      * Reads from the session statistic characteristic. This is an asynchronous operation.
      * The results will be emitted through a SessionState event to JS.

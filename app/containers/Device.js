@@ -22,6 +22,7 @@ class Device extends Component {
       push: PropTypes.func,
     }),
     isConnected: PropTypes.bool,
+    isConnecting: PropTypes.bool,
     inProgress: PropTypes.bool,
     device: PropTypes.shape({
       batteryLevel: PropTypes.number,
@@ -80,9 +81,9 @@ class Device extends Component {
   }
 
   render() {
-    const { device, inProgress } = this.props;
+    const { device, inProgress, isConnecting } = this.props;
 
-    return inProgress ?
+    return inProgress || isConnecting ?
       <Spinner />
       :
         <View style={styles.container}>

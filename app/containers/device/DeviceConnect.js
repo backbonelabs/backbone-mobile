@@ -30,7 +30,7 @@ class DeviceConnect extends Component {
     }),
     isConnected: PropTypes.bool,
     dispatch: PropTypes.func,
-    inProgress: PropTypes.bool,
+    isConnecting: PropTypes.bool,
     errorMessage: PropTypes.string,
   };
 
@@ -91,7 +91,7 @@ class DeviceConnect extends Component {
   }
 
   render() {
-    return this.props.inProgress ? (
+    return this.props.isConnecting ? (
       <View style={styles.container}>
         <View style={styles.bodyContainer}>
           <View style={styles.spinnerContainer}>
