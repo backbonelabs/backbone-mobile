@@ -67,10 +67,10 @@ export default {
                 new Error(body.error)
               ));
             } else {
-              const { _id, accessToken, ...userObj } = body;
+              const { accessToken, ...userObj } = body;
 
               // Identify user for Mixpanel tracking
-              Mixpanel.identify(_id);
+              Mixpanel.identify(userObj._id);
 
               // Update user profile on Mixpanel
               Mixpanel.setUserProperties(userObj);
