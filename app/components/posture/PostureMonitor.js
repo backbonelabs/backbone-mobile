@@ -168,8 +168,8 @@ class PostureMonitor extends Component {
         // There is currently an active session running on the device, resume session
         this.resumeSession();
       } else {
-        // There is no active session running on the device
-        // TODO: Implement
+        // There is no active session running on the device, invoke statsHandler to show summary
+        this.statsHandler(event);
       }
     });
 
