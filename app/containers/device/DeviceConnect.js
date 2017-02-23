@@ -116,7 +116,7 @@ class DeviceConnect extends Component {
 
   @autobind
   showBluetoothError() {
-    Alert.alert('Error', 'Bluetooth is off');
+    Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
     this.goBackToScene();
   }
 
