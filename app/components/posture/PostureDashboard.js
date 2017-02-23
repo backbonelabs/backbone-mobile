@@ -3,6 +3,7 @@ import {
   Alert,
   View,
   Image,
+  NativeModules,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -11,6 +12,8 @@ import postureActions from '../../actions/posture';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
 import Button from '../../components/Button';
+import constants from '../../utils/constants';
+import SensitiveInfo from '../../utils/SensitiveInfo';
 import styles from '../../styles/posture/postureDashboard';
 import Icon5Min from '../../images/session/5min.png';
 import Icon10Min from '../../images/session/10min.png';
@@ -19,6 +22,10 @@ import Icon20Min from '../../images/session/20min.png';
 import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
+
+const { BluetoothService } = NativeModules;
+
+const { bluetoothStates, storageKeys } = constants;
 
 const sessions = [
   { id: '5min', durationSeconds: 5 * 60, icon: Icon5Min },
@@ -42,6 +49,7 @@ class PostureDashboard extends Component {
     }),
     device: PropTypes.shape({
       isConnected: PropTypes.bool,
+      isConnecting: PropTypes.bool,
     }),
     user: PropTypes.shape({
       nickname: PropTypes.string,
@@ -59,23 +67,49 @@ class PostureDashboard extends Component {
 
   @autobind
   start() {
-    if (!this.props.device.isConnected) {
-      return Alert.alert(
-        'Error',
-        'Please connect to your Backbone before starting a session.',
-        [
-          {
-            text: 'Cancel',
-          },
-          {
-            text: 'Connect',
-            onPress: () => this.props.navigator.push(routes.deviceAdd),
-          },
-        ]
-      );
-    }
-
-    return this.props.navigator.push(routes.postureCalibrate);
+    // First of all, check if Bluetooth is enabled
+    BluetoothService.getState((error, { state }) => {
+      if (!error) {
+        if (state === bluetoothStates.ON) {
+          if (!this.props.device.isConnected) {
+            if (this.props.device.isConnecting) {
+              Alert.alert('Error', 'Connecting to your Backbone. Please try again later.');
+            } else {
+              // Check saved device and attempt to connect to one
+              // Else, scan for a new device
+              Alert.alert(
+                'Error',
+                'Please connect to your Backbone before starting a session.',
+                [
+                  {
+                    text: 'Cancel',
+                  },
+                  {
+                    text: 'Connect',
+                    onPress: () => {
+                      SensitiveInfo.getItem(storageKeys.DEVICE)
+                        .then(device => {
+                          if (device) {
+                            this.props.navigator.push(routes.deviceConnect);
+                          } else {
+                            this.props.navigator.push(routes.deviceAdd);
+                          }
+                        });
+                    },
+                  },
+                ]
+              );
+            }
+          } else {
+            this.props.navigator.push(routes.postureCalibrate);
+          }
+        } else {
+          Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+        }
+      } else {
+        Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+      }
+    });
   }
 
   render() {
