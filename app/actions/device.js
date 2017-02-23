@@ -8,10 +8,11 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 
 const {
   Environment,
+  BluetoothService,
   DeviceManagementService,
   DeviceInformationService,
 } = NativeModules;
-const { storageKeys } = constants;
+const { bluetoothStates, storageKeys } = constants;
 const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
 
 const connectStart = () => ({ type: 'DEVICE_CONNECT__START' });
@@ -84,9 +85,15 @@ const getInfoError = error => ({
 const deviceActions = {
   connect(deviceIdentifier) {
     return (dispatch) => {
-      dispatch(connectStart());
-      // Connect to device with specified identifier
-      DeviceManagementService.connectToDevice(deviceIdentifier);
+      BluetoothService.getState((error, { state }) => {
+        if (!error) {
+          if (state === bluetoothStates.ON) {
+            dispatch(connectStart());
+            // Connect to device with specified identifier
+            DeviceManagementService.connectToDevice(deviceIdentifier);
+          }
+        }
+      });
     };
   },
   connectStatus(status) {

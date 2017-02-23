@@ -175,7 +175,7 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   if (self.currentDevice && (self.currentDevice.state == CBPeripheralStateConnected || self.currentDevice.state == CBPeripheralStateConnecting)) {
     [self.centralManager cancelPeripheralConnection:self.currentDevice];
   }
-  else {
+  else if (completionHandler) {
     self.disconnectHandler(nil);
     self.disconnectHandler = nil;
   }
