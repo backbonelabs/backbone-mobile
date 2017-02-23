@@ -14,6 +14,17 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
   },
+  connectingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  connectingSpinner: {
+    marginBottom: 10,
+  },
+  connectingText: {
+    marginTop: 10,
+  },
   timer: {
     textAlign: 'center',
     marginTop: 40 * heightDifference,

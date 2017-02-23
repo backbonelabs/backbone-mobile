@@ -14,10 +14,12 @@ import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
 import SecondaryText from '../../components/SecondaryText';
+import Spinner from '../../components/Spinner';
 import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
 import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
+import deviceActions from '../../actions/device';
 import userActions from '../../actions/user';
 import PostureSummary from './PostureSummary';
 import routes from '../../routes';
@@ -25,9 +27,14 @@ import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
 import SensitiveInfo from '../../utils/SensitiveInfo';
 
-const { SessionControlService, NotificationService } = NativeModules;
-const { storageKeys } = constants;
-const eventEmitter = new NativeEventEmitter(SessionControlService);
+const {
+  BluetoothService,
+  NotificationService,
+  SessionControlService,
+} = NativeModules;
+const { deviceStatuses, storageKeys } = constants;
+const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
+const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 
 const MIN_POSTURE_THRESHOLD = 0.03;
 const MAX_POSTURE_THRESHOLD = 0.3;
@@ -64,6 +71,14 @@ class PostureMonitor extends Component {
     dispatch: PropTypes.func,
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
+    }),
+    device: PropTypes.shape({
+      errorMessage: PropTypes.string,
+      device: PropTypes.shape({
+        identifier: PropTypes.string,
+      }),
+      isConnected: PropTypes.bool,
+      isConnecting: PropTypes.bool,
     }),
     sessionState: PropTypes.shape({
       sessionState: PropTypes.number,
@@ -127,13 +142,36 @@ class PostureMonitor extends Component {
 
   componentWillMount() {
     // Set up listener for posture distance data
-    this.sessionDataListener = eventEmitter.addListener('SessionData', this.sessionDataHandler);
+    this.sessionDataListener =
+      SessionControlServiceEvents.addListener('SessionData', this.sessionDataHandler);
 
     // Set up listener for slouch event
-    this.slouchListener = eventEmitter.addListener('SlouchStatus', this.slouchHandler);
+    this.slouchListener =
+      SessionControlServiceEvents.addListener('SlouchStatus', this.slouchHandler);
 
     // Set up listener for session statistics event
-    this.statsListener = eventEmitter.addListener('SessionStatistics', this.statsHandler);
+    this.statsListener =
+      SessionControlServiceEvents.addListener('SessionStatistics', this.statsHandler);
+
+    // Set up listener for device state event
+    this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
+      if (state === deviceStatuses.DISCONNECTED) {
+        // Device got disconnected, prompt user for action
+        this.showAlertOnFailedConnection();
+      }
+    });
+
+    // Set up listener for session state event
+    // The session state is requested from Application.js upon connecting to the device
+    this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
+      if (event.hasActiveSession) {
+        // There is currently an active session running on the device, resume session
+        this.resumeSession();
+      } else {
+        // There is no active session running on the device
+        // TODO: Implement
+      }
+    });
 
     const { sessionState } = this.state;
     if (sessionState === sessionStates.PAUSED) {
@@ -181,6 +219,8 @@ class PostureMonitor extends Component {
     this.sessionDataListener.remove();
     this.slouchListener.remove();
     this.statsListener.remove();
+    this.deviceStateListener.remove();
+    this.sessionStateListener.remove();
   }
 
   /**
@@ -238,6 +278,20 @@ class PostureMonitor extends Component {
       SensitiveInfo.deleteItem(storageKeys.SESSION_STATE);
     }
     this.setState({ sessionState: state });
+  }
+
+  @autobind
+  showAlertOnFailedConnection() {
+    this.sessionCommandAlert({
+      message: 'Your Backbone was disconnected. ' +
+        'Do you want to end your session or attempt to reconnect to your Backbone?',
+      leftButtonLabel: 'End Session',
+      leftButtonAction: this.props.navigator.pop,
+      rightButtonLabel: 'Reconnect',
+      rightButtonAction: () => {
+        this.props.dispatch(deviceActions.connect(this.props.device.device.identifier));
+      },
+    });
   }
 
   /**
@@ -628,7 +682,12 @@ class PostureMonitor extends Component {
       return <MonitorButton play onPress={this.resumeSession} />;
     };
 
-    return (
+    return this.props.device.isConnecting ? (
+      <View style={styles.connectingContainer}>
+        <Spinner style={styles._connectingSpinner} />
+        <HeadingText size={2} style={styles._connectingText}>Connecting...</HeadingText>
+      </View>
+    ) : (
       <View style={styles.container}>
         <HeadingText size={1} style={styles._timer}>
           {this.getFormattedTime()}
@@ -680,8 +739,8 @@ class PostureMonitor extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { posture, user: { user } } = state;
-  return { posture, user };
+  const { device, posture, user: { user } } = state;
+  return { device, posture, user };
 };
 
 export default connect(mapStateToProps)(PostureMonitor);
