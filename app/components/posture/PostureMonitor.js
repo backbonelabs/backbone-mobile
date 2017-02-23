@@ -207,6 +207,12 @@ class PostureMonitor extends Component {
         vibrationPattern: backboneVibration ? vibrationPattern : 0,
       });
     }
+
+    if (this.props.device.isConnecting && !nextProps.device.isConnecting &&
+      !this.props.device.errorMessage && nextProps.device.errorMessage) {
+      // There was an error on connect, prompt user for action
+      this.showAlertOnFailedConnection();
+    }
   }
 
   componentWillUnmount() {
