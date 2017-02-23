@@ -535,8 +535,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
         if (bleGatt == null) {
             Timber.d("Device is not connected, skipping GATT disconnect");
-            disconnectCallBack.onDeviceDisconnected();
-            disconnectCallBack = null;
+            if (disconnectCallBack != null) {
+                disconnectCallBack.onDeviceDisconnected();
+                disconnectCallBack = null;
+            }
         } else {
             Timber.d("About to disconnect and close");
             bleGatt.disconnect();
