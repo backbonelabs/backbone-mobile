@@ -2,15 +2,19 @@ import React, { Component } from 'react';
 import {
   View,
   Alert,
+  NativeModules,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import routes from '../../routes';
+import constants from '../../utils/constants';
 import styles from '../../styles/device/deviceConnect';
 import deviceActions from '../../actions/device';
 import Spinner from '../../components/Spinner';
 import HeadingText from '../../components/HeadingText';
 
+const { BluetoothService } = NativeModules;
+const { bluetoothStates } = constants;
 const { PropTypes } = React;
 
 class DeviceConnect extends Component {
@@ -38,12 +42,22 @@ class DeviceConnect extends Component {
     const { device, currentRoute } = this.props;
     const deviceIdentifier = device.identifier || currentRoute.deviceIdentifier;
 
-    // If deviceIdentifier is truthy, attempt to connect to specified device
-    if (deviceIdentifier) {
-      this.props.dispatch(deviceActions.connect(deviceIdentifier));
-    } else {
-      this.props.navigator.push(routes.deviceScan);
-    }
+    BluetoothService.getState((error, { state }) => {
+      if (!error) {
+        if (state === bluetoothStates.ON) {
+          // If deviceIdentifier is truthy, attempt to connect to specified device
+          if (deviceIdentifier) {
+            this.props.dispatch(deviceActions.connect(deviceIdentifier));
+          } else {
+            this.props.navigator.push(routes.deviceScan);
+          }
+        } else {
+          this.showBluetoothError();
+        }
+      } else {
+        this.showBluetoothError();
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -56,14 +70,24 @@ class DeviceConnect extends Component {
         nextProps.device.identifier || nextProps.currentRoute.deviceIdentifier
       );
 
-      // Prompt user to reattempt connect upon failed attempt
-      Alert.alert('Error', nextProps.errorMessage, [
-        { text: 'Cancel', onPress: this.goBackToScene },
-        {
-          text: 'Retry',
-          onPress: () => this.props.dispatch(deviceActions.connect(deviceIdentifier)),
-        },
-      ]);
+      BluetoothService.getState((error, { state }) => {
+        if (!error) {
+          if (state === bluetoothStates.ON) {
+            // Prompt user to reattempt connect upon failed attempt
+            Alert.alert('Error', nextProps.errorMessage, [
+              { text: 'Cancel', onPress: this.goBackToScene },
+              {
+                text: 'Retry',
+                onPress: () => this.props.dispatch(deviceActions.connect(deviceIdentifier)),
+              },
+            ]);
+          } else {
+            this.showBluetoothError();
+          }
+        } else {
+          this.showBluetoothError();
+        }
+      });
     }
   }
 
@@ -88,6 +112,12 @@ class DeviceConnect extends Component {
 
     // If it doesn't match a property in routebackScenes send to PostureDashboard
     return this.props.navigator.replace(routes.postureDashboard);
+  }
+
+  @autobind
+  showBluetoothError() {
+    Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+    this.goBackToScene();
   }
 
   render() {
