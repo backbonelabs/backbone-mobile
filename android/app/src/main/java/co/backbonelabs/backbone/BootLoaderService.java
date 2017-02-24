@@ -135,6 +135,10 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
 
     public boolean getHasPendingUpdate() { return hasPendingUpdate; }
 
+    public boolean isUpdatingFirmware() {
+        return bootLoaderState == Constants.BOOTLOADER_STATES.UPLOADING || bootLoaderState == Constants.BOOTLOADER_STATES.UPDATED;
+    }
+
     private void firmwareUploadSuccess() {
         // Delete the firmware file after a successful update
         // NOTE: Keep it commented for development purposes to preserve the file for multiple tests
@@ -146,6 +150,8 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
     }
 
     private void firmwareUploadFailed() {
+        bootLoaderState = Constants.BOOTLOADER_STATES.ON;
+
         firmwareUpdateStatus(Constants.FIRMWARE_UPDATE_STATES.END_ERROR);
     }
 

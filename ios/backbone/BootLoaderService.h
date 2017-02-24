@@ -41,5 +41,6 @@
 
 - (id)initService;
 - (void)firmwareUpdated;
+- (BOOL)isUpdatingFirmware;
 
 @end
