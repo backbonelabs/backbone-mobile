@@ -139,8 +139,11 @@ class FirmwareUpdate extends Component {
     Alert.alert(
       'Success',
       'You have successfully updated your Backbone!',
-      [{ text: 'OK', onPress: this.props.navigator.pop }]
     );
+
+    // Automatically pop the scene without user interaction in case app is in the background
+    // so the user won't be stuck on this component when the app is back in the foreground
+    this.props.navigator.pop();
   }
 
   @autobind
