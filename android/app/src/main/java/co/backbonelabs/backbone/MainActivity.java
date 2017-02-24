@@ -56,8 +56,9 @@ public class MainActivity extends ReactActivity {
         idleTimerRunnable = new Runnable(){
             public void run() {
                 Timber.d("Check idle state");
-                if (!SessionControlService.getInstance().hasActiveSession()) {
-                    // No active session found, disconnect from the device to save battery
+                if (!SessionControlService.getInstance().hasActiveSession()
+                        && !BootLoaderService.getInstance().isUpdatingFirmware()) {
+                    // No active session found and not on firmware update, disconnect from the device to save battery
                     Timber.d("Disconnect on idle");
                     BluetoothService.getInstance().disconnect(null);
                 }
