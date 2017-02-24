@@ -591,7 +591,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
 
 - (void)firmwareUploadFailed {
   // Do any other cleanups here if needed
-  _bootLoaderState = BOOTLOADER_STATE_OFF;
+  _bootLoaderState = BOOTLOADER_STATE_ON;
   
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_END_ERROR];
 }
