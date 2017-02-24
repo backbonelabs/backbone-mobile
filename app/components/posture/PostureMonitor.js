@@ -288,10 +288,26 @@ class PostureMonitor extends Component {
 
   @autobind
   showAlertOnFailedConnection() {
+    const { sessionState } = this.state;
+
+    let message;
+    if (sessionState === sessionStates.RUNNING) {
+      message = 'Your Backbone was disconnected, but Backbone is still monitoring your posture! ' +
+        'Do you want to leave and keep the session running on your Backbone, or attempt to ' +
+        'reconnect to your Backbone now to see your posture?';
+    } else if (sessionState === sessionStates.PAUSED) {
+      message = 'Your Backbone was disconnected while your session was paused. ' +
+        'Do you want to leave to continue your session later, or attempt to reconnect to your ' +
+        'Backbone now?';
+    } else {
+      message = 'Your Backbone was disconnected. Do you want to leave or attempt to reconnect to ' +
+        'your Backbone?';
+    }
+
     this.sessionCommandAlert({
-      message: 'Your Backbone was disconnected. ' +
-        'Do you want to end your session or attempt to reconnect to your Backbone?',
-      leftButtonLabel: 'End Session',
+      title: 'Backbone disconnected',
+      message,
+      leftButtonLabel: 'Leave',
       leftButtonAction: this.props.navigator.pop,
       rightButtonLabel: 'Reconnect',
       rightButtonAction: () => {
