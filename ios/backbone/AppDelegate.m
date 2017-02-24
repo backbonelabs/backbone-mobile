@@ -9,6 +9,7 @@
 
 #import "AppDelegate.h"
 #import "BluetoothService.h"
+#import "BootLoaderService.h"
 #import "SessionControlService.h"
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
@@ -83,8 +84,9 @@
 
 - (void)checkIdleState {
   DLog(@"Check idle state");
-  if (![[SessionControlService getSessionControlService] hasActiveSession]) {
-    // No active session found, disconnect from the device to save battery
+  if (![[SessionControlService getSessionControlService] hasActiveSession]
+      && ![[BootLoaderService getBootLoaderService] isUpdatingFirmware]) {
+    // No active session found and not on updating firmware, disconnect from the device to save battery
     DLog(@"Disconnect on idle");
     [BluetoothServiceInstance disconnectDevice:nil];
   }

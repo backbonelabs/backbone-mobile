@@ -119,6 +119,10 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
   [self writeValueToCharacteristicWithData:exitBootloaderCommandData bootLoaderCommandCode:COMMAND_EXIT_BOOTLOADER];
 }
 
+- (BOOL)isUpdatingFirmware {
+  return _bootLoaderState == BOOTLOADER_STATE_UPLOADING || _bootLoaderState == BOOTLOADER_STATE_UPDATED;
+}
+
 - (void)prepareFirmwareFile {
   DLog(@"Bootloader is ready, proceed with preparing the firmware file");
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_BEGIN];
@@ -587,6 +591,8 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
 
 - (void)firmwareUploadFailed {
   // Do any other cleanups here if needed
+  _bootLoaderState = BOOTLOADER_STATE_OFF;
+  
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_END_ERROR];
 }
 
