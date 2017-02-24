@@ -22,6 +22,7 @@ import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
+import postureActions from '../actions/posture';
 import FullModal from '../components/FullModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
@@ -40,9 +41,11 @@ const {
   BluetoothService,
   DeviceManagementService,
   Environment,
+  SessionControlService,
 } = NativeModules;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
+const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 const DeviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
@@ -144,12 +147,65 @@ class Application extends Component {
     // Handle changes in the device connection status at the app level
     this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
       switch (state) {
+        case deviceStatuses.CONNECTED:
+          // Retrieve session state
+          SessionControlService.getSessionState();
+          break;
         case deviceStatuses.DISCONNECTED:
           // Dispatch disconnect action when the device is disconnected
           this.props.dispatch(deviceActions.didDisconnect());
           break;
         default:
           // no-op
+      }
+    });
+
+    // Handle SessionState events
+    this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
+      if (event.hasActiveSession) {
+        // There is an active session, check if we're on the PostureMonitor scene
+        if (this.navigator) {
+          const routeStack = this.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+          if (currentRoute.name !== routes.postureMonitor.name) {
+            // Not currently on the PostureMonitor scene
+            // Navigate to PostureMonitor to resume session using previous session parameters
+            SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+              .then(prevSessionState => {
+                const parameters = {};
+                if (prevSessionState) {
+                  Object.assign(parameters, prevSessionState.parameters);
+                  this.props.dispatch(
+                    postureActions.setSessionTime(prevSessionState.parameters.sessionDuration * 60)
+                  );
+                }
+
+                // Hacky workaround:
+                // When the device gets disconnected while on the PostureMonitor scene and
+                // the user decides to leave the scene, and then reconnects to the device
+                // outside the PostureMonitor scene, the DeviceConnect scene will call
+                // popToRoute or replace on the Navigator. However, we get into a race condition
+                // where this navigate action may cause the PostureMonitor to be inserted into
+                // the route stack before popToRoute or replace is called. If that happens, the
+                // PostureMonitor scene will be unmounted.
+                // This hack will navigate to PostureMonitor after a short delay to minimize
+                // the chances of such a race condition.
+                setTimeout(() => {
+                  this.navigate({
+                    ...routes.postureMonitor,
+                    props: {
+                      sessionState: {
+                        ...parameters,
+                        sessionState: prevSessionState.state,
+                        timeElapsed: event.totalDuration,
+                        slouchTime: event.slouchTime,
+                      },
+                    },
+                  });
+                }, 250);
+              });
+          }
+        }
       }
     });
 
@@ -254,6 +310,9 @@ class Application extends Component {
     if (this.deviceStateListener) {
       this.deviceStateListener.remove();
     }
+    if (this.sessionStateListener) {
+      this.sessionStateListener.remove();
+    }
     if (this.connectionStatusListener) {
       this.connectionStatusListener.remove();
     }
@@ -282,6 +341,9 @@ class Application extends Component {
     if (currentAppState === 'active') {
       // Fetch device info when app comes back into foreground
       this.props.dispatch(deviceActions.getInfo());
+
+      // Retrieve session state
+      SessionControlService.getSessionState();
     }
   }
 
@@ -381,7 +443,7 @@ class Application extends Component {
         </FullModal>
         { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.show ? hiddenStyles : {}, { flex: 1 }]}>
-          <RouteComponent navigator={this.navigator} currentRoute={route} {...route.passProps} />
+          <RouteComponent navigator={this.navigator} currentRoute={route} {...route.props} />
           { route.showTabBar && TabBar }
         </View>
       </View>

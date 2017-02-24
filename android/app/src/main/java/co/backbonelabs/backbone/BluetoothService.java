@@ -608,7 +608,23 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         else {
             BluetoothGattCharacteristic characteristic = characteristicMap.get(characteristicUUID);
 
-            bleGatt.readCharacteristic(characteristic);            
+            // Only one GATT operation can run at any point in time,
+            // so we might have to make several read attempts when
+            // there is another GATT operation running
+            boolean readStatus;
+            int counter = Constants.MAX_BLE_ACTION_ATTEMPT;
+
+            do {
+                readStatus = bleGatt.readCharacteristic(characteristic);
+
+                if (!readStatus) {
+                    try {
+                        Thread.sleep(100, 0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } while (!readStatus && (--counter > 0));
         }
     }
 

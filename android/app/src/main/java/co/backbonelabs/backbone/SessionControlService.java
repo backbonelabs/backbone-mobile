@@ -41,7 +41,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
 
         IntentFilter filter = new IntentFilter();
-//        filter.addAction(Constants.ACTION_CHARACTERISTIC_FOUND);
+        filter.addAction(Constants.ACTION_CHARACTERISTIC_READ);
         filter.addAction(Constants.ACTION_CHARACTERISTIC_UPDATE);
         filter.addAction(Constants.ACTION_CHARACTERISTIC_WRITE);
         filter.addAction(Constants.ACTION_DESCRIPTOR_WRITE);
@@ -52,13 +52,13 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     private int previousSessionState = Constants.SESSION_STATES.STOPPED;
     private int currentCommand;
 
-    private int sessionDuration;
-    private int slouchDistanceThreshold;
-    private int slouchTimeThreshold;
+    private int sessionDuration = Constants.SESSION_DEFAULT_DURATION;
+    private int slouchDistanceThreshold = Constants.SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
+    private int slouchTimeThreshold = Constants.SLOUCH_DEFAULT_TIME_THRESHOLD;
 
-    private int vibrationPattern;
-    private int vibrationSpeed;
-    private int vibrationDuration;
+    private int vibrationPattern = Constants.VIBRATION_DEFAULT_PATTERN;
+    private int vibrationSpeed = Constants.VIBRATION_DEFAULT_SPEED;
+    private int vibrationDuration = Constants.VIBRATION_DEFAULT_DURATION;
 
     private boolean distanceNotificationStatus;
     private boolean statisticNotificationStatus;
@@ -81,91 +81,45 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         if (bluetoothService.isDeviceReady()
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC)) {
-            if (currentSessionState == Constants.SESSION_STATES.STOPPED) {
-                forceStoppedSession = false;
+            forceStoppedSession = false;
 
-                sessionDuration = Constants.SESSION_DEFAULT_DURATION;
-                slouchDistanceThreshold = Constants.SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
-                slouchTimeThreshold = Constants.SLOUCH_DEFAULT_TIME_THRESHOLD;
+            if (sessionParam != null && sessionParam.hasKey("sessionDuration")) {
+                sessionDuration = sessionParam.getInt("sessionDuration");
+            }
 
-                vibrationPattern = Constants.VIBRATION_DEFAULT_PATTERN;
-                vibrationSpeed = Constants.VIBRATION_DEFAULT_SPEED;
-                vibrationDuration = Constants.VIBRATION_DEFAULT_DURATION;
+            if (sessionParam != null && sessionParam.hasKey("slouchDistanceThreshold")) {
+                slouchDistanceThreshold = sessionParam.getInt("slouchDistanceThreshold");
+            }
 
-                if (sessionParam != null && sessionParam.hasKey("sessionDuration")) {
-                    sessionDuration = sessionParam.getInt("sessionDuration");
-                }
+            if (sessionParam != null && sessionParam.hasKey("slouchTimeThreshold")) {
+                slouchTimeThreshold = sessionParam.getInt("slouchTimeThreshold");
+            }
 
-                if (sessionParam != null && sessionParam.hasKey("slouchDistanceThreshold")) {
-                    slouchDistanceThreshold = sessionParam.getInt("slouchDistanceThreshold");
-                }
+            if (sessionParam != null && sessionParam.hasKey("vibrationPattern")) {
+                vibrationPattern = sessionParam.getInt("vibrationPattern");
+            }
 
-                if (sessionParam != null && sessionParam.hasKey("slouchTimeThreshold")) {
-                    slouchTimeThreshold = sessionParam.getInt("slouchTimeThreshold");
-                }
+            if (sessionParam != null && sessionParam.hasKey("vibrationSpeed")) {
+                vibrationSpeed = sessionParam.getInt("vibrationSpeed");
+            }
 
-                if (sessionParam != null && sessionParam.hasKey("vibrationPattern")) {
-                    vibrationPattern = sessionParam.getInt("vibrationPattern");
-                }
+            if (sessionParam != null && sessionParam.hasKey("vibrationDuration")) {
+                vibrationDuration = sessionParam.getInt("vibrationDuration");
+            }
 
-                if (sessionParam != null && sessionParam.hasKey("vibrationSpeed")) {
-                    vibrationSpeed = sessionParam.getInt("vibrationSpeed");
-                }
+            sessionDuration *= 60; // Convert to second from minute
 
-                if (sessionParam != null && sessionParam.hasKey("vibrationDuration")) {
-                    vibrationDuration = sessionParam.getInt("vibrationDuration");
-                }
-
-                sessionDuration *= 60; // Convert to second from minute
-
-                toggleSessionOperation(Constants.SESSION_OPERATIONS.START, new Constants.IntCallBack() {
-                    @Override
-                    public void onIntCallBack(int val) {
-                        if (val == 0) {
-                            callback.invoke();
-                        }
-                        else {
-                            callback.invoke(JSError.make("Error toggling session"));
-                        }
+            toggleSessionOperation(Constants.SESSION_OPERATIONS.START, new Constants.IntCallBack() {
+                @Override
+                public void onIntCallBack(int val) {
+                    if (val == 0) {
+                        callback.invoke();
                     }
-                });
-            }
-            else if (currentSessionState == Constants.SESSION_STATES.PAUSED) {
-                if (sessionParam != null && sessionParam.hasKey("slouchDistanceThreshold")) {
-                    slouchDistanceThreshold = sessionParam.getInt("slouchDistanceThreshold");
-                }
-
-                if (sessionParam != null && sessionParam.hasKey("slouchTimeThreshold")) {
-                    slouchTimeThreshold = sessionParam.getInt("slouchTimeThreshold");
-                }
-
-                if (sessionParam != null && sessionParam.hasKey("vibrationPattern")) {
-                    vibrationPattern = sessionParam.getInt("vibrationPattern");
-                }
-
-                if (sessionParam != null && sessionParam.hasKey("vibrationSpeed")) {
-                    vibrationSpeed = sessionParam.getInt("vibrationSpeed");
-                }
-
-                if (sessionParam != null && sessionParam.hasKey("vibrationDuration")) {
-                    vibrationDuration = sessionParam.getInt("vibrationDuration");
-                }
-
-                toggleSessionOperation(Constants.SESSION_OPERATIONS.RESUME, new Constants.IntCallBack() {
-                    @Override
-                    public void onIntCallBack(int val) {
-                        if (val == 0) {
-                            callback.invoke();
-                        }
-                        else {
-                            callback.invoke(JSError.make("Error toggling session"));
-                        }
+                    else {
+                        callback.invoke(JSError.make("Error toggling session"));
                     }
-                });
-            }
-            else {
-                callback.invoke();
-            }
+                }
+            });
         }
         else {
             callback.invoke(JSError.make("Session Control is not ready"));
@@ -179,22 +133,60 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         if (bluetoothService.isDeviceReady()
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
                 && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC)) {
-            if (currentSessionState == Constants.SESSION_STATES.RUNNING) {
-                toggleSessionOperation(Constants.SESSION_OPERATIONS.PAUSE, new Constants.IntCallBack() {
-                    @Override
-                    public void onIntCallBack(int val) {
-                        if (val == 0) {
-                            callback.invoke();
-                        }
-                        else {
-                            callback.invoke(JSError.make("Error toggling session"));
-                        }
+            toggleSessionOperation(Constants.SESSION_OPERATIONS.PAUSE, new Constants.IntCallBack() {
+                @Override
+                public void onIntCallBack(int val) {
+                    if (val == 0) {
+                        callback.invoke();
                     }
-                });
+                    else {
+                        callback.invoke(JSError.make("Error toggling session"));
+                    }
+                }
+            });
+        }
+        else {
+            callback.invoke(JSError.make("Session Control is not ready"));
+        }
+    }
+
+    @ReactMethod
+    public void resume(ReadableMap sessionParam, final Callback callback) {
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+
+        if (bluetoothService.isDeviceReady()
+                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)
+                && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC)) {
+            if (sessionParam != null && sessionParam.hasKey("slouchDistanceThreshold")) {
+                slouchDistanceThreshold = sessionParam.getInt("slouchDistanceThreshold");
             }
-            else {
-                callback.invoke();
+
+            if (sessionParam != null && sessionParam.hasKey("slouchTimeThreshold")) {
+                slouchTimeThreshold = sessionParam.getInt("slouchTimeThreshold");
             }
+
+            if (sessionParam != null && sessionParam.hasKey("vibrationPattern")) {
+                vibrationPattern = sessionParam.getInt("vibrationPattern");
+            }
+
+            if (sessionParam != null && sessionParam.hasKey("vibrationSpeed")) {
+                vibrationSpeed = sessionParam.getInt("vibrationSpeed");
+            }
+
+            if (sessionParam != null && sessionParam.hasKey("vibrationDuration")) {
+                vibrationDuration = sessionParam.getInt("vibrationDuration");
+            }
+
+            toggleSessionOperation(Constants.SESSION_OPERATIONS.RESUME, new Constants.IntCallBack() {
+                @Override
+                public void onIntCallBack(int val) {
+                    if (val == 0) {
+                        callback.invoke();
+                    } else {
+                        callback.invoke(JSError.make("Error toggling session"));
+                    }
+                }
+            });
         }
         else {
             callback.invoke(JSError.make("Session Control is not ready"));
@@ -234,6 +226,20 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
     public boolean hasActiveSession() {
         return currentSessionState == Constants.SESSION_STATES.RUNNING || currentSessionState == Constants.SESSION_STATES.PAUSED;
+    }
+
+    /**
+     * Reads from the session statistic characteristic. This is an asynchronous operation.
+     * The results will be emitted through a SessionState event to JS.
+     */
+    @ReactMethod
+    public void getSessionState() {
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+
+        if (bluetoothService.isDeviceReady() &&
+                bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC)) {
+            bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC);
+        }
     }
 
     private void toggleSessionOperation(int operation, Constants.IntCallBack errCallBack) {
@@ -362,7 +368,28 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             final String action = intent.getAction();
             Timber.d("Receive Broadcast %s", action);
 
-            if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
+            if (action.equals(Constants.ACTION_CHARACTERISTIC_READ)) {
+                Timber.d("CharacteristicRead");
+                String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
+
+                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
+                    byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
+
+                    int flags = Utilities.getIntFromByteArray(responseArray, 0);
+                    int totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
+                    int slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
+
+                    boolean hasActiveSession = (flags % 2 == 1);
+
+                    WritableMap wm = Arguments.createMap();
+                    wm.putBoolean("hasActiveSession", hasActiveSession);
+                    wm.putInt("totalDuration", totalDuration);
+                    wm.putInt("slouchTime", slouchTime);
+                    Timber.d("SessionState data %s", wm);
+                    EventEmitter.send(reactContext, "SessionState", wm);
+                }
+            }
+            else if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
                 Timber.d("CharacteristicUpdate");
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
 

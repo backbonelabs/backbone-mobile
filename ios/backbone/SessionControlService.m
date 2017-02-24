@@ -29,8 +29,18 @@
   DLog(@"SessionControl init");
   [BluetoothServiceInstance addCharacteristicDelegate:self];
   
+  sessionDuration = SESSION_DEFAULT_DURATION;
+  sessionDistanceThreshold = SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
+  sessionTimeThreshold = SLOUCH_DEFAULT_TIME_THRESHOLD;
+  
+  vibrationPattern = VIBRATION_DEFAULT_PATTERN;
+  vibrationSpeed = VIBRATION_DEFAULT_SPEED;
+  vibrationDuration = VIBRATION_DEFAULT_DURATION;
+  
   previousSessionState = SESSION_STATE_STOPPED;
   currentSessionState = SESSION_STATE_STOPPED;
+  
+  requestedReadSessionStatistics = NO;
   
   return self;
 }
@@ -44,7 +54,7 @@
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-  return @[@"SessionData", @"SessionStatistics", @"SlouchStatus"];
+  return @[@"SessionData", @"SessionStatistics", @"SessionState", @"SlouchStatus"];
 }
 
 RCT_EXPORT_MODULE();
@@ -54,89 +64,45 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
-    if (currentSessionState == SESSION_STATE_STOPPED) {
-      forceStoppedSession = NO;
+    forceStoppedSession = NO;
       
-      sessionDuration = SESSION_DEFAULT_DURATION;
-      sessionDistanceThreshold = SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
-      sessionTimeThreshold = SLOUCH_DEFAULT_TIME_THRESHOLD;
-      
-      vibrationPattern = VIBRATION_DEFAULT_PATTERN;
-      vibrationSpeed = VIBRATION_DEFAULT_SPEED;
-      vibrationDuration = VIBRATION_DEFAULT_DURATION;
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"sessionDuration"] != nil) {
-        sessionDuration = [[sessionParam objectForKey:@"sessionDuration"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"slouchDistanceThreshold"] != nil) {
-        sessionDistanceThreshold = [[sessionParam objectForKey:@"slouchDistanceThreshold"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"slouchTimeThreshold"] != nil) {
-        sessionTimeThreshold = [[sessionParam objectForKey:@"slouchTimeThreshold"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationPattern"] != nil) {
-        vibrationPattern = [[sessionParam objectForKey:@"vibrationPattern"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationSpeed"] != nil) {
-        vibrationSpeed = [[sessionParam objectForKey:@"vibrationSpeed"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationDuration"] != nil) {
-        vibrationDuration = [[sessionParam objectForKey:@"vibrationDuration"] intValue];
-      }
-      
-      sessionDuration *= 60; // Convert to second from minute
-      
-      DLog(@"SessionParam %@", sessionParam);
-      DLog(@"SessionExtra %d %d %d %d %d %d", sessionDuration, sessionDistanceThreshold, sessionTimeThreshold, vibrationPattern, vibrationSpeed, vibrationDuration);
-      
-      [self toggleSessionOperation:SESSION_OPERATION_START withHandler:^(NSError * _Nullable error) {
-        if (error) {
-          callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
-        }
-        else {
-          callback(@[[NSNull null]]);
-        }
-      }];
+    if (sessionParam != nil && [sessionParam objectForKey:@"sessionDuration"] != nil) {
+      sessionDuration = [[sessionParam objectForKey:@"sessionDuration"] intValue];
     }
-    else if (currentSessionState == SESSION_STATE_PAUSED) {
-      if (sessionParam != nil && [sessionParam objectForKey:@"slouchDistanceThreshold"] != nil) {
-        sessionDistanceThreshold = [[sessionParam objectForKey:@"slouchDistanceThreshold"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"slouchTimeThreshold"] != nil) {
-        sessionTimeThreshold = [[sessionParam objectForKey:@"slouchTimeThreshold"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationPattern"] != nil) {
-        vibrationPattern = [[sessionParam objectForKey:@"vibrationPattern"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationSpeed"] != nil) {
-        vibrationSpeed = [[sessionParam objectForKey:@"vibrationSpeed"] intValue];
-      }
-      
-      if (sessionParam != nil && [sessionParam objectForKey:@"vibrationDuration"] != nil) {
-        vibrationDuration = [[sessionParam objectForKey:@"vibrationDuration"] intValue];
-      }
-      
-      [self toggleSessionOperation:SESSION_OPERATION_RESUME withHandler:^(NSError * _Nullable error) {
-        if (error) {
-          callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
-        }
-        else {
-          callback(@[[NSNull null]]);
-        }
-      }];
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"slouchDistanceThreshold"] != nil) {
+      sessionDistanceThreshold = [[sessionParam objectForKey:@"slouchDistanceThreshold"] intValue];
     }
-    else {
-      // Do nothing
-      callback(@[[NSNull null]]);
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"slouchTimeThreshold"] != nil) {
+      sessionTimeThreshold = [[sessionParam objectForKey:@"slouchTimeThreshold"] intValue];
     }
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"vibrationPattern"] != nil) {
+      vibrationPattern = [[sessionParam objectForKey:@"vibrationPattern"] intValue];
+    }
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"vibrationSpeed"] != nil) {
+      vibrationSpeed = [[sessionParam objectForKey:@"vibrationSpeed"] intValue];
+    }
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"vibrationDuration"] != nil) {
+      vibrationDuration = [[sessionParam objectForKey:@"vibrationDuration"] intValue];
+    }
+    
+    sessionDuration *= 60; // Convert to second from minute
+    
+    DLog(@"SessionParam %@", sessionParam);
+    DLog(@"SessionExtra %d %d %d %d %d %d", sessionDuration, sessionDistanceThreshold, sessionTimeThreshold, vibrationPattern, vibrationSpeed, vibrationDuration);
+    
+    [self toggleSessionOperation:SESSION_OPERATION_START withHandler:^(NSError * _Nullable error) {
+      if (error) {
+        callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
+      }
+      else {
+        callback(@[[NSNull null]]);
+      }
+    }];
   }
   else {
     callback(@[RCTMakeError(@"Session Control is not ready", nil, nil)]);
@@ -148,20 +114,53 @@ RCT_EXPORT_METHOD(pause:(RCTResponseSenderBlock)callback) {
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
-    if (currentSessionState == SESSION_STATE_RUNNING) {
-      [self toggleSessionOperation:SESSION_OPERATION_PAUSE withHandler:^(NSError * _Nullable error) {
-        if (error) {
-          callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
-        }
-        else {
-          callback(@[[NSNull null]]);
-        }
-      }];
+    [self toggleSessionOperation:SESSION_OPERATION_PAUSE withHandler:^(NSError * _Nullable error) {
+      if (error) {
+        callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
+      }
+      else {
+        callback(@[[NSNull null]]);
+      }
+    }];
+  }
+  else {
+    callback(@[RCTMakeError(@"Session Control is not ready", nil, nil)]);
+  }
+}
+
+RCT_EXPORT_METHOD(resume:(NSDictionary*)sessionParam callback:(RCTResponseSenderBlock)callback) {
+  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]
+      && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
+    if (sessionParam != nil && [sessionParam objectForKey:@"slouchDistanceThreshold"] != nil) {
+      sessionDistanceThreshold = [[sessionParam objectForKey:@"slouchDistanceThreshold"] intValue];
     }
-    else {
-      // Do nothing
-      callback(@[[NSNull null]]);
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"slouchTimeThreshold"] != nil) {
+      sessionTimeThreshold = [[sessionParam objectForKey:@"slouchTimeThreshold"] intValue];
     }
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"vibrationPattern"] != nil) {
+      vibrationPattern = [[sessionParam objectForKey:@"vibrationPattern"] intValue];
+    }
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"vibrationSpeed"] != nil) {
+      vibrationSpeed = [[sessionParam objectForKey:@"vibrationSpeed"] intValue];
+    }
+    
+    if (sessionParam != nil && [sessionParam objectForKey:@"vibrationDuration"] != nil) {
+      vibrationDuration = [[sessionParam objectForKey:@"vibrationDuration"] intValue];
+    }
+    
+    [self toggleSessionOperation:SESSION_OPERATION_RESUME withHandler:^(NSError * _Nullable error) {
+      if (error) {
+        callback(@[RCTMakeError(@"Error toggling session", nil, nil)]);
+      }
+      else {
+        callback(@[[NSNull null]]);
+      }
+    }];
   }
   else {
     callback(@[RCTMakeError(@"Session Control is not ready", nil, nil)]);
@@ -192,6 +191,19 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
   }
   else {
     callback(@[RCTMakeError(@"Session Control is not ready", nil, nil)]);
+  }
+}
+
+/**
+ Reads from the session statistic characteristic. This is an asynchronous operation.
+ The results will be emitted through a SessionState event to JS.
+ */
+RCT_EXPORT_METHOD(getSessionState) {
+  CBCharacteristic *sessionStatistics = [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID];
+
+  if ([BluetoothServiceInstance isDeviceReady] && sessionStatistics) {
+    requestedReadSessionStatistics = YES;
+    [BluetoothServiceInstance.currentDevice readValueForCharacteristic:sessionStatistics];
   }
 }
 
@@ -253,6 +265,7 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
     
     distanceNotificationStatus = YES;
     slouchNotificationStatus = YES;
+    statisticNotificationStatus = YES;
     
     NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
     
@@ -366,25 +379,36 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
       // Check the Least-Significant Bit of the flags to retrieve the current session state
       bool hasActiveSession = (flags % 2 == 1);
       
-      [self sendEventWithName:@"SessionStatistics" body:@{
-                                                          @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
-                                                          @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
-                                                          @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
-                                                          }];
-      
-      // This notification indicates the end of a session
-      // So we have to disable all notifications after we receive it
-      // Only perform the following statements when the session naturally finished
-      if (!forceStoppedSession) {
-        _errorHandler = nil;
+      if (requestedReadSessionStatistics) {
+        // Session statistics were retrieved from a read request, emit SessionState event
+        requestedReadSessionStatistics = NO;
+        [self sendEventWithName:@"SessionState" body:@{
+                                                       @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
+                                                       @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
+                                                       @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
+                                                       }];
+      } else {
+        // Session statistics were retrieved from a notification, emit SessionStatistics event
+        [self sendEventWithName:@"SessionStatistics" body:@{
+                                                            @"hasActiveSession": [NSNumber numberWithBool:hasActiveSession],
+                                                            @"totalDuration" : [NSNumber numberWithInteger:totalDuration],
+                                                            @"slouchTime" : [NSNumber numberWithInteger:slouchTime]
+                                                            }];
         
-        currentSessionState = SESSION_STATE_STOPPED;
-        
-        distanceNotificationStatus = NO;
-        slouchNotificationStatus = NO;
-        statisticNotificationStatus = NO;
-        
-        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
+        // This notification indicates the end of a session
+        // So we have to disable all notifications after we receive it
+        // Only perform the following statements when the session naturally finished
+        if (!forceStoppedSession) {
+          _errorHandler = nil;
+          
+          currentSessionState = SESSION_STATE_STOPPED;
+          
+          distanceNotificationStatus = NO;
+          slouchNotificationStatus = NO;
+          statisticNotificationStatus = NO;
+          
+          [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
+        }
       }
     }
     else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
