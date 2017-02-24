@@ -106,7 +106,7 @@ android {
         minSdkVersion 18 // Android 4.3, required for BLE
         targetSdkVersion 22
         versionCode 148
-        versionName "1.0.1"
+        versionName "1.0.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
