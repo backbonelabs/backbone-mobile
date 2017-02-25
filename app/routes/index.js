@@ -9,6 +9,7 @@ import device from './device';
 import postureDashboard from './posture/postureDashboard';
 import postureCalibrate from './posture/postureCalibrate';
 import postureMonitor from './posture/postureMonitor';
+import postureReport from './posture/postureReport';
 import tutorial from './tutorial';
 import profile from './profile';
 import settings from './settings';
@@ -32,6 +33,7 @@ export default {
   postureDashboard,
   postureCalibrate,
   postureMonitor,
+  postureReport,
   tutorial,
   profile,
   settings,

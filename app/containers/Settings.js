@@ -251,6 +251,7 @@ class Settings extends Component {
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
+      push: PropTypes.func,
       navigationContext: PropTypes.shape({
         addListener: PropTypes.func,
       }),
@@ -307,6 +308,9 @@ class Settings extends Component {
     }, {
       label: 'Forget device',
       handler: () => this.props.dispatch(deviceActions.forget()),
+    }, {
+      label: 'Posture Report',
+      handler: () => this.props.navigator.push(routes.postureReport),
     }];
 
     return (
