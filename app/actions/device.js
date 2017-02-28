@@ -143,6 +143,8 @@ const deviceActions = {
             stackTrace: ['deviceActions.forget', 'DeviceManagementService.cancelConnection'],
           });
         } else {
+          Mixpanel.unregisterSuperProperty('firmwareVersion');
+
           // Remove device information from local storage
           SensitiveInfo.deleteItem(storageKeys.DEVICE);
           dispatch(forget());
@@ -170,7 +172,7 @@ const deviceActions = {
             });
           } else {
             // Register firmwareVersion property upon connected
-            Mixpanel.registerSuperPropertiesOnce({ firmwareVersion: results.firmwareVersion });
+            Mixpanel.registerSuperProperties({ firmwareVersion: results.firmwareVersion });
 
             // Send battery reading to Mixpanel
             Mixpanel.trackWithProperties('batteryReading', {
@@ -194,6 +196,8 @@ const deviceActions = {
         SensitiveInfo.getItem(storageKeys.DEVICE)
           .then(device => {
             if (device) {
+              Mixpanel.registerSuperProperties({ firmwareVersion: device.firmwareVersion });
+
               checkFirmware(device.firmwareVersion)
                 .then(updateAvailable => {
                   // Clone device in order to add updateAvailable property
