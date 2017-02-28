@@ -11,6 +11,10 @@ const PartialModal = props => (
     animationType="none"
     transparent
     visible={props.showPartial}
+    onRequestClose={() => {
+      // This is called on Android when the hardware back button is pressed
+      // For now, this will be a no-op
+    }}
   >
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
