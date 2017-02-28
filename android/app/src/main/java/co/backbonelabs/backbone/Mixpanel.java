@@ -191,6 +191,15 @@ public class Mixpanel extends ReactContextBaseJavaModule implements LifecycleEve
     }
 
     /**
+     * Unregister super property as specified by the property name
+     * @param propertyName The name of the property to be unregistered
+     */
+    @ReactMethod
+    public void unregisterSuperProperty(final String propertyName) {
+        mixpanel.unregisterSuperProperty(propertyName);
+    }
+
+    /**
      * Set a collection of properties on a user all at once
      * @param properties Key-value pair of property names and values
      */
