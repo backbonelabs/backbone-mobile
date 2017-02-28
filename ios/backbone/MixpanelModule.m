@@ -74,6 +74,14 @@ RCT_EXPORT_METHOD(registerSuperPropertiesOnce:(NSDictionary *)properties) {
 }
 
 /**
+ Unregisters super property specified by the property name
+ @param propertyName The name of the property to be unregistered
+ */
+RCT_EXPORT_METHOD(unregisterSuperProperty:(NSString *)propertyName) {
+  [mixpanel unregisterSuperProperty:propertyName];
+}
+
+/**
  Sets a collection of properties on a user all at once
  @param properties Key-value pair of property names and values
  */

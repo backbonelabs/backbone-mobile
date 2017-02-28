@@ -159,6 +159,9 @@ const deviceActions = {
       if (deviceState.isConnected) {
         DeviceInformationService.getDeviceInformation((err, results) => {
           if (err) {
+            // Remove firmwareVersion property from the super property when not connected
+            Mixpanel.unregisterSuperProperty('firmwareVersion');
+
             dispatch(getInfoError(err));
             Mixpanel.trackError({
               errorContent: err,
@@ -166,6 +169,9 @@ const deviceActions = {
               stackTrace: ['deviceActions.getInfo', 'DeviceManagementService.getDeviceInformation'],
             });
           } else {
+            // Register firmwareVersion property upon connected
+            Mixpanel.registerSuperPropertiesOnce({ firmwareVersion: results.firmwareVersion });
+
             // Send battery reading to Mixpanel
             Mixpanel.trackWithProperties('batteryReading', {
               percentage: results.batteryLevel,
