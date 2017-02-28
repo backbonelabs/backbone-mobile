@@ -14,4 +14,13 @@ export default {
   hideFullModal() {
     return { type: 'HIDE_FULL_MODAL' };
   },
+  showPartialModal(modalConfig) {
+    return {
+      type: 'SHOW_PARTIAL_MODAL',
+      payload: modalConfig,
+    };
+  },
+  hidePartialModal() {
+    return { type: 'HIDE_PARTIAL_MODAL' };
+  },
 };

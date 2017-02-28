@@ -4,7 +4,8 @@ export default (state = {
   bluetoothState: null,
   config: {},
   modal: {
-    show: false,
+    showFull: false,
+    showPartial: false,
     content: null,
     onClose: null,
   },
@@ -40,7 +41,7 @@ export default (state = {
       return {
         ...state,
         modal: {
-          show: true,
+          showFull: true,
           content,
           onClose,
         },
@@ -50,7 +51,28 @@ export default (state = {
       return {
         ...state,
         modal: {
-          show: false,
+          showFull: false,
+          content: null,
+          onClose: null,
+        },
+      };
+    }
+    case 'SHOW_PARTIAL_MODAL': {
+      const { content, onClose } = action.payload;
+      return {
+        ...state,
+        modal: {
+          showPartial: true,
+          content,
+          onClose,
+        },
+      };
+    }
+    case 'HIDE_PARTIAL_MODAL': {
+      return {
+        ...state,
+        modal: {
+          showPartial: false,
           content: null,
           onClose: null,
         },
