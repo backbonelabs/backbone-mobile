@@ -219,7 +219,6 @@ export default {
       })
         .then(response => response.json())
         .then((body) => {
-          console.log(body, 'body');
           if (body.error) {
             dispatch(fetchUsersessionsError(
               new Error(body.error)
@@ -228,9 +227,8 @@ export default {
             dispatch(fetchSessions(body));
           }
         })
-        .catch((err) => {
+        .catch(() => {
           // Network error
-          console.log({ err }, 'error');
           dispatch(fetchUsersessionsError(
             new Error('We are encountering server issues. Please try again later.')
           ));
