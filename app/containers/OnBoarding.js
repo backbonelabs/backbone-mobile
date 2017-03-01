@@ -14,12 +14,15 @@ import {
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import onBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 import authActions from '../actions/auth';
 import userActions from '../actions/user';
 import routes from '../routes';
+
+const { storageKeys } = constants;
 
 const { width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
@@ -60,23 +63,27 @@ class OnBoarding extends Component {
     };
   }
 
-  // componentWillMount() {
-  //   // Check if user has enabled notifications on their iOS device
-  //   if (isIOS) {
-  //     // Check notification permissions
-  //     PushNotificationIOS.checkPermissions(permissions => {
-  //       // Update notificationsEnabled to true if permissions enabled
-  //       if (permissions.alert) {
-  //         this.setState({ notificationsEnabled: true });
-  //       } else {
-  //         // Listener for enabling notifications event if permissions disabled
-  //         PushNotificationIOS.addEventListener('register', () => {
-  //           this.setState({ notificationsEnabled: true });
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
+  componentWillMount() {
+    // Reset the initial survey state back to false
+    // to trigger the modal popup after the onboarding process
+    SensitiveInfo.setItem(storageKeys.INITIAL_SURVEY_STATE, false);
+
+    // // Check if user has enabled notifications on their iOS device
+    // if (isIOS) {
+    //   // Check notification permissions
+    //   PushNotificationIOS.checkPermissions(permissions => {
+    //     // Update notificationsEnabled to true if permissions enabled
+    //     if (permissions.alert) {
+    //       this.setState({ notificationsEnabled: true });
+    //     } else {
+    //       // Listener for enabling notifications event if permissions disabled
+    //       PushNotificationIOS.addEventListener('register', () => {
+    //         this.setState({ notificationsEnabled: true });
+    //       });
+    //     }
+    //   });
+    // }
+  }
 
   componentWillReceiveProps(nextProps) {
     // isUpdating is truthy while user is saving profile info

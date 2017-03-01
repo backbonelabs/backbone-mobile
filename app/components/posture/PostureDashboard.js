@@ -3,11 +3,13 @@ import {
   Alert,
   View,
   Image,
+  Linking,
   NativeModules,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
+import appActions from '../../actions/app';
 import postureActions from '../../actions/posture';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -23,7 +25,7 @@ import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
 
-const { BluetoothService } = NativeModules;
+const { BluetoothService, Environment } = NativeModules;
 
 const { bluetoothStates, storageKeys } = constants;
 
@@ -59,6 +61,64 @@ class PostureDashboard extends Component {
 
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
+
+    SensitiveInfo.getItem(storageKeys.INITIAL_SURVEY_STATE)
+      .then(surveyState => {
+        if (surveyState) {
+          // If initial survey has been displayed, do nothing
+        } else {
+          // Else display the initial survey
+          // And set the survey state to disable displaying it again for this user
+          SensitiveInfo.setItem(storageKeys.INITIAL_SURVEY_STATE, true);
+
+          this.props.dispatch(appActions.showPartialModal({
+            content: (
+              <View>
+                <BodyText>"Have a minute? Help us improve Backbone by taking this 60-second survey!"
+                </BodyText>
+                <View
+                  style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}
+                >
+                  <Button
+                    style={{ width: 100 }}
+                    text="No, thanks"
+                    onPress={() => this.props.dispatch(appActions.hidePartialModal())}
+                  />
+                  <Button
+                    style={{ width: 100 }}
+                    text="OK, sure"
+                    primary
+                    onPress={() => {
+                      // Temporarily open our homepage
+                      // Change this to the real survey url once decided
+                      const url = `${Environment.WEB_SERVER_URL}`;
+                      Linking.canOpenURL(url)
+                        .then(supported => {
+                          if (supported) {
+                            return Linking.openURL(url);
+                          }
+                          throw new Error();
+                        })
+                        .catch(() => {
+                          // This catch handler will handle rejections from Linking.openURL
+                          // as well as when the user's phone doesn't have any apps
+                          // to open the URL
+                          Alert.alert(
+                            'Baseline Survey',
+                            'We could not launch your browser. You can take the survey ' + // eslint-disable-line prefer-template, max-len
+                            'by visiting ' + url + '.',
+                          );
+                        });
+
+                      this.props.dispatch(appActions.hidePartialModal());
+                    }}
+                  />
+                </View>
+              </View>
+            ),
+          }));
+        }
+      });
   }
 
   setSessionTime(seconds) {
