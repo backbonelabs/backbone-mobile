@@ -336,8 +336,7 @@ class Settings extends Component {
     }, {
       label: 'Posture Report',
       handler: () => this.props.navigator.push(routes.postureReport),
-    },
-  }];
+    }];
 
     return (
       <View style={styles.devMenu}>
