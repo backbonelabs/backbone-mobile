@@ -108,30 +108,28 @@ class PostureReport extends Component {
     };
 
     if (sessions) {
-      data.date = new Date(sessions.time).toDateString();
-      if (sessions.properties) {
-        const { totalDuration, slouchTime } = sessions.properties;
-        data.chartData = [
-          {
-            label: 'Good',
-            duration: totalDuration - slouchTime,
-          },
-          {
-            label: 'Poor',
-            duration: slouchTime,
-          },
-        ];
-        data.total = convertToHMS(totalDuration);
-        data.good = convertToHMS(totalDuration - slouchTime);
-        data.bad = convertToHMS(slouchTime);
-      }
+      const { totalDuration, slouchTime, timestamp } = sessions;
+      data.date = new Date(timestamp).toDateString();
+      data.chartData = [
+        {
+          label: 'Good',
+          duration: totalDuration - slouchTime,
+        },
+        {
+          label: 'Poor',
+          duration: slouchTime,
+        },
+      ];
+      data.total = convertToHMS(totalDuration);
+      data.good = convertToHMS(totalDuration - slouchTime);
+      data.bad = convertToHMS(slouchTime);
     }
 
     // return a spinner if component is fetching data
     if (this.props.loading) {
       return <Spinner />;
     }
-
+    console.log(this.props.sessions);
     return (
       <View style={styles.container}>
         <HeadingText size={1} style={styles._heading}>Posture Report</HeadingText>
@@ -190,9 +188,32 @@ class PostureReport extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  sessions: state.user.sessions,
-  loading: state.user.isUpdating,
-});
+const mapStateToProps = (state) => {
+  let seen = {};
+  // Sort the sessions
+  // Merge the all the sessions with the same date
+  const groupByDay = state.user.sessions
+    .sort((a, b) => b.timestamp - a.timestamp) // sort from latest to oldest
+    .filter((val) => {
+      const date = new Date(val.timestamp);
+
+      if (new Date(seen.timestamp).toDateString() === (date.toDateString())) {
+        seen.sessionTime += val.sessionTime;
+        seen.slouchTime += val.slouchTime;
+        seen.totalDuration += val.totalDuration;
+        // Don't keep this value, It's merged
+        return false;
+      }
+
+      // remember this obj
+      seen = val;
+      return true;
+    });
+
+  return {
+    sessions: groupByDay,
+    loading: state.user.isUpdating,
+  };
+};
 
 export default connect(mapStateToProps)(PostureReport);
