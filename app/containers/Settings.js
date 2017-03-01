@@ -16,6 +16,7 @@ import {
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import routes from '../routes';
@@ -307,6 +308,30 @@ class Settings extends Component {
     }, {
       label: 'Forget device',
       handler: () => this.props.dispatch(deviceActions.forget()),
+    }, {
+      label: 'Partial modal example',
+      handler: () => {
+        this.props.dispatch(appActions.showPartialModal({
+          content: (
+            <View>
+              <BodyText>We've got your back!</BodyText>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
+                <Button
+                  style={{ width: 100 }}
+                  text="Cancel"
+                  onPress={() => this.props.dispatch(appActions.hidePartialModal())}
+                />
+                <Button
+                  style={{ width: 100 }}
+                  text="OK"
+                  primary
+                  onPress={() => this.props.dispatch(appActions.hidePartialModal())}
+                />
+              </View>
+            </View>
+          ),
+        }));
+      },
     }];
 
     return (

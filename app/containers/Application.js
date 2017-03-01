@@ -24,6 +24,7 @@ import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import postureActions from '../actions/posture';
 import FullModal from '../components/FullModal';
+import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
@@ -64,7 +65,8 @@ class Application extends Component {
     dispatch: PropTypes.func,
     app: PropTypes.shape({
       modal: PropTypes.shape({
-        show: PropTypes.bool,
+        showFull: PropTypes.bool,
+        showPartial: PropTypes.bool,
         content: PropTypes.node,
         onClose: PropTypes.func,
       }),
@@ -93,9 +95,10 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        if (this.props.app.modal.show) {
+        if (this.props.app.modal.showFull || this.props.app.modal.showPartial) {
           // There is a modal being displayed, hide it
           this.props.dispatch(appActions.hideFullModal());
+          this.props.dispatch(appActions.hidePartialModal());
           return true;
         }
 
@@ -438,12 +441,13 @@ class Application extends Component {
           navigator={this.navigator}
           currentRoute={route}
         />
-        <FullModal show={modalProps.show} onClose={modalProps.onClose}>
+        <FullModal show={modalProps.showFull} onClose={modalProps.onClose}>
           {modalProps.content}
         </FullModal>
         { route.showBanner && <Banner navigator={this.navigator} /> }
-        <View style={[modalProps.show ? hiddenStyles : {}, { flex: 1 }]}>
+        <View style={[modalProps.showFull ? hiddenStyles : {}, { flex: 1 }]}>
           <RouteComponent navigator={this.navigator} currentRoute={route} {...route.props} />
+          <PartialModal {...modalProps}>{modalProps.content}</PartialModal>
           { route.showTabBar && TabBar }
         </View>
       </View>
