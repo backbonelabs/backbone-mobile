@@ -129,7 +129,7 @@ class PostureReport extends Component {
     if (this.props.loading) {
       return <Spinner />;
     }
-    console.log(this.props.sessions);
+
     return (
       <View style={styles.container}>
         <HeadingText size={1} style={styles._heading}>Posture Report</HeadingText>
