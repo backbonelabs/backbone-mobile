@@ -100,4 +100,20 @@ export default {
   registerSuperProperties(properties) {
     Mixpanel.registerSuperProperties(properties);
   },
+
+  /**
+   * Registers super properties without overriding previously registered ones
+   * @param  {Object}  properties  An object containing properties to pass on every event
+   */
+  registerSuperPropertiesOnce(properties) {
+    Mixpanel.registerSuperPropertiesOnce(properties);
+  },
+
+  /**
+   * Unregisters super property specified by the property name
+   * @param  {String}  propertyName  The property name to be unregistered
+   */
+  unregisterSuperProperty(propertyName) {
+    Mixpanel.unregisterSuperProperty(propertyName);
+  },
 };

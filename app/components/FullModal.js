@@ -7,7 +7,7 @@ import appActions from '../actions/app';
 import styles from '../styles/fullModal';
 
 const FullModal = props => (
-  props.show ? (
+  props.showFull ? (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -34,7 +34,7 @@ FullModal.propTypes = {
   children: PropTypes.node,
   dispatch: PropTypes.func,
   onClose: PropTypes.func,
-  show: PropTypes.bool,
+  showFull: PropTypes.bool,
 };
 
 export default connect()(FullModal);

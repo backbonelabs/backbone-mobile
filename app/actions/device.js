@@ -124,6 +124,8 @@ const deviceActions = {
               stackTrace: ['deviceActions.disconnect', 'DeviceManagementService.cancelConnection'],
             });
           } else {
+            Mixpanel.unregisterSuperProperty('firmwareVersion');
+
             dispatch(deviceActions.didDisconnect());
           }
         });
@@ -143,6 +145,8 @@ const deviceActions = {
             stackTrace: ['deviceActions.forget', 'DeviceManagementService.cancelConnection'],
           });
         } else {
+          Mixpanel.unregisterSuperProperty('firmwareVersion');
+
           // Remove device information from local storage
           SensitiveInfo.deleteItem(storageKeys.DEVICE);
           dispatch(forget());
@@ -159,6 +163,9 @@ const deviceActions = {
       if (deviceState.isConnected) {
         DeviceInformationService.getDeviceInformation((err, results) => {
           if (err) {
+            // Remove firmwareVersion property from the super property when not connected
+            Mixpanel.unregisterSuperProperty('firmwareVersion');
+
             dispatch(getInfoError(err));
             Mixpanel.trackError({
               errorContent: err,
@@ -166,6 +173,9 @@ const deviceActions = {
               stackTrace: ['deviceActions.getInfo', 'DeviceManagementService.getDeviceInformation'],
             });
           } else {
+            // Register firmwareVersion property upon connected
+            Mixpanel.registerSuperProperties({ firmwareVersion: results.firmwareVersion });
+
             // Send battery reading to Mixpanel
             Mixpanel.trackWithProperties('batteryReading', {
               percentage: results.batteryLevel,
@@ -188,6 +198,8 @@ const deviceActions = {
         SensitiveInfo.getItem(storageKeys.DEVICE)
           .then(device => {
             if (device) {
+              Mixpanel.registerSuperProperties({ firmwareVersion: device.firmwareVersion });
+
               checkFirmware(device.firmwareVersion)
                 .then(updateAvailable => {
                   // Clone device in order to add updateAvailable property
