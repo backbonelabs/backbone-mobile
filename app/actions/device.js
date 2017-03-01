@@ -124,6 +124,8 @@ const deviceActions = {
               stackTrace: ['deviceActions.disconnect', 'DeviceManagementService.cancelConnection'],
             });
           } else {
+            Mixpanel.unregisterSuperProperty('firmwareVersion');
+
             dispatch(deviceActions.didDisconnect());
           }
         });
