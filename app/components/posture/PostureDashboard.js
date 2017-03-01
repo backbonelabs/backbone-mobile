@@ -74,7 +74,10 @@ class PostureDashboard extends Component {
           this.props.dispatch(appActions.showPartialModal({
             content: (
               <View>
-                <BodyText>"Have a minute? Help us improve Backbone by taking this 60-second survey!"
+                <BodyText
+                  style={{ textAlign: 'center' }}
+                >
+                  Have a minute? Help us improve Backbone by taking this 60-second survey!
                 </BodyText>
                 <View
                   style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}
