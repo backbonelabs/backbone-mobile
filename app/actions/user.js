@@ -8,6 +8,7 @@ const { Environment } = NativeModules;
 const { storageKeys } = constants;
 const baseUrl = `${Environment.API_SERVER_URL}/users`;
 const settingsUrl = `${baseUrl}/settings`;
+const sessionsUrl = `${baseUrl}/sessions`;
 
 const fetchUserStart = () => ({ type: 'FETCH_USER__START' });
 
@@ -49,6 +50,19 @@ const prepareUserUpdate = payload => ({
   type: 'PREPARE_USER_UPDATE',
   payload,
 });
+
+const fetchSessions = sessions => ({
+  type: 'FETCH_USER_SESSIONS',
+  payload: sessions,
+});
+
+const fetchUserSessionsStart = () => ({ type: 'FETCH_USER_SESSIONS__START' });
+
+const fetchUsersessionsError = error => ({
+  type: 'FETCH_USER_SESSIONS__ERROR',
+  payload: error,
+});
+
 
 export default {
   fetchUser() {
@@ -190,5 +204,39 @@ export default {
         });
     };
   },
+
+  fetchUserSessions(dates) {
+    return (dispatch, getState) => {
+      const state = getState();
+      const { accessToken } = state.auth;
+      const { user: { _id } } = state.user;
+
+      dispatch(fetchUserSessionsStart());
+
+      return Fetcher.get({
+        url: `${sessionsUrl}/${_id}?from=${dates.from_date}&to=${dates.to_date}`,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+        .then(response => response.json())
+        .then((body) => {
+          console.log(body, 'body');
+          if (body.error) {
+            dispatch(fetchUsersessionsError(
+              new Error(body.error)
+            ));
+          } else {
+            dispatch(fetchSessions(body));
+          }
+        })
+        .catch((err) => {
+          // Network error
+          console.log({ err }, 'error');
+          dispatch(fetchUsersessionsError(
+            new Error('We are encountering server issues. Please try again later.')
+          ));
+        });
+    };
+  },
+
   prepareUserUpdate,
 };
