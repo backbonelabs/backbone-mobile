@@ -111,7 +111,6 @@ class PostureMonitor extends Component {
       resetTo: PropTypes.func,
       push: PropTypes.func,
       pop: PropTypes.func,
-      getCurrentRoutes: PropTypes.func,
     }),
   };
 
@@ -184,9 +183,7 @@ class PostureMonitor extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        const routeStack = this.props.navigator.getCurrentRoutes();
-        const currentRoute = routeStack[routeStack.length - 1];
-        if (currentRoute.name === routes.postureMonitor.name) {
+        if (this.state.sessionState !== sessionStates.STOPPED) {
           // Confirm if the user wants to quit the current session
           this.props.dispatch(appActions.showPartialModal({
             content: (
