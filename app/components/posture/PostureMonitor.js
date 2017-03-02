@@ -6,13 +6,17 @@ import {
   Vibration,
   NativeModules,
   NativeEventEmitter,
+  Platform,
+  BackAndroid,
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import { debounce, isEqual } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
+import partialModalStyles from '../../styles/partialModal';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
+import Button from '../../components/Button';
 import SecondaryText from '../../components/SecondaryText';
 import Spinner from '../../components/Spinner';
 import MonitorButton from './postureMonitor/MonitorButton';
@@ -38,6 +42,8 @@ const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService
 
 const MIN_POSTURE_THRESHOLD = 0.03;
 const MAX_POSTURE_THRESHOLD = 0.3;
+
+const isiOS = Platform.OS === 'ios';
 
 /**
  * Maps distance values to slouch degrees for determining how much to rotate
@@ -105,6 +111,7 @@ class PostureMonitor extends Component {
       resetTo: PropTypes.func,
       push: PropTypes.func,
       pop: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
     }),
   };
 
@@ -138,6 +145,7 @@ class PostureMonitor extends Component {
     this.statsListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
+    this.backAndroidListener = null;
   }
 
   componentWillMount() {
@@ -172,6 +180,44 @@ class PostureMonitor extends Component {
         this.statsHandler(event);
       }
     });
+
+    // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
+    if (!isiOS) {
+      this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
+        const routeStack = this.props.navigator.getCurrentRoutes();
+        const currentRoute = routeStack[routeStack.length - 1];
+        if (currentRoute.name === routes.postureMonitor.name) {
+          // Confirm if the user wants to quit the current session
+          this.props.dispatch(appActions.showPartialModal({
+            content: (
+              <View>
+                <BodyText style={partialModalStyles._bodyText}>
+                  Do you want to quit the current session?
+                </BodyText>
+                <View style={partialModalStyles.buttonView}>
+                  <Button
+                    style={partialModalStyles._button}
+                    text="Cancel"
+                    onPress={() => this.props.dispatch(appActions.hidePartialModal())}
+                  />
+                  <Button
+                    style={partialModalStyles._button}
+                    text="Quit"
+                    primary
+                    onPress={() => {
+                      // Exit the current session
+                      this.props.dispatch(appActions.hidePartialModal());
+                      this.stopSession();
+                    }}
+                  />
+                </View>
+              </View>
+            ),
+          }));
+          return true;
+        }
+      });
+    }
 
     const { sessionState } = this.state;
     if (sessionState === sessionStates.PAUSED) {
@@ -227,6 +273,10 @@ class PostureMonitor extends Component {
     this.statsListener.remove();
     this.deviceStateListener.remove();
     this.sessionStateListener.remove();
+
+    if (this.backAndroidListener) {
+      this.backAndroidListener.remove();
+    }
   }
 
   /**
