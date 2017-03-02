@@ -26,7 +26,7 @@ export default EStyleSheet.create({
   surveyButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 10,
+    marginTop: applyWidthDifference(10),
   },
   surveyButton: {
     width: applyWidthDifference(125),

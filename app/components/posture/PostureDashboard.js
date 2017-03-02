@@ -25,7 +25,7 @@ import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
 
-const { BluetoothService, Environment } = NativeModules;
+const { BluetoothService } = NativeModules;
 
 const { bluetoothStates, storageKeys } = constants;
 
@@ -88,9 +88,8 @@ class PostureDashboard extends Component {
                     text="OK, sure"
                     primary
                     onPress={() => {
-                      // Temporarily open our homepage
-                      // Change this to the real survey url once decided
-                      const url = `${Environment.WEB_SERVER_URL}`;
+                      // const url = `${Environment.WEB_SERVER_URL}`;
+                      const url = 'https://backbonelabsinc.typeform.com/to/lVs1Sh';
                       Linking.canOpenURL(url)
                         .then(supported => {
                           if (supported) {
