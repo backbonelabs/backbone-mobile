@@ -25,4 +25,15 @@ export default EStyleSheet.create({
   closeIcon: {
     color: '$primaryFontColor',
   },
+  bodyText: {
+    textAlign: 'center',
+  },
+  buttonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: applyWidthDifference(10),
+  },
+  button: {
+    width: applyWidthDifference(125),
+  },
 });

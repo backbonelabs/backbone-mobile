@@ -17,6 +17,7 @@ import Button from '../../components/Button';
 import constants from '../../utils/constants';
 import SensitiveInfo from '../../utils/SensitiveInfo';
 import styles from '../../styles/posture/postureDashboard';
+import partialModalStyles from '../../styles/partialModal';
 import Icon5Min from '../../images/session/5min.png';
 import Icon10Min from '../../images/session/10min.png';
 import Icon15Min from '../../images/session/15min.png';
@@ -74,17 +75,17 @@ class PostureDashboard extends Component {
           this.props.dispatch(appActions.showPartialModal({
             content: (
               <View>
-                <BodyText style={styles._surveyText}>
+                <BodyText style={partialModalStyles._bodyText}>
                   Have a minute? Help us improve Backbone by taking this 60-second survey!
                 </BodyText>
-                <View style={styles.surveyButtonContainer}>
+                <View style={partialModalStyles.buttonView}>
                   <Button
-                    style={styles._surveyButton}
+                    style={partialModalStyles._button}
                     text="No, thanks"
                     onPress={() => this.props.dispatch(appActions.hidePartialModal())}
                   />
                   <Button
-                    style={styles._surveyButton}
+                    style={partialModalStyles._button}
                     text="OK, sure"
                     primary
                     onPress={() => {
