@@ -61,7 +61,7 @@ class Login extends Component {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
         // Disable initial survey for already onboarded users
-        SensitiveInfo.setItem(storageKeys.INITIAL_SURVEY_STATE, true);
+        SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, true);
 
         this.props.navigator.replace(routes.deviceConnect);
       } else {

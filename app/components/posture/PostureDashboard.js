@@ -62,33 +62,29 @@ class PostureDashboard extends Component {
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
 
-    SensitiveInfo.getItem(storageKeys.INITIAL_SURVEY_STATE)
-      .then(surveyState => {
-        if (surveyState) {
+    SensitiveInfo.getItem(storageKeys.COMPLETED_BASELINE_SURVEY)
+      .then(completedSurvey => {
+        if (completedSurvey) {
           // If initial survey has been displayed, do nothing
         } else {
           // Else display the initial survey
           // And set the survey state to disable displaying it again for this user
-          SensitiveInfo.setItem(storageKeys.INITIAL_SURVEY_STATE, true);
+          SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, true);
 
           this.props.dispatch(appActions.showPartialModal({
             content: (
               <View>
-                <BodyText
-                  style={{ textAlign: 'center' }}
-                >
+                <BodyText style={styles._surveyText}>
                   Have a minute? Help us improve Backbone by taking this 60-second survey!
                 </BodyText>
-                <View
-                  style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}
-                >
+                <View style={styles.surveyButtonContainer}>
                   <Button
-                    style={{ width: 100 }}
+                    style={styles._surveyButton}
                     text="No, thanks"
                     onPress={() => this.props.dispatch(appActions.hidePartialModal())}
                   />
                   <Button
-                    style={{ width: 100 }}
+                    style={styles._surveyButton}
                     text="OK, sure"
                     primary
                     onPress={() => {
@@ -108,7 +104,7 @@ class PostureDashboard extends Component {
                           // to open the URL
                           Alert.alert(
                             'Baseline Survey',
-                            'We could not launch your browser. You can take the survey ' + // eslint-disable-line prefer-template, max-len
+                            'We could not launch your browser. Please take the survey ' + // eslint-disable-line prefer-template, max-len
                             'by visiting ' + url + '.',
                           );
                         });

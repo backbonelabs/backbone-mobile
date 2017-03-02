@@ -20,6 +20,17 @@ export default EStyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  surveyText: {
+    textAlign: 'center',
+  },
+  surveyButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 10,
+  },
+  surveyButton: {
+    width: applyWidthDifference(125),
+  },
   sessionIcon: {
     width: '$sessionIconSize',
     height: '$sessionIconSize',

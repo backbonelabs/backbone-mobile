@@ -260,7 +260,7 @@ class Application extends Component {
             Mixpanel.identify(this.props.user._id);
 
             // Disable initial survey for already onboarded users
-            SensitiveInfo.setItem(storageKeys.INITIAL_SURVEY_STATE, true);
+            SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, true);
 
             // Set initial route to posture dashboard
             this.setInitialRoute(routes.postureDashboard);
@@ -285,7 +285,7 @@ class Application extends Component {
                     this.props.dispatch(deviceActions.getInfo());
 
                     // Disable initial survey for already onboarded users
-                    SensitiveInfo.setItem(storageKeys.INITIAL_SURVEY_STATE, true);
+                    SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, true);
 
                     // Set initial route to posture dashboard
                     this.setInitialRoute(routes.postureDashboard);

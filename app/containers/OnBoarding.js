@@ -66,7 +66,7 @@ class OnBoarding extends Component {
   componentWillMount() {
     // Reset the initial survey state back to false
     // to trigger the modal popup after the onboarding process
-    SensitiveInfo.setItem(storageKeys.INITIAL_SURVEY_STATE, false);
+    SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, false);
 
     // // Check if user has enabled notifications on their iOS device
     // if (isIOS) {
