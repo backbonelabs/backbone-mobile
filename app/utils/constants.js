@@ -6,7 +6,6 @@ export default {
     DEVICE: 'device',
     CALIBRATION_AUTO_START: 'calibrationAutoStart',
     SESSION_STATE: 'sessionParameters',
-    COMPLETED_BASELINE_SURVEY: 'completedBaselineSurvey',
   },
   bluetoothStates: {
     UNKNOWN: -1,

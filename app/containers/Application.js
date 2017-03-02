@@ -259,9 +259,6 @@ class Application extends Component {
             // Specify user account to track event for
             Mixpanel.identify(this.props.user._id);
 
-            // Disable initial survey for already onboarded users
-            SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, true);
-
             // Set initial route to posture dashboard
             this.setInitialRoute(routes.postureDashboard);
           } else {
@@ -283,9 +280,6 @@ class Application extends Component {
                     // User completed onboarding
                     // Fetch device info
                     this.props.dispatch(deviceActions.getInfo());
-
-                    // Disable initial survey for already onboarded users
-                    SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, true);
 
                     // Set initial route to posture dashboard
                     this.setInitialRoute(routes.postureDashboard);

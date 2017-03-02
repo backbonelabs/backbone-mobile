@@ -40,6 +40,7 @@ export default {
       birthdate: user.birthdate,
       dailyStreak: user.dailyStreak,
       hasOnboarded: user.hasOnboarded,
+      seenBaselineSurvey: user.seenBaselineSurvey,
       isConfirmed: user.isConfirmed,
       lastSession: user.lastSession,
       ...user.settings,

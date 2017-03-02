@@ -10,6 +10,7 @@ import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import appActions from '../../actions/app';
+import userActions from '../../actions/user';
 import postureActions from '../../actions/posture';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -55,69 +56,75 @@ class PostureDashboard extends Component {
       isConnecting: PropTypes.bool,
     }),
     user: PropTypes.shape({
+      _id: PropTypes.string,
       nickname: PropTypes.string,
       dailyStreak: PropTypes.number,
+      seenBaselineSurvey: PropTypes.bool,
     }),
   };
 
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
 
-    SensitiveInfo.getItem(storageKeys.COMPLETED_BASELINE_SURVEY)
-      .then(completedSurvey => {
-        if (completedSurvey) {
-          // If initial survey has been displayed, do nothing
-        } else {
-          // Else display the initial survey
-          // And set the survey state to disable displaying it again for this user
-          SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, true);
+    if (this.props.user.seenBaselineSurvey) {
+      // If initial survey has been displayed, do nothing
+    } else {
+      // Else display the initial survey
+      // And set the survey state to disable displaying it again for this user
+      const userData = {
+        seenBaselineSurvey: true,
+      };
 
-          this.props.dispatch(appActions.showPartialModal({
-            content: (
-              <View>
-                <BodyText style={partialModalStyles._bodyText}>
-                  Have a minute? Help us improve Backbone by taking this 60-second survey!
-                </BodyText>
-                <View style={partialModalStyles.buttonView}>
-                  <Button
-                    style={partialModalStyles._button}
-                    text="No, thanks"
-                    onPress={() => this.props.dispatch(appActions.hidePartialModal())}
-                  />
-                  <Button
-                    style={partialModalStyles._button}
-                    text="OK, sure"
-                    primary
-                    onPress={() => {
-                      // const url = `${Environment.WEB_SERVER_URL}`;
-                      const url = 'https://backbonelabsinc.typeform.com/to/lVs1Sh';
-                      Linking.canOpenURL(url)
-                        .then(supported => {
-                          if (supported) {
-                            return Linking.openURL(url);
-                          }
-                          throw new Error();
-                        })
-                        .catch(() => {
-                          // This catch handler will handle rejections from Linking.openURL
-                          // as well as when the user's phone doesn't have any apps
-                          // to open the URL
-                          Alert.alert(
-                            'Baseline Survey',
-                            'We could not launch your browser. Please take the survey ' + // eslint-disable-line prefer-template, max-len
-                            'by visiting ' + url + '.',
-                          );
-                        });
+      this.props.dispatch(userActions.updateUser({
+        _id: this.props.user._id,
+        ...userData,
+      }));
 
-                      this.props.dispatch(appActions.hidePartialModal());
-                    }}
-                  />
-                </View>
-              </View>
-            ),
-          }));
-        }
-      });
+      this.props.dispatch(appActions.showPartialModal({
+        content: (
+          <View>
+            <BodyText style={partialModalStyles._bodyText}>
+              Have a minute? Help us improve Backbone by taking this 60-second survey!
+            </BodyText>
+            <View style={partialModalStyles.buttonView}>
+              <Button
+                style={partialModalStyles._button}
+                text="No, thanks"
+                onPress={() => this.props.dispatch(appActions.hidePartialModal())}
+              />
+              <Button
+                style={partialModalStyles._button}
+                text="OK, sure"
+                primary
+                onPress={() => {
+                  // const url = `${Environment.WEB_SERVER_URL}`;
+                  const url = 'https://backbonelabsinc.typeform.com/to/lVs1Sh';
+                  Linking.canOpenURL(url)
+                    .then(supported => {
+                      if (supported) {
+                        return Linking.openURL(url);
+                      }
+                      throw new Error();
+                    })
+                    .catch(() => {
+                      // This catch handler will handle rejections from Linking.openURL
+                      // as well as when the user's phone doesn't have any apps
+                      // to open the URL
+                      Alert.alert(
+                        'Baseline Survey',
+                        'We could not launch your browser. Please take the survey ' + // eslint-disable-line prefer-template, max-len
+                        'by visiting ' + url + '.',
+                      );
+                    });
+
+                  this.props.dispatch(appActions.hidePartialModal());
+                }}
+              />
+            </View>
+          </View>
+        ),
+      }));
+    }
   }
 
   setSessionTime(seconds) {

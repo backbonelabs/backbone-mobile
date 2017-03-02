@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
@@ -22,8 +21,6 @@ import SecondaryText from '../components/SecondaryText';
 import BackBoneLogo from '../images/logo.png';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
-
-const { storageKeys } = constants;
 
 class Login extends Component {
   static propTypes = {
@@ -60,9 +57,6 @@ class Login extends Component {
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
-        // Disable initial survey for already onboarded users
-        SensitiveInfo.setItem(storageKeys.COMPLETED_BASELINE_SURVEY, true);
-
         this.props.navigator.replace(routes.deviceConnect);
       } else {
         // User hasn't completed onboarding process
