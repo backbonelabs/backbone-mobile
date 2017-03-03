@@ -18,6 +18,7 @@ import BodyText from '../components/BodyText';
 import styles from '../styles/firmwareUpdate';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
+import Mixpanel from '../utils/Mixpanel';
 
 const { firmwareUpdateStates: {
   INVALID_SERVICE,
@@ -68,41 +69,41 @@ class FirmwareUpdate extends Component {
     );
 
     BootLoaderService.setHasPendingUpdate(true);
-    this.updateFirmware();
+
+    // Local filepath to firmware
+    const firmwareFilepath = `${ReactNativeFS.DocumentDirectoryPath}/Backbone.cyacd`;
+
+    // Download firmware and begin update process
+    Mixpanel.track('firmwareUpdateBegin');
+    Fetcher.get({ url: firmwareUrl })
+      .then(res => (
+        res.json()
+          .then(body => (
+            ReactNativeFS.downloadFile({
+              fromUrl: body.url,
+              toFile: firmwareFilepath,
+            })
+          ))
+          .then(result => result.promise)
+          .then(downloadResult => {
+            const statusCode = downloadResult.statusCode;
+            if (statusCode === 200) {
+              // Successful file download attempt
+              BootLoaderService.initiateFirmwareUpdate(firmwareFilepath);
+            } else {
+              throw new Error(
+                `Failed to download firmware. Received status code ${statusCode}.`
+              );
+            }
+          })
+      ))
+      .catch(this.failedUpdateHandler);
   }
 
   componentWillUnmount() {
     BootLoaderService.setHasPendingUpdate(false);
     this.firmwareUpdateStatus.remove();
     this.firmwareUploadProgress.remove();
-  }
-
-  @autobind
-  updateFirmware() {
-    // Local filepath to firmware
-    const firmwareFilepath = `${ReactNativeFS.DocumentDirectoryPath}/Backbone.cyacd`;
-
-    return Fetcher.get({ url: firmwareUrl })
-      .then(res => res.json()
-        .then(body => (
-          ReactNativeFS.downloadFile({
-            fromUrl: body.url,
-            toFile: firmwareFilepath,
-          })
-        ))
-        .then(result => result.promise.then(downloadResult => {
-          // Successful file download attempt
-          if (downloadResult.statusCode === 200) {
-            BootLoaderService.initiateFirmwareUpdate(firmwareFilepath);
-          } else {
-            this.failedUpdateHandler();
-          }
-        })
-        // Handle network request error for firmware download
-        .catch(this.failedUpdateHandler))
-      )
-      // Handle network request error for getting firmware URL
-      .catch(this.failedUpdateHandler);
   }
 
   @autobind
@@ -119,7 +120,11 @@ class FirmwareUpdate extends Component {
       firmwareStatus === INVALID_FILE ||
       firmwareStatus === INVALID_SERVICE
     ) {
-      this.setState({ isUpdating: false }, this.failedUpdateHandler);
+      this.setState({ isUpdating: false }, () => {
+        this.failedUpdateHandler(new Error(
+          `Error during firmware update. Received firmware status ${firmwareStatus}.`
+        ));
+      });
     }
   }
 
@@ -131,6 +136,7 @@ class FirmwareUpdate extends Component {
 
   @autobind
   successfulUpdateHandler() {
+    Mixpanel.track('firmwareUpdateSuccess');
     BootLoaderService.setHasPendingUpdate(false);
 
     // Initiate getting of latest device information
@@ -146,9 +152,16 @@ class FirmwareUpdate extends Component {
     this.props.navigator.pop();
   }
 
+  /**
+   * Handles firmware update errors. The error is sent to Mixpanel and an alert is displayed
+   * to the user.
+   * @param {Error} err
+   */
   @autobind
-  failedUpdateHandler() {
+  failedUpdateHandler(err) {
     BootLoaderService.setHasPendingUpdate(false);
+
+    Mixpanel.trackWithProperties('firmwareUpdateError', { message: err.message });
 
     Alert.alert(
       'Failed',
