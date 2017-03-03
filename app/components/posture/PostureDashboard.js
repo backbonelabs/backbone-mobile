@@ -70,8 +70,13 @@ class PostureDashboard extends Component {
     } else {
       // Else display the initial survey
       // And set the survey state to disable displaying it again for this user
-      const userData = {
-        seenBaselineSurvey: true,
+      const markSurveySeenAndHideModal = () => {
+        this.props.dispatch(userActions.updateUser({
+          _id: this.props.user._id,
+          seenBaselineSurvey: true,
+        }));
+
+        this.props.dispatch(appActions.hidePartialModal());
       };
 
       this.props.dispatch(appActions.showPartialModal({
@@ -84,25 +89,13 @@ class PostureDashboard extends Component {
               <Button
                 style={styles._partialModalButton}
                 text="No, thanks"
-                onPress={() => {
-                  this.props.dispatch(userActions.updateUser({
-                    _id: this.props.user._id,
-                    ...userData,
-                  }));
-
-                  this.props.dispatch(appActions.hidePartialModal());
-                }}
+                onPress={markSurveySeenAndHideModal}
               />
               <Button
                 style={styles._partialModalButton}
                 text="OK, sure"
                 primary
                 onPress={() => {
-                  this.props.dispatch(userActions.updateUser({
-                    _id: this.props.user._id,
-                    ...userData,
-                  }));
-
                   // const url = `${Environment.WEB_SERVER_URL}`;
                   const url = 'https://backbonelabsinc.typeform.com/to/lVs1Sh?' + // eslint-disable-line prefer-template, max-len
                   'user_id=' + this.props.user._id;
@@ -124,7 +117,7 @@ class PostureDashboard extends Component {
                       );
                     });
 
-                  this.props.dispatch(appActions.hidePartialModal());
+                  markSurveySeenAndHideModal();
                 }}
               />
             </View>
@@ -133,7 +126,7 @@ class PostureDashboard extends Component {
         onClose: () => {
           this.props.dispatch(userActions.updateUser({
             _id: this.props.user._id,
-            ...userData,
+            seenBaselineSurvey: true,
           }));
         },
       }));
