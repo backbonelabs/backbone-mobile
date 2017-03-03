@@ -25,6 +25,7 @@ import Icon20Min from '../../images/session/20min.png';
 import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
+import Mixpanel from '../../utils/Mixpanel';
 
 const { BluetoothService } = NativeModules;
 
@@ -79,6 +80,9 @@ class PostureDashboard extends Component {
         this.props.dispatch(appActions.hidePartialModal());
       };
 
+      const baselineSurveyEventName = 'baselineUserSurvey';
+      Mixpanel.track(baselineSurveyEventName);
+
       this.props.dispatch(appActions.showPartialModal({
         content: (
           <View>
@@ -89,7 +93,10 @@ class PostureDashboard extends Component {
               <Button
                 style={styles._partialModalButton}
                 text="No, thanks"
-                onPress={markSurveySeenAndHideModal}
+                onPress={() => {
+                  Mixpanel.track(`${baselineSurveyEventName}-decline`);
+                  markSurveySeenAndHideModal();
+                }}
               />
               <Button
                 style={styles._partialModalButton}
@@ -117,6 +124,8 @@ class PostureDashboard extends Component {
                       );
                     });
 
+                  Mixpanel.track(`${baselineSurveyEventName}-accept`);
+
                   markSurveySeenAndHideModal();
                 }}
               />
@@ -124,6 +133,7 @@ class PostureDashboard extends Component {
           </View>
         ),
         onClose: () => {
+          Mixpanel.track(`${baselineSurveyEventName}-decline`);
           this.props.dispatch(userActions.updateUser({
             _id: this.props.user._id,
             seenBaselineSurvey: true,
