@@ -42,6 +42,12 @@ class FirmwareUpdate extends Component {
       pop: PropTypes.func,
     }),
     dispatch: PropTypes.func,
+    device: PropTypes.shape({
+      inProgress: PropTypes.bool,
+      device: PropTypes.shape({
+        firmwareVersion: PropTypes.string,
+      }),
+    }),
   }
 
   constructor() {
@@ -49,6 +55,7 @@ class FirmwareUpdate extends Component {
     this.state = {
       isUpdating: null,
       updateProgress: 0,
+      updateSuccess: false,
     };
 
     this.firmwareUpdateStatus = null;
@@ -100,6 +107,22 @@ class FirmwareUpdate extends Component {
       .catch(this.failedUpdateHandler);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.isUpdating && this.state.updateSuccess &&
+      this.props.device.inProgress && !nextProps.device.inProgress) {
+      // Firmware update completed successfully
+      Mixpanel.track('firmwareUpdateSuccess');
+      Alert.alert(
+        'Success',
+        'You have successfully updated your Backbone!',
+      );
+
+      // Automatically pop the scene without user interaction in case app is in the background
+      // so the user won't be stuck on this component when the app is back in the foreground
+      this.props.navigator.pop();
+    }
+  }
+
   componentWillUnmount() {
     BootLoaderService.setHasPendingUpdate(false);
     this.firmwareUpdateStatus.remove();
@@ -114,7 +137,10 @@ class FirmwareUpdate extends Component {
       this.setState({ isUpdating: true });
     } else if (firmwareStatus === END_SUCCESS) {
       // Firmware update has finished, display firmware update status message
-      this.setState({ isUpdating: false }, this.successfulUpdateHandler);
+      this.setState({
+        isUpdating: false,
+        updateSuccess: true,
+      }, this.successfulUpdateHandler);
     } else if (
       firmwareStatus === END_ERROR ||
       firmwareStatus === INVALID_FILE ||
@@ -136,20 +162,11 @@ class FirmwareUpdate extends Component {
 
   @autobind
   successfulUpdateHandler() {
-    Mixpanel.track('firmwareUpdateSuccess');
     BootLoaderService.setHasPendingUpdate(false);
 
-    // Initiate getting of latest device information
+    // Fetch latest device information
+    // The final steps for a successful firmware update will be done in componentWillReceiveProps
     this.props.dispatch(deviceActions.getInfo());
-
-    Alert.alert(
-      'Success',
-      'You have successfully updated your Backbone!',
-    );
-
-    // Automatically pop the scene without user interaction in case app is in the background
-    // so the user won't be stuck on this component when the app is back in the foreground
-    this.props.navigator.pop();
   }
 
   /**
@@ -194,4 +211,8 @@ class FirmwareUpdate extends Component {
   }
 }
 
-export default connect()(FirmwareUpdate);
+const mapStateToProps = state => ({
+  device: state.device,
+});
+
+export default connect(mapStateToProps)(FirmwareUpdate);
