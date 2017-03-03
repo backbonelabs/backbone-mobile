@@ -74,11 +74,6 @@ class PostureDashboard extends Component {
         seenBaselineSurvey: true,
       };
 
-      this.props.dispatch(userActions.updateUser({
-        _id: this.props.user._id,
-        ...userData,
-      }));
-
       this.props.dispatch(appActions.showPartialModal({
         content: (
           <View>
@@ -89,15 +84,28 @@ class PostureDashboard extends Component {
               <Button
                 style={styles._partialModalButton}
                 text="No, thanks"
-                onPress={() => this.props.dispatch(appActions.hidePartialModal())}
+                onPress={() => {
+                  this.props.dispatch(userActions.updateUser({
+                    _id: this.props.user._id,
+                    ...userData,
+                  }));
+
+                  this.props.dispatch(appActions.hidePartialModal());
+                }}
               />
               <Button
                 style={styles._partialModalButton}
                 text="OK, sure"
                 primary
                 onPress={() => {
+                  this.props.dispatch(userActions.updateUser({
+                    _id: this.props.user._id,
+                    ...userData,
+                  }));
+
                   // const url = `${Environment.WEB_SERVER_URL}`;
-                  const url = 'https://backbonelabsinc.typeform.com/to/lVs1Sh';
+                  const url = 'https://backbonelabsinc.typeform.com/to/lVs1Sh?' + // eslint-disable-line prefer-template, max-len
+                  'user_id=' + this.props.user._id;
                   Linking.canOpenURL(url)
                     .then(supported => {
                       if (supported) {
@@ -111,8 +119,8 @@ class PostureDashboard extends Component {
                       // to open the URL
                       Alert.alert(
                         'Baseline Survey',
-                        'We could not launch your browser. Please take the survey ' + // eslint-disable-line prefer-template, max-len
-                        'by visiting ' + url + '.',
+                        'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
+                        'Please contact us to fill out the survey.',
                       );
                     });
 
@@ -122,6 +130,12 @@ class PostureDashboard extends Component {
             </View>
           </View>
         ),
+        onClose: () => {
+          this.props.dispatch(userActions.updateUser({
+            _id: this.props.user._id,
+            ...userData,
+          }));
+        },
       }));
     }
   }
