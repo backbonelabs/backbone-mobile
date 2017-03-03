@@ -81,7 +81,7 @@ class FirmwareUpdate extends Component {
     const firmwareFilepath = `${ReactNativeFS.DocumentDirectoryPath}/Backbone.cyacd`;
 
     // Download firmware and begin update process
-    Mixpanel.track('firmwareUpdateBegin');
+    Mixpanel.track('firmwareUpdate-begin');
     Fetcher.get({ url: firmwareUrl })
       .then(res => (
         res.json()
@@ -111,7 +111,7 @@ class FirmwareUpdate extends Component {
     if (!this.state.isUpdating && this.state.updateSuccess &&
       this.props.device.inProgress && !nextProps.device.inProgress) {
       // Firmware update completed successfully
-      Mixpanel.track('firmwareUpdateSuccess');
+      Mixpanel.track('firmwareUpdate-success');
       Alert.alert(
         'Success',
         'You have successfully updated your Backbone!',
@@ -178,7 +178,7 @@ class FirmwareUpdate extends Component {
   failedUpdateHandler(err) {
     BootLoaderService.setHasPendingUpdate(false);
 
-    Mixpanel.trackWithProperties('firmwareUpdateError', { message: err.message });
+    Mixpanel.trackWithProperties('firmwareUpdate-error', { message: err.message });
 
     Alert.alert(
       'Failed',
