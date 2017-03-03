@@ -15,7 +15,6 @@ import { debounce, isEqual } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
-import Button from '../../components/Button';
 import SecondaryText from '../../components/SecondaryText';
 import Spinner from '../../components/Spinner';
 import MonitorButton from './postureMonitor/MonitorButton';
@@ -184,32 +183,25 @@ class PostureMonitor extends Component {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
         if (this.state.sessionState !== sessionStates.STOPPED) {
           // Confirm if the user wants to quit the current session
-          this.props.dispatch(appActions.showPartialModal({
-            content: (
-              <View>
-                <BodyText style={styles._partialModalBodyText}>
-                  Do you want to quit the current session?
-                </BodyText>
-                <View style={styles.partialModalButtonView}>
-                  <Button
-                    style={styles._partialModalButton}
-                    text="Cancel"
-                    onPress={() => this.props.dispatch(appActions.hidePartialModal())}
-                  />
-                  <Button
-                    style={styles._partialModalButton}
-                    text="Quit"
-                    primary
-                    onPress={() => {
-                      // Exit the current session
-                      this.props.dispatch(appActions.hidePartialModal());
-                      this.stopSession();
-                    }}
-                  />
-                </View>
-              </View>
-            ),
-          }));
+          Alert.alert(
+            'Quit Session',
+            'Do you want to quit the current session?',
+            [
+              {
+                text: 'Cancel',
+                onPress: () => this.props.dispatch(appActions.hidePartialModal()),
+              },
+              {
+                text: 'Quit',
+                onPress: () => {
+                  // Exit the current session
+                  this.props.dispatch(appActions.hidePartialModal());
+                  this.stopSession();
+                },
+              },
+            ]
+          );
+
           return true;
         }
       });
