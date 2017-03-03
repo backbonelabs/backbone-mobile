@@ -143,4 +143,15 @@ export default EStyleSheet.create({
     borderBottomRightRadius: responsiveWidthHalfCircle * 2,
     backgroundColor: '#FFF',
   },
+  partialModalBodyText: {
+    textAlign: 'center',
+  },
+  partialModalButtonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: applyWidthDifference(10),
+  },
+  partialModalButton: {
+    width: applyWidthDifference(125),
+  },
 });

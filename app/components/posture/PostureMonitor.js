@@ -13,7 +13,6 @@ import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import { debounce, isEqual } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
-import partialModalStyles from '../../styles/partialModal';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
 import Button from '../../components/Button';
@@ -188,17 +187,17 @@ class PostureMonitor extends Component {
           this.props.dispatch(appActions.showPartialModal({
             content: (
               <View>
-                <BodyText style={partialModalStyles._bodyText}>
+                <BodyText style={styles._partialModalBodyText}>
                   Do you want to quit the current session?
                 </BodyText>
-                <View style={partialModalStyles.buttonView}>
+                <View style={styles.partialModalButtonView}>
                   <Button
-                    style={partialModalStyles._button}
+                    style={styles._partialModalButton}
                     text="Cancel"
                     onPress={() => this.props.dispatch(appActions.hidePartialModal())}
                   />
                   <Button
-                    style={partialModalStyles._button}
+                    style={styles._partialModalButton}
                     text="Quit"
                     primary
                     onPress={() => {
