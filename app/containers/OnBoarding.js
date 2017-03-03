@@ -61,21 +61,21 @@ class OnBoarding extends Component {
   }
 
   // componentWillMount() {
-  //   // Check if user has enabled notifications on their iOS device
-  //   if (isIOS) {
-  //     // Check notification permissions
-  //     PushNotificationIOS.checkPermissions(permissions => {
-  //       // Update notificationsEnabled to true if permissions enabled
-  //       if (permissions.alert) {
+  // // Check if user has enabled notifications on their iOS device
+  // if (isIOS) {
+  //   // Check notification permissions
+  //   PushNotificationIOS.checkPermissions(permissions => {
+  //     // Update notificationsEnabled to true if permissions enabled
+  //     if (permissions.alert) {
+  //       this.setState({ notificationsEnabled: true });
+  //     } else {
+  //       // Listener for enabling notifications event if permissions disabled
+  //       PushNotificationIOS.addEventListener('register', () => {
   //         this.setState({ notificationsEnabled: true });
-  //       } else {
-  //         // Listener for enabling notifications event if permissions disabled
-  //         PushNotificationIOS.addEventListener('register', () => {
-  //           this.setState({ notificationsEnabled: true });
-  //         });
-  //       }
-  //     });
-  //   }
+  //       });
+  //     }
+  //   });
+  // }
   // }
 
   componentWillReceiveProps(nextProps) {

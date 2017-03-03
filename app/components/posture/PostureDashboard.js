@@ -3,11 +3,14 @@ import {
   Alert,
   View,
   Image,
+  Linking,
   NativeModules,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
+import appActions from '../../actions/app';
+import userActions from '../../actions/user';
 import postureActions from '../../actions/posture';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -52,13 +55,82 @@ class PostureDashboard extends Component {
       isConnecting: PropTypes.bool,
     }),
     user: PropTypes.shape({
+      _id: PropTypes.string,
       nickname: PropTypes.string,
       dailyStreak: PropTypes.number,
+      seenBaselineSurvey: PropTypes.bool,
     }),
   };
 
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
+
+    if (this.props.user.seenBaselineSurvey) {
+      // If initial survey has been displayed, do nothing
+    } else {
+      // Else display the initial survey
+      // And set the survey state to disable displaying it again for this user
+      const markSurveySeenAndHideModal = () => {
+        this.props.dispatch(userActions.updateUser({
+          _id: this.props.user._id,
+          seenBaselineSurvey: true,
+        }));
+
+        this.props.dispatch(appActions.hidePartialModal());
+      };
+
+      this.props.dispatch(appActions.showPartialModal({
+        content: (
+          <View>
+            <BodyText style={styles._partialModalBodyText}>
+              Have a minute? Help us improve Backbone by taking this 60-second survey!
+            </BodyText>
+            <View style={styles.partialModalButtonView}>
+              <Button
+                style={styles._partialModalButton}
+                text="No, thanks"
+                onPress={markSurveySeenAndHideModal}
+              />
+              <Button
+                style={styles._partialModalButton}
+                text="OK, sure"
+                primary
+                onPress={() => {
+                  // const url = `${Environment.WEB_SERVER_URL}`;
+                  const url = 'https://backbonelabsinc.typeform.com/to/lVs1Sh?' + // eslint-disable-line prefer-template, max-len
+                  'user_id=' + this.props.user._id;
+                  Linking.canOpenURL(url)
+                    .then(supported => {
+                      if (supported) {
+                        return Linking.openURL(url);
+                      }
+                      throw new Error();
+                    })
+                    .catch(() => {
+                      // This catch handler will handle rejections from Linking.openURL
+                      // as well as when the user's phone doesn't have any apps
+                      // to open the URL
+                      Alert.alert(
+                        'Baseline Survey',
+                        'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
+                        'Please contact us to fill out the survey.',
+                      );
+                    });
+
+                  markSurveySeenAndHideModal();
+                }}
+              />
+            </View>
+          </View>
+        ),
+        onClose: () => {
+          this.props.dispatch(userActions.updateUser({
+            _id: this.props.user._id,
+            seenBaselineSurvey: true,
+          }));
+        },
+      }));
+    }
   }
 
   setSessionTime(seconds) {
