@@ -184,18 +184,16 @@ class PostureMonitor extends Component {
         if (this.state.sessionState !== sessionStates.STOPPED) {
           // Confirm if the user wants to quit the current session
           Alert.alert(
-            'Quit Session',
-            'Do you want to quit the current session?',
+            'End Session',
+            'Do you want to end the current session?',
             [
               {
                 text: 'Cancel',
-                onPress: () => this.props.dispatch(appActions.hidePartialModal()),
               },
               {
-                text: 'Quit',
+                text: 'End Session',
                 onPress: () => {
                   // Exit the current session
-                  this.props.dispatch(appActions.hidePartialModal());
                   this.stopSession();
                 },
               },
