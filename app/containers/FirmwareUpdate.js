@@ -131,7 +131,7 @@ class FirmwareUpdate extends Component {
 
   @autobind
   firmwareUpdateStatusHandler(status) {
-    const { status: firmwareStatus } = status;
+    const { status: firmwareStatus, code: errorCode, command: currentCommand } = status;
 
     if (firmwareStatus === BEGIN) {
       this.setState({ isUpdating: true });
@@ -141,14 +141,23 @@ class FirmwareUpdate extends Component {
         isUpdating: false,
         updateSuccess: true,
       }, this.successfulUpdateHandler);
-    } else if (
-      firmwareStatus === END_ERROR ||
-      firmwareStatus === INVALID_FILE ||
-      firmwareStatus === INVALID_SERVICE
-    ) {
+    } else if (firmwareStatus === END_ERROR) {
       this.setState({ isUpdating: false }, () => {
         this.failedUpdateHandler(new Error(
-          `Error during firmware update. Received firmware status ${firmwareStatus}.`
+          'Error during firmware update. ' +
+          `Operation Code: ${currentCommand}. Error code ${errorCode}.`
+        ));
+      });
+    } else if (firmwareStatus === INVALID_FILE) {
+      this.setState({ isUpdating: false }, () => {
+        this.failedUpdateHandler(new Error(
+          'Error updating firmware. Invalid firmware file'
+        ));
+      });
+    } else if (firmwareStatus === INVALID_SERVICE) {
+      this.setState({ isUpdating: false }, () => {
+        this.failedUpdateHandler(new Error(
+          'Error updating firmware. Bootloader is not available'
         ));
       });
     }
@@ -182,7 +191,7 @@ class FirmwareUpdate extends Component {
 
     Alert.alert(
       'Failed',
-      'Your Backbone update has failed, please try again.',
+      `Your Backbone update has failed, please try again. (Reason: ${err.message})`,
       [{ text: 'OK', onPress: this.props.navigator.pop }]
     );
   }

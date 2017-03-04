@@ -38,6 +38,22 @@ export default {
     END_SUCCESS: 1,
     END_ERROR: 2,
   },
+  firmwareUpdateErrorCodes: {
+    COMMAND_RESULT: 1,
+    COMMAND_VERIFY: 2,
+    UPDATE_VALUE: 3,
+    WRITE_VALUE: 4,
+    ROW_NUMBER: 5,
+  },
+  firmwareUpdateCommandCodes: {
+    VERIFY_CHECKSUM: 0x31,
+    GET_FLASH_SIZE: 0x32,
+    SEND_DATA: 0x37,
+    ENTER_BOOTLOADER: 0x38,
+    PROGRAM_ROW: 0x39,
+    VERIFY_ROW: 0x3A,
+    EXIT_BOOTLOADER: 0x3B,
+  },
   heightUnitIdToLabel: {
     1: 'IN',
     2: 'CM',
