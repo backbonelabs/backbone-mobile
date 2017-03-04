@@ -25,10 +25,11 @@ import Icon20Min from '../../images/session/20min.png';
 import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
+import Mixpanel from '../../utils/Mixpanel';
 
 const { BluetoothService } = NativeModules;
 
-const { bluetoothStates, storageKeys } = constants;
+const { bluetoothStates, storageKeys, surveyUrls } = constants;
 
 const sessions = [
   { id: '5min', durationSeconds: 5 * 60, icon: Icon5Min },
@@ -79,6 +80,9 @@ class PostureDashboard extends Component {
         this.props.dispatch(appActions.hidePartialModal());
       };
 
+      const baselineSurveyEventName = 'baselineUserSurvey';
+      Mixpanel.track(baselineSurveyEventName);
+
       this.props.dispatch(appActions.showPartialModal({
         content: (
           <View>
@@ -89,16 +93,17 @@ class PostureDashboard extends Component {
               <Button
                 style={styles._partialModalButton}
                 text="No, thanks"
-                onPress={markSurveySeenAndHideModal}
+                onPress={() => {
+                  Mixpanel.track(`${baselineSurveyEventName}-decline`);
+                  markSurveySeenAndHideModal();
+                }}
               />
               <Button
                 style={styles._partialModalButton}
                 text="OK, sure"
                 primary
                 onPress={() => {
-                  // const url = `${Environment.WEB_SERVER_URL}`;
-                  const url = 'https://backbonelabsinc.typeform.com/to/lVs1Sh?' + // eslint-disable-line prefer-template, max-len
-                  'user_id=' + this.props.user._id;
+                  const url = `${surveyUrls.baseline}?user_id=${this.props.user._id}`;
                   Linking.canOpenURL(url)
                     .then(supported => {
                       if (supported) {
@@ -111,11 +116,13 @@ class PostureDashboard extends Component {
                       // as well as when the user's phone doesn't have any apps
                       // to open the URL
                       Alert.alert(
-                        'Baseline Survey',
+                        'Error',
                         'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
                         'Please contact us to fill out the survey.',
                       );
                     });
+
+                  Mixpanel.track(`${baselineSurveyEventName}-accept`);
 
                   markSurveySeenAndHideModal();
                 }}
@@ -124,6 +131,7 @@ class PostureDashboard extends Component {
           </View>
         ),
         onClose: () => {
+          Mixpanel.track(`${baselineSurveyEventName}-decline`);
           this.props.dispatch(userActions.updateUser({
             _id: this.props.user._id,
             seenBaselineSurvey: true,
