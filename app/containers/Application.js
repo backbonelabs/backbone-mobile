@@ -102,6 +102,13 @@ class Application extends Component {
           return true;
         }
 
+        const routeStack = this.navigator.getCurrentRoutes();
+        const currentRoute = routeStack[routeStack.length - 1];
+        if (currentRoute.name === routes.postureMonitor.name) {
+          // Delegate to the PostureMonitor to handle this scenario
+          return true;
+        }
+
         if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
           // There are subsequent routes after the initial route,
           // so pop the route stack to navigate one scene back
