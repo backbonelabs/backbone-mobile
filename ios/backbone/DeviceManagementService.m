@@ -5,11 +5,11 @@
 @implementation DeviceManagementService
 
 static NSMutableDictionary *_deviceCollection = nil;
+static NSTimer *_connectionTimer = nil;
 
 - (id)init {
   self = [super init];
   if (!_deviceCollection) {
-    _hasPendingConnection = NO;
     _deviceCollection = [NSMutableDictionary new];
   }
   
@@ -45,11 +45,23 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
         [self deviceConnectionStatus:@{@"isConnected": @YES, @"deviceMode": @(BluetoothServiceInstance.currentDeviceMode)}];
       }
       
-      _hasPendingConnection = NO;
+      // Cancel the connection timeout
+      DLog(@"Cancel timer");
+      [_connectionTimer invalidate];
+      _connectionTimer = nil;
     }];
     
-    _hasPendingConnection = YES;
-    [self checkConnectTimeout];
+    // Cancel any previously scheduled timeout
+    if (_connectionTimer) {
+      DLog(@"Cancel timer");
+      [_connectionTimer invalidate];
+      _connectionTimer = nil;
+    }
+    
+    // Schedule a connection timeout
+    DLog(@"Schedule timer");
+    _connectionTimer = [NSTimer timerWithTimeInterval:CONNECTION_TIMEOUT target:self selector:@selector(checkConnectTimeout) userInfo:nil repeats:NO];
+    [[NSRunLoop mainRunLoop] addTimer:_connectionTimer forMode:NSRunLoopCommonModes];
   } else {
     // There is no valid device
     [self deviceConnectionStatus:RCTMakeError(@"Not a valid device", nil, nil)];
@@ -59,6 +71,9 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
 RCT_EXPORT_METHOD(scanForDevices :(RCTResponseSenderBlock)callback) {
   DLog(@"Scanning for devices");
   if ([BluetoothService getIsEnabled]) {
+    // Reset scanned device list
+    [_deviceCollection removeAllObjects];
+    
     [BluetoothServiceInstance startScanForBLEDevicesAllowDuplicates:NO handler:^(NSDictionary * _Nonnull device) {
       DLog(@"Found %@", device);
       _deviceCollection[device[@"identifier"]] = device;
@@ -106,17 +121,13 @@ RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
 }
 
 - (void)checkConnectTimeout {
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-    if (_hasPendingConnection) {
-      DLog(@"Connection timeout");
-      _hasPendingConnection = NO;
-      
-      [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
-        NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, nil);
-        [self deviceConnectionStatus:makeError];
-      }];
-    }
-  });
+  DLog(@"Connection timeout");
+  _connectionTimer = nil;
+  
+  [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
+    NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, nil);
+    [self deviceConnectionStatus:makeError];
+  }];
 }
 
 - (NSArray<NSString *> *)supportedEvents {
