@@ -149,10 +149,10 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
         bootLoaderState = Constants.BOOTLOADER_STATES.UPDATED;
     }
 
-    private void firmwareUploadFailed() {
+    private void firmwareUploadFailed(int errorCode) {
         bootLoaderState = Constants.BOOTLOADER_STATES.ON;
 
-        firmwareUpdateStatus(Constants.FIRMWARE_UPDATE_STATES.END_ERROR);
+        firmwareUpdateStatus(Constants.FIRMWARE_UPDATE_STATES.END_ERROR, errorCode);
     }
 
     private void firmwareUploadProgress() {
@@ -163,9 +163,15 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
     }
 
     private void firmwareUpdateStatus(int status) {
-        Timber.d("Firmware Update State: %d", status);
+        firmwareUpdateStatus(status, 0);
+    }
+
+    private void firmwareUpdateStatus(int status, int errorCode) {
+        Timber.d("Firmware Update State: %d %d", status, errorCode);
         WritableMap wm = Arguments.createMap();
         wm.putInt("status", status);
+        wm.putInt("code", errorCode);
+        wm.putInt("command", (status == Constants.FIRMWARE_UPDATE_STATES.END_ERROR ? currentCommandCode : 0));
         EventEmitter.send(reactContext, "FirmwareUpdateStatus", wm);
     }
 
@@ -258,8 +264,12 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
 
                                         currentCommandCode = GET_FLASH_SIZE;
                                     }
+                                    else {
+                                        firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_RESULT);
+                                    }
                                     break;
                                 default:
+                                    firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_VERIFY);
                                     break;
                             }
                         }
@@ -277,6 +287,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                                     writeProgrammableData(rowNumber);
                                     break;
                                 default:
+                                    firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_VERIFY);
                                     break;
                             }
                         }
@@ -291,9 +302,12 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                                     if (status.equalsIgnoreCase("00")) {
                                         writeProgrammableData(rowNumber);
                                     }
+                                    else {
+                                        firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_RESULT);
+                                    }
                                     break;
                                 default:
-
+                                    firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_VERIFY);
                                     break;
                             }
                         }
@@ -321,8 +335,12 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                                         OTAVerifyRowCmd(rowMSB, rowLSB, modelData, checkSumType);
                                         currentCommandCode = VERIFY_ROW;
                                     }
+                                    else {
+                                        firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_RESULT);
+                                    }
                                     break;
                                 default:
+                                    firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_VERIFY);
                                     break;
                             }
                         }
@@ -380,12 +398,17 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                                                 currentCommandCode = VERIFY_CHECK_SUM;
                                                 OTAVerifyCheckSumCmd(checkSumType);
                                             }
-                                        } else {
-
                                         }
+                                        else {
+                                            firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_RESULT);
+                                        }
+                                    }
+                                    else {
+                                        firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_RESULT);
                                     }
                                     break;
                                 default:
+                                    firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_VERIFY);
                                     break;
                             }
                         }
@@ -405,8 +428,12 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                                         OTAExitBootloaderCmd(checkSumType);
                                         currentCommandCode = EXIT_BOOTLOADER;
                                     }
+                                    else {
+                                        firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_RESULT);
+                                    }
                                     break;
                                 default:
+                                    firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.COMMAND_VERIFY);
                                     break;
                             }
                         }
@@ -442,7 +469,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                         }
                     }
                     else {
-                        firmwareUploadFailed();
+                        firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.WRITE_VALUE);
                     }
                 }
             }
