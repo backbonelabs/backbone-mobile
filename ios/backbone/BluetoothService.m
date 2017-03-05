@@ -185,6 +185,10 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   return self.currentDevice != nil && self.currentDevice.state == CBPeripheralStateConnected;
 }
 
+- (BOOL)shouldRestart {
+  return _shouldRestart;
+}
+
 - (CBCharacteristic*)getCharacteristicByUUID:(CBUUID *)uuid {
   if (uuid == nil) return nil;
   return _characteristicMap[uuid];
