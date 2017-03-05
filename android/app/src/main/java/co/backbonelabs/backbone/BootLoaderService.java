@@ -599,6 +599,7 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
                 }
             } else {
                 // Error
+                firmwareUploadFailed(Constants.FIRMWARE_UPDATE_ERROR_CODES.ROW_NUMBER);
             }
         }
     }

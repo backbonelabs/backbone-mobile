@@ -39,11 +39,11 @@ export default {
     END_ERROR: 2,
   },
   firmwareUpdateErrorCodes: {
-    COMMAND_RESULT: 1,
-    COMMAND_VERIFY: 2,
-    UPDATE_VALUE: 3,
-    WRITE_VALUE: 4,
-    ROW_NUMBER: 5,
+    COMMAND_RESULT: 300,
+    COMMAND_VERIFY: 301,
+    UPDATE_VALUE: 302,
+    WRITE_VALUE: 303,
+    ROW_NUMBER: 304,
   },
   firmwareUpdateCommandCodes: {
     VERIFY_CHECKSUM: 49,

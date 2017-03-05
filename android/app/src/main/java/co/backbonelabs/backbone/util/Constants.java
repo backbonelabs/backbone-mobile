@@ -86,11 +86,11 @@ public class Constants {
     }
 
     public interface FIRMWARE_UPDATE_ERROR_CODES {
-        int COMMAND_RESULT = 1;
-        int COMMAND_VERIFY = 2;
-        int UPDATE_VALUE = 3;
-        int WRITE_VALUE = 4;
-        int ROW_NUMBER = 5;
+        int COMMAND_RESULT = 300;
+        int COMMAND_VERIFY = 301;
+        int UPDATE_VALUE = 302; // Currently unused due to Android's api, but let's keep it to conform with iOS
+        int WRITE_VALUE = 303;
+        int ROW_NUMBER = 304;
     }
 
     public interface BOOTLOADER_BYTE_TYPES {

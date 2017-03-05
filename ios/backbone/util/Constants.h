@@ -79,9 +79,9 @@
 #define SESSION_COMMAND_PAUSE     0x02
 #define SESSION_COMMAND_STOP      0x03
 
-#define SESSION_DEFAULT_DURATION 5 // Session duration in minutes
+#define SESSION_DEFAULT_DURATION          5 // Session duration in minutes
 #define SLOUCH_DEFAULT_DISTANCE_THRESHOLD 2000 // Distance threshold in ten thousandths of a unit
-#define SLOUCH_DEFAULT_TIME_THRESHOLD 3 // Time threshold in seconds
+#define SLOUCH_DEFAULT_TIME_THRESHOLD     3 // Time threshold in seconds
 
 #define VIBRATION_DEFAULT_PATTERN     1 // Number of times the motor should vibrate [0-3]
 #define VIBRATION_DEFAULT_SPEED       50 // Speed of motor vibration [0-255]
@@ -103,11 +103,11 @@
 #define FIRMWARE_UPDATE_STATE_END_SUCCESS           1
 #define FIRMWARE_UPDATE_STATE_END_ERROR             2
 
-#define FIRMWARE_UPDATE_ERROR_COMMAND_RESULT    1
-#define FIRMWARE_UPDATE_ERROR_COMMAND_VERIFY    2
-#define FIRMWARE_UPDATE_ERROR_UPDATE_VALUE      3
-#define FIRMWARE_UPDATE_ERROR_WRITE_VALUE       4
-#define FIRMWARE_UPDATE_ERROR_ROW_NUMBER        5
+#define FIRMWARE_UPDATE_ERROR_COMMAND_RESULT    300
+#define FIRMWARE_UPDATE_ERROR_COMMAND_VERIFY    301
+#define FIRMWARE_UPDATE_ERROR_UPDATE_VALUE      302
+#define FIRMWARE_UPDATE_ERROR_WRITE_VALUE       303
+#define FIRMWARE_UPDATE_ERROR_ROW_NUMBER        304
 
 #define COMMAND_START_BYTE    0x01
 #define COMMAND_END_BYTE      0x17
