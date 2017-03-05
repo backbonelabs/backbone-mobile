@@ -24,6 +24,8 @@ import timber.log.Timber;
 
 public class DeviceManagementService extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private boolean scanning;
+    private Handler connectionTimerHandler = null;
+    private Runnable connectionTimerRunnable = null;
     private boolean hasPendingConnection = false;
     private ReactApplicationContext reactContext;
 
@@ -102,7 +104,12 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 @Override
                 public void onDeviceConnected() {
                     Timber.d("DeviceConnected");
-                    hasPendingConnection = false;
+                    if (connectionTimerRunnable != null) {
+                        Timber.d("Cancel connection timeout");
+                        connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
+                        connectionTimerRunnable = null;
+                    }
+
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", true);
                     wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
@@ -113,7 +120,12 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 @Override
                 public void onDeviceDisconnected() {
                     Timber.d("DeviceDisconnected");
-                    hasPendingConnection = false;
+                    if (connectionTimerRunnable != null) {
+                        Timber.d("Cancel connection timeout");
+                        connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
+                        connectionTimerRunnable = null;
+                    }
+
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", false);
                     wm.putNull("message");
@@ -121,8 +133,32 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 }
             });
 
-            hasPendingConnection = true;
-            checkConnectTimeout();
+            if (connectionTimerHandler == null) {
+                connectionTimerHandler = new Handler();
+            }
+            else if (connectionTimerRunnable != null) {
+                Timber.d("Cancel connection timeout");
+                connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
+                connectionTimerRunnable = null;
+            }
+
+            connectionTimerRunnable = new Runnable(){
+                public void run() {
+                    Timber.d("Check connection timeout");
+                    connectionTimerRunnable = null;
+
+                    if (!BluetoothService.getInstance().isShouldRestart()) {
+                        Timber.d("Device connection timeout");
+                        BluetoothService.getInstance().disconnect(null);
+                        WritableMap wm = Arguments.createMap();
+                        wm.putBoolean("isConnected", false);
+                        wm.putString("message", "Device took too long to connect");
+                        EventEmitter.send(reactContext, "ConnectionStatus", wm);
+                    }
+                }
+            };
+
+            connectionTimerHandler.postDelayed(connectionTimerRunnable, Constants.CONNECTION_TIMEOUT * 1000);
         } else {
             // Could not retrieve a valid device
             EventEmitter.send(reactContext, "ConnectionStatus", JSError.make("Not a valid device"));
@@ -148,7 +184,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 @Override
                 public void onDeviceDisconnected() {
                     Timber.d("Connection Cancelled");
-                    hasPendingConnection = false;
                     callback.invoke();
                 }
             });
@@ -156,28 +191,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             e.printStackTrace();
             callback.invoke(JSError.make("Failed to disconnect"));
         }
-    }
-
-    private void checkConnectTimeout() {
-        int interval = 1000 * 10; // 10 seconds of timeout
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable(){
-            public void run() {
-                Timber.d("Check connection timeout");
-                if (hasPendingConnection && !BluetoothService.getInstance().isShouldRestart()) {
-                    Timber.d("Device connection timeout %b", hasPendingConnection);
-                    hasPendingConnection = false;
-
-                    BluetoothService.getInstance().disconnect(null);
-                    WritableMap wm = Arguments.createMap();
-                    wm.putBoolean("isConnected", false);
-                    wm.putString("message", "Device took too long to connect");
-                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
-                }
-            }
-        };
-
-        handler.postDelayed(runnable, interval);
     }
 
     @Override

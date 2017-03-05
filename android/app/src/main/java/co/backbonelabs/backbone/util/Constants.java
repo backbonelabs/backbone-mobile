@@ -196,6 +196,7 @@ public class Constants {
 
     public final static int MAX_BLE_ACTION_ATTEMPT = 50;
     public final static int MAX_IDLE_DURATION = 120; // Delay before the app disconnects from the device on an idle situation, in seconds
+    public final static int CONNECTION_TIMEOUT = 10; // Device connection timeout, in seconds
 
     public final static int SESSION_DEFAULT_DURATION = 5; // Session duration in minutes
     public final static int SLOUCH_DEFAULT_DISTANCE_THRESHOLD = 2000; // Distance threshold in ten thousandths of a unit
