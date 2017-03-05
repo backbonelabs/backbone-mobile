@@ -70,8 +70,8 @@ public class Constants {
     public interface BOOTLOADER_COMMANDS {
         int VERIFY_CHECK_SUM = 0x31; // 49
         int GET_FLASH_SIZE = 0x32; // 50
-        int ENTER_BOOTLOADER = 0x38; // 55
-        int SEND_DATA = 0x37; // 56
+        int SEND_DATA = 0x37; // 55
+        int ENTER_BOOTLOADER = 0x38; // 56
         int PROGRAM_ROW = 0x39; // 57
         int VERIFY_ROW = 0x3A; // 58
         int EXIT_BOOTLOADER = 0x3B; // 59
