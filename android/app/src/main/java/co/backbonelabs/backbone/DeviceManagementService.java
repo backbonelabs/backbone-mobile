@@ -1,7 +1,6 @@
 package co.backbonelabs.backbone;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothProfile;
 import android.os.Handler;
 
 import com.facebook.react.bridge.Arguments;
@@ -26,7 +25,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     private boolean scanning;
     private Handler connectionTimerHandler = null;
     private Runnable connectionTimerRunnable = null;
-    private boolean hasPendingConnection = false;
     private ReactApplicationContext reactContext;
 
     public DeviceManagementService(ReactApplicationContext reactContext) {
@@ -120,12 +118,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 @Override
                 public void onDeviceDisconnected() {
                     Timber.d("DeviceDisconnected");
-                    if (connectionTimerRunnable != null) {
-                        Timber.d("Cancel connection timeout");
-                        connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
-                        connectionTimerRunnable = null;
-                    }
-
                     WritableMap wm = Arguments.createMap();
                     wm.putBoolean("isConnected", false);
                     wm.putNull("message");
