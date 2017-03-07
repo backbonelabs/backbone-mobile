@@ -144,20 +144,19 @@ class FirmwareUpdate extends Component {
     } else if (firmwareStatus === END_ERROR) {
       this.setState({ isUpdating: false }, () => {
         this.failedUpdateHandler(new Error(
-          'Error during firmware update. ' +
           `Operation Code: ${currentCommand}. Error code ${errorCode}.`
         ));
       });
     } else if (firmwareStatus === INVALID_FILE) {
       this.setState({ isUpdating: false }, () => {
         this.failedUpdateHandler(new Error(
-          'Error updating firmware. Invalid firmware file'
+          'Invalid firmware file'
         ));
       });
     } else if (firmwareStatus === INVALID_SERVICE) {
       this.setState({ isUpdating: false }, () => {
         this.failedUpdateHandler(new Error(
-          'Error updating firmware. Bootloader is not available'
+          'Bootloader is not available'
         ));
       });
     }
