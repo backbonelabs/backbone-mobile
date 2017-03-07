@@ -66,11 +66,11 @@ class PostureDashboard extends Component {
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
 
-    if (this.props.user.seenBaselineSurvey) {
-      // If initial survey has been displayed, do nothing
-    } else {
-      // Else display the initial survey
-      // And set the survey state to disable displaying it again for this user
+    const { seenBaselineSurvey } = this.props.user;
+
+    if (!seenBaselineSurvey) {
+      // User has not seen the baseline survey modal yet. Display survey modal
+      // and mark as seen in the user profile to prevent it from being shown again.
       const markSurveySeenAndHideModal = () => {
         this.props.dispatch(userActions.updateUser({
           _id: this.props.user._id,
