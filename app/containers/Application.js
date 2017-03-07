@@ -161,7 +161,7 @@ class Application extends Component {
           // Retrieve session state
           SessionControlService.getSessionState();
           break;
-        case deviceStatuses.DISCONNECTED:
+        case deviceStatuses.DISCONNECTED: {
           // Dispatch disconnect action when the device is disconnected
           this.props.dispatch(deviceActions.didDisconnect());
 
@@ -174,6 +174,7 @@ class Application extends Component {
 
             Alert.alert('Error', 'Connection lost. Your Backbone update has failed.');
           }
+        }
           break;
         default:
           // no-op
