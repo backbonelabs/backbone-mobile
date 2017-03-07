@@ -12,6 +12,7 @@ import {
 import autobind from 'autobind-decorator';
 import ReactNativeFS from 'react-native-fs';
 import { connect } from 'react-redux';
+import routes from '../routes';
 import deviceActions from '../actions/device';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
@@ -40,6 +41,7 @@ class FirmwareUpdate extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       pop: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
     }),
     dispatch: PropTypes.func,
     device: PropTypes.shape({
@@ -191,7 +193,16 @@ class FirmwareUpdate extends Component {
     Alert.alert(
       'Failed',
       `Your Backbone update has failed, please try again. (Reason: ${err.message})`,
-      [{ text: 'OK', onPress: this.props.navigator.pop }]
+      [{
+        text: 'OK',
+        onPress: () => {
+          const routeStack = this.props.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+          if (currentRoute.name === routes.firmwareUpdate.name) {
+            this.props.navigator.pop();
+          }
+        },
+      }]
     );
   }
 
