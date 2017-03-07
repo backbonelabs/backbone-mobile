@@ -56,11 +56,14 @@ class Device extends Component {
     const { batteryLevel } = this.props.device;
     if (!this.props.isConnected) {
       Alert.alert(
-          'Error',
-          'Please connect to your Backbone before updating.',
+        'Error',
+        'Please connect to your Backbone before updating.',
         [
           { text: 'Cancel' },
-          { text: 'Connect', onPress: this.addDevice },
+          {
+            text: 'Connect',
+            onPress: () => this.props.navigator.push(routes.deviceConnect),
+          },
         ]
       );
     } else if (batteryLevel >= 0 && batteryLevel <= 15) {
