@@ -27,6 +27,7 @@
 #define STEP_TIME_LIMIT   15.0
 
 #define MAX_IDLE_DURATION 120 // Delay before the app disconnects from the device on an idle situation, in seconds
+#define CONNECTION_TIMEOUT 10 // Timeout for connection attempts, in seconds
 
 // Change this value if you want to test it faster. Both values are now in 'minute'
 #define NOTIFICATION_PERIOD   5
