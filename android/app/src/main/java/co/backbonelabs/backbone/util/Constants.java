@@ -68,13 +68,13 @@ public class Constants {
     }
 
     public interface BOOTLOADER_COMMANDS {
-        int VERIFY_CHECK_SUM = 0x31;
-        int GET_FLASH_SIZE = 0x32;
-        int ENTER_BOOTLOADER = 0x38;
-        int SEND_DATA = 0x37;
-        int PROGRAM_ROW = 0x39;
-        int VERIFY_ROW = 0x3A;
-        int EXIT_BOOTLOADER = 0x3B;
+        int VERIFY_CHECK_SUM = 0x31; // 49
+        int GET_FLASH_SIZE = 0x32; // 50
+        int SEND_DATA = 0x37; // 55
+        int ENTER_BOOTLOADER = 0x38; // 56
+        int PROGRAM_ROW = 0x39; // 57
+        int VERIFY_ROW = 0x3A; // 58
+        int EXIT_BOOTLOADER = 0x3B; // 59
     }
 
     public interface FIRMWARE_UPDATE_STATES {
@@ -83,6 +83,14 @@ public class Constants {
         int BEGIN = 0;
         int END_SUCCESS = 1;
         int END_ERROR = 2;
+    }
+
+    public interface FIRMWARE_UPDATE_ERROR_CODES {
+        int COMMAND_RESULT = 300;
+        int COMMAND_VERIFY = 301;
+        int UPDATE_VALUE = 302; // Currently unused due to Android's api, but let's keep it to conform with iOS
+        int WRITE_VALUE = 303;
+        int ROW_NUMBER = 304;
     }
 
     public interface BOOTLOADER_BYTE_TYPES {
