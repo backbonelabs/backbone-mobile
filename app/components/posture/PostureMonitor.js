@@ -6,6 +6,8 @@ import {
   Vibration,
   NativeModules,
   NativeEventEmitter,
+  Platform,
+  BackAndroid,
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
@@ -38,6 +40,8 @@ const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService
 
 const MIN_POSTURE_THRESHOLD = 0.03;
 const MAX_POSTURE_THRESHOLD = 0.3;
+
+const isiOS = Platform.OS === 'ios';
 
 /**
  * Maps distance values to slouch degrees for determining how much to rotate
@@ -138,6 +142,7 @@ class PostureMonitor extends Component {
     this.statsListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
+    this.backAndroidListener = null;
   }
 
   componentWillMount() {
@@ -172,6 +177,33 @@ class PostureMonitor extends Component {
         this.statsHandler(event);
       }
     });
+
+    // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
+    if (!isiOS) {
+      this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
+        if (this.state.sessionState !== sessionStates.STOPPED) {
+          // Confirm if the user wants to quit the current session
+          Alert.alert(
+            'End Session',
+            'Do you want to end the current session?',
+            [
+              {
+                text: 'Cancel',
+              },
+              {
+                text: 'End Session',
+                onPress: () => {
+                  // Exit the current session
+                  this.stopSession();
+                },
+              },
+            ]
+          );
+
+          return true;
+        }
+      });
+    }
 
     const { sessionState } = this.state;
     if (sessionState === sessionStates.PAUSED) {
@@ -227,6 +259,10 @@ class PostureMonitor extends Component {
     this.statsListener.remove();
     this.deviceStateListener.remove();
     this.sessionStateListener.remove();
+
+    if (this.backAndroidListener) {
+      this.backAndroidListener.remove();
+    }
   }
 
   /**

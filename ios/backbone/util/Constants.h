@@ -27,6 +27,7 @@
 #define STEP_TIME_LIMIT   15.0
 
 #define MAX_IDLE_DURATION 120 // Delay before the app disconnects from the device on an idle situation, in seconds
+#define CONNECTION_TIMEOUT 10 // Timeout for connection attempts, in seconds
 
 // Change this value if you want to test it faster. Both values are now in 'minute'
 #define NOTIFICATION_PERIOD   5
@@ -79,9 +80,9 @@
 #define SESSION_COMMAND_PAUSE     0x02
 #define SESSION_COMMAND_STOP      0x03
 
-#define SESSION_DEFAULT_DURATION 5 // Session duration in minutes
+#define SESSION_DEFAULT_DURATION          5 // Session duration in minutes
 #define SLOUCH_DEFAULT_DISTANCE_THRESHOLD 2000 // Distance threshold in ten thousandths of a unit
-#define SLOUCH_DEFAULT_TIME_THRESHOLD 3 // Time threshold in seconds
+#define SLOUCH_DEFAULT_TIME_THRESHOLD     3 // Time threshold in seconds
 
 #define VIBRATION_DEFAULT_PATTERN     1 // Number of times the motor should vibrate [0-3]
 #define VIBRATION_DEFAULT_SPEED       50 // Speed of motor vibration [0-255]
@@ -103,16 +104,22 @@
 #define FIRMWARE_UPDATE_STATE_END_SUCCESS           1
 #define FIRMWARE_UPDATE_STATE_END_ERROR             2
 
+#define FIRMWARE_UPDATE_ERROR_COMMAND_RESULT    300
+#define FIRMWARE_UPDATE_ERROR_COMMAND_VERIFY    301
+#define FIRMWARE_UPDATE_ERROR_UPDATE_VALUE      302
+#define FIRMWARE_UPDATE_ERROR_WRITE_VALUE       303
+#define FIRMWARE_UPDATE_ERROR_ROW_NUMBER        304
+
 #define COMMAND_START_BYTE    0x01
 #define COMMAND_END_BYTE      0x17
 
-#define COMMAND_VERIFY_CHECKSUM       0x31
-#define COMMAND_GET_FLASH_SIZE        0x32
-#define COMMAND_SEND_DATA             0x37
-#define COMMAND_ENTER_BOOTLOADER      0x38
-#define COMMAND_PROGRAM_ROW           0x39
-#define COMMAND_VERIFY_ROW            0x3A
-#define COMMAND_EXIT_BOOTLOADER       0x3B
+#define COMMAND_VERIFY_CHECKSUM       0x31 // 49
+#define COMMAND_GET_FLASH_SIZE        0x32 // 50
+#define COMMAND_SEND_DATA             0x37 // 55
+#define COMMAND_ENTER_BOOTLOADER      0x38 // 56
+#define COMMAND_PROGRAM_ROW           0x39 // 57
+#define COMMAND_VERIFY_ROW            0x3A // 58
+#define COMMAND_EXIT_BOOTLOADER       0x3B // 59
 
 #define BOOTLOADER_CODE_SUCCESS               @"0x00"
 #define BOOTLOADER_CODE_ERROR_FILE            @"0x01"

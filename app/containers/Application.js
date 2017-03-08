@@ -102,6 +102,13 @@ class Application extends Component {
           return true;
         }
 
+        const routeStack = this.navigator.getCurrentRoutes();
+        const currentRoute = routeStack[routeStack.length - 1];
+        if (currentRoute.name === routes.postureMonitor.name) {
+          // Delegate to the PostureMonitor to handle this scenario
+          return true;
+        }
+
         if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
           // There are subsequent routes after the initial route,
           // so pop the route stack to navigate one scene back
@@ -447,7 +454,9 @@ class Application extends Component {
         { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.showFull ? hiddenStyles : {}, { flex: 1 }]}>
           <RouteComponent navigator={this.navigator} currentRoute={route} {...route.props} />
-          <PartialModal {...modalProps}>{modalProps.content}</PartialModal>
+          <PartialModal show={modalProps.showPartial} onClose={modalProps.onClose}>
+            {modalProps.content}
+          </PartialModal>
           { route.showTabBar && TabBar }
         </View>
       </View>

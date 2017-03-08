@@ -38,6 +38,7 @@
 - (void)disconnectDevice:(ErrorHandler)completionHandler;
 
 - (BOOL)isDeviceReady;
+- (BOOL)shouldRestart;
 - (CBCharacteristic*)getCharacteristicByUUID:(CBUUID*)uuid;
 
 - (void)applicationWillTerminate:(NSNotification *)notification;

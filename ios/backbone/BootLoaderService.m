@@ -392,7 +392,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
       }
     }
     else {
-      [self firmwareUploadFailed];
+      [self firmwareUploadFailed:FIRMWARE_UPDATE_ERROR_WRITE_VALUE];
     }
   }
 }
@@ -422,7 +422,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
             [self writeValueToCharacteristicWithData:data bootLoaderCommandCode:COMMAND_GET_FLASH_SIZE];
           }
           else {
-            [self firmwareUploadFailed];
+            [self firmwareUploadFailed:FIRMWARE_UPDATE_ERROR_COMMAND_RESULT];
           }
         }
         else if ([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_GET_FLASH_SIZE)]) {
@@ -481,7 +481,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
             }
           }
           else {
-            [self firmwareUploadFailed];
+            [self firmwareUploadFailed:FIRMWARE_UPDATE_ERROR_COMMAND_RESULT];
           }
         }
         else if([[_commandArray objectAtIndex:0] isEqual:@(COMMAND_VERIFY_CHECKSUM)]) {
@@ -494,7 +494,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
             [self writeValueToCharacteristicWithData:exitBootloaderCommandData bootLoaderCommandCode:COMMAND_EXIT_BOOTLOADER];
           }
           else {
-            [self firmwareUploadFailed];
+            [self firmwareUploadFailed:FIRMWARE_UPDATE_ERROR_COMMAND_RESULT];
           }
         }
       }
@@ -506,13 +506,13 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
           _isWritePacketDataSuccess = NO;
         }
 
-        [self firmwareUploadFailed];
+        [self firmwareUploadFailed:FIRMWARE_UPDATE_ERROR_COMMAND_VERIFY];
       }
 
       [_commandArray removeObjectAtIndex:0];
     }
     else {
-      [self firmwareUploadFailed];
+      [self firmwareUploadFailed:FIRMWARE_UPDATE_ERROR_UPDATE_VALUE];
     }
   }
 }
@@ -548,7 +548,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
     [self writeCurrentRowDataArrayAtIndex:index];
   }
   else {
-    [self firmwareUploadFailed];
+    [self firmwareUploadFailed:FIRMWARE_UPDATE_ERROR_ROW_NUMBER];
   }
 }
 
@@ -589,11 +589,11 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
   _bootLoaderState = BOOTLOADER_STATE_UPDATED;
 }
 
-- (void)firmwareUploadFailed {
+- (void)firmwareUploadFailed:(int)errorCode {
   // Do any other cleanups here if needed
   _bootLoaderState = BOOTLOADER_STATE_ON;
   
-  [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_END_ERROR];
+  [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_END_ERROR code:errorCode];
 }
 
 - (void)firmwareUpdated {
@@ -608,8 +608,13 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
 }
 
 - (void)firmwareUpdateStatus:(int)status {
-  DLog(@"Firmware Update State %d", status);
-  [self sendEventWithName:@"FirmwareUpdateStatus" body:@{@"status" : @(status)}];
+  [self firmwareUpdateStatus:status code:0];
+}
+
+- (void)firmwareUpdateStatus:(int)status code:(int)code {
+  DLog(@"Firmware Update State %d %d", status, code);
+  // Log both the error code and the current command code
+  [self sendEventWithName:@"FirmwareUpdateStatus" body:@{@"status" : @(status), @"code" : @(code), @"command" : @((status == FIRMWARE_UPDATE_STATE_END_ERROR ? [[_commandArray objectAtIndex:0] intValue] : 0))}];
 }
 
 @end

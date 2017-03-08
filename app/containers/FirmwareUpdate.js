@@ -18,6 +18,7 @@ import BodyText from '../components/BodyText';
 import styles from '../styles/firmwareUpdate';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
+import Mixpanel from '../utils/Mixpanel';
 
 const { firmwareUpdateStates: {
   INVALID_SERVICE,
@@ -41,6 +42,12 @@ class FirmwareUpdate extends Component {
       pop: PropTypes.func,
     }),
     dispatch: PropTypes.func,
+    device: PropTypes.shape({
+      inProgress: PropTypes.bool,
+      device: PropTypes.shape({
+        firmwareVersion: PropTypes.string,
+      }),
+    }),
   }
 
   constructor() {
@@ -48,6 +55,7 @@ class FirmwareUpdate extends Component {
     this.state = {
       isUpdating: null,
       updateProgress: 0,
+      updateSuccess: false,
     };
 
     this.firmwareUpdateStatus = null;
@@ -68,7 +76,51 @@ class FirmwareUpdate extends Component {
     );
 
     BootLoaderService.setHasPendingUpdate(true);
-    this.updateFirmware();
+
+    // Local filepath to firmware
+    const firmwareFilepath = `${ReactNativeFS.DocumentDirectoryPath}/Backbone.cyacd`;
+
+    // Download firmware and begin update process
+    Mixpanel.track('firmwareUpdate-begin');
+    Fetcher.get({ url: firmwareUrl })
+      .then(res => (
+        res.json()
+          .then(body => (
+            ReactNativeFS.downloadFile({
+              fromUrl: body.url,
+              toFile: firmwareFilepath,
+            })
+          ))
+          .then(result => result.promise)
+          .then(downloadResult => {
+            const statusCode = downloadResult.statusCode;
+            if (statusCode === 200) {
+              // Successful file download attempt
+              BootLoaderService.initiateFirmwareUpdate(firmwareFilepath);
+            } else {
+              throw new Error(
+                `Failed to download firmware. Received status code ${statusCode}.`
+              );
+            }
+          })
+      ))
+      .catch(this.failedUpdateHandler);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.isUpdating && this.state.updateSuccess &&
+      this.props.device.inProgress && !nextProps.device.inProgress) {
+      // Firmware update completed successfully
+      Mixpanel.track('firmwareUpdate-success');
+      Alert.alert(
+        'Success',
+        'You have successfully updated your Backbone!',
+      );
+
+      // Automatically pop the scene without user interaction in case app is in the background
+      // so the user won't be stuck on this component when the app is back in the foreground
+      this.props.navigator.pop();
+    }
   }
 
   componentWillUnmount() {
@@ -78,48 +130,35 @@ class FirmwareUpdate extends Component {
   }
 
   @autobind
-  updateFirmware() {
-    // Local filepath to firmware
-    const firmwareFilepath = `${ReactNativeFS.DocumentDirectoryPath}/Backbone.cyacd`;
-
-    return Fetcher.get({ url: firmwareUrl })
-      .then(res => res.json()
-        .then(body => (
-          ReactNativeFS.downloadFile({
-            fromUrl: body.url,
-            toFile: firmwareFilepath,
-          })
-        ))
-        .then(result => result.promise.then(downloadResult => {
-          // Successful file download attempt
-          if (downloadResult.statusCode === 200) {
-            BootLoaderService.initiateFirmwareUpdate(firmwareFilepath);
-          } else {
-            this.failedUpdateHandler();
-          }
-        })
-        // Handle network request error for firmware download
-        .catch(this.failedUpdateHandler))
-      )
-      // Handle network request error for getting firmware URL
-      .catch(this.failedUpdateHandler);
-  }
-
-  @autobind
   firmwareUpdateStatusHandler(status) {
-    const { status: firmwareStatus } = status;
+    const { status: firmwareStatus, code: errorCode, command: currentCommand } = status;
 
     if (firmwareStatus === BEGIN) {
       this.setState({ isUpdating: true });
     } else if (firmwareStatus === END_SUCCESS) {
       // Firmware update has finished, display firmware update status message
-      this.setState({ isUpdating: false }, this.successfulUpdateHandler);
-    } else if (
-      firmwareStatus === END_ERROR ||
-      firmwareStatus === INVALID_FILE ||
-      firmwareStatus === INVALID_SERVICE
-    ) {
-      this.setState({ isUpdating: false }, this.failedUpdateHandler);
+      this.setState({
+        isUpdating: false,
+        updateSuccess: true,
+      }, this.successfulUpdateHandler);
+    } else if (firmwareStatus === END_ERROR) {
+      this.setState({ isUpdating: false }, () => {
+        this.failedUpdateHandler(new Error(
+          `Operation Code: ${currentCommand}. Error code ${errorCode}.`
+        ));
+      });
+    } else if (firmwareStatus === INVALID_FILE) {
+      this.setState({ isUpdating: false }, () => {
+        this.failedUpdateHandler(new Error(
+          'Invalid firmware file'
+        ));
+      });
+    } else if (firmwareStatus === INVALID_SERVICE) {
+      this.setState({ isUpdating: false }, () => {
+        this.failedUpdateHandler(new Error(
+          'Bootloader is not available'
+        ));
+      });
     }
   }
 
@@ -133,26 +172,25 @@ class FirmwareUpdate extends Component {
   successfulUpdateHandler() {
     BootLoaderService.setHasPendingUpdate(false);
 
-    // Initiate getting of latest device information
+    // Fetch latest device information
+    // The final steps for a successful firmware update will be done in componentWillReceiveProps
     this.props.dispatch(deviceActions.getInfo());
-
-    Alert.alert(
-      'Success',
-      'You have successfully updated your Backbone!',
-    );
-
-    // Automatically pop the scene without user interaction in case app is in the background
-    // so the user won't be stuck on this component when the app is back in the foreground
-    this.props.navigator.pop();
   }
 
+  /**
+   * Handles firmware update errors. The error is sent to Mixpanel and an alert is displayed
+   * to the user.
+   * @param {Error} err
+   */
   @autobind
-  failedUpdateHandler() {
+  failedUpdateHandler(err) {
     BootLoaderService.setHasPendingUpdate(false);
+
+    Mixpanel.trackWithProperties('firmwareUpdate-error', { message: err.message });
 
     Alert.alert(
       'Failed',
-      'Your Backbone update has failed, please try again.',
+      `Your Backbone update has failed, please try again. (Reason: ${err.message})`,
       [{ text: 'OK', onPress: this.props.navigator.pop }]
     );
   }
@@ -181,4 +219,8 @@ class FirmwareUpdate extends Component {
   }
 }
 
-export default connect()(FirmwareUpdate);
+const mapStateToProps = state => ({
+  device: state.device,
+});
+
+export default connect(mapStateToProps)(FirmwareUpdate);

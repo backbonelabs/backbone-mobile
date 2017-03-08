@@ -6,11 +6,11 @@ import { isFunction } from 'lodash';
 import appActions from '../actions/app';
 import styles from '../styles/partialModal';
 
-const PartialModal = props => (
+const PartialModal = props => ((props.show &&
   <Modal
     animationType="none"
     transparent
-    visible={props.showPartial}
+    visible
     onRequestClose={() => {
       // This is called on Android when the hardware back button is pressed
       // For now, this will be a no-op
@@ -38,13 +38,13 @@ const PartialModal = props => (
       </View>
     </View>
   </Modal>
-);
+) || null);
 
 PartialModal.propTypes = {
   children: PropTypes.node,
   dispatch: PropTypes.func,
   onClose: PropTypes.func,
-  showPartial: PropTypes.bool,
+  show: PropTypes.bool,
 };
 
 export default connect()(PartialModal);
