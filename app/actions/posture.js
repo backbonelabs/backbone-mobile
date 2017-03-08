@@ -5,4 +5,10 @@ export default {
       payload: seconds,
     };
   },
+  setSessionDate(date) {
+    return {
+      type: 'SET_SESSION_DATE',
+      payload: date,
+    };
+  },
 };
