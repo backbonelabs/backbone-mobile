@@ -69,19 +69,21 @@ class PostureReport extends Component {
       .sort((a, b) => b.timestamp - a.timestamp) // sort from latest to oldest
       .reduce((acc, val) => {
         const date = moment(val.timestamp).format('YYYY-MM-DD');
-        const accCopy = Object.assign({}, acc);
+        /* eslint-disable */
+        acc[date] = Object.assign({}, val);
 
         if (acc[date]) {
-          accCopy[date].sessionTime += val.sessionTime;
-          accCopy[date].slouchTime += val.slouchTime;
-          accCopy[date].totalDuration += val.totalDuration;
+          acc[date].sessionTime += val.sessionTime;
+          acc[date].slouchTime += val.slouchTime;
+          acc[date].totalDuration += val.totalDuration;
 
-          return accCopy;
+          return acc;
         }
 
-        accCopy[date] = val;
+        acc[date] = val;
 
-        return accCopy;
+        return acc;
+        /* eslint-enable */
       }, {});
       this.setState({ sessions: groupByDay });
     }
