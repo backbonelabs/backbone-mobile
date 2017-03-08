@@ -10,6 +10,7 @@ import postureDashboard from './posture/postureDashboard';
 import postureCalibrate from './posture/postureCalibrate';
 import postureMonitor from './posture/postureMonitor';
 import postureReport from './posture/postureReport';
+import postureChart from './posture/postureChart';
 import tutorial from './tutorial';
 import profile from './profile';
 import settings from './settings';
@@ -34,6 +35,7 @@ export default {
   postureCalibrate,
   postureMonitor,
   postureReport,
+  postureChart,
   tutorial,
   profile,
   settings,
