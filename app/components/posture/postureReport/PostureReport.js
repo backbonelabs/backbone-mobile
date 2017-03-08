@@ -36,7 +36,7 @@ class PostureReport extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     sessions: PropTypes.array,
-    loading: PropTypes.bool,
+    isFetchingSessions: PropTypes.bool,
     navigator: PropTypes.shape({
       push: PropTypes.func,
     }),
@@ -153,7 +153,7 @@ class PostureReport extends Component {
   render() {
     const events = (Object.keys(this.state.sessions));
     // return a spinner if component is fetching data
-    if (this.props.loading || this.state.loading) {
+    if (this.props.isFetchingSessions || this.state.loading) {
       return <Spinner />;
     }
     return (
@@ -177,7 +177,7 @@ class PostureReport extends Component {
 
 const mapStateToProps = (state) => ({
   sessions: state.user.sessions,
-  loading: state.user.isUpdating,
+  isFetchingSessions: state.user.isFetchingSessions,
 });
 
 export default connect(mapStateToProps)(PostureReport);

@@ -7,6 +7,7 @@ export default (state = {
   pendingUser: null,
   errorMessage: null,
   sessions: [],
+  isFetchingSessions: false,
 }, action) => {
   switch (action.type) {
     case 'LOGIN': {
@@ -92,7 +93,7 @@ export default (state = {
     case 'FETCH_USER_SESSIONS': {
       return {
         ...state,
-        isUpdating: false,
+        isFetchingSessions: false,
         errorMessage: null,
         sessions: state.sessions.concat(action.payload),
       };
@@ -100,14 +101,14 @@ export default (state = {
     case 'FETCH_USER_SESSIONS__START': {
       return {
         ...state,
-        isUpdating: true,
+        isFetchingSessions: true,
         errorMessage: null,
       };
     }
     case 'FETCH_USER_SESSIONS__ERROR': {
       return {
         ...state,
-        isUpdating: false,
+        isFetchingSessions: false,
         errorMessage: action.payload.message,
       };
     }
