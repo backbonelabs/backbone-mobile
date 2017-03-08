@@ -5,6 +5,8 @@ export default (state = {
   isUpdating: false,
   user: {},
   pendingUser: null,
+  isFetchingSessions: false,
+  sessions: [],
   errorMessage: null,
 }, action) => {
   switch (action.type) {
@@ -86,6 +88,28 @@ export default (state = {
           ...state.user,
           settings: action.payload.settings || state.user.settings,
         },
+      };
+    }
+    case 'FETCH_USER_SESSIONS__START': {
+      return {
+        ...state,
+        isFetchingSessions: true,
+        errorMessage: null,
+      };
+    }
+    case 'FETCH_USER_SESSIONS': {
+      return {
+        ...state,
+        isFetchingSessions: false,
+        sessions: action.payload,
+        errorMessage: null,
+      };
+    }
+    case 'FETCH_USER_SESSIONS__ERROR': {
+      return {
+        ...state,
+        isFetchingSessions: false,
+        errorMessage: action.payload.message,
       };
     }
     case 'SIGNUP': {
