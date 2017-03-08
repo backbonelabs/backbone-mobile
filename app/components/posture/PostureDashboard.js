@@ -165,6 +165,7 @@ class PostureDashboard extends Component {
         // Check if the user completed 5 full sessions throughout their lifetime.
         // A full session is either completing the entire duration of a timed session,
         // or at least one minute of an untimed session.
+        const sessionThreshold = 5;
         let totalFullSessions = 0;
         // Using forEach to allow for early iteration exit once we count 5 full sessions
         forEach(nextProps.user.sessions, session => {
@@ -174,12 +175,13 @@ class PostureDashboard extends Component {
             // This is a full session, increment counter by 1
             totalFullSessions++;
           }
-          if (totalFullSessions === 5) {
+          if (totalFullSessions === sessionThreshold) {
+            // We met the threshold, exit iteration early
             return false;
           }
         });
 
-        if (totalFullSessions === 5) {
+        if (totalFullSessions === sessionThreshold) {
           // User completed 5 full sessions, display app rating modal
           const appRatingEventName = 'appRating';
           const { _id: userId } = this.props.user.user;
