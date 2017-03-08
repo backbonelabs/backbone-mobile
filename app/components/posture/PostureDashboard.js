@@ -174,6 +174,11 @@ class PostureDashboard extends Component {
     if (this.props.user.isFetchingSessions && !nextProps.user.isFetchingSessions) {
       // Finished fetching user sessions.
       if (!this.props.user.user.seenFeedbackSurvey || !this.props.user.user.seenAppRating) {
+        const createdDate = new Date(this.props.user.user.createdAt);
+        const timeThreshold = 7 * 24 * 3600000; // 7 days converted to milliseconds
+        const today = new Date();
+        const hasPassedTimeThreshold = today.getTime() - createdDate.getTime() >= timeThreshold;
+
         const appRatingSessionThreshold = 5;
         const feedbackSurveySessionThreshold = 3;
         const maxThreshold = Math.max(appRatingSessionThreshold, feedbackSurveySessionThreshold);
@@ -195,7 +200,7 @@ class PostureDashboard extends Component {
           }
         });
 
-        if (!this.props.user.user.seenFeedbackSurvey) {
+        if (!this.props.user.user.seenFeedbackSurvey && hasPassedTimeThreshold) {
           // Users should only see this popup at most once,
           // so we mark it as done when the 7-days period has passed
           // regardless whether the modal is displayed or not
