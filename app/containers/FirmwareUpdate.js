@@ -45,6 +45,7 @@ class FirmwareUpdate extends Component {
     }),
     dispatch: PropTypes.func,
     device: PropTypes.shape({
+      isConnected: PropTypes.bool,
       inProgress: PropTypes.bool,
       device: PropTypes.shape({
         firmwareVersion: PropTypes.string,
@@ -122,6 +123,16 @@ class FirmwareUpdate extends Component {
       // Automatically pop the scene without user interaction in case app is in the background
       // so the user won't be stuck on this component when the app is back in the foreground
       this.props.navigator.pop();
+    } else if (this.props.device.isConnected && !nextProps.device.isConnected) {
+      const routeStack = this.props.navigator.getCurrentRoutes();
+      const currentRoute = routeStack[routeStack.length - 1];
+      if (currentRoute.name === routes.firmwareUpdate.name) {
+        // This indicates a running firmware update was interrupted
+        // Return to the previous scene
+        this.props.navigator.pop();
+
+        Alert.alert('Error', 'Connection lost. Your Backbone update has failed.');
+      }
     }
   }
 

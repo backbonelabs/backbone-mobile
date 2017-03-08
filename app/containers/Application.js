@@ -161,20 +161,9 @@ class Application extends Component {
           // Retrieve session state
           SessionControlService.getSessionState();
           break;
-        case deviceStatuses.DISCONNECTED: {
+        case deviceStatuses.DISCONNECTED:
           // Dispatch disconnect action when the device is disconnected
           this.props.dispatch(deviceActions.didDisconnect());
-
-          const routeStack = this.navigator.getCurrentRoutes();
-          const currentRoute = routeStack[routeStack.length - 1];
-          if (currentRoute.name === routes.firmwareUpdate.name) {
-            // This indicates a running firmware update was interrupted
-            // Return to the previous scene
-            this.navigator.pop();
-
-            Alert.alert('Error', 'Connection lost. Your Backbone update has failed.');
-          }
-        }
           break;
         default:
           // no-op
