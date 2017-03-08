@@ -6,7 +6,6 @@ import styles from '../../../styles/posture/postureChart';
 import HeadingText from '../../../components/HeadingText';
 import color from '../../../styles/theme';
 import BodyText from '../../BodyText';
-import convertToHMS from '../../utils/convertToHMS';
 
 const PostureChart = (props) => {
   const { sessionDate: { totalDuration, slouchTime, timestamp } } = props;
@@ -22,9 +21,10 @@ const PostureChart = (props) => {
       duration: slouchTime,
     },
   ];
-  data.total = convertToHMS(totalDuration);
-  data.good = convertToHMS(totalDuration - slouchTime);
-  data.bad = convertToHMS(slouchTime);
+
+  data.total = moment().startOf('day').seconds(totalDuration).format('H:mm:ss');
+  data.good = moment().startOf('day').seconds(totalDuration - slouchTime).format('H:mm:ss');
+  data.bad = moment().startOf('day').seconds(slouchTime).format('H:mm:ss');
 
   return (
     <View style={styles.container}>
