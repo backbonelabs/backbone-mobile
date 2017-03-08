@@ -162,6 +162,7 @@ class PostureReport extends Component {
         <Calendar
           showEventIndicators
           showControls
+          weekStart={0}
           onTouchPrev={this.onTouchPrev}
           onTouchNext={this.onTouchNext}
           onDateSelect={this.onDateSelect}
