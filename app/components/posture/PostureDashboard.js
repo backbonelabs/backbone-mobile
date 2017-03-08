@@ -5,10 +5,12 @@ import {
   Image,
   Linking,
   NativeModules,
+  Platform,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
+import forEach from 'lodash/forEach';
 import appActions from '../../actions/app';
 import userActions from '../../actions/user';
 import postureActions from '../../actions/posture';
@@ -29,7 +31,7 @@ import Mixpanel from '../../utils/Mixpanel';
 
 const { BluetoothService } = NativeModules;
 
-const { bluetoothStates, storageKeys, surveyUrls } = constants;
+const { bluetoothStates, storageKeys, surveyUrls, appUrls } = constants;
 
 const sessions = [
   { id: '5min', durationSeconds: 5 * 60, icon: Icon5Min },
@@ -38,6 +40,8 @@ const sessions = [
   { id: '20min', durationSeconds: 20 * 60, icon: Icon20Min },
   { id: 'infinity', durationSeconds: 0, icon: IconInfinity },
 ];
+
+const isiOS = Platform.OS === 'ios';
 
 const renderItem = (session) => (
   <View key={session.id}>
@@ -56,24 +60,29 @@ class PostureDashboard extends Component {
       isConnecting: PropTypes.bool,
     }),
     user: PropTypes.shape({
-      _id: PropTypes.string,
-      nickname: PropTypes.string,
-      dailyStreak: PropTypes.number,
-      seenBaselineSurvey: PropTypes.bool,
+      isFetchingSessions: PropTypes.bool,
+      user: PropTypes.shape({
+        _id: PropTypes.string,
+        nickname: PropTypes.string,
+        dailyStreak: PropTypes.number,
+        seenBaselineSurvey: PropTypes.bool,
+        seenAppRating: PropTypes.bool,
+        createdAt: PropTypes.string,
+      }),
     }),
   };
 
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
 
-    if (this.props.user.seenBaselineSurvey) {
-      // If initial survey has been displayed, do nothing
-    } else {
-      // Else display the initial survey
-      // And set the survey state to disable displaying it again for this user
+    const { _id: userId, seenBaselineSurvey, seenAppRating } = this.props.user.user;
+
+    if (!seenBaselineSurvey) {
+      // User has not seen the baseline survey modal yet. Display survey modal
+      // and mark as seen in the user profile to prevent it from being shown again.
       const markSurveySeenAndHideModal = () => {
         this.props.dispatch(userActions.updateUser({
-          _id: this.props.user._id,
+          _id: userId,
           seenBaselineSurvey: true,
         }));
 
@@ -103,7 +112,7 @@ class PostureDashboard extends Component {
                 text="OK, sure"
                 primary
                 onPress={() => {
-                  const url = `${surveyUrls.baseline}?user_id=${this.props.user._id}`;
+                  const url = `${surveyUrls.baseline}?user_id=${userId}`;
                   Linking.canOpenURL(url)
                     .then(supported => {
                       if (supported) {
@@ -133,14 +142,136 @@ class PostureDashboard extends Component {
         onClose: () => {
           Mixpanel.track(`${baselineSurveyEventName}-decline`);
           this.props.dispatch(userActions.updateUser({
-            _id: this.props.user._id,
+            _id: userId,
             seenBaselineSurvey: true,
           }));
         },
       }));
     }
+
+    if (!seenAppRating) {
+      // User has not seen the app rating modal yet.
+      // Retrieve user session data to later check if the user has
+      // completed 5 full sessions throughout their lifetime.
+      this.getUserSessions(userId, new Date(this.props.user.user.createdAt), new Date());
+    }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.user.isFetchingSessions && !nextProps.user.isFetchingSessions) {
+      // Finished fetching user sessions
+      if (!this.props.user.user.seenAppRating) {
+        // User has not seen the app rating modal yet.
+        // Check if the user completed 5 full sessions throughout their lifetime.
+        // A full session is either completing the entire duration of a timed session,
+        // or at least one minute of an untimed session.
+        const sessionThreshold = 5;
+        let totalFullSessions = 0;
+        // Using forEach to allow for early iteration exit once we count 5 full sessions
+        forEach(nextProps.user.sessions, session => {
+          const { sessionTime, totalDuration } = session;
+          if ((sessionTime > 0 && totalDuration === sessionTime) ||
+            (sessionTime === 0 && totalDuration >= 60)) {
+            // This is a full session, increment counter by 1
+            totalFullSessions++;
+          }
+          if (totalFullSessions === sessionThreshold) {
+            // We met the threshold, exit iteration early
+            return false;
+          }
+        });
+
+        if (totalFullSessions === sessionThreshold) {
+          // User completed 5 full sessions, display app rating modal
+          const appRatingEventName = 'appRating';
+          const { _id: userId } = this.props.user.user;
+
+          const markAppRatingSeenAndHideModal = () => {
+            this.props.dispatch(userActions.updateUser({
+              _id: userId,
+              seenAppRating: true,
+            }));
+
+            this.props.dispatch(appActions.hidePartialModal());
+          };
+
+          this.props.dispatch(appActions.showPartialModal({
+            content: (
+              <View>
+                <BodyText style={styles._partialModalBodyText}>
+                  We hope you are enjoying Backbone. Would you mind telling
+                  us about your experience in the {isiOS ? 'App' : 'Play'} Store?
+                </BodyText>
+                <View style={styles.partialModalButtonView}>
+                  <Button
+                    style={styles._partialModalButton}
+                    text="No, thanks"
+                    onPress={() => {
+                      Mixpanel.track(`${appRatingEventName}-decline`);
+                      markAppRatingSeenAndHideModal();
+                    }}
+                  />
+                  <Button
+                    style={styles._partialModalButton}
+                    text="OK, sure"
+                    primary
+                    onPress={() => {
+                      const url = isiOS ? appUrls.ios : appUrls.android;
+                      Linking.canOpenURL(url)
+                        .then(supported => {
+                          if (supported) {
+                            return Linking.openURL(url);
+                          }
+                          throw new Error();
+                        })
+                        .catch(() => {
+                          // This catch handler will handle rejections from Linking.openURL
+                          // as well as when the user's phone doesn't have any apps
+                          // to open the URL
+                          Alert.alert(
+                            'Error',
+                            'We could not launch the ' + (isiOS ? 'App' : 'Play') + ' Store. ' + // eslint-disable-line prefer-template, max-len
+                            'You can still share your feedback with us by filling out the ' +
+                            'support form in Settings.'
+                          );
+                        });
+
+                      Mixpanel.track(`${appRatingEventName}-accept`);
+
+                      markAppRatingSeenAndHideModal();
+                    }}
+                  />
+                </View>
+              </View>
+            ),
+            onClose: () => {
+              Mixpanel.track(`${appRatingEventName}-decline`);
+              this.props.dispatch(userActions.updateUser({
+                _id: userId,
+                seenAppRating: true,
+              }));
+            },
+          }));
+        }
+      }
+    }
+  }
+
+  /**
+   * Retrieve user sessions for a date range
+   * @param  {String} userId User ID
+   * @param  {Date}   from   From date
+   * @param  {Date}   to     To Date
+   */
+  @autobind
+  getUserSessions(userId, from, to) {
+    this.props.dispatch(userActions.fetchUserSessions({
+      from: from.toISOString(),
+      to: to.toISOString(),
+    }));
+  }
+
+  @autobind
   setSessionTime(seconds) {
     this.props.dispatch(postureActions.setSessionTime(seconds));
   }
@@ -193,10 +324,11 @@ class PostureDashboard extends Component {
   }
 
   render() {
+    const { user } = this.props.user;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <HeadingText size={2}>{this.props.user.nickname}</HeadingText>
+          <HeadingText size={2}>{user.nickname}</HeadingText>
           <HeadingText size={2}>Choose your goal</HeadingText>
         </View>
         <View style={styles.body}>
@@ -222,7 +354,7 @@ class PostureDashboard extends Component {
             <BodyText style={styles._dailyStreakTitle}>DAILY STREAK</BodyText>
             <Image source={DailyStreakBanner} style={styles.dailyStreakBanner} />
             <BodyText style={styles._streakCounter}>
-              { this.props.user.dailyStreak }
+              { user.dailyStreak }
             </BodyText>
           </View>
         </View>
@@ -232,7 +364,7 @@ class PostureDashboard extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { device, user: { user } } = state;
+  const { device, user } = state;
   return { device, user };
 };
 
