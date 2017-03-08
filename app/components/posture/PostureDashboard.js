@@ -67,6 +67,7 @@ class PostureDashboard extends Component {
         dailyStreak: PropTypes.number,
         seenBaselineSurvey: PropTypes.bool,
         seenAppRating: PropTypes.bool,
+        seenFeedbackSurvey: PropTypes.bool,
         createdAt: PropTypes.string,
       }),
     }),
@@ -75,7 +76,9 @@ class PostureDashboard extends Component {
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
 
-    const { _id: userId, seenBaselineSurvey, seenAppRating } = this.props.user.user;
+    const {
+      _id: userId, seenBaselineSurvey, seenAppRating, seenFeedbackSurvey,
+    } = this.props.user.user;
 
     if (!seenBaselineSurvey) {
       // User has not seen the baseline survey modal yet. Display survey modal
@@ -149,7 +152,15 @@ class PostureDashboard extends Component {
       }));
     }
 
-    if (!seenAppRating) {
+    // For the time being, feedback survey is put on higher priority than app rating
+    if (!seenFeedbackSurvey) {
+      // Fetch the user session data to check if the user has
+      // completed 3 full sessions in the first 7 days after signing up.
+      const createdDate = new Date(this.props.user.user.createdAt);
+      const timeThreshold = 7 * 24 * 3600000; // 7 days converted to milliseconds
+      const limitDate = new Date(new Date().setTime(createdDate.getTime() + timeThreshold));
+      this.getUserSessions(userId, createdDate, limitDate);
+    } else if (!seenAppRating) {
       // User has not seen the app rating modal yet.
       // Retrieve user session data to later check if the user has
       // completed 5 full sessions throughout their lifetime.
@@ -160,14 +171,13 @@ class PostureDashboard extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.user.isFetchingSessions && !nextProps.user.isFetchingSessions) {
       // Finished fetching user sessions
-      if (!this.props.user.user.seenAppRating) {
-        // User has not seen the app rating modal yet.
-        // Check if the user completed 5 full sessions throughout their lifetime.
+      if (!this.props.user.user.seenFeedbackSurvey || !this.props.user.user.seenAppRating) {
+        const sessionThreshold = (!this.props.user.user.seenFeedbackSurvey ? 3 : 5);
+        let totalFullSessions = 0;
+
         // A full session is either completing the entire duration of a timed session,
         // or at least one minute of an untimed session.
-        const sessionThreshold = 5;
-        let totalFullSessions = 0;
-        // Using forEach to allow for early iteration exit once we count 5 full sessions
+        // Using forEach to allow for early iteration exit once we reach the required count
         forEach(nextProps.user.sessions, session => {
           const { sessionTime, totalDuration } = session;
           if ((sessionTime > 0 && totalDuration === sessionTime) ||
@@ -182,76 +192,13 @@ class PostureDashboard extends Component {
         });
 
         if (totalFullSessions === sessionThreshold) {
-          // User completed 5 full sessions, display app rating modal
-          const appRatingEventName = 'appRating';
-          const { _id: userId } = this.props.user.user;
-
-          const markAppRatingSeenAndHideModal = () => {
-            this.props.dispatch(userActions.updateUser({
-              _id: userId,
-              seenAppRating: true,
-            }));
-
-            this.props.dispatch(appActions.hidePartialModal());
-          };
-
-          this.props.dispatch(appActions.showPartialModal({
-            content: (
-              <View>
-                <BodyText style={styles._partialModalBodyText}>
-                  We hope you are enjoying Backbone. Would you mind telling
-                  us about your experience in the {isiOS ? 'App' : 'Play'} Store?
-                </BodyText>
-                <View style={styles.partialModalButtonView}>
-                  <Button
-                    style={styles._partialModalButton}
-                    text="No, thanks"
-                    onPress={() => {
-                      Mixpanel.track(`${appRatingEventName}-decline`);
-                      markAppRatingSeenAndHideModal();
-                    }}
-                  />
-                  <Button
-                    style={styles._partialModalButton}
-                    text="OK, sure"
-                    primary
-                    onPress={() => {
-                      const url = isiOS ? appUrls.ios : appUrls.android;
-                      Linking.canOpenURL(url)
-                        .then(supported => {
-                          if (supported) {
-                            return Linking.openURL(url);
-                          }
-                          throw new Error();
-                        })
-                        .catch(() => {
-                          // This catch handler will handle rejections from Linking.openURL
-                          // as well as when the user's phone doesn't have any apps
-                          // to open the URL
-                          Alert.alert(
-                            'Error',
-                            'We could not launch the ' + (isiOS ? 'App' : 'Play') + ' Store. ' + // eslint-disable-line prefer-template, max-len
-                            'You can still share your feedback with us by filling out the ' +
-                            'support form in Settings.'
-                          );
-                        });
-
-                      Mixpanel.track(`${appRatingEventName}-accept`);
-
-                      markAppRatingSeenAndHideModal();
-                    }}
-                  />
-                </View>
-              </View>
-            ),
-            onClose: () => {
-              Mixpanel.track(`${appRatingEventName}-decline`);
-              this.props.dispatch(userActions.updateUser({
-                _id: userId,
-                seenAppRating: true,
-              }));
-            },
-          }));
+          // User completed the required number of full sessions
+          // Display the appropriate modal
+          if (!this.props.user.user.seenFeedbackSurvey) {
+            this.showFeedbackSurveyModal();
+          } else {
+            this.showAppRatingModal();
+          }
         }
       }
     }
@@ -274,6 +221,152 @@ class PostureDashboard extends Component {
   @autobind
   setSessionTime(seconds) {
     this.props.dispatch(postureActions.setSessionTime(seconds));
+  }
+
+  @autobind
+  showAppRatingModal() {
+    const appRatingEventName = 'appRating';
+    const { _id: userId } = this.props.user.user;
+
+    const markAppRatingSeenAndHideModal = () => {
+      this.props.dispatch(userActions.updateUser({
+        _id: userId,
+        seenAppRating: true,
+      }));
+
+      this.props.dispatch(appActions.hidePartialModal());
+    };
+
+    this.props.dispatch(appActions.showPartialModal({
+      content: (
+        <View>
+          <BodyText style={styles._partialModalBodyText}>
+            We hope you are enjoying Backbone. Would you mind telling
+            us about your experience in the {isiOS ? 'App' : 'Play'} Store?
+          </BodyText>
+          <View style={styles.partialModalButtonView}>
+            <Button
+              style={styles._partialModalButton}
+              text="No, thanks"
+              onPress={() => {
+                Mixpanel.track(`${appRatingEventName}-decline`);
+                markAppRatingSeenAndHideModal();
+              }}
+            />
+            <Button
+              style={styles._partialModalButton}
+              text="OK, sure"
+              primary
+              onPress={() => {
+                const url = isiOS ? appUrls.ios : appUrls.android;
+                Linking.canOpenURL(url)
+                  .then(supported => {
+                    if (supported) {
+                      return Linking.openURL(url);
+                    }
+                    throw new Error();
+                  })
+                  .catch(() => {
+                    // This catch handler will handle rejections from Linking.openURL
+                    // as well as when the user's phone doesn't have any apps
+                    // to open the URL
+                    Alert.alert(
+                      'Error',
+                      'We could not launch the ' + (isiOS ? 'App' : 'Play') + ' Store. ' + // eslint-disable-line prefer-template, max-len
+                      'You can still share your feedback with us by filling out the ' +
+                      'support form in Settings.'
+                    );
+                  });
+
+                Mixpanel.track(`${appRatingEventName}-accept`);
+
+                markAppRatingSeenAndHideModal();
+              }}
+            />
+          </View>
+        </View>
+      ),
+      onClose: () => {
+        Mixpanel.track(`${appRatingEventName}-decline`);
+        this.props.dispatch(userActions.updateUser({
+          _id: userId,
+          seenAppRating: true,
+        }));
+      },
+    }));
+  }
+
+  @autobind
+  showFeedbackSurveyModal() {
+    const feedbackSurveyEventName = 'feedbackSurvey';
+    const { _id: userId } = this.props.user.user;
+
+    const markFeedbackSurveySeenAndHideModal = () => {
+      this.props.dispatch(userActions.updateUser({
+        _id: userId,
+        seenFeedbackSurvey: true,
+      }));
+
+      this.props.dispatch(appActions.hidePartialModal());
+    };
+
+    this.props.dispatch(appActions.showPartialModal({
+      content: (
+        <View>
+          <BodyText style={styles._partialModalBodyText}>
+            Is Backbone working for you?
+            If you're having a problem or have any other feedback,
+            please let us know!
+          </BodyText>
+          <View style={styles.partialModalButtonView}>
+            <Button
+              style={styles._partialModalButton}
+              text="No, thanks"
+              onPress={() => {
+                Mixpanel.track(`${feedbackSurveyEventName}-decline`);
+                markFeedbackSurveySeenAndHideModal();
+              }}
+            />
+            <Button
+              style={styles._partialModalButton}
+              text="OK, sure"
+              primary
+              onPress={() => {
+                const url = `${surveyUrls.feedback}?user_id=${userId}`;
+                Linking.canOpenURL(url)
+                  .then(supported => {
+                    if (supported) {
+                      return Linking.openURL(url);
+                    }
+                    throw new Error();
+                  })
+                  .catch(() => {
+                    // This catch handler will handle rejections from Linking.openURL
+                    // as well as when the user's phone doesn't have any apps
+                    // to open the URL
+                    Alert.alert(
+                      'Error',
+                      'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
+                      'Please contact us to fill out the survey.',
+                    );
+                  });
+
+                Mixpanel.track(`${feedbackSurveyEventName}-accept`);
+
+                markFeedbackSurveySeenAndHideModal();
+              }}
+            />
+          </View>
+        </View>
+      ),
+      onClose: () => {
+        Mixpanel.track(`${feedbackSurveyEventName}-decline`);
+        this.props.dispatch(userActions.updateUser({
+          _id: userId,
+          seenFeedbackSurvey: true,
+        }));
+      },
+    }));
   }
 
   @autobind
