@@ -95,7 +95,7 @@ export default (state = {
         ...state,
         isFetchingSessions: false,
         errorMessage: null,
-        sessions: state.sessions.concat(action.payload),
+        sessions: action.payload,
       };
     }
     case 'FETCH_USER_SESSIONS__START': {
