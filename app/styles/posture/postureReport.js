@@ -1,7 +1,4 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
-import relativeDimensions from '../../utils/relativeDimensions';
-
-const { heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -9,7 +6,6 @@ export default EStyleSheet.create({
   },
   heading: {
     textAlign: 'center',
-    paddingBottom: 25 * heightDifference,
-    marginTop: 30 * heightDifference,
+    paddingVertical: 25,
   },
 });
