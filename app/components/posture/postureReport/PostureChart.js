@@ -6,6 +6,9 @@ import styles from '../../../styles/posture/postureChart';
 import HeadingText from '../../../components/HeadingText';
 import color from '../../../styles/theme';
 import BodyText from '../../BodyText';
+import relativeDimensions from '../../../utils/relativeDimensions';
+
+const { applyWidthDifference } = relativeDimensions;
 
 const PostureChart = (props) => {
   const { sessionDate: { totalDuration, slouchTime, timestamp } } = props;
@@ -31,23 +34,21 @@ const PostureChart = (props) => {
       <View style={styles.dateContainer}>
         <HeadingText size={2}>{data.date}</HeadingText>
       </View>
-      <View style={styles.chart}>
-        <VictoryPie
-          style={{
-            labels: { fontSize: 14, fontWeight: 'bold' },
-          }}
-          innerRadius={80}
-          data={data.chartData}
-          x="label"
-          y="duration"
-          width={350}
-          padding={{ top: 80, bottom: 0, left: 70, right: 70 }}
-          labels={(datum) => (datum.duration ? datum.text : null)}
-          colorScale={[
-            color.fillColor,
-            color.primaryColor,
-          ]}
-        />
+      <View style={styles.chartContainer}>
+        <View style={styles.chart}>
+          <VictoryPie
+            style={{ labels: styles._chartLabel }}
+            innerRadius={applyWidthDifference(80)}
+            data={data.chartData}
+            x="label"
+            y="duration"
+            width={applyWidthDifference(350)}
+            height={applyWidthDifference(380)}
+            padding={applyWidthDifference(70)}
+            labels={(datum) => (datum.duration ? datum.text : null)}
+            colorScale={['#4CAF50', color.primaryColor]}
+          />
+        </View>
         <View style={styles._total}>
           <HeadingText size={1}>Total</HeadingText>
           <HeadingText size={1}>{data.total}</HeadingText>
@@ -73,3 +74,6 @@ PostureChart.propTypes = {
 };
 
 export default PostureChart;
+
+
+            // padding={{ top: 80, bottom: 0, left: 70, right: 70 }}

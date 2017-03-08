@@ -17,7 +17,6 @@ const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
 const activeBorderColor = '#85181C';
 const bannerColor = '#EEE';
-const fillColor = '#4CAF50';
 
 export default {
   primaryColor,
@@ -26,7 +25,6 @@ export default {
   secondaryFontColor,
   activeBorderColor,
   disabledColor: '#A9A9A9',
-  fillColor,
   iconSize,
   iconButtonSize,
   inputIconSize,

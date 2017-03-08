@@ -1,4 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import relativeDimensions from '../../utils/relativeDimensions';
+
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -6,6 +9,6 @@ export default EStyleSheet.create({
   },
   heading: {
     textAlign: 'center',
-    paddingVertical: 25,
+    paddingVertical: applyWidthDifference(25),
   },
 });

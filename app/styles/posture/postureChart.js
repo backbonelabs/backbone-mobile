@@ -5,8 +5,8 @@ const { applyWidthDifference } = relativeDimensions;
 
 const statsText = {
   textAlign: 'center',
-  paddingTop: 5,
-  paddingBottom: 5,
+  paddingTop: applyWidthDifference(5),
+  paddingBottom: applyWidthDifference(5),
 };
 
 export default EStyleSheet.create({
@@ -16,24 +16,26 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   dateContainer: {
-    flexDirection: 'row',
-    width: '95%',
+    width: applyWidthDifference(350),
+    height: applyWidthDifference(55),
     alignItems: 'center',
-    justifyContent: 'space-around',
-    flex: 2,
+    justifyContent: 'center',
     marginBottom: applyWidthDifference(5),
-    marginTop: applyWidthDifference(15),
     backgroundColor: '$bannerColor',
   },
-  icons: {
-    paddingRight: applyWidthDifference(25),
-    paddingLeft: applyWidthDifference(25),
+  chartContainer: {
+    width: applyWidthDifference(350),
+    height: applyWidthDifference(350),
+    backgroundColor: '$bannerColor',
+    alignItems: 'center',
   },
   chart: {
-    width: '95%',
-    backgroundColor: '$bannerColor',
-    alignItems: 'center',
-    flex: 15,
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+  chartLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   heading: {
     textAlign: 'center',
@@ -43,14 +45,13 @@ export default EStyleSheet.create({
   total: {
     position: 'relative',
     alignItems: 'center',
-    bottom: 270,
+    bottom: applyWidthDifference(220),
   },
   statsContainer: {
     flexDirection: 'row',
-    width: '95%',
+    width: applyWidthDifference(350),
     marginTop: applyWidthDifference(5),
     justifyContent: 'space-between',
-    flex: 5,
   },
   innerContainer: {
     width: applyWidthDifference(150),
@@ -61,7 +62,7 @@ export default EStyleSheet.create({
   statsGoodHeader: {
     ...statsText,
     color: 'white',
-    backgroundColor: '$fillColor',
+    backgroundColor: '#4CAF50',
   },
   statsBadHeader: {
     ...statsText,
