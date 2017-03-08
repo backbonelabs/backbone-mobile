@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { View } from 'react-native';
 import { VictoryPie } from 'victory-native';
-import { connect } from 'react-redux';
 import moment from 'moment';
 import styles from '../../../styles/posture/postureChart';
 import HeadingText from '../../../components/HeadingText';
@@ -75,8 +74,4 @@ PostureChart.propTypes = {
   sessionDate: PropTypes.object,
 };
 
-const mapStateToProps = (state) => ({
-  sessionDate: state.user.sessionDate,
-});
-
-export default connect(mapStateToProps)(PostureChart);
+export default PostureChart;

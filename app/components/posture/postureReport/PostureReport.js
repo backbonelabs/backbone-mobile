@@ -11,7 +11,6 @@ import styles from '../../../styles/posture/postureReport';
 import HeadingText from '../../../components/HeadingText';
 import color from '../../../styles/theme';
 import userActions from '../../../actions/user';
-import postureActions from '../../../actions/posture';
 import Spinner from '../../Spinner';
 import routes from '../../../routes';
 
@@ -94,8 +93,12 @@ class PostureReport extends Component {
     const selectedSession = this.state.sessions[formatDate];
 
     if (selectedSession) {
-      this.props.dispatch(postureActions.setSessionDate(selectedSession));
-      return this.props.navigator.push(routes.postureChart);
+      return this.props.navigator.push({
+        ...routes.postureChart,
+        props: {
+          sessionDate: selectedSession,
+        },
+      });
     }
 
     return null;

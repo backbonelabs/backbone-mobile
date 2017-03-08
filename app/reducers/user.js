@@ -7,7 +7,6 @@ export default (state = {
   pendingUser: null,
   errorMessage: null,
   sessions: [],
-  sessionDate: {},
 }, action) => {
   switch (action.type) {
     case 'LOGIN': {
@@ -110,12 +109,6 @@ export default (state = {
         ...state,
         isUpdating: false,
         errorMessage: action.payload.message,
-      };
-    }
-    case 'SET_SESSION_DATE': {
-      return {
-        ...state,
-        sessionDate: action.payload,
       };
     }
     case 'SIGNUP': {
