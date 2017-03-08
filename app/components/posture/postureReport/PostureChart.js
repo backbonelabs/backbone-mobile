@@ -13,11 +13,11 @@ const PostureChart = (props) => {
   data.date = moment(timestamp).format('MMMM D, YYYY');
   data.chartData = [
     {
-      label: 'Good',
+      text: 'Good',
       duration: totalDuration - slouchTime,
     },
     {
-      label: 'Poor',
+      text: 'Poor',
       duration: slouchTime,
     },
   ];
@@ -42,8 +42,9 @@ const PostureChart = (props) => {
           y="duration"
           width={350}
           padding={{ top: 80, bottom: 0, left: 70, right: 70 }}
+          labels={(datum) => (datum.duration ? datum.text : null)}
           colorScale={[
-            'white',
+            color.fillColor,
             color.primaryColor,
           ]}
         />
