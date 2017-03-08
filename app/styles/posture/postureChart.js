@@ -61,11 +61,11 @@ export default EStyleSheet.create({
   statsGoodHeader: {
     ...statsText,
     color: 'white',
-    backgroundColor: '#BDBDBD',
+    backgroundColor: '$fillColor',
   },
   statsBadHeader: {
     ...statsText,
-    color: '$primaryColor',
-    backgroundColor: '#BDBDBD',
+    color: 'white',
+    backgroundColor: '$primaryColor',
   },
 });
