@@ -42,9 +42,6 @@ const PostureChart = (props) => {
           y="duration"
           width={350}
           padding={{ top: 80, bottom: 0, left: 70, right: 70 }}
-          animate={{
-            duration: 700,
-          }}
           colorScale={[
             'white',
             color.primaryColor,
