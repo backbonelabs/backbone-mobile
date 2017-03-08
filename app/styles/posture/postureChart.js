@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 const statsText = {
   textAlign: 'center',
@@ -21,8 +21,8 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     flex: 2,
-    marginBottom: 5 * heightDifference,
-    marginTop: 15 * heightDifference,
+    marginBottom: applyWidthDifference(5),
+    marginTop: applyWidthDifference(15),
     backgroundColor: '$bannerColor',
   },
   icons: {
@@ -37,8 +37,8 @@ export default EStyleSheet.create({
   },
   heading: {
     textAlign: 'center',
-    paddingBottom: 25 * heightDifference,
-    marginTop: 30 * heightDifference,
+    paddingBottom: applyWidthDifference(25),
+    marginTop: applyWidthDifference(30),
   },
   total: {
     position: 'relative',
@@ -48,13 +48,13 @@ export default EStyleSheet.create({
   statsContainer: {
     flexDirection: 'row',
     width: '95%',
-    marginTop: 5 * heightDifference,
+    marginTop: applyWidthDifference(5),
     justifyContent: 'space-between',
     flex: 5,
   },
   innerContainer: {
     width: applyWidthDifference(150),
-    height: 70 * heightDifference,
+    height: applyWidthDifference(70),
     backgroundColor: '$bannerColor',
   },
   statsText: { ...statsText },
