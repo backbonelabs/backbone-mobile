@@ -214,7 +214,7 @@ export default {
       dispatch(fetchUserSessionsStart());
 
       return Fetcher.get({
-        url: `${sessionsUrl}/${_id}?from=${dates.from_date}&to=${dates.to_date}`,
+        url: `${sessionsUrl}/${_id}?from=${dates.fromDate}&to=${dates.toDate}`,
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then(response => response.json())

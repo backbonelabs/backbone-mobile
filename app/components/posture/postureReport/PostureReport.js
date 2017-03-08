@@ -48,8 +48,8 @@ class PostureReport extends Component {
     this.state = {
       sessions: {},
       startDate: moment().format('YYYY-MM-DD'),
-      from_date: moment().subtract(3, 'months').startOf('month').format('YYYY-MM-DD'),
-      to_date: moment().endOf('month').format('YYYY-MM-DD'),
+      fromDate: moment().subtract(3, 'months').startOf('month').format('YYYY-MM-DD'),
+      toDate: moment().endOf('month').format('YYYY-MM-DD'),
       loading: true,
     };
   }
@@ -57,8 +57,8 @@ class PostureReport extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(userActions.fetchUserSessions({
-        from_date: this.state.from_date,
-        to_date: this.state.to_date,
+        fromDate: this.state.fromDate,
+        toDate: this.state.toDate,
       }));
       this.setState({ loading: false });
     });
@@ -110,13 +110,13 @@ class PostureReport extends Component {
 
     if (selectedMonth === fromDateMonth) {
       this.props.dispatch(userActions.fetchUserSessions({
-        from_date: fromDateMonth,
-        to_date: toDateMonth,
+        fromDate: fromDateMonth,
+        toDate: toDateMonth,
       }));
       return this.setState({
         startDate: fromDateMonth,
-        from_date: fromDateMonth,
-        to_date: toDateMonth,
+        fromDate: fromDateMonth,
+        toDate: toDateMonth,
       });
     }
 
@@ -133,13 +133,13 @@ class PostureReport extends Component {
 
     if (selectedMonth === fromDateMonth) {
       this.props.dispatch(userActions.fetchUserSessions({
-        from_date: fromDateMonth,
-        to_date: toDateMonth,
+        fromDate: fromDateMonth,
+        toDate: toDateMonth,
       }));
       return this.setState({
         startDate: fromDateMonth,
-        from_date: fromDateMonth,
-        to_date: toDateMonth,
+        fromDate: fromDateMonth,
+        toDate: toDateMonth,
       });
     }
 
