@@ -108,4 +108,8 @@ export default {
   surveyUrls: {
     baseline: 'https://backbonelabsinc.typeform.com/to/lVs1Sh',
   },
+  appUrls: {
+    ios: 'https://appsto.re/us/1vAOgb.i',
+    android: 'https://play.google.com/store/apps/details?id=co.backbonelabs.backbone',
+  },
 };
