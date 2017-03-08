@@ -12,7 +12,7 @@ import convertToHMS from '../../utils/convertToHMS';
 const PostureChart = (props) => {
   const { sessionDate: { totalDuration, slouchTime, timestamp } } = props;
   const data = {};
-  data.date = moment(timestamp).format('MMM Do YY');
+  data.date = moment(timestamp).format('MMMM D, YYYY');
   data.chartData = [
     {
       label: 'Good',
