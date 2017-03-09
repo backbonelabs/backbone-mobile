@@ -73,6 +73,15 @@ const sessionStates = {
 class PostureMonitor extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
+    navigator: PropTypes.shape({
+      getCurrentRoutes: PropTypes.func,
+      resetTo: PropTypes.func,
+      push: PropTypes.func,
+      pop: PropTypes.func,
+    }),
+    currentRoute: PropTypes.shape({
+      name: PropTypes.string,
+    }),
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
     }),
@@ -104,12 +113,6 @@ class PostureMonitor extends Component {
       _id: PropTypes.string.isRequired,
       dailyStreak: PropTypes.number.isRequired,
       lastSession: PropTypes.string,
-    }),
-    navigator: PropTypes.shape({
-      getCurrentRoutes: PropTypes.func,
-      resetTo: PropTypes.func,
-      push: PropTypes.func,
-      pop: PropTypes.func,
     }),
   };
 
@@ -185,9 +188,7 @@ class PostureMonitor extends Component {
         if (this.state.sessionState !== sessionStates.STOPPED) {
           // Back button was pressed during an active session.
           // Check if PostureMonitor is the current scene.
-          const routeStack = this.props.navigator.getCurrentRoutes();
-          const currentRoute = routeStack[routeStack.length - 1];
-          if (currentRoute.name === routes.postureMonitor.name) {
+          if (this.props.currentRoute.name === routes.postureMonitor.name) {
             // PostureMonitor is the current scene.
             // Confirm if the user wants to quit the current session.
             Alert.alert(
