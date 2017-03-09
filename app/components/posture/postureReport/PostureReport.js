@@ -47,8 +47,8 @@ class PostureReport extends Component {
     this.state = {
       sessions: {},
       startDate: moment().format('YYYY-MM-DD'),
-      fromDate: moment().subtract(2, 'months').endOf('month').format('YYYY-MM-DD'),
-      toDate: moment().add(2, 'months').startOf('month').format('YYYY-MM-DD'),
+      fromDate: moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD'),
+      toDate: moment().add(1, 'months').endOf('month').format('YYYY-MM-DD'),
       loading: true,
     };
   }
@@ -112,9 +112,9 @@ class PostureReport extends Component {
     const nextFetchDate = moment(this.state.startDate)
       .subtract(2, 'months').startOf('month').format('YYYY-MM-DD');
     const fromDateMonth = moment(nextFetchDate)
-      .endOf('month').subtract(2, 'months').format('YYYY-MM-DD');
+      .startOf('month').subtract(1, 'months').format('YYYY-MM-DD');
     const toDateMonth = moment(nextFetchDate)
-      .startOf('month').add(2, 'months').format('YYYY-MM-DD');
+      .endOf('month').add(1, 'months').format('YYYY-MM-DD');
 
     if (selectedMonth === nextFetchDate) {
       this.props.dispatch(userActions.fetchUserSessions({
@@ -137,9 +137,9 @@ class PostureReport extends Component {
     const nextFetchDate = moment(this.state.startDate)
       .add(2, 'months').startOf('month').format('YYYY-MM-DD');
     const fromDateMonth = moment(nextFetchDate)
-      .endOf('month').subtract(3, 'months').format('YYYY-MM-DD');
+      .startOf('month').subtract(1, 'months').format('YYYY-MM-DD');
     const toDateMonth = moment(nextFetchDate)
-      .startOf('month').add(2, 'months').format('YYYY-MM-DD');
+      .endOf('month').add(1, 'months').format('YYYY-MM-DD');
 
     if (selectedMonth === nextFetchDate) {
       this.props.dispatch(userActions.fetchUserSessions({
