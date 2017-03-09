@@ -154,13 +154,13 @@ class PostureDashboard extends Component {
 
     // Calculate and check if 7 days have passed since registration.
     const createdDate = new Date(this.props.user.user.createdAt);
-    const timeThreshold = 7 * 24 * 3600000; // 7 days converted to milliseconds
+    const timeThreshold = 7 * 24 * 60 * 60 * 1000; // 7 days converted to milliseconds
     const today = new Date();
     if (!seenFeedbackSurvey && (today.getTime() - createdDate.getTime() >= timeThreshold)) {
       // Feedback Survey hasn't been displayed yet, and 7 days have passed.
       // Fetch the user session data to check if the user has
       // completed at least 3 full sessions in the first 7 days after signing up.
-      const limitDate = new Date(new Date().setTime(createdDate.getTime() + timeThreshold));
+      const limitDate = new Date(createdDate.getTime() + timeThreshold);
       this.getUserSessions(userId, createdDate, limitDate);
     } else if (!seenAppRating) {
       // User has not seen the app rating modal yet.
@@ -175,7 +175,7 @@ class PostureDashboard extends Component {
       // Finished fetching user sessions.
       if (!this.props.user.user.seenFeedbackSurvey || !this.props.user.user.seenAppRating) {
         const createdDate = new Date(this.props.user.user.createdAt);
-        const timeThreshold = 7 * 24 * 3600000; // 7 days converted to milliseconds
+        const timeThreshold = 7 * 24 * 60 * 60 * 1000; // 7 days converted to milliseconds
         const today = new Date();
         const hasPassedTimeThreshold = today.getTime() - createdDate.getTime() >= timeThreshold;
 
@@ -200,22 +200,22 @@ class PostureDashboard extends Component {
           }
         });
 
-        if (!this.props.user.user.seenFeedbackSurvey && hasPassedTimeThreshold) {
+        if (!this.props.user.user.seenAppRating &&
+          totalFullSessions === appRatingSessionThreshold) {
+          this.showAppRatingModal();
+        } else if (!this.props.user.user.seenFeedbackSurvey && hasPassedTimeThreshold) {
           // Users should only see this popup at most once,
           // so we mark it as done when the 7-days period has passed
-          // regardless whether the modal is displayed or not
-          this.props.dispatch(userActions.updateUser({
-            _id: this.props.user.user._id,
-            seenFeedbackSurvey: true,
-          }));
-
+          // if he has completed the required number of sessions,
+          // otherwise we display the modal popup
           if (totalFullSessions < feedbackSurveySessionThreshold) {
-            // Show only when less than 3 full sessions have been done.
-            // Otherwise, there's no need to display the modal.
             this.showFeedbackSurveyModal();
+          } else {
+            this.props.dispatch(userActions.updateUser({
+              _id: this.props.user.user._id,
+              seenFeedbackSurvey: true,
+            }));
           }
-        } else if (totalFullSessions === appRatingSessionThreshold) {
-          this.showAppRatingModal();
         }
       }
     }
@@ -318,6 +318,15 @@ class PostureDashboard extends Component {
     const feedbackSurveyEventName = 'feedbackSurvey';
     const { _id: userId } = this.props.user.user;
 
+    const markFeedbackSurveySeenAndHideModal = () => {
+      this.props.dispatch(userActions.updateUser({
+        _id: userId,
+        seenFeedbackSurvey: true,
+      }));
+
+      this.props.dispatch(appActions.hidePartialModal());
+    };
+
     this.props.dispatch(appActions.showPartialModal({
       content: (
         <View>
@@ -332,7 +341,7 @@ class PostureDashboard extends Component {
               text="No, thanks"
               onPress={() => {
                 Mixpanel.track(`${feedbackSurveyEventName}-decline`);
-                this.props.dispatch(appActions.hidePartialModal());
+                markFeedbackSurveySeenAndHideModal();
               }}
             />
             <Button
@@ -361,7 +370,7 @@ class PostureDashboard extends Component {
 
                 Mixpanel.track(`${feedbackSurveyEventName}-accept`);
 
-                this.props.dispatch(appActions.hidePartialModal());
+                markFeedbackSurveySeenAndHideModal();
               }}
             />
           </View>
@@ -369,6 +378,10 @@ class PostureDashboard extends Component {
       ),
       onClose: () => {
         Mixpanel.track(`${feedbackSurveyEventName}-decline`);
+        this.props.dispatch(userActions.updateUser({
+          _id: userId,
+          seenFeedbackSurvey: true,
+        }));
       },
     }));
   }
