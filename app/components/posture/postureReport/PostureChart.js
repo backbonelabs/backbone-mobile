@@ -43,7 +43,7 @@ const PostureChart = (props) => {
             x="label"
             y="duration"
             width={applyWidthDifference(350)}
-            height={applyWidthDifference(380)}
+            height={applyWidthDifference(350)}
             padding={applyWidthDifference(70)}
             labels={(datum) => (datum.duration ? datum.text : null)}
             colorScale={['#4CAF50', color.primaryColor]}
@@ -54,7 +54,7 @@ const PostureChart = (props) => {
           <HeadingText size={1}>{data.total}</HeadingText>
         </View>
       </View>
-      <View style={styles._statsContainer}>
+      <View style={styles.statsContainer}>
         <View style={styles.innerContainer}>
           <BodyText style={styles._statsGoodHeader}>Good</BodyText>
           <BodyText style={styles._statsText}>{data.good}</BodyText>
@@ -74,6 +74,3 @@ PostureChart.propTypes = {
 };
 
 export default PostureChart;
-
-
-            // padding={{ top: 80, bottom: 0, left: 70, right: 70 }}

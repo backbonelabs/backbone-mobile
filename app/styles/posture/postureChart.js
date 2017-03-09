@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const statsText = {
   textAlign: 'center',
@@ -34,7 +34,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   chartLabel: {
-    fontSize: 14,
+    fontSize: fixedResponsiveFontSize(14),
     fontWeight: 'bold',
   },
   heading: {
@@ -43,9 +43,10 @@ export default EStyleSheet.create({
     marginTop: applyWidthDifference(30),
   },
   total: {
-    position: 'relative',
     alignItems: 'center',
-    bottom: applyWidthDifference(220),
+    justifyContent: 'center',
+    height: applyWidthDifference(350),
+    bottom: applyWidthDifference(350),
   },
   statsContainer: {
     flexDirection: 'row',
@@ -55,7 +56,6 @@ export default EStyleSheet.create({
   },
   innerContainer: {
     width: applyWidthDifference(150),
-    height: applyWidthDifference(70),
     backgroundColor: '$bannerColor',
   },
   statsText: { ...statsText },
