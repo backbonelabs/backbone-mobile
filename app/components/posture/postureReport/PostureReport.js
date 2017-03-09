@@ -47,8 +47,8 @@ class PostureReport extends Component {
     this.state = {
       sessions: {},
       startDate: moment().format('YYYY-MM-DD'),
-      fromDate: moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD'),
-      toDate: moment().add(1, 'months').endOf('month').format('YYYY-MM-DD'),
+      fromDate: moment().subtract(1, 'months').startOf('month'),
+      toDate: moment().add(1, 'months').endOf('month'),
       loading: true,
     };
   }
@@ -56,8 +56,8 @@ class PostureReport extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(userActions.fetchUserSessions({
-        fromDate: this.state.fromDate,
-        toDate: this.state.toDate,
+        fromDate: this.state.fromDate.toISOString(),
+        toDate: this.state.toDate.toISOString(),
       }));
       this.setState({ loading: false });
     });
@@ -70,7 +70,6 @@ class PostureReport extends Component {
       .reduce((acc, val) => {
         const date = moment(val.timestamp).format('YYYY-MM-DD');
         /* eslint-disable */
-        acc[date] = Object.assign({}, val);
 
         if (acc[date]) {
           acc[date].sessionTime += val.sessionTime;
@@ -80,7 +79,7 @@ class PostureReport extends Component {
           return acc;
         }
 
-        acc[date] = val;
+        acc[date] = Object.assign({}, val);
 
         return acc;
         /* eslint-enable */
@@ -108,21 +107,19 @@ class PostureReport extends Component {
 
   @autobind
   onTouchPrev(date) {
+    const { startDate } = this.state;
     const selectedMonth = date.startOf('month').format('YYYY-MM-DD');
-    const nextFetchDate = moment(this.state.startDate)
-      .subtract(2, 'months').startOf('month').format('YYYY-MM-DD');
-    const fromDateMonth = moment(nextFetchDate)
-      .startOf('month').subtract(1, 'months').format('YYYY-MM-DD');
-    const toDateMonth = moment(nextFetchDate)
-      .endOf('month').add(1, 'months').format('YYYY-MM-DD');
+    const fetchDate = moment(startDate).subtract(2, 'months').startOf('month').format('YYYY-MM-DD');
+    const fromDateMonth = moment(fetchDate).startOf('month').subtract(1, 'months');
+    const toDateMonth = moment(fetchDate).endOf('month').add(1, 'months');
 
-    if (selectedMonth === nextFetchDate) {
+    if (selectedMonth === fetchDate) {
       this.props.dispatch(userActions.fetchUserSessions({
-        fromDate: fromDateMonth,
-        toDate: toDateMonth,
+        fromDate: fromDateMonth.toISOString(),
+        toDate: toDateMonth.toISOString(),
       }));
       return this.setState({
-        startDate: nextFetchDate,
+        startDate: fetchDate,
         fromDate: fromDateMonth,
         toDate: toDateMonth,
       });
@@ -133,21 +130,19 @@ class PostureReport extends Component {
 
   @autobind
   onTouchNext(date) {
+    const { startDate } = this.state;
     const selectedMonth = date.startOf('month').format('YYYY-MM-DD');
-    const nextFetchDate = moment(this.state.startDate)
-      .add(2, 'months').startOf('month').format('YYYY-MM-DD');
-    const fromDateMonth = moment(nextFetchDate)
-      .startOf('month').subtract(1, 'months').format('YYYY-MM-DD');
-    const toDateMonth = moment(nextFetchDate)
-      .endOf('month').add(1, 'months').format('YYYY-MM-DD');
+    const fetchDate = moment(startDate).add(2, 'months').startOf('month').format('YYYY-MM-DD');
+    const fromDateMonth = moment(fetchDate).startOf('month').subtract(1, 'months');
+    const toDateMonth = moment(fetchDate).endOf('month').add(1, 'months');
 
-    if (selectedMonth === nextFetchDate) {
+    if (selectedMonth === fetchDate) {
       this.props.dispatch(userActions.fetchUserSessions({
-        fromDate: fromDateMonth,
-        toDate: toDateMonth,
+        fromDate: fromDateMonth.toISOString(),
+        toDate: toDateMonth.toISOString(),
       }));
       return this.setState({
-        startDate: nextFetchDate,
+        startDate: fetchDate,
         fromDate: fromDateMonth,
         toDate: toDateMonth,
       });
