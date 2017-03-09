@@ -5,9 +5,9 @@ export default (state = {
   isUpdating: false,
   user: {},
   pendingUser: null,
-  isFetchingSessions: false,
-  sessions: [],
   errorMessage: null,
+  sessions: [],
+  isFetchingSessions: false,
 }, action) => {
   switch (action.type) {
     case 'LOGIN': {
@@ -90,18 +90,18 @@ export default (state = {
         },
       };
     }
-    case 'FETCH_USER_SESSIONS__START': {
-      return {
-        ...state,
-        isFetchingSessions: true,
-        errorMessage: null,
-      };
-    }
     case 'FETCH_USER_SESSIONS': {
       return {
         ...state,
         isFetchingSessions: false,
+        errorMessage: null,
         sessions: action.payload,
+      };
+    }
+    case 'FETCH_USER_SESSIONS__START': {
+      return {
+        ...state,
+        isFetchingSessions: true,
         errorMessage: null,
       };
     }
