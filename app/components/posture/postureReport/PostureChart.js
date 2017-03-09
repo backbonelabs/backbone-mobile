@@ -27,7 +27,7 @@ const PostureChart = (props) => {
 
   data.total = moment().startOf('day').seconds(totalDuration).format('H:mm:ss');
   data.good = moment().startOf('day').seconds(totalDuration - slouchTime).format('H:mm:ss');
-  data.bad = moment().startOf('day').seconds(slouchTime).format('H:mm:ss');
+  data.poor = moment().startOf('day').seconds(slouchTime).format('H:mm:ss');
 
   return (
     <View style={styles.container}>
@@ -60,8 +60,8 @@ const PostureChart = (props) => {
           <BodyText style={styles._statsText}>{data.good}</BodyText>
         </View>
         <View style={styles.innerContainer}>
-          <BodyText style={styles._statsBadHeader}>Bad</BodyText>
-          <BodyText style={styles._statsText}>{data.bad}</BodyText>
+          <BodyText style={styles._statsPoorHeader}>Poor</BodyText>
+          <BodyText style={styles._statsText}>{data.poor}</BodyText>
         </View>
       </View>
     </View>

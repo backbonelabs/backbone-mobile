@@ -64,7 +64,7 @@ export default EStyleSheet.create({
     color: 'white',
     backgroundColor: '#4CAF50',
   },
-  statsBadHeader: {
+  statsPoorHeader: {
     ...statsText,
     color: 'white',
     backgroundColor: '$primaryColor',
