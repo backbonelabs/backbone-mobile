@@ -27,23 +27,18 @@
 		44970BBB1D2AC74B00351480 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 44970BB01D2AC74400351480 /* libART.a */; };
 		449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 449AD4C41D2ACD6A004919E0 /* FontAwesome.ttf */; };
 		54B3C7A82E534518AA08CE57 /* libRNSensitiveInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8A4554BED5149C3AFC4FB96 /* libRNSensitiveInfo.a */; };
-		6602D6981D50295300DF3369 /* SensorDataService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6971D50295300DF3369 /* SensorDataService.m */; };
-		6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6602D6991D502EA800DF3369 /* ActivityModule.m */; };
 		6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */; };
 		662BD3491DFC92E900CF71D1 /* Debug.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */; };
 		662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */; };
 		665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */; };
 		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
-		669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 669B151C1D51458700DCEFBE /* SensorNotifications.m */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
 		66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */; };
 		690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 690A06151DF8544E00EAC570 /* OTAFileParser.m */; };
 		690F1C5B1DB8FF5100AE2E98 /* UserSettingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */; };
-		697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 697D0FE71DA3DCDC00F6FF13 /* StepModule.m */; };
 		699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 699262611DE58A28003FBBC7 /* SessionControlService.m */; };
 		69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */; };
 		69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69AAF58E1E1D6314005FD0BF /* NotificationService.m */; };
-		69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */; };
 		69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 69CCE72A1DD4B01C0038157C /* Utilities.m */; };
 		69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69EB80541E0170E200A29ADA /* BootLoaderService.m */; };
 		7593D56BEF6AA0DB5D4CE824 /* libPods-BackboneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B98A4387B7B289536F06F13 /* libPods-BackboneTests.a */; };
@@ -267,10 +262,6 @@
 		465D07C7FE9F1FD781466674 /* Pods-BackboneTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackboneTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-BackboneTests/Pods-BackboneTests.release.xcconfig"; sourceTree = "<group>"; };
 		6600D5691DFBDA0E005D5807 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = backbone/config/Debug.xcconfig; sourceTree = "<group>"; };
 		6600D56A1DFBDA28005D5807 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = backbone/config/Release.xcconfig; sourceTree = "<group>"; };
-		6602D6891D5023A500DF3369 /* SensorDataService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SensorDataService.h; path = backbone/SensorDataService.h; sourceTree = "<group>"; };
-		6602D6961D50255D00DF3369 /* ActivityModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActivityModule.h; path = backbone/ActivityModule.h; sourceTree = "<group>"; };
-		6602D6971D50295300DF3369 /* SensorDataService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorDataService.m; path = backbone/SensorDataService.m; sourceTree = "<group>"; };
-		6602D6991D502EA800DF3369 /* ActivityModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActivityModule.m; path = backbone/ActivityModule.m; sourceTree = "<group>"; };
 		6625BB7D1DB1E5E3009B4941 /* MixpanelModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MixpanelModule.h; path = backbone/MixpanelModule.h; sourceTree = "<group>"; };
 		6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MixpanelModule.m; path = backbone/MixpanelModule.m; sourceTree = "<group>"; };
 		662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.local.xcconfig; path = backbone/config/Debug.local.xcconfig; sourceTree = "<group>"; };
@@ -278,24 +269,18 @@
 		665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		667641251D63B8F900D45761 /* Environment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Environment.h; path = backbone/Environment.h; sourceTree = "<group>"; };
 		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
-		669B15191D51439E00DCEFBE /* SensorNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SensorNotifications.h; path = backbone/SensorNotifications.h; sourceTree = "<group>"; };
-		669B151C1D51458700DCEFBE /* SensorNotifications.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SensorNotifications.m; path = backbone/SensorNotifications.m; sourceTree = "<group>"; };
 		66F918791DA9F82B00649391 /* Lato.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Lato.ttf; path = ../android/app/src/main/assets/fonts/Lato.ttf; sourceTree = "<group>"; };
 		66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "backbone/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		690A06141DF8544E00EAC570 /* OTAFileParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTAFileParser.h; sourceTree = "<group>"; };
 		690A06151DF8544E00EAC570 /* OTAFileParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTAFileParser.m; sourceTree = "<group>"; };
 		690F1C591DB8FF5100AE2E98 /* UserSettingService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserSettingService.h; path = backbone/UserSettingService.h; sourceTree = "<group>"; };
 		690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserSettingService.m; path = backbone/UserSettingService.m; sourceTree = "<group>"; };
-		697D0FE61DA3DCDC00F6FF13 /* StepModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StepModule.h; path = backbone/StepModule.h; sourceTree = "<group>"; };
-		697D0FE71DA3DCDC00F6FF13 /* StepModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StepModule.m; path = backbone/StepModule.m; sourceTree = "<group>"; };
 		699262601DE58A28003FBBC7 /* SessionControlService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SessionControlService.h; path = backbone/SessionControlService.h; sourceTree = "<group>"; };
 		699262611DE58A28003FBBC7 /* SessionControlService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SessionControlService.m; path = backbone/SessionControlService.m; sourceTree = "<group>"; };
 		69A002ED1DDCA13B002C47FB /* DeviceInformationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeviceInformationService.h; path = backbone/DeviceInformationService.h; sourceTree = "<group>"; };
 		69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DeviceInformationService.m; path = backbone/DeviceInformationService.m; sourceTree = "<group>"; };
 		69AAF58D1E1D6314005FD0BF /* NotificationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotificationService.h; path = backbone/NotificationService.h; sourceTree = "<group>"; };
 		69AAF58E1E1D6314005FD0BF /* NotificationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotificationService.m; path = backbone/NotificationService.m; sourceTree = "<group>"; };
-		69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalNotificationManager.h; path = backbone/LocalNotificationManager.h; sourceTree = "<group>"; };
-		69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalNotificationManager.m; path = backbone/LocalNotificationManager.m; sourceTree = "<group>"; };
 		69CCE7281DD4B01C0038157C /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		69CCE7291DD4B01C0038157C /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		69CCE72A1DD4B01C0038157C /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
@@ -465,16 +450,6 @@
 				446AF7F81D53DB1200F85785 /* DeviceManagementService.m */,
 				699262601DE58A28003FBBC7 /* SessionControlService.h */,
 				699262611DE58A28003FBBC7 /* SessionControlService.m */,
-				6602D6891D5023A500DF3369 /* SensorDataService.h */,
-				6602D6971D50295300DF3369 /* SensorDataService.m */,
-				669B15191D51439E00DCEFBE /* SensorNotifications.h */,
-				669B151C1D51458700DCEFBE /* SensorNotifications.m */,
-				6602D6961D50255D00DF3369 /* ActivityModule.h */,
-				6602D6991D502EA800DF3369 /* ActivityModule.m */,
-				697D0FE61DA3DCDC00F6FF13 /* StepModule.h */,
-				697D0FE71DA3DCDC00F6FF13 /* StepModule.m */,
-				69ABF9E51DA3CA6000D9B15A /* LocalNotificationManager.h */,
-				69ABF9E61DA3CA6000D9B15A /* LocalNotificationManager.m */,
 				690F1C591DB8FF5100AE2E98 /* UserSettingService.h */,
 				690F1C5A1DB8FF5100AE2E98 /* UserSettingService.m */,
 			);
@@ -1193,22 +1168,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6602D69A1D502EA800DF3369 /* ActivityModule.m in Sources */,
 				699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */,
 				667641271D63B90800D45761 /* Environment.m in Sources */,
 				69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				669B151D1D51458700DCEFBE /* SensorNotifications.m in Sources */,
-				697D0FE81DA3DCDC00F6FF13 /* StepModule.m in Sources */,
 				69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */,
 				690F1C5B1DB8FF5100AE2E98 /* UserSettingService.m in Sources */,
-				69ABF9E71DA3CA6100D9B15A /* LocalNotificationManager.m in Sources */,
 				69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */,
 				6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */,
 				69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */,
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
-				6602D6981D50295300DF3369 /* SensorDataService.m in Sources */,
 				4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */,
 				690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */,
 			);
