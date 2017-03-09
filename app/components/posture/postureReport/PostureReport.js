@@ -9,27 +9,22 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import styles from '../../../styles/posture/postureReport';
 import HeadingText from '../../../components/HeadingText';
-import color from '../../../styles/theme';
 import userActions from '../../../actions/user';
 import Spinner from '../../Spinner';
 import routes from '../../../routes';
 
 const calendarStyles = {
-  calendarContainer: {
-    backgroundColor: 'transparent',
-  },
-  currentDayCircle: {
-    backgroundColor: 'black',
-  },
-  currentDayText: {
-    color: color.primaryColor,
-  },
-  hasEventCircle: {
-    backgroundColor: color.primaryColor,
-  },
-  hasEventText: {
-    color: 'white',
-  },
+  calendarContainer: styles._calendarContainer,
+  currentDayCircle: styles._currentDayCircle,
+  currentDayText: styles._currentDayText,
+  hasEventCircle: styles._hasEventCircle,
+  hasEventText: styles._hasEventText,
+  day: styles._day,
+  weekendDayText: styles._weekendDayText,
+  controlButtonText: styles._controlButtonText,
+  title: styles._title,
+  dayHeading: styles._dayHeading,
+  weekendHeading: styles._weekendHeading,
 };
 
 class PostureReport extends Component {

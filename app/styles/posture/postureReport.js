@@ -11,4 +11,37 @@ export default EStyleSheet.create({
     textAlign: 'center',
     paddingVertical: applyWidthDifference(25),
   },
+  calendarContainer: {
+    backgroundColor: 'transparent',
+  },
+  currentDayCircle: {
+    backgroundColor: 'black',
+  },
+  currentDayText: {
+    color: '$primaryColor',
+  },
+  hasEventCircle: {
+    backgroundColor: '$primaryColor',
+  },
+  hasEventText: {
+    color: 'white',
+  },
+  day: {
+    color: '$primaryFontColor',
+  },
+  weekendDayText: {
+    color: '$primaryFontColor',
+  },
+  controlButtonText: {
+    color: '$primaryFontColor',
+  },
+  title: {
+    color: '$primaryFontColor',
+  },
+  dayHeading: {
+    color: '$primaryFontColor',
+  },
+  weekendHeading: {
+    color: '$primaryFontColor',
+  },
 });
