@@ -9,34 +9,40 @@ import com.horcrux.svg.RNSvgPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.facebook.soloader.SoLoader;
 import br.com.classapp.RNSensitiveInfo.RNSensitiveInfoPackage;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
+    private final ReactNativeHost reactNativeHost = new ReactNativeHost(this) {
+        @Override
+        protected boolean getUseDeveloperSupport() {
+          return BuildConfig.DEBUG;
+        }
 
-  private final ReactNativeHost reactNativeHost = new ReactNativeHost(this) {
+        @Override
+        protected List<ReactPackage> getPackages() {
+            return Arrays.<ReactPackage>asList(
+                new MainReactPackage(),
+                new RNFSPackage(),
+                new ReactMaterialKitPackage(),
+                new RNSvgPackage(),
+                new RNSensitiveInfoPackage(),
+                new BackbonePackage()
+            );
+        }
+    };
+
     @Override
-    protected boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
+    public ReactNativeHost getReactNativeHost() {
+        return reactNativeHost;
     }
 
     @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-        new MainReactPackage(),
-            new RNFSPackage(),
-            new ReactMaterialKitPackage(),
-            new RNSvgPackage(),
-        new RNSensitiveInfoPackage(),
-        new BackbonePackage()
-      );
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, /* native exopackage */ false);
     }
-  };
-
-  @Override
-  public ReactNativeHost getReactNativeHost() {
-      return reactNativeHost;
-  }
 }
