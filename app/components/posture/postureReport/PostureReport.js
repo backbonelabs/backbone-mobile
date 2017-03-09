@@ -13,20 +13,6 @@ import userActions from '../../../actions/user';
 import Spinner from '../../Spinner';
 import routes from '../../../routes';
 
-const calendarStyles = {
-  calendarContainer: styles._calendarContainer,
-  currentDayCircle: styles._currentDayCircle,
-  currentDayText: styles._currentDayText,
-  hasEventCircle: styles._hasEventCircle,
-  hasEventText: styles._hasEventText,
-  day: styles._day,
-  weekendDayText: styles._weekendDayText,
-  controlButtonText: styles._controlButtonText,
-  title: styles._title,
-  dayHeading: styles._dayHeading,
-  weekendHeading: styles._weekendHeading,
-};
-
 class PostureReport extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
@@ -147,6 +133,19 @@ class PostureReport extends Component {
   }
 
   render() {
+    const calendarStyles = {
+      calendarContainer: styles._calendarContainer,
+      currentDayCircle: styles._currentDayCircle,
+      currentDayText: styles._currentDayText,
+      hasEventCircle: styles._hasEventCircle,
+      hasEventText: styles._hasEventText,
+      day: styles._day,
+      weekendDayText: styles._weekendDayText,
+      controlButtonText: styles._controlButtonText,
+      title: styles._title,
+      dayHeading: styles._dayHeading,
+      weekendHeading: styles._weekendHeading,
+    };
     const events = (Object.keys(this.state.sessions));
     // return a spinner if component is fetching data
     if (this.props.isFetchingSessions || this.state.loading) {
