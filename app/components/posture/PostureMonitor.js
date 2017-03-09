@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-import { debounce, isEqual } from 'lodash';
+import { debounce, isEqual, isFunction } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -307,12 +307,13 @@ class PostureMonitor extends Component {
 
   /**
    * Keeps track of the session state and parameters
-   * @param {Object} session
-   * @param {Number} session.state      Session state
-   * @param {Object} session.parameters Session parameters
+   * @param {Object}   session
+   * @param {Number}   session.state      Session state
+   * @param {Object}   session.parameters Session parameters
+   * @param {Function} [callback]         Optional callback to invoke after setting state
    */
   @autobind
-  setSessionState(session) {
+  setSessionState(session, callback) {
     const { state, parameters } = session;
     if ((state === sessionStates.RUNNING || state === sessionStates.PAUSED) && parameters) {
       // Store session state in local storage in case the app exits
@@ -325,7 +326,11 @@ class PostureMonitor extends Component {
       // Remove session state from local storage
       SensitiveInfo.deleteItem(storageKeys.SESSION_STATE);
     }
-    this.setState({ sessionState: state });
+    this.setState({ sessionState: state }, () => {
+      if (isFunction(callback)) {
+        callback();
+      }
+    });
   }
 
   @autobind
@@ -409,13 +414,11 @@ class PostureMonitor extends Component {
   statsHandler(event) {
     const { totalDuration, slouchTime } = event;
     this.saveUserSession();
-    this.setState({
-      sessionState: sessionStates.STOPPED,
-      totalDuration,
-      slouchTime,
-    }, () => {
-      this.setSessionState({ state: sessionStates.STOPPED });
-      this.showSummary();
+    this.setSessionState({ state: sessionStates.STOPPED }, () => {
+      this.setState({
+        totalDuration,
+        slouchTime,
+      }, this.showSummary);
     });
   }
 
@@ -610,8 +613,6 @@ class PostureMonitor extends Component {
             path: 'app/components/posture/PostureMonitor',
             stackTrace: ['stopSession', 'SessionControlService.stop'],
           });
-        } else {
-          this.setSessionState({ state: sessionStates.STOPPED });
         }
       });
     }
@@ -696,6 +697,10 @@ class PostureMonitor extends Component {
       content:
         <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
     }));
+
+    // Pop scene so if the Android back button is pressed while the modal
+    // is displayed, it won't navigate back to PostureMonitor
+    this.props.navigator.pop();
   }
 
   /**
