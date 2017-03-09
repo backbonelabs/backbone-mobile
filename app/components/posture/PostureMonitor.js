@@ -106,6 +106,7 @@ class PostureMonitor extends Component {
       lastSession: PropTypes.string,
     }),
     navigator: PropTypes.shape({
+      getCurrentRoutes: PropTypes.func,
       resetTo: PropTypes.func,
       push: PropTypes.func,
       pop: PropTypes.func,
@@ -178,29 +179,34 @@ class PostureMonitor extends Component {
       }
     });
 
-    // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
+    // ANDROID ONLY: Listen to the hardware back button
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
         if (this.state.sessionState !== sessionStates.STOPPED) {
-          // Confirm if the user wants to quit the current session
-          Alert.alert(
-            'End Session',
-            'Do you want to end the current session?',
-            [
-              {
-                text: 'Cancel',
-              },
-              {
-                text: 'End Session',
-                onPress: () => {
-                  // Exit the current session
-                  this.stopSession();
+          // Back button was pressed during an active session.
+          // Check if PostureMonitor is the current scene.
+          const routeStack = this.props.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+          if (currentRoute.name === routes.postureMonitor.name) {
+            // PostureMonitor is the current scene.
+            // Confirm if the user wants to quit the current session.
+            Alert.alert(
+              'End Session',
+              'Do you want to end the current session?',
+              [
+                {
+                  text: 'Cancel',
                 },
-              },
-            ]
-          );
-
-          return true;
+                {
+                  text: 'End Session',
+                  onPress: () => {
+                    // Exit the current session
+                    this.stopSession();
+                  },
+                },
+              ]
+            );
+          }
         }
       });
     }
