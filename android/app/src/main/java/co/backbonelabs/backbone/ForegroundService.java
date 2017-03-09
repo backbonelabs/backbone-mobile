@@ -56,8 +56,6 @@ public class ForegroundService extends Service {
                 break;
             case Constants.ACTIONS.STOP_POSTURE_ACTIVITY:
                 Timber.d("Received stop posture intent");
-                // Disable posture activity
-                ActivityService.getInstance().disableActivity(Constants.MODULES.POSTURE);
 
                 // No break here because we want to process the next case of stopping the service
             case Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE:
