@@ -6,5 +6,6 @@ WEB_SERVER_URL = https:/$()/gobackbone.com
 
 // Define all of the following in Release.local.xcconfig
 MIXPANEL_TOKEN = replace me
+BUGSNAG_API_KEY = replace me
 
 #include "Release.local.xcconfig"

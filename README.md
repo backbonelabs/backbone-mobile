@@ -17,7 +17,7 @@ Then, follow the setup instructions at https://facebook.github.io/react-native/d
 
 Before developing on your local machine, create xcconfig files at `ios/backbone/config/Debug.local.xcconfig` and `ios/backbone/config/Release.local.xcconfig`. These are used by the Debug configuration and Release configuration, respectively, to set variables for each configuration. These local xcconfig files should **not** be checked into version control.
 
-In `Debug.local.xcconfig`, you will need to set `API_SERVER_URL` and `WEB_SERVER_URL` to the IP addresses of your local Backbone API and web servers. For example, `API_SERVER_URL = http:/$()/192.168.1.1:3000`. The `$()` is required in order for Xcode to properly recognize the double forward slashes. Ask another dev for the `MIXPANEL_TOKEN` value.
+In `Debug.local.xcconfig`, you will need to set `API_SERVER_URL` and `WEB_SERVER_URL` to the IP addresses of your local Backbone API and web servers. For example, `API_SERVER_URL = http:/$()/192.168.1.1:3000`. The `$()` is required in order for Xcode to properly recognize the double forward slashes. Ask another dev for the `MIXPANEL_TOKEN` and `BUGSNAG_API_KEY` values.
 
 ### Android
 
@@ -32,10 +32,11 @@ RELEASE_KEY_ALIAS=backboneAndroidSigningKey
 RELEASE_STORE_PASSWORD=
 RELEASE_KEY_PASSWORD=
 MIXPANEL_TOKEN=
+BUGSNAG_API_KEY=
 WEB_SERVER_URL="http://XXX.XXX.XXX.XXX:XXXX"
 ```
 
-Fill in the `API_SERVER_URL` and `WEB_SERVER_URL` variables with the IP addresses of your local Backbone API and web servers, e.g., http://192.168.1.1:3000 and http://192.168.1.1:9999. Ask another dev for the actual keystore file (backbone-release-key.keystore)—which you would place in the `android/app` folder—and the values for `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_PASSWORD`, and `MIXPANEL_TOKEN`. Make sure you wrap these values with double quotes to ensure they are treated as strings.
+Fill in the `API_SERVER_URL` and `WEB_SERVER_URL` variables with the IP addresses of your local Backbone API and web servers, e.g., http://192.168.1.1:3000 and http://192.168.1.1:9999. Ask another dev for the actual keystore file (backbone-release-key.keystore)—which you would place in the `android/app` folder—and the values for `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_PASSWORD`, `MIXPANEL_TOKEN`, and `BUGSNAG_API_KEY`. Make sure you wrap these values with double quotes to ensure they are treated as strings.
 
 Similar to iOS, you can define environment variables specific to your machine when building/running the app. These variables are located in `android/app/build.gradle` under the `android.buildTypes.debug` property.
 
