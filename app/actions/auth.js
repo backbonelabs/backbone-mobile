@@ -65,7 +65,9 @@ export default {
           .then((body) => {
             if (body.error) {
               // Error received from API server
-              Mixpanel.track(`${loginEventName}-error`);
+              Mixpanel.trackWithProperties(`${loginEventName}-error`, {
+                errorMessage: body.error,
+              });
 
               dispatch(loginError(
                 new Error(body.error)
@@ -113,7 +115,9 @@ export default {
           .then(body => {
             // Error received from API server
             if (body.error) {
-              Mixpanel.track(`${signupEventName}-error`);
+              Mixpanel.trackWithProperties(`${signupEventName}-error`, {
+                errorMessage: body.error,
+              });
 
               dispatch(signupError(
                 new Error(body.error)
@@ -163,16 +167,17 @@ export default {
 
             dispatch(passwordReset(response.ok));
           } else {
-            Mixpanel.trackWithProperties(`${passwordResetEventName}-error`, {
-              email: user.email,
-            });
-
             return response.json()
-              .then(body => (
+              .then(body => {
+                Mixpanel.trackWithProperties(`${passwordResetEventName}-error`, {
+                  email: user.email,
+                  errorMessage: body.error,
+                });
+
                 dispatch(passwordResetError(
                   new Error(body.error)
-                ))
-              ));
+                ));
+              });
           }
         })
         .catch(() => {

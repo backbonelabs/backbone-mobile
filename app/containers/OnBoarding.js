@@ -20,6 +20,7 @@ import styles from '../styles/onboarding';
 import authActions from '../actions/auth';
 import userActions from '../actions/user';
 import routes from '../routes';
+import Mixpanel from '../utils/Mixpanel';
 
 const { width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
@@ -241,6 +242,10 @@ class OnBoarding extends Component {
       height: height.unit === constants.height.units.IN ?
         height.value : height.value / constants.height.conversionValue,
     };
+
+    Mixpanel.trackWithProperties('saveInitialProfile', {
+      userId: this.props.user._id,
+    });
 
     this.props.dispatch(userActions.updateUser({
       _id: this.props.user._id,
