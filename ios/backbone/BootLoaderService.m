@@ -593,6 +593,8 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
   // Do any other cleanups here if needed
   _bootLoaderState = BOOTLOADER_STATE_ON;
   
+  [BluetoothServiceInstance disconnectDevice:nil];
+  
   [self firmwareUpdateStatus:FIRMWARE_UPDATE_STATE_END_ERROR code:errorCode];
 }
 
