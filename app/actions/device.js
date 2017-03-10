@@ -172,6 +172,29 @@ const deviceActions = {
               path: 'app/actions/device',
               stackTrace: ['deviceActions.getInfo', 'DeviceManagementService.getDeviceInformation'],
             });
+          } else if (results.batteryLevel === -1) {
+            // Fail-safe to fetch the last device information.
+            // This is needed on bootloader failure, so that the app will still recognize
+            // that there's a saved device instead of treating the app as having
+            // no saved device (whenever available).
+            SensitiveInfo.getItem(storageKeys.DEVICE)
+            .then(device => {
+              if (device) {
+                Mixpanel.registerSuperProperties({ firmwareVersion: results.firmwareVersion });
+
+                checkFirmware(device.firmwareVersion)
+                  .then(updateAvailable => {
+                    // Clone device in order to add updateAvailable property
+                    const deviceClone = { ...device, updateAvailable };
+
+                    // Update device store
+                    dispatch(getInfo(deviceClone));
+                  });
+              } else {
+                // No locally stored device, set to empty object
+                dispatch(getInfo({}));
+              }
+            });
           } else {
             // Register firmwareVersion property upon connected
             Mixpanel.registerSuperProperties({ firmwareVersion: results.firmwareVersion });
