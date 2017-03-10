@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import reducers from './app/reducers';
 import Application from './app/containers/Application';
 import theme from './app/styles/theme';
+import './app/utils/Bugsnag';
 
 EStyleSheet.build(theme);
 
