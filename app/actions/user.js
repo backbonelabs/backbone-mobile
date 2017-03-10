@@ -2,6 +2,7 @@ import { NativeModules } from 'react-native';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
@@ -63,7 +64,6 @@ const fetchUsersessionsError = error => ({
   payload: error,
 });
 
-
 export default {
   fetchUser() {
     return (dispatch, getState) => {
@@ -86,6 +86,12 @@ export default {
             } else {
               // Store user in local storage
               SensitiveInfo.setItem(storageKeys.USER, body);
+
+              // Update user details in Bugsnag
+              Bugsnag.setUser(body._id, body.nickname, body.email);
+
+              // Update user profile on Mixpanel
+              Mixpanel.setUserProperties(body);
 
               dispatch(fetchUser(body));
             }
@@ -130,6 +136,9 @@ export default {
             } else {
               // Store updated user in local storage
               SensitiveInfo.setItem(storageKeys.USER, body);
+
+              // Update user details in Bugsnag
+              Bugsnag.setUser(body._id, body.nickname, body.email);
 
               // Update user profile on Mixpanel
               Mixpanel.setUserProperties(body);

@@ -2,6 +2,7 @@ import { NativeModules } from 'react-native';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
+import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
@@ -69,6 +70,9 @@ export default {
             } else {
               const { accessToken, ...userObj } = body;
 
+              // Identify user for Bugsnag
+              Bugsnag.setUser(userObj._id, userObj.nickname, userObj.email);
+
               // Identify user for Mixpanel tracking
               Mixpanel.identify(userObj._id);
 
@@ -108,6 +112,9 @@ export default {
                 new Error(body.error)
               ));
             } else {
+              // Identify user for Bugsnag
+              Bugsnag.setUser(body.user._id, body.user.nickname, body.user.email);
+
               // Identify user for Mixpanel tracking
               Mixpanel.identify(body.user._id);
 
@@ -162,6 +169,7 @@ export default {
   },
   signOut() {
     return (dispatch) => {
+      Bugsnag.clearUser();
       SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);
       SensitiveInfo.deleteItem(storageKeys.USER);
       dispatch(signOut());

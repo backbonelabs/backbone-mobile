@@ -34,6 +34,7 @@ import styles from '../styles/application';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
 const { bluetoothStates, deviceModes, deviceStatuses, storageKeys } = constants;
@@ -73,6 +74,8 @@ class Application extends Component {
     }),
     user: PropTypes.shape({
       _id: PropTypes.string,
+      nickname: PropTypes.string,
+      email: PropTypes.string,
     }),
   };
 
@@ -263,6 +266,9 @@ class Application extends Component {
             // Fetch device info
             this.props.dispatch(deviceActions.getInfo());
 
+            // Identify user for Bugsnag
+            Bugsnag.setUser(this.props.user._id, this.props.user.nickname, this.props.user.email);
+
             // Specify user account to track event for
             Mixpanel.identify(this.props.user._id);
 
@@ -279,6 +285,9 @@ class Application extends Component {
                     type: 'FETCH_USER',
                     payload: user,
                   });
+
+                  // Identify user for Bugsnag
+                  Bugsnag.setUser(user._id, user.nickname, user.email);
 
                   // Specify user account to track event for
                   Mixpanel.identify(user._id);
