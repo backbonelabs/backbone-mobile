@@ -66,6 +66,7 @@ class FirmwareUpdate extends Component {
 
     this.firmwareUpdateStatus = null;
     this.firmwareUploadProgress = null;
+    this.firmwareUpdateErrorMessage = 'Connection Lost';
   }
 
   componentWillMount() {
@@ -133,7 +134,8 @@ class FirmwareUpdate extends Component {
         this.props.navigator.pop();
 
         Mixpanel.trackWithProperties('firmwareUpdate-error', { message: 'Device disconnected' });
-        Alert.alert('Error', 'Device disconnected. Your Backbone update has failed.');
+        Alert.alert('Error', 'Device disconnected. Your Backbone update has failed.' +
+          `(Reason: ${this.firmwareUpdateErrorMessage})`);
       }
     }
   }
@@ -202,19 +204,7 @@ class FirmwareUpdate extends Component {
     BootLoaderService.setHasPendingUpdate(false);
 
     Mixpanel.trackWithProperties('firmwareUpdate-error', { message: err.message });
-
-    Alert.alert(
-      'Failed',
-      `Your Backbone update has failed, please try again. (Reason: ${err.message})`,
-      [{
-        text: 'OK',
-        onPress: () => {
-          if (this.props.currentRoute.name === routes.firmwareUpdate.name) {
-            this.props.navigator.pop();
-          }
-        },
-      }]
-    );
+    this.firmwareUpdateErrorMessage = err.message;
   }
 
   render() {
