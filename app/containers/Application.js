@@ -433,19 +433,33 @@ class Application extends Component {
       position: 'absolute',
     };
 
-    // Alter the push method on the navigator object to include a timestamp for
-    // each route in the route stack so that each route in the stack is unique.
+    // Alter navigator methods to include a timestamp for each route
+    // in the route stack so that each route in the stack is unique.
     // This prevents React errors when a route is in the stack multiple times.
     // All components should use this customized navigator object.
     if (!this.navigator) {
       this.navigator = clone(navigator);
+
+      const transform = (routeObj, navigationMethod, fn) => {
+        Bugsnag.leaveBreadcrumb(`Navigating to ${routeObj.name}`, {
+          type: 'navigation',
+          method: navigationMethod,
+          routeConfig: JSON.stringify(routeObj),
+        });
+        return fn.call(this.navigator, { ...routeObj, key: Date.now() });
+      };
+
       this.navigator._push = this.navigator.push; // the original push method
       this.navigator.push = function push(routeObj) {
-        return this._push({ ...routeObj, key: Date.now() });
+        return transform(routeObj, 'push', this._push);
       };
       this.navigator._replace = this.navigator.replace; // the original replace method
       this.navigator.replace = function replace(routeObj) {
-        return this._replace({ ...routeObj, key: Date.now() });
+        return transform(routeObj, 'replace', this._replace);
+      };
+      this.navigator._resetTo = this.navigator.resetTo; // the original resetTo method
+      this.navigator.resetTo = function resetTo(routeObj) {
+        return transform(routeObj, 'resetTo', this._replace);
       };
     }
 
