@@ -43,6 +43,9 @@ class FirmwareUpdate extends Component {
       pop: PropTypes.func,
       getCurrentRoutes: PropTypes.func,
     }),
+    currentRoute: PropTypes.shape({
+      name: PropTypes.string,
+    }),
     dispatch: PropTypes.func,
     device: PropTypes.shape({
       isConnected: PropTypes.bool,
@@ -124,14 +127,13 @@ class FirmwareUpdate extends Component {
       // so the user won't be stuck on this component when the app is back in the foreground
       this.props.navigator.pop();
     } else if (this.props.device.isConnected && !nextProps.device.isConnected) {
-      const routeStack = this.props.navigator.getCurrentRoutes();
-      const currentRoute = routeStack[routeStack.length - 1];
-      if (currentRoute.name === routes.firmwareUpdate.name) {
+      if (this.props.currentRoute.name === routes.firmwareUpdate.name) {
         // This indicates a running firmware update was interrupted
         // Return to the previous scene
         this.props.navigator.pop();
 
-        Alert.alert('Error', 'Connection lost. Your Backbone update has failed.');
+        Mixpanel.trackWithProperties('firmwareUpdate-error', { message: 'Device disconnected' });
+        Alert.alert('Error', 'Device disconnected. Your Backbone update has failed.');
       }
     }
   }
@@ -207,9 +209,7 @@ class FirmwareUpdate extends Component {
       [{
         text: 'OK',
         onPress: () => {
-          const routeStack = this.props.navigator.getCurrentRoutes();
-          const currentRoute = routeStack[routeStack.length - 1];
-          if (currentRoute.name === routes.firmwareUpdate.name) {
+          if (this.props.currentRoute.name === routes.firmwareUpdate.name) {
             this.props.navigator.pop();
           }
         },
