@@ -433,12 +433,17 @@ class Application extends Component {
       position: 'absolute',
     };
 
+    let currentRoute;
+
     // Alter navigator methods to include a timestamp for each route
     // in the route stack so that each route in the stack is unique.
     // This prevents React errors when a route is in the stack multiple times.
     // All components should use this customized navigator object.
     if (!this.navigator) {
       this.navigator = clone(navigator);
+
+      const routeStack = this.navigator.getCurrentRoutes();
+      currentRoute = routeStack[routeStack.length - 1];
 
       const transform = (routeObj, navigationMethod, fn) => {
         Bugsnag.leaveBreadcrumb(`Navigating to ${routeObj.name}`, {
@@ -464,8 +469,6 @@ class Application extends Component {
     }
 
     const { modal: modalProps } = this.props.app;
-    const routeStack = this.navigator.getCurrentRoutes();
-    const currentRoute = routeStack[routeStack.length - 1];
 
     return (
       <View style={{ flex: 1 }}>
