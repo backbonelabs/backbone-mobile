@@ -15,6 +15,7 @@ import Button from '../Button';
 import sittingExample from '../../images/calibration/sittingExample.png';
 import constants from '../../utils/constants';
 import SensitiveInfo from '../../utils/SensitiveInfo';
+import Mixpanel from '../../utils/Mixpanel';
 
 const { PropTypes } = React;
 
@@ -110,6 +111,7 @@ export default class PostureCalibrate extends Component {
    */
   @autobind
   toggleAutoStart(autoStart) {
+    Mixpanel.track(`toggleAutoStart-(${autoStart ? 'enabled' : 'diabled'})`);
     SensitiveInfo.setItem(storageKeys.CALIBRATION_AUTO_START, autoStart);
     this.setState({ autoStart });
   }
