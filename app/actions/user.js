@@ -110,7 +110,7 @@ export default {
       const state = getState();
       const { accessToken } = state.auth;
 
-      const updateUserEventName = 'updateUser';
+      const updateUserEventName = 'updateUserProfile';
 
       // Remove invalidData property, since no longer needed
       delete userUpdateFields.invalidData;
