@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "bugsnag:ios": "node ios/bugsnag.js",
+    "bugsnag:android": "node android/bugsnag.js",
     "lint": "eslint index.* app/**",
     "prepush": "npm run lint",
     "start": "node node_modules/react-native/local-cli/cli.js start"
@@ -39,6 +40,7 @@
     "eslint-plugin-import": "1.16.0",
     "eslint-plugin-jsx-a11y": "2.2.3",
     "eslint-plugin-react": "6.4.1",
+    "gradle-to-js": "0.2.5",
     "husky": "0.11.9",
     "localenv": "0.2.2",
     "request": "2.81.0"
