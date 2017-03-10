@@ -111,7 +111,7 @@ export default class PostureCalibrate extends Component {
    */
   @autobind
   toggleAutoStart(autoStart) {
-    Mixpanel.track(`toggleAutoStart-(${autoStart ? 'enabled' : 'diabled'})`);
+    Mixpanel.track(`toggleAutoStart-${autoStart ? 'enabled' : 'diabled'}`);
     SensitiveInfo.setItem(storageKeys.CALIBRATION_AUTO_START, autoStart);
     this.setState({ autoStart });
   }
