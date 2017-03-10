@@ -41,3 +41,8 @@ buck-out/
 \.buckd/
 android/app/libs
 *.keystore
+
+# Bundle files
+main.jsbundle
+main.jsbundle.*
+ios/assets/

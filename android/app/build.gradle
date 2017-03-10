@@ -65,6 +65,11 @@ import com.android.build.OutputFile
  * ]
  */
 
+project.ext.react = [
+    // supply additional arguments to the packager
+    extraPackagerArgs: ["--sourcemap-output", "$buildDir/intermediates/assets/release/index.android.bundle.map"]
+]
+
 project.ext.vectoricons = [
     iconFontNames: ['FontAwesome.ttf', 'MaterialIcons.ttf']
 ]

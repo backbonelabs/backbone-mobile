@@ -1121,7 +1121,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
+			shellScript = "[ -f ~/.bash_profile ] && source ~/.bash_profile\nexport NODE_BINARY=node\n\n../node_modules/react-native/packager/react-native-xcode.sh\n\nif [ \"${CONFIGURATION}\" = \"Release\" ]\nthen\n BUNDLE_DEST=./ios\n BUNDLE_FILE=main.jsbundle\n cd \"${PROJECT_DIR}/..\"\n react-native bundle \\\n --platform ios \\\n --entry-file ./index.ios.js \\\n --dev false \\\n --reset-cache \\\n --bundle-output $BUNDLE_DEST/$BUNDLE_FILE \\\n --assets-dest $BUNDLE_DEST \\\n --sourcemap-output $BUNDLE_DEST/$BUNDLE_FILE.map\nfi\n";
 		};
 		1FE0837799E1F44B3B0D519A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
