@@ -464,19 +464,21 @@ class Application extends Component {
     }
 
     const { modal: modalProps } = this.props.app;
+    const routeStack = this.navigator.getCurrentRoutes();
+    const currentRoute = routeStack[routeStack.length - 1];
 
     return (
       <View style={{ flex: 1 }}>
         <TitleBar
           navigator={this.navigator}
-          currentRoute={route}
+          currentRoute={currentRoute}
         />
         <FullModal show={modalProps.showFull} onClose={modalProps.onClose}>
           {modalProps.content}
         </FullModal>
         { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.showFull ? hiddenStyles : {}, { flex: 1 }]}>
-          <RouteComponent navigator={this.navigator} currentRoute={route} {...route.props} />
+          <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
           <PartialModal show={modalProps.showPartial} onClose={modalProps.onClose}>
             {modalProps.content}
           </PartialModal>
