@@ -34,7 +34,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>186</string>
+	<string>187</string>
 	<key>DEV_MODE</key>
 	<string>$(DEV_MODE)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -49,7 +49,7 @@
 		<dict>
 			<key>localhost</key>
 			<dict>
-				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
 		</dict>
