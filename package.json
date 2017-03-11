@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "bugsnag:ios": "node ios/bugsnag.js",
-    "bugsnag:android": "node android/bugsnag.js",
+    "bugsnag": "node bugsnag.js --debug --release",
+    "bugsnag-debug": "node bugsnag.js --debug",
+    "bugsnag-release": "node bugsnag.js --release",
     "lint": "eslint index.* app/**",
     "prepush": "npm run lint",
     "start": "node node_modules/react-native/local-cli/cli.js start"
