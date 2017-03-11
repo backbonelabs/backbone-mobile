@@ -1,4 +1,4 @@
-#include "../../Pods/Target Support Files/Pods-backbone/Pods-backbone.release.xcconfig"
+#include "../../Pods/Target Support Files/Pods-Backbone/Pods-Backbone.release.xcconfig"
 
 DEV_MODE = false
 API_SERVER_URL = https:/$()/api.gobackbone.com

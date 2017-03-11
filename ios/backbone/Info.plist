@@ -4,12 +4,6 @@
 <dict>
 	<key>API_SERVER_URL</key>
 	<string>$(API_SERVER_URL)</string>
-	<key>DEV_MODE</key>
-	<string>$(DEV_MODE)</string>
-	<key>MIXPANEL_TOKEN</key>
-	<string>$(MIXPANEL_TOKEN)</string>
-	<key>WEB_SERVER_URL</key>
-	<string>$(WEB_SERVER_URL)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -38,18 +32,22 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>184</string>
+	<string>187</string>
+	<key>DEV_MODE</key>
+	<string>$(DEV_MODE)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MIXPANEL_TOKEN</key>
+	<string>$(MIXPANEL_TOKEN)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
 			<dict>
-				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
 		</dict>
@@ -80,5 +78,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>WEB_SERVER_URL</key>
+	<string>$(WEB_SERVER_URL)</string>
 </dict>
 </plist>
