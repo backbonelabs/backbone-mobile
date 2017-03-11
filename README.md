@@ -42,25 +42,25 @@ Similar to iOS, you can define environment variables specific to your machine wh
 
 ## Versioning
 
-iOS apps have a marketing version and build version. These are used by the store to identify the build. The marketing version should follow semantic versioning (http://semver.org/), e.g., 1.2.3. The build version should be an integer that always increments, e.g., 1, 2, 3, etc.
+iOS apps have a marketing version and build version. These are used by the store to identify the build. The **marketing version** should follow semantic versioning (http://semver.org/), e.g., 1.2.3. The **build version** should be an integer that always increments, e.g., 1, 2, 3, etc.
 
 The build version can be incremented without changing the marketing version, but any change to the marketing version requires a bump in the build version.
 
-Android is similar in that there is a version code and a version name. The version code represents the internal version number, or build, and the version name is the public-facing version number.
+Android is similar in that there is a version code and a version name. The **version code** represents the internal version number, or build, and the **version name** is the public-facing version number that should follow semantic versioning.
 
 ## Merge Process
 
-When PRs are merged and the codebase is affected, the build version needs to be incremented. It will be responsibility of the person who did the merge to increment the build version.
+When PRs are merged and the codebase is affected, the build version needs to be incremented for whichever platforms were affected. It will be responsibility of the person who did the merge to increment the build version.
 
 ### iOS
 
-To increment the build version, make sure to pull down the latest `master` and that you are on the `master` branch. Then close the Xcode project because agvtool will update the project file and could potentially cause problems for Xcode when the project is opened.
+1. Switch to the `master` branch and pull down the latest `master`
+2. Close the Xcode project because agvtool will update the project file and could potentially cause problems for Xcode when the project is opened
+3. Run the following from the `ios` folder:
 
-Then run the following from the `ios` folder:
-
-```
-sh buildVersion.sh
-```
+ ```
+ sh buildVersion.sh
+ ```
 
 ### Android
 
@@ -68,6 +68,27 @@ sh buildVersion.sh
 2. Manually increment the build version by updating the `versionCode` property in `android/app/build.gradle`
 3. Commit the change to version control with a commit message of "Android build X" where X is the new build version
 4. Push the commit to the repo's `master`
+
+## Bugsnag
+
+We use [Bugsnag](https://www.bugsnag.com/) to log application errors originating from either JavaScript or native code. It provides stacktraces, app and device details, user details, and much more.
+
+Since React Native bundles the JavaScript files into one file, source maps must be uploaded to Bugsnag in order to unminify and demangle stacktraces to show full stacktraces with methods, file paths, and line numbers.
+
+When developing, it isn't as critical to upload source maps to Bugsnag because hopefully there will be enough error details in the Xcode or Android Studio logs. In addition, it's likely each developer will be working on something different at the same time, so even if you upload an updated source map for your development code, it may affect error logs produced by another dev in development, and vice versa. However, if you would like to take advantage of Bugsnag while developing in spite of those shortcomings, you can!
+
+In order to upload source maps to Bugsnag, first create an `.env.local` file in the project root if it doesn't already exist, and add an `BUGSNAG_API_KEY` variable with the value of the Bugsnag API key. Ask another dev for the key. Then, simply run one of the following commands in the root folder:
+
+```
+# Bundle and upload the debug version
+npm run bugsnag-debug
+
+# Bundle and upload the release version
+npm run bugsnag-release
+
+# Bundles and uploads both the debug and release versions
+npm run bugsnag
+```
 
 ## Deployment
 
