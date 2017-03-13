@@ -53,16 +53,37 @@ const getBundleCommand = (platform, isDev) => {
   --sourcemap-output ${sourcemapOutput}`;
 };
 
-const bugsnagApiFormDataDefaults = {
-  apiKey: process.env.BUGSNAG_API_KEY,
-  overwrite: 'true',
-};
+/**
+ * Makes a submission request to the Bugsnag API
+ * @param  {Object}  formData Form data to include in the request
+ * @return {Promise}          Resolves if the status code is 2xx, rejects if otherwise
+ */
+const submitToBugsnag = formData => (
+  new Promise((resolve, reject) => {
+    request({
+      url: 'https://upload.bugsnag.com',
+      method: 'POST',
+      formData: Object.assign({
+        apiKey: process.env.BUGSNAG_API_KEY,
+        overwrite: 'true',
+      }, formData),
+    }, (err, response, body) => {
+      const { statusCode } = response;
+      if (err) {
+        reject(err);
+      } else if (statusCode >= 200 && statusCode <= 299) {
+        resolve(body);
+      } else {
+        reject(new Error(body));
+      }
+    });
+  })
+);
 
 Promise.resolve()
   .then(() => {
     if (!program.debug && !program.release) {
-      error(red('Please specify at least one of the bundle options.'));
-      process.exit(1);
+      throw new Error('Please specify at least one of the bundle options.');
     }
   })
   .then(() => {
@@ -74,69 +95,41 @@ Promise.resolve()
       log(exec(getBundleCommand('android', true), { encoding: 'utf8' }));
 
       log(green('Uploading iOS debug source map...'));
-      const upload1 = new Promise((resolve, reject) => {
-        const plistFilePath = path.join(__dirname, 'ios/backbone/Info.plist');
-        const plistString = fs.readFileSync(plistFilePath, 'utf8');
-        const result = plist.parse(plistString);
-        const buildNumber = result.CFBundleVersion;
-        const bundlePath = path.join(__dirname, iOSBundleName);
-
-        request({
-          url: 'https://upload.bugsnag.com',
-          method: 'POST',
-          formData: Object.assign({}, bugsnagApiFormDataDefaults, {
-            appVersion: buildNumber,
-            minifiedUrl: 'http*://index.ios.bundle*', // this maps to the local dev server
-            sourceMap: fs.createReadStream(`${bundlePath}.map`),
-            minifedFile: fs.createReadStream(bundlePath),
-          }),
-        }, (err, response, body) => {
-          if (err) {
-            error(red('Error uploading iOS debug source map.'));
-            reject(err);
-          } else {
-            const { statusCode } = response;
-            if (statusCode >= 200 && response.statusCode <= 299) {
-              log(green('Uploaded iOS debug source map.'));
-            } else {
-              log(red('Failed to upload iOS debug source map.'), body);
-            }
-            resolve();
-          }
+      const plistFilePath = path.join(__dirname, 'ios/backbone/Info.plist');
+      const plistString = fs.readFileSync(plistFilePath, 'utf8');
+      const plistResult = plist.parse(plistString);
+      const iOSBuildNumber = plistResult.CFBundleVersion;
+      const iOSBundlePath = path.join(__dirname, iOSBundleName);
+      const upload1 = submitToBugsnag({
+        appVersion: iOSBuildNumber,
+        minifiedUrl: 'http*://index.ios.bundle*', // this maps to the local dev server
+        sourceMap: fs.createReadStream(`${iOSBundlePath}.map`),
+        minifedFile: fs.createReadStream(iOSBundlePath),
+      })
+        .then(() => {
+          log(green('Uploaded iOS debug source map.'));
+        })
+        .catch(err => {
+          error(red('Error uploading iOS debug source map.'), err);
         });
-      });
 
       log(green('Uploading Android debug source map...'));
       const upload2 = g2js.parseFile(path.join(__dirname, 'android/app/build.gradle'))
         .then(result => {
-          const buildNumber = result.android.defaultConfig.versionCode;
-
-          return new Promise((resolve, reject) => {
-            const bundlePath = path.join(androidBundleDir, androidBundleName);
-            request({
-              url: 'https://upload.bugsnag.com',
-              method: 'POST',
-              formData: Object.assign({}, bugsnagApiFormDataDefaults, {
-                appVersion: buildNumber,
-                minifiedUrl: 'http*://index.android.bundle*', // this maps to the local dev server
-                sourceMap: fs.createReadStream(`${bundlePath}.map`),
-                minifedFile: fs.createReadStream(bundlePath),
-              }),
-            }, (err, response, body) => {
-              if (err) {
-                error(red('Error uploading Android debug source map.'));
-                reject(err);
-              } else {
-                const { statusCode } = response;
-                if (statusCode >= 200 && response.statusCode <= 299) {
-                  log(green('Uploaded Android debug source map.'));
-                } else {
-                  log(red('Failed to upload Android debug source map.'), body);
-                }
-                resolve();
-              }
+          const androidBuildNumber = result.android.defaultConfig.versionCode;
+          const androidBundlePath = path.join(androidBundleDir, androidBundleName);
+          return submitToBugsnag({
+            appVersion: androidBuildNumber,
+            minifiedUrl: 'http*://index.android.bundle*', // this maps to the local dev server
+            sourceMap: fs.createReadStream(`${androidBundlePath}.map`),
+            minifedFile: fs.createReadStream(androidBundlePath),
+          })
+            .then(() => {
+              log(green('Uploaded Android debug source map.'));
+            })
+            .catch(err => {
+              error(red('Error uploading Android debug source map.'), err);
             });
-          });
         });
 
       return Promise.all([upload1, upload2]);
@@ -151,73 +144,45 @@ Promise.resolve()
       log(exec(getBundleCommand('android', false), { encoding: 'utf8' }));
 
       log(green('Uploading iOS release source map...'));
-      const upload1 = new Promise((resolve, reject) => {
-        const plistFilePath = path.join(__dirname, 'ios/backbone/Info.plist');
-        const plistString = fs.readFileSync(plistFilePath, 'utf8');
-        const result = plist.parse(plistString);
-        const version = result.CFBundleVersion;
-        const bundlePath = path.join(__dirname, iOSBundleName);
-        const sourcePath = path.join(__dirname, 'index.ios.js');
-
-        request({
-          url: 'https://upload.bugsnag.com',
-          method: 'POST',
-          formData: Object.assign({}, bugsnagApiFormDataDefaults, {
-            appVersion: version,
-            minifiedUrl: iOSBundleName,
-            sourceMap: fs.createReadStream(`${bundlePath}.map`),
-            minifedFile: fs.createReadStream(bundlePath),
-            [sourcePath]: fs.createReadStream(sourcePath),
-          }),
-        }, (err, response, body) => {
-          if (err) {
-            error(red('Error uploading iOS release source map.'));
-            reject(err);
-          } else {
-            const { statusCode } = response;
-            if (statusCode >= 200 && response.statusCode <= 299) {
-              log(green('Uploaded iOS release source map.'));
-            } else {
-              log(red('Failed to upload iOS release source map.'), body);
-            }
-            resolve();
-          }
+      const plistFilePath = path.join(__dirname, 'ios/backbone/Info.plist');
+      const plistString = fs.readFileSync(plistFilePath, 'utf8');
+      const plistResult = plist.parse(plistString);
+      const iOSBuildNumber = plistResult.CFBundleVersion;
+      const iOSBundlePath = path.join(__dirname, iOSBundleName);
+      const iOSSourcePath = path.join(__dirname, 'index.ios.js');
+      const upload1 = submitToBugsnag({
+        appVersion: iOSBuildNumber,
+        minifiedUrl: iOSBundleName,
+        sourceMap: fs.createReadStream(`${iOSBundlePath}.map`),
+        minifedFile: fs.createReadStream(iOSBundlePath),
+        [iOSSourcePath]: fs.createReadStream(iOSSourcePath),
+      })
+        .then(() => {
+          log(green('Uploaded iOS release source map.'));
+        })
+        .catch(err => {
+          error(red('Error uploading iOS release source map.'), err);
         });
-      });
 
       log(green('Uploading Android release source map...'));
       const upload2 = g2js.parseFile(path.join(__dirname, 'android/app/build.gradle'))
         .then(result => {
-          const version = result.android.defaultConfig.versionCode;
-
-          return new Promise((resolve, reject) => {
-            const bundlePath = path.join(androidBundleDir, androidBundleName);
-            const sourcePath = path.join(__dirname, 'index.android.js');
-            request({
-              url: 'https://upload.bugsnag.com',
-              method: 'POST',
-              formData: Object.assign({}, bugsnagApiFormDataDefaults, {
-                appVersion: version,
-                minifiedUrl: androidBundleName,
-                sourceMap: fs.createReadStream(`${bundlePath}.map`),
-                minifedFile: fs.createReadStream(bundlePath),
-                [sourcePath]: fs.createReadStream(sourcePath),
-              }),
-            }, (err, response, body) => {
-              if (err) {
-                error(red('Error uploading Android release source map.'));
-                reject(err);
-              } else {
-                const { statusCode } = response;
-                if (statusCode >= 200 && statusCode <= 299) {
-                  log(green('Uploaded Android release source map.'));
-                } else {
-                  log(red('Failed to upload Android release source map.'), body);
-                }
-                resolve();
-              }
+          const androidBuildNumber = result.android.defaultConfig.versionCode;
+          const androidBundlePath = path.join(androidBundleDir, androidBundleName);
+          const androidSourcePath = path.join(__dirname, 'index.android.js');
+          return submitToBugsnag({
+            appVersion: androidBuildNumber,
+            minifiedUrl: androidBundleName,
+            sourceMap: fs.createReadStream(`${androidBundlePath}.map`),
+            minifedFile: fs.createReadStream(androidBundlePath),
+            [androidSourcePath]: fs.createReadStream(androidSourcePath),
+          })
+            .then(() => {
+              log(green('Uploaded Android release source map.'));
+            })
+            .catch(err => {
+              error(red('Error uploading Android release source map.'), err);
             });
-          });
         });
 
       return Promise.all([upload1, upload2]);
@@ -228,6 +193,6 @@ Promise.resolve()
     process.exit();
   })
   .catch(err => {
-    error(err);
+    error(red(err));
     process.exit(1);
   });
