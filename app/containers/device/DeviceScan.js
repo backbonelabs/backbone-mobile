@@ -82,6 +82,7 @@ class DeviceScan extends Component {
   @autobind
   initiateScanning() {
     // Initiate scanning
+    Mixpanel.track('scanForDevices');
     DeviceManagementService.scanForDevices(error => {
       if (error) {
         Alert.alert(

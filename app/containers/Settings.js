@@ -31,6 +31,7 @@ import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
+import Mixpanel from '../utils/Mixpanel';
 
 const { storageKeys } = constants;
 const { UserSettingService, Environment } = NativeModules;
@@ -162,6 +163,8 @@ AccountRemindersSettings.propTypes = {
 };
 
 const openTOS = () => {
+  Mixpanel.track('openTOS');
+
   const url = `${Environment.WEB_SERVER_URL}/legal/terms`;
   Linking.canOpenURL(url)
     .then(supported => {
@@ -182,6 +185,8 @@ const openTOS = () => {
 };
 
 const openPrivacyPolicy = () => {
+  Mixpanel.track('openPrivacyPolicy');
+
   const url = `${Environment.WEB_SERVER_URL}/legal/privacy`;
   Linking.canOpenURL(url)
     .then(supported => {
@@ -208,7 +213,11 @@ const HelpSettings = props => (
     </View>
     <TouchableOpacity
       style={styles.settingsRow}
-      onPress={() => props.navigator.push(routes.howTo)}
+      onPress={() => {
+        Mixpanel.track('openHowTo');
+
+        props.navigator.push(routes.howTo);
+      }}
     >
       <SettingsIcon iconName="live-tv" />
       <SettingsText text="How To" />

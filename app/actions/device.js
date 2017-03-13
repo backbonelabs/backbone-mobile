@@ -83,14 +83,18 @@ const getInfoError = error => ({
 });
 
 const deviceActions = {
-  connect(deviceIdentifier) {
+  connect(identifier) {
     return (dispatch) => {
       BluetoothService.getState((error, { state }) => {
         if (!error) {
           if (state === bluetoothStates.ON) {
             dispatch(connectStart());
+            Mixpanel.trackWithProperties('connectToDevice', {
+              deviceIdentifier: identifier,
+            });
+
             // Connect to device with specified identifier
-            DeviceManagementService.connectToDevice(deviceIdentifier);
+            DeviceManagementService.connectToDevice(identifier);
           }
         }
       });
@@ -135,6 +139,7 @@ const deviceActions = {
   forget() {
     return (dispatch) => {
       dispatch(forgetStart());
+      Mixpanel.track('forgetDevice');
       // Disconnect device before attempting to forget
       DeviceManagementService.cancelConnection(err => {
         if (err) {

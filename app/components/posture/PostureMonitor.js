@@ -484,6 +484,10 @@ class PostureMonitor extends Component {
       vibrationPattern,
     };
 
+    Mixpanel.trackWithProperties('startSession', {
+      goalDuration: sessionDuration,
+    });
+
     SessionControlService.start(sessionParameters, err => {
       if (err) {
         const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
@@ -518,6 +522,8 @@ class PostureMonitor extends Component {
 
   @autobind
   pauseSession() {
+    Mixpanel.track('pauseSession');
+
     SessionControlService.pause(err => {
       if (err) {
         this.sessionCommandAlert({
@@ -564,6 +570,8 @@ class PostureMonitor extends Component {
       vibrationPattern,
     };
 
+    Mixpanel.track('resumeSession');
+
     SessionControlService.resume(sessionParameters, err => {
       if (err) {
         this.sessionCommandAlert({
@@ -599,6 +607,8 @@ class PostureMonitor extends Component {
         rightButtonAction: this.props.navigator.pop,
       });
     } else {
+      Mixpanel.track('stopSession');
+
       SessionControlService.stop(err => {
         if (err) {
           this.sessionCommandAlert({

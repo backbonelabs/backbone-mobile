@@ -55,6 +55,8 @@ export default {
     return (dispatch) => {
       dispatch(loginStart());
 
+      const loginEventName = 'login';
+
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/login`,
         body: JSON.stringify(user),
@@ -63,6 +65,10 @@ export default {
           .then((body) => {
             if (body.error) {
               // Error received from API server
+              Mixpanel.trackWithProperties(`${loginEventName}-error`, {
+                errorMessage: body.error,
+              });
+
               dispatch(loginError(
                 new Error(body.error)
               ));
@@ -74,6 +80,7 @@ export default {
 
               // Update user profile on Mixpanel
               Mixpanel.setUserProperties(userObj);
+              Mixpanel.track(`${loginEventName}-success`);
 
               // Store access token and user in local storage
               SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
@@ -85,6 +92,8 @@ export default {
         )
         .catch(() => {
           // Network error
+          Mixpanel.track(`${loginEventName}-serverError`);
+
           dispatch(loginError(
             new Error('We are encountering server issues. Please try again later.')
           ));
@@ -96,6 +105,8 @@ export default {
     return (dispatch) => {
       dispatch(signupStart());
 
+      const signupEventName = 'signup';
+
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
@@ -104,6 +115,10 @@ export default {
           .then(body => {
             // Error received from API server
             if (body.error) {
+              Mixpanel.trackWithProperties(`${signupEventName}-error`, {
+                errorMessage: body.error,
+              });
+
               dispatch(signupError(
                 new Error(body.error)
               ));
@@ -113,7 +128,7 @@ export default {
 
               // Update user profile on Mixpanel
               Mixpanel.setUserProperties(body.user);
-              Mixpanel.track('signup');
+              Mixpanel.track(`${signupEventName}-success`);
 
               // Store access token and user in local storage
               SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, body.accessToken);
@@ -123,12 +138,14 @@ export default {
             }
           })
         )
-        .catch(() => (
+        .catch(() => {
           // Network error
+          Mixpanel.track(`${signupEventName}-serverError`);
+
           dispatch(signupError(
             new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
+          ));
+        });
     };
   },
 
@@ -136,32 +153,49 @@ export default {
     return (dispatch) => {
       dispatch(passwordResetStart());
 
+      const passwordResetEventName = 'passwordReset';
+
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/password-reset-token`,
         body: JSON.stringify(user),
       })
         .then((response) => {
           if (response.ok) {
+            Mixpanel.trackWithProperties(`${passwordResetEventName}-success`, {
+              email: user.email,
+            });
+
             dispatch(passwordReset(response.ok));
           } else {
             return response.json()
-              .then(body => (
+              .then(body => {
+                Mixpanel.trackWithProperties(`${passwordResetEventName}-error`, {
+                  email: user.email,
+                  errorMessage: body.error,
+                });
+
                 dispatch(passwordResetError(
                   new Error(body.error)
-                ))
-              ));
+                ));
+              });
           }
         })
-        .catch(() => (
+        .catch(() => {
           // Network error
+          Mixpanel.trackWithProperties(`${passwordResetEventName}-serverError`, {
+            email: user.email,
+          });
+
           dispatch(passwordResetError(
             new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
+          ));
+        });
     };
   },
   signOut() {
     return (dispatch) => {
+      Mixpanel.track('signOut');
+
       SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);
       SensitiveInfo.deleteItem(storageKeys.USER);
       dispatch(signOut());
