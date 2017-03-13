@@ -6,6 +6,7 @@ import BodyText from '../components/BodyText';
 import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
 import theme from '../styles/theme';
+import Mixpanel from '../utils/Mixpanel';
 
 const ProfileSave = props => {
   const isPendingSave = props.pendingUser && !props.pendingUser.invalidData;
@@ -14,7 +15,10 @@ const ProfileSave = props => {
 
   return isPendingSave ? (
     <TouchableOpacity
-      onPress={() => props.dispatch(userActions.updateUser(props.pendingUser))}
+      onPress={() => {
+        Mixpanel.track('updateUserProfile');
+        props.dispatch(userActions.updateUser(props.pendingUser));
+      }}
     >
       {props.isUpdating ?
         <Spinner color="#FFFFFF" /> : text}

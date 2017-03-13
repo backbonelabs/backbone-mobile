@@ -136,17 +136,22 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
             connectionTimerRunnable = new Runnable(){
                 public void run() {
-                    Timber.d("Check connection timeout");
                     connectionTimerRunnable = null;
 
-                    if (!BluetoothService.getInstance().isShouldRestart()) {
-                        Timber.d("Device connection timeout");
-                        BluetoothService.getInstance().disconnect(null);
-                        WritableMap wm = Arguments.createMap();
-                        wm.putBoolean("isConnected", false);
-                        wm.putString("message", "Device took too long to connect");
-                        EventEmitter.send(reactContext, "ConnectionStatus", wm);
-                    }
+                    Timber.d("Device connection timeout");
+                    BluetoothService.getInstance().disconnect(new BluetoothService.DeviceConnectionCallBack() {
+                        @Override
+                        public void onDeviceConnected() {
+                        }
+
+                        @Override
+                        public void onDeviceDisconnected() {
+                            WritableMap wm = Arguments.createMap();
+                            wm.putBoolean("isConnected", false);
+                            wm.putString("message", "Device took too long to connect");
+                            EventEmitter.send(reactContext, "ConnectionStatus", wm);
+                        }
+                    });
                 }
             };
 

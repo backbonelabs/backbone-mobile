@@ -152,6 +152,9 @@ public class BootLoaderService extends ReactContextBaseJavaModule implements OTA
     private void firmwareUploadFailed(int errorCode) {
         bootLoaderState = Constants.BOOTLOADER_STATES.ON;
 
+        // Disconnect on failure
+        BluetoothService.getInstance().disconnect(null);
+
         firmwareUpdateStatus(Constants.FIRMWARE_UPDATE_STATES.END_ERROR, errorCode);
     }
 
