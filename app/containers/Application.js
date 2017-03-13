@@ -433,34 +433,46 @@ class Application extends Component {
       position: 'absolute',
     };
 
-    // Alter navigator methods to include a timestamp for each route
-    // in the route stack so that each route in the stack is unique.
-    // This prevents React errors when a route is in the stack multiple times.
+    // Alter navigator methods to 1) include a timestamp for each route in the route stack,
+    // and 2) place breadcrumbs for Bugsnag error reports. Having the timestamp for each route
+    // in the route stack will ensure each route in the stack is unique to prevent React
+    // errors when a route is in the stack multiple times. Leaving Bugsnag breadcrumbs will
+    // help with debugging errors because we can get a better idea of what navigation
+    // the user performed while leading up to the error.
     // All components should use this customized navigator object.
     if (!this.navigator) {
       this.navigator = clone(navigator);
 
-      const transform = (routeObj, navigationMethod, fn) => {
+      const leaveNavBreadcrumb = (routeObj, navigationMethod, fn) => {
         Bugsnag.leaveBreadcrumb(`Navigating to ${routeObj.name}`, {
           type: 'navigation',
           method: navigationMethod,
           routeConfig: JSON.stringify(routeObj),
         });
-        return fn.call(this.navigator, { ...routeObj, key: Date.now() });
+        return fn.call(this.navigator, routeObj);
       };
 
       this.navigator._push = this.navigator.push; // the original push method
       this.navigator.push = function push(routeObj) {
-        return transform(routeObj, 'push', this._push);
+        return leaveNavBreadcrumb({ ...routeObj, key: Date.now() }, 'push', this._push);
       };
+
       this.navigator._replace = this.navigator.replace; // the original replace method
       this.navigator.replace = function replace(routeObj) {
-        return transform(routeObj, 'replace', this._replace);
+        return leaveNavBreadcrumb({ ...routeObj, key: Date.now() }, 'replace', this._replace);
       };
+
       this.navigator._resetTo = this.navigator.resetTo; // the original resetTo method
       this.navigator.resetTo = function resetTo(routeObj) {
-        return transform(routeObj, 'resetTo', this._replace);
+        return leaveNavBreadcrumb({ ...routeObj, key: Date.now() }, 'resetTo', this._replace);
       };
+
+      this.navigator._pop = this.navigator.pop; // the original pop method
+      this.navigator.pop = function pop() {
+        const routeStack = this.getCurrentRoutes();
+        const previousRoute = routeStack[routeStack.length - 2] || {};
+        return leaveNavBreadcrumb(previousRoute, 'pop', this._pop);
+      }.bind(this.navigator);
     }
 
     const { modal: modalProps } = this.props.app;
