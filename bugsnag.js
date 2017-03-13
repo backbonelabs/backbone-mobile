@@ -21,8 +21,12 @@ program
 
 const androidBundleDir = path.join(__dirname, 'android/app/build');
 const androidBundleName = 'index.android.bundle';
+const androidBundlePath = path.join(androidBundleDir, androidBundleName);
+const androidSourcePath = path.join(__dirname, 'index.android.js');
 const iOSBundleDir = path.join(__dirname, 'ios');
 const iOSBundleName = 'main.jsbundle';
+const iOSBundlePath = path.join(iOSBundleDir, iOSBundleName);
+const iOSSourcePath = path.join(__dirname, 'index.ios.js');
 
 /**
  * Generates the shell command to run for the JS bundling
@@ -35,10 +39,10 @@ const getBundleCommand = (platform, isDev) => {
   let assetsDest;
 
   if (platform === 'ios') {
-    bundleOutput = path.join(iOSBundleDir, iOSBundleName);
+    bundleOutput = iOSBundlePath;
     assetsDest = iOSBundleDir;
   } else {
-    bundleOutput = path.join(androidBundleDir, androidBundleName);
+    bundleOutput = androidBundlePath;
     assetsDest = androidBundleDir;
   }
   const sourcemapOutput = `${bundleOutput}.map`;
@@ -99,10 +103,9 @@ Promise.resolve()
       const plistString = fs.readFileSync(plistFilePath, 'utf8');
       const plistResult = plist.parse(plistString);
       const iOSBuildNumber = plistResult.CFBundleVersion;
-      const iOSBundlePath = path.join(__dirname, iOSBundleName);
       const upload1 = submitToBugsnag({
         appVersion: iOSBuildNumber,
-        minifiedUrl: 'http*://index.ios.bundle*', // this maps to the local dev server
+        minifiedUrl: 'http*://*index.ios.bundle*', // this maps to the local dev server
         sourceMap: fs.createReadStream(`${iOSBundlePath}.map`),
         minifedFile: fs.createReadStream(iOSBundlePath),
       })
@@ -117,10 +120,9 @@ Promise.resolve()
       const upload2 = g2js.parseFile(path.join(__dirname, 'android/app/build.gradle'))
         .then(result => {
           const androidBuildNumber = result.android.defaultConfig.versionCode;
-          const androidBundlePath = path.join(androidBundleDir, androidBundleName);
           return submitToBugsnag({
             appVersion: androidBuildNumber,
-            minifiedUrl: 'http*://index.android.bundle*', // this maps to the local dev server
+            minifiedUrl: 'http*://*index.android.bundle*', // this maps to the local dev server
             sourceMap: fs.createReadStream(`${androidBundlePath}.map`),
             minifedFile: fs.createReadStream(androidBundlePath),
           })
@@ -148,14 +150,12 @@ Promise.resolve()
       const plistString = fs.readFileSync(plistFilePath, 'utf8');
       const plistResult = plist.parse(plistString);
       const iOSBuildNumber = plistResult.CFBundleVersion;
-      const iOSBundlePath = path.join(__dirname, iOSBundleName);
-      const iOSSourcePath = path.join(__dirname, 'index.ios.js');
       const upload1 = submitToBugsnag({
         appVersion: iOSBuildNumber,
         minifiedUrl: iOSBundleName,
         sourceMap: fs.createReadStream(`${iOSBundlePath}.map`),
         minifedFile: fs.createReadStream(iOSBundlePath),
-        [iOSSourcePath]: fs.createReadStream(iOSSourcePath),
+        '*/index.ios.js': fs.createReadStream(iOSSourcePath),
       })
         .then(() => {
           log(green('Uploaded iOS release source map.'));
@@ -168,14 +168,12 @@ Promise.resolve()
       const upload2 = g2js.parseFile(path.join(__dirname, 'android/app/build.gradle'))
         .then(result => {
           const androidBuildNumber = result.android.defaultConfig.versionCode;
-          const androidBundlePath = path.join(androidBundleDir, androidBundleName);
-          const androidSourcePath = path.join(__dirname, 'index.android.js');
           return submitToBugsnag({
             appVersion: androidBuildNumber,
             minifiedUrl: androidBundleName,
             sourceMap: fs.createReadStream(`${androidBundlePath}.map`),
             minifedFile: fs.createReadStream(androidBundlePath),
-            [androidSourcePath]: fs.createReadStream(androidSourcePath),
+            '*/index.android.js': fs.createReadStream(androidSourcePath),
           })
             .then(() => {
               log(green('Uploaded Android release source map.'));
