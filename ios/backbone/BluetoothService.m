@@ -367,6 +367,19 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
         
         [self emitDeviceState];
       }
+      else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPLOADING) {
+        DLog(@"Abort previous firmware update");
+        // Connection was restored after a lost connection when a firmware update was running
+        // Reset back to initial bootloader state
+        [BootLoaderService getBootLoaderService].bootLoaderState = BOOTLOADER_STATE_ON;
+        
+        if (self.connectHandler) {
+          self.connectHandler(nil);
+          self.connectHandler = nil;
+        }
+        
+        [self emitDeviceState];
+      }
     }
   }
   
