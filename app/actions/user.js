@@ -110,6 +110,8 @@ export default {
       const state = getState();
       const { accessToken } = state.auth;
 
+      const updateUserEventName = 'updateUserProfile';
+
       // Remove invalidData property, since no longer needed
       delete userUpdateFields.invalidData;
 
@@ -124,6 +126,10 @@ export default {
           .then((body) => {
             if (body.error) {
               // Error received from API server
+              Mixpanel.trackWithProperties(`${updateUserEventName}-error`, {
+                errorMessage: body.error,
+              });
+
               dispatch(updateUserError(
                 new Error(body.error)
               ));
@@ -133,17 +139,20 @@ export default {
 
               // Update user profile on Mixpanel
               Mixpanel.setUserProperties(body);
+              Mixpanel.track(`${updateUserEventName}-success`);
 
               dispatch(updateUser(body));
             }
           })
         )
-        .catch(() => (
+        .catch(() => {
           // Network error
+          Mixpanel.track(`${updateUserEventName}-serverError`);
+
           dispatch(updateUserError(
             new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
+          ));
+        });
     };
   },
 
@@ -156,6 +165,8 @@ export default {
     return (dispatch, getState) => {
       const state = getState();
       const { auth: { accessToken }, user: { user: oldUser } } = state;
+
+      const updateUserSettingsEventName = 'updateUserSettings';
 
       dispatch(updateUserSettingsStart());
 
@@ -173,6 +184,10 @@ export default {
 
             if (body.error) {
               // Error received from API server
+              Mixpanel.trackWithProperties(`${updateUserSettingsEventName}-error`, {
+                errorMessage: body.error,
+              });
+
               return dispatch(updateUserSettingsError(
                 new Error(body.error)
               ));
@@ -183,11 +198,14 @@ export default {
 
             // Update user profile on Mixpanel
             Mixpanel.setUserProperties(userObj);
+            Mixpanel.track(`${updateUserSettingsEventName}-success`);
 
             return dispatch(updateUserSettings(body));
           })
         )
         .catch(() => {
+          Mixpanel.track(`${updateUserSettingsEventName}-serverError`);
+
           const userUpdateError = new Error(
             'We\'re encountering server issues. Settings saved locally.'
           );

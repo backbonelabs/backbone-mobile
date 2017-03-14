@@ -13,6 +13,7 @@ import Input from '../components/Input';
 import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
+import Mixpanel from '../utils/Mixpanel';
 
 class ChangePassword extends Component {
   static propTypes = {
@@ -86,6 +87,8 @@ class ChangePassword extends Component {
       // Show alert if current password is not 8 characters long
       return Alert.alert('Current Password must be at least 8 characters');
     }
+
+    Mixpanel.track('changePassword');
 
     return this.props.dispatch(userActions.updateUser({
       _id: user._id,

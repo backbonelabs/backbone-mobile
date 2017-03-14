@@ -124,13 +124,10 @@ RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
   DLog(@"Connection timeout");
   _connectionTimer = nil;
   
-  // Skip timeout on any pending system auto-restart
-  if (![BluetoothServiceInstance shouldRestart]) {
-    [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
-      NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, nil);
-      [self deviceConnectionStatus:makeError];
-    }];
-  }
+  [BluetoothServiceInstance disconnectDevice:^(NSError * _Nullable error) {
+    NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, nil);
+    [self deviceConnectionStatus:makeError];
+  }];
 }
 
 - (NSArray<NSString *> *)supportedEvents {

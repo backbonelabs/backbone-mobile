@@ -1,5 +1,6 @@
 import { NativeModules } from 'react-native';
 import Fetcher from '../utils/Fetcher';
+import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
 
@@ -31,6 +32,8 @@ export default {
       const { auth: { accessToken }, user: { user } } = getState();
       dispatch(createTicketStart());
 
+      const createTicketEventName = 'createTicket';
+
       return Fetcher.post({
         url: `${Environment.API_SERVER_URL}/support`,
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -42,18 +45,26 @@ export default {
         .then(response => response.json()
           .then((body) => {
             if (body.error) {
+              Mixpanel.trackWithProperties(`${createTicketEventName}-error`, {
+                errorMessage: body.error,
+              });
+
               dispatch(createTicketError(new Error(body.error)));
             } else {
+              Mixpanel.track(`${createTicketEventName}-success`);
+
               dispatch(createTicket());
             }
           })
         )
-        .catch(() => (
+        .catch(() => {
           // Network error
+          Mixpanel.track(`${createTicketEventName}-serverError`);
+
           dispatch(createTicketError(
             new Error('We are encountering server issues. Please try again later.')
-          ))
-        ));
+          ));
+        });
     };
   },
 };

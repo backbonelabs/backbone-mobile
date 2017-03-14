@@ -93,7 +93,6 @@ class PostureDashboard extends Component {
       };
 
       const baselineSurveyEventName = 'baselineUserSurvey';
-      Mixpanel.track(baselineSurveyEventName);
 
       this.props.dispatch(appActions.showPartialModal({
         content: (

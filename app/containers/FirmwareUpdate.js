@@ -12,6 +12,7 @@ import {
 import autobind from 'autobind-decorator';
 import ReactNativeFS from 'react-native-fs';
 import { connect } from 'react-redux';
+import routes from '../routes';
 import deviceActions from '../actions/device';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
@@ -40,9 +41,14 @@ class FirmwareUpdate extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       pop: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
+    }),
+    currentRoute: PropTypes.shape({
+      name: PropTypes.string,
     }),
     dispatch: PropTypes.func,
     device: PropTypes.shape({
+      isConnected: PropTypes.bool,
       inProgress: PropTypes.bool,
       device: PropTypes.shape({
         firmwareVersion: PropTypes.string,
@@ -60,6 +66,7 @@ class FirmwareUpdate extends Component {
 
     this.firmwareUpdateStatus = null;
     this.firmwareUploadProgress = null;
+    this.firmwareUpdateErrorMessage = 'Connection Lost';
   }
 
   componentWillMount() {
@@ -120,6 +127,16 @@ class FirmwareUpdate extends Component {
       // Automatically pop the scene without user interaction in case app is in the background
       // so the user won't be stuck on this component when the app is back in the foreground
       this.props.navigator.pop();
+    } else if (this.props.device.isConnected && !nextProps.device.isConnected) {
+      if (this.props.currentRoute.name === routes.firmwareUpdate.name) {
+        // This indicates a running firmware update was interrupted
+        // Return to the previous scene
+        this.props.navigator.pop();
+
+        Mixpanel.trackWithProperties('firmwareUpdate-error', { message: 'Device disconnected' });
+        Alert.alert('Error', 'Device disconnected. Your Backbone update has failed.' +
+          `(Reason: ${this.firmwareUpdateErrorMessage})`);
+      }
     }
   }
 
@@ -187,12 +204,7 @@ class FirmwareUpdate extends Component {
     BootLoaderService.setHasPendingUpdate(false);
 
     Mixpanel.trackWithProperties('firmwareUpdate-error', { message: err.message });
-
-    Alert.alert(
-      'Failed',
-      `Your Backbone update has failed, please try again. (Reason: ${err.message})`,
-      [{ text: 'OK', onPress: this.props.navigator.pop }]
-    );
+    this.firmwareUpdateErrorMessage = err.message;
   }
 
   render() {
