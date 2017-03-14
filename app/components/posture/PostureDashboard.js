@@ -222,15 +222,15 @@ class PostureDashboard extends Component {
 
   /**
    * Retrieve user sessions for a date range
-   * @param  {String} userId User ID
-   * @param  {Date}   from   From date
-   * @param  {Date}   to     To Date
+   * @param  {String} userId   User ID
+   * @param  {Date}   fromDate Starting date
+   * @param  {Date}   toDate   Ending date
    */
   @autobind
-  getUserSessions(userId, from, to) {
+  getUserSessions(userId, fromDate, toDate) {
     this.props.dispatch(userActions.fetchUserSessions({
-      from: from.toISOString(),
-      to: to.toISOString(),
+      fromDate: fromDate.toISOString(),
+      toDate: toDate.toISOString(),
     }));
   }
 

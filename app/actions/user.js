@@ -223,6 +223,13 @@ export default {
     };
   },
 
+  /**
+   * Fetch user posture sessions for a date range
+   * @param  {Object} dates
+   * @param  {String} dates.fromDate ISO 8601 date string of starting date
+   * @param  {String} dates.toDate   ISO 8601 date string of ending date
+   * @return {Promise<Array>}
+   */
   fetchUserSessions(dates) {
     return (dispatch, getState) => {
       const state = getState();
