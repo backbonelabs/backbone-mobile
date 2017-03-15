@@ -1,24 +1,15 @@
 package co.backbonelabs.backbone;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.Settings;
 
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableMap;
-
-import co.backbonelabs.backbone.util.Constants;
-import co.backbonelabs.backbone.util.JSError;
-import timber.log.Timber;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Interface for interacting with the local user setting via SharedPreferences
+ * Interface for interacting with the local user setting via Intent
  */
 public class UserSettingService extends ReactContextBaseJavaModule {
     /**
