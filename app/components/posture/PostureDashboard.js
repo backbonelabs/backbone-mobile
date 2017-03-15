@@ -8,6 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import autobind from 'autobind-decorator';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import forEach from 'lodash/forEach';
@@ -77,7 +78,7 @@ class PostureDashboard extends Component {
     this.setSessionTime(sessions[0].durationSeconds);
 
     const {
-      _id: userId, seenBaselineSurvey, seenAppRating, seenFeedbackSurvey,
+      _id: userId, seenBaselineSurvey, seenAppRating, seenFeedbackSurvey, lastSession,
     } = this.props.user.user;
 
     if (!seenBaselineSurvey) {
@@ -166,6 +167,19 @@ class PostureDashboard extends Component {
       // Retrieve user session data to later check if the user has
       // completed 5 full sessions throughout their lifetime.
       this.getUserSessions(userId, createdDate, today);
+    }
+
+    // Reset daily streak if lastSession was 2 days ago
+    const todayDate = moment().format('YYYY-MM-DD');
+    const twoDaysLaterDate = moment(lastSession).add(2, 'days').format('YYYY-MM-DD');
+
+    // if the current date is the same as the date 2 days after the last session, reset it
+    if (todayDate === twoDaysLaterDate) {
+      this.props.dispatch(userActions.updateUser({
+        _id: userId,
+        dailyStreak: 0,
+        lastSession: null,
+      }));
     }
   }
 
@@ -434,6 +448,7 @@ class PostureDashboard extends Component {
 
   render() {
     const { user } = this.props.user;
+    console.log(user);
     return (
       <View style={styles.container}>
         <View style={styles.header}>
