@@ -650,8 +650,7 @@ class PostureMonitor extends Component {
         // Session date is same as last session, do not increment streak
       } else {
         // Reset streak
-        updateUserPayload.dailyStreak = 0;
-        updateUserPayload.lastSession = null;
+        updateUserPayload.dailyStreak = 1;
       }
     } else {
       // First-time user

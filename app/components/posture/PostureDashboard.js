@@ -70,7 +70,7 @@ class PostureDashboard extends Component {
         seenAppRating: PropTypes.bool,
         seenFeedbackSurvey: PropTypes.bool,
         createdAt: PropTypes.string,
-        lastSession: PropTypes.object,
+        lastSession: PropTypes.string,
       }),
     }),
   };
@@ -179,7 +179,6 @@ class PostureDashboard extends Component {
       this.props.dispatch(userActions.updateUser({
         _id: userId,
         dailyStreak: 0,
-        lastSession: null,
       }));
     }
   }
