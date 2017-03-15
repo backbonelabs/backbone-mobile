@@ -175,7 +175,7 @@ class PostureDashboard extends Component {
     const twoDaysLaterDate = moment(lastSession).add(2, 'days').format('YYYY-MM-DD');
 
     // if the current date is the same as the date 2 days after the last session, reset it
-    if (todayDate === twoDaysLaterDate) {
+    if (todayDate >= twoDaysLaterDate) {
       this.props.dispatch(userActions.updateUser({
         _id: userId,
         dailyStreak: 0,
