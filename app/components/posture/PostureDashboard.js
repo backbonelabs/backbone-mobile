@@ -70,6 +70,7 @@ class PostureDashboard extends Component {
         seenAppRating: PropTypes.bool,
         seenFeedbackSurvey: PropTypes.bool,
         createdAt: PropTypes.string,
+        lastSession: PropTypes.object,
       }),
     }),
   };
