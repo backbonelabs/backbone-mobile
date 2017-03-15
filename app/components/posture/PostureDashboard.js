@@ -448,7 +448,6 @@ class PostureDashboard extends Component {
 
   render() {
     const { user } = this.props.user;
-    console.log(user);
     return (
       <View style={styles.container}>
         <View style={styles.header}>
