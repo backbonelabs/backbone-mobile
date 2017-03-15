@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.facebook.react.bridge.Callback;
+
 import co.backbonelabs.backbone.util.Constants;
 import timber.log.Timber;
 
@@ -56,6 +58,12 @@ public class ForegroundService extends Service {
                 break;
             case Constants.ACTIONS.STOP_POSTURE_ACTIVITY:
                 Timber.d("Received stop posture intent");
+                //Stop the running session
+                SessionControlService.getInstance().stop(new Callback() {
+                    @Override
+                    public void invoke(Object... args) {
+                    }
+                });
 
                 // No break here because we want to process the next case of stopping the service
             case Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE:
