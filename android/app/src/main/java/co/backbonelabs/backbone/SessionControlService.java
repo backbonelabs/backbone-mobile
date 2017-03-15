@@ -1,10 +1,13 @@
 package co.backbonelabs.backbone;
 
+import android.app.Activity;
+import android.app.Application;
 import android.bluetooth.BluetoothGatt;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -46,6 +49,71 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         filter.addAction(Constants.ACTION_CHARACTERISTIC_WRITE);
         filter.addAction(Constants.ACTION_DESCRIPTOR_WRITE);
         reactContext.registerReceiver(bleBroadcastReceiver, filter);
+
+        // Register activity lifecycle callbacks to start and stop session tracking
+        MainActivity.currentActivity.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                Timber.d("onActivityResume");
+                // Stop foreground service
+                Intent stopIntent = new Intent(activity, ForegroundService.class);
+                stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
+                activity.startService(stopIntent);
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+                Timber.d("onActivityPaused");
+                if (hasActiveSession()) {
+                    // There is an active session, start foreground service to continue listening
+                    Intent startIntent = new Intent(activity, ForegroundService.class);
+                    startIntent.setAction(Constants.ACTIONS.START_POSTURE_FOREGROUND_SERVICE);
+                    activity.startService(startIntent);
+                }
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                // App is terminated, perform cleanup tasks
+                Timber.d("onActivityDestroyed");
+
+                // Stop the foreground service
+                Intent stopIntent = new Intent(activity, ForegroundService.class);
+                stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
+                activity.startService(stopIntent);
+
+                // Stop the active session
+                if (hasActiveSession()) {
+                    forceStoppedSession = true;
+
+                    toggleSessionOperation(Constants.SESSION_OPERATIONS.STOP, new Constants.IntCallBack() {
+                        @Override
+                        public void onIntCallBack(int val) {
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private int currentSessionState = Constants.SESSION_STATES.STOPPED;
