@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import { NativeModules } from 'react-native';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
@@ -67,6 +68,7 @@ const fetchUsersessionsError = error => ({
 export default {
   fetchUser() {
     return (dispatch, getState) => {
+      throw new Error('A fake error');
       const state = getState();
       const { accessToken } = state.auth;
       const { user: { _id } } = state.user;
