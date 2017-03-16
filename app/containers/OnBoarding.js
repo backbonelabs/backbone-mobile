@@ -101,7 +101,7 @@ class OnBoarding extends Component {
   onClose() {
     // check if user already completed step 1
     if (this.props.user.hasOnboarded) {
-      return this.props.navigator.push(routes.postureDashboard);
+      return this.props.navigator.replace(routes.postureDashboard);
     }
 
     return Alert.alert(
