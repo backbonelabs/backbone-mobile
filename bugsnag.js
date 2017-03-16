@@ -107,7 +107,7 @@ Promise.resolve()
         appVersion: iOSBuildNumber,
         minifiedUrl: 'http*://*index.ios.bundle*', // this maps to the local dev server
         sourceMap: fs.createReadStream(`${iOSBundlePath}.map`),
-        minifedFile: fs.createReadStream(iOSBundlePath),
+        minifiedFile: fs.createReadStream(iOSBundlePath),
       })
         .then(() => {
           log(green('Uploaded iOS debug source map.'));
@@ -124,7 +124,7 @@ Promise.resolve()
             appVersion: androidBuildNumber,
             minifiedUrl: 'http*://*index.android.bundle*', // this maps to the local dev server
             sourceMap: fs.createReadStream(`${androidBundlePath}.map`),
-            minifedFile: fs.createReadStream(androidBundlePath),
+            minifiedFile: fs.createReadStream(androidBundlePath),
           })
             .then(() => {
               log(green('Uploaded Android debug source map.'));
@@ -154,7 +154,7 @@ Promise.resolve()
         appVersion: iOSBuildNumber,
         minifiedUrl: iOSBundleName,
         sourceMap: fs.createReadStream(`${iOSBundlePath}.map`),
-        minifedFile: fs.createReadStream(iOSBundlePath),
+        minifiedFile: fs.createReadStream(iOSBundlePath),
         '*/index.ios.js': fs.createReadStream(iOSSourcePath),
       })
         .then(() => {
@@ -172,7 +172,7 @@ Promise.resolve()
             appVersion: androidBuildNumber,
             minifiedUrl: androidBundleName,
             sourceMap: fs.createReadStream(`${androidBundlePath}.map`),
-            minifedFile: fs.createReadStream(androidBundlePath),
+            minifiedFile: fs.createReadStream(androidBundlePath),
             '*/index.android.js': fs.createReadStream(androidSourcePath),
           })
             .then(() => {
