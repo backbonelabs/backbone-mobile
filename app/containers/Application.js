@@ -381,6 +381,20 @@ class Application extends Component {
     }
   }
 
+  leaveNavStartBreadcrumb(route) {
+    Bugsnag.leaveBreadcrumb(`Navigating to ${route.name}`, {
+      type: 'navigation',
+      routeConfig: JSON.stringify(route),
+    });
+  }
+
+  leaveNavEndBreadcrumb(route) {
+    Bugsnag.leaveBreadcrumb(`Navigated to ${route.name}`, {
+      type: 'navigation',
+      routeConfig: JSON.stringify(route),
+    });
+  }
+
   @autobind
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
@@ -443,36 +457,20 @@ class Application extends Component {
     if (!this.navigator) {
       this.navigator = clone(navigator);
 
-      const leaveNavBreadcrumb = (routeObj, navigationMethod, fn) => {
-        Bugsnag.leaveBreadcrumb(`Navigating to ${routeObj.name}`, {
-          type: 'navigation',
-          method: navigationMethod,
-          routeConfig: JSON.stringify(routeObj),
-        });
-        return fn.call(this.navigator, routeObj);
-      };
-
       this.navigator._push = this.navigator.push; // the original push method
       this.navigator.push = function push(routeObj) {
-        return leaveNavBreadcrumb({ ...routeObj, key: Date.now() }, 'push', this._push);
+        return this._push({ ...routeObj, key: Date.now() });
       };
 
       this.navigator._replace = this.navigator.replace; // the original replace method
       this.navigator.replace = function replace(routeObj) {
-        return leaveNavBreadcrumb({ ...routeObj, key: Date.now() }, 'replace', this._replace);
+        return this._replace({ ...routeObj, key: Date.now() });
       };
 
       this.navigator._resetTo = this.navigator.resetTo; // the original resetTo method
       this.navigator.resetTo = function resetTo(routeObj) {
-        return leaveNavBreadcrumb({ ...routeObj, key: Date.now() }, 'resetTo', this._replace);
+        return this._resetTo({ ...routeObj, key: Date.now() });
       };
-
-      this.navigator._pop = this.navigator.pop; // the original pop method
-      this.navigator.pop = function pop() {
-        const routeStack = this.getCurrentRoutes();
-        const previousRoute = routeStack[routeStack.length - 2] || {};
-        return leaveNavBreadcrumb(previousRoute, 'pop', this._pop);
-      }.bind(this.navigator);
     }
 
     const { modal: modalProps } = this.props.app;
@@ -526,6 +524,8 @@ class Application extends Component {
             configureScene={this.configureScene}
             initialRoute={this.state.initialRoute}
             renderScene={this.renderScene}
+            onWillFocus={this.leaveNavStartBreadcrumb}
+            onDidFocus={this.leaveNavEndBreadcrumb}
           />
         )}
       </View>
