@@ -31,6 +31,12 @@ export default {
     CONNECTED: 2,
     DISCONNECTING: 3,
   },
+  sessionOperations: {
+    START: 0,
+    RESUME: 1,
+    PAUSE: 2,
+    STOP: 3,
+  },
   firmwareUpdateStates: {
     INVALID_SERVICE: -2,
     INVALID_FILE: -1,

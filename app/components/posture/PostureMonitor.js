@@ -34,7 +34,7 @@ const {
   NotificationService,
   SessionControlService,
 } = NativeModules;
-const { deviceStatuses, storageKeys } = constants;
+const { deviceStatuses, sessionOperations, storageKeys } = constants;
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
 const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 
@@ -182,6 +182,57 @@ class PostureMonitor extends Component {
       }
     });
 
+    // Set up listener for session control event
+    // To be used for android's interactive notification for session control
+    this.sessionControlStateListener = SessionControlServiceEvents.addListener(
+      'SessionControlState', event => {
+        switch (event.operation) {
+          case sessionOperations.PAUSE: {
+            this.setSessionState({
+              state: sessionStates.PAUSED,
+              parameters: {
+                sessionDuration: this.state.sessionDuration,
+                slouchDistanceThreshold: this.state.slouchDistanceThreshold,
+                vibrationSpeed: this.state.vibrationSpeed,
+                vibrationPattern: this.state.vibrationPattern,
+              },
+            });
+
+            break;
+          }
+          case sessionOperations.RESUME: {
+            const {
+              sessionDuration,
+              slouchDistanceThreshold,
+              vibrationSpeed,
+              vibrationPattern,
+            } = this.state;
+
+            const sessionParameters = {
+              sessionDuration,
+              slouchDistanceThreshold,
+              vibrationSpeed,
+              vibrationPattern,
+            };
+
+            this.setSessionState({
+              state: sessionStates.RUNNING,
+              parameters: {
+                sessionDuration,
+                ...sessionParameters,
+              },
+            });
+
+            break;
+          }
+          case sessionOperations.STOP:
+            break;
+          default:
+            break;
+        }
+      }
+    );
+
     // ANDROID ONLY: Listen to the hardware back button
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -266,6 +317,7 @@ class PostureMonitor extends Component {
     this.statsListener.remove();
     this.deviceStateListener.remove();
     this.sessionStateListener.remove();
+    this.sessionControlStateListener.remove();
 
     if (this.backAndroidListener) {
       this.backAndroidListener.remove();
