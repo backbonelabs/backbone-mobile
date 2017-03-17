@@ -455,12 +455,10 @@ class Application extends Component {
       position: 'absolute',
     };
 
-    // Alter navigator methods to 1) include a timestamp for each route in the route stack,
-    // and 2) place breadcrumbs for Bugsnag error reports. Having the timestamp for each route
-    // in the route stack will ensure each route in the stack is unique to prevent React
-    // errors when a route is in the stack multiple times. Leaving Bugsnag breadcrumbs will
-    // help with debugging errors because we can get a better idea of what navigation
-    // the user performed while leading up to the error.
+    // Sets up a custom navigator object with customized navigator methods which adds a
+    // timestamp to each route in the route stack. Having the timestamp for each route in
+    // the route stack will ensure each route in the stack is unique to prevent React errors
+    // when a route is in the stack multiple times.
     // All components should use this customized navigator object.
     if (!this.navigator) {
       this.navigator = clone(navigator);
