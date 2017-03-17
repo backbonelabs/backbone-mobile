@@ -381,6 +381,10 @@ class Application extends Component {
     }
   }
 
+  /**
+   * Leaves a Bugsnag breadcrumb for marking when a navigation begins
+   * @param {Object} route Route to navigate to
+   */
   leaveNavStartBreadcrumb(route) {
     Bugsnag.leaveBreadcrumb(`Navigating to ${route.name}`, {
       type: 'navigation',
@@ -388,6 +392,10 @@ class Application extends Component {
     });
   }
 
+  /**
+   * Leaves a Bugsnag breadcrumb for marking when a navigation ends
+   * @param {Object} route Route navigated to
+   */
   leaveNavEndBreadcrumb(route) {
     Bugsnag.leaveBreadcrumb(`Navigated to ${route.name}`, {
       type: 'navigation',
