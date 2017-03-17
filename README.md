@@ -94,21 +94,27 @@ npm run bugsnag
 
 ### iOS
 
-Make sure the appropriate production variables are set in `ios/backbone/config/Release.local.xcconfig`.
-
-Before uploading the app to iTunes Connect, be sure to update the marketing version number.
-
-To change the marketing version number, make sure you are on the `master` branch and it is up to date. Then close the Xcode project because agvtool will update the project file and could potentially cause problems for Xcode when the project is opened.
-
-Then run the following from the `ios` folder:
-
-```
-sh marketingVersion.sh <new_version_number>
-```
+1. Make sure the appropriate production variables are set in `ios/backbone/config/Release.local.xcconfig`
+2. Close the Xcode workspace
+3. From the `ios` folder, run `sh marketingVersion.sh <new_marketing_version_number>`, where `<new_marketing_verison_number>` is the semver marketing version as described above in the Versioning section. This will automatically create a commit with the following message: "iOS version <marketing_version>".
+4. If the Android marketing version hasn't been bumped yet, then skip steps 5 and 6 and add the version tag when following the Android deployment steps
+5. Add a git tag for the marketing version where the tag name is in the following format: vX.Y.Z, e.g., v1.0.0
+6. Push the git tag to the repo
+8. Open the Xcode workspace
+9. Clean the build folder (hold Alt and click the Product menu and click Clean Build Folder, or press Alt-Command-Shift-K)
+10. Click Product > Archive
+11. After the archive is created, upload it to iTunes Connect
+12. Set up the new release in iTunes Connect
 
 ### Android
 
-1. Increment the `versionName` in `android/app/build.gradle`. The `versionCode` should have already been incremented beforehand when the codebase was modified, but if it wasn't, increment it as well.
-2. In Android Studio, apply the `release` variant to all project modules by navigating to Build > Select Build Variant...
-3. Build the project by navigating to Build > Build APK
-4. Find the APK in `android/app/build/outputs/apk`
+1. Make sure the appropriate production variables are set in `android/app/build.gradle` and `android/app/local.properties`.
+2. Increment the `versionName` in `android/app/build.gradle`
+3. Commit the change with a commit message in the following format: "Android version <marketing_version>", e.g., "Android version 1.0.0"
+4. If the iOS marketing version hasn't been bumped yet, then skip steps 5 and 6 and add the version tag when following the iOS deployment steps
+5. Add a git tag for the marketing version where the tag name is in the following format: vX.Y.Z, e.g., v1.0.0
+6. Push the git tag to the repo
+7. From the `android` folder, run `./gradlew clean` to remove prior build artifacts just in case they conflict with the release build
+8. From the `android` folder, run `./gradlew assembleRelease` to build the release variant
+9. From the Google Play console, upload the `app-release.apk` from `android/app/build/outputs/apk`
+10. Perform the necessary actions in Google Play for the release

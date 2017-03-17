@@ -1,7 +1,6 @@
 #import "BluetoothService.h"
 #import "BootLoaderService.h"
 #import "RCTUtils.h"
-#import "SensorDataService.h"
 
 #import "Utilities.h"
 
@@ -426,9 +425,6 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   DLog(@"Application Will Terminate");
   // Cancel all prior notifications before termination
   [[UIApplication sharedApplication] cancelAllLocalNotifications];
-  
-  // Close all open events and stop all sensors
-  [[SensorDataService getSensorDataService] unregisterAllActivities];
   
   // Gives the app additional time before termination
   [NSThread sleepForTimeInterval:2];
