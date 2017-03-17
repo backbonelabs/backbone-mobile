@@ -105,13 +105,14 @@ public class ForegroundService extends Service {
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Create a pending intent for the intent to launch the app
+        // Create pending intents for the intent to launch the app
         PendingIntent launchApp = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        // Create an intent to stop the posture activity
+        // Create an intent to pause/resume the posture activity
         Intent toggleIntent = new Intent(this, ForegroundService.class);
         toggleIntent.setAction(action);
 
+        // Create an intent to stop the posture activity
         Intent stopIntent = new Intent(this, ForegroundService.class);
         stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_ACTIVITY);
 
