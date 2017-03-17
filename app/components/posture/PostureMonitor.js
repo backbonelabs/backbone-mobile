@@ -121,6 +121,7 @@ class PostureMonitor extends Component {
 
     this.state = {
       sessionState: sessionStates.STOPPED,
+      hasPendingSessionOperation: false,
       postureThreshold: this.props.user.settings.postureThreshold,
       pointerPosition: 0,
       totalDuration: 0, // in seconds
@@ -238,7 +239,8 @@ class PostureMonitor extends Component {
     // ANDROID ONLY: Listen to the hardware back button
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        if (this.state.sessionState !== sessionStates.STOPPED) {
+        if (this.state.sessionState !== sessionStates.STOPPED
+          && !this.state.hasPendingSessionOperation) {
           // Back button was pressed during an active session.
           // Check if PostureMonitor is the current scene.
           if (this.props.currentRoute.name === routes.postureMonitor.name) {
@@ -579,110 +581,131 @@ class PostureMonitor extends Component {
 
   @autobind
   pauseSession() {
-    Mixpanel.track('pauseSession');
+    if (!this.state.hasPendingSessionOperation) {
+      this.setState({ hasPendingSessionOperation: true });
 
-    SessionControlService.pause(err => {
-      if (err) {
-        this.sessionCommandAlert({
-          message: 'An error occurred while attempting to pause the session.',
-          rightButtonLabel: 'Retry',
-          rightButtonAction: this.pauseSession,
-        });
+      Mixpanel.track('pauseSession');
 
-        Mixpanel.trackError({
-          errorContent: err,
-          path: 'app/components/posture/PostureMonitor',
-          stackTrace: ['pauseSession', 'SessionControlService.pause'],
-        });
-      } else {
-        this.setSessionState({
-          state: sessionStates.PAUSED,
-          parameters: {
-            sessionDuration: this.state.sessionDuration,
-            slouchDistanceThreshold: this.state.slouchDistanceThreshold,
-            vibrationSpeed: this.state.vibrationSpeed,
-            vibrationPattern: this.state.vibrationPattern,
-          },
-        });
-      }
-    });
-  }
+      SessionControlService.pause(err => {
+        this.setState({ hasPendingSessionOperation: false });
 
-  @autobind
-  resumeSession() {
-    const {
-      sessionDuration,
-      slouchDistanceThreshold,
-      vibrationSpeed,
-      vibrationPattern,
-    } = this.state;
-
-    const sessionParameters = {
-      // We use the slouchDistanceThreshold from state instead of user.settings.postureThreshold
-      // because the user may modify the threshold and resume the session before the
-      // updated threshold value is saved in the database and a response is returned
-      // from the API server to refresh the user object in the Redux store.
-      slouchDistanceThreshold,
-      vibrationSpeed,
-      vibrationPattern,
-    };
-
-    Mixpanel.track('resumeSession');
-
-    SessionControlService.resume(sessionParameters, err => {
-      if (err) {
-        this.sessionCommandAlert({
-          message: 'An error occurred while attempting to resume the session.',
-          rightLabel: 'Retry',
-          rightAction: this.resumeSession,
-        });
-
-        Mixpanel.trackError({
-          errorContent: err,
-          path: 'app/components/posture/PostureMonitor',
-          stackTrace: ['resumeSession', 'SessionControlService.resume'],
-        });
-      } else {
-        this.setSessionState({
-          state: sessionStates.RUNNING,
-          parameters: {
-            sessionDuration,
-            ...sessionParameters,
-          },
-        });
-      }
-    });
-  }
-
-  @autobind
-  stopSession() {
-    if (this.state.sessionState === sessionStates.STOPPED) {
-      // There is no active session
-      this.sessionCommandAlert({
-        title: 'Exit',
-        message: 'Are you sure you want to leave?',
-        rightButtonAction: this.props.navigator.pop,
-      });
-    } else {
-      Mixpanel.track('stopSession');
-
-      SessionControlService.stop(err => {
         if (err) {
           this.sessionCommandAlert({
-            message: 'An error occurred while attempting to stop the session.',
-            centerButtonLabel: 'Leave',
-            centerButtonAction: this.props.navigator.pop,
+            message: 'An error occurred while attempting to pause the session.',
             rightButtonLabel: 'Retry',
-            rightButtonAction: this.stopSession,
+            rightButtonAction: this.pauseSession,
           });
 
           Mixpanel.trackError({
             errorContent: err,
             path: 'app/components/posture/PostureMonitor',
-            stackTrace: ['stopSession', 'SessionControlService.stop'],
+            stackTrace: ['pauseSession', 'SessionControlService.pause'],
+          });
+        } else {
+          this.setSessionState({
+            state: sessionStates.PAUSED,
+            parameters: {
+              sessionDuration: this.state.sessionDuration,
+              slouchDistanceThreshold: this.state.slouchDistanceThreshold,
+              vibrationSpeed: this.state.vibrationSpeed,
+              vibrationPattern: this.state.vibrationPattern,
+            },
           });
         }
       });
+    }
+  }
+
+  @autobind
+  resumeSession() {
+    if (!this.state.hasPendingSessionOperation) {
+      this.setState({ hasPendingSessionOperation: true });
+
+      const {
+        sessionDuration,
+        slouchDistanceThreshold,
+        vibrationSpeed,
+        vibrationPattern,
+      } = this.state;
+
+      const sessionParameters = {
+        // We use the slouchDistanceThreshold from state instead of user.settings.postureThreshold
+        // because the user may modify the threshold and resume the session before the
+        // updated threshold value is saved in the database and a response is returned
+        // from the API server to refresh the user object in the Redux store.
+        slouchDistanceThreshold,
+        vibrationSpeed,
+        vibrationPattern,
+      };
+
+      Mixpanel.track('resumeSession');
+
+      SessionControlService.resume(sessionParameters, err => {
+        this.setState({ hasPendingSessionOperation: false });
+
+        if (err) {
+          this.sessionCommandAlert({
+            message: 'An error occurred while attempting to resume the session.',
+            rightLabel: 'Retry',
+            rightAction: this.resumeSession,
+          });
+
+          Mixpanel.trackError({
+            errorContent: err,
+            path: 'app/components/posture/PostureMonitor',
+            stackTrace: ['resumeSession', 'SessionControlService.resume'],
+          });
+        } else {
+          this.setSessionState({
+            state: sessionStates.RUNNING,
+            parameters: {
+              sessionDuration,
+              ...sessionParameters,
+            },
+          });
+        }
+      });
+    }
+  }
+
+  @autobind
+  stopSession() {
+    if (!this.state.hasPendingSessionOperation) {
+      if (this.state.sessionState === sessionStates.STOPPED) {
+        // There is no active session
+        this.sessionCommandAlert({
+          title: 'Exit',
+          message: 'Are you sure you want to leave?',
+          rightButtonAction: this.props.navigator.pop,
+        });
+      } else {
+        this.setState({ hasPendingSessionOperation: true });
+
+        Mixpanel.track('stopSession');
+
+        SessionControlService.stop(err => {
+          if (err) {
+            // Only unset this state on errors.
+            // This is because on a succesful stop attempt,
+            // the scene could already be unmounted at this phase
+            this.setState({ hasPendingSessionOperation: false });
+
+            this.sessionCommandAlert({
+              message: 'An error occurred while attempting to stop the session.',
+              centerButtonLabel: 'Leave',
+              centerButtonAction: this.props.navigator.pop,
+              rightButtonLabel: 'Retry',
+              rightButtonAction: this.stopSession,
+            });
+
+            Mixpanel.trackError({
+              errorContent: err,
+              path: 'app/components/posture/PostureMonitor',
+              stackTrace: ['stopSession', 'SessionControlService.stop'],
+            });
+          }
+        });
+      }
     }
   }
 
