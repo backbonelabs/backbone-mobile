@@ -73,20 +73,20 @@ When PRs are merged and the codebase is affected, the build version needs to be 
 
 We use [Bugsnag](https://www.bugsnag.com/) to log application errors originating from either JavaScript or native code. It provides stacktraces, app and device details, user details, and much more.
 
-Since React Native bundles the JavaScript files into one file, source maps must be uploaded to Bugsnag in order to unminify and demangle stacktraces to show full stacktraces with methods, file paths, and line numbers.
+Since React Native bundles the JavaScript files into one file, source maps must be uploaded to Bugsnag in order to unminify and demangle stacktraces to show full stacktraces with methods, file paths, and line numbers. When source maps are uploaded to Bugsnag, they will be attributed to an "app version." This app version will match the build number. So if source maps were uploaded for iOS for builds 100 and 110, and an error was sent to Bugsnag from a phone with app build 100, the error would be matched against the source map for build 100.
 
-When developing, it isn't as critical to upload source maps to Bugsnag because hopefully there will be enough error details in the Xcode or Android Studio logs. In addition, it's likely each developer will be working on something different at the same time, so even if you upload an updated source map for your development code, it may affect error logs produced by another dev in development, and vice versa. However, if you would like to take advantage of Bugsnag while developing in spite of those shortcomings, you can!
+When developing, it isn't critical to upload source maps to Bugsnag because hopefully there will be enough error details in the Xcode or Android Studio logs. In addition, it's likely each developer will be working on something different at the same time, so even if you upload an updated source map for your development code, it may affect error logs produced by another dev in development, and vice versa. However, if you would like to take advantage of Bugsnag while developing in spite of those shortcomings, you can!
 
 In order to upload source maps to Bugsnag, first create an `.env.local` file in the project root if it doesn't already exist, and add an `BUGSNAG_API_KEY` variable with the value of the Bugsnag API key. Ask another dev for the key. Then, simply run one of the following commands in the root folder:
 
 ```
-# Bundle and upload the debug version
+# Bundle and upload the debug version (use this while developing)
 npm run bugsnag-debug
 
-# Bundle and upload the release version
+# Bundle and upload the release version (this should not be used while developing)
 npm run bugsnag-release
 
-# Bundles and uploads both the debug and release versions
+# Bundles and uploads both the debug and release versions (this should not be used while developing)
 npm run bugsnag
 ```
 
@@ -105,6 +105,7 @@ npm run bugsnag
 10. Click Product > Archive
 11. After the archive is created, upload it to iTunes Connect
 12. Set up the new release in iTunes Connect
+13. If the release source map hasn't been uploaded to Bugsnag yet, then run `npm run bugsnag-release` from the project root
 
 ### Android
 
@@ -118,3 +119,4 @@ npm run bugsnag
 8. From the `android` folder, run `./gradlew assembleRelease` to build the release variant
 9. From the Google Play console, upload the `app-release.apk` from `android/app/build/outputs/apk`
 10. Perform the necessary actions in Google Play for the release
+13. If the release source map hasn't been uploaded to Bugsnag yet, then run `npm run bugsnag-release` from the project root
