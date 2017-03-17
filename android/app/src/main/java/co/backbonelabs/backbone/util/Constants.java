@@ -10,6 +10,8 @@ public class Constants {
     public interface ACTIONS {
         String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.START_POSTURE_FOREGROUND_SERVICE";
         String STOP_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.STOP_POSTURE_FOREGROUND_SERVICE";
+        String PAUSE_POSTURE_ACTIVITY = "co.backbonelabs.backbone.intent.action.PAUSE_POSTURE_ACTIVITY";
+        String RESUME_POSTURE_ACTIVITY = "co.backbonelabs.backbone.intent.action.RESUME_POSTURE_ACTIVITY";
         String STOP_POSTURE_ACTIVITY = "co.backbonelabs.backbone.intent.action.STOP_POSTURE_ACTIVITY";
     }
 
