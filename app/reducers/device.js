@@ -14,14 +14,21 @@ export default (state = {
         errorMessage: null,
       };
     }
-    case 'DEVICE_CONNECT': {
+    case 'DEVICE_CONNECT__ERROR': {
+      return {
+        ...state,
+        isConnecting: false,
+        errorMessage: action.payload.message,
+      };
+    }
+    case 'DEVICE_CONNECT_STATUS': {
       return {
         ...state,
         isConnecting: false,
         isConnected: action.payload.isConnected,
       };
     }
-    case 'DEVICE_CONNECT__ERROR': {
+    case 'DEVICE_CONNECT_STATUS__ERROR': {
       return {
         ...state,
         isConnecting: false,

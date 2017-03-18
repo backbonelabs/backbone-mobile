@@ -118,7 +118,7 @@ export default (state = {
         user: action.payload.user,
       };
     }
-    case 'SIGN__OUT': {
+    case 'SIGN_OUT': {
       return {
         ...state,
         isFetching: false,

@@ -44,7 +44,7 @@ export default (state = {
         accessToken: action.payload.accessToken,
       };
     }
-    case 'SIGN__OUT': {
+    case 'SIGN_OUT': {
       return {
         ...state,
         accessToken: null,
