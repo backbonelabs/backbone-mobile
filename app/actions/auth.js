@@ -1,4 +1,11 @@
 import { NativeModules } from 'react-native';
+import {
+  LOGIN,
+  SIGNUP,
+  PASSWORD_RESET,
+  SIGN_OUT,
+  SET_ACCESS_TOKEN,
+} from './types';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
@@ -17,7 +24,7 @@ export default {
     const loginEventName = 'login';
 
     return {
-      type: 'LOGIN',
+      type: LOGIN,
       payload: () => Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/login`,
         body: JSON.stringify(user),
@@ -56,7 +63,7 @@ export default {
     const signupEventName = 'signup';
 
     return {
-      type: 'SIGNUP',
+      type: SIGNUP,
       payload: () => Fetcher.post({
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
@@ -93,7 +100,7 @@ export default {
     const passwordResetEventName = 'passwordReset';
 
     return {
-      type: 'PASSWORD_RESET',
+      type: PASSWORD_RESET,
       payload: () => Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/password-reset-token`,
         body: JSON.stringify(user),
@@ -127,12 +134,12 @@ export default {
     SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);
     SensitiveInfo.deleteItem(storageKeys.USER);
 
-    return { type: 'SIGN_OUT' };
+    return { type: SIGN_OUT };
   },
 
   setAccessToken(token) {
     return {
-      type: 'SET_ACCESS_TOKEN',
+      type: SET_ACCESS_TOKEN,
       payload: token,
     };
   },

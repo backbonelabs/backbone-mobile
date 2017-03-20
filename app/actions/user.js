@@ -1,4 +1,11 @@
 import { NativeModules } from 'react-native';
+import {
+  FETCH_USER,
+  UPDATE_USER,
+  UPDATE_USER_SETTINGS,
+  FETCH_USER_SESSIONS,
+  PREPARE_USER_UPDATE,
+} from './types';
 import store from '../store';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
@@ -24,7 +31,7 @@ export default {
     const fetchUserEventName = 'fetchUserProfile';
 
     return {
-      type: 'FETCH_USER',
+      type: FETCH_USER,
       payload: () => Fetcher.get({
         url: `${baseUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -55,7 +62,7 @@ export default {
     delete userUpdateFields.invalidData;
 
     return {
-      type: 'UPDATE_USER',
+      type: UPDATE_USER,
       payload: () => Fetcher.post({
         url: `${baseUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -94,7 +101,7 @@ export default {
     const updateUserSettingsEventName = 'updateUserSettings';
 
     return {
-      type: 'UPDATE_USER_SETTINGS',
+      type: UPDATE_USER_SETTINGS,
       payload: () => Fetcher.post({
         url: `${settingsUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -159,7 +166,7 @@ export default {
     const fetchUserSessionsEventName = 'fetchUserSessions';
 
     return {
-      type: 'FETCH_USER_SESSIONS',
+      type: FETCH_USER_SESSIONS,
       paylaod: () => Fetcher.get({
         url: `${sessionsUrl}/${_id}?from=${dates.fromDate}&to=${dates.toDate}`,
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -177,7 +184,7 @@ export default {
 
   prepareUserUpdate(user) {
     return {
-      type: 'PREPARE_USER_UPDATE',
+      type: PREPARE_USER_UPDATE,
       payload: user,
     };
   },

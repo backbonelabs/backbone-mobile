@@ -15,6 +15,7 @@ import {
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
+import { UPDATE_BLUETOOTH_STATE } from '../actions/types';
 import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
@@ -124,7 +125,7 @@ class Application extends Component {
     BluetoothService.getState((error, { state }) => {
       if (!error) {
         this.props.dispatch({
-          type: 'UPDATE_BLUETOOTH_STATE',
+          type: UPDATE_BLUETOOTH_STATE,
           payload: state,
         });
       } else {
@@ -144,7 +145,7 @@ class Application extends Component {
     // Handle changes from the Bluetooth adapter
     this.bluetoothListener = BluetoothServiceEvents.addListener('BluetoothState', ({ state }) => {
       this.props.dispatch({
-        type: 'UPDATE_BLUETOOTH_STATE',
+        type: UPDATE_BLUETOOTH_STATE,
         payload: state,
       });
 

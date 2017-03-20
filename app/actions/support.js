@@ -1,4 +1,8 @@
 import { NativeModules } from 'react-native';
+import {
+  CREATE_SUPPORT_TICKET,
+  UPDATE_SUPPORT_MESSAGE,
+} from './types';
 import store from '../store';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
@@ -15,7 +19,7 @@ const handleNetworkError = mixpanelEvent => {
 export default {
   updateMessage(message) {
     return {
-      type: 'UPDATE_SUPPORT_MESSAGE',
+      type: UPDATE_SUPPORT_MESSAGE,
       payload: message,
     };
   },
@@ -24,7 +28,7 @@ export default {
     const createTicketEventName = 'createTicket';
 
     return {
-      type: 'CREATE_SUPPORT_TICKET',
+      type: CREATE_SUPPORT_TICKET,
       payload: () => Fetcher.post({
         url: `${Environment.API_SERVER_URL}/support`,
         headers: { Authorization: `Bearer ${accessToken}` },

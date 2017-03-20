@@ -1,4 +1,12 @@
 import { isString, mapValues } from 'lodash';
+import {
+  UPDATE_BLUETOOTH_STATE,
+  SET_CONFIG,
+  SHOW_FULL_MODAL,
+  HIDE_FULL_MODAL,
+  SHOW_PARTIAL_MODAL,
+  HIDE_PARTIAL_MODAL,
+} from '../actions/types';
 
 export default (state = {
   bluetoothState: null,
@@ -11,13 +19,13 @@ export default (state = {
   },
 }, action) => {
   switch (action.type) {
-    case 'UPDATE_BLUETOOTH_STATE': {
+    case UPDATE_BLUETOOTH_STATE: {
       return {
         ...state,
         bluetoothState: action.payload,
       };
     }
-    case 'SET_CONFIG': {
+    case SET_CONFIG: {
       // Convert string true/false values to primitive boolean
       const transformedConfig = mapValues(action.payload, value => {
         if (isString(value)) {
@@ -36,7 +44,7 @@ export default (state = {
         config: transformedConfig,
       };
     }
-    case 'SHOW_FULL_MODAL': {
+    case SHOW_FULL_MODAL: {
       const { content, onClose } = action.payload;
       return {
         ...state,
@@ -47,7 +55,7 @@ export default (state = {
         },
       };
     }
-    case 'HIDE_FULL_MODAL': {
+    case HIDE_FULL_MODAL: {
       return {
         ...state,
         modal: {
@@ -57,7 +65,7 @@ export default (state = {
         },
       };
     }
-    case 'SHOW_PARTIAL_MODAL': {
+    case SHOW_PARTIAL_MODAL: {
       const { content, onClose } = action.payload;
       return {
         ...state,
@@ -68,7 +76,7 @@ export default (state = {
         },
       };
     }
-    case 'HIDE_PARTIAL_MODAL': {
+    case HIDE_PARTIAL_MODAL: {
       return {
         ...state,
         modal: {

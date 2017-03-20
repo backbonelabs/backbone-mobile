@@ -1,6 +1,13 @@
 import {
   NativeModules,
 } from 'react-native';
+import {
+  DEVICE_CONNECT,
+  DEVICE_CONNECT_STATUS,
+  DEVICE_DISCONNECT,
+  DEVICE_FORGET,
+  DEVICE_GET_INFO,
+} from './types';
 import store from '../store';
 import Fetcher from '../utils/Fetcher';
 import constants from '../utils/constants';
@@ -43,7 +50,7 @@ function checkFirmware(firmwareVersion) {
 const deviceActions = {
   connect(identifier) {
     return {
-      type: 'DEVICE_CONNECT',
+      type: DEVICE_CONNECT,
       payload: () => new Promise((resolve, reject) => {
         BluetoothService.getState((err, { state }) => {
           if (err || state !== bluetoothStates.ON) {
@@ -63,7 +70,7 @@ const deviceActions = {
   },
   connectStatus(status) {
     return {
-      type: 'DEVICE_CONNECT_STATUS',
+      type: DEVICE_CONNECT_STATUS,
       payload: () => new Promise((resolve, reject) => {
         if (status.message) {
           reject(new Error(status.message));
@@ -73,11 +80,11 @@ const deviceActions = {
     };
   },
   didDisconnect() {
-    return { type: 'DEVICE_DISCONNECT' };
+    return { type: DEVICE_DISCONNECT };
   },
   disconnect() {
     return {
-      type: 'DEVICE_DISCONNECT',
+      type: DEVICE_DISCONNECT,
       payload: () => {
         // Attempt disconnect only if device is connected
         if (store.getState().device.isConnected) {
@@ -106,7 +113,7 @@ const deviceActions = {
   },
   forget() {
     return {
-      type: 'DEVICE_FORGET',
+      type: DEVICE_FORGET,
       payload: () => new Promise((resolve, reject) => {
         Mixpanel.track('forgetDevice');
         // Disconnect device before attempting to forget
@@ -132,7 +139,7 @@ const deviceActions = {
   getInfo() {
     const { device: deviceState } = store.getState();
     return {
-      type: 'DEVICE_GET_INFO',
+      type: DEVICE_GET_INFO,
       payload: () => new Promise((resolve, reject) => {
         // Get latest information if device is connected
         if (deviceState.isConnected) {
