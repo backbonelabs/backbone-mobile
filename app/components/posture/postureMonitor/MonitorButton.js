@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { TouchableOpacity, Image, View } from 'react-native';
-// import SvgUri from 'react-native-svg-uri';  switch to svg at after library is updated
 import pauseImg from '../../../images/monitor/pauseButton.png';
 import pauseActiveImg from '../../../images/monitor/pauseButtonActive.png';
 import stopImg from '../../../images/monitor/stopButton.png';
