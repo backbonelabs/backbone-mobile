@@ -158,6 +158,9 @@ class Application extends Component {
     this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
       switch (state) {
         case deviceStatuses.CONNECTED:
+          // Retrieve device info
+          this.props.dispatch(deviceActions.getInfo());
+
           // Retrieve session state
           SessionControlService.getSessionState();
           break;
@@ -257,53 +260,43 @@ class Application extends Component {
           // Dispatch access token to the store
           this.props.dispatch(authActions.setAccessToken(accessToken));
 
-          // Check if there is already a user profile in the Redux store
-          if (this.props.user._id) {
-            // There is a user profile in the Redux store
-            // Fetch device info
-            this.props.dispatch(deviceActions.getInfo());
+          // Check for a saved user in local storage
+          return SensitiveInfo.getItem(storageKeys.USER)
+            .then((user) => {
+              if (user) {
+                // There is a user profile in local storage
+                // Dispatch user profile to the Redux store
+                this.props.dispatch({
+                  type: 'FETCH_USER',
+                  payload: user,
+                });
 
-            // Specify user account to track event for
-            Mixpanel.identify(this.props.user._id);
+                // Specify user account to track event for
+                Mixpanel.identify(user._id);
 
-            // Set initial route to posture dashboard
-            this.setInitialRoute(routes.postureDashboard);
-          } else {
-            // There is no user profile in the Redux store, check local storage
-            return SensitiveInfo.getItem(storageKeys.USER)
-              .then((user) => {
-                if (user) {
-                  // There is a user profile in local storage
-                  // Dispatch user profile to the Redux store
-                  this.props.dispatch({
-                    type: 'FETCH_USER',
-                    payload: user,
-                  });
-
-                  // Specify user account to track event for
-                  Mixpanel.identify(user._id);
-
-                  if (user.hasOnboarded) {
-                    // User completed onboarding
-                    // Fetch device info
-                    this.props.dispatch(deviceActions.getInfo());
-
-                    // Set initial route to posture dashboard
-                    this.setInitialRoute(routes.postureDashboard);
-                  } else {
-                    // User did not complete onboarding, set initial route to onboarding
-                    this.setInitialRoute(routes.onboarding);
-                  }
-                } else {
-                  // There is no user profile in local storage
-                  this.setInitialRoute();
+                if (user.hasOnboarded) {
+                  // User completed onboarding
+                  // Check for a saved device
+                  return SensitiveInfo.getItem(storageKeys.DEVICE)
+                    .then((device) => {
+                      if (device) {
+                        // There is a saved device, attempt to connect to it
+                        this.props.dispatch(deviceActions.connect(device.identifier));
+                      }
+                      // Set initial route to posture dashboard
+                      this.setInitialRoute(routes.postureDashboard);
+                    });
                 }
-              });
-          }
-        } else {
-          // There is no saved access token
-          this.setInitialRoute();
+                // User did not complete onboarding, set initial route to onboarding
+                this.setInitialRoute(routes.onboarding);
+              } else {
+                // There is no user profile in local storage
+                this.setInitialRoute();
+              }
+            });
         }
+        // There is no saved access token
+        this.setInitialRoute();
       })
       .catch(() => {
         this.setInitialRoute();
