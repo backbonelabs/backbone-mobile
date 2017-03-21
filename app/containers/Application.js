@@ -74,6 +74,10 @@ class Application extends Component {
     user: PropTypes.shape({
       _id: PropTypes.string,
     }),
+    device: PropTypes.shape({
+      device: PropTypes.object,
+      batteryLevel: PropTypes.bool,
+    }),
   };
 
   constructor() {
@@ -82,6 +86,7 @@ class Application extends Component {
     this.state = {
       initializing: true,
       initialRoute: null,
+      lowBatteryWarning: true,
     };
 
     this.navigator = null; // Components should use this custom navigator object
@@ -310,6 +315,20 @@ class Application extends Component {
       });
   }
 
+  // Alerts user when the deivce batter level is below 15%.  This will only notify
+  // user once when the application open.
+  componentWillReceiveProps() {
+    const batteryLevel = this.props.device.device.batteryLevel;
+    if (this.state.lowBatteryWarning && batteryLevel < 15) {
+      this.setState({ lowBatteryWarning: false });
+      Alert.alert(
+        'Low Battery',
+        `${batteryLevel} of battery remaining`,
+        { text: 'Dismiss' }
+      );
+    }
+  }
+
   componentWillUnmount() {
     if (this.bluetoothListener) {
       this.bluetoothListener.remove();
@@ -328,7 +347,6 @@ class Application extends Component {
     }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
-
   /**
    * Defines the initial scene to mount and ends the initialization process
    * @param {Object} route=routes.welcome Route object, defaults to the welcome route
@@ -499,8 +517,8 @@ class Application extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user } } = state;
-  return { app, user };
+  const { app, user: { user }, device } = state;
+  return { app, user, device };
 };
 
 export default connect(mapStateToProps)(Application);
