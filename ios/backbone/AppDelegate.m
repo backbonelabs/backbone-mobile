@@ -11,10 +11,10 @@
 #import "BluetoothService.h"
 #import "BootLoaderService.h"
 #import "SessionControlService.h"
-#import "RCTBundleURLProvider.h"
-#import "RCTRootView.h"
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
 #import "Mixpanel/Mixpanel.h"
-#import "RCTPushNotificationManager.h"
+#import <React/RCTPushNotificationManager.h>
 
 @implementation AppDelegate
 

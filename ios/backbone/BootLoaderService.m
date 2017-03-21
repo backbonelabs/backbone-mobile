@@ -8,7 +8,7 @@
 
 #import "BootLoaderService.h"
 #import "BluetoothService.h"
-#import "RCTUtils.h"
+#import <React/RCTUtils.h>
 #import "OTAFileParser.h"
 #import "Utilities.h"
 
