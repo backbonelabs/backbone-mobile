@@ -319,7 +319,7 @@ class Application extends Component {
   // Alerts the user anytime the Backbone device's battery drops to 15% or lower.
   componentWillReceiveProps(nextProps) {
     if (!this.state.hasDisplayedLowBatteryWarning) {
-      const batteryLevel = nextProps.device.device.batteryLevel;
+      const batteryLevel = nextProps.device.batteryLevel;
       if (batteryLevel <= 15) {
         this.setState({ hasDisplayedLowBatteryWarning: true });
         Alert.alert(
@@ -519,7 +519,7 @@ class Application extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user }, device } = state;
+  const { app, user: { user }, device: { device } } = state;
   return { app, user, device };
 };
 
