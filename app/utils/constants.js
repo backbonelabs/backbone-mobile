@@ -60,6 +60,9 @@ export default {
     VERIFY_ROW: 58,
     EXIT_BOOTLOADER: 59,
   },
+  errorMessages: {
+    NETWORK_ERROR: 'We are encountering server issues. Please try again later.',
+  },
   heightUnitIdToLabel: {
     1: 'IN',
     2: 'CM',

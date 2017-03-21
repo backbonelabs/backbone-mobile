@@ -1,205 +1,146 @@
 import { NativeModules } from 'react-native';
+import {
+  LOGIN,
+  SIGNUP,
+  PASSWORD_RESET,
+  SIGN_OUT,
+  SET_ACCESS_TOKEN,
+} from './types';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
-const { storageKeys } = constants;
+const { storageKeys, errorMessages } = constants;
 
-const loginStart = () => ({ type: 'LOGIN__START' });
-
-const login = payload => ({
-  type: 'LOGIN',
-  payload,
-});
-
-const loginError = error => ({
-  type: 'LOGIN__ERROR',
-  payload: error,
-});
-
-const signupStart = () => ({ type: 'SIGNUP__START' });
-
-const signup = payload => ({
-  type: 'SIGNUP',
-  payload,
-});
-
-const signOut = () => ({ type: 'SIGN__OUT' });
-
-const signupError = error => ({
-  type: 'SIGNUP__ERROR',
-  payload: error,
-});
-
-const passwordResetStart = () => ({ type: 'PASSWORD_RESET__START' });
-
-const passwordReset = payload => ({
-  type: 'PASSWORD_RESET',
-  payload,
-});
-
-const passwordResetError = error => ({
-  type: 'PASSWORD_RESET__ERROR',
-  payload: error,
-});
-
-const setAccessToken = token => ({
-  type: 'SET_ACCESS_TOKEN',
-  payload: token,
-});
+const handleNetworkError = mixpanelEvent => {
+  Mixpanel.track(`${mixpanelEvent}-serverError`);
+  throw new Error(errorMessages.NETWORK_ERROR);
+};
 
 export default {
   login(user) {
-    return (dispatch) => {
-      dispatch(loginStart());
+    const loginEventName = 'login';
 
-      const loginEventName = 'login';
-
-      return Fetcher.post({
+    return {
+      type: LOGIN,
+      payload: () => Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/login`,
         body: JSON.stringify(user),
       })
-        .then(response => response.json()
-          .then((body) => {
-            if (body.error) {
-              // Error received from API server
-              Mixpanel.trackWithProperties(`${loginEventName}-error`, {
-                errorMessage: body.error,
-              });
+        .catch(() => handleNetworkError(loginEventName))
+        .then(response => response.json())
+        .then((body) => {
+          if (body.error) {
+            // Error received from API server
+            Mixpanel.trackWithProperties(`${loginEventName}-error`, {
+              errorMessage: body.error,
+            });
 
-              dispatch(loginError(
-                new Error(body.error)
-              ));
-            } else {
-              const { accessToken, ...userObj } = body;
+            throw new Error(body.error);
+          } else {
+            const { accessToken, ...userObj } = body;
 
-              // Identify user for Mixpanel tracking
-              Mixpanel.identify(userObj._id);
+            // Identify user for Mixpanel tracking
+            Mixpanel.identify(userObj._id);
 
-              // Update user profile on Mixpanel
-              Mixpanel.setUserProperties(userObj);
-              Mixpanel.track(`${loginEventName}-success`);
+            // Update user profile on Mixpanel
+            Mixpanel.setUserProperties(userObj);
+            Mixpanel.track(`${loginEventName}-success`);
 
-              // Store access token and user in local storage
-              SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
-              SensitiveInfo.setItem(storageKeys.USER, userObj);
+            // Store access token and user in local storage
+            SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
+            SensitiveInfo.setItem(storageKeys.USER, userObj);
 
-              dispatch(login(body));
-            }
-          })
-        )
-        .catch(() => {
-          // Network error
-          Mixpanel.track(`${loginEventName}-serverError`);
-
-          dispatch(loginError(
-            new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+            return body;
+          }
+        }),
     };
   },
 
   signup(user) {
-    return (dispatch) => {
-      dispatch(signupStart());
+    const signupEventName = 'signup';
 
-      const signupEventName = 'signup';
-
-      return Fetcher.post({
+    return {
+      type: SIGNUP,
+      payload: () => Fetcher.post({
         url: `${Environment.API_SERVER_URL}/users/`,
         body: JSON.stringify(user),
       })
-        .then((response) => response.json()
-          .then(body => {
-            // Error received from API server
-            if (body.error) {
-              Mixpanel.trackWithProperties(`${signupEventName}-error`, {
-                errorMessage: body.error,
-              });
+        .catch(() => handleNetworkError(signupEventName))
+        .then(response => response.json())
+        .then(body => {
+          // Error received from API server
+          if (body.error) {
+            Mixpanel.trackWithProperties(`${signupEventName}-error`, {
+              errorMessage: body.error,
+            });
 
-              dispatch(signupError(
-                new Error(body.error)
-              ));
-            } else {
-              // Identify user for Mixpanel tracking
-              Mixpanel.identify(body.user._id);
+            throw new Error(body.error);
+          } else {
+            // Identify user for Mixpanel tracking
+            Mixpanel.identify(body.user._id);
 
-              // Update user profile on Mixpanel
-              Mixpanel.setUserProperties(body.user);
-              Mixpanel.track(`${signupEventName}-success`);
+            // Update user profile on Mixpanel
+            Mixpanel.setUserProperties(body.user);
+            Mixpanel.track(`${signupEventName}-success`);
 
-              // Store access token and user in local storage
-              SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, body.accessToken);
-              SensitiveInfo.setItem(storageKeys.USER, body.user);
+            // Store access token and user in local storage
+            SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, body.accessToken);
+            SensitiveInfo.setItem(storageKeys.USER, body.user);
 
-              dispatch(signup(body));
-            }
-          })
-        )
-        .catch(() => {
-          // Network error
-          Mixpanel.track(`${signupEventName}-serverError`);
-
-          dispatch(signupError(
-            new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+            return body;
+          }
+        }),
     };
   },
 
   reset(user) {
-    return (dispatch) => {
-      dispatch(passwordResetStart());
+    const passwordResetEventName = 'passwordReset';
 
-      const passwordResetEventName = 'passwordReset';
-
-      return Fetcher.post({
+    return {
+      type: PASSWORD_RESET,
+      payload: () => Fetcher.post({
         url: `${Environment.API_SERVER_URL}/auth/password-reset-token`,
         body: JSON.stringify(user),
       })
+        .catch(() => handleNetworkError(passwordResetEventName))
+        .then(response => response.json())
         .then((response) => {
           if (response.ok) {
             Mixpanel.trackWithProperties(`${passwordResetEventName}-success`, {
               email: user.email,
             });
 
-            dispatch(passwordReset(response.ok));
-          } else {
-            return response.json()
-              .then(body => {
-                Mixpanel.trackWithProperties(`${passwordResetEventName}-error`, {
-                  email: user.email,
-                  errorMessage: body.error,
-                });
-
-                dispatch(passwordResetError(
-                  new Error(body.error)
-                ));
-              });
+            return response.ok;
           }
-        })
-        .catch(() => {
-          // Network error
-          Mixpanel.trackWithProperties(`${passwordResetEventName}-serverError`, {
-            email: user.email,
-          });
+          return response.json()
+            .then(body => {
+              Mixpanel.trackWithProperties(`${passwordResetEventName}-error`, {
+                email: user.email,
+                errorMessage: body.error,
+              });
 
-          dispatch(passwordResetError(
-            new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+              throw new Error(body.error);
+            });
+        }),
     };
   },
+
   signOut() {
-    return (dispatch) => {
-      Mixpanel.track('signOut');
+    Mixpanel.track('signOut');
 
-      SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);
-      SensitiveInfo.deleteItem(storageKeys.USER);
-      dispatch(signOut());
+    SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);
+    SensitiveInfo.deleteItem(storageKeys.USER);
+
+    return { type: SIGN_OUT };
+  },
+
+  setAccessToken(token) {
+    return {
+      type: SET_ACCESS_TOKEN,
+      payload: token,
     };
   },
-  setAccessToken,
 };
