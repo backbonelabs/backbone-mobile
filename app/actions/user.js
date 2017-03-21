@@ -167,7 +167,7 @@ export default {
 
     return {
       type: FETCH_USER_SESSIONS,
-      paylaod: () => Fetcher.get({
+      payload: () => Fetcher.get({
         url: `${sessionsUrl}/${_id}?from=${dates.fromDate}&to=${dates.toDate}`,
         headers: { Authorization: `Bearer ${accessToken}` },
       })
