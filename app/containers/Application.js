@@ -75,8 +75,9 @@ class Application extends Component {
       _id: PropTypes.string,
     }),
     device: PropTypes.shape({
-      device: PropTypes.object,
-      batteryLevel: PropTypes.bool,
+      device: PropTypes.shape({
+        batteryLevel: PropTypes.number,
+      })
     }),
   };
 
@@ -86,7 +87,7 @@ class Application extends Component {
     this.state = {
       initializing: true,
       initialRoute: null,
-      lowBatteryWarning: true,
+      hasDisplayedLowBatteryWarning: false,
     };
 
     this.navigator = null; // Components should use this custom navigator object
@@ -315,17 +316,15 @@ class Application extends Component {
       });
   }
 
-  // Alerts user when the deivce battery is 15% or less.  This will only notify
-  // user once when the application opens.
-  componentWillReceiveProps() {
-    if (this.state.lowBatteryWarning) {
-      const batteryLevel = this.props.device.device.batteryLevel;
+  // Alerts the user anytime the Backbone device's battery drops to 15% or lower.
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.hasDisplayedLowBatteryWarning) {
+      const batteryLevel = nextProps.device.device.batteryLevel;
       if (batteryLevel <= 15) {
-        this.setState({ lowBatteryWarning: false });
+        this.setState({ hasDisplayedLowBatteryWarning: true });
         Alert.alert(
           'Backbone Low Battery',
-          `${batteryLevel}% of battery remaining`,
-          [{ text: 'Dismiss' }]
+          `${batteryLevel}% of battery remaining`
         );
       }
     }
