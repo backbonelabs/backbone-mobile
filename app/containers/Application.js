@@ -315,17 +315,19 @@ class Application extends Component {
       });
   }
 
-  // Alerts user when the deivce batter level is below 15%.  This will only notify
-  // user once when the application open.
+  // Alerts user when the deivce battery is below 15%.  This will only notify
+  // user once when the application opens.
   componentWillReceiveProps() {
-    const batteryLevel = this.props.device.device.batteryLevel;
-    if (this.state.lowBatteryWarning && batteryLevel < 15) {
-      this.setState({ lowBatteryWarning: false });
-      Alert.alert(
-        'Low Battery',
-        `${batteryLevel} of battery remaining`,
-        { text: 'Dismiss' }
-      );
+    if (this.state.lowBatteryWarning) {
+      const batteryLevel = this.props.device.device.batteryLevel;
+      if (batteryLevel < 15) {
+        this.setState({ lowBatteryWarning: false });
+        Alert.alert(
+          'Backbone Low Battery',
+          `${batteryLevel}% of battery remaining`,
+          [{text: 'Dismiss'}]
+        );
+      }
     }
   }
 
