@@ -315,12 +315,12 @@ class Application extends Component {
       });
   }
 
-  // Alerts user when the deivce battery is below 15%.  This will only notify
+  // Alerts user when the deivce battery is 15% or less.  This will only notify
   // user once when the application opens.
   componentWillReceiveProps() {
     if (this.state.lowBatteryWarning) {
       const batteryLevel = this.props.device.device.batteryLevel;
-      if (batteryLevel < 15) {
+      if (batteryLevel <= 15) {
         this.setState({ lowBatteryWarning: false });
         Alert.alert(
           'Backbone Low Battery',
@@ -349,6 +349,7 @@ class Application extends Component {
     }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
+
   /**
    * Defines the initial scene to mount and ends the initialization process
    * @param {Object} route=routes.welcome Route object, defaults to the welcome route
