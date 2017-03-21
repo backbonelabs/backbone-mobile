@@ -317,6 +317,7 @@ class Application extends Component {
   }
 
   // Alerts the user anytime the Backbone device's battery drops to 15% or lower.
+  // Alert will only trigger once during the lifetime of the app.
   componentWillReceiveProps(nextProps) {
     if (!this.state.hasDisplayedLowBatteryWarning) {
       const batteryLevel = nextProps.device.batteryLevel;
