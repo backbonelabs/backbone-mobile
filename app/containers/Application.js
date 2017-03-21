@@ -325,7 +325,7 @@ class Application extends Component {
         Alert.alert(
           'Backbone Low Battery',
           `${batteryLevel}% of battery remaining`,
-          [{text: 'Dismiss'}]
+          [{ text: 'Dismiss' }]
         );
       }
     }
