@@ -1,6 +1,6 @@
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "RCTBridgeModule.h"
-#import "RCTEventEmitter.h"
+#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 #import "Constants.h"
 
 @interface BluetoothService : RCTEventEmitter <CBCentralManagerDelegate, CBPeripheralDelegate, RCTBridgeModule> {

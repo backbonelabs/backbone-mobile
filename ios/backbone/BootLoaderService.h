@@ -7,8 +7,8 @@
 //
 
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "RCTEventEmitter.h"
-#import "RCTBridgeModule.h"
+#import <React/RCTEventEmitter.h>
+#import <React/RCTBridgeModule.h>
 
 @interface BootLoaderService : RCTEventEmitter <RCTBridgeModule, CBPeripheralDelegate> {
   NSMutableArray *_commandArray;

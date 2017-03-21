@@ -6,7 +6,7 @@ import com.facebook.react.ReactApplication;
 import com.bugsnag.BugsnagReactNative;
 import com.rnfs.RNFSPackage;
 import com.github.xinthink.rnmk.ReactMaterialKitPackage;
-import com.horcrux.svg.RNSvgPackage;
+import com.horcrux.svg.SvgPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -19,7 +19,7 @@ import java.util.List;
 public class MainApplication extends Application implements ReactApplication {
     private final ReactNativeHost reactNativeHost = new ReactNativeHost(this) {
         @Override
-        protected boolean getUseDeveloperSupport() {
+        public boolean getUseDeveloperSupport() {
           return BuildConfig.DEBUG;
         }
 
@@ -30,7 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
                 BugsnagReactNative.getPackage(),
                 new RNFSPackage(),
                 new ReactMaterialKitPackage(),
-                new RNSvgPackage(),
+                new SvgPackage(),
                 new RNSensitiveInfoPackage(),
                 new BackbonePackage()
             );
