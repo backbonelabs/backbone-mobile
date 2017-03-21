@@ -349,6 +349,7 @@ class Application extends Component {
     }
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
+
   /**
    * Defines the initial scene to mount and ends the initialization process
    * @param {Object} route=routes.welcome Route object, defaults to the welcome route
