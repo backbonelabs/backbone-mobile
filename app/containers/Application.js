@@ -77,7 +77,7 @@ class Application extends Component {
     device: PropTypes.shape({
       device: PropTypes.shape({
         batteryLevel: PropTypes.number,
-      })
+      }),
     }),
   };
 
