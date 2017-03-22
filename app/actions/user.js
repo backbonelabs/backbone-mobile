@@ -186,6 +186,10 @@ export default {
           if (body.error) {
             throw new Error(body.error);
           }
+          Mixpanel.trackWithProperties('fetchUserSessions', {
+            from: dates.fromDate,
+            to: dates.toDate,
+          });
           return body;
         }),
     };
