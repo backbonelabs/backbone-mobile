@@ -90,6 +90,25 @@ npm run bugsnag-release
 npm run bugsnag
 ```
 
+Handled errors can be sent to Bugsnag from JavaScript, native iOS, and native Android. Below are examples of how to send errors from each environment. More examples can be found in the Bugsnag API docs and their example apps.
+
+```
+// JavaScript
+import Bugsnag from './utils/Bugsnag';
+
+Bugsnag.notify(new Error('Test error from JS'));
+
+// iOS
+#import "Bugsnag.h"
+
+[Bugsnag notify:[NSException exceptionWithName:@"Test error from iOS native" reason:nil userInfo:nil]];]
+
+// Android
+import com.bugsnag.android.Bugsnag;
+
+Bugsnag.notify(new Throwable("Test error from Android native"));
+```
+
 ## Deployment
 
 ### iOS
