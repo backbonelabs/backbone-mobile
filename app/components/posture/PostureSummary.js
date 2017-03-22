@@ -5,12 +5,10 @@ import {
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { compact } from 'lodash';
-// import SvgUri from 'react-native-svg-uri'; replace when package updates
 import BodyText from '../../components/BodyText';
 import HeadingText from '../../components/HeadingText';
 import styles from '../../styles/posture/postureSummary';
 import theme from '../../styles/theme';
-// import summarySvg from '../../images/session/summaryCircle.svg'; replace when package updates
 import summaryCircle from '../../images/session/summaryCircle.png';
 import AnimatedStar from './AnimatedStar';
 

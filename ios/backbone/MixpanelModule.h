@@ -1,7 +1,7 @@
 #ifndef MixpanelModule_h
 #define MixpanelModule_h
 
-#import "RCTBridgeModule.h"
+#import <React/RCTBridgeModule.h>
 
 @interface MixpanelModule : NSObject <RCTBridgeModule>
 @end

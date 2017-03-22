@@ -1,6 +1,6 @@
 #import "DeviceManagementService.h"
 #import "BluetoothService.h"
-#import "RCTUtils.h"
+#import <React/RCTUtils.h>
 
 @implementation DeviceManagementService
 

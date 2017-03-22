@@ -7,7 +7,7 @@
 //
 
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "RCTBridgeModule.h"
+#import <React/RCTBridgeModule.h>
 #import "Constants.h"
 
 @interface DeviceInformationService : NSObject <RCTBridgeModule, CBPeripheralDelegate> {

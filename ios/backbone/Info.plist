@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>194</string>
+	<string>198</string>
 	<key>DEV_MODE</key>
 	<string>$(DEV_MODE)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -42,6 +42,7 @@
 	<key>MIXPANEL_TOKEN</key>
 	<string>$(MIXPANEL_TOKEN)</string>
 	<key>NSAppTransportSecurity</key>
+	<!--See http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/ -->
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>

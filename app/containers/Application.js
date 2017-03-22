@@ -15,6 +15,7 @@ import {
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
+import { UPDATE_BLUETOOTH_STATE } from '../actions/types';
 import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
@@ -128,7 +129,7 @@ class Application extends Component {
     BluetoothService.getState((error, { state }) => {
       if (!error) {
         this.props.dispatch({
-          type: 'UPDATE_BLUETOOTH_STATE',
+          type: UPDATE_BLUETOOTH_STATE,
           payload: state,
         });
       } else {
@@ -148,7 +149,7 @@ class Application extends Component {
     // Handle changes from the Bluetooth adapter
     this.bluetoothListener = BluetoothServiceEvents.addListener('BluetoothState', ({ state }) => {
       this.props.dispatch({
-        type: 'UPDATE_BLUETOOTH_STATE',
+        type: UPDATE_BLUETOOTH_STATE,
         payload: state,
       });
 
@@ -162,6 +163,9 @@ class Application extends Component {
     this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
       switch (state) {
         case deviceStatuses.CONNECTED:
+          // Retrieve device info
+          this.props.dispatch(deviceActions.getInfo());
+
           // Retrieve session state
           SessionControlService.getSessionState();
           break;
@@ -261,53 +265,43 @@ class Application extends Component {
           // Dispatch access token to the store
           this.props.dispatch(authActions.setAccessToken(accessToken));
 
-          // Check if there is already a user profile in the Redux store
-          if (this.props.user._id) {
-            // There is a user profile in the Redux store
-            // Fetch device info
-            this.props.dispatch(deviceActions.getInfo());
+          // Check for a saved user in local storage
+          return SensitiveInfo.getItem(storageKeys.USER)
+            .then((user) => {
+              if (user) {
+                // There is a user profile in local storage
+                // Dispatch user profile to the Redux store
+                this.props.dispatch({
+                  type: 'FETCH_USER',
+                  payload: user,
+                });
 
-            // Specify user account to track event for
-            Mixpanel.identify(this.props.user._id);
+                // Specify user account to track event for
+                Mixpanel.identify(user._id);
 
-            // Set initial route to posture dashboard
-            this.setInitialRoute(routes.postureDashboard);
-          } else {
-            // There is no user profile in the Redux store, check local storage
-            return SensitiveInfo.getItem(storageKeys.USER)
-              .then((user) => {
-                if (user) {
-                  // There is a user profile in local storage
-                  // Dispatch user profile to the Redux store
-                  this.props.dispatch({
-                    type: 'FETCH_USER',
-                    payload: user,
-                  });
-
-                  // Specify user account to track event for
-                  Mixpanel.identify(user._id);
-
-                  if (user.hasOnboarded) {
-                    // User completed onboarding
-                    // Fetch device info
-                    this.props.dispatch(deviceActions.getInfo());
-
-                    // Set initial route to posture dashboard
-                    this.setInitialRoute(routes.postureDashboard);
-                  } else {
-                    // User did not complete onboarding, set initial route to onboarding
-                    this.setInitialRoute(routes.onboarding);
-                  }
-                } else {
-                  // There is no user profile in local storage
-                  this.setInitialRoute();
+                if (user.hasOnboarded) {
+                  // User completed onboarding
+                  // Check for a saved device
+                  return SensitiveInfo.getItem(storageKeys.DEVICE)
+                    .then((device) => {
+                      if (device) {
+                        // There is a saved device, attempt to connect to it
+                        this.props.dispatch(deviceActions.connect(device.identifier));
+                      }
+                      // Set initial route to posture dashboard
+                      this.setInitialRoute(routes.postureDashboard);
+                    });
                 }
-              });
-          }
-        } else {
-          // There is no saved access token
-          this.setInitialRoute();
+                // User did not complete onboarding, set initial route to onboarding
+                this.setInitialRoute(routes.onboarding);
+              } else {
+                // There is no user profile in local storage
+                this.setInitialRoute();
+              }
+            });
         }
+        // There is no saved access token
+        this.setInitialRoute();
       })
       .catch(() => {
         this.setInitialRoute();

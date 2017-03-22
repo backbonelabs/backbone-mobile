@@ -1,40 +1,35 @@
 import { NativeModules } from 'react-native';
+import {
+  CREATE_SUPPORT_TICKET,
+  UPDATE_SUPPORT_MESSAGE,
+} from './types';
+import store from '../store';
+import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
 import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
+const { errorMessages } = constants;
 
-const updateTicketMessage = payload => ({
-  type: 'UPDATE_SUPPORT_MESSAGE',
-  payload,
-});
-
-const createTicketStart = () => ({ type: 'CREATE_SUPPORT_TICKET__START' });
-
-const createTicket = payload => ({
-  type: 'CREATE_SUPPORT_TICKET',
-  payload,
-});
-
-const createTicketError = error => ({
-  type: 'CREATE_SUPPORT_TICKET__ERROR',
-  payload: error,
-});
+const handleNetworkError = mixpanelEvent => {
+  Mixpanel.track(`${mixpanelEvent}-serverError`);
+  throw new Error(errorMessages.NETWORK_ERROR);
+};
 
 export default {
   updateMessage(message) {
-    return (dispatch) => {
-      dispatch(updateTicketMessage(message));
+    return {
+      type: UPDATE_SUPPORT_MESSAGE,
+      payload: message,
     };
   },
   createTicket(message) {
-    return (dispatch, getState) => {
-      const { auth: { accessToken }, user: { user } } = getState();
-      dispatch(createTicketStart());
+    const { auth: { accessToken }, user: { user } } = store.getState();
+    const createTicketEventName = 'createTicket';
 
-      const createTicketEventName = 'createTicket';
-
-      return Fetcher.post({
+    return {
+      type: CREATE_SUPPORT_TICKET,
+      payload: () => Fetcher.post({
         url: `${Environment.API_SERVER_URL}/support`,
         headers: { Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({
@@ -42,29 +37,19 @@ export default {
           message,
         }),
       })
-        .then(response => response.json()
-          .then((body) => {
-            if (body.error) {
-              Mixpanel.trackWithProperties(`${createTicketEventName}-error`, {
-                errorMessage: body.error,
-              });
+        .catch(() => handleNetworkError(createTicketEventName))
+        .then(response => response.json())
+        .then((body) => {
+          if (body.error) {
+            Mixpanel.trackWithProperties(`${createTicketEventName}-error`, {
+              errorMessage: body.error,
+            });
 
-              dispatch(createTicketError(new Error(body.error)));
-            } else {
-              Mixpanel.track(`${createTicketEventName}-success`);
-
-              dispatch(createTicket());
-            }
-          })
-        )
-        .catch(() => {
-          // Network error
-          Mixpanel.track(`${createTicketEventName}-serverError`);
-
-          dispatch(createTicketError(
-            new Error('We are encountering server issues. Please try again later.')
-          ));
-        });
+            throw new Error(body.error);
+          }
+          Mixpanel.track(`${createTicketEventName}-success`);
+          return;
+        }),
     };
   },
 };

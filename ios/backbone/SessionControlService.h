@@ -7,8 +7,8 @@
 //
 
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "RCTEventEmitter.h"
-#import "RCTBridgeModule.h"
+#import <React/RCTEventEmitter.h>
+#import <React/RCTBridgeModule.h>
 #import "Constants.h"
 
 @interface SessionControlService : RCTEventEmitter <RCTBridgeModule, CBPeripheralDelegate> {
