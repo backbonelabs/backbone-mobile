@@ -54,7 +54,7 @@ const deviceActions = {
       payload: () => new Promise((resolve, reject) => {
         BluetoothService.getState((err, { state }) => {
           if (err || state !== bluetoothStates.ON) {
-            reject(new Error(err.message || 'Bluetooth is not enabled.'));
+            reject(new Error((err && err.message) || 'Bluetooth is not enabled.'));
           } else {
             Mixpanel.trackWithProperties('connectToDevice', {
               deviceIdentifier: identifier,
