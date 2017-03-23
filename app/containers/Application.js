@@ -316,8 +316,8 @@ class Application extends Component {
       if (batteryLevel <= 15 && batteryLevel > 0) {
         this.setState({ hasDisplayedLowBatteryWarning: true });
         Alert.alert(
-          'Backbone Low Battery',
-          `${batteryLevel}% of battery remaining`
+          'Your Backbone battery is low',
+          `Your Backbone battery is at ${batteryLevel}%. Charge your Backbone as soon as possible.`
         );
       }
     }
