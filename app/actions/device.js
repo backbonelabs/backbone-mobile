@@ -24,7 +24,6 @@ const { bluetoothStates, storageKeys } = constants;
 const baseFirmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
 
 function checkFirmware(firmwareVersion) {
-
   // major software version is Y in W.X.Y.Z
   const currentFirmware = firmwareVersion.split('.');
   const majorSoftwareVersion = currentFirmware[2];
