@@ -21,9 +21,15 @@ const {
   DeviceInformationService,
 } = NativeModules;
 const { bluetoothStates, storageKeys } = constants;
-const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
+const baseFirmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
 
 function checkFirmware(firmwareVersion) {
+
+  // major software version is Y in W.X.Y.Z
+  const currentFirmware = firmwareVersion.split('.');
+  const majorSoftwareVersion = currentFirmware[2];
+  const firmwareUrl = `${baseFirmwareUrl}/v${majorSoftwareVersion}`;
+
   // Fetch device firmware details
   return Fetcher.get({ url: firmwareUrl })
     .then(res => res.json())
@@ -31,7 +37,6 @@ function checkFirmware(firmwareVersion) {
       let updateAvailable = false;
       // Split firmware versions into array for digit-by-digit comparison
       const newFirmware = body.version.split('.');
-      const currentFirmware = firmwareVersion.split('.');
 
       // Check and compare each of the firmware version digits in order
       // Use for loop, since forEach can't be interrupted
