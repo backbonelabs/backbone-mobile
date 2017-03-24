@@ -53,4 +53,8 @@ TitleBar.propTypes = {
   style: PropTypes.object,
 };
 
+TitleBar.defaultProps = {
+  currentRoute: {},
+};
+
 export default TitleBar;

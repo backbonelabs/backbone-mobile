@@ -5,6 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import Application from './app/containers/Application';
 import store from './app/store';
 import theme from './app/styles/theme';
+import './app/utils/Bugsnag';
 
 EStyleSheet.build(theme);
 

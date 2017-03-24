@@ -10,6 +10,7 @@ import store from '../store';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
@@ -42,6 +43,11 @@ export default {
           if (body.error) {
             throw new Error(body.error);
           }
+          // Update user details in Bugsnag
+          Bugsnag.setUser(body._id, body.nickname, body.email);
+
+          // Update user profile in Mixpanel
+          Mixpanel.setUserProperties(body);
 
           // Store user in local storage
           SensitiveInfo.setItem(storageKeys.USER, body);
@@ -83,7 +89,10 @@ export default {
           // Store updated user in local storage
           SensitiveInfo.setItem(storageKeys.USER, body);
 
-          // Update user profile on Mixpanel
+          // Update user details in Bugsnag
+          Bugsnag.setUser(body._id, body.nickname, body.email);
+
+          // Update user profile in Mixpanel
           Mixpanel.setUserProperties(body);
           Mixpanel.track(`${updateUserEventName}-success`);
 
@@ -143,7 +152,7 @@ export default {
           // Store updated user in local storage
           SensitiveInfo.setItem(storageKeys.USER, userObj);
 
-          // Update user profile on Mixpanel
+          // Update user profile in Mixpanel
           Mixpanel.setUserProperties(userObj);
           Mixpanel.track(`${updateUserSettingsEventName}-success`);
 
@@ -177,6 +186,10 @@ export default {
           if (body.error) {
             throw new Error(body.error);
           }
+          Mixpanel.trackWithProperties('fetchUserSessions', {
+            from: dates.fromDate,
+            to: dates.toDate,
+          });
           return body;
         }),
     };

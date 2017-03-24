@@ -35,6 +35,7 @@ import styles from '../styles/application';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
+import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
 const { bluetoothStates, deviceModes, deviceStatuses, storageKeys } = constants;
@@ -74,6 +75,8 @@ class Application extends Component {
     }),
     user: PropTypes.shape({
       _id: PropTypes.string,
+      nickname: PropTypes.string,
+      email: PropTypes.string,
     }),
     device: PropTypes.shape({
       batteryLevel: PropTypes.number,
@@ -276,7 +279,10 @@ class Application extends Component {
                   payload: user,
                 });
 
-                // Specify user account to track event for
+                // Identify user for Bugsnag
+                Bugsnag.setUser(user._id, user.nickname, user.email);
+
+                // Identify user for Mixpanel
                 Mixpanel.identify(user._id);
 
                 if (user.hasOnboarded) {
@@ -385,6 +391,28 @@ class Application extends Component {
     }
   }
 
+  /**
+   * Leaves a Bugsnag breadcrumb for marking when a navigation begins
+   * @param {Object} route Route to navigate to
+   */
+  leaveNavStartBreadcrumb(route) {
+    Bugsnag.leaveBreadcrumb(`Navigating to ${route.name}`, {
+      type: 'navigation',
+      routeConfig: JSON.stringify(route),
+    });
+  }
+
+  /**
+   * Leaves a Bugsnag breadcrumb for marking when a navigation ends
+   * @param {Object} route Route navigated to
+   */
+  leaveNavEndBreadcrumb(route) {
+    Bugsnag.leaveBreadcrumb(`Navigated to ${route.name}`, {
+      type: 'navigation',
+      routeConfig: JSON.stringify(route),
+    });
+  }
+
   @autobind
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
@@ -437,19 +465,27 @@ class Application extends Component {
       position: 'absolute',
     };
 
-    // Alter the push method on the navigator object to include a timestamp for
-    // each route in the route stack so that each route in the stack is unique.
-    // This prevents React errors when a route is in the stack multiple times.
+    // Sets up a custom navigator object with customized navigator methods which adds a
+    // timestamp to each route in the route stack. Having the timestamp for each route in
+    // the route stack will ensure each route in the stack is unique to prevent React errors
+    // when a route is in the stack multiple times.
     // All components should use this customized navigator object.
     if (!this.navigator) {
       this.navigator = clone(navigator);
+
       this.navigator._push = this.navigator.push; // the original push method
       this.navigator.push = function push(routeObj) {
         return this._push({ ...routeObj, key: Date.now() });
       };
+
       this.navigator._replace = this.navigator.replace; // the original replace method
       this.navigator.replace = function replace(routeObj) {
         return this._replace({ ...routeObj, key: Date.now() });
+      };
+
+      this.navigator._resetTo = this.navigator.resetTo; // the original resetTo method
+      this.navigator.resetTo = function resetTo(routeObj) {
+        return this._resetTo({ ...routeObj, key: Date.now() });
       };
     }
 
@@ -504,6 +540,8 @@ class Application extends Component {
             configureScene={this.configureScene}
             initialRoute={this.state.initialRoute}
             renderScene={this.renderScene}
+            onWillFocus={this.leaveNavStartBreadcrumb}
+            onDidFocus={this.leaveNavEndBreadcrumb}
           />
         )}
       </View>

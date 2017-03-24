@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "bugsnag": "node bugsnag.js --debug --release",
+    "bugsnag-debug": "node bugsnag.js --debug",
+    "bugsnag-release": "node bugsnag.js --release",
     "lint": "eslint index.* app/**",
     "prepush": "npm run lint",
     "start": "node node_modules/react-native/local-cli/cli.js start"
@@ -10,6 +13,7 @@
   "dependencies": {
     "autobind-decorator": "1.3.4",
     "babel-plugin-transform-decorators-legacy": "1.3.4",
+    "bugsnag-react-native": "2.2.0",
     "color": "0.11.3",
     "lodash": "4.15.0",
     "moment": "2.17.1",
@@ -37,6 +41,9 @@
     "eslint-plugin-import": "1.16.0",
     "eslint-plugin-jsx-a11y": "2.2.3",
     "eslint-plugin-react": "6.4.1",
-    "husky": "0.11.9"
+    "gradle-to-js": "0.2.5",
+    "husky": "0.11.9",
+    "localenv": "0.2.2",
+    "request": "2.81.0"
   }
 }

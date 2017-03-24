@@ -1,3 +1,5 @@
+.env.local
+
 # OSX
 #
 .DS_Store
@@ -54,3 +56,9 @@ buck-out/
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
+
+# Bundle files
+#
+main.jsbundle
+main.jsbundle.*
+ios/assets/
