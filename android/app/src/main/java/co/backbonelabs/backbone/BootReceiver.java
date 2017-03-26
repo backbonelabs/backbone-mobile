@@ -15,6 +15,8 @@ import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
 
+// This class is responsible to listen to the boot events, particularly here is when
+// the boot process has been completed, so we can proceed to reschedule notifications when needed
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -17,15 +17,15 @@ import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
 
+// This class is responsible to process whatever we need to do when the alarm's invoked,
+// which includes firing the notification and repeating it if required
 public class NotificationIntent extends BroadcastReceiver {
-    public static String NOTIFICATION_ID = "notification-id";
-    public static String NOTIFICATION = "notification";
-
     public void onReceive(Context context, Intent intent) {
+        // Get the registered notification and fire it
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Notification notification = intent.getParcelableExtra(NOTIFICATION);
-        int type = intent.getIntExtra(NOTIFICATION_ID, 0);
+        Notification notification = intent.getParcelableExtra(Constants.EXTRA_NOTIFICATION);
+        int type = intent.getIntExtra(Constants.EXTRA_NOTIFICATION_ID, 0);
         notificationManager.notify(type, notification);
 
         Timber.d("Notification Alarm: %d", type);
