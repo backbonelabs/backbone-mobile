@@ -1,9 +1,14 @@
 package co.backbonelabs.backbone;
 
+import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
@@ -11,8 +16,14 @@ import android.support.v4.app.NotificationCompat;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
+
+import java.util.Calendar;
 
 import co.backbonelabs.backbone.util.Constants;
+import timber.log.Timber;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class NotificationService extends ReactContextBaseJavaModule {
     private static ReactApplicationContext context;
@@ -38,7 +49,7 @@ public class NotificationService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void sendLocalNotification(String title, String message) {
-        sendNotification(Constants.NOTIFICATION_IDS.SLOUCH_NOTIFICATION, title, message);
+        sendNotification(Constants.NOTIFICATION_TYPES.SLOUCH_WARNING, title, message);
     }
 
     /**
@@ -61,7 +72,7 @@ public class NotificationService extends ReactContextBaseJavaModule {
      * @param text The second line of text in the notification
      */
     public static void sendNotification(int id, String title, String text) {
-        NotificationCompat.Builder builder = createBuilderTemplate()
+        NotificationCompat.Builder builder = createBuilderTemplate(context)
                 .setContentTitle(title)
                 .setContentText(text);
 
@@ -71,11 +82,209 @@ public class NotificationService extends ReactContextBaseJavaModule {
     }
 
     /**
+     * Schedule a notification to be shown in the status bar based on the React Context
+     * @param notificationParam Notification parameters
+     */
+    @ReactMethod
+    public static void scheduleNotification(ReadableMap notificationParam) {
+        scheduleNotification(context, notificationParam);
+    }
+
+    /**
+     * Schedule a notification to be shown in the status bar.
+     * To be used by boot-event listeners to pass the temporary context instead of the React Context
+     * @param context Current context to be used for various initializations
+     * @param notificationParam Notification parameters
+     */
+    public static void scheduleNotification(Context context, ReadableMap notificationParam) {
+        int type;
+        String title = "";
+        String text = "";
+
+        type = notificationParam.getInt("notificationType");
+        Timber.d("Schedule Notification: %d", type);
+
+        switch (type) {
+            case Constants.NOTIFICATION_TYPES.INACTIVITY_REMINDER:
+                title = "Are you alive?";
+                text = "We miss you already!";
+                break;
+            case Constants.NOTIFICATION_TYPES.DAILY_REMINDER:
+                title = "It's time lollll!";
+                text = "It's that time of the day again! Brace yourself!";
+                break;
+        }
+
+        // Invalid notification type, exit the function
+        if (title.isEmpty()) return;
+
+        NotificationCompat.Builder builder = createBuilderTemplate(context)
+                .setContentTitle(title)
+                .setContentText(text);
+
+        Notification notification = builder.build();
+        Intent notificationIntent = new Intent(context, NotificationIntent.class);
+        notificationIntent.putExtra(NotificationIntent.NOTIFICATION_ID, type);
+        notificationIntent.putExtra(NotificationIntent.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, type, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Define the user-defined time for the notification
+        int year = -1, month = 1, day = 1;
+        int hour = -1, minute = 0, second = 0;
+        long initialDelay = 0;
+        long repeatInterval = AlarmManager.INTERVAL_DAY;
+
+        if (notificationParam.hasKey("scheduledYear")) {
+            year = notificationParam.getInt("scheduledYear");
+        }
+
+        if (notificationParam.hasKey("scheduledMonth")) {
+            month = notificationParam.getInt("scheduledMonth");
+        }
+
+        if (notificationParam.hasKey("scheduledDay")) {
+            day = notificationParam.getInt("scheduledDay");
+        }
+
+        if (notificationParam.hasKey("scheduledHour")) {
+            hour = notificationParam.getInt("scheduledHour");
+        }
+
+        if (notificationParam.hasKey("scheduledMinute")) {
+            minute = notificationParam.getInt("scheduledMinute");
+        }
+
+        if (notificationParam.hasKey("scheduledSecond")) {
+            second = notificationParam.getInt("scheduledSecond");
+        }
+
+        Calendar nextFireCalendar = Calendar.getInstance();
+        Calendar currentCalendar = Calendar.getInstance();
+
+        // Only set the user-defined time when available.
+        // Otherwise use the current time components
+        if (year != -1) {
+            nextFireCalendar.set(Calendar.YEAR, year);
+            nextFireCalendar.set(Calendar.MONTH, month);
+            nextFireCalendar.set(Calendar.DAY_OF_MONTH, day);
+        }
+
+        if (hour != -1) {
+            nextFireCalendar.set(Calendar.HOUR_OF_DAY, hour);
+            nextFireCalendar.set(Calendar.MINUTE, minute);
+            nextFireCalendar.set(Calendar.SECOND, second);
+        }
+
+        switch (type) {
+            case Constants.NOTIFICATION_TYPES.INACTIVITY_REMINDER:
+                // If this is a rescheduled notification, use the fire date directly.
+                // Otherwise, schedule the reminder in the next 2 days
+                if (currentCalendar.getTimeInMillis() < nextFireCalendar.getTimeInMillis()) {
+                    initialDelay = 0;
+                }
+                else {
+                    initialDelay = AlarmManager.INTERVAL_DAY * 2;
+                }
+                break;
+            case Constants.NOTIFICATION_TYPES.DAILY_REMINDER:
+                // Set the initial delay only if it is on the next day
+                if (currentCalendar.getTimeInMillis() < nextFireCalendar.getTimeInMillis()) {
+                    initialDelay = 0;
+                }
+                else {
+                    initialDelay = AlarmManager.INTERVAL_DAY;
+                }
+                break;
+            case Constants.NOTIFICATION_TYPES.SINGLE_REMINDER:
+                initialDelay = 0;
+                repeatInterval = 0;
+                break;
+        }
+
+        long fireTimestamp = nextFireCalendar.getTimeInMillis() + initialDelay;
+
+        // This should not be sent by the React side.
+        // Used only on rescheduling by the boot listener and notification repeater
+        if (notificationParam.hasKey("scheduledTimestamp")) {
+            fireTimestamp = (long)notificationParam.getDouble("scheduledTimestamp");
+            Timber.d("Override initial %d", fireTimestamp);
+        }
+
+        // Schedule the notification based on the specified time above.
+        // Starting from KITKAT (SDK-19), due to the Android SDK limitation,
+        // there's no direct API to schedule repeated alarms without
+        // sacrificing precision (timers might not fire at the exact chosen time).
+        // Thus, we can only schedule a one time alarm, and reschedule again if needed
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, fireTimestamp, pendingIntent);
+        }
+        else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, fireTimestamp, pendingIntent);
+        }
+
+        // Save the notification settings to the system preference for future references
+        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preference.edit();
+
+        editor.putBoolean(String.format("notification-isScheduled-%d", type), true);
+        editor.putLong(String.format("notification-scheduledTimestamp-%d", type), fireTimestamp);
+        editor.putLong(String.format("notification-repeatInterval-%d", type), repeatInterval);
+
+        editor.commit();
+
+        // Tell the system to allow our app to be alive for a brief period on device boot-up
+        ComponentName receiver = new ComponentName(context, BootReceiver.class);
+        PackageManager pm = context.getPackageManager();
+        pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+    }
+
+    /**
+     * Unschedule a scheduled notification
+     * @param type Type of the notification to be unscheduled.
+     */
+    @ReactMethod
+    public static void unscheduleNotification(int type) {
+        unscheduleNotification(context, type);
+    }
+
+    /**
+     * Unschedule a scheduled notification
+     * To be used by boot-event listeners to pass the temporary context instead of the React Context
+     * @param context Current context to be used for various initializations
+     * @param type Type of the notification to be unscheduled
+     */
+    public static void unscheduleNotification(Context context, int type) {
+        Timber.d("Unschedule Notification: %d", type);
+        // Clear the notification setting from the system preference
+        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preference.edit();
+
+        editor.remove(String.format("notification-isScheduled-%d", type));
+        editor.remove(String.format("notification-fireDate-%d", type));
+        editor.remove(String.format("notification-repeatInterval-%d", type));
+
+        editor.commit();
+
+        // Retrive the correct notification and unschedule it
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent notificationIntent = new Intent(context, NotificationIntent.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, type, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+
+        // When we no longer need to check for notifications on device boot-up,
+        // tell the system to revoke our right to be kept alive on boot-up
+        ComponentName receiver = new ComponentName(context, BootReceiver.class);
+        PackageManager pm = context.getPackageManager();
+        pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+    }
+
+    /**
      * Creates builder class for Notification objects that launches the MainActivity.
      * A Notification can be created from the builder class to be passed to a NotificationManager.
      * @return A NotificationCompat.Builder object
      */
-    private static NotificationCompat.Builder createBuilderTemplate() {
+    private static NotificationCompat.Builder createBuilderTemplate(Context context) {
         long[] vibrationPattern = {0, 500};
 
         NotificationCompat.Builder builder =

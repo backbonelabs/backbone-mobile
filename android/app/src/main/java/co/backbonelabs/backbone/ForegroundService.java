@@ -139,7 +139,7 @@ public class ForegroundService extends Service {
         Notification notification = notificationBuilder.build();
 
         // Start the foreground service with the notification
-        startForeground(Constants.NOTIFICATION_IDS.FOREGROUND_SERVICE, notification);
+        startForeground(Constants.NOTIFICATION_TYPES.FOREGROUND_SERVICE, notification);
     }
 
     @Override

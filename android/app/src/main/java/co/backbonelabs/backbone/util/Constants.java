@@ -15,9 +15,12 @@ public class Constants {
         String STOP_POSTURE_ACTIVITY = "co.backbonelabs.backbone.intent.action.STOP_POSTURE_ACTIVITY";
     }
 
-    public interface NOTIFICATION_IDS {
-        int SLOUCH_NOTIFICATION = 100;
+    public interface NOTIFICATION_TYPES {
+        int SLOUCH_WARNING = 100;
         int FOREGROUND_SERVICE = 101;
+        int INACTIVITY_REMINDER = 102;
+        int DAILY_REMINDER = 103;
+        int SINGLE_REMINDER = 104;
     }
 
     public interface MODULES {
@@ -226,9 +229,13 @@ public class Constants {
     public final static String EXTRA_BYTE_UUID_VALUE = "co.backbonelabs.backbone.extra.BYTE_UUID_VALUE";
     public final static String EXTRA_BYTE_STATUS_VALUE = "co.backbonelabs.backbone.extra.BYTE_STATUS_VALUE";
 
+    public final static String EXTRA_NOTIFICATION_ID = "co.backbonelabs.backbone.extra.NOTIFICATION_ID";
+    public final static String EXTRA_NOTIFICATION = "co.backbonelabs.backbone.extra.NOTIFICATION";
+
     public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805F9B34FB";
 
     public static final String DEVICE_PREF_ID = "co.backbonelabs.backbone.DEVICE_PREF_ID";
     public static final String USER_PREF_ID = "co.backbonelabs.backbone.USER_PREF_ID";
     public static final String SAVED_DEVICE_PREF_KEY = "co.backbonelabs.backbone.SAVED_DEVICE_PREF_KEY";
+    public static final String NOTIFICATION_PREF_ID = "co.backbonelabs.backbone.NOTIFICATION_PREF_ID";
 }
