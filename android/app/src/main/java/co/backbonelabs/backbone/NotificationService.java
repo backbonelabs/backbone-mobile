@@ -124,8 +124,8 @@ public class NotificationService extends ReactContextBaseJavaModule {
 
         Notification notification = builder.build();
         Intent notificationIntent = new Intent(context, NotificationIntent.class);
-        notificationIntent.putExtra(NotificationIntent.NOTIFICATION_ID, type);
-        notificationIntent.putExtra(NotificationIntent.NOTIFICATION, notification);
+        notificationIntent.putExtra(Constants.EXTRA_NOTIFICATION_ID, type);
+        notificationIntent.putExtra(Constants.EXTRA_NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, type, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Define the user-defined time for the notification
@@ -219,7 +219,7 @@ public class NotificationService extends ReactContextBaseJavaModule {
         }
 
         // Save the notification settings to the system preference for future references
-        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
+        SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
         SharedPreferences.Editor editor = preference.edit();
 
         editor.putBoolean(String.format("notification-isScheduled-%d", type), true);
@@ -252,7 +252,7 @@ public class NotificationService extends ReactContextBaseJavaModule {
     public static void unscheduleNotification(Context context, int type) {
         Timber.d("Unschedule Notification: %d", type);
         // Clear the notification setting from the system preference
-        SharedPreferences preference = MainActivity.currentActivity.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
+        SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
         SharedPreferences.Editor editor = preference.edit();
 
         editor.remove(String.format("notification-isScheduled-%d", type));
