@@ -177,14 +177,9 @@ public class NotificationService extends ReactContextBaseJavaModule {
 
         switch (type) {
             case Constants.NOTIFICATION_TYPES.INACTIVITY_REMINDER:
-                // If this is a rescheduled notification, use the fire date directly.
-                // Otherwise, schedule the reminder in the next 2 days
-                if (currentCalendar.getTimeInMillis() < nextFireCalendar.getTimeInMillis()) {
-                    initialDelay = 0;
-                }
-                else {
-                    initialDelay = AlarmManager.INTERVAL_DAY * 2;
-                }
+                // Always use the current time
+                nextFireCalendar = Calendar.getInstance();
+                initialDelay = AlarmManager.INTERVAL_DAY * 2;
                 break;
             case Constants.NOTIFICATION_TYPES.DAILY_REMINDER:
                 // Set the initial delay only if it is on the next day

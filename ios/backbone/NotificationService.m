@@ -121,13 +121,9 @@ RCT_EXPORT_METHOD(scheduleNotification:(NSDictionary*)notificationParam) {
     
     switch (type) {
       case NOTIFICATION_TYPE_INACTIVITY_REMINDER:
-        // Fire in the same day if the scheduled time is in the future
-        if (fireTimestamp > [currentDate timeIntervalSince1970]) {
-          initialDelay = 0;
-        }
-        else {
-          initialDelay = 60 * 60 * 24 * 2; // 2 days in seconds
-        }
+        // Always use the current time
+        fireDate = [NSDate date];
+        initialDelay = 60 * 60 * 24 * 2; // 2 days in seconds
         break;
       case NOTIFICATION_TYPE_DAILY_REMINDER:
         // Fire in the same day if the scheduled time is in the future
