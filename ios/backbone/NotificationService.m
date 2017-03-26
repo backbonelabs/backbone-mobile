@@ -151,6 +151,9 @@ RCT_EXPORT_METHOD(scheduleNotification:(NSDictionary*)notificationParam) {
       localNotification.repeatInterval = repeatInterval;
     }
     
+    // Unschedule the previous notification of the same type
+    [self unscheduleNotification:type];
+    
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
   }
 }
