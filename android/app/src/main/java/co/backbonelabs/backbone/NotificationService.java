@@ -19,10 +19,12 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import co.backbonelabs.backbone.util.Constants;
 import timber.log.Timber;
 
+import static android.content.Context.CONSUMER_IR_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 public class NotificationService extends ReactContextBaseJavaModule {
@@ -101,18 +103,22 @@ public class NotificationService extends ReactContextBaseJavaModule {
         String title = "";
         String text = "";
 
-        type = notificationParam.getInt("notificationType");
+        type = notificationParam.getInt(Constants.NOTIFICATION_PARAMETER_TYPE);
         Timber.d("Schedule Notification: %d", type);
 
         switch (type) {
-            case Constants.NOTIFICATION_TYPES.INACTIVITY_REMINDER:
+            case Constants.NOTIFICATION_TYPES.INFREQUENT_REMINDER:
                 title = "Are you alive?";
                 text = "We miss you already!";
                 break;
             case Constants.NOTIFICATION_TYPES.DAILY_REMINDER:
-                title = "It's time lollll!";
+                title = "It's time!";
                 text = "It's that time of the day again! Brace yourself!";
                 break;
+            case Constants.NOTIFICATION_TYPES.SINGLE_REMINDER:
+                title = "It's time!";
+                text = "It's that time of the day again! Brace yourself!";
+                break;                
         }
 
         // Invalid notification type, exit the function
@@ -124,7 +130,7 @@ public class NotificationService extends ReactContextBaseJavaModule {
 
         Notification notification = builder.build();
         Intent notificationIntent = new Intent(context, NotificationIntent.class);
-        notificationIntent.putExtra(Constants.EXTRA_NOTIFICATION_ID, type);
+        notificationIntent.putExtra(Constants.EXTRA_NOTIFICATION_TYPE, type);
         notificationIntent.putExtra(Constants.EXTRA_NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, type, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -134,32 +140,33 @@ public class NotificationService extends ReactContextBaseJavaModule {
         long initialDelay = 0;
         long repeatInterval = AlarmManager.INTERVAL_DAY;
 
-        if (notificationParam.hasKey("scheduledYear")) {
-            year = notificationParam.getInt("scheduledYear");
+        if (notificationParam.hasKey(Constants.NOTIFICATION_PARAMETER_SCHEDULED_YEAR)) {
+            year = notificationParam.getInt(Constants.NOTIFICATION_PARAMETER_SCHEDULED_YEAR);
         }
 
-        if (notificationParam.hasKey("scheduledMonth")) {
-            month = notificationParam.getInt("scheduledMonth");
+        if (notificationParam.hasKey(Constants.NOTIFICATION_PARAMETER_SCHEDULED_MONTH)) {
+            month = notificationParam.getInt(Constants.NOTIFICATION_PARAMETER_SCHEDULED_MONTH);
         }
 
-        if (notificationParam.hasKey("scheduledDay")) {
-            day = notificationParam.getInt("scheduledDay");
+        if (notificationParam.hasKey(Constants.NOTIFICATION_PARAMETER_SCHEDULED_DAY)) {
+            day = notificationParam.getInt(Constants.NOTIFICATION_PARAMETER_SCHEDULED_DAY);
         }
 
-        if (notificationParam.hasKey("scheduledHour")) {
-            hour = notificationParam.getInt("scheduledHour");
+        if (notificationParam.hasKey(Constants.NOTIFICATION_PARAMETER_SCHEDULED_HOUR)) {
+            hour = notificationParam.getInt(Constants.NOTIFICATION_PARAMETER_SCHEDULED_HOUR);
         }
 
-        if (notificationParam.hasKey("scheduledMinute")) {
-            minute = notificationParam.getInt("scheduledMinute");
+        if (notificationParam.hasKey(Constants.NOTIFICATION_PARAMETER_SCHEDULED_MINUTE)) {
+            minute = notificationParam.getInt(Constants.NOTIFICATION_PARAMETER_SCHEDULED_MINUTE);
         }
 
-        if (notificationParam.hasKey("scheduledSecond")) {
-            second = notificationParam.getInt("scheduledSecond");
+        if (notificationParam.hasKey(Constants.NOTIFICATION_PARAMETER_SCHEDULED_SECOND)) {
+            second = notificationParam.getInt(Constants.NOTIFICATION_PARAMETER_SCHEDULED_SECOND);
         }
 
-        Calendar nextFireCalendar = Calendar.getInstance();
-        Calendar currentCalendar = Calendar.getInstance();
+        // Specifically request for a Gregorian Calendar format
+        Calendar nextFireCalendar = GregorianCalendar.getInstance();
+        Calendar currentCalendar = GregorianCalendar.getInstance();
 
         // Only set the user-defined time when available.
         // Otherwise use the current time components
@@ -176,10 +183,11 @@ public class NotificationService extends ReactContextBaseJavaModule {
         }
 
         switch (type) {
-            case Constants.NOTIFICATION_TYPES.INACTIVITY_REMINDER:
+            case Constants.NOTIFICATION_TYPES.INFREQUENT_REMINDER:
                 // Always use the current time
-                nextFireCalendar = Calendar.getInstance();
-                initialDelay = AlarmManager.INTERVAL_DAY * 2;
+                nextFireCalendar = GregorianCalendar.getInstance();
+                initialDelay = Constants.NOTIFICATION_INITIAL_DELAYS.INFREQUENT_REMINDER;
+                repeatInterval = Constants.NOTIFICATION_REPEAT_INTERVAL.INFREQUENT_REMINDER;
                 break;
             case Constants.NOTIFICATION_TYPES.DAILY_REMINDER:
                 // Set the initial delay only if it is on the next day
@@ -187,8 +195,9 @@ public class NotificationService extends ReactContextBaseJavaModule {
                     initialDelay = 0;
                 }
                 else {
-                    initialDelay = AlarmManager.INTERVAL_DAY;
+                    initialDelay = Constants.NOTIFICATION_INITIAL_DELAYS.DAILY_REMINDER;
                 }
+                repeatInterval = Constants.NOTIFICATION_REPEAT_INTERVAL.DAILY_REMINDER;
                 break;
             case Constants.NOTIFICATION_TYPES.SINGLE_REMINDER:
                 initialDelay = 0;
@@ -200,8 +209,8 @@ public class NotificationService extends ReactContextBaseJavaModule {
 
         // This should not be sent by the React side.
         // Used only on rescheduling by the boot listener and notification repeater
-        if (notificationParam.hasKey("scheduledTimestamp")) {
-            fireTimestamp = (long)notificationParam.getDouble("scheduledTimestamp");
+        if (notificationParam.hasKey(Constants.NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP)) {
+            fireTimestamp = (long)notificationParam.getDouble(Constants.NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP);
             Timber.d("Override initial %d", fireTimestamp);
         }
 
@@ -219,12 +228,12 @@ public class NotificationService extends ReactContextBaseJavaModule {
         }
 
         // Save the notification settings to the system preference for future references
-        SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
+        SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = preference.edit();
 
-        editor.putBoolean(String.format("notification-isScheduled-%d", type), true);
-        editor.putLong(String.format("notification-scheduledTimestamp-%d", type), fireTimestamp);
-        editor.putLong(String.format("notification-repeatInterval-%d", type), repeatInterval);
+        editor.putBoolean(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED, type), true);
+        editor.putLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_TIMESTAMP, type), fireTimestamp);
+        editor.putLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL, type), repeatInterval);
 
         editor.commit();
 
@@ -252,26 +261,46 @@ public class NotificationService extends ReactContextBaseJavaModule {
     public static void unscheduleNotification(Context context, int type) {
         Timber.d("Unschedule Notification: %d", type);
         // Clear the notification setting from the system preference
-        SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
+        SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = preference.edit();
 
-        editor.remove(String.format("notification-isScheduled-%d", type));
-        editor.remove(String.format("notification-fireDate-%d", type));
-        editor.remove(String.format("notification-repeatInterval-%d", type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED, type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_TIMESTAMP, type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL, type));
 
         editor.commit();
 
-        // Retrive the correct notification and unschedule it
+        // Retrieve the correct notification and unschedule it
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent notificationIntent = new Intent(context, NotificationIntent.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, type, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
 
-        // When we no longer need to check for notifications on device boot-up,
-        // tell the system to revoke our right to be kept alive on boot-up
-        ComponentName receiver = new ComponentName(context, BootReceiver.class);
-        PackageManager pm = context.getPackageManager();
-        pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        // Types of notification we need check
+        int[] notificationTypes = new int[] {
+                Constants.NOTIFICATION_TYPES.INACTIVITY_REMINDER,
+                Constants.NOTIFICATION_TYPES.DAILY_REMINDER,
+                Constants.NOTIFICATION_TYPES.SINGLE_REMINDER,
+                Constants.NOTIFICATION_TYPES.INFREQUENT_REMINDER
+        };
+
+        boolean shouldDisableBootEvents = true;
+
+        for (int notifType : notificationTypes) {
+            // Check if we still have any scheduled notifications
+            if (preference.getBoolean(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED, notifType), false)) {
+                shouldDisableBootEvents = false;
+                break;
+            }
+        }
+
+        if (shouldDisableBootEvents) {
+            // When we no longer need to check for notifications on device boot-up,
+            // tell the system to revoke our right to be kept alive on boot-up
+            ComponentName receiver = new ComponentName(context, BootReceiver.class);
+            PackageManager pm = context.getPackageManager();
+            pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        }
     }
 
     /**

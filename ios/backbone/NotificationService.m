@@ -51,7 +51,7 @@ RCT_EXPORT_METHOD(scheduleNotification:(NSDictionary*)notificationParam) {
     }
     
     switch (type) {
-      case NOTIFICATION_TYPE_INACTIVITY_REMINDER:
+      case NOTIFICATION_TYPE_INFREQUENT_REMINDER:
         title = @"Are you still alive?";
         text = @"We miss you already!";
         break;
@@ -115,15 +115,20 @@ RCT_EXPORT_METHOD(scheduleNotification:(NSDictionary*)notificationParam) {
     }
     
     NSDate *fireDate = [calendar dateFromComponents:dateComps];
+    
+    // Return on invalid date
+    if (fireDate == nil) return;
+    
     double fireTimestamp = [fireDate timeIntervalSince1970];
     
     NSDate *currentDate = [NSDate date];
     
     switch (type) {
-      case NOTIFICATION_TYPE_INACTIVITY_REMINDER:
+      case NOTIFICATION_TYPE_INFREQUENT_REMINDER:
         // Always use the current time
         fireDate = [NSDate date];
-        initialDelay = 60 * 60 * 24 * 2; // 2 days in seconds
+        initialDelay = NOTIFICATION_INITIAL_DELAY_INFREQUENT_REMINDER;
+        repeatInterval = NSCalendarUnitDay;
         break;
       case NOTIFICATION_TYPE_DAILY_REMINDER:
         // Fire in the same day if the scheduled time is in the future
@@ -131,8 +136,9 @@ RCT_EXPORT_METHOD(scheduleNotification:(NSDictionary*)notificationParam) {
           initialDelay = 0;
         }
         else {
-          initialDelay = 60 * 60 * 24; // 1 day in seconds
+          initialDelay = NOTIFICATION_INITIAL_DELAY_DAILY_REMINDER;
         }
+        repeatInterval = NSCalendarUnitDay;
         break;
       case NOTIFICATION_TYPE_SINGLE_REMINDER:
         initialDelay = 0;
@@ -150,6 +156,8 @@ RCT_EXPORT_METHOD(scheduleNotification:(NSDictionary*)notificationParam) {
     if (repeatInterval > 0) {
       localNotification.repeatInterval = repeatInterval;
     }
+    
+    DLog(@"Schedule notification %d", type);
     
     // Unschedule the previous notification of the same type
     [self unscheduleNotification:type];

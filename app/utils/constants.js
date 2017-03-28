@@ -43,6 +43,7 @@ export default {
     INACTIVITY_REMINDER: 102,
     DAILY_REMINDER: 103,
     SINGLE_REMINDER: 104,
+    INFREQUENT_REMINDER: 105,
   },
   firmwareUpdateStates: {
     INVALID_SERVICE: -2,

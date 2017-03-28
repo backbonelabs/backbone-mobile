@@ -9,6 +9,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import co.backbonelabs.backbone.util.Constants;
 import timber.log.Timber;
@@ -28,29 +29,30 @@ public class BootReceiver extends BroadcastReceiver {
             int[] notificationTypes = new int[] {
                     Constants.NOTIFICATION_TYPES.INACTIVITY_REMINDER,
                     Constants.NOTIFICATION_TYPES.DAILY_REMINDER,
-                    Constants.NOTIFICATION_TYPES.SINGLE_REMINDER
+                    Constants.NOTIFICATION_TYPES.SINGLE_REMINDER,
+                    Constants.NOTIFICATION_TYPES.INFREQUENT_REMINDER
             };
 
-            SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREF_ID, MODE_PRIVATE);
+            SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREFERENCES, MODE_PRIVATE);
 
             for (int type : notificationTypes) {
                 // Check if the notification of this type has been scheduled
-                if (preference.getBoolean(String.format("notification-isScheduled-%d", type), false)) {
+                if (preference.getBoolean(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED, type), false)) {
                     // Detected scheduled notification, check if we still need to reschedule
-                    long fireTimestamp = preference.getInt(String.format("notification-scheduleTimestamp-%d", type), 0);
-                    long repeatInterval = preference.getLong(String.format("notification-repeatInterval-%d", type), 0);
+                    long fireTimestamp = preference.getLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_TIMESTAMP, type), 0);
+                    long repeatInterval = preference.getLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL, type), 0);
                     boolean shouldRepeat = repeatInterval > 0;
 
                     WritableMap notificationParam = Arguments.createMap();
-                    notificationParam.putInt("notificationType", type);
+                    notificationParam.putInt(Constants.NOTIFICATION_PARAMETER_TYPE, type);
 
-                    Calendar currentCalendar = Calendar.getInstance();
+                    Calendar currentCalendar = GregorianCalendar.getInstance();
 
                     if (!shouldRepeat) {
                         // Non-repeated timers should only be rescheduled when the scheduled time is in the future
                         if (fireTimestamp >= currentCalendar.getTimeInMillis()) {
                             Timber.d("Reschedule Notification: %d", type);
-                            notificationParam.putDouble("scheduleTimestamp", fireTimestamp);
+                            notificationParam.putDouble(Constants.NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP, fireTimestamp);
                             NotificationService.scheduleNotification(context, notificationParam);
                         }
                     }
@@ -62,7 +64,7 @@ public class BootReceiver extends BroadcastReceiver {
                         }
 
                         Timber.d("Reschedule Notification: %d", type);
-                        notificationParam.putDouble("scheduleTimestamp", fireTimestamp);
+                        notificationParam.putDouble(Constants.NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP, fireTimestamp);
                         NotificationService.scheduleNotification(context, notificationParam);
                     }
                 }
