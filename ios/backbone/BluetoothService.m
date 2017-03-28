@@ -79,12 +79,10 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   switch (_state) {
     case CBCentralManagerStatePoweredOff: {
       DLog(@"Bluetooth is OFF");
-      [[UIApplication sharedApplication] cancelAllLocalNotifications];
     }
       break;
     case CBCentralManagerStatePoweredOn: {
       DLog(@"Bluetooth is ON");
-      [[UIApplication sharedApplication] cancelAllLocalNotifications];
     }
     default:
       break;
