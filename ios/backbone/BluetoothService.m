@@ -423,9 +423,6 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 // Handler for application termination
 - (void)applicationWillTerminate:(NSNotification *)notification {
   DLog(@"Application Will Terminate");
-  // Cancel all prior notifications before termination
-  [[UIApplication sharedApplication] cancelAllLocalNotifications];
-  
   // Gives the app additional time before termination
   [NSThread sleepForTimeInterval:2];
 }
