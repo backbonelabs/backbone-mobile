@@ -3,10 +3,6 @@ package co.backbonelabs.backbone.util;
 import java.util.UUID;
 
 public class Constants {
-    public interface SENSORS {
-        String ACCELEROMETER = "ACCELEROMETER";
-    }
-
     public interface ACTIONS {
         String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.START_POSTURE_FOREGROUND_SERVICE";
         String STOP_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.STOP_POSTURE_FOREGROUND_SERVICE";
@@ -18,21 +14,6 @@ public class Constants {
     public interface NOTIFICATION_IDS {
         int SLOUCH_NOTIFICATION = 100;
         int FOREGROUND_SERVICE = 101;
-    }
-
-    public interface MODULES {
-        String POSTURE = "posture";
-    }
-
-    public interface EVENTS {
-        String ACTIVITY_DISABLED = "ActivityDisabled";
-    }
-
-    public interface DEVICE_STATUSES {
-        int DISCONNECTED = 0;
-        int CONNECTING = 1;
-        int CONNECTED = 2;
-        int DISCONNECTING = 3;
     }
 
     public interface DEVICE_MODES {
@@ -227,8 +208,4 @@ public class Constants {
     public final static String EXTRA_BYTE_STATUS_VALUE = "co.backbonelabs.backbone.extra.BYTE_STATUS_VALUE";
 
     public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805F9B34FB";
-
-    public static final String DEVICE_PREF_ID = "co.backbonelabs.backbone.DEVICE_PREF_ID";
-    public static final String USER_PREF_ID = "co.backbonelabs.backbone.USER_PREF_ID";
-    public static final String SAVED_DEVICE_PREF_KEY = "co.backbonelabs.backbone.SAVED_DEVICE_PREF_KEY";
 }
