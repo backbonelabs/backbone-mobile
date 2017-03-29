@@ -768,6 +768,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				52370F9BA8C6196E9D1CABD1 /* [CP] Embed Pods Frameworks */,
 				5FBE96D086410517D55BA49F /* [CP] Copy Pods Resources */,
+				66D9BA3F1E8C3D8B000276BA /* Upload Bugsnag dSYM */,
 			);
 			buildRules = (
 			);
@@ -1232,7 +1233,7 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Backbone/Pods-Backbone-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		663FBD4F1E81BE90008A037E /* Upload Bugsnag dSYM */ = {
+		66D9BA3F1E8C3D8B000276BA /* Upload Bugsnag dSYM */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1244,7 +1245,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env ruby";
-			shellScript = "fork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"].each do |dsym|\n    system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
+			shellScript = "fork do\n    Process.setsid\n    STDIN.reopen(\"/dev/null\")\n    STDOUT.reopen(\"/dev/null\", \"a\")\n    STDERR.reopen(\"/dev/null\", \"a\")\n\n    require 'shellwords'\n\n    Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"].each do |dsym|\n        system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n    end\nend\n";
 			showEnvVarsInLog = 0;
 		};
 		6FB3A553466A3FC7C736E28A /* [CP] Check Pods Manifest.lock */ = {
