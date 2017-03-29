@@ -31,7 +31,7 @@ const { firmwareUpdateStates: {
 
 const { BootLoaderService, Environment } = NativeModules;
 const eventEmitter = new NativeEventEmitter(BootLoaderService);
-const firmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
+const baseFirmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
 
 const SingleColorSpinner = MKSpinner.singleColorSpinner()
   .withStyle(styles.spinner)
@@ -84,6 +84,10 @@ class FirmwareUpdate extends Component {
 
     BootLoaderService.setHasPendingUpdate(true);
 
+    // major software version is Y in W.X.Y.Z
+    const currentFirmware = (this.props.device.device.firmwareVersion).split('.');
+    const majorSoftwareVersion = currentFirmware[2];
+    const firmwareUrl = `${baseFirmwareUrl}/v${majorSoftwareVersion}`;
     // Local filepath to firmware
     const firmwareFilepath = `${ReactNativeFS.DocumentDirectoryPath}/Backbone.cyacd`;
 
