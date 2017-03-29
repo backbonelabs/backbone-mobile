@@ -15,9 +15,23 @@ public class Constants {
         String STOP_POSTURE_ACTIVITY = "co.backbonelabs.backbone.intent.action.STOP_POSTURE_ACTIVITY";
     }
 
-    public interface NOTIFICATION_IDS {
-        int SLOUCH_NOTIFICATION = 100;
+    public interface NOTIFICATION_TYPES {
+        int SLOUCH_WARNING = 100;
         int FOREGROUND_SERVICE = 101;
+        int INACTIVITY_REMINDER = 102;
+        int DAILY_REMINDER = 103;
+        int SINGLE_REMINDER = 104;
+        int INFREQUENT_REMINDER = 105;
+    }
+
+    public interface NOTIFICATION_INITIAL_DELAYS {
+        long DAILY_REMINDER = 24 * 60 * 60 * 1000; // 1-day delay
+        long INFREQUENT_REMINDER = 2 * 24 * 60 * 60 * 1000; // 2-days delay
+    }
+
+    public interface NOTIFICATION_REPEAT_INTERVAL {
+        long DAILY_REMINDER = 24 * 60 * 60 * 1000; // 1-day interval
+        long INFREQUENT_REMINDER = 24 * 60 * 60 * 1000; // 1-day interval
     }
 
     public interface MODULES {
@@ -226,9 +240,22 @@ public class Constants {
     public final static String EXTRA_BYTE_UUID_VALUE = "co.backbonelabs.backbone.extra.BYTE_UUID_VALUE";
     public final static String EXTRA_BYTE_STATUS_VALUE = "co.backbonelabs.backbone.extra.BYTE_STATUS_VALUE";
 
+    public final static String EXTRA_NOTIFICATION_TYPE = "co.backbonelabs.backbone.extra.NOTIFICATION_TYPE";
+    public final static String EXTRA_NOTIFICATION = "co.backbonelabs.backbone.extra.NOTIFICATION";
+
     public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805F9B34FB";
 
-    public static final String DEVICE_PREF_ID = "co.backbonelabs.backbone.DEVICE_PREF_ID";
-    public static final String USER_PREF_ID = "co.backbonelabs.backbone.USER_PREF_ID";
-    public static final String SAVED_DEVICE_PREF_KEY = "co.backbonelabs.backbone.SAVED_DEVICE_PREF_KEY";
+    public static final String NOTIFICATION_PREFERENCES = "co.backbonelabs.backbone.NOTIFICATION_PREFERENCES";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED = "notification-isScheduled-";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_TIMESTAMP = "notification-scheduledTimestamp-";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL = "notification-repeatInterval-";
+
+    public static final String NOTIFICATION_PARAMETER_TYPE = "notificationType";
+    public static final String NOTIFICATION_PARAMETER_SCHEDULED_YEAR = "scheduledYear";
+    public static final String NOTIFICATION_PARAMETER_SCHEDULED_MONTH = "scheduledMonth";
+    public static final String NOTIFICATION_PARAMETER_SCHEDULED_DAY = "scheduledDay";
+    public static final String NOTIFICATION_PARAMETER_SCHEDULED_HOUR = "scheduledHour";
+    public static final String NOTIFICATION_PARAMETER_SCHEDULED_MINUTE = "scheduledMinute";
+    public static final String NOTIFICATION_PARAMETER_SCHEDULED_SECOND = "scheduledSecond";
+    public static final String NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP = "scheduledTimestamp";
 }

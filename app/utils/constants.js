@@ -37,6 +37,14 @@ export default {
     PAUSE: 2,
     STOP: 3,
   },
+  notificationTypes: {
+    SLOUCH_WARNING: 100,
+    FOREGROUND_SERVICE: 101,
+    INACTIVITY_REMINDER: 102,
+    DAILY_REMINDER: 103,
+    SINGLE_REMINDER: 104,
+    INFREQUENT_REMINDER: 105,
+  },
   firmwareUpdateStates: {
     INVALID_SERVICE: -2,
     INVALID_FILE: -1,

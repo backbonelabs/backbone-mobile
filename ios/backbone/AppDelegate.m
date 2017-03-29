@@ -20,8 +20,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  // Cancel all prior notifications
-  [application cancelAllLocalNotifications];
+  // Cancel all prior notifications from the previous installation when needed
+  if ([[NSUserDefaults standardUserDefaults] objectForKey:@"hasClearedNotifications"] == nil) {
+    [application cancelAllLocalNotifications];
+    [[NSUserDefaults standardUserDefaults] setObject:@(true) forKey:@"hasClearedNotifications"];
+  }
 
   // Register notification types
   UIUserNotificationType types = (UIUserNotificationType) (UIUserNotificationTypeSound | UIUserNotificationTypeAlert);
