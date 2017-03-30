@@ -42,6 +42,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
     private Constants.StringCallBack firmwareVersionCallBack;
     private Constants.IntCallBack batteryLevelCallBack;
+    private boolean hasPendingCallback = false;
 
     @Override
     public String getName() {
@@ -57,6 +58,12 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
     public void getDeviceInformation(final Callback callback) {
         final BluetoothService bluetoothService = BluetoothService.getInstance();
 
+        if (hasPendingCallback) {
+            return;
+        }
+
+        hasPendingCallback = true;
+
         if (bluetoothService.isDeviceReady()) {
             if (bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC)
                     && bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC)) {
@@ -69,6 +76,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                             @Override
                             public void onIntCallBack(int level) {
                                 Timber.d("Found battery %d", level);
+                                hasPendingCallback = false;
+
                                 WritableMap wm = Arguments.createMap();
                                 wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
                                 wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
@@ -82,6 +91,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                 });
             }
             else {
+                hasPendingCallback = false;
+
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
                 wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
@@ -92,6 +103,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             }
         }
         else {
+            hasPendingCallback = false;
+
             callback.invoke(JSError.make("Not connected to a device"));
         }
     }
