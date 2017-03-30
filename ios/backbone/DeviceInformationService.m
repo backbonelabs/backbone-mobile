@@ -44,21 +44,30 @@ RCT_EXPORT_MODULE();
                  and a device information dictionary as the second argument if there are no exceptions
  */
 RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
+  if (hasPendingCallback) {
+    return;
+  }
+
+  hasPendingCallback = YES;
+
   if ([BluetoothServiceInstance isDeviceReady]) {
     if ([BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]
         && [BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]) {
       [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
         [self retrieveBatteryLevel:^(int value) {
+          hasPendingCallback = NO;
           callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
         }];
       }];
     }
     else {
       // Required characteristics are not available, return default values
+      hasPendingCallback = NO;
       callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : @"", @"batteryLevel" : @(-1), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
     }
   }
   else {
+    hasPendingCallback = NO;
     NSDictionary *makeError = RCTMakeError(@"Not connected to a device", nil, nil);
     callback(@[makeError]);
   }

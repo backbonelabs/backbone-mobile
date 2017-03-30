@@ -13,6 +13,7 @@
 @interface DeviceInformationService : NSObject <RCTBridgeModule, CBPeripheralDelegate> {
   StringHandler _firmwareVersionHandler;
   IntHandler _batteryLevelHandler;
+  BOOL hasPendingCallback;
 }
 
 @property (nonatomic, strong) RCTBridge *bridge;
