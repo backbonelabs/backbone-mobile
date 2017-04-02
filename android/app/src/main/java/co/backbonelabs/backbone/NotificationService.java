@@ -357,11 +357,15 @@ public class NotificationService extends ReactContextBaseJavaModule {
                 long fireTimestamp = fireCalendar.getTimeInMillis();
 
                 if (!shouldRepeat) {
-                    // Non-repeated timers should only be rescheduled when the scheduled time is in the future
+                    // Non-repeated timers should only be rescheduled when
+                    // the scheduled time is in the future, otherwise clean it up.
                     if (fireTimestamp >= currentCalendar.getTimeInMillis()) {
                         Timber.d("Reschedule Notification: %d", type);
                         notificationParam.putDouble(Constants.NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP, fireTimestamp);
                         NotificationService.scheduleNotification(context, notificationParam);
+                    }
+                    else {
+                        NotificationService.unscheduleNotification(context, type);
                     }
                 }
                 else {

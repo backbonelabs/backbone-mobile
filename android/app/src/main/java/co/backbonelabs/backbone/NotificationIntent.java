@@ -63,5 +63,8 @@ public class NotificationIntent extends BroadcastReceiver {
             Timber.d("Repeat Notification: %d %d %d", type, repeatInterval, fireTimestamp);
             NotificationService.scheduleNotification(context, notificationParam);
         }
+        else {
+            NotificationService.unscheduleNotification(context, type);
+        }
     }
 }
