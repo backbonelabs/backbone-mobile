@@ -13,10 +13,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -24,7 +26,6 @@ import java.util.GregorianCalendar;
 import co.backbonelabs.backbone.util.Constants;
 import timber.log.Timber;
 
-import static android.content.Context.CONSUMER_IR_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 public class NotificationService extends ReactContextBaseJavaModule {
@@ -118,7 +119,7 @@ public class NotificationService extends ReactContextBaseJavaModule {
             case Constants.NOTIFICATION_TYPES.SINGLE_REMINDER:
                 title = "It's time!";
                 text = "It's that time of the day again! Brace yourself!";
-                break;                
+                break;
         }
 
         // Invalid notification type, exit the function
@@ -172,7 +173,7 @@ public class NotificationService extends ReactContextBaseJavaModule {
         // Otherwise use the current time components
         if (year != -1) {
             nextFireCalendar.set(Calendar.YEAR, year);
-            nextFireCalendar.set(Calendar.MONTH, month);
+            nextFireCalendar.set(Calendar.MONTH, month - 1); // Month in the API is set from 0-11
             nextFireCalendar.set(Calendar.DAY_OF_MONTH, day);
         }
 
@@ -231,8 +232,19 @@ public class NotificationService extends ReactContextBaseJavaModule {
         SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = preference.edit();
 
+        // Store the exact date parts instead of timestamp to handle changes in timezone
+        // in order to have the notification fires at the exact same time as originally scheduled
+        // on the local time
+        Calendar nextDate = GregorianCalendar.getInstance();
+        nextDate.setTimeInMillis(fireTimestamp);
+
         editor.putBoolean(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED, type), true);
-        editor.putLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_TIMESTAMP, type), fireTimestamp);
+        editor.putInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_YEAR, type), nextDate.get(Calendar.YEAR));
+        editor.putInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_MONTH, type), nextDate.get(Calendar.MONTH));
+        editor.putInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_DAY, type), nextDate.get(Calendar.DAY_OF_MONTH));
+        editor.putInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_HOUR, type), nextDate.get(Calendar.HOUR_OF_DAY));
+        editor.putInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_MINUTE, type), nextDate.get(Calendar.MINUTE));
+        editor.putInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_SECOND, type), nextDate.get(Calendar.SECOND));
         editor.putLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL, type), repeatInterval);
 
         editor.commit();
@@ -265,7 +277,12 @@ public class NotificationService extends ReactContextBaseJavaModule {
         SharedPreferences.Editor editor = preference.edit();
 
         editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED, type));
-        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_TIMESTAMP, type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_YEAR, type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_MONTH, type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_DAY, type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_HOUR, type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_MINUTE, type));
+        editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_SECOND, type));
         editor.remove(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL, type));
 
         editor.commit();
@@ -300,6 +317,65 @@ public class NotificationService extends ReactContextBaseJavaModule {
             ComponentName receiver = new ComponentName(context, BootReceiver.class);
             PackageManager pm = context.getPackageManager();
             pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        }
+    }
+
+    /**
+     * Reschedule notifications called by certain events including boot process and timezone changes
+     * @param context Current context to be used for various initializations
+     */
+    public static void rescheduleNotification(Context context) {
+        // Types of notification we need check
+        int[] notificationTypes = new int[] {
+                Constants.NOTIFICATION_TYPES.INACTIVITY_REMINDER,
+                Constants.NOTIFICATION_TYPES.DAILY_REMINDER,
+                Constants.NOTIFICATION_TYPES.SINGLE_REMINDER,
+                Constants.NOTIFICATION_TYPES.INFREQUENT_REMINDER
+        };
+
+        SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREFERENCES, MODE_PRIVATE);
+
+        for (int type : notificationTypes) {
+            // Check if the notification of this type has been scheduled
+            if (preference.getBoolean(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED, type), false)) {
+                // Detected scheduled notification, check if we still need to reschedule
+                int year = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_YEAR, type), 0);
+                int month = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_MONTH, type), 0);
+                int day = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_DAY, type), 0);
+                int hour = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_HOUR, type), 0);
+                int minute = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_MINUTE, type), 0);
+                int second = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_SECOND, type), 0);
+                long repeatInterval = preference.getLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL, type), 0);
+                boolean shouldRepeat = repeatInterval > 0;
+
+                WritableMap notificationParam = Arguments.createMap();
+                notificationParam.putInt(Constants.NOTIFICATION_PARAMETER_TYPE, type);
+
+                Calendar currentCalendar = GregorianCalendar.getInstance();
+                Calendar fireCalendar = GregorianCalendar.getInstance();
+                fireCalendar.set(year, month, day, hour, minute, second);
+                long fireTimestamp = fireCalendar.getTimeInMillis();
+
+                if (!shouldRepeat) {
+                    // Non-repeated timers should only be rescheduled when the scheduled time is in the future
+                    if (fireTimestamp >= currentCalendar.getTimeInMillis()) {
+                        Timber.d("Reschedule Notification: %d", type);
+                        notificationParam.putDouble(Constants.NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP, fireTimestamp);
+                        NotificationService.scheduleNotification(context, notificationParam);
+                    }
+                }
+                else {
+                    // If the previous scheduled timestamp is in the past,
+                    // skip to the next timestamp
+                    while (fireTimestamp < currentCalendar.getTimeInMillis()) {
+                        fireTimestamp += repeatInterval;
+                    }
+
+                    Timber.d("Reschedule Notification: %d", type);
+                    notificationParam.putDouble(Constants.NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP, fireTimestamp);
+                    NotificationService.scheduleNotification(context, notificationParam);
+                }
+            }
         }
     }
 

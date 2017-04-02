@@ -247,7 +247,12 @@ public class Constants {
 
     public static final String NOTIFICATION_PREFERENCES = "co.backbonelabs.backbone.NOTIFICATION_PREFERENCES";
     public static final String NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED = "notification-isScheduled-";
-    public static final String NOTIFICATION_PREFERENCE_FORMAT_TIMESTAMP = "notification-scheduledTimestamp-";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_YEAR = "notification-scheduledYear-";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_MONTH = "notification-scheduledMonth-";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_DAY = "notification-scheduledDay-";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_HOUR = "notification-scheduledHour-";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_MINUTE = "notification-scheduledMinute-";
+    public static final String NOTIFICATION_PREFERENCE_FORMAT_SECOND = "notification-scheduledSecond-";
     public static final String NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL = "notification-repeatInterval-";
 
     public static final String NOTIFICATION_PARAMETER_TYPE = "notificationType";
