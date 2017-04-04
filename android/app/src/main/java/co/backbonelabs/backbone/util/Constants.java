@@ -3,10 +3,6 @@ package co.backbonelabs.backbone.util;
 import java.util.UUID;
 
 public class Constants {
-    public interface SENSORS {
-        String ACCELEROMETER = "ACCELEROMETER";
-    }
-
     public interface ACTIONS {
         String START_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.START_POSTURE_FOREGROUND_SERVICE";
         String STOP_POSTURE_FOREGROUND_SERVICE = "co.backbonelabs.backbone.intent.action.STOP_POSTURE_FOREGROUND_SERVICE";
@@ -32,21 +28,6 @@ public class Constants {
     public interface NOTIFICATION_REPEAT_INTERVAL {
         long DAILY_REMINDER = 24 * 60 * 60 * 1000; // 1-day interval
         long INFREQUENT_REMINDER = 24 * 60 * 60 * 1000; // 1-day interval
-    }
-
-    public interface MODULES {
-        String POSTURE = "posture";
-    }
-
-    public interface EVENTS {
-        String ACTIVITY_DISABLED = "ActivityDisabled";
-    }
-
-    public interface DEVICE_STATUSES {
-        int DISCONNECTED = 0;
-        int CONNECTING = 1;
-        int CONNECTED = 2;
-        int DISCONNECTING = 3;
     }
 
     public interface DEVICE_MODES {
