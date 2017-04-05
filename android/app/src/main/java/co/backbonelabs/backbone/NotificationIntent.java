@@ -33,7 +33,12 @@ public class NotificationIntent extends BroadcastReceiver {
 
         // Reschedule the timer if it needs to be repeated
         SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREFERENCES, MODE_PRIVATE);
-        long fireTimestamp = preference.getLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_TIMESTAMP, type), 0);
+        int year = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_YEAR, type), 0);
+        int month = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_MONTH, type), 0);
+        int day = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_DAY, type), 0);
+        int hour = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_HOUR, type), 0);
+        int minute = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_MINUTE, type), 0);
+        int second = preference.getInt(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_SECOND, type), 0);
         long repeatInterval = preference.getLong(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_REPEAT_INTERVAL, type), 0);
         boolean shouldRepeat = repeatInterval > 0;
 
@@ -41,7 +46,11 @@ public class NotificationIntent extends BroadcastReceiver {
             // If the previous scheduled timestamp is in the past,
             // skip to the next timestamp
             Calendar currentCalendar = GregorianCalendar.getInstance();
-            while (fireTimestamp < currentCalendar.getTimeInMillis()) {
+            Calendar fireCalendar = GregorianCalendar.getInstance();
+            fireCalendar.set(year, month, day, hour, minute, second);
+            long fireTimestamp = fireCalendar.getTimeInMillis();
+
+            while (fireTimestamp <= currentCalendar.getTimeInMillis()) {
                 fireTimestamp += repeatInterval;
             }
 
@@ -53,6 +62,9 @@ public class NotificationIntent extends BroadcastReceiver {
 
             Timber.d("Repeat Notification: %d %d %d", type, repeatInterval, fireTimestamp);
             NotificationService.scheduleNotification(context, notificationParam);
+        }
+        else {
+            NotificationService.unscheduleNotification(context, type);
         }
     }
 }

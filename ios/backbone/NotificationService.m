@@ -148,6 +148,7 @@ RCT_EXPORT_METHOD(scheduleNotification:(NSDictionary*)notificationParam) {
     
     localNotification.alertTitle = NSLocalizedString(title, nil);
     localNotification.alertBody = NSLocalizedString(text, nil);
+    localNotification.timeZone = [NSTimeZone defaultTimeZone];
     localNotification.fireDate = [fireDate dateByAddingTimeInterval:initialDelay];
     localNotification.userInfo = @{@"type" : @(type)};
     localNotification.soundName = UILocalNotificationDefaultSoundName;
