@@ -17,6 +17,7 @@ import theme from '../../styles/theme';
 import routes from '../../routes';
 import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
+import DeviceConnectHelp from './DeviceConnectHelp';
 
 const { DeviceManagementService } = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
@@ -101,6 +102,9 @@ class DeviceScan extends Component {
         });
       } else {
         this.setState({ inProgress: true });
+        setTimeout(() => {
+          this.setState({ inProgress: false });
+        }, 5000);
       }
     });
   }
@@ -142,6 +146,11 @@ class DeviceScan extends Component {
     );
   }
 
+  @autobind
+  deviceConnectSupport() {
+    this.props.navigator.replace(routes.support);
+  }
+
   render() {
     const { inProgress, deviceList } = this.state;
     const { bluetoothStates } = constants;
@@ -151,13 +160,16 @@ class DeviceScan extends Component {
         { inProgress &&
           <Spinner style={styles.spinner} />
         }
-        <List
-          dataBlob={deviceList}
-          formatRowData={this.formatDeviceRow}
-          onPressRow={
-            this.props.bluetoothState === bluetoothStates.ON ? this.selectDevice : null
-          }
-        />
+        { (!inProgress && deviceList.length === 0) ?
+          <DeviceConnectHelp deviceConnectSupport={this.deviceConnectSupport} /> :
+            <List
+              dataBlob={deviceList}
+              formatRowData={this.formatDeviceRow}
+              onPressRow={
+                this.props.bluetoothState === bluetoothStates.ON ? this.selectDevice : null
+              }
+            />
+        }
       </View>
     );
   }
