@@ -22,6 +22,7 @@ import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
 import firmwareUpdate from './firmwareUpdate';
+import { educationContent, educationWebView } from './education';
 
 export default {
   activity,
@@ -48,4 +49,6 @@ export default {
   device,
   changePassword,
   firmwareUpdate,
+  educationContent,
+  educationWebView,
 };
