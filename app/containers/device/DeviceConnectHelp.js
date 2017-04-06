@@ -20,13 +20,13 @@ class DeviceConnectHelp extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
-          Didnt see your Backbone device?
+          Didn't see your Backbone device?
         </Text>
         <Text style={styles.items}>
-          1. Make sure the Backbone and your smartphone are close to each other.
+          1. Make sure the Backbone device and your smartphone are close to each other.
         </Text>
         <Text style={styles.items}>
-          2. Fully charge the Backbone using the provided USB cable.
+          2. Fully charge the Backbone device using the provided USB cable.
         </Text>
         <Text style={styles.items}>
           3. Unpair the Backbone device with any other smartphones.
