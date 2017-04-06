@@ -260,16 +260,6 @@ class Settings extends Component {
     // Run expensive operations after the scene is loaded
     InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(deviceActions.getInfo());
-      if (Platform.OS === 'ios') {
-        // Check if user has enabled notifications on their iOS device
-        this.checkNotificationsPermission();
-
-        AppState.addEventListener('change', state => {
-          if (state === 'active') {
-            this.checkNotificationsPermission();
-          }
-        });
-      }
       this.setState({ loading: false });
     });
   }
