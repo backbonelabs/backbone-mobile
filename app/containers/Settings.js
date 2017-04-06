@@ -3,13 +3,11 @@ import {
   View,
   Image,
   Alert,
-  Switch,
   Linking,
   Platform,
   AppState,
   ScrollView,
   TouchableOpacity,
-  PushNotificationIOS,
   NativeModules,
   InteractionManager,
 } from 'react-native';
@@ -34,7 +32,7 @@ import Spinner from '../components/Spinner';
 import Mixpanel from '../utils/Mixpanel';
 
 const { storageKeys } = constants;
-const { UserSettingService, Environment } = NativeModules;
+const { Environment } = NativeModules;
 
 const ArrowIcon = () => (
   <View style={styles.settingsRightIcon}>
@@ -127,30 +125,6 @@ const AccountRemindersSettings = props => (
       <SettingsText text="Alerts" />
       <ArrowIcon />
     </TouchableOpacity>
-    {Platform.select({
-      ios: (
-        <View style={styles.settingsRow}>
-          <SettingsIcon iconName="tap-and-play" />
-          <SettingsText text="Push Notifications" />
-          <View style={styles.settingsRightIcon}>
-            <Switch
-              onValueChange={props.updateNotifications}
-              value={props.notificationsEnabled}
-            />
-          </View>
-        </View>
-      ),
-      android: (
-        <TouchableOpacity
-          style={styles.settingsRow}
-          onPress={() => UserSettingService.launchAppSettings()}
-        >
-          <SettingsIcon iconName="tap-and-play" />
-          <SettingsText text="Push Notifications" />
-          <ArrowIcon />
-        </TouchableOpacity>
-      ),
-    })}
   </View>
 );
 
@@ -357,17 +331,6 @@ class Settings extends Component {
         ))}
       </View>
     );
-  }
-
-  checkNotificationsPermission() {
-    // Check notification permissions
-    PushNotificationIOS.checkPermissions(permissions => {
-      // Update notificationsEnabled to true if permissions enabled
-      if (!!permissions.alert !== this.state.notificationsEnabled) {
-        // Specifically set to boolean due to Switch prop validation
-        this.setState({ notificationsEnabled: !!permissions.alert });
-      }
-    });
   }
 
   @autobind

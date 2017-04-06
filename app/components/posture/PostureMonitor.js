@@ -108,6 +108,7 @@ class PostureMonitor extends Component {
         postureThreshold: PropTypes.number.isRequired,
         vibrationStrength: PropTypes.number.isRequired,
         backboneVibration: PropTypes.bool.isRequired,
+        slouchNotification: PropTypes.bool.isRequired,
         vibrationPattern: PropTypes.oneOf([1, 2, 3]).isRequired,
       }).isRequired,
       _id: PropTypes.string.isRequired,
@@ -449,8 +450,9 @@ class PostureMonitor extends Component {
     const { isSlouching } = event;
     // TODO: Implement final UX for slouch events
     if (isSlouching) {
-      if (AppState.currentState === 'background') {
-        // Send out slouch detection notification only on background mode
+      if (AppState.currentState === 'background' && this.props.user.settings.slouchNotification) {
+        // Attempt to send out a slouch detection notification only on background mode
+        // and the slouch notification is enabled
         NotificationService.sendLocalNotification('Bad posture detected',
           'Fix your posture to look and feel your best!');
       }

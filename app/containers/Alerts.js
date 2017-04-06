@@ -46,6 +46,7 @@ class Alerts extends Component {
           slouchTimeThreshold: PropTypes.number,
           postureThreshold: PropTypes.number,
           backboneVibration: PropTypes.bool,
+          slouchNotification: PropTypes.bool,
           phoneVibration: PropTypes.bool,
           vibrationStrength: PropTypes.number,
           vibrationPattern: PropTypes.number,
@@ -62,6 +63,7 @@ class Alerts extends Component {
       vibrationStrength,
       vibrationPattern,
       phoneVibration,
+      slouchNotification,
     } = this.props.user.user.settings;
 
     // Maintain settings in component state because the user settings object
@@ -73,6 +75,7 @@ class Alerts extends Component {
       vibrationStrength,
       vibrationPattern,
       phoneVibration,
+      slouchNotification,
     };
 
     // Debounce state update to smoothen quick slider value changes
@@ -115,6 +118,7 @@ class Alerts extends Component {
       vibrationStrength,
       vibrationPattern,
       phoneVibration,
+      slouchNotification,
     } = this.state;
 
     return (
@@ -184,6 +188,12 @@ class Alerts extends Component {
           onChange={this.updateSetting}
           text="Phone Vibration"
           settingName="phoneVibration"
+        />
+        <AlertToggle
+          value={slouchNotification}
+          onChange={this.updateSetting}
+          text="Slouch Notification"
+          settingName="slouchNotification"
         />
         <View style={styles.batteryLifeWarningContainer}>
           <SecondaryText style={styles._batteryLifeWarningText}>
