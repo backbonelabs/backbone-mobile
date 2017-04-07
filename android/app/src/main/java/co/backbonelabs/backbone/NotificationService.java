@@ -12,8 +12,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -43,6 +45,23 @@ public class NotificationService extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return "NotificationService";
+    }
+
+    /**
+     * Check if push notifications are allowed by the user in the system setting
+     * Added on SDK 24, backward compatible to SDK 19
+     * On SDK < 19, this will always return true
+     */
+    @ReactMethod
+    public void isPushNotificationEnabled(Callback callback) {
+        WritableMap response = Arguments.createMap();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            response.putBoolean("notificationEnabled", NotificationManagerCompat.from(context).areNotificationsEnabled());
+        }
+        else {
+            response.putBoolean("notificationEnabled", true);
+        }
+        callback.invoke(null, response);
     }
 
     /**
