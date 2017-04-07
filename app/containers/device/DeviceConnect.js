@@ -8,13 +8,14 @@ import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 import routes from '../../routes';
 import constants from '../../utils/constants';
+import SensitiveInfo from '../../utils/SensitiveInfo';
 import styles from '../../styles/device/deviceConnect';
 import deviceActions from '../../actions/device';
 import Spinner from '../../components/Spinner';
 import HeadingText from '../../components/HeadingText';
 
 const { BluetoothService } = NativeModules;
-const { bluetoothStates } = constants;
+const { bluetoothStates, storageKeys } = constants;
 const { PropTypes } = React;
 
 class DeviceConnect extends Component {
@@ -40,6 +41,7 @@ class DeviceConnect extends Component {
 
   componentWillMount() {
     const { device, currentRoute } = this.props;
+
     const deviceIdentifier = device.identifier || currentRoute.deviceIdentifier;
 
     BluetoothService.getState((error, { state }) => {
@@ -49,7 +51,15 @@ class DeviceConnect extends Component {
           if (deviceIdentifier) {
             this.props.dispatch(deviceActions.connect(deviceIdentifier));
           } else {
-            this.props.navigator.push(routes.deviceScan);
+            // Attempt to use saved device identifier, if any
+            SensitiveInfo.getItem(storageKeys.DEVICE)
+              .then(savedDevice => {
+                if (savedDevice) {
+                  this.props.dispatch(deviceActions.connect(savedDevice.identifier));
+                } else {
+                  this.props.navigator.replace(routes.deviceScan);
+                }
+              });
           }
         } else {
           this.showBluetoothError();
@@ -78,7 +88,21 @@ class DeviceConnect extends Component {
               { text: 'Cancel', onPress: this.goBackToScene },
               {
                 text: 'Retry',
-                onPress: () => this.props.dispatch(deviceActions.connect(deviceIdentifier)),
+                onPress: () => {
+                  if (deviceIdentifier) {
+                    this.props.dispatch(deviceActions.connect(deviceIdentifier));
+                  } else {
+                    // Attempt to use saved device identifier, if any
+                    SensitiveInfo.getItem(storageKeys.DEVICE)
+                      .then(savedDevice => {
+                        if (savedDevice) {
+                          this.props.dispatch(deviceActions.connect(savedDevice.identifier));
+                        } else {
+                          this.props.navigator.replace(routes.deviceScan);
+                        }
+                      });
+                  }
+                },
               },
             ]);
           } else {
