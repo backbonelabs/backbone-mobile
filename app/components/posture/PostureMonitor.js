@@ -124,6 +124,7 @@ class PostureMonitor extends Component {
       sessionState: sessionStates.STOPPED,
       hasPendingSessionOperation: false,
       postureThreshold: this.props.user.settings.postureThreshold,
+      shouldNotifySlouch: true,
       pointerPosition: 0,
       totalDuration: 0, // in seconds
       slouchTime: 0, // in seconds
@@ -437,6 +438,13 @@ class PostureMonitor extends Component {
       pointerPosition: distanceToDegrees(currentDistance),
       timeElapsed,
     });
+
+    // Mark the shouldNotifySlouch to true when it's on a good posture state
+    // so the app will send the notification once it enters the bad posture state
+    if (distanceToDegrees(currentDistance) > distanceToDegrees(this.state.postureThreshold)
+      && !this.state.shouldNotifySlouch) {
+      this.setState({ shouldNotifySlouch: true });
+    }
   }
 
   /**
@@ -450,11 +458,17 @@ class PostureMonitor extends Component {
     const { isSlouching } = event;
     // TODO: Implement final UX for slouch events
     if (isSlouching) {
-      if (AppState.currentState === 'background' && this.props.user.settings.slouchNotification) {
-        // Attempt to send out a slouch detection notification only on background mode
-        // and the slouch notification is enabled
+      const slouchNotificationEnabled = this.props.user.settings.slouchNotification;
+
+      if (AppState.currentState === 'background'
+        && slouchNotificationEnabled && this.state.shouldNotifySlouch) {
+        // Attempt to send out a slouch detection notification only on background mode,
+        // the slouch notification is enabled, and it was previously on a good posture state
         NotificationService.sendLocalNotification('Bad posture detected',
           'Fix your posture to look and feel your best!');
+
+        // Prevent sending out more notifications while still on the bad posture state
+        this.setState({ shouldNotifySlouch: false });
       }
 
       if (this.props.user.settings.phoneVibration) {
