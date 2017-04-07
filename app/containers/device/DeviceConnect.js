@@ -88,7 +88,21 @@ class DeviceConnect extends Component {
               { text: 'Cancel', onPress: this.goBackToScene },
               {
                 text: 'Retry',
-                onPress: () => this.props.dispatch(deviceActions.connect(deviceIdentifier)),
+                onPress: () => {
+                  if (deviceIdentifier) {
+                    this.props.dispatch(deviceActions.connect(deviceIdentifier));
+                  } else {
+                    // Attempt to use saved device identifier, if any
+                    SensitiveInfo.getItem(storageKeys.DEVICE)
+                      .then(savedDevice => {
+                        if (savedDevice) {
+                          this.props.dispatch(deviceActions.connect(savedDevice.identifier));
+                        } else {
+                          this.props.navigator.replace(routes.deviceScan);
+                        }
+                      });
+                  }
+                },
               },
             ]);
           } else {
