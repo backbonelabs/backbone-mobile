@@ -41,6 +41,20 @@ export default EStyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
+  helpContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    paddingTop: applyWidthDifference(30),
+    width: applyWidthDifference(300),
+  },
+  helpItems: {
+    paddingTop: applyWidthDifference(20),
+  },
+  helpSupport: {
+    paddingTop: applyWidthDifference(30),
+    textAlign: 'center',
+  },
   secondaryText: {
     fontSize: fixedResponsiveFontSize(12),
     marginTop: 5 * heightDifference,
