@@ -4,6 +4,12 @@ import {
   Alert,
   Switch,
   Slider,
+  AppState,
+  Linking,
+  Platform,
+  PushNotificationIOS,
+  NativeModules,
+  Text,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -11,9 +17,12 @@ import { debounce } from 'lodash';
 import userAction from '../actions/user';
 import styles from '../styles/alerts';
 import BodyText from '../components/BodyText';
+import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
 import thumbImage from '../images/settings/thumbImage.png';
 import trackImage from '../images/settings/trackImage.png';
+
+const { NotificationService, UserSettingService } = NativeModules;
 
 const AlertToggle = props => (
   <View style={styles.vibrationContainer}>
@@ -22,6 +31,7 @@ const AlertToggle = props => (
     </View>
     <View style={styles.vibrationSwitch}>
       <Switch
+        disabled={props.disabled}
         value={props.value}
         onValueChange={value => props.onChange(props.settingName, value)}
       />
@@ -32,6 +42,7 @@ const AlertToggle = props => (
 AlertToggle.propTypes = {
   value: PropTypes.bool,
   onChange: PropTypes.func,
+  disabled: PropTypes.bool,
   text: PropTypes.string.isRequired,
   settingName: PropTypes.string.isRequired,
 };
@@ -84,6 +95,16 @@ class Alerts extends Component {
     this.updateUserSettingsFromState = debounce(this.updateUserSettingsFromState, 1000);
   }
 
+  componentDidMount() {
+    this.checkNotificationPermission();
+
+    AppState.addEventListener('change', state => {
+      if (state === 'active') {
+        this.checkNotificationPermission();
+      }
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     // Check if errorMessage is present in nextProps
     if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
@@ -91,6 +112,29 @@ class Alerts extends Component {
       if (this.props.user.user.settings === nextProps.user.user.settings) {
         Alert.alert('Error', 'Your settings were NOT saved, please try again.');
       }
+    }
+  }
+
+  componentWillUnmount() {
+    // Remove listeners
+    AppState.removeEventListener('change');
+  }
+
+  @autobind
+  checkNotificationPermission() {
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.checkPermissions(permissions => {
+        // Update pushNotificationEnabled to true if permissions enabled
+        if (!!permissions.alert !== this.state.notificationsEnabled) {
+          this.setState({ pushNotificationEnabled: !!permissions.alert });
+        } else {
+          this.setState({ pushNotificationEnabled: false });
+        }
+      });
+    } else {
+      NotificationService.isPushNotificationEnabled((error, { notificationEnabled }) => {
+        this.setState({ pushNotificationEnabled: notificationEnabled });
+      });
     }
   }
 
@@ -106,10 +150,29 @@ class Alerts extends Component {
   @autobind
   updateUserSettingsFromState() {
     const { _id, settings } = this.props.user.user;
+
+    // Filter through states to exclude non-user-setting fields
+    const tempState = {
+      backboneVibration: this.state.backboneVibration,
+      vibrationStrength: this.state.vibrationStrength,
+      vibrationPattern: this.state.vibrationPattern,
+      phoneVibration: this.state.phoneVibration,
+      slouchNotification: this.state.slouchNotification,
+    };
+
     this.props.dispatch(userAction.updateUserSettings({
       _id,
-      settings: Object.assign({}, settings, this.state),
+      settings: Object.assign({}, settings, tempState),
     }));
+  }
+
+  @autobind
+  openSystemSetting() {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:');
+    } else {
+      UserSettingService.launchAppSettings();
+    }
   }
 
   render() {
@@ -119,6 +182,7 @@ class Alerts extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      pushNotificationEnabled,
     } = this.state;
 
     return (
@@ -192,9 +256,19 @@ class Alerts extends Component {
         <AlertToggle
           value={slouchNotification}
           onChange={this.updateSetting}
+          disabled={!pushNotificationEnabled}
           text="Slouch Notification"
           settingName="slouchNotification"
         />
+        {!pushNotificationEnabled ?
+          <View style={styles.notificationDisabledWarningContainer}>
+            <SecondaryText style={styles._notificationDisabledWarningText}>
+              Notifications are disabled in the System Setting.
+            </SecondaryText>
+            <Button primary text="Open Setting" onPress={this.openSystemSetting} />
+          </View>
+          : <Text />
+        }
         <View style={styles.batteryLifeWarningContainer}>
           <SecondaryText style={styles._batteryLifeWarningText}>
             Increasing the vibration strength and pattern of

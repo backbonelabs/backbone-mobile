@@ -4,8 +4,6 @@ import {
   Image,
   Alert,
   Linking,
-  Platform,
-  AppState,
   ScrollView,
   TouchableOpacity,
   NativeModules,
@@ -265,8 +263,6 @@ class Settings extends Component {
   }
 
   componentWillUnmount() {
-    // Remove listeners
-    AppState.removeEventListener('change');
   }
 
   getDevMenu() {
@@ -341,16 +337,6 @@ class Settings extends Component {
         },
       ]
     );
-  }
-
-  @autobind
-  updateNotifications(value) {
-    this.setState({ notificationsEnabled: value }, () => {
-      // Linking scheme for iOS only
-      if (Platform.OS === 'ios') {
-        Linking.openURL('app-settings:');
-      }
-    });
   }
 
   render() {

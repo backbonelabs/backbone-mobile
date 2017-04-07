@@ -62,6 +62,18 @@ export default EStyleSheet.create({
   sliderDetailsText: {
     color: '$primaryFontColor',
   },
+  notificationDisabledWarningContainer: {
+    alignItems: 'center',
+    paddingTop: 15 * heightDifference,
+    paddingHorizontal: applyWidthDifference(5),
+  },
+  notificationDisabledWarningText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '$primaryFontColor',
+    fontSize: fixedResponsiveFontSize(14),
+    paddingBottom: 10 * heightDifference,
+  },
   batteryLifeWarningContainer: {
     flex: 0.36,
     alignItems: 'center',
