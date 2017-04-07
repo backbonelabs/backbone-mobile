@@ -68,8 +68,6 @@ export default EStyleSheet.create({
     paddingHorizontal: applyWidthDifference(5),
   },
   notificationDisabledWarningText: {
-    justifyContent: 'center',
-    alignItems: 'center',
     color: '$primaryFontColor',
     fontSize: fixedResponsiveFontSize(14),
     paddingBottom: 10 * heightDifference,
