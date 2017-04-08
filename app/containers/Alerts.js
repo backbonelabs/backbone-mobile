@@ -93,12 +93,13 @@ class Alerts extends Component {
     this.updateSetting = debounce(this.updateSetting, 150);
     // Debounce user profile update to limit the number of API requests
     this.updateUserSettingsFromState = debounce(this.updateUserSettingsFromState, 1000);
+    this.appStateListener = null;
   }
 
   componentDidMount() {
     this.checkNotificationPermission();
 
-    AppState.addEventListener('change', state => {
+    this.appStateListener = AppState.addEventListener('change', state => {
       if (state === 'active') {
         this.checkNotificationPermission();
       }
@@ -117,7 +118,9 @@ class Alerts extends Component {
 
   componentWillUnmount() {
     // Remove listeners
-    AppState.removeEventListener('change');
+    if (this.appStateListener) {
+      this.appStateListener.remove();
+    }
   }
 
   @autobind
@@ -125,11 +128,7 @@ class Alerts extends Component {
     if (Platform.OS === 'ios') {
       PushNotificationIOS.checkPermissions(permissions => {
         // Update pushNotificationEnabled to true if permissions enabled
-        if (!!permissions.alert !== this.state.notificationsEnabled) {
-          this.setState({ pushNotificationEnabled: !!permissions.alert });
-        } else {
-          this.setState({ pushNotificationEnabled: false });
-        }
+        this.setState({ pushNotificationEnabled: !!permissions.alert });
       });
     } else {
       NotificationService.isPushNotificationEnabled((error, { notificationEnabled }) => {
@@ -152,17 +151,25 @@ class Alerts extends Component {
     const { _id, settings } = this.props.user.user;
 
     // Filter through states to exclude non-user-setting fields
-    const tempState = {
-      backboneVibration: this.state.backboneVibration,
-      vibrationStrength: this.state.vibrationStrength,
-      vibrationPattern: this.state.vibrationPattern,
-      phoneVibration: this.state.phoneVibration,
-      slouchNotification: this.state.slouchNotification,
+    const {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
+    } = this.state;
+
+    const newSettings = {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
     };
 
     this.props.dispatch(userAction.updateUserSettings({
       _id,
-      settings: Object.assign({}, settings, tempState),
+      settings: Object.assign({}, settings, newSettings),
     }));
   }
 
