@@ -254,7 +254,7 @@ class Alerts extends Component {
           settingName="phoneVibration"
         />
         <AlertToggle
-          value={slouchNotification}
+          value={slouchNotification && pushNotificationEnabled}
           onChange={this.updateSetting}
           disabled={!pushNotificationEnabled}
           text="Slouch Notification"
@@ -263,9 +263,13 @@ class Alerts extends Component {
         {!pushNotificationEnabled ?
           <View style={styles.notificationDisabledWarningContainer}>
             <SecondaryText style={styles._notificationDisabledWarningText}>
-              Notifications are disabled in the System Setting.
+              Notifications are disabled in your phone's settings.
             </SecondaryText>
-            <Button primary text="Open Setting" onPress={this.openSystemSetting} />
+            <Button
+              style={styles._systemSettingButton}
+              primary text="Open Phone Settings"
+              onPress={this.openSystemSetting}
+            />
           </View>
           : <Text />
         }

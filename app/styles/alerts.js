@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const border = {
   borderBottomWidth: 1,
@@ -64,22 +64,25 @@ export default EStyleSheet.create({
   },
   notificationDisabledWarningContainer: {
     alignItems: 'center',
-    paddingTop: 15 * heightDifference,
+    paddingTop: applyWidthDifference(15),
     paddingHorizontal: applyWidthDifference(5),
   },
   notificationDisabledWarningText: {
     color: '$primaryFontColor',
     fontSize: fixedResponsiveFontSize(14),
-    paddingBottom: 10 * heightDifference,
+    paddingBottom: applyWidthDifference(10),
   },
   batteryLifeWarningContainer: {
     flex: 0.36,
     alignItems: 'center',
-    paddingTop: 15 * heightDifference,
+    paddingTop: applyWidthDifference(15),
     paddingHorizontal: applyWidthDifference(5),
   },
   batteryLifeWarningText: {
     color: '$primaryFontColor',
     fontSize: fixedResponsiveFontSize(13),
+  },
+  systemSettingButton: {
+    width: applyWidthDifference(200),
   },
 });
