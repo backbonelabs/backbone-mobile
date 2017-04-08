@@ -81,7 +81,6 @@ export default EStyleSheet.create({
     paddingHorizontal: applyWidthDifference(5),
   },
   batteryLifeWarningText: {
-    color: '$primaryFontColor',
     fontSize: fixedResponsiveFontSize(13),
   },
   systemSettingButton: {

@@ -441,8 +441,8 @@ class PostureMonitor extends Component {
 
     // Mark the shouldNotifySlouch to true when it's on a good posture state
     // so the app will send the notification once it enters the bad posture state
-    if (distanceToDegrees(currentDistance) > distanceToDegrees(this.state.postureThreshold)
-      && !this.state.shouldNotifySlouch) {
+    const { shouldNotifySlouch, postureThreshold } = this.state;
+    if (!shouldNotifySlouch && currentDistance < postureThreshold) {
       this.setState({ shouldNotifySlouch: true });
     }
   }

@@ -93,17 +93,11 @@ class Alerts extends Component {
     this.updateSetting = debounce(this.updateSetting, 150);
     // Debounce user profile update to limit the number of API requests
     this.updateUserSettingsFromState = debounce(this.updateUserSettingsFromState, 1000);
-    this.appStateListener = null;
   }
 
   componentDidMount() {
     this.checkNotificationPermission();
-
-    this.appStateListener = AppState.addEventListener('change', state => {
-      if (state === 'active') {
-        this.checkNotificationPermission();
-      }
-    });
+    AppState.addEventListener('change', this.handleAppState);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,8 +112,13 @@ class Alerts extends Component {
 
   componentWillUnmount() {
     // Remove listeners
-    if (this.appStateListener) {
-      this.appStateListener.remove();
+    AppState.removeEventListener('change', this.handleAppState);
+  }
+
+  @autobind
+  handleAppState(state) {
+    if (state === 'active') {
+      this.checkNotificationPermission();
     }
   }
 
