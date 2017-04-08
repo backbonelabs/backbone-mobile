@@ -64,8 +64,10 @@ export default EStyleSheet.create({
   },
   notificationDisabledWarningContainer: {
     alignItems: 'center',
-    paddingTop: applyWidthDifference(15),
+    paddingTop: applyWidthDifference(12),
+    paddingBottom: applyWidthDifference(15),
     paddingHorizontal: applyWidthDifference(5),
+    ...border,
   },
   notificationDisabledWarningText: {
     color: '$primaryFontColor',
