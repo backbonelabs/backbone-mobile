@@ -55,6 +55,9 @@ export default EStyleSheet.create({
     paddingTop: applyWidthDifference(30),
     textAlign: 'center',
   },
+  scanning: {
+    textAlign: 'center',
+  },
   secondaryText: {
     fontSize: fixedResponsiveFontSize(12),
     marginTop: 5 * heightDifference,

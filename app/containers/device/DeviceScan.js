@@ -28,8 +28,7 @@ const { ON, OFF, TURNING_ON, TURNING_OFF } = constants.bluetoothStates;
 const DeviceConnectHelp = props => (
   <View style={styles.helpContainer}>
     <HeadingText size={2}>
-      {/* I'll add the ' at the end because unclosed ' messes with my IDE.*/}
-      Dont see your Backbone device?
+      Don't see your Backbone device?
     </HeadingText>
     <BodyText style={styles._helpItems}>
       1. Make sure your Backbone device and smartphone are close to each other.
@@ -38,7 +37,7 @@ const DeviceConnectHelp = props => (
       2. Fully charge the Backbone device using the provided USB cable.
     </BodyText>
     <BodyText style={styles._helpItems}>
-      3. Unpair the Backbone device with any other smartphones.
+      3. Unpair the Backbone device from any other smartphones.
     </BodyText>
     <TouchableOpacity onPress={() => props.navigator.replace(routes.support)}>
       <SecondaryText style={styles._helpSupport}>Need more help?</SecondaryText>
@@ -131,6 +130,7 @@ class DeviceScan extends Component {
     Mixpanel.track('scanForDevices');
     DeviceManagementService.scanForDevices(error => {
       if (error) {
+        this.setState({ inProgress: false });
         Alert.alert(
           'Error',
           'Unable to scan.', // Add error message here (if available)
@@ -208,8 +208,8 @@ class DeviceScan extends Component {
             />
           }
         >
-          <SecondaryText style={{ textAlign: 'center' }}>
-            {inProgress ? 'Refreshing...' : 'Pull down to refresh...'}
+          <SecondaryText style={styles._scanning}>
+            {inProgress ? 'Scanning...' : 'Pull down to refresh...'}
           </SecondaryText>
           { (!inProgress && deviceList.length === 0) &&
             <DeviceConnectHelp navigator={navigator} />
