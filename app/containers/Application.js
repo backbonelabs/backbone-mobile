@@ -187,11 +187,10 @@ class Application extends Component {
         // There is an active session, check if we're on the PostureMonitor scene
         if (this.navigator) {
           const routeStack = this.navigator.getCurrentRoutes();
-          // Stay on the current scene if postureMonitor is still in the stack
+          // Stay on the current scene if postureMonitor is still in the stack.
+          // Only navigate to it when the user's currently not accessing the monitor
           let shouldGoToPostureMonitor = true;
           for (let i = 0; i < routeStack.length; i++) {
-            // Route to the last route before DeviceScan / DeviceConnect
-            // If it matches device or postureDashboard in that order
             if (routeStack[i].name === routes.postureMonitor.name) {
               shouldGoToPostureMonitor = false;
               break;
