@@ -177,7 +177,7 @@ class PostureMonitor extends Component {
       if (event.hasActiveSession) {
         // There is currently an active session running on the device, resume session
         // only if we are not on the Alert scene
-        if (this.props.currentRoute.name !== routes.alerts.name) {
+        if (this.props.currentRoute.name === routes.postureMonitor.name) {
           this.resumeSession();
         }
       } else {
