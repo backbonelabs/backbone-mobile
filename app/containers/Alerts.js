@@ -4,6 +4,12 @@ import {
   Alert,
   Switch,
   Slider,
+  AppState,
+  Linking,
+  Platform,
+  PushNotificationIOS,
+  NativeModules,
+  Text,
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
@@ -11,9 +17,12 @@ import { debounce } from 'lodash';
 import userAction from '../actions/user';
 import styles from '../styles/alerts';
 import BodyText from '../components/BodyText';
+import Button from '../components/Button';
 import SecondaryText from '../components/SecondaryText';
 import thumbImage from '../images/settings/thumbImage.png';
 import trackImage from '../images/settings/trackImage.png';
+
+const { NotificationService, UserSettingService } = NativeModules;
 
 const AlertToggle = props => (
   <View style={styles.vibrationContainer}>
@@ -22,6 +31,7 @@ const AlertToggle = props => (
     </View>
     <View style={styles.vibrationSwitch}>
       <Switch
+        disabled={props.disabled}
         value={props.value}
         onValueChange={value => props.onChange(props.settingName, value)}
       />
@@ -32,6 +42,7 @@ const AlertToggle = props => (
 AlertToggle.propTypes = {
   value: PropTypes.bool,
   onChange: PropTypes.func,
+  disabled: PropTypes.bool,
   text: PropTypes.string.isRequired,
   settingName: PropTypes.string.isRequired,
 };
@@ -46,6 +57,7 @@ class Alerts extends Component {
           slouchTimeThreshold: PropTypes.number,
           postureThreshold: PropTypes.number,
           backboneVibration: PropTypes.bool,
+          slouchNotification: PropTypes.bool,
           phoneVibration: PropTypes.bool,
           vibrationStrength: PropTypes.number,
           vibrationPattern: PropTypes.number,
@@ -62,6 +74,7 @@ class Alerts extends Component {
       vibrationStrength,
       vibrationPattern,
       phoneVibration,
+      slouchNotification,
     } = this.props.user.user.settings;
 
     // Maintain settings in component state because the user settings object
@@ -73,12 +86,18 @@ class Alerts extends Component {
       vibrationStrength,
       vibrationPattern,
       phoneVibration,
+      slouchNotification,
     };
 
     // Debounce state update to smoothen quick slider value changes
     this.updateSetting = debounce(this.updateSetting, 150);
     // Debounce user profile update to limit the number of API requests
     this.updateUserSettingsFromState = debounce(this.updateUserSettingsFromState, 1000);
+  }
+
+  componentDidMount() {
+    this.checkNotificationPermission();
+    AppState.addEventListener('change', this.handleAppState);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -88,6 +107,32 @@ class Alerts extends Component {
       if (this.props.user.user.settings === nextProps.user.user.settings) {
         Alert.alert('Error', 'Your settings were NOT saved, please try again.');
       }
+    }
+  }
+
+  componentWillUnmount() {
+    // Remove listeners
+    AppState.removeEventListener('change', this.handleAppState);
+  }
+
+  @autobind
+  handleAppState(state) {
+    if (state === 'active') {
+      this.checkNotificationPermission();
+    }
+  }
+
+  @autobind
+  checkNotificationPermission() {
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.checkPermissions(permissions => {
+        // Update pushNotificationEnabled to true if permissions enabled
+        this.setState({ pushNotificationEnabled: !!permissions.alert });
+      });
+    } else {
+      NotificationService.isPushNotificationEnabled((error, { notificationEnabled }) => {
+        this.setState({ pushNotificationEnabled: notificationEnabled });
+      });
     }
   }
 
@@ -103,10 +148,37 @@ class Alerts extends Component {
   @autobind
   updateUserSettingsFromState() {
     const { _id, settings } = this.props.user.user;
+
+    // Filter through states to exclude non-user-setting fields
+    const {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
+    } = this.state;
+
+    const newSettings = {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
+    };
+
     this.props.dispatch(userAction.updateUserSettings({
       _id,
-      settings: Object.assign({}, settings, this.state),
+      settings: Object.assign({}, settings, newSettings),
     }));
+  }
+
+  @autobind
+  openSystemSetting() {
+    if (Platform.OS === 'ios') {
+      Linking.openURL('app-settings:');
+    } else {
+      UserSettingService.launchAppSettings();
+    }
   }
 
   render() {
@@ -115,6 +187,8 @@ class Alerts extends Component {
       vibrationStrength,
       vibrationPattern,
       phoneVibration,
+      slouchNotification,
+      pushNotificationEnabled,
     } = this.state;
 
     return (
@@ -185,6 +259,26 @@ class Alerts extends Component {
           text="Phone Vibration"
           settingName="phoneVibration"
         />
+        <AlertToggle
+          value={slouchNotification && pushNotificationEnabled}
+          onChange={this.updateSetting}
+          disabled={!pushNotificationEnabled}
+          text="Slouch Notification"
+          settingName="slouchNotification"
+        />
+        {!pushNotificationEnabled ?
+          <View style={styles.notificationDisabledWarningContainer}>
+            <SecondaryText style={styles._notificationDisabledWarningText}>
+              Notifications are disabled in your phone's settings.
+            </SecondaryText>
+            <Button
+              style={styles._systemSettingButton}
+              primary text="Open Phone Settings"
+              onPress={this.openSystemSetting}
+            />
+          </View>
+          : <Text />
+        }
         <View style={styles.batteryLifeWarningContainer}>
           <SecondaryText style={styles._batteryLifeWarningText}>
             Increasing the vibration strength and pattern of
