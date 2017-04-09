@@ -148,6 +148,11 @@ class PostureMonitor extends Component {
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
     this.backAndroidListener = null;
+
+    // Manually bind these methods to ensure valid instance state
+    // especially after interacting with foreground session controls
+    this.pauseSession = this.pauseSession.bind(this);
+    this.resumeSession = this.resumeSession.bind(this);
   }
 
   componentWillMount() {
@@ -582,7 +587,6 @@ class PostureMonitor extends Component {
     });
   }
 
-  @autobind
   pauseSession() {
     if (!this.state.hasPendingSessionOperation) {
       this.setState({ hasPendingSessionOperation: true });
@@ -619,7 +623,6 @@ class PostureMonitor extends Component {
     }
   }
 
-  @autobind
   resumeSession() {
     if (!this.state.hasPendingSessionOperation) {
       this.setState({ hasPendingSessionOperation: true });
