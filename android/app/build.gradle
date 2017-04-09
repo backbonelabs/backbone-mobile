@@ -99,14 +99,14 @@ def RELEASE_STORE_PASSWORD = localProperties.getProperty("RELEASE_STORE_PASSWORD
 def RELEASE_KEY_PASSWORD = localProperties.getProperty("RELEASE_KEY_PASSWORD")
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.3"
 
     defaultConfig {
         applicationId "co.backbonelabs.backbone"
         minSdkVersion 18 // Android 4.3, required for BLE
         targetSdkVersion 22
-        versionCode 180
+        versionCode 181
         versionName "1.0.7"
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -169,7 +169,7 @@ dependencies {
     compile project(':react-native-svg')
     compile project(':react-native-sensitive-info')
     compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:23.0.1"
+    compile "com.android.support:appcompat-v7:24.2.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile "com.mixpanel.android:mixpanel-android:4.+"
     compile "com.jakewharton.timber:timber:4.3.1"
