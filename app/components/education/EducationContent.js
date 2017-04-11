@@ -1,34 +1,29 @@
 import React, { PropTypes } from 'react';
-import { View, Text } from 'react-native';
-import routes from '../../routes';
+import { View, NativeModules } from 'react-native';
+import EducationListItem from './EducationListItem';
+import styles from '../../styles/education/educationContent';
+
+const { Environment } = NativeModules;
 
 // Sample titles
 // The titles will be used in the url path in order
 // to display the webview.
 const educationTitles = ['EducationOne', 'EducationTwo'];
 
-const EducationContent = props => (
+const EducationContent = ({ navigator }) => (
   <View>
-    {educationTitles.map((title, idx) => (
-      <Text
-        style={{
-          textAlign: 'center',
-          backgroundColor: '#eee',
-          marginBottom: 2,
-          padding: 10,
-        }}
-        key={idx}
-        onPress={() =>
-          props.navigator.push({
-            ...routes.educationWebView,
-            props: {
-              title,
-            },
-          })}
-      >
-        {title}
-      </Text>
-    ))}
+    {educationTitles.map((title, idx) => {
+      const uri = `${Environment.WEB_SERVER_URL}/education/${title}`;
+      return (
+        <EducationListItem
+          style={styles._titleList}
+          key={idx}
+          title={title}
+          uri={uri}
+          navigator={navigator}
+        />
+      );
+    })}
   </View>
 );
 
