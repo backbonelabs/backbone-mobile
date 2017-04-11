@@ -16,6 +16,7 @@ class BodyText extends React.Component {
   render() {
     const {
       style,
+      onPress,
       ...remainingProps,
     } = this.props;
 
@@ -23,6 +24,7 @@ class BodyText extends React.Component {
       <View ref={component => { this._root = component; }}>
         <Text
           style={[styles._body, style]}
+          onPress={onPress}
           {...{ remainingProps, allowFontScaling }}
         >
           {this.props.children}
