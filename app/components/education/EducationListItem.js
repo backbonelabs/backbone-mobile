@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { View } from 'react-native';
 import BodyText from '../BodyText';
 import routes from '../../routes';
 import styles from '../../styles/education/educationContent';
@@ -13,9 +14,11 @@ const EducationListItem = ({ title, uri, navigator }) => {
       },
     });
   return (
-    <BodyText style={styles._titleList} onPress={handleOnPress}>
-      {title}
-    </BodyText>
+    <View style={styles.titleList}>
+      <BodyText onPress={handleOnPress}>
+        {title}
+      </BodyText>
+    </View>
   );
 };
 
