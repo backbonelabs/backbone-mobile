@@ -12,7 +12,7 @@ const educationTitles = ['EducationOne', 'EducationTwo'];
 const EducationContent = ({ navigator }) => (
   <View>
     {educationTitles.map((title, idx) => {
-      const uri = `${Environment.WEB_SERVER_URL}/education/${title}`;
+      const uri = `${Environment.WEB_SERVER_URL}/mobile/education/${title}`;
       return (
         <EducationListItem
           key={idx}
