@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { View, NativeModules } from 'react-native';
 import EducationListItem from './EducationListItem';
-import styles from '../../styles/education/educationContent';
 
 const { Environment } = NativeModules;
 
@@ -16,7 +15,6 @@ const EducationContent = ({ navigator }) => (
       const uri = `${Environment.WEB_SERVER_URL}/education/${title}`;
       return (
         <EducationListItem
-          style={styles._titleList}
           key={idx}
           title={title}
           uri={uri}
