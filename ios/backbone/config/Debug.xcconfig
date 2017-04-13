@@ -3,9 +3,9 @@
 DEV_MODE = true
 
 // Define all of the following in Debug.local.xcconfig
-API_SERVER_URL = http:/$()/192.168.1.1:3000 // The $() is required for Xcode to recognize the double forward slashes
+API_SERVER_URL = http:/$()/10.12.2.174:3000 // The $() is required for Xcode to recognize the double forward slashes
                                             // You must override the URL in Debug.local.xcconfig with your local server address
-WEB_SERVER_URL = http:/$()/192.168.1.1:9999
+WEB_SERVER_URL = http:/$()/10.12.2.174:9999
 MIXPANEL_TOKEN = replace me
 BUGSNAG_API_KEY = replace me
 

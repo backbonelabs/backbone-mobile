@@ -7,7 +7,7 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
@@ -74,6 +74,11 @@ class PostureDashboard extends Component {
       }),
     }),
   };
+
+  constructor(props) {
+    super(props);
+    autobind(this);
+  }
 
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
@@ -240,7 +245,6 @@ class PostureDashboard extends Component {
    * @param  {Date}   fromDate Starting date
    * @param  {Date}   toDate   Ending date
    */
-  @autobind
   getUserSessions(userId, fromDate, toDate) {
     this.props.dispatch(userActions.fetchUserSessions({
       fromDate: fromDate.toISOString(),
@@ -248,12 +252,10 @@ class PostureDashboard extends Component {
     }));
   }
 
-  @autobind
   setSessionTime(seconds) {
     this.props.dispatch(postureActions.setSessionTime(seconds));
   }
 
-  @autobind
   showAppRatingModal() {
     const appRatingEventName = 'appRating';
     const { _id: userId } = this.props.user.user;
@@ -326,7 +328,6 @@ class PostureDashboard extends Component {
     }));
   }
 
-  @autobind
   showFeedbackSurveyModal() {
     const feedbackSurveyEventName = 'feedbackSurvey';
     const { _id: userId } = this.props.user.user;
@@ -399,7 +400,6 @@ class PostureDashboard extends Component {
     }));
   }
 
-  @autobind
   start() {
     // First of all, check if Bluetooth is enabled
     BluetoothService.getState((error, { state }) => {

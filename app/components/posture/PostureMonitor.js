@@ -589,7 +589,6 @@ class PostureMonitor extends Component {
     });
   }
 
-  @autobind
   pauseSession() {
     if (!this.state.hasPendingSessionOperation) {
       this.setState({ hasPendingSessionOperation: true });
@@ -626,7 +625,6 @@ class PostureMonitor extends Component {
     }
   }
 
-  @autobind
   resumeSession() {
     if (!this.state.hasPendingSessionOperation) {
       this.setState({ hasPendingSessionOperation: true });

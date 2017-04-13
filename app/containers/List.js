@@ -3,7 +3,7 @@ import {
   ListView,
   TouchableOpacity,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 
 export default class List extends Component {
   static propTypes = {
@@ -14,6 +14,7 @@ export default class List extends Component {
 
   constructor(props) {
     super(props);
+    autobind(this);
     this.ds = new ListView.DataSource({ rowHasChanged: () => true });
     this.state = { dataSource: this.ds.cloneWithRows(this.props.dataBlob) };
   }
@@ -22,7 +23,6 @@ export default class List extends Component {
     this.setState({ dataSource: this.state.dataSource.cloneWithRows(nextProps.dataBlob) });
   }
 
-  @autobind
   renderRow(rowData) {
     return this.props.onPressRow ?
       <TouchableOpacity

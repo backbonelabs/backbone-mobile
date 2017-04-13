@@ -5,7 +5,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/tutorial';
 
@@ -18,6 +18,7 @@ export default class Tutorial extends Component {
 
   constructor() {
     super();
+    autobind(this);
     this.state = {
       step: 0,
       valueX: 0,
@@ -73,7 +74,6 @@ export default class Tutorial extends Component {
     return <View style={styles.stepIndicatorContainer}>{stepIndicators}</View>;
   }
 
-  @autobind
   previousStep() {
     this.setState({
       step: this.state.step - 1,
@@ -81,7 +81,6 @@ export default class Tutorial extends Component {
     }, this.animationSequence);
   }
 
-  @autobind
   nextStep() {
     this.setState({
       step: this.state.step + 1,

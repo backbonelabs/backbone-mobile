@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import userActions from '../actions/user';
@@ -109,6 +109,7 @@ class Profile extends Component {
 
   constructor(props) {
     super(props);
+    autobind(this);
     const { user } = this.props;
     this.state = {
       nickname: user.nickname,
@@ -166,7 +167,6 @@ class Profile extends Component {
    * @param {String} pickerType Data picker to open. If undefined, the
    *                            data pickers will be hidden
    */
-  @autobind
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was editing nickname or email
     Keyboard.dismiss();
@@ -252,7 +252,6 @@ class Profile extends Component {
    * @param {*}       value
    * @param {Boolean} clearPickerType Whether or not to hide picker components on update
    */
-  @autobind
   updateProfile(field, value, clearPickerType) {
     const newState = { [field]: value };
     if (clearPickerType) {
@@ -266,7 +265,6 @@ class Profile extends Component {
    * @param {String}  field  Object key for accessing state/prop value
    * @param {String}  value  Text input value
    */
-  @autobind
   fieldInputChangeHandler(field, value) {
     let invalidData = false;
 
@@ -296,7 +294,6 @@ class Profile extends Component {
    * Resets field back to initial user profile value if validation fails
    * @param {String}  field  Object key for accessing state/prop value
    */
-  @autobind
   fieldInputBlurHandler(field) {
     // Check if state property value is falsy
     if (!this.state[field]) {
@@ -334,7 +331,6 @@ class Profile extends Component {
   }
 
   // Prepare user data for update
-  @autobind
   prepareUserUpdate() {
     const {
       nickname,

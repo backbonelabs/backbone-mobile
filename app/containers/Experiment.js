@@ -1,6 +1,6 @@
 // import React, { Component, PropTypes } from 'react';
 // import { View } from 'react-native';
-// import autobind from 'autobind-decorator';
+// import autobind from 'class-autobind';
 // import { connect } from 'react-redux';
 
 // class Experiment extends Component {

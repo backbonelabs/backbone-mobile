@@ -8,7 +8,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import constants from '../utils/constants';
 import Spinner from '../components/Spinner';
@@ -38,6 +38,7 @@ class Login extends Component {
 
   constructor() {
     super();
+    autobind(this);
     this.state = {
       email: '',
       password: '',
@@ -68,7 +69,6 @@ class Login extends Component {
     }
   }
 
-  @autobind
   onEmailChange(email) {
     const stateChanges = {
       validEmail: constants.emailRegex.test(email),
@@ -82,7 +82,6 @@ class Login extends Component {
     this.setState(stateChanges);
   }
 
-  @autobind
   onPasswordChange(password) {
     if (this.state.passwordPristine) {
       return this.setState({ passwordPristine: false, password });
@@ -91,7 +90,6 @@ class Login extends Component {
     return this.setState({ password });
   }
 
-  @autobind
   login() {
     const { email, password } = this.state;
     this.props.dispatch(authActions.login({ email, password }));

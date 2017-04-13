@@ -4,7 +4,7 @@ import {
   View,
   Alert,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import deviceActions from '../actions/device';
 import sensorSmall from '../images/settings/sensorSmall.png';
@@ -30,12 +30,14 @@ class Device extends Component {
     }),
   };
 
-  @autobind
+  constructor(props) {
+    super(props);
+    autobind(this);
+  }
   addDevice() {
     this.props.navigator.push(routes.deviceAdd);
   }
 
-  @autobind
   unpairDevice() {
     // Prompt user to confirm that they want to unpair device
     Alert.alert(
@@ -51,7 +53,6 @@ class Device extends Component {
     );
   }
 
-  @autobind
   updateFirmware() {
     const { batteryLevel } = this.props.device;
     if (!this.props.isConnected) {

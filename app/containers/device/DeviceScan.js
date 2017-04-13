@@ -8,7 +8,7 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../../styles/device';
@@ -61,6 +61,7 @@ class DeviceScan extends Component {
 
   constructor() {
     super();
+    autobind(this);
     this.state = {
       // List's data source
       deviceList: [],
@@ -112,7 +113,6 @@ class DeviceScan extends Component {
   /**
    * Toggles the RefreshControl, clears the deviceList, and initiates scanning
    */
-  @autobind
   onRefresh() {
     this.setState({
       inProgress: true,
@@ -124,7 +124,6 @@ class DeviceScan extends Component {
   /**
    * Initiates a 5 second scanning for Backbone devices.
    */
-  @autobind
   initiateScanning() {
     // Initiate scanning
     Mixpanel.track('scanForDevices');
@@ -158,7 +157,6 @@ class DeviceScan extends Component {
    * Selects a device to connect to
    * @param {Object} deviceData Selected device's data
    */
-  @autobind
   selectDevice(deviceData) {
     // Stop scanning, since device has been selected
     DeviceManagementService.stopScanForDevices();
@@ -172,7 +170,6 @@ class DeviceScan extends Component {
    * Formats device data into a list item row
    * @param {Object}  rowData  Device data for a single row
    */
-  @autobind
   formatDeviceRow(rowData) {
     return (
       <View style={styles.cardStyle}>

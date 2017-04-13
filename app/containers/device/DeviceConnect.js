@@ -4,7 +4,7 @@ import {
   Alert,
   NativeModules,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import routes from '../../routes';
 import constants from '../../utils/constants';
@@ -38,6 +38,11 @@ class DeviceConnect extends Component {
     isConnecting: PropTypes.bool,
     errorMessage: PropTypes.string,
   };
+
+  constructor(props) {
+    super(props);
+    autobind(this);
+  }
 
   componentWillMount() {
     const { device, currentRoute } = this.props;
@@ -115,7 +120,6 @@ class DeviceConnect extends Component {
     }
   }
 
-  @autobind
   goBackToScene() {
     const routebackScenes = {
       device: 'device',
@@ -138,7 +142,6 @@ class DeviceConnect extends Component {
     return this.props.navigator.replace(routes.postureDashboard);
   }
 
-  @autobind
   showBluetoothError() {
     Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
     this.goBackToScene();

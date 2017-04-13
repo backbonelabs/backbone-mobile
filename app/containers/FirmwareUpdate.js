@@ -9,7 +9,7 @@ import {
   MKProgress,
   MKSpinner,
 } from 'react-native-material-kit';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import ReactNativeFS from 'react-native-fs';
 import { connect } from 'react-redux';
 import routes from '../routes';
@@ -58,6 +58,7 @@ class FirmwareUpdate extends Component {
 
   constructor() {
     super();
+    autobind(this);
     this.state = {
       isUpdating: null,
       updateProgress: 0,
@@ -150,7 +151,6 @@ class FirmwareUpdate extends Component {
     this.firmwareUploadProgress.remove();
   }
 
-  @autobind
   firmwareUpdateStatusHandler(status) {
     const { status: firmwareStatus, code: errorCode, command: currentCommand } = status;
 
@@ -183,13 +183,11 @@ class FirmwareUpdate extends Component {
     }
   }
 
-  @autobind
   firmwareUploadProgressHandler(progress) {
     // Set state to firmware progress percentage
     this.setState({ updateProgress: progress.percentage });
   }
 
-  @autobind
   successfulUpdateHandler() {
     BootLoaderService.setHasPendingUpdate(false);
 
@@ -203,7 +201,6 @@ class FirmwareUpdate extends Component {
    * to the user.
    * @param {Error} err
    */
-  @autobind
   failedUpdateHandler(err) {
     BootLoaderService.setHasPendingUpdate(false);
 
