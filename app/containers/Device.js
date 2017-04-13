@@ -34,6 +34,7 @@ class Device extends Component {
     super(props);
     autobind(this);
   }
+
   addDevice() {
     this.props.navigator.push(routes.deviceAdd);
   }
