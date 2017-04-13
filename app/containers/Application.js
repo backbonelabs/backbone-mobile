@@ -187,8 +187,17 @@ class Application extends Component {
         // There is an active session, check if we're on the PostureMonitor scene
         if (this.navigator) {
           const routeStack = this.navigator.getCurrentRoutes();
-          const currentRoute = routeStack[routeStack.length - 1];
-          if (currentRoute.name !== routes.postureMonitor.name) {
+          // Stay on the current scene if postureMonitor is still in the stack.
+          // Only navigate to it when the user's currently not accessing the monitor
+          let shouldGoToPostureMonitor = true;
+          for (let i = 0; i < routeStack.length; i++) {
+            if (routeStack[i].name === routes.postureMonitor.name) {
+              shouldGoToPostureMonitor = false;
+              break;
+            }
+          }
+
+          if (shouldGoToPostureMonitor) {
             // Not currently on the PostureMonitor scene
             // Navigate to PostureMonitor to resume session using previous session parameters
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)

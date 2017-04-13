@@ -178,7 +178,11 @@ class PostureMonitor extends Component {
     this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
       if (event.hasActiveSession) {
         // There is currently an active session running on the device, resume session
-        this.resumeSession();
+        // only if we are not on the Alert scene
+        if (this.props.currentRoute.name === routes.postureMonitor.name
+          && this.state.sessionState === sessionStates.RUNNING) {
+          this.resumeSession();
+        }
       } else {
         // There is no active session running on the device, invoke statsHandler to show summary
         this.statsHandler(event);
