@@ -4,7 +4,7 @@ import {
   InteractionManager,
 } from 'react-native';
 import Calendar from 'react-native-calendar';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import styles from '../../../styles/posture/postureReport';
@@ -25,6 +25,7 @@ class PostureReport extends Component {
 
   constructor(props) {
     super(props);
+    autobind(this);
     this.state = {
       sessions: {},
       startDate: moment().format('YYYY-MM-DD'),
@@ -69,7 +70,6 @@ class PostureReport extends Component {
     }
   }
 
-  @autobind
   onDateSelect(date) {
     const formatDate = moment(date).format('YYYY-MM-DD');
     const selectedSession = this.state.sessions[formatDate];
@@ -86,7 +86,6 @@ class PostureReport extends Component {
     return null;
   }
 
-  @autobind
   onTouchPrev(date) {
     const { startDate } = this.state;
     const selectedMonth = date.startOf('month').format('YYYY-MM-DD');
@@ -109,7 +108,6 @@ class PostureReport extends Component {
     return null;
   }
 
-  @autobind
   onTouchNext(date) {
     const { startDate } = this.state;
     const selectedMonth = date.startOf('month').format('YYYY-MM-DD');

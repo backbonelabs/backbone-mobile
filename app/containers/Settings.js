@@ -9,7 +9,7 @@ import {
   NativeModules,
   InteractionManager,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import appActions from '../actions/app';
@@ -248,6 +248,7 @@ class Settings extends Component {
 
   constructor() {
     super();
+    autobind(this);
     this.state = {
       notificationsEnabled: false,
       loading: true,
@@ -319,7 +320,6 @@ class Settings extends Component {
     );
   }
 
-  @autobind
   signOut() {
     Alert.alert(
       'Sign Out',

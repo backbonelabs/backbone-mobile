@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoarding/profile';
 import BodyText from '../../../components/BodyText';
@@ -44,6 +44,7 @@ export default class ProfilePicker extends Component {
 
   constructor() {
     super();
+    autobind(this);
 
     // Generate numeric and unit picker values
     this.pickerNumericValues = {
@@ -115,23 +116,19 @@ export default class ProfilePicker extends Component {
     }
   }
 
-  @autobind
   _heightLabel(value) {
     return this.state.currentUnit === heightConstants.units.IN ?
       `${Math.floor(value / 12)}ft ${value % 12}in` : `${value}cm`;
   }
 
-  @autobind
   _weightLabel(value) {
     return `${value}${constants.weightUnitIdToLabel[this.state.currentUnit].toLowerCase()}`;
   }
 
-  @autobind
   _valueChangeHandler(value) {
     this.setState({ currentValue: value });
   }
 
-  @autobind
   _heightTypeChangeHandler(unit) {
     const { currentValue, currentUnit } = this.state;
     if (unit !== currentUnit) {
@@ -148,7 +145,6 @@ export default class ProfilePicker extends Component {
     }
   }
 
-  @autobind
   _weightTypeChangeHandler(unit) {
     const { currentValue, currentUnit } = this.state;
     if (unit !== currentUnit) {

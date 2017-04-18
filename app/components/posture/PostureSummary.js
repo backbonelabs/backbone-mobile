@@ -3,7 +3,7 @@ import {
   View,
   Image,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { compact } from 'lodash';
 import BodyText from '../../components/BodyText';
 import HeadingText from '../../components/HeadingText';
@@ -23,7 +23,7 @@ class PostureSummary extends Component {
   }
   constructor() {
     super();
-
+    autobind(this);
     this.state = {
       stars: {},
       intervalId: '',
@@ -40,7 +40,6 @@ class PostureSummary extends Component {
     clearInterval(this.intervalId);
   }
 
-  @autobind
   addStar() {
     const stars = { ...this.state.stars };
     stars[++this.counter] = (

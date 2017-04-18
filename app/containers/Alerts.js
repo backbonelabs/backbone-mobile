@@ -11,7 +11,7 @@ import {
   NativeModules,
   Text,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
 import userAction from '../actions/user';
@@ -69,6 +69,7 @@ class Alerts extends Component {
 
   constructor(props) {
     super(props);
+    autobind(this);
     const {
       backboneVibration,
       vibrationStrength,
@@ -115,14 +116,12 @@ class Alerts extends Component {
     AppState.removeEventListener('change', this.handleAppState);
   }
 
-  @autobind
   handleAppState(state) {
     if (state === 'active') {
       this.checkNotificationPermission();
     }
   }
 
-  @autobind
   checkNotificationPermission() {
     if (Platform.OS === 'ios') {
       PushNotificationIOS.checkPermissions(permissions => {
@@ -136,7 +135,6 @@ class Alerts extends Component {
     }
   }
 
-  @autobind
   updateSetting(field, value) {
     this.setState({ [field]: value });
     this.updateUserSettingsFromState();
@@ -145,7 +143,6 @@ class Alerts extends Component {
   /**
    * Update user settings in the backend
    */
-  @autobind
   updateUserSettingsFromState() {
     const { _id, settings } = this.props.user.user;
 
@@ -172,7 +169,6 @@ class Alerts extends Component {
     }));
   }
 
-  @autobind
   openSystemSetting() {
     if (Platform.OS === 'ios') {
       Linking.openURL('app-settings:');

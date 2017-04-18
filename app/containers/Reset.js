@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import authActions from '../actions/auth';
 import Input from '../components/Input';
@@ -29,6 +29,7 @@ class Reset extends Component {
 
   constructor() {
     super();
+    autobind(this);
     this.state = {
       email: null,
       emailPristine: true,
@@ -52,7 +53,6 @@ class Reset extends Component {
     }
   }
 
-  @autobind
   onEmailChange(email) {
     const stateChanges = {
       validEmail: constants.emailRegex.test(email),
@@ -66,7 +66,6 @@ class Reset extends Component {
     this.setState(stateChanges);
   }
 
-  @autobind
   sendPasswordResetRequest() {
     this.setState({ showIcon: false });
     this.props.dispatch(authActions.reset({ email: this.state.email }));

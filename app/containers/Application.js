@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   BackAndroid,
 } from 'react-native';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
 import { UPDATE_BLUETOOTH_STATE } from '../actions/types';
@@ -85,7 +85,7 @@ class Application extends Component {
 
   constructor() {
     super();
-
+    autobind(this);
     this.state = {
       initializing: true,
       initialRoute: null,
@@ -374,7 +374,6 @@ class Application extends Component {
     }, 500);
   }
 
-  @autobind
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
       // Fetch device info when app comes back into foreground
@@ -385,12 +384,10 @@ class Application extends Component {
     }
   }
 
-  @autobind
   configureScene() {
     return CustomSceneConfig;
   }
 
-  @autobind
   navigate(route) {
     const routeStack = this.navigator.getCurrentRoutes();
     const currentRoute = routeStack[routeStack.length - 1];
@@ -422,7 +419,6 @@ class Application extends Component {
     });
   }
 
-  @autobind
   renderScene(route, navigator) {
     const { component: RouteComponent } = route;
     // Tab bar component data

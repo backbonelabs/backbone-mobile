@@ -10,7 +10,7 @@ import {
   BackAndroid,
 } from 'react-native';
 import { connect } from 'react-redux';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { debounce, isEqual, isFunction } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
@@ -119,7 +119,7 @@ class PostureMonitor extends Component {
 
   constructor(props) {
     super(props);
-
+    autobind(this);
     this.state = {
       sessionState: sessionStates.STOPPED,
       hasPendingSessionOperation: false,
@@ -378,7 +378,6 @@ class PostureMonitor extends Component {
    * @param {Object}   session.parameters Session parameters
    * @param {Function} [callback]         Optional callback to invoke after setting state
    */
-  @autobind
   setSessionState(session, callback) {
     const { state, parameters } = session;
     if ((state === sessionStates.RUNNING || state === sessionStates.PAUSED) && parameters) {
@@ -399,7 +398,6 @@ class PostureMonitor extends Component {
     });
   }
 
-  @autobind
   showAlertOnFailedConnection() {
     const { sessionState } = this.state;
 
@@ -435,7 +433,6 @@ class PostureMonitor extends Component {
    * @param {Number} event.currentDistance How far away the user is from the control point
    * @param {Number} event.timeElapsed     Number of seconds the session has been running
    */
-  @autobind
   sessionDataHandler(event) {
     const { currentDistance, timeElapsed } = event;
     this.setState({
@@ -457,7 +454,6 @@ class PostureMonitor extends Component {
    * NOTE: THIS IS NOT COMPLETELY IMPLEMENTED AND WILL
    * UNDERGO CHANGES BASED ON HOW WE WANT TO TAILOR THE UX.
    */
-  @autobind
   slouchHandler(event) {
     const { isSlouching } = event;
     // TODO: Implement final UX for slouch events
@@ -490,7 +486,6 @@ class PostureMonitor extends Component {
    * @param {Number} event.totalDuration Total elapsed time of the session, in seconds
    * @param {Number} event.slouchTime    Total slouch time, in seconds
    */
-  @autobind
   statsHandler(event) {
     const { totalDuration, slouchTime } = event;
     this.saveUserSession();
@@ -543,7 +538,6 @@ class PostureMonitor extends Component {
     Alert.alert(title, message, buttons);
   }
 
-  @autobind
   startSession() {
     const {
       sessionDuration,
@@ -599,7 +593,6 @@ class PostureMonitor extends Component {
     });
   }
 
-  @autobind
   pauseSession() {
     if (!this.state.hasPendingSessionOperation) {
       this.setState({ hasPendingSessionOperation: true });
@@ -636,7 +629,6 @@ class PostureMonitor extends Component {
     }
   }
 
-  @autobind
   resumeSession() {
     if (!this.state.hasPendingSessionOperation) {
       this.setState({ hasPendingSessionOperation: true });
@@ -688,7 +680,6 @@ class PostureMonitor extends Component {
     }
   }
 
-  @autobind
   stopSession() {
     if (!this.state.hasPendingSessionOperation) {
       if (this.state.sessionState === sessionStates.STOPPED) {
@@ -732,7 +723,6 @@ class PostureMonitor extends Component {
   /**
    * Updates a user's last session date and updates their daily streak as needed
    */
-  @autobind
   saveUserSession() {
     const { user: { _id, dailyStreak, lastSession }, dispatch } = this.props;
     const today = new Date();
@@ -768,7 +758,6 @@ class PostureMonitor extends Component {
   /**
    * Tracks a user's posture session on Mixpanel
    */
-  @autobind
   trackUserSession() {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     const { slouchTime, totalDuration } = this.state;
@@ -784,7 +773,6 @@ class PostureMonitor extends Component {
   /**
    * Tracks a user's dailyStreak on Mixpanel
    */
-  @autobind
   trackDailyStreak(current, previous) {
     Mixpanel.trackWithProperties('dailyStreak', {
       // If we see that a user is no longer on a streak, we can look at the
@@ -798,7 +786,6 @@ class PostureMonitor extends Component {
   /**
    * Displays a modal containing the session summary
    */
-  @autobind
   showSummary() {
     const { sessionDuration, slouchTime, totalDuration } = this.state;
 
@@ -822,7 +809,6 @@ class PostureMonitor extends Component {
    * @param {Number} distance The distance away from the control point at which the user
    *                          is considered slouching
    */
-  @autobind
   updatePostureThreshold(distance) {
     this.setState({
       postureThreshold: distance,

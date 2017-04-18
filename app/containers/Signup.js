@@ -11,7 +11,7 @@ import {
   NativeModules,
 } from 'react-native';
 import { MKCheckbox } from 'react-native-material-kit';
-import autobind from 'autobind-decorator';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
 import Spinner from '../components/Spinner';
@@ -39,6 +39,7 @@ class Signup extends Component {
 
   constructor() {
     super();
+    autobind(this);
     this.state = {
       email: '',
       password: '',
@@ -57,7 +58,6 @@ class Signup extends Component {
     }
   }
 
-  @autobind
   onEmailChange(email) {
     const stateChanges = {
       validEmail: constants.emailRegex.test(email),
@@ -71,7 +71,6 @@ class Signup extends Component {
     this.setState(stateChanges);
   }
 
-  @autobind
   onPasswordChange(password) {
     if (this.state.passwordPristine) {
       return this.setState({ passwordPristine: false, password });
@@ -80,12 +79,10 @@ class Signup extends Component {
     return this.setState({ password });
   }
 
-  @autobind
   onTOSChange(event) {
     this.setState({ acceptedTOS: event.checked });
   }
 
-  @autobind
   signup() {
     const { email, password } = this.state;
     this.props.dispatch(authActions.signup({ email, password }));
@@ -258,4 +255,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(Signup);
-
