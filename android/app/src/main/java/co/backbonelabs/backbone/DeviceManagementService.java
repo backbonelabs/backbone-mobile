@@ -15,6 +15,7 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
 
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.EventEmitter;
@@ -52,24 +53,29 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         }
         else {
             scanning = true;
-            final HashMap<String, BluetoothDevice> deviceCollection = new HashMap<String, BluetoothDevice>();
+            final HashMap<String, ArrayList> deviceCollection = new HashMap<String, ArrayList>();
 
             Timber.d("Starting scan");
             bluetoothService.startScanForBLEDevices(new BluetoothService.DeviceScanCallBack() {
                 @Override
                 public void onDeviceFound(BluetoothDevice device, int rssi) {
-                    deviceCollection.put(device.getAddress(), device);
+                    // Create a Arraylist for every new bluetooth device found. Array
+                    // stores the bluetooth device name, address, and RSSI
+                    ArrayList newDeviceInfo = new ArrayList();
+                    newDeviceInfo.add(device.getName());
+                    newDeviceInfo.add(device.getAddress());
+                    newDeviceInfo.add(rssi);
+                    deviceCollection.put(device.getAddress(), newDeviceInfo);
 
                     // Map device collection to a JS-compatible array of JS-compatible objects
                     WritableArray deviceList = Arguments.createArray();
-                    Set<Map.Entry<String, BluetoothDevice>> entrySet = deviceCollection.entrySet();
+                    Set<Map.Entry<String, ArrayList>> entrySet = deviceCollection.entrySet();
                     for (Map.Entry entry : entrySet) {
-                        BluetoothDevice _device = (BluetoothDevice) entry.getValue();
-
+                        ArrayList deviceEntryArray = (ArrayList)entry.getValue();
                         WritableMap deviceInfo = Arguments.createMap();
-                        deviceInfo.putString("name", _device.getName());
-                        deviceInfo.putString("identifier", _device.getAddress());
-                        deviceInfo.putInt("RSSI", rssi);
+                        deviceInfo.putString("name", deviceEntryArray.get(0).toString());
+                        deviceInfo.putString("identifier", deviceEntryArray.get(1).toString());
+                        deviceInfo.putInt("RSSI", (int) deviceEntryArray.get(2));
 
                         deviceList.pushMap(deviceInfo);
                     }
