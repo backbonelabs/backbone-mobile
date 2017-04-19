@@ -67,9 +67,9 @@ class DeviceScan extends Component {
       deviceList: [],
       // true for the initial scan when component mounts
       inProgress: true,
-      scanTimeout: null,
     };
 
+    this.scanTimeout = null;
     this.devicesFoundListener = null;
   }
 
