@@ -113,6 +113,9 @@ class ChangePassword extends Component {
       if ((newPassword.length > 0) && (currentPassword.length > 0)) {
         passwordWarning = (newPassword !== currentPassword) ?
         '' : 'New Password and Current Password cannot be the same';
+
+        passwordWarning += (newPassword.length < 8) ?
+        'New Password must be at least 8 characters' : '';
       }
     }
 
