@@ -69,6 +69,7 @@ class DeviceScan extends Component {
       inProgress: true,
     };
 
+    this.scanTimeout = null;
     this.devicesFoundListener = null;
   }
 
@@ -105,6 +106,9 @@ class DeviceScan extends Component {
   componentWillUnmount() {
     // Remove listener
     this.devicesFoundListener.remove();
+
+    // Clears the device scan timer
+    clearTimeout(this.scanTimeout);
 
     // Stop scanning for devices
     DeviceManagementService.stopScanForDevices();
@@ -145,7 +149,7 @@ class DeviceScan extends Component {
           stackTrace: ['initiateScanning', 'DeviceManagementService.scanForDevices'],
         });
       } else {
-        setTimeout(() => {
+        this.scanTimeout = setTimeout(() => {
           DeviceManagementService.stopScanForDevices();
           this.setState({ inProgress: false });
         }, 5000);
