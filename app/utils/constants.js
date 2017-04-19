@@ -45,12 +45,12 @@ export default {
     SINGLE_REMINDER: 104,
     INFREQUENT_REMINDER: 105,
   },
-  vibrationSpeed: {
+  vibrationSpeeds: {
     SLOW: 0,
     MEDIUM: 1,
     FAST: 2,
   },
-  vibrationDuration: {
+  vibrationDurations: {
     SHORT: 0,
     MEDIUM: 1,
     LONG: 2,

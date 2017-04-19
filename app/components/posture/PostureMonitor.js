@@ -33,8 +33,17 @@ const {
   BluetoothService,
   NotificationService,
   SessionControlService,
+  VibrationMotorService,
 } = NativeModules;
-const { deviceStatuses, sessionOperations, storageKeys } = constants;
+
+const {
+  deviceStatuses,
+  sessionOperations,
+  storageKeys,
+  vibrationSpeeds,
+  vibrationDurations,
+} = constants;
+
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
 const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 
@@ -123,6 +132,7 @@ class PostureMonitor extends Component {
     this.state = {
       sessionState: sessionStates.STOPPED,
       hasPendingSessionOperation: false,
+      forceStoppedSession: false,
       postureThreshold: this.props.user.settings.postureThreshold,
       shouldNotifySlouch: true,
       pointerPosition: 0,
@@ -691,6 +701,7 @@ class PostureMonitor extends Component {
         });
       } else {
         this.setState({ hasPendingSessionOperation: true });
+        this.setState({ forceStoppedSession: true });
 
         Mixpanel.track('stopSession');
 
@@ -795,6 +806,17 @@ class PostureMonitor extends Component {
       content:
         <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
     }));
+
+    // Vibrate the motor to indicate the current session has ended
+    // only if it ends naturally without forcing it to stop
+    if (!this.state.forceStoppedSession) {
+      // Vibrate 3 times with gradually increased durations
+      VibrationMotorService.vibrate([
+        { vibrationSpeed: vibrationSpeeds.MEDIUM, vibrationDuration: vibrationDurations.SHORT },
+        { vibrationSpeed: vibrationSpeeds.MEDIUM, vibrationDuration: vibrationDurations.MEDIUM },
+        { vibrationSpeed: vibrationSpeeds.MEDIUM, vibrationDuration: vibrationDurations.LONG },
+      ]);
+    }
 
     if (!isiOS) {
       // Pop scene so if the Android back button is pressed while the modal
