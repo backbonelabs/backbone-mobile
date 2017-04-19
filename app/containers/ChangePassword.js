@@ -116,6 +116,9 @@ class ChangePassword extends Component {
 
         passwordWarning += (newPassword.length < 8) ?
         'New Password must be at least 8 characters' : '';
+
+        passwordWarning += (newPassword !== confirmPassword && confirmPassword.length > 0) ?
+        'New Passwords do not match' : '';
       }
     }
 
