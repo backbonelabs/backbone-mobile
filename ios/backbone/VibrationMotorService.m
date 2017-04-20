@@ -52,34 +52,10 @@ RCT_EXPORT_METHOD(vibrate:(NSArray*)vibrationParams) {
   if (currentVibrationIndex == [_currentVibrationCommands count]) return;
   
   NSDictionary *vibrationParam = (NSDictionary*)_currentVibrationCommands[currentVibrationIndex];
-  int vibrationSpeedType = (vibrationParam[@"vibrationSpeed"] ? [vibrationParam[@"vibrationSpeed"] intValue] : VIBRATION_SPEED_TYPE_MEDIUM);
-  int vibrationDurationType = (vibrationParam[@"vibrationDuration"] ? [vibrationParam[@"vibrationDuration"] intValue] : VIBRATION_DURATION_TYPE_MEDIUM);
-  int vibrationSpeed;
-  int vibrationDuration;
+  int vibrationSpeed = (vibrationParam[@"vibrationSpeed"] ? [vibrationParam[@"vibrationSpeed"] intValue] : VIBRATION_DEFAULT_SPEED);
+  int vibrationDuration = (vibrationParam[@"vibrationDuration"] ? [vibrationParam[@"vibrationDuration"] intValue] : VIBRATION_DEFAULT_DURATION * 10);
   
-  switch (vibrationSpeedType) {
-    case VIBRATION_SPEED_TYPE_SLOW:
-      vibrationSpeed = VIBRATION_SPEED_VALUE_SLOW;
-      break;
-    case VIBRATION_SPEED_TYPE_FAST:
-      vibrationSpeed = VIBRATION_SPEED_VALUE_FAST;
-      break;
-    default:
-      vibrationSpeed = VIBRATION_SPEED_VALUE_MEDIUM;
-  }
-  
-  switch (vibrationDurationType) {
-    case VIBRATION_DURATION_TYPE_SHORT:
-      vibrationDuration = VIBRATION_DURATION_VALUE_SHORT;
-      break;
-    case VIBRATION_DURATION_TYPE_LONG:
-      vibrationDuration = VIBRATION_DURATION_VALUE_LONG;
-      break;
-    default:
-      vibrationDuration = VIBRATION_DURATION_VALUE_MEDIUM;
-  }
-  
-  nextVibrationDelay = vibrationDuration;
+  nextVibrationDelay = vibrationDuration + 100; // Add an extra delay of 100ms
   
   uint8_t bytes[4];
   

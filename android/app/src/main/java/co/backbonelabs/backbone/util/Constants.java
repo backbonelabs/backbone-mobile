@@ -56,18 +56,6 @@ public class Constants {
         int STOP = 0x03;
     }
 
-    public interface VIBRATION_SPEED_TYPES {
-        int SLOW = 0;
-        int MEDIUM = 1;
-        int FAST = 2;
-    }
-
-    public interface VIBRATION_DURATION_TYPES {
-        int SHORT = 0;
-        int MEDIUM = 1;
-        int LONG = 2;
-    }
-
     public interface VIBRATION_COMMANDS {
         int STOP = 0;
         int START = 1;

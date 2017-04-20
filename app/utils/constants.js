@@ -45,15 +45,10 @@ export default {
     SINGLE_REMINDER: 104,
     INFREQUENT_REMINDER: 105,
   },
-  vibrationSpeeds: {
-    SLOW: 0,
-    MEDIUM: 1,
-    FAST: 2,
-  },
   vibrationDurations: {
-    SHORT: 0,
-    MEDIUM: 1,
-    LONG: 2,
+    SHORT: 200,
+    MEDIUM: 500,
+    LONG: 800,
   },
   firmwareUpdateStates: {
     INVALID_SERVICE: -2,

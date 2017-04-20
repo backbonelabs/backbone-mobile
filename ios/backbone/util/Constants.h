@@ -82,22 +82,10 @@
 
 #define VIBRATION_COMMAND_STOP              0
 #define VIBRATION_COMMAND_START             1
- 
-#define VIBRATION_SPEED_TYPE_SLOW           0
-#define VIBRATION_SPEED_TYPE_MEDIUM         1
-#define VIBRATION_SPEED_TYPE_FAST           2
 
-#define VIBRATION_DURATION_TYPE_SHORT       0
-#define VIBRATION_DURATION_TYPE_MEDIUM      1
-#define VIBRATION_DURATION_TYPE_LONG        2
-
-#define VIBRATION_SPEED_VALUE_SLOW          40
-#define VIBRATION_SPEED_VALUE_MEDIUM        80
-#define VIBRATION_SPEED_VALUE_FAST          150
-
-#define VIBRATION_DURATION_VALUE_SHORT      200
-#define VIBRATION_DURATION_VALUE_MEDIUM     500
-#define VIBRATION_DURATION_VALUE_LONG       800
+#define VIBRATION_DEFAULT_PATTERN     1 // Number of times the motor should vibrate [0-3]
+#define VIBRATION_DEFAULT_SPEED       50 // Speed of motor vibration [0-255]
+#define VIBRATION_DEFAULT_DURATION    50 // Duration of motor vibration in tens of milliseconds [0-255]
 
 /*
  Session Specifics
@@ -120,10 +108,6 @@
 #define SESSION_DEFAULT_DURATION          5 // Session duration in minutes
 #define SLOUCH_DEFAULT_DISTANCE_THRESHOLD 2000 // Distance threshold in ten thousandths of a unit
 #define SLOUCH_DEFAULT_TIME_THRESHOLD     3 // Time threshold in seconds
-
-#define VIBRATION_DEFAULT_PATTERN     1 // Number of times the motor should vibrate [0-3]
-#define VIBRATION_DEFAULT_SPEED       50 // Speed of motor vibration [0-255]
-#define VIBRATION_DEFAULT_DURATION    50 // Duration of motor vibration in tens of milliseconds [0-255]
 
 /*
  Bootloader Specifics

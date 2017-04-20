@@ -40,7 +40,6 @@ const {
   deviceStatuses,
   sessionOperations,
   storageKeys,
-  vibrationSpeeds,
   vibrationDurations,
 } = constants;
 
@@ -700,8 +699,10 @@ class PostureMonitor extends Component {
           rightButtonAction: this.props.navigator.pop,
         });
       } else {
-        this.setState({ hasPendingSessionOperation: true });
-        this.setState({ forceStoppedSession: true });
+        this.setState({
+          hasPendingSessionOperation: true,
+          forceStoppedSession: true,
+        });
 
         Mixpanel.track('stopSession');
 
@@ -812,9 +813,9 @@ class PostureMonitor extends Component {
     if (!this.state.forceStoppedSession) {
       // Vibrate 3 times with gradually increased durations
       VibrationMotorService.vibrate([
-        { vibrationSpeed: vibrationSpeeds.MEDIUM, vibrationDuration: vibrationDurations.SHORT },
-        { vibrationSpeed: vibrationSpeeds.MEDIUM, vibrationDuration: vibrationDurations.MEDIUM },
-        { vibrationSpeed: vibrationSpeeds.MEDIUM, vibrationDuration: vibrationDurations.LONG },
+        { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.SHORT },
+        { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.MEDIUM },
+        { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.LONG },
       ]);
     }
 

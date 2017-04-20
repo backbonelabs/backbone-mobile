@@ -70,39 +70,15 @@ public class VibrationMotorService extends ReactContextBaseJavaModule {
         if (currentVibrationIndex == currentVibrationCommands.size()) return;
 
         ReadableMap vibrationParam = currentVibrationCommands.getMap(currentVibrationIndex);
-        int vibrationSpeedType = (vibrationParam.hasKey("vibrationSpeed") ? vibrationParam.getInt("vibrationSpeed") : Constants.VIBRATION_SPEED_TYPES.MEDIUM);
-        int vibrationDurationType = (vibrationParam.hasKey("vibrationDuration") ? vibrationParam.getInt("vibrationDuration") : Constants.VIBRATION_DURATION_TYPES.MEDIUM);
-        byte vibrationSpeed;
-        int vibrationDuration;
+        int vibrationSpeed = (vibrationParam.hasKey("vibrationSpeed") ? vibrationParam.getInt("vibrationSpeed") : Constants.VIBRATION_DEFAULT_SPEED);
+        int vibrationDuration = (vibrationParam.hasKey("vibrationDuration") ? vibrationParam.getInt("vibrationDuration") : Constants.VIBRATION_DEFAULT_DURATION * 10);
 
-        switch (vibrationSpeedType) {
-            case Constants.VIBRATION_SPEED_TYPES.SLOW:
-                vibrationSpeed = Constants.VIBRATION_SPEED_VALUES.SLOW;
-                break;
-            case Constants.VIBRATION_SPEED_TYPES.FAST:
-                vibrationSpeed = Constants.VIBRATION_SPEED_VALUES.FAST;
-                break;
-            default:
-                vibrationSpeed = Constants.VIBRATION_SPEED_VALUES.MEDIUM;
-        }
-
-        switch (vibrationDurationType) {
-            case Constants.VIBRATION_DURATION_TYPES.SHORT:
-                vibrationDuration = Constants.VIBRATION_DURATION_VALUES.SHORT;
-                break;
-            case Constants.VIBRATION_DURATION_TYPES.LONG:
-                vibrationDuration = Constants.VIBRATION_DURATION_VALUES.LONG;
-                break;
-            default:
-                vibrationDuration = Constants.VIBRATION_DURATION_VALUES.MEDIUM;
-        }
-
-        nextVibrationDelay = vibrationDuration;
+        nextVibrationDelay = vibrationDuration + 100; // Add an extra delay of 100ms
 
         byte[] commandBytes = new byte[4];
 
         commandBytes[0] = Constants.VIBRATION_COMMANDS.START;
-        commandBytes[1] = vibrationSpeed;
+        commandBytes[1] = (byte)vibrationSpeed; 
         commandBytes[2] = Utilities.getByteFromInt(vibrationDuration, 1);
         commandBytes[3] = Utilities.getByteFromInt(vibrationDuration, 0);
 
