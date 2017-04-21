@@ -194,6 +194,7 @@ class PostureMonitor extends Component {
         }
       } else {
         // There is no active session running on the device, invoke statsHandler to show summary
+        this.setState({ forceStoppedSession: true });
         this.statsHandler(event);
       }
     });
