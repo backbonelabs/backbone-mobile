@@ -180,7 +180,7 @@ class DeviceScan extends Component {
         <View style={styles.textContainer}>
           <BodyText>{rowData.name}</BodyText>
           <SecondaryText style={styles._secondaryText}>
-            {rowData.identifier}
+            {`${rowData.identifier} RSSI:${rowData.RSSI}`}
           </SecondaryText>
         </View>
         <Icon
