@@ -211,6 +211,7 @@ public class Constants {
     public final static int VIBRATION_DEFAULT_SPEED = 50; // Speed of motor vibration [0-255]
     public final static int VIBRATION_DEFAULT_DURATION = 50; // Duration of motor vibration in tens of milliseconds [0-255]
 
+    public final static String ACTION_CONNECTION_ESTABLISHED = "co.backbonelabs.backbone.intent.action.CONNECTION_ESTABLISHED";
     public final static String ACTION_CHARACTERISTIC_FOUND = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_FOUND";
     public final static String ACTION_CHARACTERISTIC_UPDATE = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_UPDATE";
     public final static String ACTION_CHARACTERISTIC_READ = "co.backbonelabs.backbone.intent.action.CHARACTERISTIC_READ";

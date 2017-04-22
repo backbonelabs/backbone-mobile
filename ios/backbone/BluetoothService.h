@@ -9,6 +9,7 @@
   NSDictionary *stateMap;
   NSMutableDictionary *_servicesFound;
   NSMutableDictionary *_characteristicMap;
+  NSMutableArray *_centralManagerDelegates;
   NSMutableArray *_characteristicDelegates;
 }
 
@@ -30,6 +31,9 @@
 
 - (void)addCharacteristicDelegate:(id<CBPeripheralDelegate>)delegate;
 - (void)removeCharacteristicDelegate:(id<CBPeripheralDelegate>)delegate;
+
+- (void)addCentralManagerDelegate:(id<CBCentralManagerDelegate>)delegate;
+- (void)removeCentralManagerDelegate:(id<CBCentralManagerDelegate>)delegate;
 
 - (void)startScanForBLEDevicesAllowDuplicates:(BOOL)duplicate handler:(DictionaryHandler)handler;
 - (void)stopScan;

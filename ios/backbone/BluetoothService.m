@@ -25,6 +25,7 @@
   self = [super init];
   
   _characteristicDelegates = [NSMutableArray new];
+  _centralManagerDelegates = [NSMutableArray new];
   
   _state = CBCentralManagerStateUnknown;
   _currentDeviceMode = DEVICE_MODE_UNKNOWN;
@@ -138,6 +139,16 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   [_characteristicDelegates removeObject:delegate];
 }
 
+- (void)addCentralManagerDelegate:(id<CBCentralManagerDelegate>)delegate {
+  if (delegate) {
+    [_centralManagerDelegates addObject:delegate];
+  }
+}
+
+- (void)removeCentralManagerDelegate:(id<CBCentralManagerDelegate>)delegate {
+  [_centralManagerDelegates removeObject:delegate];
+}
+
 - (void)startScanForBLEDevicesAllowDuplicates:(BOOL)duplicate handler:(DictionaryHandler)handler {
   self.scanDeviceHandler = handler;
   
@@ -214,9 +225,17 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
-  DLog(@"didconnect %@", peripheral);
+  DLog(@"didconnect %@ %@", peripheral, _centralManagerDelegates);
   _currentDevice = [peripheral copy];
   _currentDevice.delegate = self;
+  
+  if ([_centralManagerDelegates count] > 0) {
+    for (id<CBCentralManagerDelegate> delegate in _centralManagerDelegates) {
+      if ([delegate respondsToSelector:@selector(centralManager:didConnectPeripheral:)]) {
+        [delegate centralManager:central didConnectPeripheral:peripheral];
+      }
+    }
+  }
   
   [_currentDevice discoverServices:@[BACKBONE_SERVICE_UUID, BOOTLOADER_SERVICE_UUID, BATTERY_SERVICE_UUID]];
 }

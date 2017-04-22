@@ -11,6 +11,8 @@ static NSTimer *_connectionTimer = nil;
   self = [super init];
   if (!_deviceCollection) {
     _deviceCollection = [NSMutableDictionary new];
+    
+    [BluetoothServiceInstance addCentralManagerDelegate:self];
   }
   
   return self;
@@ -128,6 +130,18 @@ RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
     NSDictionary *makeError = RCTMakeError(@"Device took too long to connect", nil, nil);
     [self deviceConnectionStatus:makeError];
   }];
+}
+
+- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
+  // Cancel the initial connection timer if any, then reschedule a new one for services discovery
+  if (_connectionTimer) {
+    DLog(@"Cancel initial timer");
+    [_connectionTimer invalidate];
+    _connectionTimer = nil;
+    
+    _connectionTimer = [NSTimer timerWithTimeInterval:CONNECTION_TIMEOUT target:self selector:@selector(checkConnectTimeout) userInfo:nil repeats:NO];
+    [[NSRunLoop mainRunLoop] addTimer:_connectionTimer forMode:NSRunLoopCommonModes];
+  }
 }
 
 - (NSArray<NSString *> *)supportedEvents {

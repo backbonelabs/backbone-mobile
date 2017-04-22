@@ -193,6 +193,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     Timber.d("Device Connected");
+                    Intent intent = new Intent(Constants.ACTION_CONNECTION_ESTABLISHED);
+                    reactContext.sendBroadcast(intent);
+
                     // Enable bigger sized packet to be sent by changing the MTU size to 512
                     // This results in faster speed especially in firmware upload
                     // Only for Lollipop and above devices

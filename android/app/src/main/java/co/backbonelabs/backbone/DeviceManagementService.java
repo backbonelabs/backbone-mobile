@@ -1,6 +1,11 @@
 package co.backbonelabs.backbone;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 
 import com.facebook.react.bridge.Arguments;
@@ -31,6 +36,10 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.ACTION_CONNECTION_ESTABLISHED);
+        reactContext.registerReceiver(bleBroadcastReceiver, filter);
 
         // Listen to the Activity's lifecycle events
         reactContext.addLifecycleEventListener(this);
@@ -193,6 +202,47 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
             callback.invoke(JSError.make("Failed to disconnect"));
         }
     }
+
+    private final BroadcastReceiver bleBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            Timber.d("Receive Broadcast %s", action);
+
+            if (action.equals(Constants.ACTION_CONNECTION_ESTABLISHED)) {
+                Timber.d("Initial Connection Established");
+                // Cancel the initial timer and reschedule a new one for services discovery
+                if (connectionTimerRunnable != null) {
+                    Timber.d("Cancel initial timer");
+                    connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
+                    connectionTimerRunnable = null;
+
+                    connectionTimerRunnable = new Runnable(){
+                        public void run() {
+                            connectionTimerRunnable = null;
+
+                            Timber.d("Device connection timeout");
+                            BluetoothService.getInstance().disconnect(new BluetoothService.DeviceConnectionCallBack() {
+                                @Override
+                                public void onDeviceConnected() {
+                                }
+
+                                @Override
+                                public void onDeviceDisconnected() {
+                                    WritableMap wm = Arguments.createMap();
+                                    wm.putBoolean("isConnected", false);
+                                    wm.putString("message", "Device took too long to connect");
+                                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
+                                }
+                            });
+                        }
+                    };
+
+                    connectionTimerHandler.postDelayed(connectionTimerRunnable, Constants.CONNECTION_TIMEOUT * 1000);
+                }
+            }
+        }
+    };
 
     @Override
     public void onHostResume() {
