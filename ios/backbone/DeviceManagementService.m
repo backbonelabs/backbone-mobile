@@ -48,20 +48,20 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
       }
       
       // Cancel the connection timeout
-      DLog(@"Cancel timer");
+      DLog(@"Cancel connection timeout from completionBlock");
       [_connectionTimer invalidate];
       _connectionTimer = nil;
     }];
     
     // Cancel any previously scheduled timeout
     if (_connectionTimer) {
-      DLog(@"Cancel timer");
+      DLog(@"Cancel existing connection timeout");
       [_connectionTimer invalidate];
       _connectionTimer = nil;
     }
     
     // Schedule a connection timeout
-    DLog(@"Schedule timer");
+    DLog(@"Schedule connection timeout");
     _connectionTimer = [NSTimer timerWithTimeInterval:CONNECTION_TIMEOUT target:self selector:@selector(checkConnectTimeout) userInfo:nil repeats:NO];
     [[NSRunLoop mainRunLoop] addTimer:_connectionTimer forMode:NSRunLoopCommonModes];
   } else {
@@ -135,7 +135,7 @@ RCT_EXPORT_METHOD(cancelConnection:(RCTResponseSenderBlock)callback) {
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
   // Cancel the initial connection timer if any, then reschedule a new one for services discovery
   if (_connectionTimer) {
-    DLog(@"Cancel initial timer");
+    DLog(@"Cancel initial connection timeout");
     [_connectionTimer invalidate];
     _connectionTimer = nil;
     
