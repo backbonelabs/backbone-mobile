@@ -32,10 +32,12 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     private Handler connectionTimerHandler = null;
     private Runnable connectionTimerRunnable = null;
     private ReactApplicationContext reactContext;
+    private static DeviceManagementService instance;
 
     public DeviceManagementService(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        instance = this;
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.ACTION_CONNECTION_ESTABLISHED);
@@ -43,6 +45,10 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
 
         // Listen to the Activity's lifecycle events
         reactContext.addLifecycleEventListener(this);
+    }
+
+    public static DeviceManagementService getInstance() {
+        return instance;
     }
 
     @Override
@@ -116,7 +122,7 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 public void onDeviceConnected() {
                     Timber.d("DeviceConnected");
                     if (connectionTimerRunnable != null) {
-                        Timber.d("Cancel connection timeout");
+                        Timber.d("Cancel connection timeout from connection callback");
                         connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
                         connectionTimerRunnable = null;
                     }
@@ -138,41 +144,47 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 }
             });
 
-            if (connectionTimerHandler == null) {
-                connectionTimerHandler = new Handler();
-            }
-            else if (connectionTimerRunnable != null) {
-                Timber.d("Cancel connection timeout");
-                connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
-                connectionTimerRunnable = null;
-            }
-
-            connectionTimerRunnable = new Runnable(){
-                public void run() {
-                    connectionTimerRunnable = null;
-
-                    Timber.d("Device connection timeout");
-                    BluetoothService.getInstance().disconnect(new BluetoothService.DeviceConnectionCallBack() {
-                        @Override
-                        public void onDeviceConnected() {
-                        }
-
-                        @Override
-                        public void onDeviceDisconnected() {
-                            WritableMap wm = Arguments.createMap();
-                            wm.putBoolean("isConnected", false);
-                            wm.putString("message", "Device took too long to connect");
-                            EventEmitter.send(reactContext, "ConnectionStatus", wm);
-                        }
-                    });
-                }
-            };
-
-            connectionTimerHandler.postDelayed(connectionTimerRunnable, Constants.CONNECTION_TIMEOUT * 1000);
+            Timber.d("Canceling existing connection timeout, if any, and rescheduling new connection timeout");
+            this.scheduleNewConnectionTimeout();
         } else {
             // Could not retrieve a valid device
             EventEmitter.send(reactContext, "ConnectionStatus", JSError.make("Not a valid device"));
         }
+    }
+
+    private void scheduleNewConnectionTimeout() {
+        if (connectionTimerHandler == null) {
+            connectionTimerHandler = new Handler();
+        }
+
+        if (connectionTimerRunnable != null) {
+            connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
+            connectionTimerRunnable = null;
+        }
+
+        connectionTimerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                connectionTimerRunnable = null;
+
+                Timber.d("Device connection timeout");
+                BluetoothService.getInstance().disconnect(new BluetoothService.DeviceConnectionCallBack() {
+                    @Override
+                    public void onDeviceConnected() {
+                    }
+
+                    @Override
+                    public void onDeviceDisconnected() {
+                        WritableMap wm = Arguments.createMap();
+                        wm.putBoolean("isConnected", false);
+                        wm.putString("message", "Device took too long to connect");
+                        EventEmitter.send(reactContext, "ConnectionStatus", wm);
+                    }
+                });
+            }
+        };
+
+        connectionTimerHandler.postDelayed(connectionTimerRunnable, Constants.CONNECTION_TIMEOUT * 1000);
     }
 
     /**
@@ -213,32 +225,8 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                 Timber.d("Initial Connection Established");
                 // Cancel the initial timer and reschedule a new one for services discovery
                 if (connectionTimerRunnable != null) {
-                    Timber.d("Cancel initial timer");
-                    connectionTimerHandler.removeCallbacks(connectionTimerRunnable);
-                    connectionTimerRunnable = null;
-
-                    connectionTimerRunnable = new Runnable(){
-                        public void run() {
-                            connectionTimerRunnable = null;
-
-                            Timber.d("Device connection timeout");
-                            BluetoothService.getInstance().disconnect(new BluetoothService.DeviceConnectionCallBack() {
-                                @Override
-                                public void onDeviceConnected() {
-                                }
-
-                                @Override
-                                public void onDeviceDisconnected() {
-                                    WritableMap wm = Arguments.createMap();
-                                    wm.putBoolean("isConnected", false);
-                                    wm.putString("message", "Device took too long to connect");
-                                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
-                                }
-                            });
-                        }
-                    };
-
-                    connectionTimerHandler.postDelayed(connectionTimerRunnable, Constants.CONNECTION_TIMEOUT * 1000);
+                    Timber.d("Cancel initial connection timeout");
+                    DeviceManagementService.getInstance().scheduleNewConnectionTimeout();
                 }
             }
         }
