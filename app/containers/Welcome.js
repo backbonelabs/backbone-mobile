@@ -4,6 +4,7 @@ import {
   Image,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { LoginButton } from 'react-native-fbsdk';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import Button from '../components/Button';
@@ -25,6 +26,7 @@ const Welcome = props => (
       </View>
     </View>
     <View style={styles.footer}>
+      <LoginButton />
       <View style={styles.CTAContainer}>
         <Button
           primary

@@ -32,6 +32,7 @@ export default EStyleSheet.create({
   },
   CTAContainer: {
     flexDirection: 'row',
+    paddingTop: 30,
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     width: '90%',

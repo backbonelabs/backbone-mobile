@@ -1,5 +1,5 @@
 <resources>
 
-
+    <string name="facebook_app_id">1822622864665663</string>
     <string name="app_name">Backbone</string>
 </resources>

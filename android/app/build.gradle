@@ -163,6 +163,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fbsdk')
     compile project(':bugsnag-react-native')
     compile project(':react-native-fs')
     compile project(':react-native-material-kit')
