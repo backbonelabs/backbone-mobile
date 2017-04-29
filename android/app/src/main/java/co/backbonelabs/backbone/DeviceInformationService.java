@@ -80,7 +80,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
                                 WritableMap wm = Arguments.createMap();
                                 wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
-                                wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
+                                wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
                                 wm.putString("firmwareVersion", version);
                                 wm.putInt("batteryLevel", level);
 
@@ -95,7 +95,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
-                wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
+                wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
                 wm.putString("firmwareVersion", "");
                 wm.putInt("batteryLevel", -1);
 

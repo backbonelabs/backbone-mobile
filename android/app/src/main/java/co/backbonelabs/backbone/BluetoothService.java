@@ -70,7 +70,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     };
 
     private BluetoothDevice currentDevice = null;
-    private String currentDeviceIdentifier;
+    private String currentDeviceIdentifier = "";
     private int currentDeviceMode = Constants.DEVICE_MODES.UNKNOWN;
 
     private ReactApplicationContext reactContext;
@@ -490,6 +490,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
     public BluetoothDevice getCurrentDevice() {
         return currentDevice;
+    }
+
+    public String getCurrentDeviceIdentifier() {
+        return currentDeviceIdentifier;
     }
 
     public void selectDevice(BluetoothDevice device) {
