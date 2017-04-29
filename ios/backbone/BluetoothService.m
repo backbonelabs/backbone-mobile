@@ -28,6 +28,7 @@
   
   _state = CBCentralManagerStateUnknown;
   _currentDeviceMode = DEVICE_MODE_UNKNOWN;
+  _currentDeviceIdentifier = @"";
   
   stateMap = @{
                @"0": [NSNumber numberWithInteger:-1],
@@ -217,6 +218,8 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   DLog(@"didconnect %@", peripheral);
   _currentDevice = [peripheral copy];
   _currentDevice.delegate = self;
+
+  _currentDeviceIdentifier = [peripheral.identifier.UUIDString copy];
   
   [_currentDevice discoverServices:@[BACKBONE_SERVICE_UUID, BOOTLOADER_SERVICE_UUID, BATTERY_SERVICE_UUID]];
 }

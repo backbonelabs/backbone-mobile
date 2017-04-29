@@ -56,14 +56,14 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
       [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
         [self retrieveBatteryLevel:^(int value) {
           hasPendingCallback = NO;
-          callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
+          callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : BluetoothServiceInstance.currentDeviceIdentifier }]);
         }];
       }];
     }
     else {
       // Required characteristics are not available, return default values
       hasPendingCallback = NO;
-      callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : @"", @"batteryLevel" : @(-1), @"identifier" : [BluetoothServiceInstance.currentDevice.identifier UUIDString] }]);
+      callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : @"", @"batteryLevel" : @(-1), @"identifier" : BluetoothServiceInstance.currentDeviceIdentifier }]);
     }
   }
   else {
