@@ -56,7 +56,14 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
       [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
         [self retrieveBatteryLevel:^(int value) {
           hasPendingCallback = NO;
-          callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : BluetoothServiceInstance.currentDeviceIdentifier }]);
+          
+          if ([BluetoothServiceInstance isDeviceReady]) {
+            callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : BluetoothServiceInstance.currentDeviceIdentifier }]);
+          }
+          else {
+            NSDictionary *makeError = RCTMakeError(@"Not connected to a device", nil, nil);
+            callback(@[makeError]);
+          }
         }];
       }];
     }
