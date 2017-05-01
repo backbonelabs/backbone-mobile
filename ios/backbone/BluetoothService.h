@@ -17,6 +17,7 @@
 @property (nonatomic, copy) ErrorHandler connectHandler;
 @property (nonatomic, copy) ErrorHandler disconnectHandler;
 @property (nonatomic, strong) CBPeripheral *currentDevice;
+@property (nonatomic, strong) NSString *currentDeviceIdentifier;
 
 @property int state;
 @property int currentDeviceMode;

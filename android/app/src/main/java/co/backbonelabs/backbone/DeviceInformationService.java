@@ -78,13 +78,18 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                                 Timber.d("Found battery %d", level);
                                 hasPendingCallback = false;
 
-                                WritableMap wm = Arguments.createMap();
-                                wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
-                                wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
-                                wm.putString("firmwareVersion", version);
-                                wm.putInt("batteryLevel", level);
+                                if (bluetoothService.isDeviceReady()) {
+                                    WritableMap wm = Arguments.createMap();
+                                    wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
+                                    wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
+                                    wm.putString("firmwareVersion", version);
+                                    wm.putInt("batteryLevel", level);
 
-                                callback.invoke(null, wm);
+                                    callback.invoke(null, wm);
+                                }
+                                else {
+                                    callback.invoke(JSError.make("Not connected to a device"));
+                                }
                             }
                         });
                     }
@@ -95,7 +100,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
-                wm.putString("identifier", bluetoothService.getCurrentDevice().getAddress());
+                wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
                 wm.putString("firmwareVersion", "");
                 wm.putInt("batteryLevel", -1);
 
