@@ -15,6 +15,7 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
 
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.EventEmitter;
@@ -52,26 +53,29 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
         }
         else {
             scanning = true;
-            final HashMap<String, BluetoothDevice> deviceCollection = new HashMap<String, BluetoothDevice>();
+            final HashMap<String, WritableMap> deviceCollection = new HashMap<String, WritableMap>();
 
             Timber.d("Starting scan");
             bluetoothService.startScanForBLEDevices(new BluetoothService.DeviceScanCallBack() {
                 @Override
                 public void onDeviceFound(BluetoothDevice device, int rssi) {
-                    deviceCollection.put(device.getAddress(), device);
+
+                    WritableMap deviceInfo = Arguments.createMap();
+                    deviceInfo.putString("name", device.getName());
+                    deviceInfo.putString("identifier", device.getAddress());
+                    deviceInfo.putInt("RSSI", rssi);
+                    deviceCollection.put(device.getAddress(), deviceInfo);
 
                     // Map device collection to a JS-compatible array of JS-compatible objects
                     WritableArray deviceList = Arguments.createArray();
-                    Set<Map.Entry<String, BluetoothDevice>> entrySet = deviceCollection.entrySet();
+                    Set<Map.Entry<String, WritableMap>> entrySet = deviceCollection.entrySet();
                     for (Map.Entry entry : entrySet) {
-                        BluetoothDevice _device = (BluetoothDevice) entry.getValue();
-
-                        WritableMap deviceInfo = Arguments.createMap();
-                        deviceInfo.putString("name", _device.getName());
-                        deviceInfo.putString("identifier", _device.getAddress());
-                        deviceInfo.putInt("RSSI", rssi);
-
-                        deviceList.pushMap(deviceInfo);
+                        WritableMap deviceEntry = Arguments.createMap();
+                        WritableMap _device = (WritableMap) entry.getValue();
+                        deviceEntry.putString("name", _device.getString("name"));
+                        deviceEntry.putString("identifier", _device.getString("identifier"));
+                        deviceEntry.putInt("RSSI", _device.getInt("RSSI"));
+                        deviceList.pushMap(deviceEntry);
                     }
 
                     // Emit device array to JS
