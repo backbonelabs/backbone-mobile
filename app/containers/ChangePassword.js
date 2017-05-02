@@ -111,16 +111,15 @@ class ChangePassword extends Component {
     if (!newPasswordPristine) {
       newPasswordIconProps.iconRightName = validNewPassword ? 'check' : 'close';
       if ((newPassword.length > 0) && (currentPassword.length > 0)) {
-        passwordWarning = (newPassword !== currentPassword) ?
-        '' : 'New Password and Current Password cannot be the same';
-
-        passwordWarning += (newPassword.length < 8) ?
-        'New Password must be at least 8 characters' : '';
-
-        passwordWarning += (confirmPassword.length > 0 &&
-          confirmPassword !== newPassword &&
-          newPassword.length >= 8) ?
-        'New Passwords do not match' : '';
+        if (newPassword === currentPassword) {
+          passwordWarning = 'New Password and Current Password cannot be the same';
+        } else if (newPassword.length < 8) {
+          passwordWarning = 'New Password must be at least 8 characters';
+        } else if ((confirmPassword !== newPassword) && (newPassword.length >= 8)) {
+          passwordWarning = 'New Passwords do not match';
+        } else {
+          passwordWarning = '';
+        }
       }
     }
 
