@@ -8,6 +8,11 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import {
+  AccessToken as FBAccessToken,
+  GraphRequest,
+  GraphRequestManager,
+} from 'react-native-fbsdk';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import constants from '../utils/constants';
@@ -42,11 +47,22 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      authMethod: 'password',
       validEmail: false,
       emailPristine: true,
       passwordPristine: true,
     };
     this.autoFocus = true;
+  }
+
+  componentWillMount() {
+    FBAccessToken.getCurrentAccessToken().then(
+      (data) => {
+        if (data) {
+          this.getFBUserInfo();
+        }
+      }
+    );
   }
 
   componentDidMount() {
@@ -88,6 +104,30 @@ class Login extends Component {
     }
 
     return this.setState({ password });
+  }
+
+  getFBUserInfo() {
+    const _responseInfoCallback = (error, result) => {
+      if (error) {
+        Alert.alert(`Error fetching data: ${error.toString()}`);
+      } else {
+        this.props.dispatch(authActions.fbLogin(result));
+      }
+    };
+
+    const infoRequest = new GraphRequest(
+      '/me',
+      {
+        parameters: {
+          fields: {
+            string: 'email,first_name,last_name,birthday,gender,picture',
+          },
+        },
+      },
+      _responseInfoCallback,
+    );
+
+    new GraphRequestManager().addRequest(infoRequest).start();
   }
 
   login() {

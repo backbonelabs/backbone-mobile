@@ -37,16 +37,17 @@ class OnBoarding extends Component {
     isUpdating: PropTypes.bool,
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     autobind(this);
+    const { firstName, gender, birthdate } = this.props.user;
     this.state = {
       step: 0,
       valueX: 0,
       animatedValues: new Animated.ValueXY(),
-      nickname: null,
-      birthdate: null,
-      gender: null,
+      nickname: `${firstName}`,
+      birthdate: new Date(birthdate),
+      gender,
       height: {
         value: null,
         unit: null,

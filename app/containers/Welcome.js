@@ -2,9 +2,12 @@ import React, { PropTypes } from 'react';
 import {
   View,
   Image,
+  Alert,
 } from 'react-native';
+import {
+  LoginButton,
+ } from 'react-native-fbsdk';
 import { connect } from 'react-redux';
-import { LoginButton } from 'react-native-fbsdk';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import Button from '../components/Button';
@@ -26,7 +29,21 @@ const Welcome = props => (
       </View>
     </View>
     <View style={styles.footer}>
-      <LoginButton />
+      <LoginButton
+        readPermissions={['public_profile', 'user_birthday', 'email']}
+        onLoginFinished={
+          (error, result) => {
+            if (error) {
+              Alert.alert(`Login failed with error: ${result.error}`);
+            } else if (result.isCancelled) {
+              Alert.alert('Login was cancelled');
+            } else {
+              props.navigator.push(routes.login);
+            }
+          }
+        }
+        onLogoutFinished={() => Alert.alert('You logged out.')}
+      />
       <View style={styles.CTAContainer}>
         <Button
           primary

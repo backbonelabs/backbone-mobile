@@ -23,7 +23,6 @@ const handleNetworkError = mixpanelEvent => {
 export default {
   login(user) {
     const loginEventName = 'login';
-
     return {
       type: LOGIN,
       payload: () => Fetcher.post({
@@ -56,6 +55,47 @@ export default {
             // Store access token and user in local storage
             SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
             SensitiveInfo.setItem(storageKeys.USER, userObj);
+
+            return body;
+          }
+        }),
+    };
+  },
+
+  fbLogin(user) {
+    const loginEventName = 'login';
+    return {
+      type: LOGIN,
+      payload: () => Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/users/fbLogin/`,
+        body: JSON.stringify(user),
+      })
+        .catch(() => handleNetworkError(loginEventName))
+        .then(response => response.json())
+        .then(body => {
+          const { _id, nickname, email, accessToken, error } = body;
+
+          // Error received from API server
+          if (error) {
+            Mixpanel.trackWithProperties(`${loginEventName}-error`, {
+              errorMessage: body.error,
+            });
+
+            throw new Error(error);
+          } else {
+            // Identify user for Bugsnag
+            Bugsnag.setUser(_id, nickname, email);
+
+            // Identify user for Mixpanel tracking
+            Mixpanel.identify(_id);
+
+            // Update user profile in Mixpanel
+            Mixpanel.setUserProperties(body);
+            Mixpanel.track(`${loginEventName}-success`);
+
+            // Store access token and user in local storage
+            SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
+            SensitiveInfo.setItem(storageKeys.USER, body);
 
             return body;
           }
