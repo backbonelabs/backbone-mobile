@@ -33,6 +33,9 @@ class OnBoarding extends Component {
       _id: PropTypes.string,
       hasOnboarded: PropTypes.bool,
       nickname: PropTypes.string,
+      firstName: PropTypes.string,
+      gender: PropTypes.number,
+      birthdate: PropTypes.string,
     }),
     isUpdating: PropTypes.bool,
   };
