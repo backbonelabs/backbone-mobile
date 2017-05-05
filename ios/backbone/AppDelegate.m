@@ -15,11 +15,15 @@
 #import <React/RCTRootView.h>
 #import "Mixpanel/Mixpanel.h"
 #import <React/RCTPushNotificationManager.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [[FBSDKApplicationDelegate sharedInstance] application:application
+                           didFinishLaunchingWithOptions:launchOptions];
+  
   // Cancel all prior notifications from the previous installation when needed
   if ([[NSUserDefaults standardUserDefaults] objectForKey:@"hasClearedNotifications"] == nil) {
     [application cancelAllLocalNotifications];
@@ -56,6 +60,17 @@
   return YES;
 }
 
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+  return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                        openURL:url
+                                              sourceApplication:sourceApplication
+                                                     annotation:annotation];
+}
+
 // Required to register for notifications
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
   DLog(@"didRegisterUserNotificationSettings");
@@ -72,6 +87,7 @@
 // Handler for when the app is active in the foreground
 - (void)applicationDidBecomeActive:(UIApplication *)application {
   DLog(@"applicationDidBecomeActive");
+  [FBSDKAppEvents activateApp];
 }
 
 // Handler for when the app is about to return to the foreground

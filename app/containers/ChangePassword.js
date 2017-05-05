@@ -20,6 +20,7 @@ class ChangePassword extends Component {
     isUpdating: PropTypes.bool,
     user: PropTypes.shape({
       _id: PropTypes.string,
+      authMethod: PropTypes.string,
     }),
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
@@ -120,6 +121,14 @@ class ChangePassword extends Component {
       confirmPasswordIconProps.iconRightName = validConfirmPassword ? 'check' : 'close';
     }
 
+    // Don't allow users that signed in with Facebook accounts to change the password
+    if (this.props.user.authMethod === 'facebook') {
+      return (
+        <View style={styles.container}>
+          <BodyText style={styles._saveButton}>Account password is managed by Facebook.</BodyText>
+        </View>
+      );
+    }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>

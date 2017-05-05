@@ -49,7 +49,7 @@ class OnBoarding extends Component {
       valueX: 0,
       animatedValues: new Animated.ValueXY(),
       nickname: `${firstName}`,
-      birthdate: new Date(birthdate),
+      birthdate: (birthdate ? (new Date(birthdate)) : null),
       gender,
       height: {
         value: null,

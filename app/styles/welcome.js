@@ -32,9 +32,19 @@ export default EStyleSheet.create({
   },
   CTAContainer: {
     flexDirection: 'row',
-    paddingTop: 30,
     flexWrap: 'wrap',
     justifyContent: 'space-around',
+    width: '90%',
+  },
+  fbContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 30 * heightDifference,
+  },
+  fbButton: {
+    width: '85%',
+  },
+  buttonText: {
     width: '90%',
   },
 });

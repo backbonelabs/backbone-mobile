@@ -5,8 +5,8 @@ import {
   Alert,
 } from 'react-native';
 import {
-  LoginButton,
- } from 'react-native-fbsdk';
+  LoginManager,
+} from 'react-native-fbsdk';
 import { connect } from 'react-redux';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
@@ -14,6 +14,19 @@ import Button from '../components/Button';
 import logo from '../images/logo.png';
 import styles from '../styles/welcome';
 import routes from '../routes';
+
+// Allows user to log into the app using their Facebook account with the following
+// read permissions: pubic_profile, user_birthday, and email.
+const facebookLogin = (props) => {
+  LoginManager.logInWithReadPermissions(['public_profile', 'user_birthday', 'email']).then(
+    (result) => {
+      if (result.isCancelled) {
+        Alert.alert('Login cancelled');
+      } else {
+        props.navigator.push(routes.login);
+      }
+    });
+};
 
 const Welcome = props => (
   <View style={styles.container}>
@@ -29,21 +42,6 @@ const Welcome = props => (
       </View>
     </View>
     <View style={styles.footer}>
-      <LoginButton
-        readPermissions={['public_profile', 'user_birthday', 'email']}
-        onLoginFinished={
-          (error, result) => {
-            if (error) {
-              Alert.alert(`Login failed with error: ${result.error}`);
-            } else if (result.isCancelled) {
-              Alert.alert('Login was cancelled');
-            } else {
-              props.navigator.push(routes.login);
-            }
-          }
-        }
-        onLogoutFinished={() => Alert.alert('You logged out.')}
-      />
       <View style={styles.CTAContainer}>
         <Button
           primary
@@ -55,6 +53,14 @@ const Welcome = props => (
           text="Sign Up"
         />
       </View>
+    </View>
+    <View style={styles.fbContainer}>
+      <Button
+        style={styles._fbButton}
+        primary
+        text="Continue with Facebook"
+        onPress={() => { facebookLogin(props); }}
+      />
     </View>
   </View>
 );

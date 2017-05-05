@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {
   AccessToken as FBAccessToken,
+  LoginManager,
   GraphRequest,
   GraphRequestManager,
 } from 'react-native-fbsdk';
@@ -56,10 +57,12 @@ class Login extends Component {
   }
 
   componentWillMount() {
+    // Check if a valid facebook access token is available if the user logs into
+    // the app using their facebook account.
     FBAccessToken.getCurrentAccessToken().then(
       (data) => {
         if (data) {
-          this.getFBUserInfo();
+          this.getFBUserInfo(data);
         }
       }
     );
@@ -80,6 +83,8 @@ class Login extends Component {
         this.props.navigator.replace(routes.onboarding);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
+      // Logs the user out of facebook if wrong authentication method
+      LoginManager.logOut();
       // Authentication error
       Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
@@ -106,12 +111,20 @@ class Login extends Component {
     return this.setState({ password });
   }
 
-  getFBUserInfo() {
+  getFBUserInfo(fbAccessToken) {
     const _responseInfoCallback = (error, result) => {
       if (error) {
-        Alert.alert(`Error fetching data: ${error.toString()}`);
+        Alert.alert('Please try again.');
       } else {
-        this.props.dispatch(authActions.fbLogin(result));
+        // New user object containing request facebook graph fields and login
+        // access tokens from facebook
+        const user = Object.assign(
+          {},
+          result,
+          fbAccessToken,
+          { authMethod: 'facebook' },
+        );
+        this.props.dispatch(authActions.login(user));
       }
     };
 

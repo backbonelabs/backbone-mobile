@@ -21,6 +21,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		17D7AC4E1EBBDAE1001F1F0D /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 661FFB411E82316A000FCC32 /* libjschelpers.a */; };
 		3990F821BAF6425690F1994C /* libBugsnagReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C78CC741E2A44853A993390F /* libBugsnagReactNative.a */; };
 		4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4457C4B01D60273200F05D92 /* BluetoothService.m */; };
 		446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */ = {isa = PBXBuildFile; fileRef = 446AF7F81D53DB1200F85785 /* DeviceManagementService.m */; };
@@ -392,6 +393,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17D7AC4E1EBBDAE1001F1F0D /* libjschelpers.a in Frameworks */,
 				447B900E1DB8228000AC7E71 /* libRCTPushNotification.a in Frameworks */,
 				44970BBB1D2AC74B00351480 /* libART.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
