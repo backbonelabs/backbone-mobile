@@ -87,12 +87,12 @@
     <dict>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>fb1822622864665663</string>
+        <string>fb$(FACEBOOK_APP_ID)</string>
       </array>
     </dict>
   </array>
   <key>FacebookAppID</key>
-  <string>1822622864665663</string>
+  <string>$(FACEBOOK_APP_ID)</string>
   <key>FacebookDisplayName</key>
   <string>Backbone</string>
   <key>LSApplicationQueriesSchemes</key>

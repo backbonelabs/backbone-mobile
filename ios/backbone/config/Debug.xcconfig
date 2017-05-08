@@ -8,5 +8,5 @@ API_SERVER_URL = http:/$()/192.168.1.1:3000 // The $() is required for Xcode to 
 WEB_SERVER_URL = http:/$()/192.168.1.1:9999
 MIXPANEL_TOKEN = replace me
 BUGSNAG_API_KEY = replace me
-
+FACEBOOK_APP_ID = replace me
 #include "Debug.local.xcconfig"

@@ -142,6 +142,7 @@ export default {
     Bugsnag.clearUser();
     Mixpanel.track('signOut');
 
+    // Signs out Facebook users as well
     LoginManager.logOut();
 
     SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);

@@ -65,7 +65,10 @@ class Login extends Component {
           this.getFBUserInfo(data);
         }
       }
-    );
+    )
+    .catch(() => {
+      Alert.alert('Unable to authenticate with Facebook.  Try again later.');
+    });
   }
 
   componentDidMount() {
@@ -83,7 +86,7 @@ class Login extends Component {
         this.props.navigator.replace(routes.onboarding);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
-      // Logs the user out of facebook if wrong authentication method
+      // Logs out the user of Facebook if wrong authentication method
       LoginManager.logOut();
       // Authentication error
       Alert.alert('Authentication Error', nextProps.auth.errorMessage);

@@ -44,7 +44,4 @@ export default EStyleSheet.create({
   fbButton: {
     width: '85%',
   },
-  buttonText: {
-    width: '90%',
-  },
 });
