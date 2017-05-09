@@ -1,14 +1,11 @@
 package co.backbonelabs.backbone.util;
 
 import android.os.ParcelUuid;
-import android.util.ArrayMap;
-import android.util.SparseArray;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class DeviceScanRecord {
@@ -27,6 +24,7 @@ public class DeviceScanRecord {
     public static final int UUID_BYTES_32_BIT = 4;
     /** Length of bytes for 128 bit UUID */
     public static final int UUID_BYTES_128_BIT = 16;
+
     /**
      * Parse scan record bytes to {@link DeviceScanRecord}.
      * <p>
@@ -44,13 +42,7 @@ public class DeviceScanRecord {
         }
 
         int currentPos = 0;
-        int advertiseFlag = -1;
-        List<ParcelUuid> serviceUuids = new ArrayList<ParcelUuid>();
-        String localName = null;
-        int txPowerLevel = Integer.MIN_VALUE;
-
-        SparseArray<byte[]> manufacturerData = new SparseArray<byte[]>();
-        Map<ParcelUuid, byte[]> serviceData = new ArrayMap<ParcelUuid, byte[]>();
+        List<ParcelUuid> serviceUuids = new ArrayList<>();
 
         try {
             while (currentPos < scanRecord.length) {
@@ -115,7 +107,7 @@ public class DeviceScanRecord {
             shortUuid = uuidBytes[0] & 0xFF;
             shortUuid += (uuidBytes[1] & 0xFF) << 8;
         } else {
-            shortUuid = uuidBytes[0] & 0xFF ;
+            shortUuid = uuidBytes[0] & 0xFF;
             shortUuid += (uuidBytes[1] & 0xFF) << 8;
             shortUuid += (uuidBytes[2] & 0xFF) << 16;
             shortUuid += (uuidBytes[3] & 0xFF) << 24;
