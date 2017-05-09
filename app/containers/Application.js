@@ -402,10 +402,12 @@ class Application extends Component {
    * @param {Object} route Route to navigate to
    */
   leaveNavStartBreadcrumb(route) {
-    Bugsnag.leaveBreadcrumb(`Navigating to ${route.name}`, {
-      type: 'navigation',
-      routeConfig: JSON.stringify(route),
-    });
+    if (route) {
+      Bugsnag.leaveBreadcrumb(`Navigating to ${route.name}`, {
+        type: 'navigation',
+        routeConfig: JSON.stringify(route),
+      });
+    }
   }
 
   /**
