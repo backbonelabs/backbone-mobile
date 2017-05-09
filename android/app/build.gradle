@@ -104,7 +104,7 @@ android {
 
     defaultConfig {
         applicationId "co.backbonelabs.backbone"
-        minSdkVersion 18 // Android 4.3, required for BLE
+        minSdkVersion 19 // Up to SDK 19 to allow access for manual filtering
         targetSdkVersion 22
         versionCode 187
         versionName "1.0.8"

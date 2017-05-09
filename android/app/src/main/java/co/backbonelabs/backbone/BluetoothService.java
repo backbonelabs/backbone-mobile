@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.util.SparseIntArray;
 
 import com.facebook.react.bridge.Arguments;
@@ -33,6 +34,7 @@ import java.util.MissingFormatArgumentException;
 import java.util.UUID;
 
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.DeviceScanRecord;
 import co.backbonelabs.backbone.util.EventEmitter;
 import co.backbonelabs.backbone.util.Utilities;
 import timber.log.Timber;
@@ -461,27 +463,37 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
     private BluetoothAdapter.LeScanCallback bleScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
-        public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
+        public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
             MainActivity.currentActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Timber.d("Found %s", device.getName());
-                    scanCallBack.onDeviceFound(device, rssi);
+                    boolean isBackboneDevice = false;
+                    List<ParcelUuid> serviceUuids = DeviceScanRecord.getServiceUuids(scanRecord);
+                    for (int i = 0; i < serviceUuids.size(); i++) {
+                        Timber.d("Serve %s", serviceUuids.get(i).getUuid().toString());
+                        if (serviceUuids.get(i).getUuid().equals(Constants.SERVICE_UUIDS.BACKBONE_SERVICE) ||
+                                serviceUuids.get(i).getUuid().equals(Constants.SERVICE_UUIDS.BOOTLOADER_SERVICE)) {
+                            Timber.d("Valid Device");
+                            isBackboneDevice = true;
+                            break;
+                        }
+                    }
+
+                    if (isBackboneDevice) {
+                        scanCallBack.onDeviceFound(device, rssi);
+                    }
                 }
             });
         }
     };
 
     public void startScanForBLEDevices(DeviceScanCallBack callBack) {
-        UUID[] serviceUuids = new UUID[] {
-                Constants.SERVICE_UUIDS.BACKBONE_SERVICE,
-        };
-
         if (callBack != null) {
             scanCallBack = callBack;
         }
 
-        bluetoothAdapter.startLeScan(serviceUuids, bleScanCallback);
+        bluetoothAdapter.startLeScan(null, bleScanCallback);
     }
 
     public void stopScan() {
