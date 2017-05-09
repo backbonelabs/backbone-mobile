@@ -493,7 +493,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             scanCallBack = callBack;
         }
 
-        bluetoothAdapter.startLeScan(null, bleScanCallback);
+        bluetoothAdapter.startLeScan(bleScanCallback);
     }
 
     public void stopScan() {
