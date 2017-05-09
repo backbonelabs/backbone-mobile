@@ -85,8 +85,14 @@ class FirmwareUpdate extends Component {
 
     BootLoaderService.setHasPendingUpdate(true);
 
+    const device = this.props.device.device;
+    // If the firmwareVersion data doesn't exist, use default value.
+    // When a device is booted into the bootloader mode, whether it has been previously unpaired
+    // or it is simply a brand new device with bootloader issue,
+    // the value of the firmwareVersion data could be empty.
+    const firmwareVersion = device.firmwareVersion ? device.firmwareVersion : '1.0.2.0';
     // major software version is Y in W.X.Y.Z
-    const currentFirmware = (this.props.device.device.firmwareVersion).split('.');
+    const currentFirmware = firmwareVersion.split('.');
     const majorSoftwareVersion = currentFirmware[2];
     const firmwareUrl = `${baseFirmwareUrl}/v${majorSoftwareVersion}`;
     // Local filepath to firmware
