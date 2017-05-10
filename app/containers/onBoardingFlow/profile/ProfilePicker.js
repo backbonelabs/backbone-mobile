@@ -96,7 +96,10 @@ export default class ProfilePicker extends Component {
   _setValues(props) {
     const { pickerType } = props;
     if (pickerType === 'birthdate') {
-      this.setState({ currentValue: props[pickerType] || new Date() });
+      // Sets the default birthday to 18 years ago.
+      const defaultDate = new Date();
+      defaultDate.setFullYear(defaultDate.getFullYear() - 18);
+      this.setState({ currentValue: props[pickerType] || defaultDate });
     } else {
       let defaults;
       switch (pickerType) {
