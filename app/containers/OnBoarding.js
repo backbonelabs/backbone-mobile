@@ -274,7 +274,6 @@ class OnBoarding extends Component {
   }
 
   render() {
-    console.log(this.state.step);
     return (
       <View style={styles.container}>
         <View style={styles.exitOnboardingIcon}>
