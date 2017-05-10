@@ -15,19 +15,6 @@ import logo from '../images/logo.png';
 import styles from '../styles/welcome';
 import routes from '../routes';
 
-// Allows user to log into the app using their Facebook account with the following
-// read permissions: pubic_profile, user_birthday, and email.
-const facebookLogin = (props) => {
-  LoginManager.logInWithReadPermissions(['public_profile', 'user_birthday', 'email']).then(
-    (result) => {
-      if (result.isCancelled) {
-        Alert.alert('Login cancelled');
-      } else {
-        props.navigator.push(routes.login);
-      }
-    });
-};
-
 const Welcome = props => (
   <View style={styles.container}>
     <View style={styles.body}>
@@ -59,7 +46,18 @@ const Welcome = props => (
         style={styles._fbButton}
         primary
         text="Continue with Facebook"
-        onPress={() => { facebookLogin(props); }}
+        // Allows user to log into the app using their Facebook account with the following
+        // read permissions: pubic_profile, user_birthday, and email.
+        onPress={() => LoginManager
+          .logInWithReadPermissions(['public_profile', 'user_birthday', 'email'])
+          .then((result) => {
+            if (result.isCancelled) {
+              Alert.alert('Login cancelled');
+            } else {
+              props.navigator.push(routes.login);
+            }
+          })
+        }
       />
     </View>
   </View>
