@@ -99,16 +99,21 @@ class OnBoarding extends Component {
   // }
 
   onClose() {
-    // check if user already completed step 1
-    if (this.props.user.hasOnboarded) {
-      return this.props.navigator.replace(routes.postureDashboard);
-    }
-
-    return Alert.alert(
+    // If on step 0 (profile), return alert
+    // If on step 1 (device), return next step
+    // (default) If last step, redirect to dashboard
+    switch (this.state.step) {
+      case 0:
+        return Alert.alert(
             'Are you sure?',
             '\nExiting will log you out and can cause you to lose your information',
             [{ text: 'Cancel' }, { text: 'Logout', onPress: this.exitOnboarding }]
           );
+      case 1:
+        return this.nextStep();
+      default:
+        this.props.navigator.replace(routes.postureDashboard);
+    }
   }
 
   /**
