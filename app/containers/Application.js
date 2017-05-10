@@ -253,8 +253,6 @@ class Application extends Component {
           const currentRoute = routeStack[routeStack.length - 1];
           const delay = (currentRoute.name === routes.deviceConnect.name ? 1000 : 0);
 
-          this.props.dispatch(deviceActions.connectStatus(status));
-
           if (status.deviceMode === deviceModes.BOOTLOADER) {
             // When the device failed to load the normal Backbone services,
             // we should proceed to show firmware update related UI.
@@ -271,6 +269,8 @@ class Application extends Component {
             }, delay);
           }
         }
+
+        this.props.dispatch(deviceActions.connectStatus(status));
       }
     );
 
