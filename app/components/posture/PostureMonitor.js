@@ -801,6 +801,7 @@ class PostureMonitor extends Component {
    */
   showSummary() {
     const { sessionDuration, slouchTime, totalDuration } = this.state;
+    const { backboneVibration } = this.props.user.settings;
 
     this.trackUserSession();
     this.props.dispatch(appActions.showFullModal({
@@ -811,7 +812,7 @@ class PostureMonitor extends Component {
 
     // Vibrate the motor to indicate the current session has ended
     // only if it ends naturally without forcing it to stop
-    if (!this.state.forceStoppedSession) {
+    if (!this.state.forceStoppedSession && backboneVibration) {
       // Vibrate 3 times with gradually increased durations
       VibrationMotorService.vibrate([
         { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.SHORT },
