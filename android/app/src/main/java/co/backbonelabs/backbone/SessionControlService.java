@@ -175,8 +175,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 vibrationDuration = sessionParam.getInt("vibrationDuration");
             }
 
-            sessionDuration *= 60; // Convert to second from minute
-
             toggleSessionOperation(Constants.SESSION_OPERATIONS.START, new Constants.IntCallBack() {
                 @Override
                 public void onIntCallBack(int val) {
@@ -330,14 +328,16 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         boolean status;
 
         if (operation == Constants.SESSION_OPERATIONS.START) {
+            int sessionDurationInSecond = sessionDuration * 60; // Convert to second from minute
+
             byte[] commandBytes = new byte[12];
 
             commandBytes[0] = Constants.SESSION_COMMANDS.START;
 
-            commandBytes[1] = Utilities.getByteFromInt(sessionDuration, 3);
-            commandBytes[2] = Utilities.getByteFromInt(sessionDuration, 2);
-            commandBytes[3] = Utilities.getByteFromInt(sessionDuration, 1);
-            commandBytes[4] = Utilities.getByteFromInt(sessionDuration, 0);
+            commandBytes[1] = Utilities.getByteFromInt(sessionDurationInSecond, 3);
+            commandBytes[2] = Utilities.getByteFromInt(sessionDurationInSecond, 2);
+            commandBytes[3] = Utilities.getByteFromInt(sessionDurationInSecond, 1);
+            commandBytes[4] = Utilities.getByteFromInt(sessionDurationInSecond, 0);
 
             commandBytes[5] = Utilities.getByteFromInt(slouchDistanceThreshold, 1);
             commandBytes[6] = Utilities.getByteFromInt(slouchDistanceThreshold, 0);
@@ -453,18 +453,29 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
 
-                    int flags = Utilities.getIntFromByteArray(responseArray, 0);
-                    int totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
-                    int slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
+                    if (responseArray == null || responseArray.length < 12) {
+                        // Invalid response, default to no active session
+                        WritableMap wm = Arguments.createMap();
+                        wm.putBoolean("hasActiveSession", false);
+                        wm.putInt("totalDuration", 0);
+                        wm.putInt("slouchTime", 0);
+                        Timber.d("SessionState data %s", wm);
+                        EventEmitter.send(reactContext, "SessionState", wm);
+                    }
+                    else {
+                        int flags = Utilities.getIntFromByteArray(responseArray, 0);
+                        int totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
+                        int slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
 
-                    boolean hasActiveSession = (flags % 2 == 1);
+                        boolean hasActiveSession = (flags % 2 == 1);
 
-                    WritableMap wm = Arguments.createMap();
-                    wm.putBoolean("hasActiveSession", hasActiveSession);
-                    wm.putInt("totalDuration", totalDuration);
-                    wm.putInt("slouchTime", slouchTime);
-                    Timber.d("SessionState data %s", wm);
-                    EventEmitter.send(reactContext, "SessionState", wm);
+                        WritableMap wm = Arguments.createMap();
+                        wm.putBoolean("hasActiveSession", hasActiveSession);
+                        wm.putInt("totalDuration", totalDuration);
+                        wm.putInt("slouchTime", slouchTime);
+                        Timber.d("SessionState data %s", wm);
+                        EventEmitter.send(reactContext, "SessionState", wm);
+                    }
                 }
             }
             else if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
