@@ -824,6 +824,9 @@ class PostureMonitor extends Component {
       ]);
     }
 
+    // Clear the slouch notification when the current session has ended
+    NotificationService.clearSlouchNotification();
+
     if (!isiOS) {
       // Pop scene so if the Android back button is pressed while the modal
       // is displayed, it won't navigate back to PostureMonitor
