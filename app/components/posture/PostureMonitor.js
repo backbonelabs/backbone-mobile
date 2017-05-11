@@ -326,10 +326,13 @@ class PostureMonitor extends Component {
   }
 
   componentWillUnmount() {
-    // End the session if it's running
-    SessionControlService.stop(() => {
-      // no-op
-    });
+    const { forceStoppedSession, sessionState } = this.state;
+    // End the session if it's running and not yet stopped
+    if (!forceStoppedSession && sessionState !== sessionStates.STOPPED) {
+      SessionControlService.stop(() => {
+        // no-op
+      });
+    }
 
     // Remove listeners
     this.sessionDataListener.remove();
