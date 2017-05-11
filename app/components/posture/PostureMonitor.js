@@ -816,8 +816,8 @@ class PostureMonitor extends Component {
       // Vibrate 3 times with gradually increased durations
       VibrationMotorService.vibrate([
         { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.SHORT },
+        { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.SHORT },
         { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.MEDIUM },
-        { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.LONG },
       ]);
     }
 
