@@ -208,31 +208,31 @@ class Application extends Component {
                   this.props.dispatch(
                     postureActions.setSessionTime(prevSessionState.parameters.sessionDuration * 60)
                   );
-                }
 
-                // Hacky workaround:
-                // When the device gets disconnected while on the PostureMonitor scene and
-                // the user decides to leave the scene, and then reconnects to the device
-                // outside the PostureMonitor scene, the DeviceConnect scene will call
-                // popToRoute or replace on the Navigator. However, we get into a race condition
-                // where this navigate action may cause the PostureMonitor to be inserted into
-                // the route stack before popToRoute or replace is called. If that happens, the
-                // PostureMonitor scene will be unmounted.
-                // This hack will navigate to PostureMonitor after a short delay to minimize
-                // the chances of such a race condition.
-                setTimeout(() => {
-                  this.navigate({
-                    ...routes.postureMonitor,
-                    props: {
-                      sessionState: {
-                        ...parameters,
-                        sessionState: prevSessionState.state,
-                        timeElapsed: event.totalDuration,
-                        slouchTime: event.slouchTime,
+                  // Hacky workaround:
+                  // When the device gets disconnected while on the PostureMonitor scene and
+                  // the user decides to leave the scene, and then reconnects to the device
+                  // outside the PostureMonitor scene, the DeviceConnect scene will call
+                  // popToRoute or replace on the Navigator. However, we get into a race condition
+                  // where this navigate action may cause the PostureMonitor to be inserted into
+                  // the route stack before popToRoute or replace is called. If that happens, the
+                  // PostureMonitor scene will be unmounted.
+                  // This hack will navigate to PostureMonitor after a short delay to minimize
+                  // the chances of such a race condition.
+                  setTimeout(() => {
+                    this.navigate({
+                      ...routes.postureMonitor,
+                      props: {
+                        sessionState: {
+                          ...parameters,
+                          sessionState: prevSessionState.state,
+                          timeElapsed: event.totalDuration,
+                          slouchTime: event.slouchTime,
+                        },
                       },
-                    },
-                  });
-                }, 250);
+                    });
+                  }, 250);
+                }
               });
           }
         }
