@@ -70,8 +70,16 @@ public class NotificationService extends ReactContextBaseJavaModule {
      * @param message The second text line to be displayed on the local notification
      */
     @ReactMethod
-    public void sendLocalNotification(String title, String message) {
+    public void sendSlouchNotification(String title, String message) {
         sendNotification(Constants.NOTIFICATION_TYPES.SLOUCH_WARNING, title, message);
+    }
+
+    /**
+     * Clear the slouch notification from status bar
+     */
+    @ReactMethod
+    public void clearSlouchNotification() {
+        clearNotification(Constants.NOTIFICATION_TYPES.SLOUCH_WARNING);
     }
 
     /**
@@ -101,6 +109,17 @@ public class NotificationService extends ReactContextBaseJavaModule {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(id, builder.build());
+    }
+
+    /**
+     * Clear a notification from the status bar
+     * @param id A unique identifier for the notification
+     */
+    public static void clearNotification(int id) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.cancel(id);
     }
 
     /**
