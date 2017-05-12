@@ -4,6 +4,8 @@ import BodyText from '../../components/BodyText';
 import Button from '../../components/Button';
 import Spinner from '../../components/Spinner';
 import styles from '../../styles/onBoarding/device';
+import HeadingText from '../../components/HeadingText';
+
 import routes from '../../routes';
 
 const showSpinner = () => <Spinner />;
@@ -13,19 +15,22 @@ const showErrorMessage = () => (
 
 const HowToVideo = (props) => (
   <View key={props.key} style={styles.container}>
-    <WebView
+    <View style={styles.headerTextContainer}>
+      <HeadingText size={2}>Tutorial</HeadingText>
+    </View>
+    {props.step === 2 ? <WebView
       source={{
         uri: 'https://www.youtube.com/embed/Uo27rJAjriw?rel=0&autoplay=0&showinfo=0&controls=0' }}
       javaScriptEnabled
       startInLoadingState
       renderLoading={showSpinner}
       renderError={showErrorMessage}
-    />
+    /> : null}
     <View style={styles.buttonContainer}>
       <Button
         primary
         style={styles._button}
-        text="Done"
+        text="DONE"
         onPress={() => props.navigator.replace(routes.postureDashboard)}
       />
       <View style={{ paddingTop: 15 }}>
@@ -41,6 +46,7 @@ const HowToVideo = (props) => (
 
 HowToVideo.propTypes = {
   key: PropTypes.number,
+  step: PropTypes.number,
   navigator: PropTypes.shape({
     replace: PropTypes.func,
   }),
