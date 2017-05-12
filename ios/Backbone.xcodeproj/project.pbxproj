@@ -35,6 +35,7 @@
 		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
 		66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */; };
+		690301FE1EA7A68D00A59FD4 /* VibrationMotorService.m in Sources */ = {isa = PBXBuildFile; fileRef = 690301FD1EA7A68D00A59FD4 /* VibrationMotorService.m */; };
 		690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 690A06151DF8544E00EAC570 /* OTAFileParser.m */; };
 		699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 699262611DE58A28003FBBC7 /* SessionControlService.m */; };
 		69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */; };
@@ -336,6 +337,8 @@
 		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
 		66F918791DA9F82B00649391 /* Lato.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Lato.ttf; path = ../android/app/src/main/assets/fonts/Lato.ttf; sourceTree = "<group>"; };
 		66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "backbone/Launch Screen.storyboard"; sourceTree = "<group>"; };
+		690301FC1EA7A68C00A59FD4 /* VibrationMotorService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VibrationMotorService.h; path = backbone/VibrationMotorService.h; sourceTree = "<group>"; };
+		690301FD1EA7A68D00A59FD4 /* VibrationMotorService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VibrationMotorService.m; path = backbone/VibrationMotorService.m; sourceTree = "<group>"; };
 		690A06141DF8544E00EAC570 /* OTAFileParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTAFileParser.h; sourceTree = "<group>"; };
 		690A06151DF8544E00EAC570 /* OTAFileParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTAFileParser.m; sourceTree = "<group>"; };
 		699262601DE58A28003FBBC7 /* SessionControlService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SessionControlService.h; path = backbone/SessionControlService.h; sourceTree = "<group>"; };
@@ -516,6 +519,8 @@
 				446AF7F81D53DB1200F85785 /* DeviceManagementService.m */,
 				699262601DE58A28003FBBC7 /* SessionControlService.h */,
 				699262611DE58A28003FBBC7 /* SessionControlService.m */,
+				690301FC1EA7A68C00A59FD4 /* VibrationMotorService.h */,
+				690301FD1EA7A68D00A59FD4 /* VibrationMotorService.m */,
 			);
 			name = Backbone;
 			sourceTree = "<group>";
@@ -1297,6 +1302,7 @@
 				667641271D63B90800D45761 /* Environment.m in Sources */,
 				69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				690301FE1EA7A68D00A59FD4 /* VibrationMotorService.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */,
 				69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */,
@@ -1382,7 +1388,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 214;
+				CURRENT_PROJECT_VERSION = 218;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
@@ -1424,7 +1430,7 @@
 				CODE_SIGN_ENTITLEMENTS = Backbone/Backbone.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 214;
+				CURRENT_PROJECT_VERSION = 218;
 				DEVELOPMENT_TEAM = 538BXQKM9F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";

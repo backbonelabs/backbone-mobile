@@ -242,23 +242,35 @@ class Application extends Component {
     // Add a listener to the ConnectionStatus event
     this.connectionStatusListener = DeviceManagementServiceEvents.addListener('ConnectionStatus',
       status => {
-        this.props.dispatch(deviceActions.connectStatus(status));
         if (status.message) {
           Mixpanel.trackError({
             errorContent: status,
             path: 'app/containers/Application',
             stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
           });
-        } else if (status.deviceMode === deviceModes.BOOTLOADER) {
-          // When the device failed to load the normal Backbone services,
-          // we should proceed to show firmware update related UI
-          Alert.alert('Error', 'There is something wrong with your Backbone. ' +
-            'Perform an update now to continue using your Backbone.', [
-            { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
-            { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
-            ]
-          );
+        } else {
+          const routeStack = this.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+          const delay = (currentRoute.name === routes.deviceConnect.name ? 1000 : 0);
+
+          if (status.deviceMode === deviceModes.BOOTLOADER) {
+            // When the device failed to load the normal Backbone services,
+            // we should proceed to show firmware update related UI.
+            // Delay is needed when transitioning from the deviceConnect scene
+            // to prevent corrupted navigation stack if the user promptly tap
+            // on the 'Update' button while the deviceConnect scene is being popped.
+            setTimeout(() => {
+              Alert.alert('Error', 'There is something wrong with your Backbone. ' +
+                'Perform an update now to continue using your Backbone.', [
+                { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
+                { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
+                ]
+              );
+            }, delay);
+          }
         }
+
+        this.props.dispatch(deviceActions.connectStatus(status));
       }
     );
 

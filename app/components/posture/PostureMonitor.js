@@ -33,8 +33,16 @@ const {
   BluetoothService,
   NotificationService,
   SessionControlService,
+  VibrationMotorService,
 } = NativeModules;
-const { deviceStatuses, sessionOperations, storageKeys } = constants;
+
+const {
+  deviceStatuses,
+  sessionOperations,
+  storageKeys,
+  vibrationDurations,
+} = constants;
+
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
 const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 
@@ -123,6 +131,7 @@ class PostureMonitor extends Component {
     this.state = {
       sessionState: sessionStates.STOPPED,
       hasPendingSessionOperation: false,
+      forceStoppedSession: false,
       postureThreshold: this.props.user.settings.postureThreshold,
       shouldNotifySlouch: true,
       pointerPosition: 0,
@@ -185,6 +194,7 @@ class PostureMonitor extends Component {
         }
       } else {
         // There is no active session running on the device, invoke statsHandler to show summary
+        this.setState({ forceStoppedSession: true });
         this.statsHandler(event);
       }
     });
@@ -444,6 +454,9 @@ class PostureMonitor extends Component {
     // so the app will send the notification once it enters the bad posture state
     const { shouldNotifySlouch, postureThreshold } = this.state;
     if (!shouldNotifySlouch && currentDistance < postureThreshold) {
+      // Clear the slouch notification since it's no longer relevant
+      // on good posture state
+      NotificationService.clearSlouchNotification();
       this.setState({ shouldNotifySlouch: true });
     }
   }
@@ -464,7 +477,7 @@ class PostureMonitor extends Component {
         && slouchNotificationEnabled && this.state.shouldNotifySlouch) {
         // Attempt to send out a slouch detection notification only on background mode,
         // the slouch notification is enabled, and it was previously on a good posture state
-        NotificationService.sendLocalNotification('Bad posture detected',
+        NotificationService.sendSlouchNotification('Bad posture detected',
           'Fix your posture to look and feel your best!');
 
         // Prevent sending out more notifications while still on the bad posture state
@@ -690,7 +703,10 @@ class PostureMonitor extends Component {
           rightButtonAction: this.props.navigator.pop,
         });
       } else {
-        this.setState({ hasPendingSessionOperation: true });
+        this.setState({
+          hasPendingSessionOperation: true,
+          forceStoppedSession: true,
+        });
 
         Mixpanel.track('stopSession');
 
@@ -788,6 +804,7 @@ class PostureMonitor extends Component {
    */
   showSummary() {
     const { sessionDuration, slouchTime, totalDuration } = this.state;
+    const { backboneVibration } = this.props.user.settings;
 
     this.trackUserSession();
     this.props.dispatch(appActions.showFullModal({
@@ -795,6 +812,20 @@ class PostureMonitor extends Component {
       content:
         <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
     }));
+
+    // Vibrate the motor to indicate the current session has ended
+    // only if it ends naturally without forcing it to stop
+    if (!this.state.forceStoppedSession && backboneVibration) {
+      // Vibrate 3 times with gradually increased durations
+      VibrationMotorService.vibrate([
+        { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.SHORT },
+        { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.SHORT },
+        { vibrationSpeed: this.state.vibrationSpeed, vibrationDuration: vibrationDurations.MEDIUM },
+      ]);
+    }
+
+    // Clear the slouch notification when the current session has ended
+    NotificationService.clearSlouchNotification();
 
     if (!isiOS) {
       // Pop scene so if the Android back button is pressed while the modal
