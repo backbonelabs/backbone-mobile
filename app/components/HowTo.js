@@ -3,14 +3,13 @@ import {
   View,
   Image,
   ScrollView,
-  TouchableOpacity,
   Linking,
   Alert,
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import styles from '../styles/howTo';
 import HeadingText from '../components/HeadingText';
-import BodyText from '../components/BodyText';
+import Button from '../components/Button';
 import howToUseBackbone from '../images/howTo/howToUseBackbone.png';
 import howToStartSession from '../images/howTo/howToStartSession.png';
 import howToGetBestResults from '../images/howTo/howToGetBestResults.png';
@@ -52,7 +51,7 @@ const openHowToVideo = () => {
       Alert.alert(
         'How to video',
         `${'We could not launch your browser. You can watch the video' +
-        'by visiting '}${url}.`,
+        'by visiting '}https://youtu.be/Uo27rJAjriw.`,
       );
     });
 };
@@ -62,11 +61,9 @@ const HowTo = () => (
     removeClippedSubviews={false}
     contentContainerStyle={styles.scrollView}
   >
-    <TouchableOpacity onPress={openHowToVideo}>
-      <View style={styles.videoLinkContainer}>
-        <BodyText>Watch Video</BodyText>
-      </View>
-    </TouchableOpacity>
+    <View style={styles.videoLinkContainer}>
+      <Button text="Watch Video" onPress={openHowToVideo} />
+    </View>
     {
       howToContent.map((value, key) => (
         <View
