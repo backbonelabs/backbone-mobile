@@ -3,7 +3,6 @@ import React, { PropTypes } from 'react';
 import { TouchableOpacity } from 'react-native';
 import DeviceScan from '../../containers/device/DeviceScan';
 import BodyText from '../../components/BodyText';
-import routes from '../../routes';
 import Mixpanel from '../../utils/Mixpanel';
 
 const DeviceScanSkipButton = props => (
@@ -11,7 +10,7 @@ const DeviceScanSkipButton = props => (
     style={{ padding: 5 }}
     onPress={() => {
       Mixpanel.track('skipScanForDevices');
-      props.navigator.replace(routes.postureDashboard);
+      props.navigator.pop();
     }}
   >
     <BodyText style={{ color: '#FFFFFF' }}>Skip</BodyText>
@@ -20,7 +19,7 @@ const DeviceScanSkipButton = props => (
 
 DeviceScanSkipButton.propTypes = {
   navigator: PropTypes.shape({
-    replace: PropTypes.func,
+    pop: PropTypes.func,
   }),
 };
 

@@ -19,6 +19,7 @@ import onBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 import authActions from '../actions/auth';
 import userActions from '../actions/user';
+import appActions from '../actions/app';
 import routes from '../routes';
 import Mixpanel from '../utils/Mixpanel';
 
@@ -33,6 +34,9 @@ class OnBoarding extends Component {
       _id: PropTypes.string,
       hasOnboarded: PropTypes.bool,
       nickname: PropTypes.string,
+    }),
+    app: PropTypes.shape({
+      nextStep: PropTypes.bool,
     }),
     isUpdating: PropTypes.bool,
   };
@@ -90,6 +94,12 @@ class OnBoarding extends Component {
       } else {
         Alert.alert('Error', 'Unable to save, please try again');
       }
+    }
+
+    // if nextStep is truthy, user connected, go to next step
+    if (this.props.app.nextStep && (this.state.step === 1)) {
+      this.nextStep();
+      this.props.dispatch(appActions.removeNextStep());
     }
   }
 
@@ -310,8 +320,8 @@ class OnBoarding extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
-  return user;
+  const { user, app } = state;
+  return { ...user, app };
 };
 
 export default connect(mapStateToProps)(OnBoarding);

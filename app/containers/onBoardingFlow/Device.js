@@ -22,7 +22,7 @@ const Device = props => (
         primary
         style={styles._button}
         text="CONNECT"
-        onPress={() => props.navigator.replace(routes.deviceScan)}
+        onPress={() => props.navigator.push(routes.deviceScan)}
       />
       <View style={{ paddingTop: 15 }}>
         <Button
@@ -38,7 +38,7 @@ const Device = props => (
 Device.propTypes = {
   key: PropTypes.number,
   navigator: PropTypes.shape({
-    replace: PropTypes.func,
+    push: PropTypes.func,
   }),
   previousStep: PropTypes.func,
 };
