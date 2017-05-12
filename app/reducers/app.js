@@ -6,8 +6,8 @@ import {
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
-  NEXT_STEP,
-  REMOVE_NEXT_STEP,
+  ONBOARDING_NEXT_STEP,
+  REMOVE_ONBOARDING_NEXT_STEP,
 } from '../actions/types';
 
 export default (state = {
@@ -89,13 +89,13 @@ export default (state = {
         },
       };
     }
-    case NEXT_STEP: {
+    case ONBOARDING_NEXT_STEP: {
       return {
         ...state,
         nextStep: true,
       };
     }
-    case REMOVE_NEXT_STEP: {
+    case REMOVE_ONBOARDING_NEXT_STEP: {
       return {
         ...state,
         nextStep: false,
