@@ -96,8 +96,8 @@ class OnBoarding extends Component {
       }
     }
 
-    // if nextStep is truthy, user connected, go to next step
-    if (this.props.app.nextStep && (this.state.step === 1)) {
+    // if nextStep is truthy (device connected), go to next step
+    if (nextProps.app.nextStep) {
       this.nextStep();
       this.props.dispatch(appActions.removeNextStep());
     }
