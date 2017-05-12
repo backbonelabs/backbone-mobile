@@ -14,7 +14,7 @@ import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
-const { storageKeys, errorMessages } = constants;
+const { storageKeys, errorMessages, authMethod } = constants;
 
 const handleNetworkError = mixpanelEvent => {
   Mixpanel.track(`${mixpanelEvent}-serverError`);
@@ -25,7 +25,7 @@ export default {
   login(user) {
     const loginEventName = 'login';
     let authURL = `${Environment.API_SERVER_URL}/auth/`;
-    authURL += (user.authMethod === 'facebook') ? 'facebookLogin' : 'login';
+    authURL += (user.authMethod === authMethod.FACEBOOK) ? 'facebook' : 'login';
 
     return {
       type: LOGIN,

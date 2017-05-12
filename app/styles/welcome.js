@@ -36,12 +36,20 @@ export default EStyleSheet.create({
     justifyContent: 'space-around',
     width: '90%',
   },
-  fbContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 30 * heightDifference,
-  },
   fbButton: {
+    flexDirection: 'row',
     width: '85%',
+    height: 50 * heightDifference,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    borderRadius: 5,
+    backgroundColor: '#4267B2',
+    marginBottom: 30 * heightDifference,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  fbButtonText: {
+    color: '#FFF',
+    fontFamily: 'Geneva',
   },
 });

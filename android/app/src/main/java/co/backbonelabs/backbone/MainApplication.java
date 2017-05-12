@@ -7,7 +7,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
-import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.bugsnag.BugsnagReactNative;
 import com.rnfs.RNFSPackage;
 import com.github.xinthink.rnmk.ReactMaterialKitPackage;

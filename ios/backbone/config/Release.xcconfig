@@ -3,9 +3,10 @@
 DEV_MODE = false
 API_SERVER_URL = https:/$()/api.gobackbone.com
 WEB_SERVER_URL = https:/$()/gobackbone.com
+FACEBOOK_APP_ID = replace me
 
 // Define all of the following in Release.local.xcconfig
 MIXPANEL_TOKEN = replace me
 BUGSNAG_API_KEY = replace me
-FACEBOOK_APP_ID = replace me
+
 #include "Release.local.xcconfig"

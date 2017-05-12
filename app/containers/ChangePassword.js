@@ -14,13 +14,14 @@ import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
 import Mixpanel from '../utils/Mixpanel';
+import constants from '../utils/constants';
 
 class ChangePassword extends Component {
   static propTypes = {
     isUpdating: PropTypes.bool,
     user: PropTypes.shape({
       _id: PropTypes.string,
-      authMethod: PropTypes.string,
+      authMethod: PropTypes.number,
     }),
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
@@ -122,7 +123,7 @@ class ChangePassword extends Component {
     }
 
     // Don't allow users that signed in with Facebook accounts to change the password
-    if (this.props.user.authMethod === 'facebook') {
+    if (this.props.user.authMethod === constants.authMethod.FACEBOOK) {
       return (
         <View style={styles.container}>
           <BodyText style={styles._saveButton}>Account password is managed by Facebook.</BodyText>

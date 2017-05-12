@@ -48,7 +48,6 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      authMethod: 'password',
       validEmail: false,
       emailPristine: true,
       passwordPristine: true,
@@ -125,7 +124,7 @@ class Login extends Component {
           {},
           result,
           fbAccessToken,
-          { authMethod: 'facebook' },
+          { authMethod: constants.authMethod.FACEBOOK },
         );
         this.props.dispatch(authActions.login(user));
       }
@@ -136,7 +135,7 @@ class Login extends Component {
       {
         parameters: {
           fields: {
-            string: 'email,first_name,last_name,birthday,gender,picture',
+            string: 'email,first_name,last_name,gender',
           },
         },
       },

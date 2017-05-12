@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   View,
   Image,
-  Alert,
+  TouchableOpacity,
 } from 'react-native';
 import {
   LoginManager,
@@ -41,24 +42,22 @@ const Welcome = props => (
         />
       </View>
     </View>
-    <View style={styles.fbContainer}>
-      <Button
+    <View>
+      <TouchableOpacity
         style={styles._fbButton}
-        primary
-        text="Continue with Facebook"
-        // Allows user to log into the app using their Facebook account with the following
-        // read permissions: pubic_profile, user_birthday, and email.
         onPress={() => LoginManager
-          .logInWithReadPermissions(['public_profile', 'user_birthday', 'email'])
+          .logInWithReadPermissions(['public_profile', 'email'])
           .then((result) => {
-            if (result.isCancelled) {
-              Alert.alert('Login cancelled');
-            } else {
+            if (result) {
               props.navigator.push(routes.login);
             }
           })
         }
-      />
+      >
+        <Icon name="facebook-square" size={25} color="#FFF" />
+        <BodyText style={styles._fbButtonText}>Continue with Facebook</BodyText>
+        <View />
+      </TouchableOpacity>
     </View>
   </View>
 );
