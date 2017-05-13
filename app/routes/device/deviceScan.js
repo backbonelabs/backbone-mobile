@@ -11,17 +11,17 @@ const DeviceScanSkipButton = props => (
     style={{ padding: 5 }}
     onPress={() => {
       Mixpanel.track('skipScanForDevices');
-    // Loop through routeStack starting with the most recent route
+      // Loop through routeStack starting with the most recent route
       const routeStack = props.navigator.getCurrentRoutes().reverse();
 
       for (let i = 0; i < routeStack.length; i++) {
         // if onboarding is in the stack, use pop() to redirect
-        if (routeStack[i].name === 'onboarding') {
+        if (routeStack[i].name === routes.onboarding.name) {
           return props.navigator.pop();
         }
       }
 
-    // Else redirect to dashboard
+      // Else redirect to dashboard
       return props.navigator.replace(routes.postureDashboard);
     }}
   >
