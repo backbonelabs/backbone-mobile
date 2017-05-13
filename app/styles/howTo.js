@@ -25,7 +25,7 @@ export default EStyleSheet.create({
     ...absoluteCenter,
   },
   videoLinkContainer: {
-    paddingVertical: applyWidthDifference(10),
+    paddingVertical: applyWidthDifference(16),
     ...absoluteCenter,
     width: '100%',
     backgroundColor: '#eee',
