@@ -316,6 +316,14 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC)) {
             bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC);
         }
+        else {
+            WritableMap wm = Arguments.createMap();
+            wm.putBoolean("hasActiveSession", false);
+            wm.putInt("totalDuration", 0);
+            wm.putInt("slouchTime", 0);
+            Timber.d("SessionState data %s", wm);
+            EventEmitter.send(reactContext, "SessionState", wm);
+        }
     }
 
     private void toggleSessionOperation(int operation, Constants.IntCallBack errCallBack) {
@@ -450,32 +458,28 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 Timber.d("CharacteristicRead");
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
 
+                int flags = 0;
+                int totalDuration = 0;
+                int slouchTime = 0;
+
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
 
                     if (responseArray == null || responseArray.length < 12) {
                         // Invalid response, default to no active session
-                        WritableMap wm = Arguments.createMap();
-                        wm.putBoolean("hasActiveSession", false);
-                        wm.putInt("totalDuration", 0);
-                        wm.putInt("slouchTime", 0);
-                        Timber.d("SessionState data %s", wm);
-                        EventEmitter.send(reactContext, "SessionState", wm);
                     }
                     else {
-                        int flags = Utilities.getIntFromByteArray(responseArray, 0);
-                        int totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
-                        int slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
-
-                        boolean hasActiveSession = (flags % 2 == 1);
-
-                        WritableMap wm = Arguments.createMap();
-                        wm.putBoolean("hasActiveSession", hasActiveSession);
-                        wm.putInt("totalDuration", totalDuration);
-                        wm.putInt("slouchTime", slouchTime);
-                        Timber.d("SessionState data %s", wm);
-                        EventEmitter.send(reactContext, "SessionState", wm);
+                        flags = Utilities.getIntFromByteArray(responseArray, 0);
+                        totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
+                        slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
                     }
+
+                    WritableMap wm = Arguments.createMap();
+                    wm.putBoolean("hasActiveSession", flags % 2 == 1);
+                    wm.putInt("totalDuration", totalDuration);
+                    wm.putInt("slouchTime", slouchTime);
+                    Timber.d("SessionState data %s", wm);
+                    EventEmitter.send(reactContext, "SessionState", wm);
                 }
             }
             else if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
