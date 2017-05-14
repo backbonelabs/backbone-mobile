@@ -7,6 +7,8 @@ import {
   DEVICE_DISCONNECT,
   DEVICE_FORGET,
   DEVICE_GET_INFO,
+  DEVICE_RESTORE_SAVED_SESSION,
+  DEVICE_CLEAR_SAVED_SESSION,
 } from './types';
 import store from '../store';
 import Fetcher from '../utils/Fetcher';
@@ -231,6 +233,12 @@ const deviceActions = {
         }
       }),
     };
+  },
+  restoreSavedSession() {
+    return { type: DEVICE_RESTORE_SAVED_SESSION };
+  },
+  clearSavedSession() {
+    return { type: DEVICE_CLEAR_SAVED_SESSION };
   },
 };
 

@@ -19,20 +19,23 @@ const PartialModal = props => ((props.show &&
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              props.dispatch(appActions.hidePartialModal());
-              if (isFunction(props.onClose)) {
-                props.onClose();
-              }
-            }}
-          >
-            <Icon
-              name="close"
-              size={styles.$iconSize}
-              color={styles._closeIcon.color}
-            />
-          </TouchableOpacity>
+          {
+            !props.hideClose &&
+            <TouchableOpacity
+              onPress={() => {
+                props.dispatch(appActions.hidePartialModal());
+                if (isFunction(props.onClose)) {
+                  props.onClose();
+                }
+              }}
+            >
+              <Icon
+                name="close"
+                size={styles.$iconSize}
+                color={styles._closeIcon.color}
+              />
+            </TouchableOpacity>
+          }
         </View>
         {props.children}
       </View>
@@ -44,6 +47,7 @@ PartialModal.propTypes = {
   children: PropTypes.node,
   dispatch: PropTypes.func,
   onClose: PropTypes.func,
+  hideClose: PropTypes.bool,
   show: PropTypes.bool,
 };
 

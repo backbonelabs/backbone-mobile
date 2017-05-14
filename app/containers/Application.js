@@ -29,6 +29,7 @@ import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
+import BodyText from '../components/BodyText';
 import Banner from '../components/Banner';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -71,6 +72,7 @@ class Application extends Component {
         showPartial: PropTypes.bool,
         content: PropTypes.node,
         onClose: PropTypes.func,
+        hideClose: PropTypes.bool,
       }),
     }),
     user: PropTypes.shape({
@@ -103,8 +105,9 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        if (this.props.app.modal.showFull || this.props.app.modal.showPartial) {
-          // There is a modal being displayed, hide it
+        const { showFull, showPartial, hideClose } = this.props.app.modal;
+        if ((showFull || showPartial) && !hideClose) {
+          // There is a modal being displayed, hide it when allowed
           this.props.dispatch(appActions.hideFullModal());
           this.props.dispatch(appActions.hidePartialModal());
           return true;
@@ -169,8 +172,8 @@ class Application extends Component {
           // Retrieve device info
           this.props.dispatch(deviceActions.getInfo());
 
-          // Retrieve session state
-          SessionControlService.getSessionState();
+          // Check for previous session
+          this.checkActiveSession();
           break;
         case deviceStatuses.DISCONNECTED:
           // Dispatch disconnect action when the device is disconnected
@@ -183,21 +186,20 @@ class Application extends Component {
 
     // Handle SessionState events
     this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
-      if (event.hasActiveSession) {
-        // There is an active session, check if we're on the PostureMonitor scene
-        if (this.navigator) {
-          const routeStack = this.navigator.getCurrentRoutes();
-          // Stay on the current scene if postureMonitor is still in the stack.
-          // Only navigate to it when the user's currently not accessing the monitor
-          let shouldGoToPostureMonitor = true;
-          for (let i = 0; i < routeStack.length; i++) {
-            if (routeStack[i].name === routes.postureMonitor.name) {
-              shouldGoToPostureMonitor = false;
-              break;
-            }
-          }
+      let shouldGoToPostureMonitor = true;
+      const routeStack = this.navigator.getCurrentRoutes();
+      // Check if we are not yet in the postureMonitor
+      for (let i = 0; i < routeStack.length; i++) {
+        if (routeStack[i].name === routes.postureMonitor.name) {
+          shouldGoToPostureMonitor = false;
+          break;
+        }
+      }
 
-          if (shouldGoToPostureMonitor) {
+      if (shouldGoToPostureMonitor) {
+        if (event.hasActiveSession) {
+          // There is an active session,
+          if (this.navigator) {
             // Not currently on the PostureMonitor scene
             // Navigate to PostureMonitor to resume session using previous session parameters
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)
@@ -235,8 +237,28 @@ class Application extends Component {
                 }
               });
           }
+        } else {
+          // Redirect to the postureMonitor to show the summary
+          SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+            .then(prevSessionState => {
+              if (prevSessionState) {
+                setTimeout(() => {
+                  this.navigate({
+                    ...routes.postureMonitor,
+                    props: {
+                      sessionState: {
+                        showSummary: true,
+                        previousSessionEvent: event,
+                      },
+                    },
+                  });
+                }, 250);
+              }
+            });
         }
       }
+
+      this.props.dispatch(appActions.hidePartialModal());
     });
 
     // Add a listener to the ConnectionStatus event
@@ -273,6 +295,14 @@ class Application extends Component {
         this.props.dispatch(deviceActions.connectStatus(status));
       }
     );
+
+    // Check if we need to prepare for restoring previously saved session
+    SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+      .then(prevSessionState => {
+        if (prevSessionState) {
+          this.props.dispatch(deviceActions.restoreSavedSession());
+        }
+      });
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -388,12 +418,69 @@ class Application extends Component {
 
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
-      // Fetch device info when app comes back into foreground
-      this.props.dispatch(deviceActions.getInfo());
+      let isPostureMonitorActive = false;
+      const routeStack = this.navigator.getCurrentRoutes();
+      // Check if we really have to check for active session.
+      // Skip this when the user's still on the posture monitor
+      for (let i = 0; i < routeStack.length; i++) {
+        if (routeStack[i].name === routes.postureMonitor.name) {
+          isPostureMonitorActive = true;
+          break;
+        }
+      }
 
-      // Retrieve session state
-      SessionControlService.getSessionState();
+      // Only refresh device data when not on postureMonitor
+      if (!isPostureMonitorActive) {
+        // Fetch device info when app comes back into foreground
+        this.props.dispatch(deviceActions.getInfo());
+
+        // // Check for previous session
+        this.checkActiveSession();
+      }
     }
+  }
+
+  checkActiveSession() {
+    SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+      .then(prevSessionState => {
+        let shouldShowLoading = true;
+        const routeStack = this.navigator.getCurrentRoutes();
+        // Check if we really have to check for active session.
+        // Skip this when the user's still on the posture monitor
+        for (let i = 0; i < routeStack.length; i++) {
+          if (routeStack[i].name === routes.postureMonitor.name) {
+            shouldShowLoading = false;
+            break;
+          }
+        }
+
+        // Skip if there's any visible popUp
+        if (this.props.app.modal.showPartial || this.props.app.modal.showFull) {
+          shouldShowLoading = false;
+        }
+
+        if (prevSessionState && shouldShowLoading) {
+          this.props.dispatch(appActions.showPartialModal({
+            content: (
+              <View>
+                <View style={styles.partialModalTextContainer}>
+                  <BodyText style={styles._partialModalBodyText}>
+                    Checking for previous session
+                  </BodyText>
+                </View>
+                <View style={styles.partialSpinnerContainer}>
+                  <Spinner />
+                </View>
+              </View>
+            ),
+            hideClose: true,
+          }));
+        }
+      });
+
+    setTimeout(() => {
+      SessionControlService.getSessionState();
+    }, 1000);
   }
 
   configureScene() {
@@ -522,7 +609,11 @@ class Application extends Component {
         { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.showFull ? hiddenStyles : {}, { flex: 1 }]}>
           <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
-          <PartialModal show={modalProps.showPartial} onClose={modalProps.onClose}>
+          <PartialModal
+            show={modalProps.showPartial}
+            onClose={modalProps.onClose}
+            hideClose={modalProps.hideClose}
+          >
             {modalProps.content}
           </PartialModal>
           { route.showTabBar && TabBar }

@@ -109,6 +109,12 @@ class PostureMonitor extends Component {
       slouchDistanceThreshold: PropTypes.number,
       vibrationSpeed: PropTypes.number,
       vibrationPattern: PropTypes.oneOf([1, 2, 3]),
+      showSummary: PropTypes.bool,
+      previousSessionEvent: PropTypes.shape({
+        hasActiveSession: PropTypes.bool,
+        totalDuration: PropTypes.number,
+        slouchTime: PropTypes.number,
+      }),
     }),
     user: PropTypes.shape({
       settings: PropTypes.shape({
@@ -283,19 +289,24 @@ class PostureMonitor extends Component {
       });
     }
 
-    const { sessionState } = this.state;
-    if (sessionState === sessionStates.PAUSED) {
-      // There is an active session that's paused
-      // Sync app to a paused state
-      this.pauseSession();
-    } else if (sessionState === sessionStates.RUNNING) {
-      // There is an active session that's running
-      // Sync app to a running state
-      this.resumeSession();
+    if (this.state.showSummary) {
+      this.setState({ forceStoppedSession: true });
+      this.statsHandler(this.state.previousSessionEvent);
     } else {
-      // There is no active session
-      // Automatically start a new session
-      this.startSession();
+      const { sessionState } = this.state;
+      if (sessionState === sessionStates.PAUSED) {
+        // There is an active session that's paused
+        // Sync app to a paused state
+        this.pauseSession();
+      } else if (sessionState === sessionStates.RUNNING) {
+        // There is an active session that's running
+        // Sync app to a running state
+        this.resumeSession();
+      } else {
+        // There is no active session
+        // Automatically start a new session
+        this.startSession();
+      }
     }
   }
 
@@ -402,6 +413,7 @@ class PostureMonitor extends Component {
       });
     } else if (state === sessionStates.STOPPED) {
       // Remove session state from local storage
+      this.props.dispatch(deviceActions.clearSavedSession());
       SensitiveInfo.deleteItem(storageKeys.SESSION_STATE);
     }
     this.setState({ sessionState: state }, () => {
