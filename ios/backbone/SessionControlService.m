@@ -203,6 +203,13 @@ RCT_EXPORT_METHOD(getSessionState) {
     requestedReadSessionStatistics = YES;
     [BluetoothServiceInstance.currentDevice readValueForCharacteristic:sessionStatistics];
   }
+  else {
+    [self sendEventWithName:@"SessionState" body:@{
+                                                   @"hasActiveSession": [NSNumber numberWithBool:false],
+                                                   @"totalDuration" : [NSNumber numberWithInteger:0],
+                                                   @"slouchTime" : [NSNumber numberWithInteger:0]
+                                                   }];
+  }
 }
 
 - (void)toggleSessionOperation:(int)operation withHandler:(ErrorHandler)handler{
