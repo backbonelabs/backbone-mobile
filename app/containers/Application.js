@@ -260,6 +260,8 @@ class Application extends Component {
           }
         }
 
+        this.setState({ isFetchingSessionState: false });
+
         this.props.dispatch(appActions.hidePartialModal());
       }
     });

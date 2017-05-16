@@ -162,6 +162,9 @@ class PostureMonitor extends Component {
     this.sessionDataListener = null;
     this.slouchListener = null;
     this.statsListener = null;
+    this.deviceStateListener = null;
+    this.sessionStateListener = null;
+    this.sessionControlStateListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
     this.backAndroidListener = null;
@@ -261,7 +264,9 @@ class PostureMonitor extends Component {
     // ANDROID ONLY: Listen to the hardware back button
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        if (this.state.sessionState !== sessionStates.STOPPED
+        if (this.state.showSummary) {
+          this.props.navigator.resetTo(routes.postureDashboard);
+        } else if (this.state.sessionState !== sessionStates.STOPPED
           && !this.state.hasPendingSessionOperation) {
           // Back button was pressed during an active session.
           // Check if PostureMonitor is the current scene.
