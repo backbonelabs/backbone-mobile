@@ -101,17 +101,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
                 stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
                 activity.startService(stopIntent);
-
-                // Stop the active session
-                if (hasActiveSession()) {
-                    forceStoppedSession = true;
-
-                    toggleSessionOperation(Constants.SESSION_OPERATIONS.STOP, new Constants.IntCallBack() {
-                        @Override
-                        public void onIntCallBack(int val) {
-                        }
-                    });
-                }
             }
         });
     }
