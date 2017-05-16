@@ -418,24 +418,27 @@ class Application extends Component {
 
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
-      let isPostureMonitorActive = false;
-      const routeStack = this.navigator.getCurrentRoutes();
-      // Check if we really have to check for active session.
-      // Skip this when the user's still on the posture monitor
-      for (let i = 0; i < routeStack.length; i++) {
-        if (routeStack[i].name === routes.postureMonitor.name) {
-          isPostureMonitorActive = true;
-          break;
+      // Skip the check if the app's not yet ready
+      if (this.navigator) {
+        let isPostureMonitorActive = false;
+        const routeStack = this.navigator.getCurrentRoutes();
+        // Check if we really have to check for active session.
+        // Skip this when the user's still on the posture monitor
+        for (let i = 0; i < routeStack.length; i++) {
+          if (routeStack[i].name === routes.postureMonitor.name) {
+            isPostureMonitorActive = true;
+            break;
+          }
         }
-      }
 
-      // Only refresh device data when not on postureMonitor
-      if (!isPostureMonitorActive) {
-        // Fetch device info when app comes back into foreground
-        this.props.dispatch(deviceActions.getInfo());
+        // Only refresh device data when not on postureMonitor
+        if (!isPostureMonitorActive) {
+          // Fetch device info when app comes back into foreground
+          this.props.dispatch(deviceActions.getInfo());
 
-        // // Check for previous session
-        this.checkActiveSession();
+          // // Check for previous session
+          this.checkActiveSession();
+        }
       }
     }
   }
