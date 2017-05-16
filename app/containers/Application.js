@@ -92,6 +92,7 @@ class Application extends Component {
       initializing: true,
       initialRoute: null,
       hasDisplayedLowBatteryWarning: false,
+      isFetchingSessionState: false,
     };
 
     this.navigator = null; // Components should use this custom navigator object
@@ -186,50 +187,70 @@ class Application extends Component {
 
     // Handle SessionState events
     this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
-      let shouldGoToPostureMonitor = true;
-      const routeStack = this.navigator.getCurrentRoutes();
-      // Check if we are not yet in the postureMonitor
-      for (let i = 0; i < routeStack.length; i++) {
-        if (routeStack[i].name === routes.postureMonitor.name) {
-          shouldGoToPostureMonitor = false;
-          break;
+      if (this.state.isFetchingSessionState) {
+        let shouldGoToPostureMonitor = true;
+        const routeStack = this.navigator.getCurrentRoutes();
+        // Check if we are not yet in the postureMonitor
+        for (let i = 0; i < routeStack.length; i++) {
+          if (routeStack[i].name === routes.postureMonitor.name) {
+            shouldGoToPostureMonitor = false;
+            break;
+          }
         }
-      }
 
-      if (shouldGoToPostureMonitor) {
-        if (event.hasActiveSession) {
-          // There is an active session,
-          if (this.navigator) {
-            // Not currently on the PostureMonitor scene
-            // Navigate to PostureMonitor to resume session using previous session parameters
+        if (shouldGoToPostureMonitor) {
+          if (event.hasActiveSession) {
+            // There is an active session,
+            if (this.navigator) {
+              // Not currently on the PostureMonitor scene
+              // Navigate to PostureMonitor to resume session using previous session parameters
+              SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+                .then(prevSessionState => {
+                  const parameters = {};
+                  if (prevSessionState) {
+                    Object.assign(parameters, prevSessionState.parameters);
+                    this.props.dispatch(
+                      postureActions.setSessionTime(parameters.sessionDuration * 60)
+                    );
+
+                    // Hacky workaround:
+                    // When the device gets disconnected while on the PostureMonitor scene and
+                    // the user decides to leave the scene, and then reconnects to the device
+                    // outside the PostureMonitor scene, the DeviceConnect scene will call
+                    // popToRoute or replace on the Navigator. However, we get into a race condition
+                    // where this navigate action may cause the PostureMonitor to be inserted into
+                    // the route stack before popToRoute or replace is called. If that happens, the
+                    // PostureMonitor scene will be unmounted.
+                    // This hack will navigate to PostureMonitor after a short delay to minimize
+                    // the chances of such a race condition.
+                    setTimeout(() => {
+                      this.navigate({
+                        ...routes.postureMonitor,
+                        props: {
+                          sessionState: {
+                            ...parameters,
+                            sessionState: prevSessionState.state,
+                            timeElapsed: event.totalDuration,
+                            slouchTime: event.slouchTime,
+                          },
+                        },
+                      });
+                    }, 250);
+                  }
+                });
+            }
+          } else {
+            // Redirect to the postureMonitor to show the summary
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)
               .then(prevSessionState => {
-                const parameters = {};
                 if (prevSessionState) {
-                  Object.assign(parameters, prevSessionState.parameters);
-                  this.props.dispatch(
-                    postureActions.setSessionTime(prevSessionState.parameters.sessionDuration * 60)
-                  );
-
-                  // Hacky workaround:
-                  // When the device gets disconnected while on the PostureMonitor scene and
-                  // the user decides to leave the scene, and then reconnects to the device
-                  // outside the PostureMonitor scene, the DeviceConnect scene will call
-                  // popToRoute or replace on the Navigator. However, we get into a race condition
-                  // where this navigate action may cause the PostureMonitor to be inserted into
-                  // the route stack before popToRoute or replace is called. If that happens, the
-                  // PostureMonitor scene will be unmounted.
-                  // This hack will navigate to PostureMonitor after a short delay to minimize
-                  // the chances of such a race condition.
                   setTimeout(() => {
                     this.navigate({
                       ...routes.postureMonitor,
                       props: {
                         sessionState: {
-                          ...parameters,
-                          sessionState: prevSessionState.state,
-                          timeElapsed: event.totalDuration,
-                          slouchTime: event.slouchTime,
+                          showSummary: true,
+                          previousSessionEvent: event,
                         },
                       },
                     });
@@ -237,28 +258,10 @@ class Application extends Component {
                 }
               });
           }
-        } else {
-          // Redirect to the postureMonitor to show the summary
-          SensitiveInfo.getItem(storageKeys.SESSION_STATE)
-            .then(prevSessionState => {
-              if (prevSessionState) {
-                setTimeout(() => {
-                  this.navigate({
-                    ...routes.postureMonitor,
-                    props: {
-                      sessionState: {
-                        showSummary: true,
-                        previousSessionEvent: event,
-                      },
-                    },
-                  });
-                }, 250);
-              }
-            });
         }
-      }
 
-      this.props.dispatch(appActions.hidePartialModal());
+        this.props.dispatch(appActions.hidePartialModal());
+      }
     });
 
     // Add a listener to the ConnectionStatus event
@@ -418,25 +421,20 @@ class Application extends Component {
 
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active') {
-      // Skip the check if the app's not yet ready
+      // Fetch device info when app comes back into foreground
+      this.props.dispatch(deviceActions.getInfo());
+
+      // Skip the session check if the app's not yet ready
       if (this.navigator) {
-        let isPostureMonitorActive = false;
-        const routeStack = this.navigator.getCurrentRoutes();
         // Check if we really have to check for active session.
         // Skip this when the user's still on the posture monitor
-        for (let i = 0; i < routeStack.length; i++) {
-          if (routeStack[i].name === routes.postureMonitor.name) {
-            isPostureMonitorActive = true;
-            break;
-          }
-        }
+        const routeStack = this.navigator.getCurrentRoutes();
+        const postureRouteName = routes.postureMonitor.name;
+        const isPostureMonitorActive = routeStack.some(route => route.name === postureRouteName);
 
         // Only refresh device data when not on postureMonitor
         if (!isPostureMonitorActive) {
-          // Fetch device info when app comes back into foreground
-          this.props.dispatch(deviceActions.getInfo());
-
-          // // Check for previous session
+          // Check for previous session
           this.checkActiveSession();
         }
       }
@@ -446,43 +444,46 @@ class Application extends Component {
   checkActiveSession() {
     SensitiveInfo.getItem(storageKeys.SESSION_STATE)
       .then(prevSessionState => {
-        let shouldShowLoading = true;
-        const routeStack = this.navigator.getCurrentRoutes();
-        // Check if we really have to check for active session.
-        // Skip this when the user's still on the posture monitor
-        for (let i = 0; i < routeStack.length; i++) {
-          if (routeStack[i].name === routes.postureMonitor.name) {
-            shouldShowLoading = false;
-            break;
+        if (prevSessionState) {
+          // Check if we really have to check for active session.
+          // Skip this when the user's still on the posture monitor
+          const routeStack = this.navigator.getCurrentRoutes();
+          const postureRouteName = routes.postureMonitor.name;
+          const shouldShowLoading = !(routeStack.some(route => route.name === postureRouteName));
+          const { showPartial, showFull } = this.props.app.modal;
+
+          // Only display if no other pop-ups are visible
+          if (shouldShowLoading && !showPartial && !showFull) {
+            this.props.dispatch(appActions.showPartialModal({
+              content: (
+                <View>
+                  <View style={styles.partialModalTextContainer}>
+                    <BodyText style={styles._partialModalBodyText}>
+                      Checking for previous session
+                    </BodyText>
+                  </View>
+                  <View style={styles.partialSpinnerContainer}>
+                    <Spinner />
+                  </View>
+                </View>
+              ),
+              hideClose: true,
+            }));
           }
-        }
-
-        // Skip if there's any visible popUp
-        if (this.props.app.modal.showPartial || this.props.app.modal.showFull) {
-          shouldShowLoading = false;
-        }
-
-        if (prevSessionState && shouldShowLoading) {
-          this.props.dispatch(appActions.showPartialModal({
-            content: (
-              <View>
-                <View style={styles.partialModalTextContainer}>
-                  <BodyText style={styles._partialModalBodyText}>
-                    Checking for previous session
-                  </BodyText>
-                </View>
-                <View style={styles.partialSpinnerContainer}>
-                  <Spinner />
-                </View>
-              </View>
-            ),
-            hideClose: true,
-          }));
         }
       });
 
     setTimeout(() => {
+      this.setState({ isFetchingSessionState: true });
       SessionControlService.getSessionState();
+
+      // Time-limit of 4 seconds for fetching previous session state
+      setTimeout(() => {
+        if (this.state.isFetchingSessionState) {
+          this.setState({ isFetchingSessionState: false });
+          this.props.dispatch(appActions.hidePartialModal());
+        }
+      }, 4000);
     }, 1000);
   }
 
