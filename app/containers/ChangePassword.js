@@ -21,7 +21,7 @@ class ChangePassword extends Component {
     isUpdating: PropTypes.bool,
     user: PropTypes.shape({
       _id: PropTypes.string,
-      authMethod: PropTypes.number,
+      authMethods: PropTypes.number,
     }),
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
@@ -122,11 +122,16 @@ class ChangePassword extends Component {
       confirmPasswordIconProps.iconRightName = validConfirmPassword ? 'check' : 'close';
     }
 
-    // Don't allow users that signed in with Facebook accounts to change the password
-    if (this.props.user.authMethod === constants.authMethod.FACEBOOK) {
+    // Don't allow users that signed up with Facebook accounts to change the password
+    if (this.props.user.authMethods === constants.authMethods.FACEBOOK) {
       return (
         <View style={styles.container}>
-          <BodyText style={styles._saveButton}>Account password is managed by Facebook.</BodyText>
+          <BodyText style={styles._saveButton}>
+            Your account is connected with your Facebook account.
+            There is no need to set a password.
+            \n
+            If you need assistance, please contact Support from the Settings screen.
+          </BodyText>
         </View>
       );
     }

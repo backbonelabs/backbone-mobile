@@ -2,7 +2,7 @@
 
 DEV_MODE = true
 
-FACEBOOK_APP_ID = replace me
+FACEBOOK_APP_ID = 1822622864665663
 // Define all of the following in Debug.local.xcconfig
 API_SERVER_URL = http:/$()/192.168.1.1:3000 // The $() is required for Xcode to recognize the double forward slashes
                                             // You must override the URL in Debug.local.xcconfig with your local server address

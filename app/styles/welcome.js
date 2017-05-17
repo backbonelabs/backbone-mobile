@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -16,10 +16,10 @@ export default EStyleSheet.create({
     width: '90%',
   },
   heading: {
-    marginTop: 30 * heightDifference,
+    marginTop: applyWidthDifference(30),
   },
   caption: {
-    marginTop: 26 * heightDifference,
+    marginTop: applyWidthDifference(26),
   },
   text: {
     textAlign: 'center',
@@ -39,17 +39,15 @@ export default EStyleSheet.create({
   fbButton: {
     flexDirection: 'row',
     width: '85%',
-    height: 50 * heightDifference,
+    height: applyWidthDifference(50),
     alignItems: 'center',
     justifyContent: 'space-around',
     borderRadius: 5,
     backgroundColor: '#4267B2',
-    marginBottom: 30 * heightDifference,
-    paddingLeft: 10,
-    paddingRight: 10,
+    marginBottom: applyWidthDifference(30),
+    paddingHorizontal: applyWidthDifference(10),
   },
   fbButtonText: {
     color: '#FFF',
-    fontFamily: 'Geneva',
   },
 });

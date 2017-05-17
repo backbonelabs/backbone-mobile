@@ -15,6 +15,9 @@ import Button from '../components/Button';
 import logo from '../images/logo.png';
 import styles from '../styles/welcome';
 import routes from '../routes';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { applyWidthDifference } = relativeDimensions;
 
 const Welcome = props => (
   <View style={styles.container}>
@@ -48,13 +51,13 @@ const Welcome = props => (
         onPress={() => LoginManager
           .logInWithReadPermissions(['public_profile', 'email'])
           .then((result) => {
-            if (result) {
+            if (result && !result.isCancelled) {
               props.navigator.push(routes.login);
             }
           })
         }
       >
-        <Icon name="facebook-square" size={25} color="#FFF" />
+        <Icon name="facebook-square" size={applyWidthDifference(35)} color="#FFF" />
         <BodyText style={styles._fbButtonText}>Continue with Facebook</BodyText>
         <View />
       </TouchableOpacity>

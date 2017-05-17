@@ -53,20 +53,23 @@ class Login extends Component {
       passwordPristine: true,
     };
     this.autoFocus = true;
+    this.isFacebookLogin = false;
   }
 
   componentWillMount() {
     // Check if a valid facebook access token is available if the user logs into
     // the app using their facebook account.
-    FBAccessToken.getCurrentAccessToken().then(
-      (data) => {
+    FBAccessToken.getCurrentAccessToken()
+      .then((data) => {
         if (data) {
+          this.isFacebookLogin = true;
           this.getFBUserInfo(data);
         }
       }
     )
     .catch(() => {
-      Alert.alert('Unable to authenticate with Facebook.  Try again later.');
+      Alert.alert('Unable to authenticate with Facebook. Try again later.');
+      this.props.navigator.pop();
     });
   }
 
@@ -76,6 +79,7 @@ class Login extends Component {
 
   componentWillReceiveProps(nextProps) {
     const newAccessToken = nextProps.auth.accessToken;
+
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
@@ -85,8 +89,11 @@ class Login extends Component {
         this.props.navigator.replace(routes.onboarding);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
-      // Logs out the user of Facebook if wrong authentication method
-      LoginManager.logOut();
+      if (this.isFacebookLogin) {
+        // Logs out the user of Facebook and returns to welcome screen
+        LoginManager.logOut();
+        this.props.navigator.pop();
+      }
       // Authentication error
       Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
@@ -124,7 +131,7 @@ class Login extends Component {
           {},
           result,
           fbAccessToken,
-          { authMethod: constants.authMethod.FACEBOOK },
+          { authMethods: constants.authMethods.FACEBOOK },
         );
         this.props.dispatch(authActions.login(user));
       }
@@ -135,7 +142,7 @@ class Login extends Component {
       {
         parameters: {
           fields: {
-            string: 'email,first_name,last_name,gender',
+            string: 'email,first_name,last_name,gender,verified',
           },
         },
       },
