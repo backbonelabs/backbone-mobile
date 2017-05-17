@@ -188,17 +188,12 @@ class Application extends Component {
     // Handle SessionState events
     this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
       if (this.state.isFetchingSessionState) {
-        let shouldGoToPostureMonitor = true;
         const routeStack = this.navigator.getCurrentRoutes();
-        // Check if we are not yet in the postureMonitor
-        for (let i = 0; i < routeStack.length; i++) {
-          if (routeStack[i].name === routes.postureMonitor.name) {
-            shouldGoToPostureMonitor = false;
-            break;
-          }
-        }
+        const postureRouteName = routes.postureMonitor.name;
+        const isPostureMonitorActive = routeStack.some(route => route.name === postureRouteName);
 
-        if (shouldGoToPostureMonitor) {
+        // Check if we are not yet in the postureMonitor
+        if (!isPostureMonitorActive) {
           if (event.hasActiveSession) {
             // There is an active session,
             if (this.navigator) {
@@ -471,22 +466,23 @@ class Application extends Component {
               ),
               hideClose: true,
             }));
+
+            // Start fetching the previous session state
+            setTimeout(() => {
+              this.setState({ isFetchingSessionState: true });
+              SessionControlService.getSessionState();
+
+              // Time-limit of 4 seconds for fetching it
+              setTimeout(() => {
+                if (this.state.isFetchingSessionState) {
+                  this.setState({ isFetchingSessionState: false });
+                  this.props.dispatch(appActions.hidePartialModal());
+                }
+              }, 4000);
+            }, 1000);
           }
         }
       });
-
-    setTimeout(() => {
-      this.setState({ isFetchingSessionState: true });
-      SessionControlService.getSessionState();
-
-      // Time-limit of 4 seconds for fetching previous session state
-      setTimeout(() => {
-        if (this.state.isFetchingSessionState) {
-          this.setState({ isFetchingSessionState: false });
-          this.props.dispatch(appActions.hidePartialModal());
-        }
-      }, 4000);
-    }, 1000);
   }
 
   configureScene() {
