@@ -131,7 +131,7 @@ class Login extends Component {
           {},
           result,
           fbAccessToken,
-          { authMethods: constants.authMethods.FACEBOOK },
+          { authMethod: constants.authMethods.FACEBOOK },
         );
         this.props.dispatch(authActions.login(user));
       }

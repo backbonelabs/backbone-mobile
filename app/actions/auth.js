@@ -26,7 +26,7 @@ export default {
     const signupEventName = 'signup';
     const loginEventName = 'login';
     let authURL = `${Environment.API_SERVER_URL}/auth/`;
-    authURL += (user.authMethods === authMethods.FACEBOOK) ? 'facebook' : 'login';
+    authURL += (user.authMethod === authMethods.FACEBOOK) ? 'facebook' : 'login';
 
     return {
       type: LOGIN,
