@@ -454,7 +454,7 @@ class Application extends Component {
             this.props.dispatch(appActions.showPartialModal({
               content: (
                 <View>
-                  <View style={styles.partialModalTextContainer}>
+                  <View>
                     <BodyText style={styles._partialModalBodyText}>
                       Checking for previous session
                     </BodyText>
