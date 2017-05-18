@@ -290,6 +290,7 @@ RCT_EXPORT_METHOD(getSessionState) {
         
         distanceNotificationStatus = NO;
         slouchNotificationStatus = NO;
+        statisticNotificationStatus = YES;
         
         break;
       case SESSION_OPERATION_STOP:
