@@ -12,6 +12,8 @@ import {
   DEVICE_GET_INFO,
   DEVICE_GET_INFO__START,
   DEVICE_GET_INFO__ERROR,
+  DEVICE_SELF_TEST__START,
+  DEVICE_SELF_TEST__END,
 } from '../actions/types';
 
 export default (state = {
@@ -20,6 +22,7 @@ export default (state = {
   isConnecting: false,
   isConnected: false,
   errorMessage: null,
+  requestingSelfTest: false,
 }, action) => {
   switch (action.type) {
     case DEVICE_CONNECT__START: {
@@ -113,6 +116,22 @@ export default (state = {
         ...state,
         inProgress: false,
         errorMessage: action.payload.message,
+      };
+    }
+    case DEVICE_SELF_TEST__START: {
+      return {
+        ...state,
+        requestingSelfTest: true,
+      };
+    }
+    case DEVICE_SELF_TEST__END: {
+      return {
+        ...state,
+        requestingSelfTest: false,
+        device: {
+          ...state.device,
+          selfTestStatus: action.payload,
+        },
       };
     }
     default:

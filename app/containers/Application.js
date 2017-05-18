@@ -45,11 +45,13 @@ const {
   DeviceManagementService,
   Environment,
   SessionControlService,
+  DeviceInformationService,
 } = NativeModules;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
 const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 const DeviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
+const DeviceInformationServiceEvents = new NativeEventEmitter(DeviceInformationService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -79,7 +81,10 @@ class Application extends Component {
       email: PropTypes.string,
     }),
     device: PropTypes.shape({
-      batteryLevel: PropTypes.number,
+      requestingSelfTest: PropTypes.bool,
+      device: PropTypes.shape({
+        batteryLevel: PropTypes.number,
+      }),
     }),
   };
 
@@ -180,6 +185,18 @@ class Application extends Component {
           // no-op
       }
     });
+
+    this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
+      test => {
+        const { requestingSelfTest } = this.props.device;
+
+        if (!test.success && !requestingSelfTest) {
+          SessionControlService.requestSelfTest();
+          this.props.dispatch(deviceActions.selfTestStarted());
+        } else if (requestingSelfTest) {
+          this.props.dispatch(deviceActions.selfTestEnded(test.success));
+        }
+      });
 
     // Handle SessionState events
     this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
@@ -359,6 +376,9 @@ class Application extends Component {
     }
     if (this.deviceStateListener) {
       this.deviceStateListener.remove();
+    }
+    if (this.deviceTestStatusListener) {
+      this.deviceTestStatusListener.remove();
     }
     if (this.sessionStateListener) {
       this.sessionStateListener.remove();
@@ -567,7 +587,7 @@ class Application extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user }, device: { device } } = state;
+  const { app, user: { user }, device } = state;
   return { app, user, device };
 };
 

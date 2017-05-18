@@ -14,6 +14,7 @@ import Carousel from 'react-native-snap-carousel';
 import forEach from 'lodash/forEach';
 import appActions from '../../actions/app';
 import userActions from '../../actions/user';
+import deviceActions from '../../actions/device';
 import postureActions from '../../actions/posture';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -30,7 +31,7 @@ import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
 import Mixpanel from '../../utils/Mixpanel';
 
-const { BluetoothService } = NativeModules;
+const { BluetoothService, SessionControlService } = NativeModules;
 
 const { bluetoothStates, storageKeys, surveyUrls, appUrls } = constants;
 
@@ -59,6 +60,11 @@ class PostureDashboard extends Component {
     device: PropTypes.shape({
       isConnected: PropTypes.bool,
       isConnecting: PropTypes.bool,
+      requestingSelfTest: PropTypes.bool,
+      inProgress: PropTypes.bool,
+      device: PropTypes.shape({
+        selfTestStatus: PropTypes.bool,
+      }),
     }),
     user: PropTypes.shape({
       isFetchingSessions: PropTypes.bool,
@@ -434,8 +440,35 @@ class PostureDashboard extends Component {
                 ]
               );
             }
+          } else if (!this.props.device.inProgress) {
+            // Check if self-test has no problem
+            if (this.props.device.device.selfTestStatus) {
+              this.props.navigator.push(routes.postureCalibrate);
+            } else if (this.props.device.requestingSelfTest) {
+              // Display an alert stating that the auto-fix is on the way
+              Alert.alert('Error', 'Fixing sensors');
+            } else {
+              // Display an alert to let the user choose whether to auto-fix or not
+              Alert.alert(
+                'Error',
+                'There is an issue with the sensor. Fix it now?',
+                [
+                  {
+                    text: 'Cancel',
+                  },
+                  {
+                    text: 'Fix',
+                    onPress: () => {
+                      this.props.dispatch(deviceActions.selfTestStarted());
+                      SessionControlService.requestSelfTest();
+                    },
+                  },
+                ]
+              );
+            }
           } else {
-            this.props.navigator.push(routes.postureCalibrate);
+            // Still loading the device status
+            Alert.alert('Error', 'Checking Sensors...');
           }
         } else {
           Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');

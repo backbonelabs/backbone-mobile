@@ -7,6 +7,8 @@ import {
   DEVICE_DISCONNECT,
   DEVICE_FORGET,
   DEVICE_GET_INFO,
+  DEVICE_SELF_TEST__START,
+  DEVICE_SELF_TEST__END,
 } from './types';
 import store from '../store';
 import Fetcher from '../utils/Fetcher';
@@ -230,6 +232,15 @@ const deviceActions = {
             });
         }
       }),
+    };
+  },
+  selfTestStarted() {
+    return { type: DEVICE_SELF_TEST__START };
+  },
+  selfTestEnded(status) {
+    return {
+      type: DEVICE_SELF_TEST__END,
+      payload: status,
     };
   },
 };
