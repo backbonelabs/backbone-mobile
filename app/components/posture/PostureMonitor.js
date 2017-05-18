@@ -264,7 +264,7 @@ class PostureMonitor extends Component {
     // ANDROID ONLY: Listen to the hardware back button
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        if (this.props.sessionState.showSummary) {
+        if (this.props.sessionState && this.props.sessionState.showSummary) {
           this.props.navigator.resetTo(routes.postureDashboard);
         } else if (this.state.sessionState !== sessionStates.STOPPED
           && !this.state.hasPendingSessionOperation) {
@@ -294,7 +294,7 @@ class PostureMonitor extends Component {
       });
     }
 
-    if (this.props.sessionState.showSummary) {
+    if (this.props.sessionState && this.props.sessionState.showSummary) {
       this.setState({ forceStoppedSession: true }, () => {
         this.statsHandler(this.props.sessionState.previousSessionEvent);
       });
