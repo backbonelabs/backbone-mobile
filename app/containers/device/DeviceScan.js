@@ -64,13 +64,13 @@ DeviceConnectHelp.propTypes = {
  */
 const getRssiIcon = (rssi) => {
   let iconSource;
-  if (rssi > -40) {
+  if (rssi > -65) {
     iconSource = Signal100;
-  } else if (rssi > -55 && rssi <= -40) {
+  } else if (rssi > -75 && rssi <= -65) {
     iconSource = Signal80;
-  } else if (rssi > -70 && rssi <= -55) {
+  } else if (rssi > -80 && rssi <= -75) {
     iconSource = Signal60;
-  } else if (rssi > -85 && rssi <= -70) {
+  } else if (rssi > -85 && rssi <= -80) {
     iconSource = Signal40;
   } else {
     iconSource = Signal20;
