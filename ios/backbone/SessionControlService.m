@@ -90,8 +90,6 @@ RCT_EXPORT_METHOD(start:(NSDictionary*)sessionParam callback:(RCTResponseSenderB
       vibrationDuration = [[sessionParam objectForKey:@"vibrationDuration"] intValue];
     }
     
-    sessionDuration *= 60; // Convert to second from minute
-    
     DLog(@"SessionParam %@", sessionParam);
     DLog(@"SessionExtra %d %d %d %d %d %d", sessionDuration, sessionDistanceThreshold, sessionTimeThreshold, vibrationPattern, vibrationSpeed, vibrationDuration);
     
@@ -205,6 +203,13 @@ RCT_EXPORT_METHOD(getSessionState) {
     requestedReadSessionStatistics = YES;
     [BluetoothServiceInstance.currentDevice readValueForCharacteristic:sessionStatistics];
   }
+  else {
+    [self sendEventWithName:@"SessionState" body:@{
+                                                   @"hasActiveSession": [NSNumber numberWithBool:false],
+                                                   @"totalDuration" : [NSNumber numberWithInteger:0],
+                                                   @"slouchTime" : [NSNumber numberWithInteger:0]
+                                                   }];
+  }
 }
 
 - (void)toggleSessionOperation:(int)operation withHandler:(ErrorHandler)handler{
@@ -215,14 +220,16 @@ RCT_EXPORT_METHOD(getSessionState) {
   
   // 'Start' and 'Resume' operations require additional parameters to be sent
   if (operation == SESSION_OPERATION_START) {
+    int sessionDurationInSecond = sessionDuration * 60; // Convert to second from minute
+    
     uint8_t bytes[12];
     
     bytes[0] = SESSION_COMMAND_START;
     
-    bytes[1] = [Utilities getByteFromInt:sessionDuration index:3];
-    bytes[2] = [Utilities getByteFromInt:sessionDuration index:2];
-    bytes[3] = [Utilities getByteFromInt:sessionDuration index:1];
-    bytes[4] = [Utilities getByteFromInt:sessionDuration index:0];
+    bytes[1] = [Utilities getByteFromInt:sessionDurationInSecond index:3];
+    bytes[2] = [Utilities getByteFromInt:sessionDurationInSecond index:2];
+    bytes[3] = [Utilities getByteFromInt:sessionDurationInSecond index:1];
+    bytes[4] = [Utilities getByteFromInt:sessionDurationInSecond index:0];
     
     bytes[5] = [Utilities getByteFromInt:sessionDistanceThreshold index:1];
     bytes[6] = [Utilities getByteFromInt:sessionDistanceThreshold index:0];
@@ -372,12 +379,22 @@ RCT_EXPORT_METHOD(getSessionState) {
     else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
       
-      int flags = [Utilities convertToIntFromBytes:dataPointer offset:0];
-      int totalDuration = [Utilities convertToIntFromBytes:dataPointer offset:4];
-      int slouchTime = [Utilities convertToIntFromBytes:dataPointer offset:8];
+      int flags = 0;
+      int totalDuration = 0;
+      int slouchTime = 0;
+      bool hasActiveSession = false;
       
-      // Check the Least-Significant Bit of the flags to retrieve the current session state
-      bool hasActiveSession = (flags % 2 == 1);
+      if (characteristic.value == nil || [characteristic.value length] < 12) {
+        // Invalid response data, use default values
+      }
+      else {
+        flags = [Utilities convertToIntFromBytes:dataPointer offset:0];
+        totalDuration = [Utilities convertToIntFromBytes:dataPointer offset:4];
+        slouchTime = [Utilities convertToIntFromBytes:dataPointer offset:8];
+        
+        // Check the Least-Significant Bit of the flags to retrieve the current session state
+        hasActiveSession = (flags % 2 == 1);
+      }
       
       if (requestedReadSessionStatistics) {
         // Session statistics were retrieved from a read request, emit SessionState event

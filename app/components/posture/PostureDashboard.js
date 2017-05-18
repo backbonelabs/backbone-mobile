@@ -59,6 +59,7 @@ class PostureDashboard extends Component {
     device: PropTypes.shape({
       isConnected: PropTypes.bool,
       isConnecting: PropTypes.bool,
+      hasSavedSession: PropTypes.bool,
     }),
     user: PropTypes.shape({
       isFetchingSessions: PropTypes.bool,
@@ -83,11 +84,14 @@ class PostureDashboard extends Component {
   componentDidMount() {
     this.setSessionTime(sessions[0].durationSeconds);
 
+    const { hasSavedSession } = this.props.device;
+
     const {
       _id: userId, seenBaselineSurvey, seenAppRating, seenFeedbackSurvey, lastSession,
     } = this.props.user.user;
 
-    if (!seenBaselineSurvey) {
+    // Prioritize recovering previous session if exists
+    if (!hasSavedSession && !seenBaselineSurvey) {
       // User has not seen the baseline survey modal yet. Display survey modal
       // and mark as seen in the user profile to prevent it from being shown again.
       const markSurveySeenAndHideModal = () => {
@@ -189,8 +193,12 @@ class PostureDashboard extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.user.isFetchingSessions && !nextProps.user.isFetchingSessions) {
-      // Finished fetching user sessions.
+    const { isFetchingSessions } = this.props.user;
+
+    const sessionsFetched = isFetchingSessions && !nextProps.user.isFetchingSessions;
+
+    if (!nextProps.device.hasSavedSession && sessionsFetched) {
+      // Finished fetching user sessions and display popUp when needed
       if (!this.props.user.user.seenFeedbackSurvey || !this.props.user.user.seenAppRating) {
         const createdDate = new Date(this.props.user.user.createdAt);
         const timeThreshold = 7 * 24 * 60 * 60 * 1000; // 7 days converted to milliseconds
