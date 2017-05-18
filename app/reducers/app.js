@@ -6,6 +6,8 @@ import {
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
+  ONBOARDING_NEXT_STEP,
+  REMOVE_ONBOARDING_NEXT_STEP,
 } from '../actions/types';
 
 export default (state = {
@@ -18,6 +20,7 @@ export default (state = {
     content: null,
     onClose: null,
   },
+  nextStep: false,
 }, action) => {
   switch (action.type) {
     case UPDATE_BLUETOOTH_STATE: {
@@ -87,6 +90,18 @@ export default (state = {
           content: null,
           onClose: null,
         },
+      };
+    }
+    case ONBOARDING_NEXT_STEP: {
+      return {
+        ...state,
+        nextStep: true,
+      };
+    }
+    case REMOVE_ONBOARDING_NEXT_STEP: {
+      return {
+        ...state,
+        nextStep: false,
       };
     }
     default:

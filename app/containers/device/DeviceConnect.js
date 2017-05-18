@@ -13,6 +13,7 @@ import styles from '../../styles/device/deviceConnect';
 import deviceActions from '../../actions/device';
 import Spinner from '../../components/Spinner';
 import HeadingText from '../../components/HeadingText';
+import appActions from '../../actions/app';
 
 const { BluetoothService } = NativeModules;
 const { bluetoothStates, storageKeys } = constants;
@@ -122,6 +123,7 @@ class DeviceConnect extends Component {
 
   goBackToScene() {
     const routebackScenes = {
+      onboarding: 'onboarding',
       device: 'device',
       postureDashboard: 'postureDashboard',
     };
@@ -134,6 +136,9 @@ class DeviceConnect extends Component {
       // Route to the last route before DeviceScan / DeviceConnect
       // If it matches device or postureDashboard in that order
       if (routebackScenes[routeName]) {
+        if (routebackScenes[routeName] === 'onboarding') {
+          this.props.dispatch(appActions.nextStep());
+        }
         return this.props.navigator.popToRoute(routeStack[i]);
       }
     }
