@@ -210,7 +210,7 @@ class DeviceScan extends Component {
             {getRssiIcon(rowData.RSSI)}
           </View>
           <SecondaryText style={styles._secondaryText}>
-            {`${rowData.identifier} RSSI:${rowData.RSSI}`}
+            {rowData.identifier}
           </SecondaryText>
         </View>
         <Icon
