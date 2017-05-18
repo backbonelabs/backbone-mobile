@@ -9,6 +9,8 @@ import {
   DEVICE_GET_INFO,
   DEVICE_SELF_TEST__START,
   DEVICE_SELF_TEST__END,
+  DEVICE_RESTORE_SAVED_SESSION,
+  DEVICE_CLEAR_SAVED_SESSION,
 } from './types';
 import store from '../store';
 import Fetcher from '../utils/Fetcher';
@@ -242,6 +244,12 @@ const deviceActions = {
       type: DEVICE_SELF_TEST__END,
       payload: status,
     };
+  },
+  restoreSavedSession() {
+    return { type: DEVICE_RESTORE_SAVED_SESSION };
+  },
+  clearSavedSession() {
+    return { type: DEVICE_CLEAR_SAVED_SESSION };
   },
 };
 

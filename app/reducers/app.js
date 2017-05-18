@@ -16,6 +16,7 @@ export default (state = {
   modal: {
     showFull: false,
     showPartial: false,
+    hideClose: false,
     content: null,
     onClose: null,
   },
@@ -69,11 +70,12 @@ export default (state = {
       };
     }
     case SHOW_PARTIAL_MODAL: {
-      const { content, onClose } = action.payload;
+      const { content, hideClose, onClose } = action.payload;
       return {
         ...state,
         modal: {
           showPartial: true,
+          hideClose,
           content,
           onClose,
         },
@@ -84,6 +86,7 @@ export default (state = {
         ...state,
         modal: {
           showPartial: false,
+          hideClose: false,
           content: null,
           onClose: null,
         },

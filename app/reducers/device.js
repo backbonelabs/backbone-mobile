@@ -14,6 +14,8 @@ import {
   DEVICE_GET_INFO__ERROR,
   DEVICE_SELF_TEST__START,
   DEVICE_SELF_TEST__END,
+  DEVICE_RESTORE_SAVED_SESSION,
+  DEVICE_CLEAR_SAVED_SESSION,
 } from '../actions/types';
 
 export default (state = {
@@ -21,6 +23,7 @@ export default (state = {
   device: {},
   isConnecting: false,
   isConnected: false,
+  hasSavedSession: false,
   errorMessage: null,
   requestingSelfTest: false,
 }, action) => {
@@ -132,6 +135,18 @@ export default (state = {
           ...state.device,
           selfTestStatus: action.payload,
         },
+      }
+    }
+    case DEVICE_RESTORE_SAVED_SESSION: {
+      return {
+        ...state,
+        hasSavedSession: true,
+      };
+    }
+    case DEVICE_CLEAR_SAVED_SESSION: {
+      return {
+        ...state,
+        hasSavedSession: false,
       };
     }
     default:

@@ -109,6 +109,12 @@ class PostureMonitor extends Component {
       slouchDistanceThreshold: PropTypes.number,
       vibrationSpeed: PropTypes.number,
       vibrationPattern: PropTypes.oneOf([1, 2, 3]),
+      showSummary: PropTypes.bool,
+      previousSessionEvent: PropTypes.shape({
+        hasActiveSession: PropTypes.bool,
+        totalDuration: PropTypes.number,
+        slouchTime: PropTypes.number,
+      }),
     }),
     user: PropTypes.shape({
       settings: PropTypes.shape({
@@ -156,6 +162,9 @@ class PostureMonitor extends Component {
     this.sessionDataListener = null;
     this.slouchListener = null;
     this.statsListener = null;
+    this.deviceStateListener = null;
+    this.sessionStateListener = null;
+    this.sessionControlStateListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
     this.backAndroidListener = null;
@@ -255,7 +264,9 @@ class PostureMonitor extends Component {
     // ANDROID ONLY: Listen to the hardware back button
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        if (this.state.sessionState !== sessionStates.STOPPED
+        if (this.props.sessionState && this.props.sessionState.showSummary) {
+          this.props.navigator.resetTo(routes.postureDashboard);
+        } else if (this.state.sessionState !== sessionStates.STOPPED
           && !this.state.hasPendingSessionOperation) {
           // Back button was pressed during an active session.
           // Check if PostureMonitor is the current scene.
@@ -283,19 +294,25 @@ class PostureMonitor extends Component {
       });
     }
 
-    const { sessionState } = this.state;
-    if (sessionState === sessionStates.PAUSED) {
-      // There is an active session that's paused
-      // Sync app to a paused state
-      this.pauseSession();
-    } else if (sessionState === sessionStates.RUNNING) {
-      // There is an active session that's running
-      // Sync app to a running state
-      this.resumeSession();
+    if (this.props.sessionState && this.props.sessionState.showSummary) {
+      this.setState({ forceStoppedSession: true }, () => {
+        this.statsHandler(this.props.sessionState.previousSessionEvent);
+      });
     } else {
-      // There is no active session
-      // Automatically start a new session
-      this.startSession();
+      const { sessionState } = this.state;
+      if (sessionState === sessionStates.PAUSED) {
+        // There is an active session that's paused
+        // Sync app to a paused state
+        this.pauseSession();
+      } else if (sessionState === sessionStates.RUNNING) {
+        // There is an active session that's running
+        // Sync app to a running state
+        this.resumeSession();
+      } else {
+        // There is no active session
+        // Automatically start a new session
+        this.startSession();
+      }
     }
   }
 
@@ -326,10 +343,13 @@ class PostureMonitor extends Component {
   }
 
   componentWillUnmount() {
-    // End the session if it's running
-    SessionControlService.stop(() => {
-      // no-op
-    });
+    const { forceStoppedSession, sessionState } = this.state;
+    // End the session if it's running and not yet stopped
+    if (!forceStoppedSession && sessionState !== sessionStates.STOPPED) {
+      SessionControlService.stop(() => {
+        // no-op
+      });
+    }
 
     // Remove listeners
     this.sessionDataListener.remove();
@@ -399,6 +419,7 @@ class PostureMonitor extends Component {
       });
     } else if (state === sessionStates.STOPPED) {
       // Remove session state from local storage
+      this.props.dispatch(deviceActions.clearSavedSession());
       SensitiveInfo.deleteItem(storageKeys.SESSION_STATE);
     }
     this.setState({ sessionState: state }, () => {
