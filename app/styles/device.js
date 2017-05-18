@@ -41,6 +41,16 @@ export default EStyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
   },
+  mainText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rssi: {
+    marginLeft: applyWidthDifference(6),
+    width: applyWidthDifference(21),
+    height: applyWidthDifference(16),
+    resizeMode: 'contain',
+  },
   helpContainer: {
     alignItems: 'center',
     flex: 1,

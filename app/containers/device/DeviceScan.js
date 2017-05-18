@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Image,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -20,6 +21,11 @@ import theme from '../../styles/theme';
 import routes from '../../routes';
 import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
+import Signal20 from '../../images/signal20.png';
+import Signal40 from '../../images/signal40.png';
+import Signal60 from '../../images/signal60.png';
+import Signal80 from '../../images/signal80.png';
+import Signal100 from '../../images/signal100.png';
 
 const { DeviceManagementService } = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
@@ -49,6 +55,27 @@ DeviceConnectHelp.propTypes = {
   navigator: PropTypes.shape({
     replace: PropTypes.func,
   }),
+};
+
+/**
+ * Returns a RSSI icon based on the RSSI strength
+ * @param  {Integer} rssi
+ * @return {Image}
+ */
+const getRssiIcon = (rssi) => {
+  let iconSource;
+  if (rssi > -40) {
+    iconSource = Signal100;
+  } else if (rssi > -55 && rssi <= -40) {
+    iconSource = Signal80;
+  } else if (rssi > -70 && rssi <= -55) {
+    iconSource = Signal60;
+  } else if (rssi > -85 && rssi <= -70) {
+    iconSource = Signal40;
+  } else {
+    iconSource = Signal20;
+  }
+  return <Image source={iconSource} style={styles.rssi} />;
 };
 
 class DeviceScan extends Component {
@@ -178,7 +205,10 @@ class DeviceScan extends Component {
     return (
       <View style={styles.cardStyle}>
         <View style={styles.textContainer}>
-          <BodyText>{rowData.name}</BodyText>
+          <View style={styles.mainText}>
+            <BodyText>{rowData.name}</BodyText>
+            {getRssiIcon(rowData.RSSI)}
+          </View>
           <SecondaryText style={styles._secondaryText}>
             {`${rowData.identifier} RSSI:${rowData.RSSI}`}
           </SecondaryText>
