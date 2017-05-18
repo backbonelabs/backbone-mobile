@@ -8,21 +8,23 @@
 
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 #import "Constants.h"
 
-@interface DeviceInformationService : NSObject <RCTBridgeModule, CBPeripheralDelegate> {
+@interface DeviceInformationService : RCTEventEmitter <RCTBridgeModule, CBPeripheralDelegate> {
   StringHandler _firmwareVersionHandler;
   IntHandler _batteryLevelHandler;
+  DictionaryHandler _deviceStatusHandler;
   BOOL hasPendingCallback;
 }
-
-@property (nonatomic, strong) RCTBridge *bridge;
 
 + (DeviceInformationService *)getDeviceInformationService;
 
 - (id)initService;
 
+- (void)refreshDeviceTestStatus;
 - (void)retrieveFirmwareVersion:(StringHandler)handler;
 - (void)retrieveBatteryLevel:(IntHandler)handler;
+- (void)retrieveDeviceStatus:(DictionaryHandler)handler;
 
 @end
