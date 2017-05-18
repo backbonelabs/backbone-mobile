@@ -135,7 +135,7 @@ export default (state = {
           ...state.device,
           selfTestStatus: action.payload,
         },
-      }
+      };
     }
     case DEVICE_RESTORE_SAVED_SESSION: {
       return {
