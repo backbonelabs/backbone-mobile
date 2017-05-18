@@ -18,11 +18,11 @@
 RCT_EXPORT_MODULE();
 
 /**
- Send a local push notification
+ Send a slouch warning notification
  @param title The title to be displayed on the push notification
  @param message The message to be displayed on the push notification
  */
-RCT_EXPORT_METHOD(sendLocalNotification:(NSString*)title message:(NSString*)message) {
+RCT_EXPORT_METHOD(sendSlouchNotification:(NSString*)title message:(NSString*)message) {
   UILocalNotification *localNotification = [[UILocalNotification alloc] init];
   
   if (localNotification) {
@@ -32,6 +32,14 @@ RCT_EXPORT_METHOD(sendLocalNotification:(NSString*)title message:(NSString*)mess
     
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
   }
+}
+
+/**
+ Clear the slouch notification from the notification center
+ */
+RCT_EXPORT_METHOD(clearSlouchNotification) {
+  [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+  [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
 }
 
 /**

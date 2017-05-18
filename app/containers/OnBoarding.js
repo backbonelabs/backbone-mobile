@@ -19,6 +19,7 @@ import onBoardingFlow from './onBoardingFlow';
 import styles from '../styles/onboarding';
 import authActions from '../actions/auth';
 import userActions from '../actions/user';
+import appActions from '../actions/app';
 import routes from '../routes';
 import Mixpanel from '../utils/Mixpanel';
 
@@ -36,6 +37,9 @@ class OnBoarding extends Component {
       firstName: PropTypes.string,
       gender: PropTypes.number,
       birthdate: PropTypes.string,
+    }),
+    app: PropTypes.shape({
+      nextStep: PropTypes.bool,
     }),
     isUpdating: PropTypes.bool,
   };
@@ -95,6 +99,12 @@ class OnBoarding extends Component {
         Alert.alert('Error', 'Unable to save, please try again');
       }
     }
+
+    // if nextStep is truthy, go to next step
+    if (nextProps.app.nextStep) {
+      this.nextStep();
+      this.props.dispatch(appActions.removeNextStep());
+    }
   }
 
   // componentWillUnmount() {
@@ -103,16 +113,21 @@ class OnBoarding extends Component {
   // }
 
   onClose() {
-    // check if user already completed step 1
-    if (this.props.user.hasOnboarded) {
-      return this.props.navigator.replace(routes.postureDashboard);
-    }
-
-    return Alert.alert(
+    // If on step 0 (profile), return alert
+    // If on step 1 (device), return next step
+    // (default) If last step, redirect to dashboard
+    switch (this.state.step) {
+      case 0:
+        return Alert.alert(
             'Are you sure?',
             '\nExiting will log you out and can cause you to lose your information',
             [{ text: 'Cancel' }, { text: 'Logout', onPress: this.exitOnboarding }]
           );
+      case 1:
+        return this.nextStep();
+      default:
+        this.props.navigator.replace(routes.postureDashboard);
+    }
   }
 
   /**
@@ -309,8 +324,8 @@ class OnBoarding extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
-  return user;
+  const { user, app } = state;
+  return { ...user, app };
 };
 
 export default connect(mapStateToProps)(OnBoarding);

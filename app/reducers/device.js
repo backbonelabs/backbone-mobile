@@ -12,6 +12,8 @@ import {
   DEVICE_GET_INFO,
   DEVICE_GET_INFO__START,
   DEVICE_GET_INFO__ERROR,
+  DEVICE_RESTORE_SAVED_SESSION,
+  DEVICE_CLEAR_SAVED_SESSION,
 } from '../actions/types';
 
 export default (state = {
@@ -19,6 +21,7 @@ export default (state = {
   device: {},
   isConnecting: false,
   isConnected: false,
+  hasSavedSession: false,
   errorMessage: null,
 }, action) => {
   switch (action.type) {
@@ -113,6 +116,18 @@ export default (state = {
         ...state,
         inProgress: false,
         errorMessage: action.payload.message,
+      };
+    }
+    case DEVICE_RESTORE_SAVED_SESSION: {
+      return {
+        ...state,
+        hasSavedSession: true,
+      };
+    }
+    case DEVICE_CLEAR_SAVED_SESSION: {
+      return {
+        ...state,
+        hasSavedSession: false,
       };
     }
     default:

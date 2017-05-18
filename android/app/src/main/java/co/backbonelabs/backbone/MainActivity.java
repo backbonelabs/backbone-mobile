@@ -11,7 +11,6 @@ import timber.log.Timber;
 
 public class MainActivity extends ReactActivity {
     public static Activity currentActivity;
-    private NotificationService notificationService;
     private Handler idleTimerHandler = new Handler();
     private Runnable idleTimerRunnable = null;
 
@@ -80,6 +79,12 @@ public class MainActivity extends ReactActivity {
     public void onDestroy() {
         Timber.d("onDestroy");
         super.onDestroy();
+
+        if (idleTimerRunnable != null) {
+            Timber.d("Cancel idle timer");
+            idleTimerHandler.removeCallbacks(idleTimerRunnable);
+            idleTimerRunnable = null;
+        }
 
         BluetoothService bluetoothService = BluetoothService.getInstance();
 

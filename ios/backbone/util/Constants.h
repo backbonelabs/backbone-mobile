@@ -50,7 +50,7 @@
 #define BOOTLOADER_SERVICE_UUID                   [CBUUID UUIDWithString:@"00060000-F8CE-11E4-ABF4-0002A5D5C51B"]
 
 #define SESSION_CONTROL_CHARACTERISTIC_UUID       [CBUUID UUIDWithString:@"00010001-0000-1000-8000-00805F9B0421"]
-#define MOTOR_CONTROL_CHARACTERISTIC_UUID         [CBUUID UUIDWithString:@"00010002-0000-1000-8000-00805F9B0421"]
+#define VIBRATION_MOTOR_CHARACTERISTIC_UUID         [CBUUID UUIDWithString:@"00010002-0000-1000-8000-00805F9B0421"]
 #define SESSION_STATISTIC_CHARACTERISTIC_UUID     [CBUUID UUIDWithString:@"00010003-0000-1000-8000-00805F9B0421"]
 #define SESSION_DATA_CHARACTERISTIC_UUID          [CBUUID UUIDWithString:@"00010004-0000-1000-8000-00805F9B0421"]
 #define ACCELEROMETER_CHARACTERISTIC_UUID         [CBUUID UUIDWithString:@"00010005-0000-1000-8000-00805F9B0421"]
@@ -77,6 +77,17 @@
 #define NOTIFICATION_INITIAL_DELAY_INFREQUENT_REMINDER    2 * 24 * 60 * 60 // 2-days delay
 
 /*
+ Vibration Motor Specifics
+ */
+
+#define VIBRATION_COMMAND_STOP              0
+#define VIBRATION_COMMAND_START             1
+
+#define VIBRATION_DEFAULT_PATTERN     1 // Number of times the motor should vibrate [0-3]
+#define VIBRATION_DEFAULT_SPEED       50 // Speed of motor vibration [0-255]
+#define VIBRATION_DEFAULT_DURATION    50 // Duration of motor vibration in tens of milliseconds [0-255]
+
+/*
  Session Specifics
  */
 
@@ -97,10 +108,6 @@
 #define SESSION_DEFAULT_DURATION          5 // Session duration in minutes
 #define SLOUCH_DEFAULT_DISTANCE_THRESHOLD 2000 // Distance threshold in ten thousandths of a unit
 #define SLOUCH_DEFAULT_TIME_THRESHOLD     3 // Time threshold in seconds
-
-#define VIBRATION_DEFAULT_PATTERN     1 // Number of times the motor should vibrate [0-3]
-#define VIBRATION_DEFAULT_SPEED       50 // Speed of motor vibration [0-255]
-#define VIBRATION_DEFAULT_DURATION    50 // Duration of motor vibration in tens of milliseconds [0-255]
 
 /*
  Bootloader Specifics

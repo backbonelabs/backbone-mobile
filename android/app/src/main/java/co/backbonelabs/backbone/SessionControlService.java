@@ -101,17 +101,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
                 stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
                 activity.startService(stopIntent);
-
-                // Stop the active session
-                if (hasActiveSession()) {
-                    forceStoppedSession = true;
-
-                    toggleSessionOperation(Constants.SESSION_OPERATIONS.STOP, new Constants.IntCallBack() {
-                        @Override
-                        public void onIntCallBack(int val) {
-                        }
-                    });
-                }
             }
         });
     }
@@ -174,8 +163,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             if (sessionParam != null && sessionParam.hasKey("vibrationDuration")) {
                 vibrationDuration = sessionParam.getInt("vibrationDuration");
             }
-
-            sessionDuration *= 60; // Convert to second from minute
 
             toggleSessionOperation(Constants.SESSION_OPERATIONS.START, new Constants.IntCallBack() {
                 @Override
@@ -318,6 +305,14 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC)) {
             bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC);
         }
+        else {
+            WritableMap wm = Arguments.createMap();
+            wm.putBoolean("hasActiveSession", false);
+            wm.putInt("totalDuration", 0);
+            wm.putInt("slouchTime", 0);
+            Timber.d("SessionState data %s", wm);
+            EventEmitter.send(reactContext, "SessionState", wm);
+        }
     }
 
     private void toggleSessionOperation(int operation, Constants.IntCallBack errCallBack) {
@@ -330,14 +325,16 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         boolean status;
 
         if (operation == Constants.SESSION_OPERATIONS.START) {
+            int sessionDurationInSecond = sessionDuration * 60; // Convert to second from minute
+
             byte[] commandBytes = new byte[12];
 
             commandBytes[0] = Constants.SESSION_COMMANDS.START;
 
-            commandBytes[1] = Utilities.getByteFromInt(sessionDuration, 3);
-            commandBytes[2] = Utilities.getByteFromInt(sessionDuration, 2);
-            commandBytes[3] = Utilities.getByteFromInt(sessionDuration, 1);
-            commandBytes[4] = Utilities.getByteFromInt(sessionDuration, 0);
+            commandBytes[1] = Utilities.getByteFromInt(sessionDurationInSecond, 3);
+            commandBytes[2] = Utilities.getByteFromInt(sessionDurationInSecond, 2);
+            commandBytes[3] = Utilities.getByteFromInt(sessionDurationInSecond, 1);
+            commandBytes[4] = Utilities.getByteFromInt(sessionDurationInSecond, 0);
 
             commandBytes[5] = Utilities.getByteFromInt(slouchDistanceThreshold, 1);
             commandBytes[6] = Utilities.getByteFromInt(slouchDistanceThreshold, 0);
@@ -450,17 +447,24 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 Timber.d("CharacteristicRead");
                 String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
 
+                int flags = 0;
+                int totalDuration = 0;
+                int slouchTime = 0;
+
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
 
-                    int flags = Utilities.getIntFromByteArray(responseArray, 0);
-                    int totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
-                    int slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
-
-                    boolean hasActiveSession = (flags % 2 == 1);
+                    if (responseArray == null || responseArray.length < 12) {
+                        // Invalid response, default to no active session
+                    }
+                    else {
+                        flags = Utilities.getIntFromByteArray(responseArray, 0);
+                        totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
+                        slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
+                    }
 
                     WritableMap wm = Arguments.createMap();
-                    wm.putBoolean("hasActiveSession", hasActiveSession);
+                    wm.putBoolean("hasActiveSession", flags % 2 == 1);
                     wm.putInt("totalDuration", totalDuration);
                     wm.putInt("slouchTime", slouchTime);
                     Timber.d("SessionState data %s", wm);

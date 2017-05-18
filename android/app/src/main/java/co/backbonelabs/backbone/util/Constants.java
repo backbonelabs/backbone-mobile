@@ -56,6 +56,23 @@ public class Constants {
         int STOP = 0x03;
     }
 
+    public interface VIBRATION_COMMANDS {
+        int STOP = 0;
+        int START = 1;
+    }
+
+    public interface VIBRATION_SPEED_VALUES {
+        byte SLOW = 40;
+        byte MEDIUM = 80;
+        byte FAST = (byte)150;
+    }
+
+    public interface VIBRATION_DURATION_VALUES {
+        int SHORT = 200;
+        int MEDIUM = 500;
+        int LONG = 800;
+    }
+
     public interface BOOTLOADER_STATES {
         int OFF = 0;
         int INITIATED = 1;
@@ -180,7 +197,7 @@ public class Constants {
 
     public interface CHARACTERISTIC_UUIDS {
         UUID SESSION_CONTROL_CHARACTERISTIC = UUID.fromString("00010001-0000-1000-8000-00805F9B0421");
-        UUID MOTOR_CONTROL_CHARACTERISTIC = UUID.fromString("00010002-0000-1000-8000-00805F9B0421");
+        UUID VIBRATION_MOTOR_CHARACTERISTIC = UUID.fromString("00010002-0000-1000-8000-00805F9B0421");
         UUID SESSION_STATISTIC_CHARACTERISTIC = UUID.fromString("00010003-0000-1000-8000-00805F9B0421");
         UUID SESSION_DATA_CHARACTERISTIC = UUID.fromString("00010004-0000-1000-8000-00805F9B0421");
         UUID ACCELEROMETER_CHARACTERISTIC = UUID.fromString("00010005-0000-1000-8000-00805F9B0421");

@@ -121,11 +121,12 @@ Bugsnag.notify(new Throwable("Test error from Android native"));
 5. Add a git tag for the marketing version where the tag name is in the following format: vX.Y.Z, e.g., v1.0.0
 6. Push the git tag to the repo
 8. Open the Xcode workspace
-9. Clean the build folder (hold Alt and click the Product menu and click Clean Build Folder, or press Alt-Command-Shift-K)
-10. Click Product > Archive
-11. After the archive is created, upload it to iTunes Connect
-12. Set up the new release in iTunes Connect
-13. If the release source map hasn't been uploaded to Bugsnag yet, then run `npm run bugsnag-release` from the project root
+9. Select the `backbone prod` scheme and use the Generic iOS Device
+10. Clean the build folder (hold Alt and click the Product menu and click Clean Build Folder, or press Alt-Command-Shift-K)
+11. Click Product > Archive
+12. After the archive is created, upload it to iTunes Connect
+13. Set up the new release in iTunes Connect
+14. If the release source map hasn't been uploaded to Bugsnag yet, then run `npm run bugsnag-release` from the project root
 
 ### Android
 

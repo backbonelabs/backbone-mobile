@@ -6,6 +6,8 @@ import {
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
+  ONBOARDING_NEXT_STEP,
+  REMOVE_ONBOARDING_NEXT_STEP,
 } from '../actions/types';
 
 export default (state = {
@@ -14,9 +16,11 @@ export default (state = {
   modal: {
     showFull: false,
     showPartial: false,
+    hideClose: false,
     content: null,
     onClose: null,
   },
+  nextStep: false,
 }, action) => {
   switch (action.type) {
     case UPDATE_BLUETOOTH_STATE: {
@@ -66,11 +70,12 @@ export default (state = {
       };
     }
     case SHOW_PARTIAL_MODAL: {
-      const { content, onClose } = action.payload;
+      const { content, hideClose, onClose } = action.payload;
       return {
         ...state,
         modal: {
           showPartial: true,
+          hideClose,
           content,
           onClose,
         },
@@ -81,9 +86,22 @@ export default (state = {
         ...state,
         modal: {
           showPartial: false,
+          hideClose: false,
           content: null,
           onClose: null,
         },
+      };
+    }
+    case ONBOARDING_NEXT_STEP: {
+      return {
+        ...state,
+        nextStep: true,
+      };
+    }
+    case REMOVE_ONBOARDING_NEXT_STEP: {
+      return {
+        ...state,
+        nextStep: false,
       };
     }
     default:

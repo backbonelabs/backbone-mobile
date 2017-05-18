@@ -29,6 +29,7 @@ import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
+import BodyText from '../components/BodyText';
 import Banner from '../components/Banner';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -71,6 +72,7 @@ class Application extends Component {
         showPartial: PropTypes.bool,
         content: PropTypes.node,
         onClose: PropTypes.func,
+        hideClose: PropTypes.bool,
       }),
     }),
     user: PropTypes.shape({
@@ -90,6 +92,7 @@ class Application extends Component {
       initializing: true,
       initialRoute: null,
       hasDisplayedLowBatteryWarning: false,
+      isFetchingSessionState: false,
     };
 
     this.navigator = null; // Components should use this custom navigator object
@@ -103,8 +106,9 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        if (this.props.app.modal.showFull || this.props.app.modal.showPartial) {
-          // There is a modal being displayed, hide it
+        const { showFull, showPartial, hideClose } = this.props.app.modal;
+        if ((showFull || showPartial) && !hideClose) {
+          // There is a modal being displayed, hide it when allowed
           this.props.dispatch(appActions.hideFullModal());
           this.props.dispatch(appActions.hidePartialModal());
           return true;
@@ -169,8 +173,8 @@ class Application extends Component {
           // Retrieve device info
           this.props.dispatch(deviceActions.getInfo());
 
-          // Retrieve session state
-          SessionControlService.getSessionState();
+          // Check for previous session
+          this.checkActiveSession();
           break;
         case deviceStatuses.DISCONNECTED:
           // Dispatch disconnect action when the device is disconnected
@@ -183,84 +187,122 @@ class Application extends Component {
 
     // Handle SessionState events
     this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
-      if (event.hasActiveSession) {
-        // There is an active session, check if we're on the PostureMonitor scene
-        if (this.navigator) {
-          const routeStack = this.navigator.getCurrentRoutes();
-          // Stay on the current scene if postureMonitor is still in the stack.
-          // Only navigate to it when the user's currently not accessing the monitor
-          let shouldGoToPostureMonitor = true;
-          for (let i = 0; i < routeStack.length; i++) {
-            if (routeStack[i].name === routes.postureMonitor.name) {
-              shouldGoToPostureMonitor = false;
-              break;
-            }
-          }
+      if (this.state.isFetchingSessionState) {
+        const routeStack = this.navigator.getCurrentRoutes();
+        const postureRouteName = routes.postureMonitor.name;
+        const isPostureMonitorActive = routeStack.some(route => route.name === postureRouteName);
 
-          if (shouldGoToPostureMonitor) {
-            // Not currently on the PostureMonitor scene
-            // Navigate to PostureMonitor to resume session using previous session parameters
+        // Check if we are not yet in the postureMonitor
+        if (!isPostureMonitorActive) {
+          if (event.hasActiveSession) {
+            // There is an active session,
+            if (this.navigator) {
+              // Not currently on the PostureMonitor scene
+              // Navigate to PostureMonitor to resume session using previous session parameters
+              SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+                .then(prevSessionState => {
+                  const parameters = {};
+                  if (prevSessionState) {
+                    Object.assign(parameters, prevSessionState.parameters);
+                    this.props.dispatch(
+                      postureActions.setSessionTime(parameters.sessionDuration * 60)
+                    );
+
+                    // Hacky workaround:
+                    // When the device gets disconnected while on the PostureMonitor scene and
+                    // the user decides to leave the scene, and then reconnects to the device
+                    // outside the PostureMonitor scene, the DeviceConnect scene will call
+                    // popToRoute or replace on the Navigator. However, we get into a race condition
+                    // where this navigate action may cause the PostureMonitor to be inserted into
+                    // the route stack before popToRoute or replace is called. If that happens, the
+                    // PostureMonitor scene will be unmounted.
+                    // This hack will navigate to PostureMonitor after a short delay to minimize
+                    // the chances of such a race condition.
+                    setTimeout(() => {
+                      this.navigate({
+                        ...routes.postureMonitor,
+                        props: {
+                          sessionState: {
+                            ...parameters,
+                            sessionState: prevSessionState.state,
+                            timeElapsed: event.totalDuration,
+                            slouchTime: event.slouchTime,
+                          },
+                        },
+                      });
+                    }, 250);
+                  }
+                });
+            }
+          } else {
+            // Redirect to the postureMonitor to show the summary
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)
               .then(prevSessionState => {
-                const parameters = {};
                 if (prevSessionState) {
-                  Object.assign(parameters, prevSessionState.parameters);
-                  this.props.dispatch(
-                    postureActions.setSessionTime(prevSessionState.parameters.sessionDuration * 60)
-                  );
-                }
-
-                // Hacky workaround:
-                // When the device gets disconnected while on the PostureMonitor scene and
-                // the user decides to leave the scene, and then reconnects to the device
-                // outside the PostureMonitor scene, the DeviceConnect scene will call
-                // popToRoute or replace on the Navigator. However, we get into a race condition
-                // where this navigate action may cause the PostureMonitor to be inserted into
-                // the route stack before popToRoute or replace is called. If that happens, the
-                // PostureMonitor scene will be unmounted.
-                // This hack will navigate to PostureMonitor after a short delay to minimize
-                // the chances of such a race condition.
-                setTimeout(() => {
-                  this.navigate({
-                    ...routes.postureMonitor,
-                    props: {
-                      sessionState: {
-                        ...parameters,
-                        sessionState: prevSessionState.state,
-                        timeElapsed: event.totalDuration,
-                        slouchTime: event.slouchTime,
+                  setTimeout(() => {
+                    this.navigate({
+                      ...routes.postureMonitor,
+                      props: {
+                        sessionState: {
+                          showSummary: true,
+                          previousSessionEvent: event,
+                        },
                       },
-                    },
-                  });
-                }, 250);
+                    });
+                  }, 250);
+                }
               });
           }
         }
+
+        this.setState({ isFetchingSessionState: false });
+
+        this.props.dispatch(appActions.hidePartialModal());
       }
     });
 
     // Add a listener to the ConnectionStatus event
     this.connectionStatusListener = DeviceManagementServiceEvents.addListener('ConnectionStatus',
       status => {
-        this.props.dispatch(deviceActions.connectStatus(status));
         if (status.message) {
           Mixpanel.trackError({
             errorContent: status,
             path: 'app/containers/Application',
             stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
           });
-        } else if (status.deviceMode === deviceModes.BOOTLOADER) {
-          // When the device failed to load the normal Backbone services,
-          // we should proceed to show firmware update related UI
-          Alert.alert('Error', 'There is something wrong with your Backbone. ' +
-            'Perform an update now to continue using your Backbone.', [
-            { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
-            { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
-            ]
-          );
+        } else {
+          const routeStack = this.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+          const delay = (currentRoute.name === routes.deviceConnect.name ? 1000 : 0);
+
+          if (status.deviceMode === deviceModes.BOOTLOADER) {
+            // When the device failed to load the normal Backbone services,
+            // we should proceed to show firmware update related UI.
+            // Delay is needed when transitioning from the deviceConnect scene
+            // to prevent corrupted navigation stack if the user promptly tap
+            // on the 'Update' button while the deviceConnect scene is being popped.
+            setTimeout(() => {
+              Alert.alert('Error', 'There is something wrong with your Backbone. ' +
+                'Perform an update now to continue using your Backbone.', [
+                { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
+                { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
+                ]
+              );
+            }, delay);
+          }
         }
+
+        this.props.dispatch(deviceActions.connectStatus(status));
       }
     );
+
+    // Check if we need to prepare for restoring previously saved session
+    SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+      .then(prevSessionState => {
+        if (prevSessionState) {
+          this.props.dispatch(deviceActions.restoreSavedSession());
+        }
+      });
 
     // Listen to when the app switches between foreground and background
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -379,9 +421,68 @@ class Application extends Component {
       // Fetch device info when app comes back into foreground
       this.props.dispatch(deviceActions.getInfo());
 
-      // Retrieve session state
-      SessionControlService.getSessionState();
+      // Skip the session check if the app's not yet ready
+      if (this.navigator) {
+        // Check if we really have to check for active session.
+        // Skip this when the user's still on the posture monitor
+        const routeStack = this.navigator.getCurrentRoutes();
+        const postureRouteName = routes.postureMonitor.name;
+        const isPostureMonitorActive = routeStack.some(route => route.name === postureRouteName);
+
+        // Only refresh device data when not on postureMonitor
+        if (!isPostureMonitorActive) {
+          // Check for previous session
+          this.checkActiveSession();
+        }
+      }
     }
+  }
+
+  checkActiveSession() {
+    SensitiveInfo.getItem(storageKeys.SESSION_STATE)
+      .then(prevSessionState => {
+        if (prevSessionState) {
+          // Check if we really have to check for active session.
+          // Skip this when the user's still on the posture monitor
+          const routeStack = this.navigator.getCurrentRoutes();
+          const postureRouteName = routes.postureMonitor.name;
+          const shouldShowLoading = !(routeStack.some(route => route.name === postureRouteName));
+          const { showPartial, showFull } = this.props.app.modal;
+
+          // Only display if no other pop-ups are visible
+          if (shouldShowLoading && !showPartial && !showFull) {
+            this.props.dispatch(appActions.showPartialModal({
+              content: (
+                <View>
+                  <View>
+                    <BodyText style={styles._partialModalBodyText}>
+                      Checking for previous session
+                    </BodyText>
+                  </View>
+                  <View style={styles.partialSpinnerContainer}>
+                    <Spinner />
+                  </View>
+                </View>
+              ),
+              hideClose: true,
+            }));
+
+            // Start fetching the previous session state
+            setTimeout(() => {
+              this.setState({ isFetchingSessionState: true });
+              SessionControlService.getSessionState();
+
+              // Time-limit of 4 seconds for fetching it
+              setTimeout(() => {
+                if (this.state.isFetchingSessionState) {
+                  this.setState({ isFetchingSessionState: false });
+                  this.props.dispatch(appActions.hidePartialModal());
+                }
+              }, 4000);
+            }, 1000);
+          }
+        }
+      });
   }
 
   configureScene() {
@@ -510,7 +611,11 @@ class Application extends Component {
         { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.showFull ? hiddenStyles : {}, { flex: 1 }]}>
           <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
-          <PartialModal show={modalProps.showPartial} onClose={modalProps.onClose}>
+          <PartialModal
+            show={modalProps.showPartial}
+            onClose={modalProps.onClose}
+            hideClose={modalProps.hideClose}
+          >
             {modalProps.content}
           </PartialModal>
           { route.showTabBar && TabBar }
