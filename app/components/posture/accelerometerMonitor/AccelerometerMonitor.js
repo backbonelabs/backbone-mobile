@@ -8,6 +8,7 @@ import {
   VictoryChart,
   VictoryLine,
   VictoryAxis,
+  VictoryLabel,
 } from 'victory-native';
 import autobind from 'class-autobind';
 import MonitorButton from '../postureMonitor/MonitorButton';
@@ -19,7 +20,7 @@ const { PropTypes } = React;
 const { AccelerometerService } = NativeModules;
 const AccelerometerServiceEvents = new NativeEventEmitter(AccelerometerService);
 
-const { fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default class AccelerometerMonitor extends Component {
   static propTypes = {
@@ -32,7 +33,7 @@ export default class AccelerometerMonitor extends Component {
     this.state = {
       xValues: [],
       yValues: [],
-      // zValues: [],
+      zValues: [],
       currentIndex: 0,
       hasPendingOperation: false,
       isStreaming: false,
@@ -49,12 +50,12 @@ export default class AccelerometerMonitor extends Component {
   }
 
   accelerometerDataHandler(event) {
-    const { currentIndex, xValues, yValues } = this.state;
-    const { xAxis, yAxis } = event;
+    const { currentIndex, xValues, yValues, zValues } = this.state;
+    const { xAxis, yAxis, zAxis } = event;
 
     xValues.push({ index: currentIndex, value: xAxis });
     yValues.push({ index: currentIndex, value: yAxis });
-    // zValues.push({ index: currentIndex, value: zAxis });
+    zValues.push({ index: currentIndex, value: zAxis });
 
     if (xValues.length > 50) {
       xValues.shift();
@@ -64,15 +65,15 @@ export default class AccelerometerMonitor extends Component {
       yValues.shift();
     }
 
-    // if (zValues.length > 50) {
-    //   zValues.shift();
-    // }
+    if (zValues.length > 50) {
+      zValues.shift();
+    }
 
     this.setState({
       currentIndex: currentIndex + 1,
       xValues: this.state.xValues,
       yValues: this.state.yValues,
-      // zValues: this.state.zValues,
+      zValues: this.state.zValues,
     });
   }
 
@@ -106,7 +107,7 @@ export default class AccelerometerMonitor extends Component {
     const {
       xValues,
       yValues,
-      // zValues,
+      zValues,
       isStreaming,
       currentIndex,
     } = this.state;
@@ -134,7 +135,7 @@ export default class AccelerometerMonitor extends Component {
 
     const xRecords = (xValues.length < 2 ? emptyData : xValues);
     const yRecords = (yValues.length < 2 ? emptyData : yValues);
-    // const zRecords = (zValues.length < 2 ? emptyData : zValues);
+    const zRecords = (zValues.length < 2 ? emptyData : zValues);
 
     return (
       <View style={styles.container}>
@@ -145,9 +146,24 @@ export default class AccelerometerMonitor extends Component {
                 tickLabels: { fill: 'none' },
               }}
             />
+            <VictoryLabel
+              text="X-axis"
+              style={{ stroke: 'red', fontSize: fixedResponsiveFontSize(12) }}
+            />
+            <VictoryLabel
+              text="Y-axis"
+              dx={applyWidthDifference(150)}
+              style={{ stroke: 'blue', fontSize: fixedResponsiveFontSize(12) }}
+            />
+            <VictoryLabel
+              text="Z-axis"
+              dx={applyWidthDifference(300)}
+              style={{ stroke: 'green', fontSize: fixedResponsiveFontSize(12) }}
+            />
             <VictoryAxis
               dependentAxis
               style={{
+                grid: { stroke: '#212121', strokeDasharray: '10, 10' },
                 tickLabels: { fontSize: fixedResponsiveFontSize(12) },
               }}
             />
@@ -155,7 +171,7 @@ export default class AccelerometerMonitor extends Component {
               data={xRecords}
               style={{
                 data: { stroke: 'red', strokeWidth: 2 },
-                labels: { fontSize: 12 },
+                labels: { fontSize: fixedResponsiveFontSize(12) },
               }}
               x="index"
               y="value"
@@ -164,6 +180,15 @@ export default class AccelerometerMonitor extends Component {
               data={yRecords}
               style={{
                 data: { stroke: 'blue', strokeWidth: 2 },
+                labels: { fontSize: fixedResponsiveFontSize(12) },
+              }}
+              x="index"
+              y="value"
+            />
+            <VictoryLine
+              data={zRecords}
+              style={{
+                data: { stroke: 'green', strokeWidth: 2 },
                 labels: { fontSize: fixedResponsiveFontSize(12) },
               }}
               x="index"
