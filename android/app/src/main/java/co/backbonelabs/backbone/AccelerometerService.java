@@ -201,7 +201,7 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
                         WritableMap wm = Arguments.createMap();
                         wm.putDouble("xAxis", xAxis);
                         wm.putDouble("yAxis", yAxis);
-                        wm.putDouble("zAxis", yAxis);
+                        wm.putDouble("zAxis", zAxis);
                         wm.putDouble("acceleration", acceleration);
                         Timber.d("Accelerometer data %f %f %f %f", xAxis, yAxis, zAxis, acceleration);
                         EventEmitter.send(reactContext, "AccelerometerData", wm);
