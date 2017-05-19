@@ -32,6 +32,7 @@ public class BackbonePackage implements ReactPackage {
         modules.add(DeviceInformationService.getInstance(reactContext));
         modules.add(SessionControlService.getInstance(reactContext));
         modules.add(VibrationMotorService.getInstance(reactContext));
+        modules.add(AccelerometerService.getInstance(reactContext));
         modules.add(new UserSettingService(reactContext));
         modules.add(new NotificationService(reactContext));
         return modules;
