@@ -306,6 +306,9 @@ class Settings extends Component {
     }, {
       label: 'Posture Report',
       handler: () => this.props.navigator.push(routes.postureReport),
+    }, {
+      label: 'Accelerometer Monitor',
+      handler: () => this.props.navigator.push(routes.accelerometerMonitor),
     }];
 
     return (
