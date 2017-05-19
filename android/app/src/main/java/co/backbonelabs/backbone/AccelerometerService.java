@@ -195,7 +195,7 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
 
                     // Prevent from flooding the React side for rendering the chart
                     // as that would freeze the entire UI due to excessive data being sent
-                    if (currentTimestamp - previousDataTimestamp >= 500) {
+                    if (currentTimestamp - previousDataTimestamp >= 250) {
                         previousDataTimestamp = currentTimestamp;
 
                         WritableMap wm = Arguments.createMap();
