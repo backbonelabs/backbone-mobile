@@ -148,17 +148,20 @@ export default class AccelerometerMonitor extends Component {
             />
             <VictoryLabel
               text="X-axis"
-              style={{ stroke: 'red', fontSize: fixedResponsiveFontSize(12) }}
+              dy={1}
+              style={{ stroke: 'red', fontSize: fixedResponsiveFontSize(14) }}
             />
             <VictoryLabel
               text="Y-axis"
               dx={applyWidthDifference(150)}
-              style={{ stroke: 'blue', fontSize: fixedResponsiveFontSize(12) }}
+              dy={1}
+              style={{ stroke: 'blue', fontSize: fixedResponsiveFontSize(14) }}
             />
             <VictoryLabel
               text="Z-axis"
               dx={applyWidthDifference(300)}
-              style={{ stroke: 'green', fontSize: fixedResponsiveFontSize(12) }}
+              dy={1}
+              style={{ stroke: 'green', fontSize: fixedResponsiveFontSize(14) }}
             />
             <VictoryAxis
               dependentAxis
