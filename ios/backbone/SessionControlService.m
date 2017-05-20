@@ -447,10 +447,12 @@ RCT_EXPORT_METHOD(getSessionState) {
   DLog(@"DidUpdateNotif %@", characteristic);
   if ([characteristic.UUID isEqual:SESSION_DATA_CHARACTERISTIC_UUID]) {
     if (error) {
-      DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
-      
       if (_errorHandler) {
+        DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
+        
         _errorHandler(error);
+        _errorHandler = nil;
+        
         [self revertOperation];
       }
     }
@@ -460,10 +462,11 @@ RCT_EXPORT_METHOD(getSessionState) {
   }
   else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
     if (error) {
-      DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
-      
       if (_errorHandler) {
+        DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
+        
         _errorHandler(error);
+        _errorHandler = nil;
         
         notificationStateChanged = YES;
         [self revertOperation];
@@ -475,10 +478,11 @@ RCT_EXPORT_METHOD(getSessionState) {
   }
   else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
     if (error) {
-      DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
-      
       if (_errorHandler) {
+        DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
+        
         _errorHandler(error);
+        _errorHandler = nil;
         
         notificationStateChanged = YES;
         [self revertOperation];
@@ -488,6 +492,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       // Session control is fully updated, return callback with no error
       if (_errorHandler) {
         _errorHandler(nil);
+        _errorHandler = nil;
       }
     }
   }
@@ -497,10 +502,11 @@ RCT_EXPORT_METHOD(getSessionState) {
   DLog(@"Has write %@ %@", characteristic, error);
   if ([characteristic.UUID isEqual:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
     if (error) {
-      DLog(@"Error writing to characteristic: %@ %@", characteristic.UUID, error.localizedDescription);
-      
       if (_errorHandler) {
+        DLog(@"Error writing to characteristic: %@ %@", characteristic.UUID, error.localizedDescription);
+        
         _errorHandler(error);
+        _errorHandler = nil;
       }
     }
     else {

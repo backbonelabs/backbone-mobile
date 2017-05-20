@@ -158,15 +158,17 @@ RCT_EXPORT_METHOD(stopListening:(RCTResponseSenderBlock)callback) {
   DLog(@"DidUpdateNotif %@", characteristic);
   if ([characteristic.UUID isEqual:ACCELEROMETER_CHARACTERISTIC_UUID]) {
     if (error) {
-      DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
-      
       if (_toggleHandler) {
+        DLog(@"Error changing notification state: %@ %@", characteristic.UUID, error.localizedDescription);
+        
         _toggleHandler(error);
+        _toggleHandler = nil;
       }
     }
     else {
       if (_toggleHandler) {
         _toggleHandler(nil);
+        _toggleHandler = nil;
       }
     }
   }
@@ -176,13 +178,14 @@ RCT_EXPORT_METHOD(stopListening:(RCTResponseSenderBlock)callback) {
   DLog(@"Has write %@ %@", characteristic, error);
   if ([characteristic.UUID isEqual:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
     if (error) {
-      DLog(@"Error writing to characteristic: %@ %@", characteristic.UUID, error.localizedDescription);
-      
       if (_toggleHandler) {
+        DLog(@"Error writing to characteristic: %@ %@", characteristic.UUID, error.localizedDescription);
+        
         _toggleHandler(error);
+        _toggleHandler = nil;
       }
     }
-    else {
+    else if (_toggleHandler) {
       [BluetoothServiceInstance.currentDevice setNotifyValue:accelerometerNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ACCELEROMETER_CHARACTERISTIC_UUID]];
     }
   }

@@ -124,7 +124,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     private boolean forceStoppedSession;
     private boolean notificationStateChanged;
 
-    private Constants.IntCallBack errorCallBack;
+    private Constants.IntCallBack errorCallBack = null;
 
     @Override
     public String getName() {
@@ -407,6 +407,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         if (!status) {
             Log.e("SessionControlService", "Error initiating session control update");
             errorCallBack.onIntCallBack(1);
+            errorCallBack = null;
         }
     }
 
@@ -542,13 +543,15 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                             if (!toggleStatus && errorCallBack != null) {
                                 Log.e("SessionControlService", "Error toggling notification");
                                 errorCallBack.onIntCallBack(1);
+                                errorCallBack = null;
                             }
                         }
                     }
                     else {
-                        Log.e("SessionControlService", "Error writing into session control");
                         if (errorCallBack != null) {
+                            Log.e("SessionControlService", "Error writing into session control");
                             errorCallBack.onIntCallBack(1);
+                            errorCallBack = null;
                         }
                     }
                 }
@@ -568,16 +571,18 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                             if (!toggleStatus) {
                                 Log.e("SessionControlService", "Error toggling notification");
                                 errorCallBack.onIntCallBack(1);
+                                errorCallBack = null;
 
                                 revertOperation();
                             }
                         }
                     }
                     else {
-                        Log.e("SessionControlService", "Error writing into notification descriptor");
                         if (errorCallBack != null) {
                             // Properly handle the failure when we failed toggling the notification state
+                            Log.e("SessionControlService", "Error writing into notification descriptor");
                             errorCallBack.onIntCallBack(1);
+                            errorCallBack = null;
 
                             revertOperation();
                         }
@@ -592,6 +597,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                             if (!toggleStatus) {
                                 Log.e("SessionControlService", "Error toggling notification");
                                 errorCallBack.onIntCallBack(1);
+                                errorCallBack = null;
 
                                 notificationStateChanged = true;
                                 revertOperation();
@@ -603,6 +609,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         if (errorCallBack != null) {
                             // Properly handle the failure when we failed toggling the notification state
                             errorCallBack.onIntCallBack(1);
+                            errorCallBack = null;
 
                             notificationStateChanged = true;
                             revertOperation();
@@ -613,13 +620,15 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (errorCallBack != null) {
                             errorCallBack.onIntCallBack(0);
+                            errorCallBack = null;
                         }
                     }
                     else {
-                        Log.e("SessionControlService", "Error writing into notification descriptor");
                         if (errorCallBack != null) {
                             // Properly handle the failure when we failed toggling the notification state
+                            Log.e("SessionControlService", "Error writing into notification descriptor");
                             errorCallBack.onIntCallBack(1);
+                            errorCallBack = null;
 
                             notificationStateChanged = true;
                             revertOperation();

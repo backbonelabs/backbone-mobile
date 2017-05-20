@@ -47,7 +47,7 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
     }
 
     private boolean accelerometerNotificationStatus;
-    private Constants.IntCallBack toggleCallBack;
+    private Constants.IntCallBack toggleCallBack = null;
     private long previousDataTimestamp = 0;
 
     @Override
@@ -146,6 +146,7 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
 
         if (!result) {
             toggleCallBack.onIntCallBack(1);
+            toggleCallBack = null;
         }
     }
 
@@ -162,19 +163,21 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
                 int status = intent.getIntExtra(Constants.EXTRA_BYTE_STATUS_VALUE, BluetoothGatt.GATT_FAILURE);
 
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC.toString())) {
-                    if (status == BluetoothGatt.GATT_SUCCESS) {
+                    if (status == BluetoothGatt.GATT_SUCCESS && toggleCallBack != null) {
                         boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, accelerometerNotificationStatus);
 
                         // If we failed initiating the descriptor writer, handle the error callback
-                        if (toggleCallBack != null && !toggleStatus) {
+                        if (!toggleStatus) {
                             Log.e("AccelerometerService", "Error toggling notification");
                             toggleCallBack.onIntCallBack(1);
+                            toggleCallBack = null;
                         }
                     }
                     else {
-                        Log.e("AccelerometerService", "Error writing into session control");
                         if (toggleCallBack != null) {
+                            Log.e("AccelerometerService", "Error writing into session control");
                             toggleCallBack.onIntCallBack(1);
+                            toggleCallBack = null;
                         }
                     }
                 }
@@ -216,11 +219,13 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (toggleCallBack != null) {
                             toggleCallBack.onIntCallBack(0);
+                            toggleCallBack = null;
                         }
                     } else {
-                        Log.e("AccelerometerService", "Error writing into notification descriptor");
                         if (toggleCallBack != null) {
+                            Log.e("AccelerometerService", "Error writing into notification descriptor");
                             toggleCallBack.onIntCallBack(1);
+                            toggleCallBack = null;
                         }
                     }
                 }
