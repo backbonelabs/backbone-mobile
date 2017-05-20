@@ -83,7 +83,7 @@ class Application extends Component {
       email: PropTypes.string,
     }),
     device: PropTypes.shape({
-      requestingSelfTest: PropTypes.bool,
+      selfTestStatus: PropTypes.bool,
       device: PropTypes.shape({
         batteryLevel: PropTypes.number,
       }),
@@ -192,14 +192,7 @@ class Application extends Component {
 
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
       test => {
-        const { requestingSelfTest } = this.props.device;
-
-        if (!test.success && !requestingSelfTest) {
-          SessionControlService.requestSelfTest();
-          this.props.dispatch(deviceActions.selfTestStarted());
-        } else if (requestingSelfTest) {
-          this.props.dispatch(deviceActions.selfTestEnded(test.success));
-        }
+        this.props.dispatch(deviceActions.selfTestUpdated(test.success));
       });
 
     // Handle SessionState events
@@ -306,6 +299,12 @@ class Application extends Component {
                 ]
               );
             }, delay);
+          } else if (!status.selfTestStatus) {
+            // Self-Test failed, request a re-run
+            SessionControlService.requestSelfTest();
+            this.props.dispatch(deviceActions.selfTestRequested());
+          } else {
+            this.props.dispatch(deviceActions.selfTestUpdated(status.selfTestStatus));
           }
         }
 
@@ -459,6 +458,11 @@ class Application extends Component {
   }
 
   checkActiveSession() {
+    // If the device failed the self-test, we shouldn't attempt to recover any sessions
+    if (!this.props.device.selfTestStatus) {
+      return;
+    }
+
     SensitiveInfo.getItem(storageKeys.SESSION_STATE)
       .then(prevSessionState => {
         if (prevSessionState) {

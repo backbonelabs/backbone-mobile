@@ -62,9 +62,7 @@ class PostureDashboard extends Component {
       isConnecting: PropTypes.bool,
       requestingSelfTest: PropTypes.bool,
       inProgress: PropTypes.bool,
-      device: PropTypes.shape({
-        selfTestStatus: PropTypes.bool,
-      }),
+      selfTestStatus: PropTypes.bool,
       hasSavedSession: PropTypes.bool,
     }),
     user: PropTypes.shape({
@@ -448,11 +446,9 @@ class PostureDashboard extends Component {
                 ]
               );
             }
-          } else if (!this.props.device.inProgress) {
-            // Check if self-test has no problem
-            if (this.props.device.device.selfTestStatus) {
-              this.props.navigator.push(routes.postureCalibrate);
-            } else if (this.props.device.requestingSelfTest) {
+          } else if (!this.props.device.selfTestStatus) {
+            // Check if self-test is being fixed
+            if (this.props.device.requestingSelfTest) {
               // Display an alert stating that the auto-fix is on the way
               Alert.alert('Error', 'Fixing sensors');
             } else {
@@ -467,16 +463,16 @@ class PostureDashboard extends Component {
                   {
                     text: 'Fix',
                     onPress: () => {
-                      this.props.dispatch(deviceActions.selfTestStarted());
                       SessionControlService.requestSelfTest();
+                      this.props.dispatch(deviceActions.selfTestRequested());
                     },
                   },
                 ]
               );
             }
           } else {
-            // Still loading the device status
-            Alert.alert('Error', 'Checking Sensors...');
+            // Self-test passed, proceed to the Calibration scene
+            this.props.navigator.push(routes.postureCalibrate);
           }
         } else {
           Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');

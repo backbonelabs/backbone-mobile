@@ -60,33 +60,25 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
         && [BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]) {
       [self retrieveFirmwareVersion:^(NSString * _Nonnull str) {
         [self retrieveBatteryLevel:^(int value) {
-          [self retrieveDeviceStatus:^(NSDictionary * _Nonnull dict) {
-            hasPendingCallback = NO;
+          hasPendingCallback = NO;
+          
+          if ([BluetoothServiceInstance isDeviceReady]) {
+            NSMutableDictionary *deviceInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                               @(BluetoothServiceInstance.currentDeviceMode), @"deviceMode",
+                                               str, @"firmwareVersion",
+                                               @(value), @"batteryLevel",
+                                               BluetoothServiceInstance.currentDeviceIdentifier, @"identifier",
+                                               nil];
             
-            if ([BluetoothServiceInstance isDeviceReady]) {
-              NSMutableDictionary *deviceInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                                 @(BluetoothServiceInstance.currentDeviceMode), @"deviceMode",
-                                                 str, @"firmwareVersion",
-                                                 @(value), @"batteryLevel",
-                                                 [dict objectForKey:@"selfTestStatus"], @"selfTestStatus",
-                                                 BluetoothServiceInstance.currentDeviceIdentifier, @"identifier",
-                                                 nil];
-              
-              if (![[deviceInfo objectForKey:@"selfTestStatus"] boolValue]) {
-                [self sendEventWithName:@"DeviceTestStatus" body:@{
-                                                                   @"success": @NO
-                                                                   }];
-              }
-              
-              DLog(@"Device Information: %@", deviceInfo);
-              
-              callback(@[[NSNull null], deviceInfo]);
-            }
-            else {
-              NSDictionary *makeError = RCTMakeError(@"Not connected to a device", nil, nil);
-              callback(@[makeError]);
-            }
-          }];
+            DLog(@"Device Information: %@", deviceInfo);
+            
+            callback(@[[NSNull null], deviceInfo]);
+          }
+          else {
+            NSDictionary *makeError = RCTMakeError(@"Not connected to a device", nil, nil);
+            callback(@[makeError]);
+          }
+
         }];
       }];
     }
@@ -105,8 +97,6 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
 
 - (void)refreshDeviceTestStatus{
   [self retrieveDeviceStatus:^(NSDictionary * _Nonnull dict) {
-    BOOL selfTestStatus = [[dict objectForKey:@"selfTestStatus"] boolValue];
-    
     [self sendEventWithName:@"DeviceTestStatus" body:@{
                                                        @"success": [dict objectForKey:@"selfTestStatus"]
                                                        }];
@@ -118,6 +108,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
   
   if (![BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]) {
     _firmwareVersionHandler(@"");
+    _firmwareVersionHandler = nil;
   }
   else {
     [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]];
@@ -129,6 +120,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
   
   if (![BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]) {
     _batteryLevelHandler(-1);
+    _batteryLevelHandler = nil;
   }
   else {
     [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]];
@@ -141,6 +133,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
   if (![BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]) {
     // On older devices, return the default value when this characteristic is not available
     _deviceStatusHandler(@{@"selfTestStatus": @YES});
+    _deviceStatusHandler = nil;
   }
   else {
     [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]];
@@ -172,6 +165,8 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
     else {
       _firmwareVersionHandler(@"");
     }
+    
+    _firmwareVersionHandler = nil;
   }
   else if ([characteristic.UUID isEqual:BATTERY_LEVEL_CHARACTERISTIC_UUID]){
     if (!error) {
@@ -182,6 +177,8 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
     else {
       _batteryLevelHandler(-1);
     }
+    
+    _batteryLevelHandler = nil;
   }
   else if ([characteristic.UUID isEqual:DEVICE_STATUS_CHARACTERISTIC_UUID]) {
     if (!error) {
@@ -201,8 +198,10 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
       _deviceStatusHandler(deviceStatusDict);
     }
     else {
-      
+      _deviceStatusHandler(@{@"selfTestStatus": @NO});
     }
+    
+    _deviceStatusHandler = nil;
   }
 }
 

@@ -7,8 +7,8 @@ import {
   DEVICE_DISCONNECT,
   DEVICE_FORGET,
   DEVICE_GET_INFO,
-  DEVICE_SELF_TEST__START,
-  DEVICE_SELF_TEST__END,
+  DEVICE_SELF_TEST_REQUESTED,
+  DEVICE_SELF_TEST_UPDATED,
   DEVICE_RESTORE_SAVED_SESSION,
   DEVICE_CLEAR_SAVED_SESSION,
 } from './types';
@@ -236,12 +236,12 @@ const deviceActions = {
       }),
     };
   },
-  selfTestStarted() {
-    return { type: DEVICE_SELF_TEST__START };
+  selfTestRequested() {
+    return { type: DEVICE_SELF_TEST_REQUESTED };
   },
-  selfTestEnded(status) {
+  selfTestUpdated(status) {
     return {
-      type: DEVICE_SELF_TEST__END,
+      type: DEVICE_SELF_TEST_UPDATED,
       payload: status,
     };
   },

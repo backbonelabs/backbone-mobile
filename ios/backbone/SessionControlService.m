@@ -229,7 +229,6 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
  */
 RCT_EXPORT_METHOD(getSessionState) {
   DLog(@"GetSessionState");
-  return;
   CBCharacteristic *sessionStatistics = [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID];
 
   if ([BluetoothServiceInstance isDeviceReady] && sessionStatistics) {

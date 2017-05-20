@@ -81,32 +81,20 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                             public void onIntCallBack(final int level) {
                                 Timber.d("Found battery %d", level);
 
-                                retrieveDeviceStatus(new Constants.MapCallBack() {
-                                    @Override
-                                    public void onMapCallBack(WritableMap map) {
-                                        hasPendingCallback = false;
+                                hasPendingCallback = false;
 
-                                        if (bluetoothService.isDeviceReady()) {
-                                            WritableMap wm = Arguments.createMap();
-                                            wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
-                                            wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
-                                            wm.putString("firmwareVersion", version);
-                                            wm.putBoolean("selfTestStatus", map.getBoolean("selfTestStatus"));
-                                            wm.putInt("batteryLevel", level);
+                                if (bluetoothService.isDeviceReady()) {
+                                    WritableMap wm = Arguments.createMap();
+                                    wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
+                                    wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
+                                    wm.putString("firmwareVersion", version);
+                                    wm.putInt("batteryLevel", level);
 
-                                            if (!wm.getBoolean("selfTestStatus")) {
-                                                WritableMap statusWm = Arguments.createMap();
-                                                statusWm.putBoolean("success", false);
-                                                EventEmitter.send(reactContext, "DeviceTestStatus", statusWm);
-                                            }
-
-                                            callback.invoke(null, wm);
-                                        }
-                                        else {
-                                            callback.invoke(JSError.make("Not connected to a device"));
-                                        }
-                                    }
-                                });
+                                    callback.invoke(null, wm);
+                                }
+                                else {
+                                    callback.invoke(JSError.make("Not connected to a device"));
+                                }
                             }
                         });
                     }
@@ -151,6 +139,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
         if (!bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC)) {
             firmwareVersionCallBack.onStringCallBack("");
+            firmwareVersionCallBack = null;
         }
         else {
             bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC);
@@ -164,6 +153,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
         if (!bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC)) {
             batteryLevelCallBack.onIntCallBack(-1);
+            batteryLevelCallBack = null;
         }
         else {
             bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC);
@@ -181,6 +171,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             statusMap.putBoolean("selfTestStatus", true);
 
             deviceStatusCallBack.onMapCallBack(statusMap);
+            deviceStatusCallBack = null;
         }
         else {
             bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC);
@@ -209,6 +200,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                     else  {
                         firmwareVersionCallBack.onStringCallBack("");
                     }
+
+                    firmwareVersionCallBack = null;
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -219,6 +212,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                     else  {
                         batteryLevelCallBack.onIntCallBack(-1);
                     }
+
+                    batteryLevelCallBack = null;
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -238,10 +233,12 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                     }
                     else {
                         WritableMap statusMap = Arguments.createMap();
-                        statusMap.putBoolean("selfTestStatus", true);
+                        statusMap.putBoolean("selfTestStatus", false);
 
                         deviceStatusCallBack.onMapCallBack(statusMap);
                     }
+
+                    deviceStatusCallBack = null;
                 }
             }
         }
