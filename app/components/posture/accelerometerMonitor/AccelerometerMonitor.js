@@ -46,7 +46,13 @@ export default class AccelerometerMonitor extends Component {
   }
 
   componentWillUnmount() {
+    const { hasPendingOperation, isStreaming } = this.state;
+
     this.accelerometerDataListener.remove();
+    if (!hasPendingOperation && isStreaming) {
+      AccelerometerService.stopListening(() => {
+      });
+    }
   }
 
   accelerometerDataHandler(event) {
