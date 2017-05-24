@@ -12,6 +12,7 @@ import {
 } from 'victory-native';
 import autobind from 'class-autobind';
 import MonitorButton from '../postureMonitor/MonitorButton';
+import Button from '../../../components/Button';
 import styles from '../../../styles/posture/accelerometerMonitor';
 import relativeDimensions from '../../../utils/relativeDimensions';
 
@@ -109,6 +110,19 @@ export default class AccelerometerMonitor extends Component {
     }
   }
 
+  resetMonitor() {
+    AccelerometerService.stopListening(() => {
+      this.setState({
+        xValues: [],
+        yValues: [],
+        zValues: [],
+        currentIndex: 0,
+        hasPendingOperation: false,
+        isStreaming: false,
+      });
+    });
+  }
+
   render() {
     const {
       xValues,
@@ -126,10 +140,10 @@ export default class AccelerometerMonitor extends Component {
 
     const getControlButton = () => {
       if (!isStreaming) {
-        return <MonitorButton start onPress={this.toggleAccelerometer} />;
+        return <MonitorButton start onPress={this.toggleAccelerometer} hideCaption />;
       }
 
-      return <MonitorButton stop onPress={this.toggleAccelerometer} />;
+      return <MonitorButton stop onPress={this.toggleAccelerometer} hideCaption />;
     };
 
     // Used as placeholder in the line chart to prevent warnings
@@ -207,6 +221,12 @@ export default class AccelerometerMonitor extends Component {
         </View>
         <View>
           {getControlButton()}
+        </View>
+        <View>
+          <Button
+            primary text="Reset"
+            onPress={this.resetMonitor}
+          />
         </View>
       </View>
     );

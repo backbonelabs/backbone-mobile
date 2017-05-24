@@ -20,6 +20,7 @@ const MonitorButton = (props) => {
     alerts,
     alertsDisabled,
     start,
+    hideCaption,
     ...otherProps,
   } = props;
 
@@ -33,6 +34,8 @@ const MonitorButton = (props) => {
   if (alerts) { image = alertsImg; text = 'Alerts'; }
   if (alertsDisabled) { image = alertsDisabledImg; text = 'Alerts'; }
   if (start) { image = playImg; text = 'Start'; }
+
+  if (hideCaption) { text = ''; }
 
   return (
     <View>
@@ -57,6 +60,7 @@ MonitorButton.propTypes = {
   alerts: PropTypes.bool,
   alertsDisabled: PropTypes.bool,
   start: PropTypes.bool,
+  hideCaption: PropTypes.bool,
 };
 
 export default MonitorButton;
