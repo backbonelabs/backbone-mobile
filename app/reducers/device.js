@@ -91,6 +91,7 @@ export default (state = {
         ...state,
         inProgress: false,
         isConnected: false,
+        selfTestStatus: false,
         device: {},
       };
     }

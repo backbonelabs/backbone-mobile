@@ -450,12 +450,13 @@ class PostureDashboard extends Component {
             // Check if self-test is being fixed
             if (this.props.device.requestingSelfTest) {
               // Display an alert stating that the auto-fix is on the way
-              Alert.alert('Error', 'Fixing sensors');
+              Alert.alert('Error', 'Fixing Backbone sensor');
             } else {
               // Display an alert to let the user choose whether to auto-fix or not
               Alert.alert(
                 'Error',
-                'There is an issue with the sensor. Fix it now?',
+                'There is an issue with the Backbone sensor. ' +
+                'Would you like to have it try to fix itself now?',
                 [
                   {
                     text: 'Cancel',

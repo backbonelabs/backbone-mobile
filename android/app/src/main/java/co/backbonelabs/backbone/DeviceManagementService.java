@@ -118,7 +118,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                             wm.putBoolean("isConnected", true);
                             wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
                             wm.putBoolean("selfTestStatus", map.getBoolean("selfTestStatus"));
-                            wm.putNull("message");
                             EventEmitter.send(reactContext, "ConnectionStatus", wm);
 
                             bluetoothService.emitDeviceState();

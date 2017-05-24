@@ -385,7 +385,7 @@ class Application extends Component {
   // Alert will only trigger once during the lifetime of the app.
   componentWillReceiveProps(nextProps) {
     if (!this.state.hasDisplayedLowBatteryWarning) {
-      const { batteryLevel } = nextProps.device;
+      const { batteryLevel } = nextProps.device.device;
       if (batteryLevel <= 15 && batteryLevel > 0) {
         this.setState({ hasDisplayedLowBatteryWarning: true });
         Alert.alert(
