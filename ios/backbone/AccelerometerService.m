@@ -10,6 +10,7 @@
 #import "BluetoothService.h"
 #import <React/RCTUtils.h>
 #import "Utilities.h"
+#import "DeviceLogger.h"
 
 @implementation AccelerometerService
 
@@ -28,6 +29,8 @@
   self = [super init];
   DLog(@"AccelerometerService init");
   [BluetoothServiceInstance addCharacteristicDelegate:self];
+  
+  _dataRecords = [NSMutableArray new];
   
   accelerometerNotificationStatus = false;
   previousDataTimestamp = 0;
@@ -75,6 +78,22 @@ RCT_EXPORT_METHOD(stopListening:(RCTResponseSenderBlock)callback) {
   else {
     callback(@[RCTMakeError(@"Accelerometer is not ready", nil, nil)]);
   }
+}
+
+RCT_EXPORT_METHOD(reset) {
+  [_dataRecords removeAllObjects];
+}
+
+RCT_EXPORT_METHOD(exportLog) {
+  // Copy to another container for background exporting
+  // while still allowing changes to the main container
+  NSArray *tmpData = [_dataRecords copy];
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    [DeviceLogger logAccelerometerData:tmpData];
+  });
+  
+  [self reset];
 }
 
 - (void)toggleAccelerometerNotification:(BOOL)state withHandler:(ErrorHandler)handler {
@@ -141,14 +160,25 @@ RCT_EXPORT_METHOD(stopListening:(RCTResponseSenderBlock)callback) {
         previousDataTimestamp = currentTimestamp;
         
         NSDictionary *accData = @{
-                                  @"xAxis": [NSNumber numberWithFloat:xAxis],
-                                  @"yAxis": [NSNumber numberWithFloat:yAxis],
-                                  @"zAxis": [NSNumber numberWithFloat:zAxis],
+                                  @"xAxis": @(xAxis),
+                                  @"yAxis": @(yAxis),
+                                  @"zAxis": @(zAxis),
                                   @"acceleration": [NSNumber numberWithFloat:acceleration]
                                   };
         
         DLog(@"AccelerometerData %@", accData);
         [self sendEventWithName:@"AccelerometerData" body:accData];
+        
+        // Save data to the temporary array for logging
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"];
+        
+        [_dataRecords addObject:@{
+                                  @"dateTime": [dateFormatter stringFromDate:[NSDate date]],
+                                  @"xAxis": @(xAxis),
+                                  @"yAxis": @(yAxis),
+                                  @"zAxis": @(zAxis),
+                                  }];
       }
     }
   }

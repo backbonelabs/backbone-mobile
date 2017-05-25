@@ -12,6 +12,7 @@
 #import "Constants.h"
 
 @interface AccelerometerService : RCTEventEmitter <RCTBridgeModule, CBPeripheralDelegate> {
+  NSMutableArray *_dataRecords;
   ErrorHandler _toggleHandler;
   
   BOOL accelerometerNotificationStatus;

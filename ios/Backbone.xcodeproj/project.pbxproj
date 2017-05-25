@@ -38,6 +38,7 @@
 		66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */; };
 		690301FE1EA7A68D00A59FD4 /* VibrationMotorService.m in Sources */ = {isa = PBXBuildFile; fileRef = 690301FD1EA7A68D00A59FD4 /* VibrationMotorService.m */; };
 		690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 690A06151DF8544E00EAC570 /* OTAFileParser.m */; };
+		6976C34B1ED6F93C00D927E1 /* DeviceLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 6976C34A1ED6F93C00D927E1 /* DeviceLogger.m */; };
 		699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 699262611DE58A28003FBBC7 /* SessionControlService.m */; };
 		69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */; };
 		69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69AAF58E1E1D6314005FD0BF /* NotificationService.m */; };
@@ -344,6 +345,8 @@
 		690301FD1EA7A68D00A59FD4 /* VibrationMotorService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VibrationMotorService.m; path = backbone/VibrationMotorService.m; sourceTree = "<group>"; };
 		690A06141DF8544E00EAC570 /* OTAFileParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTAFileParser.h; sourceTree = "<group>"; };
 		690A06151DF8544E00EAC570 /* OTAFileParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTAFileParser.m; sourceTree = "<group>"; };
+		6976C3491ED6F93C00D927E1 /* DeviceLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceLogger.h; sourceTree = "<group>"; };
+		6976C34A1ED6F93C00D927E1 /* DeviceLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceLogger.m; sourceTree = "<group>"; };
 		699262601DE58A28003FBBC7 /* SessionControlService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SessionControlService.h; path = backbone/SessionControlService.h; sourceTree = "<group>"; };
 		699262611DE58A28003FBBC7 /* SessionControlService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SessionControlService.m; path = backbone/SessionControlService.m; sourceTree = "<group>"; };
 		69A002ED1DDCA13B002C47FB /* DeviceInformationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeviceInformationService.h; path = backbone/DeviceInformationService.h; sourceTree = "<group>"; };
@@ -650,6 +653,8 @@
 				690A06151DF8544E00EAC570 /* OTAFileParser.m */,
 				69CCE7291DD4B01C0038157C /* Utilities.h */,
 				69CCE72A1DD4B01C0038157C /* Utilities.m */,
+				6976C3491ED6F93C00D927E1 /* DeviceLogger.h */,
+				6976C34A1ED6F93C00D927E1 /* DeviceLogger.m */,
 			);
 			name = util;
 			path = backbone/util;
@@ -1307,6 +1312,7 @@
 				667641271D63B90800D45761 /* Environment.m in Sources */,
 				69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				6976C34B1ED6F93C00D927E1 /* DeviceLogger.m in Sources */,
 				690301FE1EA7A68D00A59FD4 /* VibrationMotorService.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */,

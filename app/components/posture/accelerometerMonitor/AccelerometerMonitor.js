@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   View,
   NativeModules,
   NativeEventEmitter,
@@ -42,6 +43,8 @@ export default class AccelerometerMonitor extends Component {
   }
 
   componentWillMount() {
+    AccelerometerService.reset();
+
     this.accelerometerDataListener =
       AccelerometerServiceEvents.addListener('AccelerometerData', this.accelerometerDataHandler);
   }
@@ -54,6 +57,8 @@ export default class AccelerometerMonitor extends Component {
       AccelerometerService.stopListening(() => {
       });
     }
+
+    AccelerometerService.reset();
   }
 
   accelerometerDataHandler(event) {
@@ -120,6 +125,23 @@ export default class AccelerometerMonitor extends Component {
         hasPendingOperation: false,
         isStreaming: false,
       });
+
+      Alert.alert('Log', 'Do you want to export the log for the this session?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              AccelerometerService.exportLog();
+            },
+          },
+          {
+            text: 'No',
+            onPress: () => {
+              AccelerometerService.reset();
+            },
+          },
+        ]
+      );
     });
   }
 

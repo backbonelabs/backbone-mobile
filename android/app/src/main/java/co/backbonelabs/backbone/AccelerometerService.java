@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -14,7 +15,12 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
 import co.backbonelabs.backbone.util.Constants;
+import co.backbonelabs.backbone.util.DeviceLogger;
 import co.backbonelabs.backbone.util.EventEmitter;
 import co.backbonelabs.backbone.util.JSError;
 import co.backbonelabs.backbone.util.Utilities;
@@ -39,6 +45,8 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
         super(reactContext);
         this.reactContext = reactContext;
 
+        dataRecords = new ArrayList<>();
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.ACTION_CHARACTERISTIC_WRITE);
         filter.addAction(Constants.ACTION_CHARACTERISTIC_UPDATE);
@@ -49,6 +57,7 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
     private boolean accelerometerNotificationStatus;
     private Constants.IntCallBack toggleCallBack = null;
     private long previousDataTimestamp = 0;
+    private ArrayList<WritableMap> dataRecords;
 
     @Override
     public String getName() {
@@ -97,6 +106,31 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
         } else {
             callback.invoke(JSError.make("Accelerometer is not ready"));
         }
+    }
+
+    @ReactMethod
+    public void reset() {
+        dataRecords.clear();
+    }
+
+    @ReactMethod
+    public void exportLog() {
+        // Copy to another container for background exporting
+        // while still allowing changes to the main container
+        final ArrayList<WritableMap> tmpData = new ArrayList<>();
+
+        for (int i = 0; i < dataRecords.size(); i++) {
+            tmpData.add(dataRecords.get(i));
+        }
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                DeviceLogger.logAccelerometer(tmpData);
+            }
+        });
+
+        reset();
     }
 
     public void toggleAccelerometerNotification(boolean state, Constants.IntCallBack callback) {
@@ -208,6 +242,15 @@ public class AccelerometerService extends ReactContextBaseJavaModule {
                         wm.putDouble("acceleration", acceleration);
                         Timber.d("Accelerometer data %f %f %f %f", xAxis, yAxis, zAxis, acceleration);
                         EventEmitter.send(reactContext, "AccelerometerData", wm);
+
+                        String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS").format(Calendar.getInstance().getTime());
+
+                        WritableMap record = Arguments.createMap();
+                        record.putString("dateTime", now);
+                        record.putDouble("xAxis", xAxis);
+                        record.putDouble("yAxis", yAxis);
+                        record.putDouble("zAxis", zAxis);
+                        dataRecords.add(record);
                     }
                 }
             }
