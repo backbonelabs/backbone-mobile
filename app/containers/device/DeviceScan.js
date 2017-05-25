@@ -107,7 +107,7 @@ class DeviceScan extends Component {
       'DevicesFound',
       deviceList =>
         this.setState({ deviceList:
-          deviceList.sort((a, b) => parseFloat(b.RSSI) - parseFloat(a.RSSI)),
+          deviceList.sort((a, b) => parseInt(b.RSSI, 10) - parseInt(a.RSSI, 10)),
         })
       );
 
