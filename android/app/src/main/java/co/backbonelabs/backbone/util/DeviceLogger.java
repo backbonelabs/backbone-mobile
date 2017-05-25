@@ -20,7 +20,9 @@ public class DeviceLogger {
     }
 
     private static String getCurrentLogFileName() {
-        String today = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(Calendar.getInstance().getTime());
+        // Use periods instead of colons for time because colons are not supported in filenames for iOS and OS X
+        // so we'll just use the same format across all platforms
+        String today = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss").format(Calendar.getInstance().getTime());
         return "acc-log-" + today + ".csv";
     }
 

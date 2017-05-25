@@ -12,7 +12,8 @@
 
 + (NSString*)getCurrentLogFileName {
   NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-  [dateFormatter setDateFormat:@"yyyy-MM-dd HH-mm-ss"];
+  // Use periods instead of colons for time because colons are not supported in filenames for iOS and OS X
+  [dateFormatter setDateFormat:@"yyyy-MM-dd HH.mm.ss"];
   return [NSString stringWithFormat:@"acc-log-%@.csv", [dateFormatter stringFromDate:[NSDate date]]];
 }
 
