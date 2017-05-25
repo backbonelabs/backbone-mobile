@@ -101,11 +101,15 @@ class DeviceScan extends Component {
   }
 
   componentWillMount() {
-    // Set listener for updating deviceList with discovered devices
+    // Set listener for updating deviceList with discovered devices and sorts
+    // by highest signal strength on top
     this.devicesFoundListener = deviceManagementServiceEvents.addListener(
       'DevicesFound',
-      deviceList => this.setState({ deviceList }),
-    );
+      deviceList =>
+        this.setState({ deviceList:
+          deviceList.sort((a, b) => parseFloat(b.RSSI) - parseFloat(a.RSSI)),
+        })
+      );
 
     if (this.props.bluetoothState === ON) {
       // Bluetooth is on, initiate scanning
