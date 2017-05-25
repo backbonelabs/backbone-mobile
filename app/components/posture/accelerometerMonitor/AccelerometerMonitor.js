@@ -126,18 +126,18 @@ export default class AccelerometerMonitor extends Component {
         isStreaming: false,
       });
 
-      Alert.alert('Log', 'Do you want to export the log for the this session?',
+      Alert.alert('Log', 'Do you want to export the log for this session?',
         [
-          {
-            text: 'Yes',
-            onPress: () => {
-              AccelerometerService.exportLog();
-            },
-          },
           {
             text: 'No',
             onPress: () => {
               AccelerometerService.reset();
+            },
+          },
+          {
+            text: 'Yes',
+            onPress: () => {
+              AccelerometerService.exportLog();
             },
           },
         ]
