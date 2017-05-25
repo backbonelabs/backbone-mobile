@@ -301,7 +301,7 @@ class Application extends Component {
             }, delay);
           } else if (!status.selfTestStatus) {
             // Self-Test failed, request a re-run
-            SessionControlService.requestSelfTest();
+            DeviceInformationService.requestSelfTest();
             this.props.dispatch(deviceActions.selfTestRequested());
           } else {
             this.props.dispatch(deviceActions.selfTestUpdated(status.selfTestStatus));

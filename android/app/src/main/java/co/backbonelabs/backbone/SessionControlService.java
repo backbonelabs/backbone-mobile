@@ -123,7 +123,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
     private boolean forceStoppedSession;
     private boolean notificationStateChanged;
-    private boolean requestingSelfTest;
 
     private Constants.IntCallBack errorCallBack;
 
@@ -313,33 +312,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             wm.putInt("slouchTime", 0);
             Timber.d("SessionState data %s", wm);
             EventEmitter.send(reactContext, "SessionState", wm);
-        }
-    }
-
-    /**
-     * Send a command to re-run the self-test.
-     * This should only be called when the initial self-test has failed.
-     */
-    @ReactMethod
-    public void requestSelfTest() {
-        if (requestingSelfTest) return;
-
-        BluetoothService bluetoothService = BluetoothService.getInstance();
-
-        if (bluetoothService.isDeviceReady() &&
-                bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)) {
-            Timber.d("Request self test");
-            requestingSelfTest = true;
-
-            byte[] commandBytes = new byte[1];
-
-            commandBytes[0] = Constants.SESSION_COMMANDS.SELF_TEST;
-
-            boolean status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
-
-            if (!status) {
-                Log.e("SessionControlService", "Error requesting self-test");
-            }
         }
     }
 
@@ -560,24 +532,16 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        if (requestingSelfTest) {
-                            // Self-test completed
-                            requestingSelfTest = false;
-                            Timber.d("Self test completed");
-                            DeviceInformationService.getInstance().refreshDeviceTestStatus();
-                        }
-                        else {
-                            if (errorCallBack != null || notificationStateChanged) {
-                                // Session state updated, so we proceed to toggle the notification state
-                                notificationStateChanged = false;
+                        if (errorCallBack != null || notificationStateChanged) {
+                            // Session state updated, so we proceed to toggle the notification state
+                            notificationStateChanged = false;
 
-                                boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, distanceNotificationStatus);
+                            boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, distanceNotificationStatus);
 
-                                // If we failed initiating the descriptor writer, handle the error callback
-                                if (!toggleStatus && errorCallBack != null) {
-                                    Log.e("SessionControlService", "Error toggling notification");
-                                    errorCallBack.onIntCallBack(1);
-                                }
+                            // If we failed initiating the descriptor writer, handle the error callback
+                            if (!toggleStatus && errorCallBack != null) {
+                                Log.e("SessionControlService", "Error toggling notification");
+                                errorCallBack.onIntCallBack(1);
                             }
                         }
                     }

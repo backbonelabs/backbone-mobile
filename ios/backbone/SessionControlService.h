@@ -31,7 +31,6 @@
   
   BOOL forceStoppedSession;
   BOOL notificationStateChanged;
-  BOOL requestingSelfTest;
   
   BOOL requestedReadSessionStatistics;
 }

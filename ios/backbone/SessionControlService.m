@@ -42,7 +42,6 @@
   currentSessionState = SESSION_STATE_STOPPED;
   
   requestedReadSessionStatistics = NO;
-  requestingSelfTest = NO;
   
   return self;
 }
@@ -241,27 +240,6 @@ RCT_EXPORT_METHOD(getSessionState) {
                                                    @"totalDuration" : [NSNumber numberWithInteger:0],
                                                    @"slouchTime" : [NSNumber numberWithInteger:0]
                                                    }];
-  }
-}
-
-/**
- * Send a command to re-run the self-test.
- * This should only be called when the initial self-test has failed.
- */
-RCT_EXPORT_METHOD(requestSelfTest) {
-  if (requestingSelfTest) return;
-  
-  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
-    requestingSelfTest = YES;
-    
-    uint8_t bytes[1];
-    
-    bytes[0] = SESSION_COMMAND_SELF_TEST;
-    NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
-    
-    DLog(@"Request Self-Test %@ %@ %@", data, BluetoothServiceInstance.currentDevice, [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]);
-    
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
   }
 }
 
@@ -557,22 +535,14 @@ RCT_EXPORT_METHOD(requestSelfTest) {
       }
     }
     else {
-      if (requestingSelfTest) {
-        // Self-test completed
-        requestingSelfTest = NO;
-        DLog(@"Self-test completed");
-        [[DeviceInformationService getDeviceInformationService] refreshDeviceTestStatus];
+      if (_errorHandler || notificationStateChanged) {
+        // No error, so we proceed to toggling distance notification when needed
+        notificationStateChanged = NO;
+        
+        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
       }
       else {
-        if (_errorHandler || notificationStateChanged) {
-          // No error, so we proceed to toggling distance notification when needed
-          notificationStateChanged = NO;
-          
-          [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
-        }
-        else {
-          // For reverting, no need toggling the notification on the same state.
-        }
+        // For reverting, no need toggling the notification on the same state.
       }
     }
   }

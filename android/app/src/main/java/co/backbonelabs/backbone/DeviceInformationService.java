@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -40,6 +41,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.ACTION_CHARACTERISTIC_READ);
+//        filter.addAction(Constants.ACTION_CHARACTERISTIC_WRITE);
+        filter.addAction(Constants.ACTION_CHARACTERISTIC_UPDATE);
         reactContext.registerReceiver(bleBroadcastReceiver, filter);
     }
 
@@ -47,6 +50,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
     private Constants.IntCallBack batteryLevelCallBack;
     private Constants.MapCallBack deviceStatusCallBack;
     private boolean hasPendingCallback = false;
+    private boolean requestingSelfTest;
 
     @Override
     public String getName() {
@@ -107,7 +111,6 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                 wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
                 wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
                 wm.putString("firmwareVersion", "");
-                wm.putBoolean("selfTestStatus", true);
                 wm.putInt("batteryLevel", -1);
 
                 callback.invoke(null, wm);
@@ -117,6 +120,36 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             hasPendingCallback = false;
 
             callback.invoke(JSError.make("Not connected to a device"));
+        }
+    }
+
+    /**
+     * Send a command to re-run the self-test.
+     * This should only be called when the initial self-test has failed.
+     */
+    @ReactMethod
+    public void requestSelfTest() {
+        if (requestingSelfTest) return;
+
+        BluetoothService bluetoothService = BluetoothService.getInstance();
+
+        if (bluetoothService.isDeviceReady() &&
+                bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)) {
+            Timber.d("Request self test");
+            requestingSelfTest = true;
+
+            // Listen to the DeviceStatus notification
+            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC, true);
+
+            byte[] commandBytes = new byte[1];
+
+            commandBytes[0] = Constants.SESSION_COMMANDS.SELF_TEST;
+
+            boolean status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
+
+            if (!status) {
+                Log.e("SessionControlService", "Error requesting self-test");
+            }
         }
     }
 
@@ -241,6 +274,40 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                     deviceStatusCallBack = null;
                 }
             }
+            else if (action.equals(Constants.ACTION_CHARACTERISTIC_UPDATE)) {
+                Timber.d("CharacteristicUpdate");
+                String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
+                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC.toString())) {
+                    if (requestingSelfTest) {
+                        requestingSelfTest = false;
+
+                        byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
+
+                        int selfTestStatus = Utilities.getIntFromByteArray(responseArray, 4);
+                        Timber.d("Self-Test Status: %d", selfTestStatus);
+
+                        WritableMap wm = Arguments.createMap();
+                        wm.putBoolean("success", selfTestStatus == 0);
+                        EventEmitter.send(reactContext, "DeviceTestStatus", wm);
+                    }
+                }
+            }
+//            else if (action.equals(Constants.ACTION_CHARACTERISTIC_WRITE)) {
+//                String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
+//                int status = intent.getIntExtra(Constants.EXTRA_BYTE_STATUS_VALUE, BluetoothGatt.GATT_FAILURE);
+//                Timber.d("Self-Test write %d", status);
+//
+//                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC.toString())) {
+//                    if (status == BluetoothGatt.GATT_SUCCESS) {
+//                        if (requestingSelfTest) {
+//                            Timber.d("Self-Test request sent");
+//                        }
+//                    }
+//                    else {
+//                        Log.e("DeviceInformation", "Error sending self-test command");
+//                    }
+//                }
+//            }
         }
     };
 }

@@ -31,7 +31,7 @@ import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
 import Mixpanel from '../../utils/Mixpanel';
 
-const { BluetoothService, SessionControlService } = NativeModules;
+const { BluetoothService, DeviceInformationService } = NativeModules;
 
 const { bluetoothStates, storageKeys, surveyUrls, appUrls } = constants;
 
@@ -464,7 +464,7 @@ class PostureDashboard extends Component {
                   {
                     text: 'Fix',
                     onPress: () => {
-                      SessionControlService.requestSelfTest();
+                      DeviceInformationService.requestSelfTest();
                       this.props.dispatch(deviceActions.selfTestRequested());
                     },
                   },

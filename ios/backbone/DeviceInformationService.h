@@ -16,6 +16,7 @@
   IntHandler _batteryLevelHandler;
   DictionaryHandler _deviceStatusHandler;
   BOOL hasPendingCallback;
+  BOOL requestingSelfTest;
 }
 
 + (DeviceInformationService *)getDeviceInformationService;

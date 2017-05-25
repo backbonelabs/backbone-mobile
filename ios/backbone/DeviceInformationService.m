@@ -30,6 +30,8 @@
   DLog(@"DeviceInformation init");
   [BluetoothServiceInstance addCharacteristicDelegate:self];
   
+  requestingSelfTest = NO;
+  
   return self;
 }
 
@@ -92,6 +94,29 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
     hasPendingCallback = NO;
     NSDictionary *makeError = RCTMakeError(@"Not connected to a device", nil, nil);
     callback(@[makeError]);
+  }
+}
+
+/**
+ * Send a command to re-run the self-test.
+ * This should only be called when the initial self-test has failed.
+ */
+RCT_EXPORT_METHOD(requestSelfTest) {
+  if (requestingSelfTest) return;
+  
+  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
+    requestingSelfTest = YES;
+    
+    [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]];
+    
+    uint8_t bytes[1];
+    
+    bytes[0] = SESSION_COMMAND_SELF_TEST;
+    NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+    
+    DLog(@"Request Self-Test %@ %@ %@", data, BluetoothServiceInstance.currentDevice, [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]);
+    
+    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
   }
 }
 
@@ -181,27 +206,42 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
     _batteryLevelHandler = nil;
   }
   else if ([characteristic.UUID isEqual:DEVICE_STATUS_CHARACTERISTIC_UUID]) {
-    if (!error) {
-      uint8_t *data = (uint8_t*) [characteristic.value bytes];
+    if (_deviceStatusHandler) {
+      if (!error) {
+        uint8_t *data = (uint8_t*) [characteristic.value bytes];
+        
+        int initStatus = [Utilities convertToIntFromBytes:data offset:0];
+        int selfTestStatus = [Utilities convertToIntFromBytes:data offset:4];
+        int batteryVoltage = [Utilities convertToIntFromBytes:data offset:8];
+        DLog(@"Device Status: %d %d %d", initStatus, selfTestStatus, batteryVoltage);
+        
+        NSDictionary *deviceStatusDict = @{
+                                           @"initStatus": (initStatus == 0 ? @YES : @NO),
+                                           @"selfTestStatus": (selfTestStatus == 0 ? @YES : @NO),
+                                           @"batteryVoltage": @(batteryVoltage)
+                                           };
+        
+        _deviceStatusHandler(deviceStatusDict);
+      }
+      else {
+        _deviceStatusHandler(@{@"selfTestStatus": @NO});
+      }
       
-      int initStatus = [Utilities convertToIntFromBytes:data offset:0];
-      int selfTestStatus = [Utilities convertToIntFromBytes:data offset:4];
-      int batteryVoltage = [Utilities convertToIntFromBytes:data offset:8];
-      DLog(@"Device Status: %d %d %d", initStatus, selfTestStatus, batteryVoltage);
-      
-      NSDictionary *deviceStatusDict = @{
-                                         @"initStatus": (initStatus == 0 ? @YES : @NO),
-                                         @"selfTestStatus": (selfTestStatus == 0 ? @YES : @NO),
-                                         @"batteryVoltage": @(batteryVoltage)
-                                         };
-      
-      _deviceStatusHandler(deviceStatusDict);
+      _deviceStatusHandler = nil;
     }
     else {
-      _deviceStatusHandler(@{@"selfTestStatus": @NO});
+      // Handle DeviceStatus notification
+      requestingSelfTest = NO;
+      
+      uint8_t *data = (uint8_t*) [characteristic.value bytes];
+      
+      int selfTestStatus = [Utilities convertToIntFromBytes:data offset:4];
+      DLog(@"Self-Test status: %d", selfTestStatus);
+      
+      [self sendEventWithName:@"DeviceTestStatus" body:@{
+                                                         @"success": (selfTestStatus == 0 ? @YES : @NO)
+                                                         }];
     }
-    
-    _deviceStatusHandler = nil;
   }
 }
 
