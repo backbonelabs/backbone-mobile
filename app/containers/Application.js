@@ -191,8 +191,20 @@ class Application extends Component {
     });
 
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
-      test => {
-        this.props.dispatch(deviceActions.selfTestUpdated(test.success));
+      ({ message, success }) => {
+        if (message) {
+          Mixpanel.trackError({
+            errorContent: message,
+            path: 'app/containers/Application',
+            stackTrace: ['componentWillMount', 'DeviceInformationServiceEvents.addListener'],
+          });
+
+          this.props.dispatch(deviceActions.selfTestUpdated(false));
+          Alert.alert('Error', 'Backbone sensor needs to be fixed. ' +
+            'Please update your Backbone firmware to proceed.');
+        } else {
+          this.props.dispatch(deviceActions.selfTestUpdated(success));
+        }
       });
 
     // Handle SessionState events
