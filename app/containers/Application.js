@@ -201,7 +201,11 @@ class Application extends Component {
 
           this.props.dispatch(deviceActions.selfTestUpdated(false));
           Alert.alert('Error', 'Backbone sensor needs to be fixed. ' +
-            'Please update your Backbone firmware to proceed.');
+            'Perform an update now to continue using your Backbone.', [
+            { text: 'Cancel' },
+            { text: 'Update', onPress: () => this.navigator.push(routes.device) },
+            ]
+          );
         } else {
           this.props.dispatch(deviceActions.selfTestUpdated(success));
         }
