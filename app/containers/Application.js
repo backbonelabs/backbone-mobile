@@ -46,11 +46,13 @@ const {
   DeviceManagementService,
   Environment,
   SessionControlService,
+  DeviceInformationService,
 } = NativeModules;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
 const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 const DeviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
+const DeviceInformationServiceEvents = new NativeEventEmitter(DeviceInformationService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -81,7 +83,10 @@ class Application extends Component {
       email: PropTypes.string,
     }),
     device: PropTypes.shape({
-      batteryLevel: PropTypes.number,
+      selfTestStatus: PropTypes.bool,
+      device: PropTypes.shape({
+        batteryLevel: PropTypes.number,
+      }),
     }),
   };
 
@@ -184,6 +189,11 @@ class Application extends Component {
           // no-op
       }
     });
+
+    this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
+      test => {
+        this.props.dispatch(deviceActions.selfTestUpdated(test.success));
+      });
 
     // Handle SessionState events
     this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
@@ -289,6 +299,12 @@ class Application extends Component {
                 ]
               );
             }, delay);
+          } else if (!status.selfTestStatus) {
+            // Self-Test failed, request a re-run
+            DeviceInformationService.requestSelfTest();
+            this.props.dispatch(deviceActions.selfTestRequested());
+          } else {
+            this.props.dispatch(deviceActions.selfTestUpdated(status.selfTestStatus));
           }
         }
 
@@ -369,7 +385,7 @@ class Application extends Component {
   // Alert will only trigger once during the lifetime of the app.
   componentWillReceiveProps(nextProps) {
     if (!this.state.hasDisplayedLowBatteryWarning) {
-      const { batteryLevel } = nextProps.device;
+      const { batteryLevel } = nextProps.device.device;
       if (batteryLevel <= 15 && batteryLevel > 0) {
         this.setState({ hasDisplayedLowBatteryWarning: true });
         Alert.alert(
@@ -389,6 +405,9 @@ class Application extends Component {
     }
     if (this.deviceStateListener) {
       this.deviceStateListener.remove();
+    }
+    if (this.deviceTestStatusListener) {
+      this.deviceTestStatusListener.remove();
     }
     if (this.sessionStateListener) {
       this.sessionStateListener.remove();
@@ -439,6 +458,11 @@ class Application extends Component {
   }
 
   checkActiveSession() {
+    // If the device failed the self-test, we shouldn't attempt to recover any sessions
+    if (!this.props.device.selfTestStatus) {
+      return;
+    }
+
     SensitiveInfo.getItem(storageKeys.SESSION_STATE)
       .then(prevSessionState => {
         if (prevSessionState) {
@@ -660,7 +684,7 @@ class Application extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user }, device: { device } } = state;
+  const { app, user: { user }, device } = state;
   return { app, user, device };
 };
 

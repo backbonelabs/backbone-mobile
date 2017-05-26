@@ -8,6 +8,7 @@
 
 #import "DeviceInformationService.h"
 #import "BluetoothService.h"
+#import "SessionControlService.h"
 #import <React/RCTUtils.h>
 #import "Utilities.h"
 
@@ -29,11 +30,17 @@
   DLog(@"DeviceInformation init");
   [BluetoothServiceInstance addCharacteristicDelegate:self];
   
+  requestingSelfTest = NO;
+  
   return self;
 }
 
 - (id)init {
   return [DeviceInformationService getDeviceInformationService];
+}
+
+- (NSArray<NSString *> *)supportedEvents {
+  return @[@"DeviceTestStatus"];
 }
 
 RCT_EXPORT_MODULE();
@@ -58,12 +65,22 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
           hasPendingCallback = NO;
           
           if ([BluetoothServiceInstance isDeviceReady]) {
-            callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : str, @"batteryLevel" : @(value), @"identifier" : BluetoothServiceInstance.currentDeviceIdentifier }]);
+            NSMutableDictionary *deviceInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                               @(BluetoothServiceInstance.currentDeviceMode), @"deviceMode",
+                                               str, @"firmwareVersion",
+                                               @(value), @"batteryLevel",
+                                               BluetoothServiceInstance.currentDeviceIdentifier, @"identifier",
+                                               nil];
+            
+            DLog(@"Device Information: %@", deviceInfo);
+            
+            callback(@[[NSNull null], deviceInfo]);
           }
           else {
             NSDictionary *makeError = RCTMakeError(@"Not connected to a device", nil, nil);
             callback(@[makeError]);
           }
+
         }];
       }];
     }
@@ -80,11 +97,43 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
   }
 }
 
+/**
+ * Send a command to re-run the self-test.
+ * This should only be called when the initial self-test has failed.
+ */
+RCT_EXPORT_METHOD(requestSelfTest) {
+  if (requestingSelfTest) return;
+  
+  if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
+    requestingSelfTest = YES;
+    
+    [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]];
+    
+    uint8_t bytes[1];
+    
+    bytes[0] = SESSION_COMMAND_SELF_TEST;
+    NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+    
+    DLog(@"Request Self-Test %@ %@ %@", data, BluetoothServiceInstance.currentDevice, [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]);
+    
+    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+  }
+}
+
+- (void)refreshDeviceTestStatus{
+  [self retrieveDeviceStatus:^(NSDictionary * _Nonnull dict) {
+    [self sendEventWithName:@"DeviceTestStatus" body:@{
+                                                       @"success": [dict objectForKey:@"selfTestStatus"]
+                                                       }];
+  }];
+}
+
 - (void)retrieveFirmwareVersion:(StringHandler)handler {
   _firmwareVersionHandler = handler;
   
   if (![BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]) {
     _firmwareVersionHandler(@"");
+    _firmwareVersionHandler = nil;
   }
   else {
     [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]];
@@ -96,9 +145,23 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
   
   if (![BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]) {
     _batteryLevelHandler(-1);
+    _batteryLevelHandler = nil;
   }
   else {
     [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]];
+  }
+}
+
+- (void)retrieveDeviceStatus:(DictionaryHandler)handler {
+  _deviceStatusHandler = handler;
+  
+  if (![BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]) {
+    // On older devices, return the default value when this characteristic is not available
+    _deviceStatusHandler(@{@"selfTestStatus": @YES});
+    _deviceStatusHandler = nil;
+  }
+  else {
+    [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]];
   }
 }
 
@@ -127,6 +190,8 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
     else {
       _firmwareVersionHandler(@"");
     }
+    
+    _firmwareVersionHandler = nil;
   }
   else if ([characteristic.UUID isEqual:BATTERY_LEVEL_CHARACTERISTIC_UUID]){
     if (!error) {
@@ -136,6 +201,46 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
     }
     else {
       _batteryLevelHandler(-1);
+    }
+    
+    _batteryLevelHandler = nil;
+  }
+  else if ([characteristic.UUID isEqual:DEVICE_STATUS_CHARACTERISTIC_UUID]) {
+    if (_deviceStatusHandler) {
+      if (!error) {
+        uint8_t *data = (uint8_t*) [characteristic.value bytes];
+        
+        int initStatus = [Utilities convertToIntFromBytes:data offset:0];
+        int selfTestStatus = [Utilities convertToIntFromBytes:data offset:4];
+        int batteryVoltage = [Utilities convertToIntFromBytes:data offset:8];
+        DLog(@"Device Status: %d %d %d", initStatus, selfTestStatus, batteryVoltage);
+        
+        NSDictionary *deviceStatusDict = @{
+                                           @"initStatus": (initStatus == 0 ? @YES : @NO),
+                                           @"selfTestStatus": (selfTestStatus == 0 ? @YES : @NO),
+                                           @"batteryVoltage": @(batteryVoltage)
+                                           };
+        
+        _deviceStatusHandler(deviceStatusDict);
+      }
+      else {
+        _deviceStatusHandler(@{@"selfTestStatus": @NO});
+      }
+      
+      _deviceStatusHandler = nil;
+    }
+    else {
+      // Handle DeviceStatus notification
+      requestingSelfTest = NO;
+      
+      uint8_t *data = (uint8_t*) [characteristic.value bytes];
+      
+      int selfTestStatus = [Utilities convertToIntFromBytes:data offset:4];
+      DLog(@"Self-Test status: %d", selfTestStatus);
+      
+      [self sendEventWithName:@"DeviceTestStatus" body:@{
+                                                         @"success": (selfTestStatus == 0 ? @YES : @NO)
+                                                         }];
     }
   }
 }

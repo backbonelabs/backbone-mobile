@@ -14,6 +14,7 @@ import Carousel from 'react-native-snap-carousel';
 import forEach from 'lodash/forEach';
 import appActions from '../../actions/app';
 import userActions from '../../actions/user';
+import deviceActions from '../../actions/device';
 import postureActions from '../../actions/posture';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -30,7 +31,7 @@ import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
 import routes from '../../routes';
 import Mixpanel from '../../utils/Mixpanel';
 
-const { BluetoothService } = NativeModules;
+const { BluetoothService, DeviceInformationService } = NativeModules;
 
 const { bluetoothStates, storageKeys, surveyUrls, appUrls } = constants;
 
@@ -59,6 +60,9 @@ class PostureDashboard extends Component {
     device: PropTypes.shape({
       isConnected: PropTypes.bool,
       isConnecting: PropTypes.bool,
+      requestingSelfTest: PropTypes.bool,
+      inProgress: PropTypes.bool,
+      selfTestStatus: PropTypes.bool,
       hasSavedSession: PropTypes.bool,
     }),
     user: PropTypes.shape({
@@ -442,7 +446,33 @@ class PostureDashboard extends Component {
                 ]
               );
             }
+          } else if (!this.props.device.selfTestStatus) {
+            // Check if self-test is being fixed
+            if (this.props.device.requestingSelfTest) {
+              // Display an alert stating that the auto-fix is on the way
+              Alert.alert('Error', 'Fixing Backbone sensor');
+            } else {
+              // Display an alert to let the user choose whether to auto-fix or not
+              Alert.alert(
+                'Error',
+                'There is an issue with the Backbone sensor. ' +
+                'Would you like to have it try to fix itself now?',
+                [
+                  {
+                    text: 'Cancel',
+                  },
+                  {
+                    text: 'Fix',
+                    onPress: () => {
+                      DeviceInformationService.requestSelfTest();
+                      this.props.dispatch(deviceActions.selfTestRequested());
+                    },
+                  },
+                ]
+              );
+            }
           } else {
+            // Self-test passed, proceed to the Calibration scene
             this.props.navigator.push(routes.postureCalibrate);
           }
         } else {

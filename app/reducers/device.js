@@ -12,6 +12,8 @@ import {
   DEVICE_GET_INFO,
   DEVICE_GET_INFO__START,
   DEVICE_GET_INFO__ERROR,
+  DEVICE_SELF_TEST_REQUESTED,
+  DEVICE_SELF_TEST_UPDATED,
   DEVICE_RESTORE_SAVED_SESSION,
   DEVICE_CLEAR_SAVED_SESSION,
 } from '../actions/types';
@@ -22,7 +24,9 @@ export default (state = {
   isConnecting: false,
   isConnected: false,
   hasSavedSession: false,
+  selfTestStatus: false,
   errorMessage: null,
+  requestingSelfTest: false,
 }, action) => {
   switch (action.type) {
     case DEVICE_CONNECT__START: {
@@ -87,6 +91,7 @@ export default (state = {
         ...state,
         inProgress: false,
         isConnected: false,
+        selfTestStatus: false,
         device: {},
       };
     }
@@ -116,6 +121,20 @@ export default (state = {
         ...state,
         inProgress: false,
         errorMessage: action.payload.message,
+      };
+    }
+    case DEVICE_SELF_TEST_REQUESTED: {
+      return {
+        ...state,
+        requestingSelfTest: true,
+        selfTestStatus: false,
+      };
+    }
+    case DEVICE_SELF_TEST_UPDATED: {
+      return {
+        ...state,
+        requestingSelfTest: false,
+        selfTestStatus: action.payload,
       };
     }
     case DEVICE_RESTORE_SAVED_SESSION: {
