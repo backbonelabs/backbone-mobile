@@ -193,20 +193,24 @@ class Application extends Component {
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
       ({ message, success }) => {
         if (message) {
-          Mixpanel.trackError({
-            errorContent: message,
-            path: 'app/containers/Application',
-            stackTrace: ['componentWillMount', 'DeviceInformationServiceEvents.addListener'],
+          Mixpanel.trackWithProperties('selfTest-error', {
+            errorMessage: message,
           });
 
           this.props.dispatch(deviceActions.selfTestUpdated(false));
-          Alert.alert('Error', 'Backbone sensor needs to be fixed. ' +
+
+          Alert.alert('Error', 'Your Backbone sensor needs to be fixed. ' +
             'Perform an update now to continue using your Backbone.', [
             { text: 'Cancel' },
             { text: 'Update', onPress: () => this.navigator.push(routes.device) },
             ]
           );
         } else {
+          const result = (success ? 'success' : 'failed');
+          Mixpanel.trackWithProperties(`selfTest-${result}`, {
+            errorMessage: `Self-Test ${result}`,
+          });
+
           this.props.dispatch(deviceActions.selfTestUpdated(success));
         }
       });
@@ -317,6 +321,10 @@ class Application extends Component {
             }, delay);
           } else if (!status.selfTestStatus) {
             // Self-Test failed, request a re-run
+            Mixpanel.trackWithProperties('selfTest-begin', {
+              errorMessage: 'Self-Test Requested',
+            });
+
             DeviceInformationService.requestSelfTest();
             this.props.dispatch(deviceActions.selfTestRequested());
           } else {
