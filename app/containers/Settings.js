@@ -332,7 +332,7 @@ class Settings extends Component {
             this.props.dispatch(authActions.signOut());
             // Disconnect from device
             this.props.dispatch(deviceActions.disconnect());
-            this.props.navigator.resetTo(routes.welcome);
+            this.props.navigator.resetTo(routes.login);
           },
         },
       ]
