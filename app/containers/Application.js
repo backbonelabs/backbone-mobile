@@ -193,9 +193,7 @@ class Application extends Component {
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
       ({ message, success }) => {
         if (message) {
-          Mixpanel.trackWithProperties('selfTest-error', {
-            errorMessage: message,
-          });
+          Mixpanel.trackWithProperties('selfTest-error');
 
           this.props.dispatch(deviceActions.selfTestUpdated(false));
 
@@ -207,9 +205,7 @@ class Application extends Component {
           );
         } else {
           const result = (success ? 'success' : 'failed');
-          Mixpanel.trackWithProperties(`selfTest-${result}`, {
-            errorMessage: `Self-Test ${result}`,
-          });
+          Mixpanel.track(`selfTest-${result}`);
 
           this.props.dispatch(deviceActions.selfTestUpdated(success));
         }
@@ -321,9 +317,7 @@ class Application extends Component {
             }, delay);
           } else if (!status.selfTestStatus) {
             // Self-Test failed, request a re-run
-            Mixpanel.trackWithProperties('selfTest-begin', {
-              errorMessage: 'Self-Test Requested',
-            });
+            Mixpanel.track('selfTest-begin');
 
             DeviceInformationService.requestSelfTest();
             this.props.dispatch(deviceActions.selfTestRequested());
