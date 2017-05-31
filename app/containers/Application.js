@@ -193,7 +193,9 @@ class Application extends Component {
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
       ({ message, success }) => {
         if (message) {
-          Mixpanel.trackWithProperties('selfTest-error');
+          Mixpanel.trackWithProperties('selfTest-error', {
+            errorMessage: message,
+          });
 
           this.props.dispatch(deviceActions.selfTestUpdated(false));
 
