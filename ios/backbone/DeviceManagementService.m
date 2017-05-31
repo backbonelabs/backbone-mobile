@@ -1,4 +1,5 @@
 #import "DeviceManagementService.h"
+#import "DeviceInformationService.h"
 #import "BluetoothService.h"
 #import <React/RCTUtils.h>
 
@@ -42,7 +43,16 @@ RCT_EXPORT_METHOD(connectToDevice:(NSString *)deviceID) {
                                                                                       });
         [self deviceConnectionStatus:makeError];
       } else {
-        [self deviceConnectionStatus:@{@"isConnected": @YES, @"deviceMode": @(BluetoothServiceInstance.currentDeviceMode)}];
+        [[DeviceInformationService getDeviceInformationService] retrieveDeviceStatus:^(NSDictionary * _Nonnull dict) {
+          NSDictionary *deviceState = @{
+                                        @"isConnected": @YES,
+                                        @"deviceMode": @(BluetoothServiceInstance.currentDeviceMode),
+                                        @"selfTestStatus": [dict objectForKey:@"selfTestStatus"]
+                                        };
+          [self deviceConnectionStatus:deviceState];
+          
+          [BluetoothServiceInstance emitDeviceState];
+        }];
       }
       
       // Cancel the connection timeout

@@ -26,6 +26,7 @@
 - (id)initService;
 + (BOOL)getIsEnabled;
 - (void)emitCentralState;
+- (void)emitDeviceState;
 - (void)startObserving;
 - (void)stopObserving;
 

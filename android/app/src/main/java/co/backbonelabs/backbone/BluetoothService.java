@@ -328,19 +328,24 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                     Timber.d("Found all services in Backbone mode");
                     // Check for pending notification of a successful firmware update
                     if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPDATED) {
-                        // Successfully restarted after upgrading firmware
+                        // Successfully restarted after upgrading firmware.
+                        // Notify the update and refresh device state
                         Timber.d("Firmware Updated Successfully");
                         bootLoaderService.firmwareUpdated();
+                        DeviceInformationService.getInstance(reactContext).refreshDeviceTestStatus();
+                        emitDeviceState();
                     }
                     else {
                         if (connectionCallBack != null) {
                             connectionCallBack.onDeviceConnected();
                             connectionCallBack = null;
                         }
+                        else {
+                            emitDeviceState();
+                        }
                     }
 
                     bootLoaderService.setBootLoaderState(Constants.BOOTLOADER_STATES.OFF);
-                    emitDeviceState();
                 }
             }
             else if (currentDeviceMode == Constants.DEVICE_MODES.BOOTLOADER) {
@@ -355,8 +360,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                             connectionCallBack.onDeviceConnected();
                             connectionCallBack = null;
                         }
-
-                        emitDeviceState();
+                        else {
+                            emitDeviceState();
+                        }
                     }
                     else if (bootLoaderService.getBootLoaderState() == Constants.BOOTLOADER_STATES.UPLOADING) {
                         Timber.d("Abort previous firmware update");
@@ -368,8 +374,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
                             connectionCallBack.onDeviceConnected();
                             connectionCallBack = null;
                         }
-
-                        emitDeviceState();
+                        else {
+                            emitDeviceState();
+                        }
                     }
                     Timber.d("Found all services in Bootloader mode");
                 }
@@ -545,7 +552,7 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         stopScan();
     }
 
-    private void emitDeviceState() {
+    public void emitDeviceState() {
         Timber.d("Emit Device State: %d", deviceState);
         WritableMap wm = Arguments.createMap();
         wm.putInt("state", deviceState);
@@ -601,6 +608,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
 
     public boolean hasCharacteristic(UUID characteristicUUID) {
         return characteristicMap.containsKey(characteristicUUID);
+    }
+
+    public BluetoothGattCharacteristic getCharacteristic(UUID characteristicUUID) {
+        return characteristicMap.get(characteristicUUID);
     }
 
     public boolean toggleCharacteristicNotification(UUID characteristicUUID, boolean state) {

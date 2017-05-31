@@ -126,7 +126,9 @@ class DeviceScan extends Component {
     } else if (currentBluetoothState === ON &&
       (newBluetoothState === OFF || newBluetoothState === TURNING_OFF)) {
       // User has switched Bluetooth off, stop scanning
-      this.setState({ inProgress: false }, DeviceManagementService.stopScanForDevices);
+      this.setState({ inProgress: false }, () => {
+        DeviceManagementService.stopScanForDevices();
+      });
     }
   }
 
