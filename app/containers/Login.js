@@ -33,7 +33,10 @@ class Login extends Component {
       hasOnboarded: PropTypes.bool,
     }),
     dispatch: PropTypes.func,
-    navigator: PropTypes.object,
+    navigator: PropTypes.shape({
+      resetTo: PropTypes.func,
+      push: PropTypes.func,
+    }),
   };
 
   constructor() {
