@@ -191,8 +191,26 @@ class Application extends Component {
     });
 
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
-      test => {
-        this.props.dispatch(deviceActions.selfTestUpdated(test.success));
+      ({ message, success }) => {
+        if (message) {
+          Mixpanel.trackWithProperties('selfTest-error', {
+            errorMessage: message,
+          });
+
+          this.props.dispatch(deviceActions.selfTestUpdated(false));
+
+          Alert.alert('Error', 'Your Backbone sensor needs to be fixed. ' +
+            'Perform an update now to continue using your Backbone.', [
+            { text: 'Cancel' },
+            { text: 'Update', onPress: () => this.navigator.push(routes.device) },
+            ]
+          );
+        } else {
+          const result = (success ? 'success' : 'failed');
+          Mixpanel.track(`selfTest-${result}`);
+
+          this.props.dispatch(deviceActions.selfTestUpdated(success));
+        }
       });
 
     // Handle SessionState events
@@ -301,6 +319,8 @@ class Application extends Component {
             }, delay);
           } else if (!status.selfTestStatus) {
             // Self-Test failed, request a re-run
+            Mixpanel.track('selfTest-begin');
+
             DeviceInformationService.requestSelfTest();
             this.props.dispatch(deviceActions.selfTestRequested());
           } else {

@@ -105,18 +105,28 @@ RCT_EXPORT_METHOD(requestSelfTest) {
   if (requestingSelfTest) return;
   
   if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]) {
-    requestingSelfTest = YES;
-    
-    [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]];
-    
-    uint8_t bytes[1];
-    
-    bytes[0] = SESSION_COMMAND_SELF_TEST;
-    NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
-    
-    DLog(@"Request Self-Test %@ %@ %@", data, BluetoothServiceInstance.currentDevice, [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]);
-    
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    CBCharacteristic *deviceStatusCharacteristic = [BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID];
+  
+    // Check if the device is running the required firmware version to perform this
+    if (deviceStatusCharacteristic && (deviceStatusCharacteristic.properties & CBCharacteristicPropertyNotify)) {
+      requestingSelfTest = YES;
+      
+      [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]];
+      
+      uint8_t bytes[1];
+      
+      bytes[0] = SESSION_COMMAND_SELF_TEST;
+      NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
+      
+      DLog(@"Request Self-Test %@ %@ %@", data, BluetoothServiceInstance.currentDevice, [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]);
+      
+      [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    }
+    else {
+      // Running on an older device with no support of self-test re-run
+      NSDictionary *makeError = RCTMakeError(@"Self-Test re-run not supported", nil, nil);
+      [self sendEventWithName:@"DeviceTestStatus" body:makeError];
+    }
   }
 }
 

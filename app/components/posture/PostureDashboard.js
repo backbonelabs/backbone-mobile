@@ -464,6 +464,8 @@ class PostureDashboard extends Component {
                   {
                     text: 'Fix',
                     onPress: () => {
+                      Mixpanel.track('selfTest-begin');
+
                       DeviceInformationService.requestSelfTest();
                       this.props.dispatch(deviceActions.selfTestRequested());
                     },

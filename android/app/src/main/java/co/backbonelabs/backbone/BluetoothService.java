@@ -610,6 +610,10 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         return characteristicMap.containsKey(characteristicUUID);
     }
 
+    public BluetoothGattCharacteristic getCharacteristic(UUID characteristicUUID) {
+        return characteristicMap.get(characteristicUUID);
+    }
+
     public boolean toggleCharacteristicNotification(UUID characteristicUUID, boolean state) {
         boolean status = false;
 
