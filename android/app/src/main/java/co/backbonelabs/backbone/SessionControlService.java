@@ -41,6 +41,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
     private KinesisFirehoseRecorder firehoseRecorder;
     private SimpleDateFormat timestampFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS");
+    private boolean shouldFlushFirehoseRecords = true;
 
     private int currentSessionState = Constants.SESSION_STATES.STOPPED;
     private int previousSessionState = Constants.SESSION_STATES.STOPPED;
@@ -548,6 +549,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     Log.e(TAG, "Error submitting to Firehose");
                     Log.e(TAG, Log.getStackTraceString(ace));
                 }
+                shouldFlushFirehoseRecords = true;
                 return null;
             }
         }.execute();
@@ -666,6 +668,27 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         // Queue accelerometer record for Firehose
                         String now = timestampFormatter.format(new Date());
                         firehoseRecorder.saveRecord(String.format("%s,%s,%f,%f,%f\n", sessionId, now, x, y, z), Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
+
+                        // Periodically submit records to Firehose to make
+                        // sure the storage limit isn't reached. This will be
+                        // done when the storage usage is at 50%, 75%, and 90%.
+                        long storageLimit = firehoseRecorder.getDiskByteLimit();
+                        long storageUsed = firehoseRecorder.getDiskBytesUsed();
+                        float storageUsage = (float)storageUsed / storageLimit;
+                        if (storageUsage >= 0.9 && shouldFlushFirehoseRecords) {
+                            shouldFlushFirehoseRecords = false;
+                            submitFirehoseRecords();
+                        } else if (storageUsage >= 0.76) {
+                            shouldFlushFirehoseRecords = true;
+                        } else if (storageUsage >= 0.75 && shouldFlushFirehoseRecords) {
+                            shouldFlushFirehoseRecords = false;
+                            submitFirehoseRecords();
+                        } else if (storageUsage >= 0.51) {
+                            shouldFlushFirehoseRecords = true;
+                        } else if (storageUsage >= 0.5 && shouldFlushFirehoseRecords) {
+                            shouldFlushFirehoseRecords = false;
+                            submitFirehoseRecords();
+                        }
                     }
                 }
             }
