@@ -573,58 +573,64 @@ class PostureMonitor extends Component {
   }
 
   startSession() {
-    const {
-      sessionDuration,
-      slouchDistanceThreshold,
-      vibrationSpeed,
-      vibrationPattern,
-    } = this.state;
+    if (!this.state.hasPendingSessionOperation) {
+      const {
+        sessionDuration,
+        slouchDistanceThreshold,
+        vibrationSpeed,
+        vibrationPattern,
+      } = this.state;
 
-    const sessionParameters = {
-      sessionDuration,
-      // We use the slouchDistanceThreshold from state instead of user.settings.postureThreshold
-      // because the user may modify the threshold and resume the session before the
-      // updated threshold value is saved in the database and a response is returned
-      // from the API server to refresh the user object in the Redux store.
-      slouchDistanceThreshold,
-      vibrationSpeed,
-      vibrationPattern,
-    };
+      const sessionParameters = {
+        sessionDuration,
+        // We use the slouchDistanceThreshold from state instead of user.settings.postureThreshold
+        // because the user may modify the threshold and resume the session before the
+        // updated threshold value is saved in the database and a response is returned
+        // from the API server to refresh the user object in the Redux store.
+        slouchDistanceThreshold,
+        vibrationSpeed,
+        vibrationPattern,
+      };
 
-    Mixpanel.trackWithProperties('startSession', {
-      goalDuration: sessionDuration,
-    });
+      Mixpanel.trackWithProperties('startSession', {
+        goalDuration: sessionDuration,
+      });
 
-    SessionControlService.start(sessionParameters, err => {
-      if (err) {
-        const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
-        const message = `An error occurred while attempting to ${verb} the session.`;
-        if (this.state.sessionState === sessionStates.STOPPED) {
-          // No session has been started, which means the initial autostart failed, so we should
-          // just navigate back since there is nothing else the user can do in this scene
-          Alert.alert('Error', message);
-          this.props.navigator.pop();
+      this.setState({ hasPendingSessionOperation: true });
+
+      SessionControlService.start(sessionParameters, err => {
+        this.setState({ hasPendingSessionOperation: false });
+
+        if (err) {
+          const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
+          const message = `An error occurred while attempting to ${verb} the session.`;
+          if (this.state.sessionState === sessionStates.STOPPED) {
+            // No session has been started, which means the initial autostart failed, so we should
+            // just navigate back since there is nothing else the user can do in this scene
+            Alert.alert('Error', message);
+            this.props.navigator.pop();
+          } else {
+            // A session was already started, so an error here would be for resuming the session
+            this.sessionCommandAlert({
+              message,
+              rightButtonLabel: 'Retry',
+              rightButtonAction: this.startSession,
+            });
+          }
+
+          Mixpanel.trackError({
+            errorContent: err,
+            path: 'app/components/posture/PostureMonitor',
+            stackTrace: ['startSession', 'SessionControlService.start'],
+          });
         } else {
-          // A session was already started, so an error here would be for resuming the session
-          this.sessionCommandAlert({
-            message,
-            rightButtonLabel: 'Retry',
-            rightButtonAction: this.startSession,
+          this.setSessionState({
+            state: sessionStates.RUNNING,
+            parameters: sessionParameters,
           });
         }
-
-        Mixpanel.trackError({
-          errorContent: err,
-          path: 'app/components/posture/PostureMonitor',
-          stackTrace: ['startSession', 'SessionControlService.start'],
-        });
-      } else {
-        this.setSessionState({
-          state: sessionStates.RUNNING,
-          parameters: sessionParameters,
-        });
-      }
-    });
+      });
+    }
   }
 
   pauseSession() {
@@ -891,6 +897,7 @@ class PostureMonitor extends Component {
       postureThreshold,
       pointerPosition,
       sessionState,
+      hasPendingSessionOperation,
     } = this.state;
 
     const getPlayPauseButton = () => {
@@ -947,7 +954,7 @@ class PostureMonitor extends Component {
         />
         <View style={styles.btnContainer}>
           {getPlayPauseButton()}
-          {sessionState === sessionStates.RUNNING ?
+          {sessionState !== sessionStates.PAUSED || hasPendingSessionOperation ?
             <MonitorButton alertsDisabled disabled /> :
               <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />
           }
