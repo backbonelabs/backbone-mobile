@@ -113,7 +113,6 @@ export default {
         body: JSON.stringify(user),
       })
         .catch(() => handleNetworkError(passwordResetEventName))
-        .then(response => response.json())
         .then((response) => {
           if (response.ok) {
             Mixpanel.trackWithProperties(`${passwordResetEventName}-success`, {
