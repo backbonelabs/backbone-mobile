@@ -12,7 +12,7 @@ import constants from '../utils/constants';
 import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
-const { Environment } = NativeModules;
+const { Environment, UserService } = NativeModules;
 const { storageKeys, errorMessages } = constants;
 
 const handleNetworkError = mixpanelEvent => {
@@ -42,12 +42,16 @@ export default {
             throw new Error(body.error);
           } else {
             const { accessToken, ...userObj } = body;
+            const id = userObj._id;
+
+            // Store user id on the native side
+            UserService.setUserId(id);
 
             // Identify user for Bugsnag
-            Bugsnag.setUser(userObj._id, userObj.nickname, userObj.email);
+            Bugsnag.setUser(id, userObj.nickname, userObj.email);
 
             // Identify user for Mixpanel tracking
-            Mixpanel.identify(userObj._id);
+            Mixpanel.identify(id);
 
             // Update user profile on Mixpanel
             Mixpanel.setUserProperties(userObj);
@@ -83,11 +87,16 @@ export default {
 
             throw new Error(body.error);
           } else {
+            const id = body.user._id;
+
+            // Store user id on the native side
+            UserService.setUserId(id);
+
             // Identify user for Bugsnag
-            Bugsnag.setUser(body.user._id, body.user.nickname, body.user.email);
+            Bugsnag.setUser(id, body.user.nickname, body.user.email);
 
             // Identify user for Mixpanel tracking
-            Mixpanel.identify(body.user._id);
+            Mixpanel.identify(id);
 
             // Update user profile in Mixpanel
             Mixpanel.setUserProperties(body.user);
@@ -136,6 +145,7 @@ export default {
   },
 
   signOut() {
+    UserService.unsetUserId();
     Bugsnag.clearUser();
     Mixpanel.track('signOut');
 
