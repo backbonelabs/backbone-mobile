@@ -178,7 +178,13 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             firmwareVersionCallBack = null;
         }
         else {
-            bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC);
+            boolean status = bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC);
+
+            if (!status) {
+                // Return the default value when failed to fetch the actual version
+                firmwareVersionCallBack.onStringCallBack("");
+                firmwareVersionCallBack = null;
+            }
         }
     }
 
@@ -192,7 +198,13 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             batteryLevelCallBack = null;
         }
         else {
-            bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC);
+            boolean status = bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC);
+
+            if (!status) {
+                // Return the default value when failed to fetch the actual version
+                batteryLevelCallBack.onIntCallBack(-1);
+                batteryLevelCallBack = null;
+            }
         }
     }
 
@@ -210,7 +222,16 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             deviceStatusCallBack = null;
         }
         else {
-            bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC);
+            boolean status = bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC);
+
+            if (!status) {
+                // Return the default value when failed to fetch the actual version
+                WritableMap statusMap = Arguments.createMap();
+                statusMap.putBoolean("selfTestStatus", true);
+
+                deviceStatusCallBack.onMapCallBack(statusMap);
+                deviceStatusCallBack = null;
+            }
         }
     }
 
