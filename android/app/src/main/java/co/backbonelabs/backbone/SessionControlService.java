@@ -525,7 +525,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         String startDateTime = timestampFormatter.format(new Date(sessionStartTimestamp));
         String endDateTime = timestampFormatter.format(new Date());
         String record = String.format("%s,%s,%s,%s\n", sessionId, userId, startDateTime, endDateTime);
-        Timber.d("Record: %s", record);
+        Timber.d("Firehose posture session record: %s", record);
         firehoseRecorder.saveRecord(record, Constants.FIREHOSE_STREAMS.POSTURE_SESSION);
 
         // Remove session data
