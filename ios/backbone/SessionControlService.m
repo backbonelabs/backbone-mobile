@@ -629,6 +629,8 @@ RCT_EXPORT_METHOD(getSessionState) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        _errorHandler = nil;
+
         [self revertOperation];
       }
     }
@@ -642,6 +644,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        _errorHandler = nil;
         
         notificationStateChanged = YES;
         [self revertOperation];
@@ -657,6 +660,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        _errorHandler = nil;
         
         notificationStateChanged = YES;
         [self revertOperation];
@@ -666,6 +670,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       // Session control is fully updated, return callback with no error
       if (_errorHandler) {
         _errorHandler(nil);
+        _errorHandler = nil;
       }
     }
   }
@@ -679,6 +684,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        _errorHandler = nil;
       }
     }
     else {

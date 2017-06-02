@@ -483,6 +483,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             // writing to the session control characteristic failed
             Log.e(TAG, "Error initiating session control update");
             errorCallBack.onIntCallBack(1);
+            errorCallBack = null;
         }
     }
 
@@ -708,6 +709,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                             if (!toggleStatus && errorCallBack != null) {
                                 Log.e(TAG, "Error toggling session data notification");
                                 errorCallBack.onIntCallBack(1);
+                                errorCallBack = null;
                             }
                         }
                     }
@@ -715,6 +717,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         Log.e(TAG, "Error writing into session control characteristic");
                         if (errorCallBack != null) {
                             errorCallBack.onIntCallBack(1);
+                            errorCallBack = null;
                         }
                     }
                 }
@@ -734,6 +737,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                             if (!toggleStatus) {
                                 Log.e(TAG, "Error toggling slouch notification");
                                 errorCallBack.onIntCallBack(1);
+                                errorCallBack = null;
 
                                 revertOperation();
                             }
@@ -744,6 +748,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         if (errorCallBack != null) {
                             // Properly handle the failure when we failed toggling the notification state
                             errorCallBack.onIntCallBack(1);
+                            errorCallBack = null;
 
                             revertOperation();
                         }
@@ -758,6 +763,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                             if (!toggleStatus) {
                                 Log.e(TAG, "Error toggling session statistic notification");
                                 errorCallBack.onIntCallBack(1);
+                                errorCallBack = null;
 
                                 notificationStateChanged = true;
                                 revertOperation();
@@ -769,6 +775,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         if (errorCallBack != null) {
                             // Properly handle the failure when we failed toggling the notification state
                             errorCallBack.onIntCallBack(1);
+                            errorCallBack = null;
 
                             notificationStateChanged = true;
                             revertOperation();
@@ -779,6 +786,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (errorCallBack != null) {
                             errorCallBack.onIntCallBack(0);
+                            errorCallBack = null;
                         }
                     }
                     else {
@@ -786,6 +794,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         if (errorCallBack != null) {
                             // Properly handle the failure when we failed toggling the notification state
                             errorCallBack.onIntCallBack(1);
+                            errorCallBack = null;
 
                             notificationStateChanged = true;
                             revertOperation();
