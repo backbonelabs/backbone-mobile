@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   View,
+  Text,
+  LayoutAnimation,
   TouchableWithoutFeedback,
   Keyboard,
   Image,
@@ -10,7 +12,6 @@ import {
   TouchableOpacity,
   NativeModules,
 } from 'react-native';
-import { MKCheckbox } from 'react-native-material-kit';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Input from '../components/Input';
@@ -22,7 +23,11 @@ import Button from '../components/Button';
 import constants from '../utils/constants';
 import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
+import relativeDimensions from '../utils/relativeDimensions';
+import CheckBox from '../components/checkbox';
+import SecondaryText from '../components/SecondaryText';
 
+const { heightDifference } = relativeDimensions;
 const { Environment } = NativeModules;
 
 class Signup extends Component {
@@ -46,8 +51,22 @@ class Signup extends Component {
       validEmail: false,
       emailPristine: true,
       passwordPristine: true,
+      imageHeight: 85 * heightDifference,
+      tabContainerHeight: 20 * heightDifference,
+      headingFlex: 1,
       acceptedTOS: false,
     };
+  }
+
+  componentWillMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardWillShow',
+      this.keyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardWillHide',
+      this.keyboardDidHide
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -56,6 +75,11 @@ class Signup extends Component {
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
     }
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   onEmailChange(email) {
@@ -81,6 +105,25 @@ class Signup extends Component {
 
   onTOSChange(event) {
     this.setState({ acceptedTOS: event.checked });
+  }
+
+  keyboardDidShow() {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    // apply styles when keyboard is open
+    this.setState({
+      imageHeight: 0,
+      headingFlex: 0,
+      tabContainerHeight: 65 * heightDifference,
+    });
+  }
+
+  keyboardDidHide() {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState({
+      imageHeight: 85 * heightDifference,
+      headingFlex: 1,
+      tabContainerHeight: 20 * heightDifference,
+    });
   }
 
   signup() {
@@ -139,110 +182,161 @@ class Signup extends Component {
     } = this.state;
     const validPassword = password.length >= 8;
     let passwordWarning;
-    const emailIconProps = {};
-    const passwordIconProps = {};
+    let emailWarning;
     if (!emailPristine) {
-      emailIconProps.iconRightName = validEmail ? 'check' : 'close';
+      emailWarning = validEmail ? '' : 'Invalid Email';
     }
     if (!passwordPristine) {
-      passwordIconProps.iconRightName = validPassword ? 'check' : 'close';
-      passwordWarning = validPassword ? '' : 'Password must be at least 8 characters';
+      passwordWarning = validPassword
+        ? ''
+        : 'Password must be at least 8 characters';
     }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          {this.props.inProgress ?
-            <Spinner />
-            :
-              <KeyboardAvoidingView behavior="padding">
-                <View style={styles.innerContainer}>
-                  <Image source={BackBoneLogo} style={styles.backboneLogo} />
-                  <BodyText style={styles._headingText}>
-                    Look and feel stronger with Backbone
-                  </BodyText>
-                  <View style={styles.formContainer}>
-                    <View style={styles.inputFieldContainer}>
-                      <Input
-                        style={styles._inputField}
-                        handleRef={ref => (
-                          this.emailField = ref
-                        )}
-                        value={email}
-                        autoCapitalize="none"
-                        placeholder="Email"
-                        keyboardType="email-address"
-                        onChangeText={this.onEmailChange}
-                        onSubmitEditing={() => this.passwordField.focus()}
-                        autoCorrect={false}
-                        autoFocus
-                        returnKeyType="next"
-                        {...emailIconProps}
-                      />
-                    </View>
-                    <View style={styles.inputFieldContainer}>
-                      <Input
-                        style={styles._inputField}
-                        handleRef={ref => (
-                          this.passwordField = ref
-                        )}
-                        value={password}
-                        autoCapitalize="none"
-                        placeholder="Password"
-                        keyboardType="default"
-                        onChangeText={this.onPasswordChange}
-                        autoCorrect={false}
-                        secureTextEntry
-                        {...passwordIconProps}
-                      />
-                    </View>
-                    <BodyText style={styles._warning}>
-                      {passwordWarning}
+          {this.props.inProgress
+            ? <Spinner />
+            : <KeyboardAvoidingView behavior="padding">
+              <View
+                style={[{ flex: this.state.headingFlex }, styles.heading]}
+              >
+                <View style={styles.logoContainer}>
+                  <Image
+                    source={BackBoneLogo}
+                    style={[
+                      {
+                        height: this.state.imageHeight,
+                      },
+                      styles.backboneLogo,
+                    ]}
+                  />
+                </View>
+                <View
+                  style={[
+                      { height: this.state.tabContainerHeight },
+                    styles.tabsContainer,
+                  ]}
+                >
+                  <TouchableOpacity
+                    style={styles.tab}
+                    onPress={() => this.props.navigator.pop()}
+                  >
+                    <BodyText>Sign In</BodyText>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.currentTab, styles.tab]}>
+                    <BodyText style={styles._currentTabText}>
+                        Sign Up
                     </BodyText>
-                    <View style={styles.legalOuterContainer}>
-                      <View style={styles.legalInnerContainer}>
-                        <MKCheckbox
-                          borderOnColor={styles.$checkboxColor}
-                          fillColor={styles.$checkboxColor}
-                          rippleColor="rgba(255, 255, 255, 0)"
-                          onCheckedChange={this.onTOSChange}
-                          checked={this.state.acceptedTOS}
-                        />
-                      </View>
-                      <View style={styles.legalInnerContainer}>
-                        <BodyText>I agree to the </BodyText>
-                        <TouchableOpacity
-                          onPress={this.openTOS}
-                          activeOpacity={0.4}
-                        >
-                          <BodyText style={styles._legalLink}>Terms of Service</BodyText>
-                        </TouchableOpacity>
-                        <BodyText> and </BodyText>
-                        <TouchableOpacity
-                          onPress={this.openPrivacyPolicy}
-                          activeOpacity={0.4}
-                        >
-                          <BodyText style={styles._legalLink}>Privacy Policy</BodyText>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    <View style={styles.CTAContainer}>
-                      <Button
-                        style={styles._CTAButton}
-                        text="SIGN UP"
-                        primary
-                        disabled={
-                          this.props.inProgress ||
-                          !email || !validEmail ||
-                          !password || !validPassword ||
-                          !acceptedTOS
-                        }
-                        onPress={this.signup}
-                      />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.formContainer}>
+                <View style={styles.inputsContainer}>
+                  <Button
+                    style={styles._fbBtn}
+                    textStyle={styles._fbBtnText}
+                    text="SIGN UP WITH FACEBOOK"
+                    fbBtn
+                    onPress={() => null}
+                  />
+                  <View style={styles.breakContainer}>
+                    <View style={styles.leftSideBreak} />
+                    <Text style={styles.textBreak}>OR</Text>
+                    <View style={styles.rightSideBreak} />
+                  </View>
+                  <View style={styles.inputFieldContainer}>
+                    <Input
+                      style={{
+                        color: emailWarning ? '#E53935' : '#231F20',
+                        ...styles._inputField,
+                      }}
+                      iconStyle={{
+                        color: emailWarning ? '#E53935' : '#9E9E9E',
+                      }}
+                      handleRef={ref => (this.emailField = ref)}
+                      value={email}
+                      autoCapitalize="none"
+                      placeholder="Email"
+                      keyboardType="email-address"
+                      onChangeText={this.onEmailChange}
+                      onSubmitEditing={() => this.passwordField.focus()}
+                      autoCorrect={false}
+                      returnKeyType="next"
+                      iconFont="MaterialIcon"
+                      iconLeftName="email"
+                    />
+                  </View>
+                  <View style={styles.inputFieldContainer}>
+                    <Input
+                      style={{
+                        color: passwordWarning ? '#E53935' : '#231F20',
+                        ...styles._inputField,
+                      }}
+                      iconStyle={{
+                        color: passwordWarning ? '#E53935' : '#9E9E9E',
+                      }}
+                      handleRef={ref => this.passwordField = ref}
+                      value={password}
+                      autoCapitalize="none"
+                      placeholder="Password"
+                      keyboardType="default"
+                      onChangeText={this.onPasswordChange}
+                      autoCorrect={false}
+                      secureTextEntry
+                      iconFont="MaterialIcon"
+                      iconLeftName="lock"
+                    />
+                  </View>
+                  <BodyText style={styles._warning}>
+                    {passwordWarning || emailWarning}
+                  </BodyText>
+                  <View style={styles.legalInnerContainer}>
+                    <CheckBox
+                      style={styles._checkBox}
+                      onCheckedChange={this.onTOSChange}
+                      checked={this.state.acceptedTOS}
+                    />
+                    <View style={styles.textContainer}>
+                      <SecondaryText>I agree to the </SecondaryText>
+                      <TouchableOpacity
+                        onPress={this.openTOS}
+                        activeOpacity={0.4}
+                      >
+                        <SecondaryText style={styles._legalLink}>
+                            Terms of Service
+                        </SecondaryText>
+                      </TouchableOpacity>
+                      <SecondaryText> and </SecondaryText>
+                      <TouchableOpacity
+                        onPress={this.openPrivacyPolicy}
+                        activeOpacity={0.4}
+                        style={styles.priv}
+                      >
+                        <SecondaryText style={styles._legalLink}>
+                            Privacy Policy
+                        </SecondaryText>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
-              </KeyboardAvoidingView>
-          }
+                <View style={styles.CTAContainer}>
+                  <Button
+                    style={styles._CTAButton}
+                    text="SIGN UP"
+                    primary
+                    disabled={
+                        this.props.inProgress ||
+                          !email ||
+                          !validEmail ||
+                          !password ||
+                          !validPassword ||
+                          !acceptedTOS
+                      }
+                    onPress={this.signup}
+                  />
+                </View>
+              </View>
+            </KeyboardAvoidingView>}
         </View>
       </TouchableWithoutFeedback>
     );
