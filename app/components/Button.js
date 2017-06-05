@@ -15,6 +15,7 @@ class Button extends Component {
     text: PropTypes.string.isRequired,
     textStyle: PropTypes.object,
     primary: PropTypes.bool,
+    fbBtn: PropTypes.bool,
     pressStatus: PropTypes.bool,
     onHideUnderlay: PropTypes.func,
     onShowUnderlay: PropTypes.func,
@@ -45,6 +46,7 @@ class Button extends Component {
     let buttonType;
     const textStyles = [styles._text];
     const buttonStyles = [styles.button];
+    const fbBtnStyles = [styles.facebookBtn];
     const secondaryStyles = [buttonStyles, styles.secondaryBtn];
     const secondaryActive = [buttonStyles, styles.secondaryActive];
     const secondaryTextStyles = [styles._text, styles._secondaryTextStyles];
@@ -55,7 +57,22 @@ class Button extends Component {
         <TouchableHighlight
           activeOpacity={0.4}
           style={buttonStyles}
-          underlayColor={'#85181C'}
+          underlayColor={'#FB8C00'}
+          onHideUnderlay={this._onHideUnderlay}
+          onShowUnderlay={this._onShowUnderlay}
+          onPress={this.props.disabled ? undefined : this.props.onPress}
+        >
+          <View>
+            <BodyText style={textStyles}>{this.props.text}</BodyText>
+          </View>
+        </TouchableHighlight>
+      );
+    } else if (this.props.fbBtn) {
+      buttonType = (
+        <TouchableHighlight
+          activeOpacity={0.4}
+          style={fbBtnStyles}
+          underlayColor={'#8b9dc3'}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
@@ -92,6 +109,7 @@ class Button extends Component {
     }
     buttonStyles.push(this.props.style);
     textStyles.push(this.props.textStyle);
+    fbBtnStyles.push(this.props.style);
 
     return buttonType;
   }

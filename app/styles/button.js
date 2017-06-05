@@ -7,15 +7,20 @@ const { applyWidthDifference, heightDifference } = relativeDimensions;
 export default EStyleSheet.create({
   button: {
     justifyContent: 'center',
-    backgroundColor: '$primaryColor',
+    backgroundColor: '$secondaryColor',
     width: applyWidthDifference(150),
-    height: 45 * heightDifference,
-    borderRadius: 5,
+    height: 50 * heightDifference,
   },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '$primaryColor',
+  },
+  facebookBtn: {
+    justifyContent: 'center',
+    backgroundColor: '#3b5998',
+    width: '100%',
+    height: 65 * heightDifference,
   },
   secondaryActive: {
     borderColor: '$activeBorderColor',
@@ -30,7 +35,7 @@ export default EStyleSheet.create({
   },
   disabledButton: {
     backgroundColor: () => (
-      color(EStyleSheet.value('$primaryColor')).clearer(0.6).rgbString() // 40% opacity
+      color(EStyleSheet.value('$secondaryColor')).clearer(0.6).rgbString() // 40% opacity
     ),
   },
   disabledSecondaryText: {
