@@ -36,6 +36,7 @@ class Signup extends Component {
     navigator: PropTypes.shape({
       pop: PropTypes.func,
       replace: PropTypes.func,
+      resetTo: PropTypes.func,
     }),
     accessToken: PropTypes.string,
     errorMessage: PropTypes.string,
@@ -71,7 +72,7 @@ class Signup extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.accessToken && nextProps.accessToken) {
-      this.props.navigator.replace(routes.onboarding);
+      this.props.navigator.resetTo(routes.onboarding);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
     }

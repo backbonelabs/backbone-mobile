@@ -37,7 +37,10 @@ class Login extends Component {
       hasOnboarded: PropTypes.bool,
     }),
     dispatch: PropTypes.func,
-    navigator: PropTypes.object,
+    navigator: PropTypes.shape({
+      resetTo: PropTypes.func,
+      push: PropTypes.func,
+    }),
   };
 
   constructor() {
@@ -71,10 +74,10 @@ class Login extends Component {
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
-        this.props.navigator.replace(routes.deviceConnect);
+        this.props.navigator.resetTo(routes.deviceConnect);
       } else {
         // User hasn't completed onboarding process
-        this.props.navigator.replace(routes.onboarding);
+        this.props.navigator.resetTo(routes.onboarding);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
       // Authentication error

@@ -1,11 +1,11 @@
 package co.backbonelabs.backbone;
 
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -135,20 +135,23 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
         if (bluetoothService.isDeviceReady() &&
                 bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC)) {
-            Timber.d("Request self test");
-            requestingSelfTest = true;
+            BluetoothGattCharacteristic deviceStatusChar = bluetoothService.getCharacteristic(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC);
 
-            // Listen to the DeviceStatus notification
-            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC, true);
+            if (deviceStatusChar != null && (deviceStatusChar.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
+                Timber.d("Request self test");
+                requestingSelfTest = true;
 
-            byte[] commandBytes = new byte[1];
+                // Listen to the DeviceStatus notification
+                bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC, true);
 
-            commandBytes[0] = Constants.SESSION_COMMANDS.SELF_TEST;
+                byte[] commandBytes = new byte[1];
 
-            boolean status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
+                commandBytes[0] = Constants.SESSION_COMMANDS.SELF_TEST;
 
-            if (!status) {
-                Log.e("SessionControlService", "Error requesting self-test");
+                bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
+            }
+            else {
+                EventEmitter.send(reactContext, "DeviceTestStatus", JSError.make("Self-Test re-run not supported"));
             }
         }
     }
@@ -175,7 +178,13 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             firmwareVersionCallBack = null;
         }
         else {
-            bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC);
+            boolean status = bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.FIRMWARE_VERSION_CHARACTERISTIC);
+
+            if (!status) {
+                // Return the default value when failed to fetch the actual version
+                firmwareVersionCallBack.onStringCallBack("");
+                firmwareVersionCallBack = null;
+            }
         }
     }
 
@@ -189,7 +198,13 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             batteryLevelCallBack = null;
         }
         else {
-            bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC);
+            boolean status = bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.BATTERY_LEVEL_CHARACTERISTIC);
+
+            if (!status) {
+                // Return the default value when failed to fetch the actual version
+                batteryLevelCallBack.onIntCallBack(-1);
+                batteryLevelCallBack = null;
+            }
         }
     }
 
@@ -207,7 +222,16 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
             deviceStatusCallBack = null;
         }
         else {
-            bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC);
+            boolean status = bluetoothService.readCharacteristic(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC);
+
+            if (!status) {
+                // Return the default value when failed to fetch the actual version
+                WritableMap statusMap = Arguments.createMap();
+                statusMap.putBoolean("selfTestStatus", true);
+
+                deviceStatusCallBack.onMapCallBack(statusMap);
+                deviceStatusCallBack = null;
+            }
         }
     }
 
