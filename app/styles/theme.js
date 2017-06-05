@@ -12,6 +12,7 @@ const iconButtonSize = 1.5 * iconSize;
 const inputIconSize = fixedResponsiveFontSize(16);
 
 const primaryColor = '#ED1C24';
+const secondaryColor = '#FF9800';
 const primaryFont = 'Lato';
 const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
@@ -20,6 +21,7 @@ const bannerColor = '#EEE';
 
 export default {
   primaryColor,
+  secondaryColor,
   primaryFont,
   primaryFontColor,
   secondaryFontColor,
