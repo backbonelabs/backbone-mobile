@@ -233,7 +233,7 @@ class Login extends Component {
                       iconStyle={{
                         color: emailWarning ? '#E53935' : '#9E9E9E',
                       }}
-                      handleRef={ref => this.emailField = ref}
+                      handleRef={ref => (this.emailField = ref)}
                       value={this.state.email}
                       autoCapitalize="none"
                       placeholder="Email"
@@ -255,7 +255,7 @@ class Login extends Component {
                       iconStyle={{
                         color: passwordWarning ? '#E53935' : '#9E9E9E',
                       }}
-                      handleRef={ref => this.passwordField = ref}
+                      handleRef={ref => (this.passwordField = ref)}
                       value={this.state.password}
                       autoCapitalize="none"
                       placeholder="Password"

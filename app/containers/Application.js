@@ -4,7 +4,7 @@ import {
   AppState,
   View,
   Image,
-  StatusBar,
+  // StatusBar,
   Navigator,
   NativeModules,
   NativeEventEmitter,
@@ -33,7 +33,7 @@ import BodyText from '../components/BodyText';
 import Banner from '../components/Banner';
 import routes from '../routes';
 import styles from '../styles/application';
-import theme from '../styles/theme';
+// import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Bugsnag from '../utils/Bugsnag';

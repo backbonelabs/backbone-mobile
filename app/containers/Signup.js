@@ -276,7 +276,7 @@ class Signup extends Component {
                       iconStyle={{
                         color: passwordWarning ? '#E53935' : '#9E9E9E',
                       }}
-                      handleRef={ref => this.passwordField = ref}
+                      handleRef={ref => (this.passwordField = ref)}
                       value={password}
                       autoCapitalize="none"
                       placeholder="Password"
