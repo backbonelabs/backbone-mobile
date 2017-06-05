@@ -3,7 +3,9 @@ import {
   View,
   Alert,
   Image,
+  KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Keyboard,
 } from 'react-native';
 import autobind from 'class-autobind';
@@ -16,6 +18,7 @@ import Spinner from '../components/Spinner';
 import BackBoneLogo from '../images/logo.png';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
+import SecondaryText from '../components/SecondaryText';
 import constants from '../utils/constants';
 
 class Reset extends Component {
@@ -34,7 +37,6 @@ class Reset extends Component {
       email: null,
       emailPristine: true,
       validEmail: false,
-      showIcon: true,
     };
   }
 
@@ -44,11 +46,13 @@ class Reset extends Component {
       Alert.alert(
         'Success',
         'We sent you a password reset link. ' +
-        'Please check your email and use the link to reset your password.',
-        [{
-          text: 'OK',
-          onPress: this.props.navigator.pop,
-        }]
+          'Please check your email and use the link to reset your password.',
+        [
+          {
+            text: 'OK',
+            onPress: this.props.navigator.pop,
+          },
+        ]
       );
     }
   }
@@ -72,56 +76,76 @@ class Reset extends Component {
   }
 
   render() {
-    const { email, validEmail, emailPristine, showIcon } = this.state;
-    const emailIconProps = {};
-    if (!emailPristine && showIcon) {
-      emailIconProps.iconRightName = validEmail ? 'check' : 'close';
+    const { email, validEmail, emailPristine } = this.state;
+    let emailWarning;
+    if (!emailPristine) {
+      emailWarning = validEmail ? '' : 'Invalid Email';
     }
-
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          { this.props.inProgress ?
-            <Spinner />
-            :
-              <View style={styles.innerContainer}>
+          {this.props.inProgress
+            ? <Spinner />
+            : <KeyboardAvoidingView behavior="position">
+              <View style={styles._innerContainer}>
                 <Image source={BackBoneLogo} style={styles.backboneLogo} />
-                <HeadingText size={2} style={styles._headingText}>No problem!</HeadingText>
-                <BodyText style={styles._subHeadingText}>What's your email?</BodyText>
-                <View style={styles.formContainer}>
-                  <View style={styles.inputFieldContainer}>
-                    <Input
-                      style={styles._inputField}
-                      autoCapitalize="none"
-                      placeholder="Email"
-                      keyboardType="email-address"
-                      onChangeText={this.onEmailChange}
-                      onSubmitEditing={(!email ||
-                        !validEmail) ? null : this.sendPasswordResetRequest}
-                      autoCorrect={false}
-                      returnKeyType="go"
-                      {...emailIconProps}
-                    />
-                  </View>
-                  <View style={styles.CTAContainer}>
-                    <Button
-                      disabled={(!email || !validEmail)}
-                      style={styles._CTAButton}
-                      primary
-                      text="RESET"
-                      onPress={this.sendPasswordResetRequest}
-                    />
-                  </View>
+                <HeadingText size={2} style={styles._headingText}>
+                  Password Recovery
+                </HeadingText>
+                <BodyText style={styles._subHeadingText}>
+                  Please enter your email address below and we'll send you a link
+                  to reset your password.
+                </BodyText>
+                <View style={styles.inputFieldContainer}>
+                  <Input
+                    style={{
+                      color: emailWarning ? '#E53935' : '#231F20',
+                      ...styles._inputField,
+                    }}
+                    iconStyle={{ color: emailWarning ? '#E53935' : '#9E9E9E' }}
+                    autoCapitalize="none"
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    onChangeText={this.onEmailChange}
+                    value={this.state.email}
+                    onSubmitEditing={
+                      !email || !validEmail
+                        ? null
+                        : this.sendPasswordResetRequest
+                    }
+                    autoCorrect={false}
+                    returnKeyType="go"
+                    iconFont="MaterialIcon"
+                    iconLeftName="email"
+                  />
                 </View>
+                <BodyText style={styles._warning}>
+                  {emailWarning}
+                </BodyText>
+                <Button
+                  disabled={!email || !validEmail}
+                  style={styles._CTAResetBtn}
+                  primary
+                  text="RESET"
+                  onPress={this.sendPasswordResetRequest}
+                />
+                <TouchableOpacity
+                  onPress={() => this.props.navigator.pop()}
+                  activeOpacity={0.4}
+                >
+                  <SecondaryText style={styles._cancel}>
+                  Cancel
+                  </SecondaryText>
+                </TouchableOpacity>
               </View>
-          }
+            </KeyboardAvoidingView>}
         </View>
       </TouchableWithoutFeedback>
     );
   }
 }
 
-const mapPropsToState = (state) => {
+const mapPropsToState = state => {
   const { auth } = state;
   return auth;
 };
