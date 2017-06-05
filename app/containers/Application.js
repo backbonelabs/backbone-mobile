@@ -420,9 +420,9 @@ class Application extends Component {
 
   /**
    * Defines the initial scene to mount and ends the initialization process
-   * @param {Object} route=routes.welcome Route object, defaults to the welcome route
+   * @param {Object} route=routes.login Route object, defaults to the login route
    */
-  setInitialRoute(route = routes.welcome) {
+  setInitialRoute(route = routes.login) {
     // Intentionally add a delay because sometimes the initialization process
     // can be so quick that the spinner icon only flashes for a blink of an eye,
     // and it might not be obvious it was a spinner icon indicating some type of
@@ -649,16 +649,16 @@ class Application extends Component {
   }
 
   render() {
-    const statusBarProps = {};
-    if (isiOS) {
-      statusBarProps.barStyle = 'light-content';
-    } else {
-      statusBarProps.backgroundColor = theme.primaryColor;
-    }
+    // const statusBarProps = {};
+    // if (isiOS) {
+    //   statusBarProps.barStyle = 'light-content';
+    // } else {
+    //   statusBarProps.backgroundColor = theme.primaryColor;
+    // }
 
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar {...statusBarProps} />
+        {/* <StatusBar {...statusBarProps} />
         {isiOS &&
           // The background color cannot be set for the status bar in iOS, so
           // a static View is overlayed on top of the status bar for all scenes
@@ -668,7 +668,7 @@ class Application extends Component {
               height: theme.statusBarHeight,
             }}
           />
-        }
+        }*/}
         {this.state.initializing ? <Spinner /> : (
           <Navigator
             configureScene={this.configureScene}
