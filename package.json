@@ -9,12 +9,18 @@
     "lint": "eslint index.* app/**",
     "prepush": "npm run lint",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "jest": {
     "preset": "react-native",
+    "setupFiles": ["./jestsetup.js"],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|react-navigation|bugsnag-react-native)/"
     ]
   },
   "dependencies": {
@@ -58,6 +64,7 @@
     "react-addons-test-utils": "15.4.2",
     "react-dom": "15.4.4",
     "react-test-renderer": "15.4.2",
+    "redux-mock-store": "1.2.3",
     "request": "2.81.0"
   }
 }

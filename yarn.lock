@@ -4032,6 +4032,10 @@ redux-async-action@0.0.4:
     flux-standard-action "^1.2.0"
     lodash "^4.17.4"
 
+redux-mock-store@1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/redux-mock-store/-/redux-mock-store-1.2.3.tgz#1b3ad299da91cb41ba30d68e3b6f024475fb9e1b"
+
 redux-thunk@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.1.0.tgz#c724bfee75dbe352da2e3ba9bc14302badd89a98"
