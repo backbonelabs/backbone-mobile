@@ -27,6 +27,7 @@ import com.facebook.react.bridge.WritableMap;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.EventEmitter;
@@ -81,6 +82,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     private SessionControlService(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+
+        timestampFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         // Set up Firehose
         Regions region = Regions.US_WEST_2;

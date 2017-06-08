@@ -36,6 +36,7 @@
   
   shouldFlushFirehoseRecords = YES;
   timestampFormatter = [[NSDateFormatter alloc] init];
+  [timestampFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
   [timestampFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"];
   
   // Set up Firehose
