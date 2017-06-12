@@ -15,12 +15,13 @@
   },
   "jest": {
     "preset": "react-native",
+    "verbose": true,
     "setupFiles": ["./jestsetup.js"],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!react-native|react-navigation|bugsnag-react-native)/"
+      "node_modules/(?!react-native|bugsnag-react-native)/"
     ]
   },
   "dependencies": {
