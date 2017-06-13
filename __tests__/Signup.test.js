@@ -1,20 +1,51 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import configureStore from 'redux-mock-store';
+import mockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { asyncActionMiddleware } from 'redux-async-action';
 import Signup from '../app/containers/Signup';
-
-const mockStore = configureStore();
-const initialState = {
-  auth: {},
-};
+import authActions from '../app/actions/auth';
 
 describe('Signup Component', () => {
-  test('renders as expected', () => {
-    const wrapper = shallow(
-      <Signup />,
-      { context: { store: mockStore(initialState) } },
+  const initialState = {
+    auth: {},
+  };
+  const store = mockStore([asyncActionMiddleware, thunk])(initialState);
+  const wrapper = shallow(
+    <Signup />,
+      { context: { store } },
     );
-    expect(wrapper.dive()).toMatchSnapshot();
+  const render = wrapper.dive();
+
+  beforeEach(() => {
+    store.clearActions();
+  });
+
+  test('renders as expected', () => {
+    expect(render).toMatchSnapshot();
+  });
+
+  test('Sign up action dispatched when clicked', () => {
+    const btn = render.find('Button');
+    btn.simulate('click');
+    store.dispatch(authActions.signup({ email: 'test@email.com', password: 'password' }));
+
+    const actions = store.getActions();
+    expect(actions).toEqual([{ type: 'SIGNUP__START' }]);
+  });
+
+  test('Email state updates when text change', () => {
+    const emailInput = render.find('Input').at(0);
+    const nextValue = 'some email';
+    emailInput.simulate('changeText', nextValue);
+    expect(render.state().email).toEqual(nextValue);
+  });
+
+  test('Password state updates when text change', () => {
+    const passwordInput = render.find('Input').at(1);
+    const nextValue = 'some password';
+    passwordInput.simulate('changeText', nextValue);
+    expect(render.state().password).toEqual(nextValue);
   });
 });
 

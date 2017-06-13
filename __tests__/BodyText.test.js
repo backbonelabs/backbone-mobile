@@ -3,8 +3,8 @@ import { shallow } from 'enzyme';
 import BodyText from '../app/components/BodyText';
 
 describe('BodyText Component', () => {
+  const wrapper = shallow(<BodyText />);
   test('renders as expected', () => {
-    const wrapper = shallow(<BodyText />);
     expect(wrapper).toMatchSnapshot();
   });
 });
