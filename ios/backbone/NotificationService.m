@@ -18,13 +18,16 @@
 RCT_EXPORT_MODULE();
 
 /**
- Send a slouch warning notification
+ Send a local push notification
+ @param type The type of the notification
  @param title The title to be displayed on the push notification
  @param message The message to be displayed on the push notification
  */
-RCT_EXPORT_METHOD(sendSlouchNotification:(NSString*)title message:(NSString*)message) {
+RCT_EXPORT_METHOD(sendNotification:(int)type title:(NSString*)title message:(NSString*)message) {
   UILocalNotification *localNotification = [[UILocalNotification alloc] init];
   
+  // The notification type is actually not yet being used on iOS
+  // and it's defined here to keep our native calls similar to the Android version
   if (localNotification) {
     localNotification.alertTitle = NSLocalizedString(title, nil);
     localNotification.alertBody = NSLocalizedString(message, nil);
@@ -35,9 +38,10 @@ RCT_EXPORT_METHOD(sendSlouchNotification:(NSString*)title message:(NSString*)mes
 }
 
 /**
- Clear the slouch notification from the notification center
+ Clear the local push notification from the notification center
  */
-RCT_EXPORT_METHOD(clearSlouchNotification) {
+RCT_EXPORT_METHOD(clearNotification:(int)type) {
+  // Clears out all notifications since there's still no way to filter them on iOS
   [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
   [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
 }

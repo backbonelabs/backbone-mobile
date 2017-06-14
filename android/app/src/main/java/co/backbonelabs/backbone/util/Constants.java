@@ -20,6 +20,7 @@ public class Constants {
         int DAILY_REMINDER = 103;
         int SINGLE_REMINDER = 104;
         int INFREQUENT_REMINDER = 105;
+        int SESSION_COMPLETED = 106;
     }
 
     public interface NOTIFICATION_INITIAL_DELAYS {

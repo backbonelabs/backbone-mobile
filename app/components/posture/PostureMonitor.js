@@ -41,6 +41,7 @@ const {
   sessionOperations,
   storageKeys,
   vibrationDurations,
+  notificationTypes,
 } = constants;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
@@ -294,6 +295,8 @@ class PostureMonitor extends Component {
       });
     }
 
+    AppState.addEventListener('change', this.handleAppStateChange);
+
     if (this.props.sessionState && this.props.sessionState.showSummary) {
       this.setState({ forceStoppedSession: true }, () => {
         this.statsHandler(this.props.sessionState.previousSessionEvent);
@@ -365,6 +368,8 @@ class PostureMonitor extends Component {
     if (this.backAndroidListener) {
       this.backAndroidListener.remove();
     }
+
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   /**
@@ -429,6 +434,14 @@ class PostureMonitor extends Component {
     });
   }
 
+  handleAppStateChange(currentAppState) {
+    if (currentAppState === 'active') {
+      // Remove the session completion notification from the tray
+      // once the app returns to the foreground state
+      NotificationService.clearNotification(notificationTypes.SESSION_COMPLETED);
+    }
+  }
+
   showAlertOnFailedConnection() {
     const { sessionState } = this.state;
 
@@ -477,7 +490,7 @@ class PostureMonitor extends Component {
     if (!shouldNotifySlouch && currentDistance < postureThreshold) {
       // Clear the slouch notification since it's no longer relevant
       // on good posture state
-      NotificationService.clearSlouchNotification();
+      NotificationService.clearNotification(notificationTypes.SLOUCH_WARNING);
       this.setState({ shouldNotifySlouch: true });
     }
   }
@@ -498,7 +511,8 @@ class PostureMonitor extends Component {
         && slouchNotificationEnabled && this.state.shouldNotifySlouch) {
         // Attempt to send out a slouch detection notification only on background mode,
         // the slouch notification is enabled, and it was previously on a good posture state
-        NotificationService.sendSlouchNotification('Bad posture detected',
+        NotificationService.sendNotification(notificationTypes.SLOUCH_WARNING,
+          'Bad posture detected',
           'Fix your posture to look and feel your best!');
 
         // Prevent sending out more notifications while still on the bad posture state
@@ -845,8 +859,16 @@ class PostureMonitor extends Component {
       ]);
     }
 
+    if (AppState.currentState === 'background') {
+      // Notify the user that the current session has ended
+      // only when the app is in the background
+      NotificationService.sendNotification(notificationTypes.SESSION_COMPLETED,
+        'Congratulations!',
+        'You have just finished a session!');
+    }
+
     // Clear the slouch notification when the current session has ended
-    NotificationService.clearSlouchNotification();
+    NotificationService.clearNotification(notificationTypes.SLOUCH_WARNING);
 
     if (!isiOS) {
       // Pop scene so if the Android back button is pressed while the modal
