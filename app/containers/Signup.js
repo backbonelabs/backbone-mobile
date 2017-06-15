@@ -52,7 +52,7 @@ class Signup extends Component {
       validEmail: false,
       emailPristine: true,
       passwordPristine: true,
-      imageHeight: 85 * heightDifference,
+      imageHeight: 110 * heightDifference,
       tabContainerHeight: 20 * heightDifference,
       headingFlex: 1,
       acceptedTOS: false,
@@ -121,7 +121,7 @@ class Signup extends Component {
   keyboardDidHide() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
-      imageHeight: 85 * heightDifference,
+      imageHeight: 110 * heightDifference,
       headingFlex: 1,
       tabContainerHeight: 20 * heightDifference,
     });
@@ -213,16 +213,18 @@ class Signup extends Component {
                   />
                 </View>
                 <View
-                  style={[
+                  style={
+                    [
                       { height: this.state.tabContainerHeight },
-                    styles.tabsContainer,
-                  ]}
+                      styles.tabsContainer,
+                    ]
+                  }
                 >
                   <TouchableOpacity
                     style={styles.tab}
                     onPress={() => this.props.navigator.pop()}
                   >
-                    <BodyText>Sign In</BodyText>
+                    <BodyText>Log In</BodyText>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.currentTab, styles.tab]}>
                     <BodyText style={styles._currentTabText}>
@@ -236,7 +238,7 @@ class Signup extends Component {
                   <Button
                     style={styles._fbBtn}
                     textStyle={styles._fbBtnText}
-                    text="SIGN UP WITH FACEBOOK"
+                    text="LOG IN WITH FACEBOOK"
                     fbBtn
                     onPress={() => null}
                   />

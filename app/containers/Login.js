@@ -52,7 +52,7 @@ class Login extends Component {
       validEmail: false,
       emailPristine: true,
       passwordPristine: true,
-      imageHeight: 85 * heightDifference,
+      imageHeight: 110 * heightDifference,
       tabContainerHeight: 20 * heightDifference,
       headingFlex: 1,
     };
@@ -136,7 +136,7 @@ class Login extends Component {
   keyboardDidHide() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
-      imageHeight: 85 * heightDifference,
+      imageHeight: 110 * heightDifference,
       headingFlex: 1,
       tabContainerHeight: 20 * heightDifference,
     });
@@ -197,7 +197,7 @@ class Login extends Component {
                 >
                   <TouchableOpacity style={[styles.currentTab, styles.tab]}>
                     <BodyText style={styles._currentTabText}>
-                        Sign In
+                        Log In
                     </BodyText>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -214,7 +214,7 @@ class Login extends Component {
                     <Button
                       style={styles._fbBtn}
                       textStyle={styles._fbBtnText}
-                      text="SIGN UP WITH FACEBOOK"
+                      text="LOG IN WITH FACEBOOK"
                       fbBtn
                       onPress={() => null}
                     />
@@ -288,7 +288,7 @@ class Login extends Component {
                 <View style={styles.CTAContainer}>
                   <Button
                     style={styles._CTAButton}
-                    text="SIGN IN"
+                    text="LOG IN"
                     primary
                     disabled={
                         inProgress ||

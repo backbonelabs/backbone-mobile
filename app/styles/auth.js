@@ -27,6 +27,7 @@ export default EStyleSheet.create({
   backboneLogo: {
     alignSelf: 'center',
     resizeMode: 'contain',
+    width: '100%',
   },
   heading: {
     backgroundColor: 'white',
@@ -123,10 +124,12 @@ export default EStyleSheet.create({
     fontSize: fixedResponsiveFontSize(12),
   },
   checkBox: {
-    marginRight: 10,
+    marginRight: 15,
+    alignSelf: 'center',
   },
   legalInnerContainer: {
     flexDirection: 'row',
+    height: 40 * heightDifference,
   },
   textContainer: {
     flexDirection: 'row',
