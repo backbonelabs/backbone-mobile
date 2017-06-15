@@ -848,6 +848,9 @@ class PostureMonitor extends Component {
         <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
     }));
 
+    // Clear the slouch notification when the current session has ended
+    NotificationService.clearNotification(notificationTypes.SLOUCH_WARNING);
+
     // Vibrate the motor to indicate the current session has ended
     // only if it ends naturally without forcing it to stop
     if (!this.state.forceStoppedSession && backboneVibration) {
@@ -864,11 +867,8 @@ class PostureMonitor extends Component {
       // only when the app is in the background
       NotificationService.sendNotification(notificationTypes.SESSION_COMPLETED,
         'Congratulations!',
-        'You have just finished a session!');
+        'You have just finished a posture session! See how you did.');
     }
-
-    // Clear the slouch notification when the current session has ended
-    NotificationService.clearNotification(notificationTypes.SLOUCH_WARNING);
 
     if (!isiOS) {
       // Pop scene so if the Android back button is pressed while the modal

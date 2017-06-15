@@ -251,7 +251,7 @@ RCT_EXPORT_METHOD(getSessionState) {
   
   // 'Start' and 'Resume' operations require additional parameters to be sent
   if (operation == SESSION_OPERATION_START) {
-    int sessionDurationInSecond = sessionDuration * 60; // Convert to second from minute
+    int sessionDurationInSecond = 17;//sessionDuration * 60; // Convert to second from minute
     
     uint8_t bytes[12];
     
