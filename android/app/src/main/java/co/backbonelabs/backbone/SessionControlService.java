@@ -514,6 +514,10 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     wm.putInt("slouchTime", slouchTime);
                     EventEmitter.send(reactContext, "SessionStatistics", wm);
 
+                    Intent stopIntent = new Intent(MainActivity.currentActivity, ForegroundService.class);
+                    stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
+                    MainActivity.currentActivity.startService(stopIntent);
+
                     if (!forceStoppedSession) {
                         errorCallBack = null;
 
