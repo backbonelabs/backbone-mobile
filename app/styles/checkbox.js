@@ -5,8 +5,8 @@ const { applyWidthDifference, heightDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   checkbox: {
-    width: applyWidthDifference(22),
-    height: 22 * heightDifference,
+    width: applyWidthDifference(25),
+    height: 25 * heightDifference,
     borderRadius: 3,
     borderWidth: 1.5,
     backgroundColor: 'white',
