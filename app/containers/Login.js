@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   LayoutAnimation,
   View,
   Image,
@@ -12,7 +11,7 @@ import {
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
-import constants from '../utils/constants';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import authActions from '../actions/auth';
@@ -49,9 +48,7 @@ class Login extends Component {
     this.state = {
       email: '',
       password: '',
-      validEmail: false,
-      emailPristine: true,
-      passwordPristine: true,
+      authError: false,
       imageHeight: 110 * heightDifference,
       tabContainerHeight: 20 * heightDifference,
       headingFlex: 1,
@@ -81,7 +78,8 @@ class Login extends Component {
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
       // Authentication error
-      Alert.alert('Authentication Error', nextProps.auth.errorMessage);
+      this.setState({ authError: true });
+      // Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
   }
 
@@ -91,23 +89,10 @@ class Login extends Component {
   }
 
   onEmailChange(email) {
-    const stateChanges = {
-      validEmail: constants.emailRegex.test(email),
-      email,
-    };
-
-    if (this.state.emailPristine) {
-      stateChanges.emailPristine = false;
-    }
-
-    this.setState(stateChanges);
+    this.setState({ email });
   }
 
   onPasswordChange(password) {
-    if (this.state.passwordPristine) {
-      return this.setState({ passwordPristine: false, password });
-    }
-
     return this.setState({ password });
   }
 
@@ -115,12 +100,18 @@ class Login extends Component {
     this.setState({
       email: '',
       password: '',
-      authError: '',
-      validEmail: false,
-      emailPristine: true,
-      passwordPristine: true,
+      authError: null,
     });
     this.props.navigator.push(routes.signup);
+  }
+
+  goToReset() {
+    this.setState({
+      email: '',
+      password: '',
+      authError: null,
+    });
+    this.props.navigator.push(routes.reset);
   }
 
   keyboardDidShow() {
@@ -143,30 +134,17 @@ class Login extends Component {
   }
 
   login() {
-    const { email, password } = this.state;
+    const { email, password, authError } = this.state;
+    if (authError) {
+      this.setState({ authError: false });
+    }
     this.props.dispatch(authActions.login({ email, password }));
   }
 
   render() {
     const { inProgress } = this.props.auth;
-    const {
-      email,
-      password,
-      validEmail,
-      emailPristine,
-      passwordPristine,
-    } = this.state;
-    const validPassword = password.length >= 8;
-    let passwordWarning;
-    let emailWarning;
-    if (!emailPristine) {
-      emailWarning = validEmail ? '' : 'Invalid Email';
-    }
-    if (!passwordPristine) {
-      passwordWarning = validPassword
-        ? ''
-        : 'Password must be at least 8 characters';
-    }
+    const { email, password, authError } = this.state;
+
     // The main View is composed in the TouchableWithoutFeedback to allow
     // the keyboard to be closed when tapping outside of an input field
     return (
@@ -227,11 +205,11 @@ class Login extends Component {
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: emailWarning ? '#E53935' : '#231F20',
+                        color: authError ? '#E53935' : '#231F20',
                         ...styles._inputField,
                       }}
                       iconStyle={{
-                        color: emailWarning ? '#E53935' : '#9E9E9E',
+                        color: authError ? '#E53935' : '#9E9E9E',
                       }}
                       handleRef={ref => (this.emailField = ref)}
                       value={this.state.email}
@@ -249,11 +227,11 @@ class Login extends Component {
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: passwordWarning ? '#E53935' : '#231F20',
+                        color: authError ? '#E53935' : '#231F20',
                         ...styles._inputField,
                       }}
                       iconStyle={{
-                        color: passwordWarning ? '#E53935' : '#9E9E9E',
+                        color: authError ? '#E53935' : '#9E9E9E',
                       }}
                       handleRef={ref => (this.passwordField = ref)}
                       value={this.state.password}
@@ -262,7 +240,7 @@ class Login extends Component {
                       keyboardType="default"
                       onChangeText={this.onPasswordChange}
                       onSubmitEditing={
-                          !email || !validEmail || (!password || !validPassword)
+                          !email || !password
                             ? null
                             : this.login
                         }
@@ -273,11 +251,22 @@ class Login extends Component {
                       returnKeyType="go"
                     />
                   </View>
-                  <BodyText style={styles._warning}>
-                    {passwordWarning || emailWarning}
-                  </BodyText>
+                  {
+                    authError ?
+                      <View style={styles.warningContainer}>
+                        <Icon
+                          name={'warning'}
+                          color={'#ED1C24'}
+                          size={20}
+                        />
+                        <BodyText style={styles._warning}>
+                          INCORRECT EMAIL OR PASSWORD
+                        </BodyText>
+                      </View>
+                      : null
+                    }
                   <TouchableOpacity
-                    onPress={() => this.props.navigator.push(routes.reset)}
+                    onPress={this.goToReset}
                     activeOpacity={0.4}
                   >
                     <SecondaryText style={styles._forgotPassword}>
@@ -290,12 +279,7 @@ class Login extends Component {
                     style={styles._CTAButton}
                     text="LOG IN"
                     primary
-                    disabled={
-                        inProgress ||
-                          (!email ||
-                            !validEmail ||
-                            (!password || !validPassword))
-                      }
+                    disabled={inProgress || (!email || !password)}
                     onPress={this.login}
                   />
                 </View>

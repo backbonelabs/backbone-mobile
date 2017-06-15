@@ -9,7 +9,6 @@ const {
 } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $checkboxColor: '$primaryColor',
   container: {
     flex: 1,
     alignItems: 'center',
@@ -162,10 +161,15 @@ export default EStyleSheet.create({
     marginTop: 25 * heightDifference,
     textDecorationLine: 'underline',
   },
+  warningContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10 * heightDifference,
+  },
   warning: {
     color: '$primaryColor',
     textAlign: 'center',
+    marginLeft: 5,
     fontSize: fixedResponsiveFontSize(14),
-    height: 25 * heightDifference,
   },
 });

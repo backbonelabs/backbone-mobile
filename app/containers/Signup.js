@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import Input from '../components/Input';
 import Spinner from '../components/Spinner';
 import authActions from '../actions/auth';
@@ -49,9 +50,8 @@ class Signup extends Component {
     this.state = {
       email: '',
       password: '',
-      validEmail: false,
-      emailPristine: true,
-      passwordPristine: true,
+      emailWarning: '',
+      passwordWarning: '',
       imageHeight: 110 * heightDifference,
       tabContainerHeight: 20 * heightDifference,
       headingFlex: 1,
@@ -84,23 +84,10 @@ class Signup extends Component {
   }
 
   onEmailChange(email) {
-    const stateChanges = {
-      validEmail: constants.emailRegex.test(email),
-      email,
-    };
-
-    if (this.state.emailPristine) {
-      stateChanges.emailPristine = false;
-    }
-
-    this.setState(stateChanges);
+    this.setState({ email });
   }
 
   onPasswordChange(password) {
-    if (this.state.passwordPristine) {
-      return this.setState({ passwordPristine: false, password });
-    }
-
     return this.setState({ password });
   }
 
@@ -129,6 +116,22 @@ class Signup extends Component {
 
   signup() {
     const { email, password } = this.state;
+    const validPassword = password.length >= 8;
+    const validEmail = constants.emailRegex.test(email);
+
+    if (!validEmail) {
+      return this.setState({
+        passwordWarning: '',
+        emailWarning: 'INVALID EMAIL',
+      });
+    }
+
+    if (!validPassword) {
+      return this.setState({
+        emailWarning: '',
+        passwordWarning: 'PASSWORD MUST BE AT LEAST 8 CHARACTERS',
+      });
+    }
     this.props.dispatch(authActions.signup({ email, password }));
   }
 
@@ -176,22 +179,10 @@ class Signup extends Component {
     const {
       email,
       password,
-      validEmail,
-      emailPristine,
-      passwordPristine,
+      emailWarning,
+      passwordWarning,
       acceptedTOS,
     } = this.state;
-    const validPassword = password.length >= 8;
-    let passwordWarning;
-    let emailWarning;
-    if (!emailPristine) {
-      emailWarning = validEmail ? '' : 'Invalid Email';
-    }
-    if (!passwordPristine) {
-      passwordWarning = validPassword
-        ? ''
-        : 'Password must be at least 8 characters';
-    }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -290,9 +281,20 @@ class Signup extends Component {
                       iconLeftName="lock"
                     />
                   </View>
-                  <BodyText style={styles._warning}>
-                    {passwordWarning || emailWarning}
-                  </BodyText>
+                  {
+                    (emailWarning || passwordWarning) ?
+                      <View style={styles.warningContainer}>
+                        <Icon
+                          name={'warning'}
+                          color={'#ED1C24'}
+                          size={20}
+                        />
+                        <BodyText style={styles._warning}>
+                          {passwordWarning || emailWarning}
+                        </BodyText>
+                      </View>
+                      : null
+                    }
                   <View style={styles.legalInnerContainer}>
                     <CheckBox
                       style={styles._checkBox}
@@ -330,9 +332,7 @@ class Signup extends Component {
                     disabled={
                         this.props.inProgress ||
                           !email ||
-                          !validEmail ||
                           !password ||
-                          !validPassword ||
                           !acceptedTOS
                       }
                     onPress={this.signup}
