@@ -85,13 +85,29 @@ public class NotificationService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public static void sendNotification(int id, String title, String text) {
-        NotificationCompat.Builder builder = createBuilderTemplate(context)
-                .setContentTitle(title)
-                .setContentText(text);
+        // Use BigText style to display more texts when needed
+        if (id == Constants.NOTIFICATION_TYPES.SESSION_COMPLETED) {
+            NotificationCompat.Builder builder = createBuilderTemplate(context);
 
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(id, builder.build());
+            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+            bigTextStyle.setBigContentTitle(title);
+            bigTextStyle.bigText(text);
+
+            builder.setStyle(bigTextStyle);
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(id, builder.build());
+        }
+        else {
+            NotificationCompat.Builder builder = createBuilderTemplate(context)
+                    .setContentTitle(title)
+                    .setContentText(text);
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(id, builder.build());
+        }
     }
 
     /**

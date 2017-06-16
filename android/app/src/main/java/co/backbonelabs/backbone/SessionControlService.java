@@ -101,6 +101,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 Intent stopIntent = new Intent(activity, ForegroundService.class);
                 stopIntent.setAction(Constants.ACTIONS.STOP_POSTURE_FOREGROUND_SERVICE);
                 activity.startService(stopIntent);
+
+                // Clear the session completion notification if exists
+                NotificationService.clearNotification(Constants.NOTIFICATION_TYPES.SESSION_COMPLETED);
             }
         });
     }
