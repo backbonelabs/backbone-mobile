@@ -11,6 +11,11 @@
 
 @implementation NotificationService
 
++ (void)clearNotifications {
+  [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 1];
+  [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+}
+
 - (id)init {
   return self;
 }
