@@ -606,7 +606,18 @@ class Application extends Component {
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
-                onPress={() => !isSameRoute && this.navigator.push(routes[value.routeName])}
+                onPress={() => {
+                  if (!isSameRoute) {
+                    // Reset the navigator stack if not on the posture dashboard so
+                    // the nav stack won't continue to expand.
+                    if (route.name === routes.postureDashboard.name) {
+                      this.navigator.push(routes[value.routeName]);
+                    } else {
+                      this.navigator.resetTo(routes[value.routeName]);
+                    }
+                  }
+                }
+              }
               >
                 <Image source={imageSource} style={styles.tabBarImage} />
                 <SecondaryText style={{ color: tabBarTextColor }}>{ value.name }</SecondaryText>
