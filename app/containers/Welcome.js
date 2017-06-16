@@ -1,8 +1,13 @@
 import React, { PropTypes } from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   View,
   Image,
+  TouchableOpacity,
 } from 'react-native';
+import {
+  LoginManager,
+} from 'react-native-fbsdk';
 import { connect } from 'react-redux';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
@@ -10,6 +15,9 @@ import Button from '../components/Button';
 import logo from '../images/logo.png';
 import styles from '../styles/welcome';
 import routes from '../routes';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { applyWidthDifference } = relativeDimensions;
 
 const Welcome = props => (
   <View style={styles.container}>
@@ -36,6 +44,23 @@ const Welcome = props => (
           text="Sign Up"
         />
       </View>
+    </View>
+    <View>
+      <TouchableOpacity
+        style={styles._fbButton}
+        onPress={() => LoginManager
+          .logInWithReadPermissions(['public_profile', 'email'])
+          .then((result) => {
+            if (result && !result.isCancelled) {
+              props.navigator.push(routes.login);
+            }
+          })
+        }
+      >
+        <Icon name="facebook-square" size={applyWidthDifference(35)} color="#FFF" />
+        <BodyText style={styles._fbButtonText}>Continue with Facebook</BodyText>
+        <View />
+      </TouchableOpacity>
     </View>
   </View>
 );

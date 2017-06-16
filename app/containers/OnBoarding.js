@@ -34,6 +34,9 @@ class OnBoarding extends Component {
       _id: PropTypes.string,
       hasOnboarded: PropTypes.bool,
       nickname: PropTypes.string,
+      firstName: PropTypes.string,
+      gender: PropTypes.number,
+      birthdate: PropTypes.string,
     }),
     app: PropTypes.shape({
       nextStep: PropTypes.bool,
@@ -41,16 +44,17 @@ class OnBoarding extends Component {
     isUpdating: PropTypes.bool,
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     autobind(this);
+    const { nickname, gender } = this.props.user;
     this.state = {
       step: 0,
       valueX: 0,
       animatedValues: new Animated.ValueXY(),
-      nickname: null,
+      nickname: `${nickname}`,
       birthdate: null,
-      gender: null,
+      gender,
       height: {
         value: null,
         unit: null,

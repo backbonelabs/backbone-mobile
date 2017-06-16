@@ -97,6 +97,7 @@ def RELEASE_STORE_FILE = localProperties.getProperty("RELEASE_STORE_FILE")
 def RELEASE_KEY_ALIAS = localProperties.getProperty("RELEASE_KEY_ALIAS")
 def RELEASE_STORE_PASSWORD = localProperties.getProperty("RELEASE_STORE_PASSWORD")
 def RELEASE_KEY_PASSWORD = localProperties.getProperty("RELEASE_KEY_PASSWORD")
+def FACEBOOK_APP_ID = localProperties.getProperty("FACEBOOK_APP_ID")
 
 android {
     compileSdkVersion 24
@@ -135,6 +136,7 @@ android {
             buildConfigField "String", "MIXPANEL_TOKEN", MIXPANEL_TOKEN
             buildConfigField "String", "WEB_SERVER_URL", WEB_SERVER_URL
             buildConfigField "String", "BUGSNAG_API_KEY", BUGSNAG_API_KEY
+            resValue "string", "FACEBOOK_APP_ID", FACEBOOK_APP_ID
         }
         release {
             buildConfigField "String", "API_SERVER_URL", '"https://api.gobackbone.com"'
@@ -142,6 +144,7 @@ android {
             buildConfigField "String", "MIXPANEL_TOKEN", MIXPANEL_TOKEN
             buildConfigField "String", "WEB_SERVER_URL", '"https://gobackbone.com"'
             buildConfigField "String", "BUGSNAG_API_KEY", BUGSNAG_API_KEY
+            resValue "string", "FACEBOOK_APP_ID", FACEBOOK_APP_ID
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
@@ -163,6 +166,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fbsdk')
     compile project(':bugsnag-react-native')
     compile project(':react-native-fs')
     compile project(':react-native-material-kit')

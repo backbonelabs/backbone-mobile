@@ -8,7 +8,10 @@ target 'Backbone' do
 
   # Pods for Backbone
   pod 'Mixpanel'
-
+  pod 'FBSDKCoreKit'
+  pod 'FBSDKLoginKit'
+  pod 'FBSDKShareKit'
+  
   target 'BackboneTests' do
     inherit! :search_paths
     # Pods for BackboneTests

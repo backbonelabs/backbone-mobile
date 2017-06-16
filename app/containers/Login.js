@@ -8,6 +8,12 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from 'react-native';
+import {
+  AccessToken as FBAccessToken,
+  LoginManager,
+  GraphRequest,
+  GraphRequestManager,
+} from 'react-native-fbsdk';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import constants from '../utils/constants';
@@ -50,6 +56,24 @@ class Login extends Component {
       passwordPristine: true,
     };
     this.autoFocus = true;
+    this.isFacebookLogin = false;
+  }
+
+  componentWillMount() {
+    // Check if a valid facebook access token is available if the user logs into
+    // the app using their facebook account.
+    FBAccessToken.getCurrentAccessToken()
+      .then((data) => {
+        if (data) {
+          this.isFacebookLogin = true;
+          this.getFBUserInfo(data);
+        }
+      }
+    )
+    .catch(() => {
+      Alert.alert('Unable to authenticate with Facebook. Try again later.');
+      this.props.navigator.pop();
+    });
   }
 
   componentDidMount() {
@@ -58,6 +82,7 @@ class Login extends Component {
 
   componentWillReceiveProps(nextProps) {
     const newAccessToken = nextProps.auth.accessToken;
+
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
@@ -67,6 +92,11 @@ class Login extends Component {
         this.props.navigator.resetTo(routes.onboarding);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
+      if (this.isFacebookLogin) {
+        // Logs out the user of Facebook and returns to welcome screen
+        LoginManager.logOut();
+        this.props.navigator.pop();
+      }
       // Authentication error
       Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
@@ -91,6 +121,38 @@ class Login extends Component {
     }
 
     return this.setState({ password });
+  }
+
+  getFBUserInfo(fbAccessToken) {
+    const _responseInfoCallback = (error, result) => {
+      if (error) {
+        Alert.alert('Please try again.');
+      } else {
+        // New user object containing request facebook graph fields and login
+        // access tokens from facebook
+        const user = Object.assign(
+          {},
+          result,
+          fbAccessToken,
+          { authMethod: constants.authMethods.FACEBOOK },
+        );
+        this.props.dispatch(authActions.login(user));
+      }
+    };
+
+    const infoRequest = new GraphRequest(
+      '/me',
+      {
+        parameters: {
+          fields: {
+            string: 'email,first_name,last_name,gender,verified',
+          },
+        },
+      },
+      _responseInfoCallback,
+    );
+
+    new GraphRequestManager().addRequest(infoRequest).start();
   }
 
   login() {

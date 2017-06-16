@@ -1,4 +1,5 @@
 import { NativeModules } from 'react-native';
+import { LoginManager } from 'react-native-fbsdk';
 import {
   LOGIN,
   SIGNUP,
@@ -13,7 +14,7 @@ import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
 const { Environment } = NativeModules;
-const { storageKeys, errorMessages } = constants;
+const { storageKeys, errorMessages, authMethods } = constants;
 
 const handleNetworkError = mixpanelEvent => {
   Mixpanel.track(`${mixpanelEvent}-serverError`);
@@ -22,12 +23,15 @@ const handleNetworkError = mixpanelEvent => {
 
 export default {
   login(user) {
+    const signupEventName = 'signup';
     const loginEventName = 'login';
+    let authURL = `${Environment.API_SERVER_URL}/auth/`;
+    authURL += (user.authMethod === authMethods.FACEBOOK) ? 'facebook' : 'login';
 
     return {
       type: LOGIN,
       payload: () => Fetcher.post({
-        url: `${Environment.API_SERVER_URL}/auth/login`,
+        url: authURL,
         body: JSON.stringify(user),
       })
         .catch(() => handleNetworkError(loginEventName))
@@ -42,16 +46,18 @@ export default {
             throw new Error(body.error);
           } else {
             const { accessToken, ...userObj } = body;
-
             // Identify user for Bugsnag
             Bugsnag.setUser(userObj._id, userObj.nickname, userObj.email);
 
             // Identify user for Mixpanel tracking
             Mixpanel.identify(userObj._id);
-
             // Update user profile on Mixpanel
             Mixpanel.setUserProperties(userObj);
-            Mixpanel.track(`${loginEventName}-success`);
+            if (userObj.isNew) {
+              Mixpanel.track(`${signupEventName}-success`);
+            } else {
+              Mixpanel.track(`${loginEventName}-success`);
+            }
 
             // Store access token and user in local storage
             SensitiveInfo.setItem(storageKeys.ACCESS_TOKEN, accessToken);
@@ -137,6 +143,9 @@ export default {
   signOut() {
     Bugsnag.clearUser();
     Mixpanel.track('signOut');
+
+    // Signs out Facebook users as well
+    LoginManager.logOut();
 
     SensitiveInfo.deleteItem(storageKeys.ACCESS_TOKEN);
     SensitiveInfo.deleteItem(storageKeys.USER);
