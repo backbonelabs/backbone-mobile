@@ -8,6 +8,8 @@ target 'Backbone' do
 
   # Pods for Backbone
   pod 'Mixpanel'
+  pod 'AWSCognito'
+  pod 'AWSKinesis'
 
   target 'BackboneTests' do
     inherit! :search_paths

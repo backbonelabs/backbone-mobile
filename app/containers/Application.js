@@ -47,6 +47,7 @@ const {
   Environment,
   SessionControlService,
   DeviceInformationService,
+  UserService,
 } = NativeModules;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
@@ -368,11 +369,16 @@ class Application extends Component {
                   payload: user,
                 });
 
+                const id = user._id;
+
+                // Store user id on the native side
+                UserService.setUserId(id);
+
                 // Identify user for Bugsnag
-                Bugsnag.setUser(user._id, user.nickname, user.email);
+                Bugsnag.setUser(id, user.nickname, user.email);
 
                 // Identify user for Mixpanel
-                Mixpanel.identify(user._id);
+                Mixpanel.identify(id);
 
                 if (user.hasOnboarded) {
                   // User completed onboarding

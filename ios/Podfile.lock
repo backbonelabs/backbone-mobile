@@ -1,14 +1,24 @@
 PODS:
+  - AWSCognito (2.5.6):
+    - AWSCore (= 2.5.6)
+  - AWSCore (2.5.6)
+  - AWSKinesis (2.5.6):
+    - AWSCore (= 2.5.6)
   - Mixpanel (3.0.8):
     - Mixpanel/Mixpanel (= 3.0.8)
   - Mixpanel/Mixpanel (3.0.8)
 
 DEPENDENCIES:
+  - AWSCognito
+  - AWSKinesis
   - Mixpanel
 
 SPEC CHECKSUMS:
+  AWSCognito: 18edcf80780d45229371dc954c77c825c617f9c4
+  AWSCore: 47109d026cdbc1272624caa73114fbdd2ba3ad66
+  AWSKinesis: fcd6511b82be0b48c423838de52519e158ba46eb
   Mixpanel: 550a23d5dd95f8e9cda21e697661ffddbc8da46b
 
-PODFILE CHECKSUM: 4c137f7b98316ab4d541a1b3fb02f3cbcfd9be85
+PODFILE CHECKSUM: bdbd7a22b2cc0156b6967f496ab6ded18243ad73
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.1

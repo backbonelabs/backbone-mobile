@@ -270,4 +270,14 @@ public class Constants {
     public static final String NOTIFICATION_PARAMETER_SCHEDULED_MINUTE = "scheduledMinute";
     public static final String NOTIFICATION_PARAMETER_SCHEDULED_SECOND = "scheduledSecond";
     public static final String NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP = "scheduledTimestamp";
+
+    public static final String POSTURE_SESSION_PREFERENCES = "co.backbonelabs.backbone.POSTURE_SESSION_PREFERENCES";
+    public static final String POSTURE_SESSION_PREFERENCE_SESSION_ID = "sessionId";
+    public static final String POSTURE_SESSION_PREFERENCE_START_TIMESTAMP = "startTimestamp";
+
+    public static final String AMAZON_COGNITO_IDENTITY_POOL = "us-west-2:70f7284b-3235-4b4d-82d5-bab9df3d80f5";
+    public interface FIREHOSE_STREAMS {
+        String POSTURE_SESSION_STREAM = "PostureSessionAccelerometerDeliveryStream";
+        String POSTURE_SESSION = "PostureSessionDeliveryStream";
+    }
 }

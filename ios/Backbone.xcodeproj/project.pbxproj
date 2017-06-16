@@ -31,6 +31,7 @@
 		6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */; };
 		662BD3491DFC92E900CF71D1 /* Debug.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */; };
 		662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */; };
+		66351EB31EE098B200383F23 /* UserService.m in Sources */ = {isa = PBXBuildFile; fileRef = 66351EB21EE098B200383F23 /* UserService.m */; };
 		665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */; };
 		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
@@ -332,6 +333,8 @@
 		6625BB8A1DB1E5E9009B4941 /* MixpanelModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MixpanelModule.m; path = backbone/MixpanelModule.m; sourceTree = "<group>"; };
 		662BD3481DFC92E900CF71D1 /* Debug.local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.local.xcconfig; path = backbone/config/Debug.local.xcconfig; sourceTree = "<group>"; };
 		662BD36E1DFC933F00CF71D1 /* Release.local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Release.local.xcconfig; path = backbone/config/Release.local.xcconfig; sourceTree = "<group>"; };
+		66351E8E1EE093AE00383F23 /* UserService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UserService.h; path = backbone/UserService.h; sourceTree = "<group>"; };
+		66351EB21EE098B200383F23 /* UserService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserService.m; path = backbone/UserService.m; sourceTree = "<group>"; };
 		665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		667641251D63B8F900D45761 /* Environment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Environment.h; path = backbone/Environment.h; sourceTree = "<group>"; };
 		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
@@ -521,6 +524,8 @@
 				699262611DE58A28003FBBC7 /* SessionControlService.m */,
 				690301FC1EA7A68C00A59FD4 /* VibrationMotorService.h */,
 				690301FD1EA7A68D00A59FD4 /* VibrationMotorService.m */,
+				66351E8E1EE093AE00383F23 /* UserService.h */,
+				66351EB21EE098B200383F23 /* UserService.m */,
 			);
 			name = Backbone;
 			sourceTree = "<group>";
@@ -1265,7 +1270,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		C759A8355A6451A7CFEF9959 /* [CP] Check Pods Manifest.lock */ = {
@@ -1280,7 +1285,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1300,6 +1305,7 @@
 			files = (
 				699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */,
 				667641271D63B90800D45761 /* Environment.m in Sources */,
+				66351EB31EE098B200383F23 /* UserService.m in Sources */,
 				69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				690301FE1EA7A68D00A59FD4 /* VibrationMotorService.m in Sources */,
