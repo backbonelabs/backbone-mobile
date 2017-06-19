@@ -9,7 +9,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '$secondaryColor',
     width: applyWidthDifference(150),
-    height: 50 * heightDifference,
+    height: applyWidthDifference(50),
   },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',
@@ -20,7 +20,6 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#3b5998',
     width: '100%',
-    height: 65 * heightDifference,
   },
   secondaryActive: {
     borderColor: '$activeBorderColor',

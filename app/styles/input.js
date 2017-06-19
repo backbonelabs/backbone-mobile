@@ -4,7 +4,6 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const {
   applyWidthDifference,
-  heightDifference,
   fixedResponsiveFontSize,
 } = relativeDimensions;
 
@@ -25,9 +24,9 @@ export default EStyleSheet.create({
         shadowRadius: 3,
         shadowOpacity: 0.15,
       },
-      // android: {
-      //   add android styles here
-      // },
+      android: {
+        elevation: 2,
+      },
     }),
     borderRadius: 3,
   },
@@ -36,9 +35,9 @@ export default EStyleSheet.create({
     fontFamily: '$primaryFont',
     fontSize: fixedResponsiveFontSize(16),
     width: applyWidthDifference(235),
-    height: 50 * heightDifference,
+    height: applyWidthDifference(50),
     paddingHorizontal: applyWidthDifference(45),
-    paddingVertical: 10 * heightDifference,
+    paddingVertical: applyWidthDifference(10),
     borderColor: '$secondaryColor',
     borderRadius: 3,
   },

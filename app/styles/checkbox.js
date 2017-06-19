@@ -1,12 +1,12 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   checkbox: {
     width: applyWidthDifference(25),
-    height: 25 * heightDifference,
+    height: applyWidthDifference(25),
     borderRadius: 3,
     borderWidth: 1.5,
     backgroundColor: 'white',
