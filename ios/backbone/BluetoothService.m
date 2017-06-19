@@ -428,6 +428,24 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
   }
 }
 
+- (void)writeToCharacteristic:(CBUUID *)uuid data:(NSData *)data {
+  if ([self isDeviceReady] && [self getCharacteristicByUUID:uuid]) {
+    [_currentDevice writeValue:data forCharacteristic:[self getCharacteristicByUUID:uuid] type:CBCharacteristicWriteWithResponse];
+  }
+}
+
+- (void)readCharacteristic:(CBUUID *)uuid {
+  if ([self isDeviceReady] && [self getCharacteristicByUUID:uuid]) {
+    [_currentDevice readValueForCharacteristic:[self getCharacteristicByUUID:uuid]];
+  }
+}
+
+- (void)toggleCharacteristicNotification:(CBUUID *)uuid state:(BOOL)state {
+  if ([self isDeviceReady] && [self getCharacteristicByUUID:uuid]) {
+    [_currentDevice setNotifyValue:state forCharacteristic:[self getCharacteristicByUUID:uuid]];
+  }
+}
+
 // Handler for application termination
 - (void)applicationWillTerminate:(NSNotification *)notification {
   DLog(@"Application Will Terminate");

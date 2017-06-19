@@ -111,7 +111,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
 
   DLog(@"EnterBootLoad");
 
-  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ENTER_BOOTLOADER_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+  [BluetoothServiceInstance writeToCharacteristic:ENTER_BOOTLOADER_CHARACTERISTIC_UUID data:data];
 }
 
 - (void)exitBootLoaderMode {
@@ -141,7 +141,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
         currentIndex = 0;
         [_commandArray removeAllObjects];
 
-        [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID]];
+        [BluetoothServiceInstance toggleCharacteristicNotification:BOOTLOADER_CHARACTERISTIC_UUID state:YES];
 
         if ([[_fileHeaderDictionary objectForKey:CHECKSUM_TYPE] integerValue]) {
           _checkSumType = CRC_16;
@@ -174,7 +174,7 @@ RCT_EXPORT_METHOD(setHasPendingUpdate:(BOOL)state) {
     }
 
     DLog(@"Write Command %x %@", commandCode, BluetoothServiceInstance.currentDevice);
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:BOOTLOADER_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    [BluetoothServiceInstance writeToCharacteristic:BOOTLOADER_CHARACTERISTIC_UUID data:data];
   }
 }
 
