@@ -14,6 +14,7 @@
   int currentVibrationIndex;
   NSArray *_currentVibrationCommands;
   int nextVibrationDelay;
+  BOOL hasPendingOperation;
 }
 
 + (VibrationMotorService *)getVibrationMotorService;
