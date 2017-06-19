@@ -3,7 +3,7 @@ import { View, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/checkbox';
 
-class BBCheckbox extends Component {
+class Checkbox extends Component {
   static propTypes = {
     checked: PropTypes.bool,
     onCheckedChange: PropTypes.func,
@@ -67,4 +67,4 @@ class BBCheckbox extends Component {
   }
 }
 
-export default BBCheckbox;
+export default Checkbox;
