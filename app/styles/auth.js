@@ -4,7 +4,6 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const {
   applyWidthDifference,
-  heightDifference,
   fixedResponsiveFontSize,
 } = relativeDimensions;
 
@@ -41,14 +40,13 @@ export default EStyleSheet.create({
         shadowRadius: 4,
         shadowOpacity: 0.15,
       },
-      // android: {
-      //   add android styles here
-      // },
+      android: {
+        elevation: 2,
+      },
     }),
   },
   tabsContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
   },
   tab: {
     flex: 1,
@@ -64,12 +62,12 @@ export default EStyleSheet.create({
     color: '$secondaryColor',
   },
   headingText: {
-    paddingTop: 15 * heightDifference,
+    paddingTop: applyWidthDifference(15),
   },
   subHeadingText: {
     textAlign: 'center',
     alignItems: 'center',
-    paddingVertical: 15 * heightDifference,
+    paddingVertical: applyWidthDifference(15),
     fontSize: fixedResponsiveFontSize(14),
     width: '85%',
   },
@@ -78,7 +76,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   inputFieldContainer: {
-    marginBottom: 15 * heightDifference,
+    marginBottom: applyWidthDifference(15),
   },
   inputsContainer: {
     flex: 5,
@@ -91,7 +89,7 @@ export default EStyleSheet.create({
   fbBtn: {
     width: '85%',
     borderRadius: 3,
-    height: 50 * heightDifference,
+    height: applyWidthDifference(50),
   },
   fbBtnText: {
     fontSize: fixedResponsiveFontSize(16),
@@ -100,17 +98,12 @@ export default EStyleSheet.create({
   breakContainer: {
     flexDirection: 'row',
     width: '85%',
-    marginBottom: 10 * heightDifference,
-    marginTop: 10 * heightDifference,
+    marginBottom: applyWidthDifference(10),
+    marginTop: applyWidthDifference(10),
     alignItems: 'center',
     justifyContent: 'center',
   },
-  leftSideBreak: {
-    borderTopWidth: 1,
-    flex: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  rightSideBreak: {
+  breakLine: {
     borderTopWidth: 1,
     flex: 1,
     borderTopColor: '#E0E0E0',
@@ -124,17 +117,15 @@ export default EStyleSheet.create({
   },
   checkBox: {
     marginRight: 15,
-    alignSelf: 'center',
   },
   legalInnerContainer: {
     flexDirection: 'row',
-    height: 40 * heightDifference,
+    alignItems: 'center',
   },
   textContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: applyWidthDifference(250),
-    height: 20 * heightDifference,
   },
   legalLink: {
     textDecorationLine: 'underline',
@@ -149,22 +140,22 @@ export default EStyleSheet.create({
   CTAResetBtn: {
     alignSelf: 'center',
     borderRadius: 3,
-    marginTop: 10 * heightDifference,
+    marginTop: applyWidthDifference(10),
     width: '85%',
   },
   forgotPassword: {
     textAlign: 'center',
-    marginTop: 5 * heightDifference,
+    marginTop: applyWidthDifference(5),
     textDecorationLine: 'underline',
   },
   cancel: {
-    marginTop: 25 * heightDifference,
+    marginTop: applyWidthDifference(25),
     textDecorationLine: 'underline',
   },
   warningContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10 * heightDifference,
+    marginBottom: applyWidthDifference(10),
   },
   warning: {
     color: '$primaryColor',
