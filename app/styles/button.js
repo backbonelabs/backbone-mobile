@@ -2,7 +2,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   button: {
