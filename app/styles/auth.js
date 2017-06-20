@@ -133,6 +133,7 @@ export default EStyleSheet.create({
   CTAContainer: {
     flex: 1,
     justifyContent: 'flex-end',
+    zIndex: 1,
   },
   CTAButton: {
     width: '100%',
