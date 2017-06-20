@@ -72,7 +72,7 @@ const SensorSettings = props => (
       {props.isConnected &&
         <View style={styles.batteryInfo}>
           <SecondaryText style={styles._deviceInfoText}>
-            Battery Life: { props.device.batteryLevel || '--' }%
+            Battery Life: { props.device.batteryLevel || '--' }%{' '}
           </SecondaryText>
           {getBatteryIcon(props.device.batteryLevel)}
         </View>
