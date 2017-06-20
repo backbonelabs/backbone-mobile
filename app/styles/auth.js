@@ -6,13 +6,18 @@ const {
   applyWidthDifference,
   fixedResponsiveFontSize,
 } = relativeDimensions;
-
+const containerStyles = {
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#FAFAFA',
+};
 export default EStyleSheet.create({
   container: {
+    ...containerStyles,
+  },
+  resetPasswordContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FAFAFA',
+    ...containerStyles,
   },
   innerContainer: {
     alignItems: 'center',
@@ -133,7 +138,6 @@ export default EStyleSheet.create({
   CTAContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    zIndex: 1,
   },
   CTAButton: {
     width: '100%',
