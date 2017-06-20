@@ -4,7 +4,7 @@ import {
   AppState,
   View,
   Image,
-  // StatusBar,
+  StatusBar,
   Navigator,
   NativeModules,
   NativeEventEmitter,
@@ -33,7 +33,7 @@ import BodyText from '../components/BodyText';
 import Banner from '../components/Banner';
 import routes from '../routes';
 import styles from '../styles/application';
-// import theme from '../styles/theme';
+import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Bugsnag from '../utils/Bugsnag';
@@ -64,6 +64,11 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
 });
 
 const isiOS = Platform.OS === 'ios';
+
+const statusBarProps = {
+  barStyle: 'dark-content',
+  backgroundColor: 'white',
+};
 
 class Application extends Component {
   static propTypes = {
@@ -671,26 +676,19 @@ class Application extends Component {
   }
 
   render() {
-    // const statusBarProps = {};
-    // if (isiOS) {
-    //   statusBarProps.barStyle = 'light-content';
-    // } else {
-    //   statusBarProps.backgroundColor = theme.primaryColor;
-    // }
-
     return (
       <View style={{ flex: 1 }}>
-        {/* <StatusBar {...statusBarProps} />
+        <StatusBar {...statusBarProps} />
         {isiOS &&
           // The background color cannot be set for the status bar in iOS, so
           // a static View is overlayed on top of the status bar for all scenes
           <View
             style={{
-              backgroundColor: theme.primaryColor,
+              backgroundColor: 'white',
               height: theme.statusBarHeight,
             }}
           />
-        }*/}
+        }
         {this.state.initializing ? <Spinner /> : (
           <Navigator
             configureScene={this.configureScene}
