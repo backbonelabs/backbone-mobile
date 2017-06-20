@@ -56,8 +56,23 @@ class Button extends Component {
       buttonType = (
         <TouchableHighlight
           activeOpacity={0.4}
-          style={this.props.fbBtn ? fbBtnStyles : buttonStyles}
-          underlayColor={this.props.fbBtn ? '#8b9dc3' : '#FB8C00'}
+          style={buttonStyles}
+          underlayColor={'#FB8C00'}
+          onHideUnderlay={this._onHideUnderlay}
+          onShowUnderlay={this._onShowUnderlay}
+          onPress={this.props.disabled ? undefined : this.props.onPress}
+        >
+          <View>
+            <BodyText style={textStyles}>{this.props.text}</BodyText>
+          </View>
+        </TouchableHighlight>
+      );
+    } else if (this.props.fbBtn) {
+      buttonType = (
+        <TouchableHighlight
+          activeOpacity={0.4}
+          style={fbBtnStyles}
+          underlayColor={'#8b9dc3'}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
