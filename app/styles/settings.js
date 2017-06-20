@@ -52,10 +52,11 @@ export default EStyleSheet.create({
     fontSize: fixedResponsiveFontSize(13),
     color: '$primaryFontColor',
   },
-  batteryIcon: {
-    width: applyWidthDifference(24),
-    height: applyWidthDifference(13),
-    resizeMode: 'contain',
+  batteryIconGreen: {
+    color: '#32CD32',
+  },
+  batteryIconRed: {
+    color: '#FF0000',
   },
   settingsHeader: {
     ...bottomBorder,
