@@ -71,7 +71,6 @@ class Reset extends Component {
   }
 
   sendPasswordResetRequest() {
-    this.setState({ showIcon: false });
     this.props.dispatch(authActions.reset({ email: this.state.email }));
   }
 
