@@ -6,18 +6,12 @@ const {
   applyWidthDifference,
   fixedResponsiveFontSize,
 } = relativeDimensions;
-const containerStyles = {
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundColor: '#FAFAFA',
-};
+
 export default EStyleSheet.create({
   container: {
-    ...containerStyles,
-  },
-  resetPasswordContainer: {
-    flex: 1,
-    ...containerStyles,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FAFAFA',
   },
   innerContainer: {
     alignItems: 'center',
@@ -52,6 +46,7 @@ export default EStyleSheet.create({
   },
   tabsContainer: {
     flexDirection: 'row',
+    height: applyWidthDifference(40),
   },
   tab: {
     flex: 1,
