@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Keyboard,
   Text,
-  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -22,8 +23,12 @@ import SecondaryText from '../components/SecondaryText';
 import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
+import theme from '../styles/theme';
 
-const { heightDifference } = relativeDimensions;
+const { applyWidthDifference, height } = relativeDimensions;
+// Android statusbar height
+const statusBarHeightDroid = StatusBar.currentHeight;
+const isiOS = Platform.OS === 'ios';
 
 class Login extends Component {
   static propTypes = {
@@ -49,19 +54,22 @@ class Login extends Component {
       email: '',
       password: '',
       authError: false,
-      imageHeight: 110 * heightDifference,
-      tabContainerHeight: 20 * heightDifference,
+      imageHeight: applyWidthDifference(110),
       headingFlex: 1,
+      containerHeight: 0,
     };
   }
 
   componentWillMount() {
-    this.keyboardDidShowListener = Keyboard.addListener(
-      'keyboardWillShow',
+    const kbShow = isiOS ? 'keyboardWillShow' : 'keyboardDidShow';
+    const kbHide = isiOS ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    this.keyboardWillShowListener = Keyboard.addListener(
+      kbShow,
       this.keyboardDidShow
     );
-    this.keyboardDidHideListener = Keyboard.addListener(
-      'keyboardWillHide',
+    this.keyboardWillHideListener = Keyboard.addListener(
+      kbHide,
       this.keyboardDidHide
     );
   }
@@ -84,8 +92,12 @@ class Login extends Component {
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    if (this.keyboardWillShowListener) {
+      this.keyboardWillShowListener.remove();
+    }
+    if (this.keyboardWillHideListener) {
+      this.keyboardWillHideListener.remove();
+    }
   }
 
   onEmailChange(email) {
@@ -114,22 +126,23 @@ class Login extends Component {
     this.props.navigator.push(routes.reset);
   }
 
-  keyboardDidShow() {
+  keyboardDidShow(e) {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     // apply styles when keyboard is open
     this.setState({
       imageHeight: 0,
       headingFlex: 0,
-      tabContainerHeight: 65 * heightDifference,
+      containerHeight: e.endCoordinates.height,
     });
   }
 
   keyboardDidHide() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    // apply styles when keyboard is close
     this.setState({
-      imageHeight: 110 * heightDifference,
+      imageHeight: applyWidthDifference(110),
       headingFlex: 1,
-      tabContainerHeight: 20 * heightDifference,
+      containerHeight: 0,
     });
   }
 
@@ -143,16 +156,20 @@ class Login extends Component {
 
   render() {
     const { inProgress } = this.props.auth;
-    const { email, password, authError } = this.state;
+    const { email, password, authError, containerHeight } = this.state;
+    let newHeight = height - containerHeight - theme.statusBarHeight;
 
+    if (!isiOS) {
+      newHeight -= statusBarHeightDroid;
+    }
     // The main View is composed in the TouchableWithoutFeedback to allow
     // the keyboard to be closed when tapping outside of an input field
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles._container}>
+        <View style={[styles._container, { height: newHeight }]}>
           {inProgress
             ? <Spinner />
-            : <KeyboardAvoidingView behavior="padding">
+            : <View>
               <View
                 style={[{ flex: this.state.headingFlex }, styles.heading]}
               >
@@ -167,12 +184,7 @@ class Login extends Component {
                     ]}
                   />
                 </View>
-                <View
-                  style={[
-                      { height: this.state.tabContainerHeight },
-                    styles.tabsContainer,
-                  ]}
-                >
+                <View style={styles.tabsContainer}>
                   <TouchableOpacity style={[styles.currentTab, styles.tab]}>
                     <BodyText style={styles._currentTabText}>
                         Log In
@@ -186,30 +198,28 @@ class Login extends Component {
                   </TouchableOpacity>
                 </View>
               </View>
-              <View style={styles.formContainer}>
+              <View style={[styles.formContainer]}>
                 <View style={styles.inputsContainer}>
-                  <View style={styles.fbBtnContainer}>
-                    <Button
-                      style={styles._fbBtn}
-                      textStyle={styles._fbBtnText}
-                      text="LOG IN WITH FACEBOOK"
-                      fbBtn
-                      onPress={() => null}
-                    />
-                  </View>
+                  <Button
+                    style={styles._fbBtn}
+                    textStyle={styles._fbBtnText}
+                    text="LOG IN WITH FACEBOOK"
+                    fbBtn
+                    onPress={() => null}
+                  />
                   <View style={styles.breakContainer}>
-                    <View style={styles.leftSideBreak} />
+                    <View style={styles.breakLine} />
                     <Text style={styles.textBreak}>OR</Text>
-                    <View style={styles.rightSideBreak} />
+                    <View style={styles.breakLine} />
                   </View>
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: authError ? '#E53935' : '#231F20',
+                        color: authError ? '#F44336' : '#231F20',
                         ...styles._inputField,
                       }}
                       iconStyle={{
-                        color: authError ? '#E53935' : '#9E9E9E',
+                        color: authError ? '#F44336' : '#9E9E9E',
                       }}
                       handleRef={ref => (this.emailField = ref)}
                       value={this.state.email}
@@ -227,11 +237,11 @@ class Login extends Component {
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: authError ? '#E53935' : '#231F20',
+                        color: authError ? '#F44336' : '#231F20',
                         ...styles._inputField,
                       }}
                       iconStyle={{
-                        color: authError ? '#E53935' : '#9E9E9E',
+                        color: authError ? '#F44336' : '#9E9E9E',
                       }}
                       handleRef={ref => (this.passwordField = ref)}
                       value={this.state.password}
@@ -256,7 +266,7 @@ class Login extends Component {
                       <View style={styles.warningContainer}>
                         <Icon
                           name={'warning'}
-                          color={'#ED1C24'}
+                          color={'#F44336'}
                           size={20}
                         />
                         <BodyText style={styles._warning}>
@@ -284,7 +294,7 @@ class Login extends Component {
                   />
                 </View>
               </View>
-            </KeyboardAvoidingView>}
+            </View>}
         </View>
       </TouchableWithoutFeedback>
     );

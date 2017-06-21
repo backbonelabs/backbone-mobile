@@ -7,10 +7,11 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
-  KeyboardAvoidingView,
+  Platform,
   Linking,
   TouchableOpacity,
   NativeModules,
+  StatusBar,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -25,11 +26,15 @@ import constants from '../utils/constants';
 import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
-import CheckBox from '../components/checkbox';
+import CheckBox from '../components/Checkbox';
 import SecondaryText from '../components/SecondaryText';
+import theme from '../styles/theme';
 
-const { heightDifference } = relativeDimensions;
+const { applyWidthDifference, height } = relativeDimensions;
+// Android statusbar height
+const statusBarHeightDroid = StatusBar.currentHeight;
 const { Environment } = NativeModules;
+const isiOS = Platform.OS === 'ios';
 
 class Signup extends Component {
   static propTypes = {
@@ -52,20 +57,23 @@ class Signup extends Component {
       password: '',
       emailWarning: '',
       passwordWarning: '',
-      imageHeight: 110 * heightDifference,
-      tabContainerHeight: 20 * heightDifference,
+      imageHeight: applyWidthDifference(110),
       headingFlex: 1,
+      containerHeight: 0,
       acceptedTOS: false,
     };
   }
 
   componentWillMount() {
-    this.keyboardDidShowListener = Keyboard.addListener(
-      'keyboardWillShow',
+    const kbShow = isiOS ? 'keyboardWillShow' : 'keyboardDidShow';
+    const kbHide = isiOS ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    this.keyboardWillShowListener = Keyboard.addListener(
+      kbShow,
       this.keyboardDidShow
     );
-    this.keyboardDidHideListener = Keyboard.addListener(
-      'keyboardWillHide',
+    this.keyboardWillHideListener = Keyboard.addListener(
+      kbHide,
       this.keyboardDidHide
     );
   }
@@ -79,8 +87,12 @@ class Signup extends Component {
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
+    if (this.keyboardWillShowListener) {
+      this.keyboardWillShowListener.remove();
+    }
+    if (this.keyboardWillHideListener) {
+      this.keyboardWillHideListener.remove();
+    }
   }
 
   onEmailChange(email) {
@@ -95,22 +107,22 @@ class Signup extends Component {
     this.setState({ acceptedTOS: event.checked });
   }
 
-  keyboardDidShow() {
+  keyboardDidShow(e) {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     // apply styles when keyboard is open
     this.setState({
       imageHeight: 0,
       headingFlex: 0,
-      tabContainerHeight: 65 * heightDifference,
+      containerHeight: e.endCoordinates.height,
     });
   }
 
   keyboardDidHide() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({
-      imageHeight: 110 * heightDifference,
+      imageHeight: applyWidthDifference(110),
       headingFlex: 1,
-      tabContainerHeight: 20 * heightDifference,
+      containerHeight: 0,
     });
   }
 
@@ -182,13 +194,19 @@ class Signup extends Component {
       emailWarning,
       passwordWarning,
       acceptedTOS,
+      containerHeight,
     } = this.state;
+    let newHeight = height - containerHeight - theme.statusBarHeight;
+
+    if (!isiOS) {
+      newHeight -= statusBarHeightDroid;
+    }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
+        <View style={[styles._container, { height: newHeight }]}>
           {this.props.inProgress
             ? <Spinner />
-            : <KeyboardAvoidingView behavior="padding">
+            : <View>
               <View
                 style={[{ flex: this.state.headingFlex }, styles.heading]}
               >
@@ -229,23 +247,23 @@ class Signup extends Component {
                   <Button
                     style={styles._fbBtn}
                     textStyle={styles._fbBtnText}
-                    text="LOG IN WITH FACEBOOK"
+                    text="SIGN UP WITH FACEBOOK"
                     fbBtn
                     onPress={() => null}
                   />
                   <View style={styles.breakContainer}>
-                    <View style={styles.leftSideBreak} />
+                    <View style={styles.breakLine} />
                     <Text style={styles.textBreak}>OR</Text>
-                    <View style={styles.rightSideBreak} />
+                    <View style={styles.breakLine} />
                   </View>
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: emailWarning ? '#E53935' : '#231F20',
+                        color: emailWarning ? '#F44336' : '#231F20',
                         ...styles._inputField,
                       }}
                       iconStyle={{
-                        color: emailWarning ? '#E53935' : '#9E9E9E',
+                        color: emailWarning ? '#F44336' : '#9E9E9E',
                       }}
                       handleRef={ref => (this.emailField = ref)}
                       value={email}
@@ -263,11 +281,11 @@ class Signup extends Component {
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: passwordWarning ? '#E53935' : '#231F20',
+                        color: passwordWarning ? '#F44336' : '#231F20',
                         ...styles._inputField,
                       }}
                       iconStyle={{
-                        color: passwordWarning ? '#E53935' : '#9E9E9E',
+                        color: passwordWarning ? '#F44336' : '#9E9E9E',
                       }}
                       handleRef={ref => (this.passwordField = ref)}
                       value={password}
@@ -286,7 +304,7 @@ class Signup extends Component {
                       <View style={styles.warningContainer}>
                         <Icon
                           name={'warning'}
-                          color={'#ED1C24'}
+                          color={'#F44336'}
                           size={20}
                         />
                         <BodyText style={styles._warning}>
@@ -339,7 +357,7 @@ class Signup extends Component {
                   />
                 </View>
               </View>
-            </KeyboardAvoidingView>}
+            </View>}
         </View>
       </TouchableWithoutFeedback>
     );
