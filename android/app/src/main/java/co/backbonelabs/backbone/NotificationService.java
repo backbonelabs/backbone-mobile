@@ -87,11 +87,14 @@ public class NotificationService extends ReactContextBaseJavaModule {
     public static void sendNotification(int id, String title, String text) {
         // Use BigText style to display more texts when needed
         if (id == Constants.NOTIFICATION_TYPES.SESSION_COMPLETED) {
-            NotificationCompat.Builder builder = createBuilderTemplate(context);
+            // Fallback to standard style when BigText style is not available
+            NotificationCompat.Builder builder = createBuilderTemplate(context)
+                    .setContentTitle(title)
+                    .setContentText(text);
 
-            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
-            bigTextStyle.setBigContentTitle(title);
-            bigTextStyle.bigText(text);
+            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle()
+                    .setBigContentTitle(title)
+                    .bigText(text);
 
             builder.setStyle(bigTextStyle);
 
@@ -431,9 +434,9 @@ public class NotificationService extends ReactContextBaseJavaModule {
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_notify_logo)
-                .setAutoCancel(true)
-                .setVibrate(vibrationPattern);
+                        .setSmallIcon(R.drawable.ic_stat_notify_logo)
+                        .setAutoCancel(true)
+                        .setVibrate(vibrationPattern);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Set background color of the small icon if OS is Lollipop (5.0) or higher
