@@ -212,27 +212,20 @@ class Signup extends Component {
             ? <Spinner />
             : <View>
               <View
-                style={[{ flex: this.state.headingFlex }, styles.heading]}
+                style={[styles.heading, { flex: this.state.headingFlex }]}
               >
                 <View style={styles.logoContainer}>
                   <Image
                     source={BackBoneLogo}
                     style={[
+                      styles.backboneLogo,
                       {
                         height: this.state.imageHeight,
                       },
-                      styles.backboneLogo,
                     ]}
                   />
                 </View>
-                <View
-                  style={
-                    [
-                      { height: this.state.tabContainerHeight },
-                      styles.tabsContainer,
-                    ]
-                  }
-                >
+                <View style={styles.tabsContainer}>
                   <TouchableOpacity
                     style={styles.tab}
                     onPress={() => this.props.navigator.pop()}
@@ -268,8 +261,8 @@ class Signup extends Component {
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: emailWarning ? '#F44336' : '#231F20',
                         ...styles._inputField,
+                        color: emailWarning ? '#F44336' : '#231F20',
                       }}
                       iconStyle={{
                         color: emailWarning ? '#F44336' : '#9E9E9E',
@@ -290,8 +283,8 @@ class Signup extends Component {
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: passwordWarning ? '#F44336' : '#231F20',
                         ...styles._inputField,
+                        color: passwordWarning ? '#F44336' : '#231F20',
                       }}
                       iconStyle={{
                         color: passwordWarning ? '#F44336' : '#9E9E9E',

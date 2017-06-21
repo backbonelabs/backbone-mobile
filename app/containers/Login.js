@@ -174,16 +174,16 @@ class Login extends Component {
             ? <Spinner />
             : <View>
               <View
-                style={[{ flex: this.state.headingFlex }, styles.heading]}
+                style={[styles.heading, { flex: this.state.headingFlex }]}
               >
                 <View style={styles.logoContainer}>
                   <Image
                     source={BackBoneLogo}
                     style={[
+                      styles.backboneLogo,
                       {
                         height: this.state.imageHeight,
                       },
-                      styles.backboneLogo,
                     ]}
                   />
                 </View>
@@ -201,7 +201,7 @@ class Login extends Component {
                   </TouchableOpacity>
                 </View>
               </View>
-              <View style={[styles.formContainer]}>
+              <View style={styles.formContainer}>
                 <View style={styles.inputsContainer}>
                   {
                     !isiOS && hideContent ? null :
@@ -223,8 +223,8 @@ class Login extends Component {
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: authError ? '#F44336' : '#231F20',
                         ...styles._inputField,
+                        color: authError ? '#F44336' : '#231F20',
                       }}
                       iconStyle={{
                         color: authError ? '#F44336' : '#9E9E9E',
@@ -245,8 +245,8 @@ class Login extends Component {
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
-                        color: authError ? '#F44336' : '#231F20',
                         ...styles._inputField,
+                        color: authError ? '#F44336' : '#231F20',
                       }}
                       iconStyle={{
                         color: authError ? '#F44336' : '#9E9E9E',
