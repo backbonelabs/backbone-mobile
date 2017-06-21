@@ -46,7 +46,7 @@ class Reset extends Component {
       emailPristine: true,
       validEmail: false,
       containerHeight: 0,
-      containerFlex: 1,
+      hideLogo: false,
     };
   }
 
@@ -105,12 +105,12 @@ class Reset extends Component {
 
   keyboardDidShow(e) {
     // apply styles when keyboard is open
-    this.setState({ containerHeight: e.endCoordinates.height, containerFlex: 0 });
+    this.setState({ containerHeight: e.endCoordinates.height, hideLogo: true });
   }
 
   keyboardDidHide() {
     // apply styles when keyboard is close
-    this.setState({ containerHeight: 0, containerFlex: 1 });
+    this.setState({ containerHeight: 0, hideLogo: false });
   }
 
   sendPasswordResetRequest() {
@@ -118,7 +118,7 @@ class Reset extends Component {
   }
 
   render() {
-    const { email, validEmail, emailPristine, containerHeight, containerFlex } = this.state;
+    const { email, validEmail, emailPristine, containerHeight, hideLogo } = this.state;
     let emailWarning;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
@@ -131,12 +131,15 @@ class Reset extends Component {
     }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, { height: newHeight, flex: containerFlex }]}>
+        <View style={[styles.container, { height: newHeight }]}>
           {this.props.inProgress
             ? <Spinner />
             : <View>
               <View style={styles._innerContainer}>
-                <Image source={BackBoneLogo} style={styles.backboneLogo} />
+                {
+                  !isiOS && hideLogo ? null :
+                    <Image source={BackBoneLogo} style={styles.backboneLogo} />
+                }
                 <HeadingText size={2} style={styles._headingText}>
                   Password Recovery
                 </HeadingText>
@@ -147,8 +150,8 @@ class Reset extends Component {
                 <View style={styles.inputFieldContainer}>
                   <Input
                     style={{
-                      color: emailWarning ? '#F44336' : '#231F20',
                       ...styles._inputField,
+                      color: emailWarning ? '#F44336' : '#231F20',
                     }}
                     iconStyle={{ color: emailWarning ? '#F44336' : '#9E9E9E' }}
                     autoCapitalize="none"
