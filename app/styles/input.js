@@ -43,7 +43,7 @@ export default EStyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    fontSize: fixedResponsiveFontSize(22),
+    fontSize: '$inputIconSize',
     left: applyWidthDifference(15),
     color: '#9E9E9E',
   },
