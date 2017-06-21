@@ -116,7 +116,7 @@ export default EStyleSheet.create({
     fontSize: fixedResponsiveFontSize(12),
   },
   checkBox: {
-    marginRight: 15,
+    marginRight: applyWidthDifference(15),
   },
   legalInnerContainer: {
     flexDirection: 'row',
@@ -160,7 +160,7 @@ export default EStyleSheet.create({
   warning: {
     color: '$primaryColor',
     textAlign: 'center',
-    marginLeft: 5,
+    marginLeft: applyWidthDifference(5),
     fontSize: fixedResponsiveFontSize(14),
   },
 });
