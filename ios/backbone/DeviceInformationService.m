@@ -111,7 +111,7 @@ RCT_EXPORT_METHOD(requestSelfTest) {
     if (deviceStatusCharacteristic && (deviceStatusCharacteristic.properties & CBCharacteristicPropertyNotify)) {
       requestingSelfTest = YES;
       
-      [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]];
+      [BluetoothServiceInstance toggleCharacteristicNotification:DEVICE_STATUS_CHARACTERISTIC_UUID state:YES];
       
       uint8_t bytes[1];
       
@@ -120,7 +120,7 @@ RCT_EXPORT_METHOD(requestSelfTest) {
       
       DLog(@"Request Self-Test %@ %@ %@", data, BluetoothServiceInstance.currentDevice, [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]);
       
-      [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+      [BluetoothServiceInstance writeToCharacteristic:SESSION_CONTROL_CHARACTERISTIC_UUID data:data];
     }
     else {
       // Running on an older device with no support of self-test re-run
@@ -146,7 +146,7 @@ RCT_EXPORT_METHOD(requestSelfTest) {
     _firmwareVersionHandler = nil;
   }
   else {
-    [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:FIRMWARE_VERSION_CHARACTERISTIC_UUID]];
+    [BluetoothServiceInstance readCharacteristic:FIRMWARE_VERSION_CHARACTERISTIC_UUID];
   }
 }
 
@@ -158,7 +158,7 @@ RCT_EXPORT_METHOD(requestSelfTest) {
     _batteryLevelHandler = nil;
   }
   else {
-    [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:BATTERY_LEVEL_CHARACTERISTIC_UUID]];
+    [BluetoothServiceInstance readCharacteristic:BATTERY_LEVEL_CHARACTERISTIC_UUID];
   }
 }
 
@@ -171,7 +171,7 @@ RCT_EXPORT_METHOD(requestSelfTest) {
     _deviceStatusHandler = nil;
   }
   else {
-    [BluetoothServiceInstance.currentDevice readValueForCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:DEVICE_STATUS_CHARACTERISTIC_UUID]];
+    [BluetoothServiceInstance readCharacteristic:DEVICE_STATUS_CHARACTERISTIC_UUID];
   }
 }
 

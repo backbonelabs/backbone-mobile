@@ -258,7 +258,7 @@ RCT_EXPORT_METHOD(getSessionState) {
 
   if ([BluetoothServiceInstance isDeviceReady] && sessionStatistics) {
     requestedReadSessionStatistics = YES;
-    [BluetoothServiceInstance.currentDevice readValueForCharacteristic:sessionStatistics];
+    [BluetoothServiceInstance readCharacteristic:SESSION_STATISTIC_CHARACTERISTIC_UUID];
   }
   else {
     [self sendEventWithName:@"SessionState" body:@{
@@ -329,9 +329,9 @@ RCT_EXPORT_METHOD(getSessionState) {
     
     // Toggle accelerometer notification separately because the app doesn't rely on the
     // accelerometer notifications to monitor a posture session
-    [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ACCELEROMETER_CHARACTERISTIC_UUID]];
+    [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:YES];
     
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    [BluetoothServiceInstance writeToCharacteristic:SESSION_CONTROL_CHARACTERISTIC_UUID data:data];
   }
   else if (operation == SESSION_OPERATION_RESUME) {
     uint8_t bytes[8];
@@ -360,9 +360,9 @@ RCT_EXPORT_METHOD(getSessionState) {
     
     // Toggle accelerometer notification separately because the app doesn't rely on the
     // accelerometer notifications to monitor a posture session
-    [BluetoothServiceInstance.currentDevice setNotifyValue:YES forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ACCELEROMETER_CHARACTERISTIC_UUID]];
+    [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:YES];
     
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    [BluetoothServiceInstance writeToCharacteristic:SESSION_CONTROL_CHARACTERISTIC_UUID data:data];
   }
   else {
     uint8_t bytes[1];
@@ -399,9 +399,9 @@ RCT_EXPORT_METHOD(getSessionState) {
     
     // Toggle accelerometer notification separately because the app doesn't rely on the
     // accelerometer notifications to monitor a posture session
-    [BluetoothServiceInstance.currentDevice setNotifyValue:NO forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ACCELEROMETER_CHARACTERISTIC_UUID]];
+    [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:NO];
     
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    [BluetoothServiceInstance writeToCharacteristic:SESSION_CONTROL_CHARACTERISTIC_UUID data:data];
   }
 }
 
@@ -556,9 +556,8 @@ RCT_EXPORT_METHOD(getSessionState) {
           slouchNotificationStatus = NO;
           statisticNotificationStatus = NO;
           
-          [BluetoothServiceInstance.currentDevice setNotifyValue:NO forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:ACCELEROMETER_CHARACTERISTIC_UUID]];
-          
-          [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
+          [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:NO];
+          [BluetoothServiceInstance toggleCharacteristicNotification:SESSION_DATA_CHARACTERISTIC_UUID state:distanceNotificationStatus];
           
           // Save session record for Firehose
           [self saveSessionToFirehose];
@@ -636,7 +635,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       }
     }
     else {
-      [BluetoothServiceInstance.currentDevice setNotifyValue:slouchNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]];
+      [BluetoothServiceInstance toggleCharacteristicNotification:SLOUCH_CHARACTERISTIC_UUID state:slouchNotificationStatus];
     }
   }
   else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
@@ -652,7 +651,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       }
     }
     else {
-      [BluetoothServiceInstance.currentDevice setNotifyValue:statisticNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]];
+      [BluetoothServiceInstance toggleCharacteristicNotification:SESSION_STATISTIC_CHARACTERISTIC_UUID state:statisticNotificationStatus];
     }
   }
   else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
@@ -693,7 +692,7 @@ RCT_EXPORT_METHOD(getSessionState) {
         // No error, so we proceed to toggling distance notification when needed
         notificationStateChanged = NO;
         
-        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
+        [BluetoothServiceInstance toggleCharacteristicNotification:SESSION_DATA_CHARACTERISTIC_UUID state:distanceNotificationStatus];
       }
       else {
         // For reverting, no need toggling the notification on the same state.
