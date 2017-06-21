@@ -106,7 +106,7 @@ android {
         applicationId "co.backbonelabs.backbone"
         minSdkVersion 18 // Android 4.3, required for BLE
         targetSdkVersion 22
-        versionCode 207
+        versionCode 208
         versionName "1.0.10"
         ndk {
             abiFilters "armeabi-v7a", "x86"
