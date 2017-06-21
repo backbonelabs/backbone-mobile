@@ -2,6 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/checkbox';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { applyWidthDifference } = relativeDimensions;
 
 class Checkbox extends Component {
   static propTypes = {
@@ -13,7 +16,7 @@ class Checkbox extends Component {
   };
 
   static defaultProps = {
-    iconSize: 18,
+    iconSize: applyWidthDifference(18),
     iconColor: 'white',
   };
 
@@ -41,7 +44,9 @@ class Checkbox extends Component {
   }
 
   toggle() {
-    this.setState({ checked: !this.state.checked }, () => {
+    this.setState((prevState) => ({
+      checked: !prevState.checked,
+    }), () => {
       if (this.props.onCheckedChange) {
         this.props.onCheckedChange({ checked: this.state.checked });
       }
@@ -51,7 +56,7 @@ class Checkbox extends Component {
   render() {
     const { checked } = this.state;
     const { style, iconSize, iconColor, ...remainingProps } = this.props;
-    const boxStyles = [style, styles.checkbox];
+    const boxStyles = [styles.checkbox, style];
     if (checked) {
       boxStyles.push({ backgroundColor: '#FF9800', borderColor: '#FF9800' });
     }
