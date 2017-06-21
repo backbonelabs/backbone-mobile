@@ -251,6 +251,12 @@ class PostureMonitor extends Component {
                 },
               });
 
+              // Navigate back to posture monitor if app was in alerts and resumed
+              // through Android's interactive notifications
+              if (this.props.currentRoute.name === routes.alerts.name) {
+                this.props.navigator.pop();
+              }
+
               break;
             }
             case sessionOperations.STOP:
