@@ -57,6 +57,7 @@ class Login extends Component {
       imageHeight: applyWidthDifference(110),
       headingFlex: 1,
       containerHeight: 0,
+      hideContent: false,
     };
   }
 
@@ -133,6 +134,7 @@ class Login extends Component {
       imageHeight: 0,
       headingFlex: 0,
       containerHeight: e.endCoordinates.height,
+      hideContent: true,
     });
   }
 
@@ -143,6 +145,7 @@ class Login extends Component {
       imageHeight: applyWidthDifference(110),
       headingFlex: 1,
       containerHeight: 0,
+      hideContent: false,
     });
   }
 
@@ -156,7 +159,7 @@ class Login extends Component {
 
   render() {
     const { inProgress } = this.props.auth;
-    const { email, password, authError, containerHeight } = this.state;
+    const { email, password, authError, containerHeight, hideContent } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
     if (!isiOS) {
@@ -200,18 +203,23 @@ class Login extends Component {
               </View>
               <View style={[styles.formContainer]}>
                 <View style={styles.inputsContainer}>
-                  <Button
-                    style={styles._fbBtn}
-                    textStyle={styles._fbBtnText}
-                    text="LOG IN WITH FACEBOOK"
-                    fbBtn
-                    onPress={() => null}
-                  />
-                  <View style={styles.breakContainer}>
-                    <View style={styles.breakLine} />
-                    <Text style={styles.textBreak}>OR</Text>
-                    <View style={styles.breakLine} />
-                  </View>
+                  {
+                    !isiOS && hideContent ? null :
+                      <View>
+                        <Button
+                          style={styles._fbBtn}
+                          textStyle={styles._fbBtnText}
+                          text="LOG IN WITH FACEBOOK"
+                          fbBtn
+                          onPress={() => null}
+                        />
+                        <View style={styles.breakContainer}>
+                          <View style={styles.breakLine} />
+                          <Text style={styles.textBreak}>OR</Text>
+                          <View style={styles.breakLine} />
+                        </View>
+                      </View>
+                  }
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{

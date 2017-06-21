@@ -60,6 +60,7 @@ class Signup extends Component {
       imageHeight: applyWidthDifference(110),
       headingFlex: 1,
       containerHeight: 0,
+      hideContent: false,
       acceptedTOS: false,
     };
   }
@@ -114,6 +115,7 @@ class Signup extends Component {
       imageHeight: 0,
       headingFlex: 0,
       containerHeight: e.endCoordinates.height,
+      hideContent: true,
     });
   }
 
@@ -123,6 +125,7 @@ class Signup extends Component {
       imageHeight: applyWidthDifference(110),
       headingFlex: 1,
       containerHeight: 0,
+      hideContent: false,
     });
   }
 
@@ -195,6 +198,7 @@ class Signup extends Component {
       passwordWarning,
       acceptedTOS,
       containerHeight,
+      hideContent,
     } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
@@ -244,18 +248,23 @@ class Signup extends Component {
               </View>
               <View style={styles.formContainer}>
                 <View style={styles.inputsContainer}>
-                  <Button
-                    style={styles._fbBtn}
-                    textStyle={styles._fbBtnText}
-                    text="SIGN UP WITH FACEBOOK"
-                    fbBtn
-                    onPress={() => null}
-                  />
-                  <View style={styles.breakContainer}>
-                    <View style={styles.breakLine} />
-                    <Text style={styles.textBreak}>OR</Text>
-                    <View style={styles.breakLine} />
-                  </View>
+                  {
+                    !isiOS && hideContent ? null :
+                      <View>
+                        <Button
+                          style={styles._fbBtn}
+                          textStyle={styles._fbBtnText}
+                          text="SIGN UP WITH FACEBOOK"
+                          fbBtn
+                          onPress={() => null}
+                        />
+                        <View style={styles.breakContainer}>
+                          <View style={styles.breakLine} />
+                          <Text style={styles.textBreak}>OR</Text>
+                          <View style={styles.breakLine} />
+                        </View>
+                      </View>
+                  }
                   <View style={styles.inputFieldContainer}>
                     <Input
                       style={{
