@@ -45,8 +45,7 @@ class Reset extends Component {
     autobind(this);
     this.state = {
       email: null,
-      emailPristine: true,
-      validEmail: false,
+      emailWarning: '',
       containerHeight: 0,
       logoHeight: applyWidthDifference(70),
     };
@@ -93,16 +92,7 @@ class Reset extends Component {
   }
 
   onEmailChange(email) {
-    const stateChanges = {
-      validEmail: constants.emailRegex.test(email),
-      email,
-    };
-
-    if (this.state.emailPristine) {
-      stateChanges.emailPristine = false;
-    }
-
-    this.setState(stateChanges);
+    this.setState({ email });
   }
 
   keyboardDidShow(e) {
@@ -117,21 +107,25 @@ class Reset extends Component {
   keyboardDidHide() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     // apply styles when keyboard is close
-    this.setState({ containerHeight: 0, logoHeight: applyWidthDifference(80) });
+    this.setState({ containerHeight: 0, logoHeight: applyWidthDifference(70) });
   }
 
   sendPasswordResetRequest() {
-    this.props.dispatch(authActions.reset({ email: this.state.email }));
+    const { email } = this.state;
+    const validEmail = constants.emailRegex.test(email);
+
+    if (!validEmail) {
+      return this.setState({
+        emailWarning: 'INVALID EMAIL',
+      });
+    }
+
+    this.props.dispatch(authActions.reset({ email }));
   }
 
   render() {
-    const { email, validEmail, emailPristine, containerHeight, logoHeight } = this.state;
-    let emailWarning;
+    const { email, emailWarning, containerHeight, logoHeight } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight;
-
-    if (!emailPristine) {
-      emailWarning = validEmail ? '' : 'Invalid Email';
-    }
 
     if (!isiOS) {
       newHeight -= statusBarHeightDroid;
@@ -169,8 +163,7 @@ class Reset extends Component {
                     onChangeText={this.onEmailChange}
                     value={this.state.email}
                     onSubmitEditing={
-                      !email || !validEmail
-                        ? null
+                      !email ? null
                         : this.sendPasswordResetRequest
                     }
                     autoCorrect={false}
@@ -194,7 +187,7 @@ class Reset extends Component {
                     : null
                   }
                 <Button
-                  disabled={!email || !validEmail}
+                  disabled={!email}
                   style={styles._CTAResetBtn}
                   primary
                   text="RESET"
