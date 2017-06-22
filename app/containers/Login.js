@@ -204,7 +204,7 @@ class Login extends Component {
               <View style={styles.formContainer}>
                 <View style={styles.inputsContainer}>
                   {
-                    !isiOS && hideContent ? null :
+                    hideContent ? null :
                       <View>
                         <Button
                           style={styles._fbBtn}
