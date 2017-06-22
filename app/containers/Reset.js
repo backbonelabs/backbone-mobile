@@ -8,8 +8,10 @@ import {
   Keyboard,
   StatusBar,
   Platform,
+  LayoutAnimation,
 } from 'react-native';
 import autobind from 'class-autobind';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
 import authActions from '../actions/auth';
 import Input from '../components/Input';
@@ -24,7 +26,7 @@ import constants from '../utils/constants';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
 
-const { height } = relativeDimensions;
+const { applyWidthDifference, height } = relativeDimensions;
 // Android statusbar height
 const statusBarHeightDroid = StatusBar.currentHeight;
 const isiOS = Platform.OS === 'ios';
@@ -46,7 +48,7 @@ class Reset extends Component {
       emailPristine: true,
       validEmail: false,
       containerHeight: 0,
-      hideLogo: false,
+      logoHeight: applyWidthDifference(70),
     };
   }
 
@@ -104,13 +106,18 @@ class Reset extends Component {
   }
 
   keyboardDidShow(e) {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     // apply styles when keyboard is open
-    this.setState({ containerHeight: e.endCoordinates.height, hideLogo: true });
+    this.setState({
+      containerHeight: e.endCoordinates.height,
+      logoHeight: applyWidthDifference(0),
+    });
   }
 
   keyboardDidHide() {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     // apply styles when keyboard is close
-    this.setState({ containerHeight: 0, hideLogo: false });
+    this.setState({ containerHeight: 0, logoHeight: applyWidthDifference(80) });
   }
 
   sendPasswordResetRequest() {
@@ -118,7 +125,7 @@ class Reset extends Component {
   }
 
   render() {
-    const { email, validEmail, emailPristine, containerHeight, hideLogo } = this.state;
+    const { email, validEmail, emailPristine, containerHeight, logoHeight } = this.state;
     let emailWarning;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
@@ -135,11 +142,13 @@ class Reset extends Component {
           {this.props.inProgress
             ? <Spinner />
             : <View>
-              <View style={styles._innerContainer}>
-                {
-                  !isiOS && hideLogo ? null :
-                    <Image source={BackBoneLogo} style={styles.backboneLogo} />
-                }
+              <View style={styles.innerContainer}>
+
+                <Image
+                  source={BackBoneLogo}
+                  style={[styles.backboneLogo, { height: logoHeight }]}
+                />
+
                 <HeadingText size={2} style={styles._headingText}>
                   Password Recovery
                 </HeadingText>
@@ -170,9 +179,20 @@ class Reset extends Component {
                     iconLeftName="email"
                   />
                 </View>
-                <BodyText style={styles._warning}>
-                  {emailWarning}
-                </BodyText>
+                {
+                  (emailWarning) ?
+                    <View style={styles.warningContainer}>
+                      <Icon
+                        name={'warning'}
+                        color={'#F44336'}
+                        size={20}
+                      />
+                      <BodyText style={styles._warning}>
+                        {emailWarning}
+                      </BodyText>
+                    </View>
+                    : null
+                  }
                 <Button
                   disabled={!email || !validEmail}
                   style={styles._CTAResetBtn}
