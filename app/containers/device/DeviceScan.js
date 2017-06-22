@@ -32,6 +32,25 @@ const { DeviceManagementService } = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 const { ON, OFF, TURNING_ON, TURNING_OFF } = constants.bluetoothStates;
 
+const openGoBackbone = () => {
+  const url = 'https://www.gobackbone.com';
+  Linking.canOpenURL(url)
+    .then(supported => {
+      if (supported) {
+        return Linking.openURL(url);
+      }
+      throw new Error();
+    })
+    .catch(() => {
+      // This catch handler will handle rejections from Linking.openURL as well
+      // as when the user's phone doesn't have any apps to open the URL
+      Alert.alert(
+        'We could not launch your browser.',
+        `You can purchase Backbone by visiting ${url}`,
+      );
+    });
+};
+
 const DeviceConnectHelp = props => (
   <View style={styles.helpContainer}>
     <HeadingText size={2}>
@@ -46,7 +65,7 @@ const DeviceConnectHelp = props => (
     <BodyText style={styles._helpItems}>
       3. Unpair the Backbone device from any other smartphones.
     </BodyText>
-    <TouchableOpacity onPress={() => Linking.openURL('https://www.gobackbone.com')} >
+    <TouchableOpacity onPress={openGoBackbone} >
       <BodyText style={styles._helpItems}>
         If you need a Backbone, visit gobackbone.com to buy one.
       </BodyText>
