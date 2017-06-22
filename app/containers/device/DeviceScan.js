@@ -8,6 +8,7 @@ import {
   ScrollView,
   RefreshControl,
   Image,
+  Linking,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -45,6 +46,11 @@ const DeviceConnectHelp = props => (
     <BodyText style={styles._helpItems}>
       3. Unpair the Backbone device from any other smartphones.
     </BodyText>
+    <TouchableOpacity onPress={() => Linking.openURL('https://www.gobackbone.com')} >
+      <BodyText style={styles._helpItems}>
+        If you need a Backbone, visit gobackbone.com to buy one.
+      </BodyText>
+    </TouchableOpacity>
     <TouchableOpacity onPress={() => props.navigator.replace(routes.support)}>
       <SecondaryText style={styles._helpSupport}>Need more help?</SecondaryText>
     </TouchableOpacity>
