@@ -45,7 +45,7 @@ const openGoBackbone = () => {
       // This catch handler will handle rejections from Linking.openURL as well
       // as when the user's phone doesn't have any apps to open the URL
       Alert.alert(
-        'We could not launch your browser.',
+        'We could not launch your browser',
         `You can purchase Backbone by visiting ${url}`,
       );
     });
