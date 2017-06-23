@@ -33,4 +33,5 @@ export default {
   heightDifference,
   applyWidthDifference,
   fixedResponsiveFontSize,
+  height,
 };
