@@ -65,24 +65,6 @@ public class NotificationService extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Send a local notification
-     * @param title The first text line to be displayed on the local notification
-     * @param message The second text line to be displayed on the local notification
-     */
-    @ReactMethod
-    public void sendSlouchNotification(String title, String message) {
-        sendNotification(Constants.NOTIFICATION_TYPES.SLOUCH_WARNING, title, message);
-    }
-
-    /**
-     * Clear the slouch notification from status bar
-     */
-    @ReactMethod
-    public void clearSlouchNotification() {
-        clearNotification(Constants.NOTIFICATION_TYPES.SLOUCH_WARNING);
-    }
-
-    /**
      * Posts a notification to be shown in the status bar
      * @param id A unique identifier for the notification. If a notification with the same id
      *           has already been posted and has not yet been canceled, it will be replaced
@@ -101,20 +83,41 @@ public class NotificationService extends ReactContextBaseJavaModule {
      * @param title The first line of text in the notification
      * @param text The second line of text in the notification
      */
+    @ReactMethod
     public static void sendNotification(int id, String title, String text) {
-        NotificationCompat.Builder builder = createBuilderTemplate(context)
-                .setContentTitle(title)
-                .setContentText(text);
+        // Use BigText style to display more texts when needed
+        if (id == Constants.NOTIFICATION_TYPES.SESSION_COMPLETED) {
+            // Fallback to standard style when BigText style is not available
+            NotificationCompat.Builder builder = createBuilderTemplate(context)
+                    .setContentTitle(title)
+                    .setContentText(text);
 
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(id, builder.build());
+            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle()
+                    .setBigContentTitle(title)
+                    .bigText(text);
+
+            builder.setStyle(bigTextStyle);
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(id, builder.build());
+        }
+        else {
+            NotificationCompat.Builder builder = createBuilderTemplate(context)
+                    .setContentTitle(title)
+                    .setContentText(text);
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(id, builder.build());
+        }
     }
 
     /**
      * Clear a notification from the status bar
      * @param id A unique identifier for the notification
      */
+    @ReactMethod
     public static void clearNotification(int id) {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -431,9 +434,9 @@ public class NotificationService extends ReactContextBaseJavaModule {
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_notify_logo)
-                .setAutoCancel(true)
-                .setVibrate(vibrationPattern);
+                        .setSmallIcon(R.drawable.ic_stat_notify_logo)
+                        .setAutoCancel(true)
+                        .setVibrate(vibrationPattern);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Set background color of the small icon if OS is Lollipop (5.0) or higher

@@ -11,4 +11,6 @@
 
 @interface NotificationService : NSObject <RCTBridgeModule>
 
++ (void)clearNotifications;
+
 @end
