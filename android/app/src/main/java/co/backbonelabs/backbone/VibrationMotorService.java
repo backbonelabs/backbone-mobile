@@ -45,6 +45,7 @@ public class VibrationMotorService extends ReactContextBaseJavaModule {
     private ReadableArray currentVibrationCommands;
     private int currentVibrationIndex;
     private int nextVibrationDelay;
+    private boolean hasPendingOperation = false;
 
     private Handler vibrationHandler = null;
 
@@ -55,11 +56,14 @@ public class VibrationMotorService extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void vibrate(ReadableArray vibrationParams) {
+        if (hasPendingOperation) return;
+
         BluetoothService bluetoothService = BluetoothService.getInstance();
 
         if (bluetoothService.isDeviceReady() &&
                 bluetoothService.hasCharacteristic(Constants.CHARACTERISTIC_UUIDS.VIBRATION_MOTOR_CHARACTERISTIC)) {
             currentVibrationCommands = vibrationParams;
+            hasPendingOperation = true;
             currentVibrationIndex = 0;
             sendNextVibrationCommand();
         }
@@ -67,7 +71,10 @@ public class VibrationMotorService extends ReactContextBaseJavaModule {
 
     private void sendNextVibrationCommand() {
         // Check if there's any pending vibration commands
-        if (currentVibrationIndex == currentVibrationCommands.size()) return;
+        if (currentVibrationIndex >= currentVibrationCommands.size()) {
+            hasPendingOperation = false;
+            return;
+        }
 
         ReadableMap vibrationParam = currentVibrationCommands.getMap(currentVibrationIndex);
         int vibrationSpeed = (vibrationParam.hasKey("vibrationSpeed") ? vibrationParam.getInt("vibrationSpeed") : Constants.VIBRATION_DEFAULT_SPEED);

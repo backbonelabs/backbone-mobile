@@ -10,6 +10,7 @@
 #import <React/RCTEventEmitter.h>
 #import <React/RCTBridgeModule.h>
 #import "Constants.h"
+#import <AWSKinesis/AWSKinesis.h>
 
 @interface SessionControlService : RCTEventEmitter <RCTBridgeModule, CBPeripheralDelegate> {
   ErrorHandler _errorHandler;
@@ -33,6 +34,14 @@
   BOOL notificationStateChanged;
   
   BOOL requestedReadSessionStatistics;
+  
+  NSDateFormatter *timestampFormatter;
+  AWSFirehoseRecorder *firehoseRecorder;
+  
+  NSString *sessionId;
+  double sessionStartTimestamp;
+  
+  BOOL shouldFlushFirehoseRecords;
 }
 
 + (SessionControlService *)getSessionControlService;

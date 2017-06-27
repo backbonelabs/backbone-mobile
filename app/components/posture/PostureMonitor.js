@@ -41,6 +41,7 @@ const {
   sessionOperations,
   storageKeys,
   vibrationDurations,
+  notificationTypes,
 } = constants;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
@@ -250,6 +251,12 @@ class PostureMonitor extends Component {
                 },
               });
 
+              // Navigate back to posture monitor if app was in alerts and resumed
+              // through Android's interactive notifications
+              if (this.props.currentRoute.name === routes.alerts.name) {
+                this.props.navigator.pop();
+              }
+
               break;
             }
             case sessionOperations.STOP:
@@ -293,6 +300,8 @@ class PostureMonitor extends Component {
         }
       });
     }
+
+    AppState.addEventListener('change', this.handleAppStateChange);
 
     if (this.props.sessionState && this.props.sessionState.showSummary) {
       this.setState({ forceStoppedSession: true }, () => {
@@ -365,6 +374,8 @@ class PostureMonitor extends Component {
     if (this.backAndroidListener) {
       this.backAndroidListener.remove();
     }
+
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   /**
@@ -429,6 +440,14 @@ class PostureMonitor extends Component {
     });
   }
 
+  handleAppStateChange(currentAppState) {
+    if (currentAppState === 'active') {
+      // Remove the session completion notification from the tray
+      // once the app returns to the foreground state
+      NotificationService.clearNotification(notificationTypes.SESSION_COMPLETED);
+    }
+  }
+
   showAlertOnFailedConnection() {
     const { sessionState } = this.state;
 
@@ -477,7 +496,7 @@ class PostureMonitor extends Component {
     if (!shouldNotifySlouch && currentDistance < postureThreshold) {
       // Clear the slouch notification since it's no longer relevant
       // on good posture state
-      NotificationService.clearSlouchNotification();
+      NotificationService.clearNotification(notificationTypes.SLOUCH_WARNING);
       this.setState({ shouldNotifySlouch: true });
     }
   }
@@ -498,7 +517,8 @@ class PostureMonitor extends Component {
         && slouchNotificationEnabled && this.state.shouldNotifySlouch) {
         // Attempt to send out a slouch detection notification only on background mode,
         // the slouch notification is enabled, and it was previously on a good posture state
-        NotificationService.sendSlouchNotification('Bad posture detected',
+        NotificationService.sendNotification(notificationTypes.SLOUCH_WARNING,
+          'Bad posture detected',
           'Fix your posture to look and feel your best!');
 
         // Prevent sending out more notifications while still on the bad posture state
@@ -573,58 +593,64 @@ class PostureMonitor extends Component {
   }
 
   startSession() {
-    const {
-      sessionDuration,
-      slouchDistanceThreshold,
-      vibrationSpeed,
-      vibrationPattern,
-    } = this.state;
+    if (!this.state.hasPendingSessionOperation) {
+      const {
+        sessionDuration,
+        slouchDistanceThreshold,
+        vibrationSpeed,
+        vibrationPattern,
+      } = this.state;
 
-    const sessionParameters = {
-      sessionDuration,
-      // We use the slouchDistanceThreshold from state instead of user.settings.postureThreshold
-      // because the user may modify the threshold and resume the session before the
-      // updated threshold value is saved in the database and a response is returned
-      // from the API server to refresh the user object in the Redux store.
-      slouchDistanceThreshold,
-      vibrationSpeed,
-      vibrationPattern,
-    };
+      const sessionParameters = {
+        sessionDuration,
+        // We use the slouchDistanceThreshold from state instead of user.settings.postureThreshold
+        // because the user may modify the threshold and resume the session before the
+        // updated threshold value is saved in the database and a response is returned
+        // from the API server to refresh the user object in the Redux store.
+        slouchDistanceThreshold,
+        vibrationSpeed,
+        vibrationPattern,
+      };
 
-    Mixpanel.trackWithProperties('startSession', {
-      goalDuration: sessionDuration,
-    });
+      Mixpanel.trackWithProperties('startSession', {
+        goalDuration: sessionDuration,
+      });
 
-    SessionControlService.start(sessionParameters, err => {
-      if (err) {
-        const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
-        const message = `An error occurred while attempting to ${verb} the session.`;
-        if (this.state.sessionState === sessionStates.STOPPED) {
-          // No session has been started, which means the initial autostart failed, so we should
-          // just navigate back since there is nothing else the user can do in this scene
-          Alert.alert('Error', message);
-          this.props.navigator.pop();
+      this.setState({ hasPendingSessionOperation: true });
+
+      SessionControlService.start(sessionParameters, err => {
+        this.setState({ hasPendingSessionOperation: false });
+
+        if (err) {
+          const verb = this.state.sessionState === sessionStates.STOPPED ? 'start' : 'resume';
+          const message = `An error occurred while attempting to ${verb} the session.`;
+          if (this.state.sessionState === sessionStates.STOPPED) {
+            // No session has been started, which means the initial autostart failed, so we should
+            // just navigate back since there is nothing else the user can do in this scene
+            Alert.alert('Error', message);
+            this.props.navigator.pop();
+          } else {
+            // A session was already started, so an error here would be for resuming the session
+            this.sessionCommandAlert({
+              message,
+              rightButtonLabel: 'Retry',
+              rightButtonAction: this.startSession,
+            });
+          }
+
+          Mixpanel.trackError({
+            errorContent: err,
+            path: 'app/components/posture/PostureMonitor',
+            stackTrace: ['startSession', 'SessionControlService.start'],
+          });
         } else {
-          // A session was already started, so an error here would be for resuming the session
-          this.sessionCommandAlert({
-            message,
-            rightButtonLabel: 'Retry',
-            rightButtonAction: this.startSession,
+          this.setSessionState({
+            state: sessionStates.RUNNING,
+            parameters: sessionParameters,
           });
         }
-
-        Mixpanel.trackError({
-          errorContent: err,
-          path: 'app/components/posture/PostureMonitor',
-          stackTrace: ['startSession', 'SessionControlService.start'],
-        });
-      } else {
-        this.setSessionState({
-          state: sessionStates.RUNNING,
-          parameters: sessionParameters,
-        });
-      }
-    });
+      });
+    }
   }
 
   pauseSession() {
@@ -834,6 +860,9 @@ class PostureMonitor extends Component {
         <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
     }));
 
+    // Clear the slouch notification when the current session has ended
+    NotificationService.clearNotification(notificationTypes.SLOUCH_WARNING);
+
     // Vibrate the motor to indicate the current session has ended
     // only if it ends naturally without forcing it to stop
     if (!this.state.forceStoppedSession && backboneVibration) {
@@ -845,8 +874,13 @@ class PostureMonitor extends Component {
       ]);
     }
 
-    // Clear the slouch notification when the current session has ended
-    NotificationService.clearSlouchNotification();
+    if (AppState.currentState === 'background') {
+      // Notify the user that the current session has ended
+      // only when the app is in the background
+      NotificationService.sendNotification(notificationTypes.SESSION_COMPLETED,
+        'Congratulations!',
+        'You have just finished a posture session! See how you did.');
+    }
 
     if (!isiOS) {
       // Pop scene so if the Android back button is pressed while the modal
@@ -891,6 +925,7 @@ class PostureMonitor extends Component {
       postureThreshold,
       pointerPosition,
       sessionState,
+      hasPendingSessionOperation,
     } = this.state;
 
     const getPlayPauseButton = () => {
@@ -947,7 +982,7 @@ class PostureMonitor extends Component {
         />
         <View style={styles.btnContainer}>
           {getPlayPauseButton()}
-          {sessionState === sessionStates.RUNNING ?
+          {sessionState !== sessionStates.PAUSED || hasPendingSessionOperation ?
             <MonitorButton alertsDisabled disabled /> :
               <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />
           }

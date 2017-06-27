@@ -43,5 +43,9 @@
 - (BOOL)shouldRestart;
 - (CBCharacteristic*)getCharacteristicByUUID:(CBUUID*)uuid;
 
+- (void)writeToCharacteristic:(CBUUID*)uuid data:(NSData*)data;
+- (void)readCharacteristic:(CBUUID*)uuid;
+- (void)toggleCharacteristicNotification:(CBUUID*)uuid state:(BOOL)state;
+
 - (void)applicationWillTerminate:(NSNotification *)notification;
 @end
