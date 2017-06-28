@@ -4,7 +4,6 @@ import mockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
 import Signup from '../app/containers/Signup';
-import authActions from '../app/actions/auth';
 
 describe('Signup Component', () => {
   const initialState = {
@@ -27,9 +26,7 @@ describe('Signup Component', () => {
 
   test('Sign up action dispatched when clicked', () => {
     const btn = render.find('Button');
-    btn.simulate('click');
-    store.dispatch(authActions.signup({ email: 'test@email.com', password: 'password' }));
-
+    btn.simulate('press');
     const actions = store.getActions();
     expect(actions).toEqual([{ type: 'SIGNUP__START' }]);
   });
@@ -38,6 +35,7 @@ describe('Signup Component', () => {
     const emailInput = render.find('Input').at(0);
     const nextValue = 'some email';
     emailInput.simulate('changeText', nextValue);
+    expect(render.state().emailPristine).toEqual(false);
     expect(render.state().email).toEqual(nextValue);
   });
 
@@ -46,6 +44,7 @@ describe('Signup Component', () => {
     const nextValue = 'some password';
     passwordInput.simulate('changeText', nextValue);
     expect(render.state().password).toEqual(nextValue);
+    expect(render.state().passwordPristine).toEqual(false);
   });
 });
 
