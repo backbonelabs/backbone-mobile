@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BodyText Component renders as expected 1`] = `
+<View>
+  <Text
+    accessible={true}
+    allowFontScaling={false}
+    ellipsizeMode="tail"
+    remainingProps={Object {}}
+    style={
+      Array [
+        undefined,
+        Object {},
+      ]
+    }
+  />
+</View>
+`;
