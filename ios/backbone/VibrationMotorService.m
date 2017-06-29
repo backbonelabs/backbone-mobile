@@ -39,17 +39,23 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(vibrate:(NSArray*)vibrationParams) {
+  if (hasPendingOperation) return;
+  
   if ([BluetoothServiceInstance isDeviceReady] &&
       [BluetoothServiceInstance getCharacteristicByUUID:VIBRATION_MOTOR_CHARACTERISTIC_UUID]) {
     _currentVibrationCommands = [vibrationParams copy];
     currentVibrationIndex = 0;
+    hasPendingOperation = YES;
     [self sendNextVibrationCommand];
   }
 }
 
 - (void)sendNextVibrationCommand {
   // Check if there's any pending vibration commands
-  if (currentVibrationIndex == [_currentVibrationCommands count]) return;
+  if (currentVibrationIndex >= [_currentVibrationCommands count]) {
+    hasPendingOperation = NO;
+    return;
+  }
   
   NSDictionary *vibrationParam = (NSDictionary*)_currentVibrationCommands[currentVibrationIndex];
   int vibrationSpeed = (vibrationParam[@"vibrationSpeed"] ? [vibrationParam[@"vibrationSpeed"] intValue] : VIBRATION_DEFAULT_SPEED);
@@ -66,7 +72,7 @@ RCT_EXPORT_METHOD(vibrate:(NSArray*)vibrationParams) {
   
   NSData *data = [NSData dataWithBytes:bytes length:sizeof(bytes)];
   
-  [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:VIBRATION_MOTOR_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+  [BluetoothServiceInstance writeToCharacteristic:VIBRATION_MOTOR_CHARACTERISTIC_UUID data:data];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {

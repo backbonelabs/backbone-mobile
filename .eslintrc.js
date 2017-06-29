@@ -4,6 +4,9 @@ module.exports = {
   globals: {
     fetch: true,
   },
+  env: {
+    "jest": true
+  },
   rules: {
     'react/jsx-filename-extension': [1, { extensions: ['.js'] }],
     'consistent-return': [0],
@@ -11,5 +14,6 @@ module.exports = {
     'no-underscore-dangle': [0],
     'prefer-template': [1],
     'max-len': [2, {"code": 100}],
+    'import/no-extraneous-dependencies': [0]
   },
 };

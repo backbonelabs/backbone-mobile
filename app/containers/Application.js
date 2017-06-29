@@ -47,6 +47,7 @@ const {
   Environment,
   SessionControlService,
   DeviceInformationService,
+  UserService,
 } = NativeModules;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
@@ -373,11 +374,16 @@ class Application extends Component {
                   payload: user,
                 });
 
+                const id = user._id;
+
+                // Store user id on the native side
+                UserService.setUserId(id);
+
                 // Identify user for Bugsnag
-                Bugsnag.setUser(user._id, user.nickname, user.email);
+                Bugsnag.setUser(id, user.nickname, user.email);
 
                 // Identify user for Mixpanel
-                Mixpanel.identify(user._id);
+                Mixpanel.identify(id);
 
                 if (user.hasOnboarded) {
                   // User completed onboarding
@@ -605,7 +611,18 @@ class Application extends Component {
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
-                onPress={() => !isSameRoute && this.navigator.push(routes[value.routeName])}
+                onPress={() => {
+                  if (!isSameRoute) {
+                    // Reset the navigator stack if not on the posture dashboard so
+                    // the nav stack won't continue to expand.
+                    if (route.name === routes.postureDashboard.name) {
+                      this.navigator.push(routes[value.routeName]);
+                    } else {
+                      this.navigator.resetTo(routes[value.routeName]);
+                    }
+                  }
+                }
+              }
               >
                 <Image source={imageSource} style={styles.tabBarImage} />
                 <SecondaryText style={{ color: tabBarTextColor }}>{ value.name }</SecondaryText>

@@ -73,6 +73,7 @@
 #define NOTIFICATION_TYPE_DAILY_REMINDER        103
 #define NOTIFICATION_TYPE_SINGLE_REMINDER       104
 #define NOTIFICATION_TYPE_INFREQUENT_REMINDER   105
+#define NOTIFICATION_TYPE_SESSION_COMPLETED     106
 
 #define NOTIFICATION_INITIAL_DELAY_DAILY_REMINDER         24 * 60 * 60 // 1-day delay
 #define NOTIFICATION_INITIAL_DELAY_INFREQUENT_REMINDER    2 * 24 * 60 * 60 // 2-days delay
@@ -168,6 +169,13 @@
 #define CHECK_SUM   @"checkSum"
 #define CRC_16      @"crc_16"
 #define ROW_DATA    @"rowData"
+
+#define USER_DEFAULT__SESSION_ID_KEY      @"sessionId"
+#define USER_DEFAULT__START_TIMESTAMP_KEY @"startTimestamp"
+
+#define AMAZON_COGNITO_IDENTITY_POOL    @"us-west-2:70f7284b-3235-4b4d-82d5-bab9df3d80f5"
+#define FIREHOSE_POSTURE_SESSION_STREAM @"PostureSessionAccelerometerDeliveryStream"
+#define FIREHOSE_POSTURE_SESSION        @"PostureSessionDeliveryStream"
 
 /*
  Listing all type-definitions here
