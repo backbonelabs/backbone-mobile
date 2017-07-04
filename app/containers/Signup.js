@@ -26,7 +26,7 @@ import constants from '../utils/constants';
 import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
-import CheckBox from '../components/Checkbox';
+import Checkbox from '../components/Checkbox';
 import SecondaryText from '../components/SecondaryText';
 import theme from '../styles/theme';
 
@@ -316,7 +316,7 @@ class Signup extends Component {
                       : null
                     }
                   <View style={styles.legalInnerContainer}>
-                    <CheckBox
+                    <Checkbox
                       style={styles._checkBox}
                       onCheckedChange={this.onTOSChange}
                       checked={this.state.acceptedTOS}
