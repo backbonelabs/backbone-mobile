@@ -350,11 +350,10 @@ class Signup extends Component {
                     text="SIGN UP"
                     primary
                     disabled={
-                        this.props.inProgress ||
-                          !email ||
-                          !password ||
-                          !acceptedTOS
-                      }
+                      !email ||
+                      !password ||
+                      !acceptedTOS
+                    }
                     onPress={this.signup}
                   />
                 </View>
