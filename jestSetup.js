@@ -29,6 +29,11 @@ jest.mock('Animated', () => ({
 
 jest.mock('Keyboard', () => ({
   dismiss: jest.fn(),
+  addListener: jest.fn(),
+}));
+
+jest.mock('StatusBar', () => ({
+  currentHeight: '',
 }));
 
 jest.mock('react-native-fs', () => ({
