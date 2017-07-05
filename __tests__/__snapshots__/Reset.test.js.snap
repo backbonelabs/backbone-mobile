@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Reset Component renders as expected 1`] = `
+<TouchableWithoutFeedback
+  onPress={[Function]}
+>
+  <View
+    style={
+      Array [
+        undefined,
+        Object {
+          "height": 1314,
+        },
+      ]
+    }
+  >
+    <View>
+      <View>
+        <Image
+          source={1}
+          style={
+            Array [
+              undefined,
+              Object {
+                "height": 140,
+              },
+            ]
+          }
+        />
+        <HeadingText
+          size={2}
+          style={Object {}}
+        >
+          Password Recovery
+        </HeadingText>
+        <BodyText
+          style={Object {}}
+        >
+          Please enter your email address below and we'll send you a link to reset your password.
+        </BodyText>
+        <View>
+          <Input
+            autoCapitalize="none"
+            autoCorrect={false}
+            handleRef={[Function]}
+            iconFont="MaterialIcon"
+            iconLeftName="email"
+            iconStyle={
+              Object {
+                "color": "#9E9E9E",
+              }
+            }
+            keyboardType="email-address"
+            onChangeText={[Function]}
+            onSubmitEditing={null}
+            placeholder="Email"
+            returnKeyType="go"
+            style={
+              Object {
+                "color": "#231F20",
+              }
+            }
+            value={null}
+          />
+        </View>
+        <Button
+          disabled={true}
+          onPress={[Function]}
+          primary={true}
+          style={Object {}}
+          text="RESET"
+          textStyle={Object {}}
+        />
+        <TouchableOpacity
+          activeOpacity={0.4}
+          focusedOpacity={0.7}
+          onPress={[Function]}
+        >
+          <SecondaryText
+            style={Object {}}
+          >
+            Cancel
+          </SecondaryText>
+        </TouchableOpacity>
+      </View>
+    </View>
+  </View>
+</TouchableWithoutFeedback>
+`;
