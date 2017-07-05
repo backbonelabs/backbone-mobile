@@ -12,12 +12,13 @@ describe('Signup Component', () => {
   const store = mockStore([asyncActionMiddleware, thunk])(initialState);
   const wrapper = shallow(
     <Signup />,
-      { context: { store } },
-    );
-  const render = wrapper.dive();
+    { context: { store } },
+  );
+  let render;
 
   beforeEach(() => {
     store.clearActions();
+    render = wrapper.dive();
   });
 
   test('renders as expected', () => {
@@ -25,17 +26,36 @@ describe('Signup Component', () => {
   });
 
   test('Sign up action dispatched when clicked', () => {
-    const btn = render.find('Button');
+    const btn = render.find('Button').at(1);
+    render.setState({ email: 'testing@mail.com', password: 'password' });
     btn.simulate('press');
     const actions = store.getActions();
     expect(actions).toEqual([{ type: 'SIGNUP__START' }]);
+  });
+
+  test('Checkbox toggles acceptedTOS', () => {
+    const checkBox = render.find('Checkbox').shallow();
+    checkBox.simulate('press');
+    expect(render.state().acceptedTOS).toEqual(true);
+  });
+
+  test('Sign up button disabled on first render', () => {
+    const btn = render.find('Button').at(1);
+    expect(btn.props().disabled).toEqual(true);
+  });
+
+  test('Sign up button disabled remove', () => {
+    const checkBox = render.find('Checkbox').shallow();
+    render.setState({ email: 'testing@mail.com', password: 'password' });
+    checkBox.simulate('press');
+    const btn = render.find('Button').at(1);
+    expect(btn.props().disabled).toEqual(false);
   });
 
   test('Email state updates when text change', () => {
     const emailInput = render.find('Input').at(0);
     const nextValue = 'some email';
     emailInput.simulate('changeText', nextValue);
-    expect(render.state().emailPristine).toEqual(false);
     expect(render.state().email).toEqual(nextValue);
   });
 
@@ -44,7 +64,6 @@ describe('Signup Component', () => {
     const nextValue = 'some password';
     passwordInput.simulate('changeText', nextValue);
     expect(render.state().password).toEqual(nextValue);
-    expect(render.state().passwordPristine).toEqual(false);
   });
 });
 

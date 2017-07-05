@@ -4,34 +4,114 @@ exports[`Signup Component renders as expected 1`] = `
 <TouchableWithoutFeedback
   onPress={[Function]}
 >
-  <View>
-    <KeyboardAvoidingView
-      behavior="padding"
-      keyboardVerticalOffset={0}
-    >
-      <View>
-        <Image
-          source={1}
-        />
-        <BodyText
-          style={Object {}}
-        >
-          Look and feel stronger with Backbone
-        </BodyText>
+  <View
+    style={
+      Array [
+        undefined,
+        Object {
+          "height": 1314,
+        },
+      ]
+    }
+  >
+    <View>
+      <View
+        style={
+          Array [
+            undefined,
+            Object {
+              "flex": 1,
+            },
+          ]
+        }
+      >
         <View>
+          <Image
+            source={1}
+            style={
+              Array [
+                undefined,
+                Object {
+                  "height": 220,
+                },
+              ]
+            }
+          />
+        </View>
+        <View>
+          <TouchableOpacity
+            activeOpacity={0.2}
+            focusedOpacity={0.7}
+            onPress={[Function]}
+          >
+            <BodyText
+              style={Object {}}
+            >
+              Log In
+            </BodyText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.2}
+            focusedOpacity={0.7}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            <BodyText
+              style={Object {}}
+            >
+              Sign Up
+            </BodyText>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View>
+        <View>
+          <View>
+            <Button
+              fbBtn={true}
+              onPress={[Function]}
+              style={Object {}}
+              text="SIGN UP WITH FACEBOOK"
+              textStyle={Object {}}
+            />
+            <View>
+              <View />
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+              >
+                OR
+              </Text>
+              <View />
+            </View>
+          </View>
           <View>
             <Input
               autoCapitalize="none"
               autoCorrect={false}
-              autoFocus={true}
               handleRef={[Function]}
-              iconFont="FontAwesome"
+              iconFont="MaterialIcon"
+              iconLeftName="email"
+              iconStyle={
+                Object {
+                  "color": "#9E9E9E",
+                }
+              }
               keyboardType="email-address"
               onChangeText={[Function]}
               onSubmitEditing={[Function]}
               placeholder="Email"
               returnKeyType="next"
-              style={Object {}}
+              style={
+                Object {
+                  "color": "#231F20",
+                }
+              }
               value=""
             />
           </View>
@@ -40,87 +120,80 @@ exports[`Signup Component renders as expected 1`] = `
               autoCapitalize="none"
               autoCorrect={false}
               handleRef={[Function]}
-              iconFont="FontAwesome"
+              iconFont="MaterialIcon"
+              iconLeftName="lock"
+              iconStyle={
+                Object {
+                  "color": "#9E9E9E",
+                }
+              }
               keyboardType="default"
               onChangeText={[Function]}
               placeholder="Password"
               secureTextEntry={true}
-              style={Object {}}
+              style={
+                Object {
+                  "color": "#231F20",
+                }
+              }
               value=""
             />
           </View>
-          <BodyText
-            style={Object {}}
-          />
           <View>
+            <Checkbox
+              checked={false}
+              iconColor="white"
+              iconSize={36}
+              onCheckedChange={[Function]}
+            />
             <View>
-              <Checkbox
-                checked={false}
-                editable={true}
-                maskColor="transparent"
-                onCheckedChange={[Function]}
-                pointerEvents="box-only"
-                rippleColor="rgba(255, 255, 255, 0)"
-                style={
-                  Object {
-                    "alignItems": "center",
-                    "borderRadius": 1,
-                    "borderWidth": 2,
-                    "height": 20,
-                    "justifyContent": "center",
-                    "width": 20,
-                  }
-                }
-              />
-            </View>
-            <View>
-              <BodyText
+              <SecondaryText
                 style={Object {}}
               >
                 I agree to the 
-              </BodyText>
+              </SecondaryText>
               <TouchableOpacity
                 activeOpacity={0.4}
                 focusedOpacity={0.7}
                 onPress={[Function]}
               >
-                <BodyText
+                <SecondaryText
                   style={Object {}}
                 >
                   Terms of Service
-                </BodyText>
+                </SecondaryText>
               </TouchableOpacity>
-              <BodyText
+              <SecondaryText
                 style={Object {}}
               >
                  and 
-              </BodyText>
+              </SecondaryText>
               <TouchableOpacity
                 activeOpacity={0.4}
                 focusedOpacity={0.7}
                 onPress={[Function]}
               >
-                <BodyText
+                <SecondaryText
                   style={Object {}}
                 >
                   Privacy Policy
-                </BodyText>
+                </SecondaryText>
               </TouchableOpacity>
             </View>
           </View>
-          <View>
-            <Button
-              disabled={true}
-              onPress={[Function]}
-              primary={true}
-              style={Object {}}
-              text="SIGN UP"
-              textStyle={Object {}}
-            />
-          </View>
+        </View>
+        <View>
+          <Button
+            disabled={true}
+            onPress={[Function]}
+            primary={true}
+            style={Object {}}
+            text="SIGN UP"
+            textStyle={Object {}}
+          />
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   </View>
 </TouchableWithoutFeedback>
 `;
