@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import mockStore from 'redux-mock-store';
+import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
 import Reset from '../app/containers/Reset';
@@ -9,7 +9,7 @@ describe('Reset Component', () => {
   const initialState = {
     auth: {},
   };
-  const store = mockStore([asyncActionMiddleware, thunk])(initialState);
+  const store = configureStore([asyncActionMiddleware, thunk])(initialState);
   const wrapper = shallow(
     <Reset />,
     { context: { store } },

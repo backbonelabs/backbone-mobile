@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import mockStore from 'redux-mock-store';
+import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
 import Login from '../app/containers/Login';
@@ -10,7 +10,7 @@ describe('Login Component', () => {
     auth: {},
     user: {},
   };
-  const store = mockStore([asyncActionMiddleware, thunk])(initialState);
+  const store = configureStore([asyncActionMiddleware, thunk])(initialState);
   const wrapper = shallow(
     <Login />,
     { context: { store } },
