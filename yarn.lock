@@ -894,7 +894,7 @@ circular-json@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.3.1.tgz#be8b36aefccde8b3ca7aa2d6afc07a37242c0d2d"
 
-class-autobind@^0.1.4:
+class-autobind@0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/class-autobind/-/class-autobind-0.1.4.tgz#34516c49167cf8d3f639ddc186bcfa2268afff34"
 
@@ -2826,9 +2826,9 @@ react-native-extended-stylesheet@0.3.0:
     css-mediaquery "^0.1.2"
     object-resolve-path "^1.1.0"
 
-react-native-fbsdk@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-fbsdk/-/react-native-fbsdk-0.5.0.tgz#3ccd67d189755df11d366b8de9acb91ea2300e6e"
+react-native-fbsdk@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-fbsdk/-/react-native-fbsdk-0.5.1.tgz#6edc7be4a6bb19a421914be81a0fd9eeb54d2f6d"
 
 react-native-fs@2.1.0-rc.1:
   version v2.1.0-rc.1
