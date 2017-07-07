@@ -299,9 +299,7 @@ class Application extends Component {
             path: 'app/containers/Application',
             stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
           });
-        }
-
-        if (this.navigator !== null) {
+        } else if (this.navigator !== null) {
           const routeStack = this.navigator.getCurrentRoutes();
           const currentRoute = routeStack[routeStack.length - 1];
           const delay = (currentRoute.name === routes.deviceConnect.name ? 1000 : 0);
