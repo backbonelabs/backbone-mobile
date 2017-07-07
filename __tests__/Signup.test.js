@@ -26,8 +26,10 @@ describe('Signup Component', () => {
   });
 
   test('Sign up action dispatched when clicked', () => {
-    const btn = render.find('Button').at(1);
+    const checkBox = render.find('Checkbox').shallow();
     render.setState({ email: 'testing@mail.com', password: 'password' });
+    checkBox.simulate('press');
+    const btn = render.find('Button').at(1).shallow();
     btn.simulate('press');
     const actions = store.getActions();
     expect(actions).toEqual([{ type: 'SIGNUP__START' }]);
