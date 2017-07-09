@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Auth state actions -- creates a PASSWORD_RESET action 1`] = `
+Object {
+  "payload": [Function],
+  "type": "PASSWORD_RESET",
+}
+`;
+
+exports[`Auth state actions -- creates a SET_ACCESS_TOKEN action 1`] = `
+Object {
+  "payload": "token",
+  "type": "SET_ACCESS_TOKEN",
+}
+`;
+
+exports[`Auth state actions -- creates a SIGN_OUT action 1`] = `
+Object {
+  "type": "SIGN_OUT",
+}
+`;
+
+exports[`Auth state actions -- handles a LOGIN server error 1`] = `
+Array [
+  Object {
+    "type": "LOGIN__START",
+  },
+  Object {
+    "error": true,
+    "meta": undefined,
+    "payload": [Error: We are encountering server issues. Please try again later.],
+    "type": "LOGIN__ERROR",
+  },
+]
+`;
+
+exports[`Auth state actions -- handles a SIGNUP server error 1`] = `
+Array [
+  Object {
+    "type": "SIGNUP__START",
+  },
+  Object {
+    "error": true,
+    "meta": undefined,
+    "payload": [Error: We are encountering server issues. Please try again later.],
+    "type": "SIGNUP__ERROR",
+  },
+]
+`;
+
+exports[`Auth state actions -- handles a successfull LOGIN 1`] = `
+Array [
+  Object {
+    "type": "LOGIN__START",
+  },
+  Object {
+    "meta": undefined,
+    "payload": Object {
+      "email": "test@mail.com",
+      "password": "password",
+    },
+    "type": "LOGIN",
+  },
+]
+`;
+
+exports[`Auth state actions -- handles a successfull SIGNUP 1`] = `
+Array [
+  Object {
+    "type": "SIGNUP__START",
+  },
+  Object {
+    "meta": undefined,
+    "payload": Object {
+      "user": Object {
+        "_id": "id",
+        "email": "test@mail.com",
+        "password": "password",
+      },
+    },
+    "type": "SIGNUP",
+  },
+]
+`;
+
+exports[`Auth state actions -- handles a unsuccessfull LOGIN 1`] = `
+Array [
+  Object {
+    "type": "LOGIN__START",
+  },
+  Object {
+    "error": true,
+    "meta": undefined,
+    "payload": [Error: api server error],
+    "type": "LOGIN__ERROR",
+  },
+]
+`;
+
+exports[`Auth state actions -- handles a unsuccessfull SIGNUP 1`] = `
+Array [
+  Object {
+    "type": "SIGNUP__START",
+  },
+  Object {
+    "error": true,
+    "meta": undefined,
+    "payload": [Error: api server error],
+    "type": "SIGNUP__ERROR",
+  },
+]
+`;
+
+exports[`Auth state reducer -- should handle LOGIN 1`] = `
+Object {
+  "accessToken": undefined,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": undefined,
+}
+`;
+
+exports[`Auth state reducer -- should handle PASSWORD_RESET action 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": [Function],
+  "userId": null,
+}
+`;
+
+exports[`Auth state reducer -- should handle SET_ACCESS_TOKEN  1`] = `
+Object {
+  "accessToken": "token",
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth state reducer -- should handle SIGN_OUT action 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth state reducer -- should handle SIGNUP action 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth state reducer -- should return initial state 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
