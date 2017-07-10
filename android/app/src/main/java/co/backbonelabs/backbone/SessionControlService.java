@@ -488,8 +488,11 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             // There won't be any response back from the board if
             // writing to the session control characteristic failed
             Log.e(TAG, "Error initiating session control update");
-            errorCallBack.onIntCallBack(1);
-            errorCallBack = null;
+
+            if (errorCallBack != null) {
+                errorCallBack.onIntCallBack(1);
+                errorCallBack = null;
+            }
         }
     }
 
