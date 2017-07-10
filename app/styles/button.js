@@ -2,20 +2,24 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   button: {
     justifyContent: 'center',
-    backgroundColor: '$primaryColor',
+    backgroundColor: '$secondaryColor',
     width: applyWidthDifference(150),
-    height: 45 * heightDifference,
-    borderRadius: 5,
+    height: applyWidthDifference(50),
   },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '$primaryColor',
+  },
+  facebookBtn: {
+    justifyContent: 'center',
+    backgroundColor: '#3b5998',
+    width: '100%',
   },
   secondaryActive: {
     borderColor: '$activeBorderColor',
@@ -30,7 +34,7 @@ export default EStyleSheet.create({
   },
   disabledButton: {
     backgroundColor: () => (
-      color(EStyleSheet.value('$primaryColor')).clearer(0.6).rgbString() // 40% opacity
+      color(EStyleSheet.value('$secondaryColor')).clearer(0.6).rgbString() // 40% opacity
     ),
   },
   disabledSecondaryText: {

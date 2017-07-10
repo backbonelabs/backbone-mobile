@@ -14,6 +14,7 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
+<<<<<<< HEAD
 			<string>BSD License
 
 For Bolts software
@@ -75,11 +76,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			<string>Facebook Platform License</string>
 			<key>Title</key>
 			<string>FBSDKCoreKit</string>
+=======
+			<string>The AWS Mobile SDK for iOS is generally licensed under the Apache 2.0 License, with the Amazon Cognito Identity Provider and Amazon Cognito Sync subcomponents being licensed under the Amazon Software License and the AWSLex/Bluefront folder under the AWS Customer Agreement (https://aws.amazon.com/agreement/ ). 
+</string>
+			<key>License</key>
+			<string>Amazon Software License</string>
+			<key>Title</key>
+			<string>AWSCognito</string>
+>>>>>>> v2
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
 		<dict>
 			<key>FooterText</key>
+<<<<<<< HEAD
 			<string>Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
 You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
@@ -102,11 +112,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			<string>Facebook Platform License</string>
 			<key>Title</key>
 			<string>FBSDKLoginKit</string>
+=======
+			<string>The AWS Mobile SDK for iOS is generally licensed under the Apache 2.0 License, with the Amazon Cognito Identity Provider and Amazon Cognito Sync subcomponents being licensed under the Amazon Software License and the AWSLex/Bluefront folder under the AWS Customer Agreement (https://aws.amazon.com/agreement/ ). 
+</string>
+			<key>License</key>
+			<string>Apache License, Version 2.0</string>
+			<key>Title</key>
+			<string>AWSCore</string>
+>>>>>>> v2
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
 		<dict>
 			<key>FooterText</key>
+<<<<<<< HEAD
 			<string>Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
 You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
@@ -129,6 +148,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			<string>Facebook Platform License</string>
 			<key>Title</key>
 			<string>FBSDKShareKit</string>
+=======
+			<string>The AWS Mobile SDK for iOS is generally licensed under the Apache 2.0 License, with the Amazon Cognito Identity Provider and Amazon Cognito Sync subcomponents being licensed under the Amazon Software License and the AWSLex/Bluefront folder under the AWS Customer Agreement (https://aws.amazon.com/agreement/ ). 
+</string>
+			<key>License</key>
+			<string>Apache License, Version 2.0</string>
+			<key>Title</key>
+			<string>AWSKinesis</string>
+>>>>>>> v2
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>

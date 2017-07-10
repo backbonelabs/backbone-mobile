@@ -2,7 +2,6 @@ import activity from './activity';
 import deviceAdd from './device/deviceAdd';
 import deviceConnect from './device/deviceConnect';
 import deviceScan from './device/deviceScan';
-import welcome from './welcome';
 import login from './login';
 import signup from './signup';
 import device from './device';
@@ -28,7 +27,6 @@ export default {
   deviceAdd,
   deviceConnect,
   deviceScan,
-  welcome,
   login,
   signup,
   postureDashboard,

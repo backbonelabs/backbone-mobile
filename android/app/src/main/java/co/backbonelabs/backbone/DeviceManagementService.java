@@ -111,11 +111,18 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
                         connectionTimerRunnable = null;
                     }
 
-                    WritableMap wm = Arguments.createMap();
-                    wm.putBoolean("isConnected", true);
-                    wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
-                    wm.putNull("message");
-                    EventEmitter.send(reactContext, "ConnectionStatus", wm);
+                    DeviceInformationService.getInstance(reactContext).retrieveDeviceStatus(new Constants.MapCallBack() {
+                        @Override
+                        public void onMapCallBack(WritableMap map) {
+                            WritableMap wm = Arguments.createMap();
+                            wm.putBoolean("isConnected", true);
+                            wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
+                            wm.putBoolean("selfTestStatus", map.getBoolean("selfTestStatus"));
+                            EventEmitter.send(reactContext, "ConnectionStatus", wm);
+
+                            bluetoothService.emitDeviceState();
+                        }
+                    });
                 }
 
                 @Override

@@ -3,6 +3,7 @@ import {
   Image,
   View,
   Alert,
+  NativeModules,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -14,6 +15,11 @@ import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
 import HeadingText from '../components/HeadingText';
 import routes from '../routes';
+import constants from '../utils/constants';
+
+const { BluetoothService } = NativeModules;
+
+const { bluetoothStates } = constants;
 
 class Device extends Component {
   static propTypes = {
@@ -36,7 +42,17 @@ class Device extends Component {
   }
 
   addDevice() {
-    this.props.navigator.push(routes.deviceAdd);
+    BluetoothService.getState((error, { state }) => {
+      if (!error) {
+        if (state === bluetoothStates.ON) {
+          this.props.navigator.push(routes.deviceAdd);
+        } else {
+          this.showBluetoothError();
+        }
+      } else {
+        this.showBluetoothError();
+      }
+    });
   }
 
   unpairDevice() {
@@ -52,6 +68,10 @@ class Device extends Component {
         },
       ]
     );
+  }
+
+  showBluetoothError() {
+    Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
   }
 
   updateFirmware() {

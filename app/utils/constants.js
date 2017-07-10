@@ -44,6 +44,7 @@ export default {
     DAILY_REMINDER: 103,
     SINGLE_REMINDER: 104,
     INFREQUENT_REMINDER: 105,
+    SESSION_COMPLETED: 106,
   },
   vibrationDurations: {
     SHORT: 200,

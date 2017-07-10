@@ -1,4 +1,5 @@
 #import "BluetoothService.h"
+#import "DeviceInformationService.h"
 #import "BootLoaderService.h"
 #import <React/RCTUtils.h>
 
@@ -338,14 +339,18 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
         DLog(@"Firmware Updated Successfully");
         DLog(@"CURRENT DEVICE %i", self.currentDeviceMode);
         [[BootLoaderService getBootLoaderService] firmwareUpdated];
+        [[DeviceInformationService getDeviceInformationService] refreshDeviceTestStatus];
+        [self emitDeviceState];
       }
       else if (self.connectHandler) {
         self.connectHandler(nil);
         self.connectHandler = nil;
       }
+      else {
+        [self emitDeviceState];
+      }
         
       [BootLoaderService getBootLoaderService].bootLoaderState = BOOTLOADER_STATE_OFF;
-      [self emitDeviceState];
     }
   }
   else if (self.currentDeviceMode == DEVICE_MODE_BOOTLOADER) {
@@ -364,8 +369,9 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
           self.connectHandler(nil);
           self.connectHandler = nil;
         }
-        
-        [self emitDeviceState];
+        else {
+          [self emitDeviceState];
+        }
       }
       else if ([BootLoaderService getBootLoaderService].bootLoaderState == BOOTLOADER_STATE_UPLOADING) {
         DLog(@"Abort previous firmware update");
@@ -377,8 +383,9 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
           self.connectHandler(nil);
           self.connectHandler = nil;
         }
-        
-        [self emitDeviceState];
+        else {
+          [self emitDeviceState];
+        }
       }
     }
   }
@@ -418,6 +425,24 @@ RCT_EXPORT_METHOD(getState:(RCTResponseSenderBlock)callback) {
         [delegate peripheral:peripheral didUpdateValueForCharacteristic:characteristic error:error];
       }
     }
+  }
+}
+
+- (void)writeToCharacteristic:(CBUUID *)uuid data:(NSData *)data {
+  if ([self isDeviceReady] && [self getCharacteristicByUUID:uuid]) {
+    [_currentDevice writeValue:data forCharacteristic:[self getCharacteristicByUUID:uuid] type:CBCharacteristicWriteWithResponse];
+  }
+}
+
+- (void)readCharacteristic:(CBUUID *)uuid {
+  if ([self isDeviceReady] && [self getCharacteristicByUUID:uuid]) {
+    [_currentDevice readValueForCharacteristic:[self getCharacteristicByUUID:uuid]];
+  }
+}
+
+- (void)toggleCharacteristicNotification:(CBUUID *)uuid state:(BOOL)state {
+  if ([self isDeviceReady] && [self getCharacteristicByUUID:uuid]) {
+    [_currentDevice setNotifyValue:state forCharacteristic:[self getCharacteristicByUUID:uuid]];
   }
 }
 

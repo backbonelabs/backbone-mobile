@@ -1,5 +1,7 @@
 package co.backbonelabs.backbone.util;
 
+import com.facebook.react.bridge.WritableMap;
+
 import java.util.UUID;
 
 public class Constants {
@@ -18,6 +20,7 @@ public class Constants {
         int DAILY_REMINDER = 103;
         int SINGLE_REMINDER = 104;
         int INFREQUENT_REMINDER = 105;
+        int SESSION_COMPLETED = 106;
     }
 
     public interface NOTIFICATION_INITIAL_DELAYS {
@@ -54,6 +57,7 @@ public class Constants {
         int RESUME = 0x01;
         int PAUSE = 0x02;
         int STOP = 0x03;
+        int SELF_TEST = 0x04;
     }
 
     public interface VIBRATION_COMMANDS {
@@ -204,6 +208,7 @@ public class Constants {
         UUID ENTER_BOOTLOADER_CHARACTERISTIC = UUID.fromString("00010006-0000-1000-8000-00805F9B0421");
         UUID FIRMWARE_VERSION_CHARACTERISTIC = UUID.fromString("00010007-0000-1000-8000-00805F9B0421");
         UUID SLOUCH_CHARACTERISTIC = UUID.fromString("00010008-0000-1000-8000-00805F9B0421");
+        UUID DEVICE_STATUS_CHARACTERISTIC = UUID.fromString("00010009-0000-1000-8000-00805F9B0421");
         UUID BATTERY_LEVEL_CHARACTERISTIC = UUID.fromString("00002A19-0000-1000-8000-00805F9B34FB");
         UUID BOOTLOADER_CHARACTERISTIC = UUID.fromString("00060001-F8CE-11E4-ABF4-0002A5D5C51B");
     }
@@ -214,6 +219,10 @@ public class Constants {
 
     public interface IntCallBack {
         void onIntCallBack(int value);
+    }
+
+    public interface MapCallBack {
+        void onMapCallBack(WritableMap map);
     }
 
     public final static int MAX_BLE_ACTION_ATTEMPT = 50;
@@ -261,4 +270,14 @@ public class Constants {
     public static final String NOTIFICATION_PARAMETER_SCHEDULED_MINUTE = "scheduledMinute";
     public static final String NOTIFICATION_PARAMETER_SCHEDULED_SECOND = "scheduledSecond";
     public static final String NOTIFICATION_PARAMETER_SCHEDULED_TIMESTAMP = "scheduledTimestamp";
+
+    public static final String POSTURE_SESSION_PREFERENCES = "co.backbonelabs.backbone.POSTURE_SESSION_PREFERENCES";
+    public static final String POSTURE_SESSION_PREFERENCE_SESSION_ID = "sessionId";
+    public static final String POSTURE_SESSION_PREFERENCE_START_TIMESTAMP = "startTimestamp";
+
+    public static final String AMAZON_COGNITO_IDENTITY_POOL = "us-west-2:70f7284b-3235-4b4d-82d5-bab9df3d80f5";
+    public interface FIREHOSE_STREAMS {
+        String POSTURE_SESSION_STREAM = "PostureSessionAccelerometerDeliveryStream";
+        String POSTURE_SESSION = "PostureSessionDeliveryStream";
+    }
 }

@@ -12,6 +12,7 @@ import {
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -20,7 +21,6 @@ import Button from '../components/Button';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import arrow from '../images/settings/arrow.png';
-import batteryIcon from '../images/settings/batteryIcon.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
 import styles from '../styles/settings';
 import theme from '../styles/theme';
@@ -38,6 +38,24 @@ const ArrowIcon = () => (
   </View>
 );
 
+const getBatteryIcon = (batteryLevel) => {
+  let batteryIcon;
+  if (batteryLevel >= 90) {
+    batteryIcon = 'battery-full';
+  } else if (batteryLevel >= 75) {
+    batteryIcon = 'battery-three-quarters';
+  } else if (batteryLevel >= 50) {
+    batteryIcon = 'battery-half';
+  } else if (batteryLevel >= 25) {
+    batteryIcon = 'battery-quarter';
+  } else {
+    batteryIcon = 'battery-empty';
+  }
+  return batteryLevel < 25 ?
+    <FontAwesomeIcon name={batteryIcon} style={styles.batteryIconRed} /> :
+      <FontAwesomeIcon name={batteryIcon} style={styles.batteryIconGreen} />;
+};
+
 const SensorSettings = props => (
   <TouchableOpacity
     onPress={() => props.navigator.push(routes.device)}
@@ -54,9 +72,9 @@ const SensorSettings = props => (
       {props.isConnected &&
         <View style={styles.batteryInfo}>
           <SecondaryText style={styles._deviceInfoText}>
-            Battery Life: { props.device.batteryLevel || '--' }%
+            Battery Life: { props.device.batteryLevel || '--' }%{' '}
           </SecondaryText>
-          <Image source={batteryIcon} style={styles.batteryIcon} />
+          {getBatteryIcon(props.device.batteryLevel)}
         </View>
       }
     </View>
@@ -332,7 +350,7 @@ class Settings extends Component {
             this.props.dispatch(authActions.signOut());
             // Disconnect from device
             this.props.dispatch(deviceActions.disconnect());
-            this.props.navigator.resetTo(routes.welcome);
+            this.props.navigator.resetTo(routes.login);
           },
         },
       ]

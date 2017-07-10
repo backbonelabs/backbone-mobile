@@ -46,11 +46,14 @@ const {
   DeviceManagementService,
   Environment,
   SessionControlService,
+  DeviceInformationService,
+  UserService,
 } = NativeModules;
 
 const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
 const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
 const DeviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
+const DeviceInformationServiceEvents = new NativeEventEmitter(DeviceInformationService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -62,6 +65,11 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
 });
 
 const isiOS = Platform.OS === 'ios';
+
+const statusBarProps = {
+  barStyle: 'dark-content',
+  backgroundColor: 'white',
+};
 
 class Application extends Component {
   static propTypes = {
@@ -81,7 +89,10 @@ class Application extends Component {
       email: PropTypes.string,
     }),
     device: PropTypes.shape({
-      batteryLevel: PropTypes.number,
+      selfTestStatus: PropTypes.bool,
+      device: PropTypes.shape({
+        batteryLevel: PropTypes.number,
+      }),
     }),
   };
 
@@ -185,6 +196,29 @@ class Application extends Component {
       }
     });
 
+    this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
+      ({ message, success }) => {
+        if (message) {
+          Mixpanel.trackWithProperties('selfTest-error', {
+            errorMessage: message,
+          });
+
+          this.props.dispatch(deviceActions.selfTestUpdated(false));
+
+          Alert.alert('Error', 'Your Backbone sensor needs to be fixed. ' +
+            'Perform an update now to continue using your Backbone.', [
+            { text: 'Cancel' },
+            { text: 'Update', onPress: () => this.navigator.push(routes.device) },
+            ]
+          );
+        } else {
+          const result = (success ? 'success' : 'failed');
+          Mixpanel.track(`selfTest-${result}`);
+
+          this.props.dispatch(deviceActions.selfTestUpdated(success));
+        }
+      });
+
     // Handle SessionState events
     this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
       if (this.state.isFetchingSessionState) {
@@ -270,7 +304,9 @@ class Application extends Component {
             path: 'app/containers/Application',
             stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
           });
-        } else {
+        }
+
+        if (this.navigator !== null) {
           const routeStack = this.navigator.getCurrentRoutes();
           const currentRoute = routeStack[routeStack.length - 1];
           const delay = (currentRoute.name === routes.deviceConnect.name ? 1000 : 0);
@@ -289,6 +325,14 @@ class Application extends Component {
                 ]
               );
             }, delay);
+          } else if (!status.selfTestStatus) {
+            // Self-Test failed, request a re-run
+            Mixpanel.track('selfTest-begin');
+
+            DeviceInformationService.requestSelfTest();
+            this.props.dispatch(deviceActions.selfTestRequested());
+          } else {
+            this.props.dispatch(deviceActions.selfTestUpdated(status.selfTestStatus));
           }
         }
 
@@ -330,11 +374,16 @@ class Application extends Component {
                   payload: user,
                 });
 
+                const id = user._id;
+
+                // Store user id on the native side
+                UserService.setUserId(id);
+
                 // Identify user for Bugsnag
-                Bugsnag.setUser(user._id, user.nickname, user.email);
+                Bugsnag.setUser(id, user.nickname, user.email);
 
                 // Identify user for Mixpanel
-                Mixpanel.identify(user._id);
+                Mixpanel.identify(id);
 
                 if (user.hasOnboarded) {
                   // User completed onboarding
@@ -369,7 +418,7 @@ class Application extends Component {
   // Alert will only trigger once during the lifetime of the app.
   componentWillReceiveProps(nextProps) {
     if (!this.state.hasDisplayedLowBatteryWarning) {
-      const { batteryLevel } = nextProps.device;
+      const { batteryLevel } = nextProps.device.device;
       if (batteryLevel <= 15 && batteryLevel > 0) {
         this.setState({ hasDisplayedLowBatteryWarning: true });
         Alert.alert(
@@ -390,6 +439,9 @@ class Application extends Component {
     if (this.deviceStateListener) {
       this.deviceStateListener.remove();
     }
+    if (this.deviceTestStatusListener) {
+      this.deviceTestStatusListener.remove();
+    }
     if (this.sessionStateListener) {
       this.sessionStateListener.remove();
     }
@@ -401,9 +453,9 @@ class Application extends Component {
 
   /**
    * Defines the initial scene to mount and ends the initialization process
-   * @param {Object} route=routes.welcome Route object, defaults to the welcome route
+   * @param {Object} route=routes.login Route object, defaults to the login route
    */
-  setInitialRoute(route = routes.welcome) {
+  setInitialRoute(route = routes.login) {
     // Intentionally add a delay because sometimes the initialization process
     // can be so quick that the spinner icon only flashes for a blink of an eye,
     // and it might not be obvious it was a spinner icon indicating some type of
@@ -439,6 +491,11 @@ class Application extends Component {
   }
 
   checkActiveSession() {
+    // If the device failed the self-test, we shouldn't attempt to recover any sessions
+    if (!this.props.device.selfTestStatus) {
+      return;
+    }
+
     SensitiveInfo.getItem(storageKeys.SESSION_STATE)
       .then(prevSessionState => {
         if (prevSessionState) {
@@ -554,7 +611,18 @@ class Application extends Component {
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
-                onPress={() => !isSameRoute && this.navigator.push(routes[value.routeName])}
+                onPress={() => {
+                  if (!isSameRoute) {
+                    // Reset the navigator stack if not on the posture dashboard so
+                    // the nav stack won't continue to expand.
+                    if (route.name === routes.postureDashboard.name) {
+                      this.navigator.push(routes[value.routeName]);
+                    } else {
+                      this.navigator.resetTo(routes[value.routeName]);
+                    }
+                  }
+                }
+              }
               >
                 <Image source={imageSource} style={styles.tabBarImage} />
                 <SecondaryText style={{ color: tabBarTextColor }}>{ value.name }</SecondaryText>
@@ -625,13 +693,6 @@ class Application extends Component {
   }
 
   render() {
-    const statusBarProps = {};
-    if (isiOS) {
-      statusBarProps.barStyle = 'light-content';
-    } else {
-      statusBarProps.backgroundColor = theme.primaryColor;
-    }
-
     return (
       <View style={{ flex: 1 }}>
         <StatusBar {...statusBarProps} />
@@ -640,7 +701,7 @@ class Application extends Component {
           // a static View is overlayed on top of the status bar for all scenes
           <View
             style={{
-              backgroundColor: theme.primaryColor,
+              backgroundColor: 'white',
               height: theme.statusBarHeight,
             }}
           />
@@ -660,7 +721,7 @@ class Application extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user }, device: { device } } = state;
+  const { app, user: { user }, device } = state;
   return { app, user, device };
 };
 

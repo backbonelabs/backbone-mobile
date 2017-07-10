@@ -11,6 +11,7 @@
 #import "BluetoothService.h"
 #import "BootLoaderService.h"
 #import "SessionControlService.h"
+#import "NotificationService.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import "Mixpanel/Mixpanel.h"
@@ -131,7 +132,8 @@
 
 // Handler for application termination
 - (void)applicationWillTerminate:(UIApplication *)application {
-
+  // Whenever possible, attempt to clear out notifications before app termination
+  [NotificationService clearNotifications];
 }
 
 @end

@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Signup Component renders as expected 1`] = `
+<TouchableWithoutFeedback
+  onPress={[Function]}
+>
+  <View>
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={0}
+    >
+      <View>
+        <Image
+          source={1}
+        />
+        <BodyText
+          style={Object {}}
+        >
+          Look and feel stronger with Backbone
+        </BodyText>
+        <View>
+          <View>
+            <Input
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoFocus={true}
+              handleRef={[Function]}
+              iconFont="FontAwesome"
+              keyboardType="email-address"
+              onChangeText={[Function]}
+              onSubmitEditing={[Function]}
+              placeholder="Email"
+              returnKeyType="next"
+              style={Object {}}
+              value=""
+            />
+          </View>
+          <View>
+            <Input
+              autoCapitalize="none"
+              autoCorrect={false}
+              handleRef={[Function]}
+              iconFont="FontAwesome"
+              keyboardType="default"
+              onChangeText={[Function]}
+              placeholder="Password"
+              secureTextEntry={true}
+              style={Object {}}
+              value=""
+            />
+          </View>
+          <BodyText
+            style={Object {}}
+          />
+          <View>
+            <View>
+              <Checkbox
+                checked={false}
+                editable={true}
+                maskColor="transparent"
+                onCheckedChange={[Function]}
+                pointerEvents="box-only"
+                rippleColor="rgba(255, 255, 255, 0)"
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "borderRadius": 1,
+                    "borderWidth": 2,
+                    "height": 20,
+                    "justifyContent": "center",
+                    "width": 20,
+                  }
+                }
+              />
+            </View>
+            <View>
+              <BodyText
+                style={Object {}}
+              >
+                I agree to the 
+              </BodyText>
+              <TouchableOpacity
+                activeOpacity={0.4}
+                focusedOpacity={0.7}
+                onPress={[Function]}
+              >
+                <BodyText
+                  style={Object {}}
+                >
+                  Terms of Service
+                </BodyText>
+              </TouchableOpacity>
+              <BodyText
+                style={Object {}}
+              >
+                 and 
+              </BodyText>
+              <TouchableOpacity
+                activeOpacity={0.4}
+                focusedOpacity={0.7}
+                onPress={[Function]}
+              >
+                <BodyText
+                  style={Object {}}
+                >
+                  Privacy Policy
+                </BodyText>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View>
+            <Button
+              disabled={true}
+              onPress={[Function]}
+              primary={true}
+              style={Object {}}
+              text="SIGN UP"
+              textStyle={Object {}}
+            />
+          </View>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
+  </View>
+</TouchableWithoutFeedback>
+`;

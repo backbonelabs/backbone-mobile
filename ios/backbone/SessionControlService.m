@@ -8,8 +8,13 @@
 
 #import "SessionControlService.h"
 #import "BluetoothService.h"
+#import "DeviceInformationService.h"
 #import <React/RCTUtils.h>
 #import "Utilities.h"
+#import "UserService.h"
+#import <AWSCore/AWSCore.h>
+#import <AWSCognito/AWSCognito.h>
+#import <AWSKinesis/AWSKinesis.h>
 
 @implementation SessionControlService
 
@@ -28,6 +33,28 @@
   self = [super init];
   DLog(@"SessionControl init");
   [BluetoothServiceInstance addCharacteristicDelegate:self];
+  
+  shouldFlushFirehoseRecords = YES;
+  timestampFormatter = [[NSDateFormatter alloc] init];
+  [timestampFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+  [timestampFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"];
+  
+  // Set up Firehose
+  AWSCognitoCredentialsProvider *credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionUSWest2 identityPoolId:AMAZON_COGNITO_IDENTITY_POOL];
+  
+  AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUSWest2 credentialsProvider:credentialsProvider];
+  
+  AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
+  
+  firehoseRecorder = [AWSFirehoseRecorder defaultFirehoseRecorder];
+  
+  // Submit any pending Firehose records
+  [self submitFirehoseRecords];
+  
+  // Load details of previous session, if any
+  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+  sessionId = [userDefaults stringForKey:USER_DEFAULT__SESSION_ID_KEY];
+  sessionStartTimestamp = [userDefaults doubleForKey:USER_DEFAULT__START_TIMESTAMP_KEY];
   
   sessionDuration = SESSION_DEFAULT_DURATION;
   sessionDistanceThreshold = SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
@@ -51,6 +78,35 @@
 
 - (BOOL)hasActiveSession {
   return currentSessionState == SESSION_STATE_RUNNING || currentSessionState == SESSION_STATE_PAUSED;
+}
+
++ (NSMutableData *)dataFromHexString:(NSString *)string
+{
+  NSMutableData *data = [NSMutableData new];
+  NSCharacterSet *hexSet = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789ABCDEF "] invertedSet];
+  
+  // Check whether the string is a valid hex string. Otherwise return empty data
+  if ([string rangeOfCharacterFromSet:hexSet].location == NSNotFound) {
+    
+    string = [string lowercaseString];
+    unsigned char whole_byte;
+    char byte_chars[3] = {'\0','\0','\0'};
+    int i = 0;
+    int length = (int)string.length;
+    
+    while (i < length-1)
+    {
+      char c = [string characterAtIndex:i++];
+      
+      if (c < '0' || (c > '9' && c < 'a') || c > 'f')
+        continue;
+      byte_chars[0] = c;
+      byte_chars[1] = [string characterAtIndex:i++];
+      whole_byte = strtol(byte_chars, NULL, 16);
+      [data appendBytes:&whole_byte length:1];
+    }
+  }
+  return data;
 }
 
 - (NSArray<NSString *> *)supportedEvents {
@@ -197,11 +253,12 @@ RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
  The results will be emitted through a SessionState event to JS.
  */
 RCT_EXPORT_METHOD(getSessionState) {
+  DLog(@"GetSessionState");
   CBCharacteristic *sessionStatistics = [BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID];
 
   if ([BluetoothServiceInstance isDeviceReady] && sessionStatistics) {
     requestedReadSessionStatistics = YES;
-    [BluetoothServiceInstance.currentDevice readValueForCharacteristic:sessionStatistics];
+    [BluetoothServiceInstance readCharacteristic:SESSION_STATISTIC_CHARACTERISTIC_UUID];
   }
   else {
     [self sendEventWithName:@"SessionState" body:@{
@@ -213,6 +270,7 @@ RCT_EXPORT_METHOD(getSessionState) {
 }
 
 - (void)toggleSessionOperation:(int)operation withHandler:(ErrorHandler)handler{
+  DLog(@"Toggle Session State %d", operation);
   _errorHandler = handler;
   
   currentCommand = operation;
@@ -220,6 +278,24 @@ RCT_EXPORT_METHOD(getSessionState) {
   
   // 'Start' and 'Resume' operations require additional parameters to be sent
   if (operation == SESSION_OPERATION_START) {
+    // We generate the session id locally on the phone because we can't rely on the user
+    // being connected to the internet when starting a session. This session id will be
+    // sent to our data warehouse. The session id format is the user id and current
+    // timestamp in seconds separated by a hyphen.
+    NSString *userId = [[UserService getUserService] getUserId];
+    if (userId == nil) {
+      userId = @"";
+    }
+    sessionStartTimestamp = [[NSDate date] timeIntervalSince1970];
+    DLog(@"sessionStartTimestamp %f", sessionStartTimestamp);
+    sessionId = [NSString stringWithFormat:@"%@-%ld", userId, (long)sessionStartTimestamp];
+    DLog(@"sessionId %@", sessionId);
+    
+    // Store session details in case app is terminated in the middle of a posture session
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:sessionId forKey:USER_DEFAULT__SESSION_ID_KEY];
+    [userDefaults setDouble:sessionStartTimestamp forKey:USER_DEFAULT__START_TIMESTAMP_KEY];
+    
     int sessionDurationInSecond = sessionDuration * 60; // Convert to second from minute
     
     uint8_t bytes[12];
@@ -251,7 +327,11 @@ RCT_EXPORT_METHOD(getSessionState) {
     
     DLog(@"Toggle Session %@", data);
     
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    // Toggle accelerometer notification separately because the app doesn't rely on the
+    // accelerometer notifications to monitor a posture session
+    [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:YES];
+    
+    [BluetoothServiceInstance writeToCharacteristic:SESSION_CONTROL_CHARACTERISTIC_UUID data:data];
   }
   else if (operation == SESSION_OPERATION_RESUME) {
     uint8_t bytes[8];
@@ -278,7 +358,11 @@ RCT_EXPORT_METHOD(getSessionState) {
     
     DLog(@"Toggle Session %@", data);
     
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    // Toggle accelerometer notification separately because the app doesn't rely on the
+    // accelerometer notifications to monitor a posture session
+    [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:YES];
+    
+    [BluetoothServiceInstance writeToCharacteristic:SESSION_CONTROL_CHARACTERISTIC_UUID data:data];
   }
   else {
     uint8_t bytes[1];
@@ -300,6 +384,12 @@ RCT_EXPORT_METHOD(getSessionState) {
         distanceNotificationStatus = NO;
         slouchNotificationStatus = NO;
         
+        // Save session record for Firehose
+        [self saveSessionToFirehose];
+        
+        // Submit all pending Firehose records
+        [self submitFirehoseRecords];
+        
         break;
     }
     
@@ -307,10 +397,12 @@ RCT_EXPORT_METHOD(getSessionState) {
     
     DLog(@"Toggle Session %@", data);
     
-    [BluetoothServiceInstance.currentDevice writeValue:data forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID] type:CBCharacteristicWriteWithResponse];
+    // Toggle accelerometer notification separately because the app doesn't rely on the
+    // accelerometer notifications to monitor a posture session
+    [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:NO];
+    
+    [BluetoothServiceInstance writeToCharacteristic:SESSION_CONTROL_CHARACTERISTIC_UUID data:data];
   }
-  
-  DLog(@"Toggle Session State %d", operation);
 }
 
 - (void)revertOperation {
@@ -337,6 +429,44 @@ RCT_EXPORT_METHOD(getSessionState) {
     default:
       break;
   }
+}
+
+/**
+ * Saves a posture session record to Firehose and clears the session details from UserPreferences
+ */
+- (void)saveSessionToFirehose {
+  DLog(@"saveSessionToFirehose");
+  NSString *userId = [[UserService getUserService] getUserId];
+  if (userId == nil) {
+    userId = @"";
+  }
+  
+  NSString *startDateTime = [timestampFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:sessionStartTimestamp]];
+  NSString *endDateTime = [timestampFormatter stringFromDate:[NSDate date]];
+  NSString *recordString = [NSString stringWithFormat:@"%@,%@,%@,%@\n", sessionId, userId, startDateTime, endDateTime];
+  DLog(@"Firehose posture session record: %@", recordString);
+  NSData *record = [recordString dataUsingEncoding:NSUTF8StringEncoding];
+  [firehoseRecorder saveRecord:record streamName:FIREHOSE_POSTURE_SESSION];
+  
+  // Remove session data
+  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+  [userDefaults removeObjectForKey:USER_DEFAULT__SESSION_ID_KEY];
+  [userDefaults removeObjectForKey:USER_DEFAULT__START_TIMESTAMP_KEY];
+}
+
+/**
+ * Submits all pending Firehose records
+ */
+- (void)submitFirehoseRecords {
+  DLog(@"Submitting pending Firehose records");
+  [[firehoseRecorder submitAllRecords] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
+    if (task.error) {
+      DLog(@"Error: %@", task.error);
+    } else {
+      DLog(@"Submitted Firehose records");
+    }
+    return nil;
+  }];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
@@ -417,6 +547,7 @@ RCT_EXPORT_METHOD(getSessionState) {
         // So we have to disable all notifications after we receive it
         // Only perform the following statements when the session naturally finished
         if (!forceStoppedSession) {
+          DLog(@"Session automatically stopped");
           _errorHandler = nil;
           
           currentSessionState = SESSION_STATE_STOPPED;
@@ -425,7 +556,14 @@ RCT_EXPORT_METHOD(getSessionState) {
           slouchNotificationStatus = NO;
           statisticNotificationStatus = NO;
           
-          [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
+          [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:NO];
+          [BluetoothServiceInstance toggleCharacteristicNotification:SESSION_DATA_CHARACTERISTIC_UUID state:distanceNotificationStatus];
+          
+          // Save session record for Firehose
+          [self saveSessionToFirehose];
+          
+          // Submit pending Firehose records
+          [self submitFirehoseRecords];
         }
       }
     }
@@ -437,6 +575,46 @@ RCT_EXPORT_METHOD(getSessionState) {
       [self sendEventWithName:@"SlouchStatus" body:@{
                                                      @"isSlouching": [NSNumber numberWithBool:isSlouching]
                                                      }];
+    }
+    else if ([characteristic.UUID isEqual:ACCELEROMETER_CHARACTERISTIC_UUID]) {
+      uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
+      
+      if (currentSessionState == SESSION_STATE_RUNNING) {
+        // Only save data to Firehose if session is running in case other modules are
+        // enabling accelerometer notifications outside of a posture session
+        float x = [Utilities convertToFloatFromBytes:dataPointer offset:0];
+        float y = [Utilities convertToFloatFromBytes:dataPointer offset:4];
+        float z = [Utilities convertToFloatFromBytes:dataPointer offset:8];
+        
+        DLog(@"Accelerometer data %f %f %f", x, y, z);
+        
+        // Queue accelerometer record for Firehose
+        NSString *now = [timestampFormatter stringFromDate:[NSDate date]];
+        NSString *recordString = [NSString stringWithFormat:@"%@,%@,%f,%f,%f\n", sessionId, now, x, y, z];
+        NSData *record = [recordString dataUsingEncoding:NSUTF8StringEncoding];
+        [firehoseRecorder saveRecord:record streamName:FIREHOSE_POSTURE_SESSION_STREAM];
+        
+        // Periodically submit records to Firehose to make
+        // sure the storage limit isn't reached. This will be
+        // done when the storage usage is at 50%, 75%, and 90%.
+        long storageLimit = [firehoseRecorder diskByteLimit];
+        long storageUsed = [firehoseRecorder diskBytesUsed];
+        float storageUsage = (float)storageUsed / storageLimit;
+        if (storageUsage >= 0.9 && shouldFlushFirehoseRecords) {
+          shouldFlushFirehoseRecords = NO;
+          [self submitFirehoseRecords];
+        } else if (storageUsage >= 0.76) {
+          shouldFlushFirehoseRecords = YES;
+        } else if (storageUsage >= 0.75) {
+          shouldFlushFirehoseRecords = NO;
+          [self submitFirehoseRecords];
+        } else if (storageUsage >= 0.51) {
+          shouldFlushFirehoseRecords = YES;
+        } else if (storageUsage >= 0.5 && shouldFlushFirehoseRecords) {
+          shouldFlushFirehoseRecords = NO;
+          [self submitFirehoseRecords];
+        }
+      }
     }
   }
 }
@@ -451,11 +629,13 @@ RCT_EXPORT_METHOD(getSessionState) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        _errorHandler = nil;
+
         [self revertOperation];
       }
     }
     else {
-      [BluetoothServiceInstance.currentDevice setNotifyValue:slouchNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]];
+      [BluetoothServiceInstance toggleCharacteristicNotification:SLOUCH_CHARACTERISTIC_UUID state:slouchNotificationStatus];
     }
   }
   else if ([characteristic.UUID isEqual:SLOUCH_CHARACTERISTIC_UUID]) {
@@ -464,13 +644,14 @@ RCT_EXPORT_METHOD(getSessionState) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        _errorHandler = nil;
         
         notificationStateChanged = YES;
         [self revertOperation];
       }
     }
     else {
-      [BluetoothServiceInstance.currentDevice setNotifyValue:statisticNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_STATISTIC_CHARACTERISTIC_UUID]];
+      [BluetoothServiceInstance toggleCharacteristicNotification:SESSION_STATISTIC_CHARACTERISTIC_UUID state:statisticNotificationStatus];
     }
   }
   else if ([characteristic.UUID isEqual:SESSION_STATISTIC_CHARACTERISTIC_UUID]) {
@@ -479,6 +660,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        _errorHandler = nil;
         
         notificationStateChanged = YES;
         [self revertOperation];
@@ -488,6 +670,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       // Session control is fully updated, return callback with no error
       if (_errorHandler) {
         _errorHandler(nil);
+        _errorHandler = nil;
       }
     }
   }
@@ -501,6 +684,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       
       if (_errorHandler) {
         _errorHandler(error);
+        _errorHandler = nil;
       }
     }
     else {
@@ -508,7 +692,7 @@ RCT_EXPORT_METHOD(getSessionState) {
         // No error, so we proceed to toggling distance notification when needed
         notificationStateChanged = NO;
         
-        [BluetoothServiceInstance.currentDevice setNotifyValue:distanceNotificationStatus forCharacteristic:[BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]];
+        [BluetoothServiceInstance toggleCharacteristicNotification:SESSION_DATA_CHARACTERISTIC_UUID state:distanceNotificationStatus];
       }
       else {
         // For reverting, no need toggling the notification on the same state.
