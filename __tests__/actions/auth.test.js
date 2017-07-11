@@ -20,14 +20,14 @@ describe('Auth state', () => {
       store.clearActions();
     });
 
-    test('handles a successfull LOGIN', async () => {
+    test('handles a successful LOGIN', async () => {
       const user = { email: 'test@mail.com', password: 'password' };
       fetch.mockResponseSuccess(user);
       await store.dispatch(authActions.login());
       expect(store.getActions()).toMatchSnapshot();
     });
 
-    test('handles a unsuccessfull LOGIN', async () => {
+    test('handles a unsuccessful LOGIN', async () => {
       const userErr = { email: 'test@mail.com', password: 'password', error: 'api server error' };
       fetch.mockResponseSuccess(userErr);
       await store.dispatch(authActions.login());
@@ -40,7 +40,7 @@ describe('Auth state', () => {
       expect(store.getActions()).toMatchSnapshot();
     });
 
-    test('handles a successfull SIGNUP', async () => {
+    test('handles a successful SIGNUP', async () => {
       const body = {
         user: {
           email: 'test@mail.com',
@@ -53,7 +53,7 @@ describe('Auth state', () => {
       expect(store.getActions()).toMatchSnapshot();
     });
 
-    test('handles a unsuccessfull SIGNUP', async () => {
+    test('handles a unsuccessful SIGNUP', async () => {
       const body = {
         user: {
           email: 'test@mail.com',

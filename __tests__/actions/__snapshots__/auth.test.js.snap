@@ -48,7 +48,7 @@ Array [
 ]
 `;
 
-exports[`Auth state actions -- handles a successfull LOGIN 1`] = `
+exports[`Auth state actions -- handles a successful LOGIN 1`] = `
 Array [
   Object {
     "type": "LOGIN__START",
@@ -64,7 +64,7 @@ Array [
 ]
 `;
 
-exports[`Auth state actions -- handles a successfull SIGNUP 1`] = `
+exports[`Auth state actions -- handles a successful SIGNUP 1`] = `
 Array [
   Object {
     "type": "SIGNUP__START",
@@ -83,7 +83,7 @@ Array [
 ]
 `;
 
-exports[`Auth state actions -- handles a unsuccessfull LOGIN 1`] = `
+exports[`Auth state actions -- handles a unsuccessful LOGIN 1`] = `
 Array [
   Object {
     "type": "LOGIN__START",
@@ -97,7 +97,7 @@ Array [
 ]
 `;
 
-exports[`Auth state actions -- handles a unsuccessfull SIGNUP 1`] = `
+exports[`Auth state actions -- handles a unsuccessful SIGNUP 1`] = `
 Array [
   Object {
     "type": "SIGNUP__START",
