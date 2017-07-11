@@ -8,7 +8,6 @@ const baseTitleBarStyles = {
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
-  backgroundColor: theme.primaryColor,
 };
 
 const baseSideButtonStyles = {
@@ -28,7 +27,7 @@ export default EStyleSheet.create({
   },
   title: {
     flex: 0.50,
-    color: '#FFFFFF',
+    color: '$secondaryColor',
     backgroundColor: 'transparent',
     textAlign: 'center',
   },
@@ -47,7 +46,7 @@ export default EStyleSheet.create({
     flexDirection: 'row-reverse',
   },
   buttonIcon: {
-    color: '#FFFFFF',
+    color: '$secondaryColor',
     marginRight: applyWidthDifference(6),
   },
 });
