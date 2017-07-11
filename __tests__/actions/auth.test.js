@@ -23,7 +23,8 @@ describe('Auth state', () => {
     test('handles a successful LOGIN', async () => {
       const user = { email: 'test@mail.com', password: 'password' };
       fetch.mockResponseSuccess(user);
-      await store.dispatch(authActions.login());
+      await store.dispatch(authActions.login(user));
+      expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify(user));
       expect(store.getActions()).toMatchSnapshot();
     });
 
@@ -41,15 +42,17 @@ describe('Auth state', () => {
     });
 
     test('handles a successful SIGNUP', async () => {
+      const user = { email: 'test@mail.com', password: 'password' };
       const body = {
         user: {
-          email: 'test@mail.com',
-          password: 'password',
+          ...user,
           _id: 'id',
         },
       };
+
       fetch.mockResponseSuccess(body);
-      await store.dispatch(authActions.signup());
+      await store.dispatch(authActions.signup(user));
+      expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify(user));
       expect(store.getActions()).toMatchSnapshot();
     });
 
