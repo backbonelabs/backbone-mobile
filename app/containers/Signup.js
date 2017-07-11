@@ -258,49 +258,47 @@ class Signup extends Component {
                         </View>
                       </View>
                   }
-                  <View style={styles.inputFieldContainer}>
-                    <Input
-                      style={{
-                        ...styles._inputField,
-                        color: emailWarning ? '#F44336' : '#231F20',
-                      }}
-                      iconStyle={{
-                        color: emailWarning ? '#F44336' : '#9E9E9E',
-                      }}
-                      handleRef={ref => (this.emailField = ref)}
-                      value={email}
-                      autoCapitalize="none"
-                      placeholder="Email"
-                      keyboardType="email-address"
-                      onChangeText={this.onEmailChange}
-                      onSubmitEditing={() => this.passwordField.focus()}
-                      autoCorrect={false}
-                      returnKeyType="next"
-                      iconFont="MaterialIcon"
-                      iconLeftName="email"
-                    />
-                  </View>
-                  <View style={styles.inputFieldContainer}>
-                    <Input
-                      style={{
-                        ...styles._inputField,
-                        color: passwordWarning ? '#F44336' : '#231F20',
-                      }}
-                      iconStyle={{
-                        color: passwordWarning ? '#F44336' : '#9E9E9E',
-                      }}
-                      handleRef={ref => (this.passwordField = ref)}
-                      value={password}
-                      autoCapitalize="none"
-                      placeholder="Password"
-                      keyboardType="default"
-                      onChangeText={this.onPasswordChange}
-                      autoCorrect={false}
-                      secureTextEntry
-                      iconFont="MaterialIcon"
-                      iconLeftName="lock"
-                    />
-                  </View>
+                  <Input
+                    containerStyles={styles._inputFieldContainer}
+                    style={{
+                      ...styles._inputField,
+                      color: emailWarning ? '#F44336' : '#231F20',
+                    }}
+                    iconStyle={{
+                      color: emailWarning ? '#F44336' : '#9E9E9E',
+                    }}
+                    handleRef={ref => (this.emailField = ref)}
+                    value={email}
+                    autoCapitalize="none"
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    onChangeText={this.onEmailChange}
+                    onSubmitEditing={() => this.passwordField.focus()}
+                    autoCorrect={false}
+                    returnKeyType="next"
+                    iconFont="MaterialIcon"
+                    iconLeftName="email"
+                  />
+                  <Input
+                    containerStyles={styles._inputFieldContainer}
+                    style={{
+                      ...styles._inputField,
+                      color: passwordWarning ? '#F44336' : '#231F20',
+                    }}
+                    iconStyle={{
+                      color: passwordWarning ? '#F44336' : '#9E9E9E',
+                    }}
+                    handleRef={ref => (this.passwordField = ref)}
+                    value={password}
+                    autoCapitalize="none"
+                    placeholder="Password"
+                    keyboardType="default"
+                    onChangeText={this.onPasswordChange}
+                    autoCorrect={false}
+                    secureTextEntry
+                    iconFont="MaterialIcon"
+                    iconLeftName="lock"
+                  />
                   {
                     (emailWarning || passwordWarning) ?
                       <View style={styles.warningContainer}>
