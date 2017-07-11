@@ -46,7 +46,7 @@ export default EStyleSheet.create({
   },
   tabsContainer: {
     flexDirection: 'row',
-    height: applyWidthDifference(40),
+    height: applyWidthDifference(50),
   },
   tab: {
     flex: 1,
