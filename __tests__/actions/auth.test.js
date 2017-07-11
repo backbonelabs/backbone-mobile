@@ -15,101 +15,97 @@ describe('Auth state', () => {
     userId: null,
   };
 
+  const user = {
+    email: 'test@mail.com',
+    password: 'password',
+    _id: 'testId',
+    accessToken: 'testToken',
+  };
+
+  const { email, password } = user;
+
   describe('actions --', () => {
-    beforeEach(() => {
-      store.clearActions();
+    test('creates a LOGIN action', () => {
+      expect(authActions.login({ email, password })).toMatchSnapshot();
     });
 
-    test('handles a successful LOGIN', async () => {
-      const user = { email: 'test@mail.com', password: 'password' };
-      fetch.mockResponseSuccess(user);
-      await store.dispatch(authActions.login(user));
-      expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify(user));
-      expect(store.getActions()).toMatchSnapshot();
+    test('creates a SIGNUP action', () => {
+      expect(authActions.signup({ email, password })).toMatchSnapshot();
     });
 
-    test('handles a unsuccessful LOGIN', async () => {
-      const userErr = { email: 'test@mail.com', password: 'password', error: 'api server error' };
-      fetch.mockResponseSuccess(userErr);
-      await store.dispatch(authActions.login());
-      expect(store.getActions()).toMatchSnapshot();
-    });
-
-    test('handles a LOGIN server error', async () => {
-      fetch.mockResponseFailure();
-      await store.dispatch(authActions.login());
-      expect(store.getActions()).toMatchSnapshot();
-    });
-
-    test('handles a successful SIGNUP', async () => {
-      const user = { email: 'test@mail.com', password: 'password' };
-      const body = {
-        user: {
-          ...user,
-          _id: 'id',
-        },
-      };
-
-      fetch.mockResponseSuccess(body);
-      await store.dispatch(authActions.signup(user));
-      expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify(user));
-      expect(store.getActions()).toMatchSnapshot();
-    });
-
-    test('handles a unsuccessful SIGNUP', async () => {
-      const body = {
-        user: {
-          email: 'test@mail.com',
-          password: 'password',
-          _id: 'id',
-        },
-        error: 'api server error',
-      };
-      fetch.mockResponseSuccess(body);
-      await store.dispatch(authActions.signup());
-      expect(store.getActions()).toMatchSnapshot();
-    });
-
-    test('handles a SIGNUP server error', async () => {
-      fetch.mockResponseFailure();
-      await store.dispatch(authActions.signup());
-      expect(store.getActions()).toMatchSnapshot();
+    test('creates a SIGN_OUT action', () => {
+      expect(authActions.signOut()).toMatchSnapshot();
     });
 
     test('creates a PASSWORD_RESET action', () => {
       expect(authActions.reset()).toMatchSnapshot();
     });
 
-    test('creates a SIGN_OUT action', () => {
-      expect(store.dispatch(authActions.signOut())).toMatchSnapshot();
-    });
-
     test('creates a SET_ACCESS_TOKEN action', () => {
-      expect(authActions.setAccessToken('token')).toMatchSnapshot();
+      expect(authActions.setAccessToken('testToken')).toMatchSnapshot();
     });
   });
 
   describe('reducer --', () => {
+    beforeEach(() => {
+      store.clearActions();
+    });
+
     test('should return initial state', () => {
       expect(authReducer(initialState, {})).toMatchSnapshot();
     });
 
-    test('should handle LOGIN', () => {
-      expect(authReducer(initialState, authActions.login())).toMatchSnapshot();
+    // store.getActions() returns an array of actions,
+    // the first object is always the ''__START action
+    test('handles a successful LOGIN__START/LOGIN', async () => {
+      fetch.mockResponseSuccess(user);
+      await store.dispatch(authActions.login({ email, password }));
+      expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password }));
+      expect(authReducer(initialState, store.getActions()[0])).toMatchSnapshot();
+      expect(authReducer(initialState, store.getActions()[1])).toMatchSnapshot();
+    });
+
+
+    test('handles a unsuccessful LOGIN', async () => {
+      fetch.mockResponseSuccess({ ...user, error: 'api server error' });
+      await store.dispatch(authActions.login());
+      expect(authReducer(initialState, store.getActions()[1])).toMatchSnapshot();
+    });
+
+
+    test('handles a LOGIN server error', async () => {
+      fetch.mockResponseFailure();
+      await store.dispatch(authActions.login());
+      expect(authReducer(initialState, store.getActions()[1])).toMatchSnapshot();
+    });
+
+    test('handles a successful SIGNUP__START/SIGNUP', async () => {
+      const { accessToken, ...rest } = user;
+      fetch.mockResponseSuccess({ user: { ...rest }, accessToken });
+      await store.dispatch(authActions.signup({ email, password }));
+      expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password }));
+      expect(authReducer(initialState, store.getActions()[0])).toMatchSnapshot();
+      expect(authReducer(initialState, store.getActions()[1])).toMatchSnapshot();
+    });
+
+    test('handles a unsuccessful SIGNUP', async () => {
+      fetch.mockResponseSuccess({ user: { ...user }, error: 'api server error' });
+      await store.dispatch(authActions.signup());
+      expect(authReducer(initialState, store.getActions()[1])).toMatchSnapshot();
+    });
+
+    test('handles a SIGNUP server error', async () => {
+      fetch.mockResponseFailure();
+      await store.dispatch(authActions.signup());
+      expect(authReducer(initialState, store.getActions()[1])).toMatchSnapshot();
     });
 
     test('should handle SET_ACCESS_TOKEN ', () => {
-      expect(authReducer(initialState, authActions.setAccessToken('token'))).toMatchSnapshot();
+      expect(authReducer(initialState, authActions.setAccessToken('testToken'))).toMatchSnapshot();
     });
 
     test('should handle SIGN_OUT action', () => {
       expect(authReducer(initialState, authActions.signOut())).toMatchSnapshot();
-    });
-
-  // causes an error because user is undefined in payload (action.payload.user._id),
-    test('should handle SIGNUP action', () => {
-      const obj = authActions.signup().payload.user = {};
-      expect(authReducer(initialState, obj)).toMatchSnapshot();
     });
 
     test('should handle PASSWORD_RESET action', () => {
