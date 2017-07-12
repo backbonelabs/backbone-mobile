@@ -26,7 +26,6 @@ import constants from '../utils/constants';
 import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
-import CheckBox from '../components/Checkbox';
 import SecondaryText from '../components/SecondaryText';
 import theme from '../styles/theme';
 
@@ -61,7 +60,6 @@ class Signup extends Component {
       headingFlex: 1,
       containerHeight: 0,
       hideContent: false,
-      acceptedTOS: false,
     };
   }
 
@@ -102,10 +100,6 @@ class Signup extends Component {
 
   onPasswordChange(password) {
     return this.setState({ password });
-  }
-
-  onTOSChange(event) {
-    this.setState({ acceptedTOS: event.checked });
   }
 
   keyboardDidShow(e) {
@@ -196,7 +190,6 @@ class Signup extends Component {
       password,
       emailWarning,
       passwordWarning,
-      acceptedTOS,
       containerHeight,
       hideContent,
     } = this.state;
@@ -316,13 +309,8 @@ class Signup extends Component {
                       : null
                     }
                   <View style={styles.legalInnerContainer}>
-                    <CheckBox
-                      style={styles._checkBox}
-                      onCheckedChange={this.onTOSChange}
-                      checked={this.state.acceptedTOS}
-                    />
                     <View style={styles.textContainer}>
-                      <SecondaryText>I agree to the </SecondaryText>
+                      <SecondaryText>By signing up, you agree to our</SecondaryText>
                       <TouchableOpacity
                         onPress={this.openTOS}
                         activeOpacity={0.4}
@@ -352,8 +340,7 @@ class Signup extends Component {
                     disabled={
                         this.props.inProgress ||
                           !email ||
-                          !password ||
-                          !acceptedTOS
+                          !password
                       }
                     onPress={this.signup}
                   />

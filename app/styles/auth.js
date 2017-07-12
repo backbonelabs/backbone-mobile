@@ -115,9 +115,6 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
     fontSize: fixedResponsiveFontSize(12),
   },
-  checkBox: {
-    marginRight: applyWidthDifference(15),
-  },
   legalInnerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
