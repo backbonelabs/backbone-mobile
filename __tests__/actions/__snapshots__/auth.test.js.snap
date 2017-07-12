@@ -44,6 +44,16 @@ Object {
 }
 `;
 
+exports[`Auth state reducer -- handles a PASSWORD_RESET server error 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": "We are encountering server issues. Please try again later.",
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
 exports[`Auth state reducer -- handles a SIGNUP server error 1`] = `
 Object {
   "accessToken": null,
@@ -104,6 +114,16 @@ Object {
 }
 `;
 
+exports[`Auth state reducer -- handles a unsuccessful PASSWORD_RESET 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": "api server error",
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
 exports[`Auth state reducer -- handles a unsuccessful SIGNUP 1`] = `
 Object {
   "accessToken": null,
@@ -114,17 +134,7 @@ Object {
 }
 `;
 
-exports[`Auth state reducer -- should handle PASSWORD_RESET action 1`] = `
-Object {
-  "accessToken": null,
-  "errorMessage": null,
-  "inProgress": false,
-  "passwordResetSent": [Function],
-  "userId": null,
-}
-`;
-
-exports[`Auth state reducer -- should handle SET_ACCESS_TOKEN  1`] = `
+exports[`Auth state reducer -- should handle SET_ACCESS_TOKEN 1`] = `
 Object {
   "accessToken": "testToken",
   "errorMessage": null,
@@ -134,12 +144,32 @@ Object {
 }
 `;
 
-exports[`Auth state reducer -- should handle SIGN_OUT action 1`] = `
+exports[`Auth state reducer -- should handle SIGN_OUT 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": null,
   "inProgress": false,
   "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth state reducer -- should handle successful PASSWORD_START/PASSWORD_RESET 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": true,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth state reducer -- should handle successful PASSWORD_START/PASSWORD_RESET 2`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": true,
   "userId": null,
 }
 `;

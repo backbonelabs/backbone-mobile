@@ -3,7 +3,16 @@ global.fetch = jest.fn();
 // Helper to mock a successful response (only once)
 fetch.mockResponseSuccess = (body) => {
   fetch.mockImplementationOnce(
-    () => Promise.resolve({ json: () => Promise.resolve(body) })
+    () => {
+      const res = {
+        json: () => Promise.resolve(body),
+      };
+      // password reset res
+      if (body.ok) {
+        res.ok = Promise.resolve(body.ok);
+      }
+      return Promise.resolve(res);
+    }
   );
 };
 
@@ -13,6 +22,19 @@ fetch.mockResponseFailure = (error) => {
     () => Promise.reject(error)
   );
 };
+
+jest.mock('./app/utils/SensitiveInfo', () => ({
+  deleteItem: jest.fn(),
+  setItem: jest.fn(),
+}));
+
+jest.mock('./app/utils/Mixpanel', () => ({
+  track: jest.fn(),
+  identify: jest.fn(),
+  set: jest.fn(),
+  trackWithProperties: jest.fn(),
+  setUserProperties: jest.fn(),
+}));
 
 jest.mock('NativeModules', () => ({
   Environment: {
@@ -24,21 +46,10 @@ jest.mock('NativeModules', () => ({
   SessionControlService: jest.fn(),
   VibrationMotorService: jest.fn(),
   BootLoaderService: jest.fn(),
-  Mixpanel: {
-    track: jest.fn(),
-    identify: jest.fn(),
-    set: jest.fn(),
-    trackWithProperties: jest.fn(),
-  },
   UserService: {
     unsetUserId: jest.fn(),
     setUserId: jest.fn(),
   },
-}));
-
-jest.mock('react-native-sensitive-info', () => ({
-  deleteItem: jest.fn(),
-  setItem: jest.fn(),
 }));
 
 jest.mock('bugsnag-react-native', () => ({
