@@ -3,10 +3,6 @@ machine:
     America/Los_Angeles
   node:
     version: 6.9.1
-  environment:
-    # Running Yarn from cache requires adding ~/.yarn/bin explicitly
-    # https://circleci.com/docs/install-and-use-yarn/
-    PATH: "${PATH}:${HOME}/.yarn/bin"
 dependencies:
   cache_directories:
     - ~/.cache/yarn
