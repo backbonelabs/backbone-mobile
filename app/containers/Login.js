@@ -222,13 +222,8 @@ class Login extends Component {
                   }
                   <Input
                     containerStyles={styles._inputFieldContainer}
-                    style={{
-                      ...styles._inputField,
-                      color: authError ? '#F44336' : '#231F20',
-                    }}
-                    iconStyle={{
-                      color: authError ? '#F44336' : '#9E9E9E',
-                    }}
+                    style={{ color: authError ? '#F44336' : '#231F20' }}
+                    iconStyle={{ color: authError ? '#F44336' : '#9E9E9E' }}
                     handleRef={ref => (this.emailField = ref)}
                     value={this.state.email}
                     autoCapitalize="none"
@@ -243,13 +238,8 @@ class Login extends Component {
                   />
                   <Input
                     containerStyles={styles._inputFieldContainer}
-                    style={{
-                      ...styles._inputField,
-                      color: authError ? '#F44336' : '#231F20',
-                    }}
-                    iconStyle={{
-                      color: authError ? '#F44336' : '#9E9E9E',
-                    }}
+                    style={{ color: authError ? '#F44336' : '#231F20' }}
+                    iconStyle={{ color: authError ? '#F44336' : '#9E9E9E' }}
                     handleRef={ref => (this.passwordField = ref)}
                     value={this.state.password}
                     autoCapitalize="none"

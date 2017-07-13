@@ -37,7 +37,7 @@ export default EStyleSheet.create({
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: fixedResponsiveFontSize(16),
-    width: applyWidthDifference(235),
+    width: '85%',
     height: applyWidthDifference(50),
     paddingHorizontal: applyWidthDifference(45),
     paddingVertical: applyWidthDifference(10),

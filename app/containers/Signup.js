@@ -260,10 +260,7 @@ class Signup extends Component {
                   }
                   <Input
                     containerStyles={styles._inputFieldContainer}
-                    style={{
-                      ...styles._inputField,
-                      color: emailWarning ? '#F44336' : '#231F20',
-                    }}
+                    style={{ color: emailWarning ? '#F44336' : '#231F20' }}
                     iconStyle={{
                       color: emailWarning ? '#F44336' : '#9E9E9E',
                     }}
@@ -281,13 +278,8 @@ class Signup extends Component {
                   />
                   <Input
                     containerStyles={styles._inputFieldContainer}
-                    style={{
-                      ...styles._inputField,
-                      color: passwordWarning ? '#F44336' : '#231F20',
-                    }}
-                    iconStyle={{
-                      color: passwordWarning ? '#F44336' : '#9E9E9E',
-                    }}
+                    style={{ color: passwordWarning ? '#F44336' : '#231F20' }}
+                    iconStyle={{ color: passwordWarning ? '#F44336' : '#9E9E9E' }}
                     handleRef={ref => (this.passwordField = ref)}
                     value={password}
                     autoCapitalize="none"

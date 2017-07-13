@@ -83,9 +83,6 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  inputField: {
-    width: '85%',
-  },
   fbBtn: {
     width: '85%',
     borderRadius: 3,
