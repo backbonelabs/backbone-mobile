@@ -2,20 +2,15 @@ machine:
   timezone:
     America/Los_Angeles
   node:
-    version: 6.2.2
+    version: 6.9.1
   environment:
-    YARN_VERSION: 0.18.0
     # Running Yarn from cache requires adding ~/.yarn/bin explicitly
     # https://circleci.com/docs/install-and-use-yarn/
     PATH: "${PATH}:${HOME}/.yarn/bin"
 dependencies:
   pre:
-    # Install Yarn
-    - |
-      if [[ ! -e ~/.yarn/bin/yarn || $(yarn --version) != "${YARN_VERSION}" ]]; then
-        echo "Download and install Yarn"
-        curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version $YARN_VERSION
-      fi
+    # Install latest Yarn
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
   cache_directories:
     - "~/.yarn"
     - "~/.yarn-cache"
