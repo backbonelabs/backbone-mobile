@@ -11,16 +11,18 @@ import postureMonitor from './posture/postureMonitor';
 import postureReport from './posture/postureReport';
 import postureChart from './posture/postureChart';
 import tutorial from './tutorial';
-import profile from './profile';
 import settings from './settings';
 import errors from './errors';
 import reset from './reset';
-import onboarding from './onboarding';
 import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
 import firmwareUpdate from './firmwareUpdate';
+import profileSetupOne from './onBoarding/profileSetupOne';
+import profileSetupTwo from './onBoarding/profileSetupTwo';
+import deviceSetup from './onBoarding/deviceSetup';
+import howToVideo from './onBoarding/howToVideo';
 
 export default {
   activity,
@@ -35,15 +37,17 @@ export default {
   postureReport,
   postureChart,
   tutorial,
-  profile,
   settings,
   errors,
   reset,
-  onboarding,
   alerts,
   support,
   howTo,
   device,
   changePassword,
   firmwareUpdate,
+  profileSetupOne,
+  profileSetupTwo,
+  deviceSetup,
+  howToVideo,
 };
