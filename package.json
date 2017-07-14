@@ -64,7 +64,7 @@
     "jest": "20.0.4",
     "localenv": "0.2.2",
     "react-addons-test-utils": "15.4.2",
-    "react-dom": "15.4.4",
+    "react-dom": "15.4.2",
     "react-test-renderer": "15.4.2",
     "redux-mock-store": "1.2.3",
     "request": "2.81.0"
