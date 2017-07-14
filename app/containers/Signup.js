@@ -308,28 +308,28 @@ class Signup extends Component {
                       </View>
                       : null
                     }
-                  <View style={styles.legalInnerContainer}>
-                    <View style={styles.textContainer}>
-                      <SecondaryText>By signing up, you agree to our</SecondaryText>
-                      <TouchableOpacity
-                        onPress={this.openTOS}
-                        activeOpacity={0.4}
-                      >
-                        <SecondaryText style={styles._legalLink}>
-                            Terms of Service
-                        </SecondaryText>
-                      </TouchableOpacity>
-                      <SecondaryText> and </SecondaryText>
-                      <TouchableOpacity
-                        onPress={this.openPrivacyPolicy}
-                        activeOpacity={0.4}
-                        style={styles.priv}
-                      >
-                        <SecondaryText style={styles._legalLink}>
-                            Privacy Policy
-                        </SecondaryText>
-                      </TouchableOpacity>
-                    </View>
+                  <View style={styles.legalContainer}>
+                    <SecondaryText>
+                      By signing up, you agree to our
+                    </SecondaryText>
+                    <TouchableOpacity
+                      onPress={this.openTOS}
+                      activeOpacity={0.4}
+                    >
+                      <SecondaryText style={styles._legalLink}>
+                          Terms of Service
+                      </SecondaryText>
+                    </TouchableOpacity>
+                    <SecondaryText> and </SecondaryText>
+                    <TouchableOpacity
+                      onPress={this.openPrivacyPolicy}
+                      activeOpacity={0.4}
+                      style={styles.priv}
+                    >
+                      <SecondaryText style={styles._legalLink}>
+                          Privacy Policy
+                      </SecondaryText>
+                    </TouchableOpacity>
                   </View>
                 </View>
                 <View style={styles.CTAContainer}>
