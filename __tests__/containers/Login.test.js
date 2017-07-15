@@ -3,15 +3,16 @@ import { shallow } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
-import Signup from '../app/containers/Signup';
+import Login from '../../app/containers/Login';
 
-describe('Signup Component', () => {
+describe('Login Component', () => {
   const initialState = {
     auth: {},
+    user: {},
   };
   const store = configureStore([asyncActionMiddleware, thunk])(initialState);
   const wrapper = shallow(
-    <Signup />,
+    <Login />,
     { context: { store } },
   );
   let render;
@@ -25,31 +26,21 @@ describe('Signup Component', () => {
     expect(render).toMatchSnapshot();
   });
 
-  test('Sign up action dispatched when clicked', () => {
-    const checkBox = render.find('Checkbox').shallow();
+  test('Login action dispatched when clicked', () => {
+    const btn = render.find('Button').at(1);
     render.setState({ email: 'testing@mail.com', password: 'password' });
-    checkBox.simulate('press');
-    const btn = render.find('Button').at(1).shallow();
     btn.simulate('press');
     const actions = store.getActions();
-    expect(actions).toEqual([{ type: 'SIGNUP__START' }]);
+    expect(actions).toEqual([{ type: 'LOGIN__START' }]);
   });
 
-  test('Checkbox toggles acceptedTOS', () => {
-    const checkBox = render.find('Checkbox').shallow();
-    checkBox.simulate('press');
-    expect(render.state().acceptedTOS).toEqual(true);
-  });
-
-  test('Sign up button disabled on first render', () => {
+  test('Login button disabled on first render', () => {
     const btn = render.find('Button').at(1);
     expect(btn.props().disabled).toEqual(true);
   });
 
-  test('Sign up button disabled remove', () => {
-    const checkBox = render.find('Checkbox').shallow();
+  test('Login button disabled remove', () => {
     render.setState({ email: 'testing@mail.com', password: 'password' });
-    checkBox.simulate('press');
     const btn = render.find('Button').at(1);
     expect(btn.props().disabled).toEqual(false);
   });

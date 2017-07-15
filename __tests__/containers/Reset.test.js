@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
-import Reset from '../app/containers/Reset';
+import Reset from '../../app/containers/Reset';
 
 describe('Reset Component', () => {
   const initialState = {
