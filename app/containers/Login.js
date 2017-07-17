@@ -126,6 +126,7 @@ class Login extends Component {
       authError: null,
     });
     this.props.navigator.push(routes.signup);
+    if (!isiOS) { Keyboard.dismiss(); }
   }
 
   goToReset() {
@@ -135,6 +136,7 @@ class Login extends Component {
       authError: null,
     });
     this.props.navigator.push(routes.reset);
+    if (!isiOS) { Keyboard.dismiss(); }
   }
 
   keyboardDidShow(e) {

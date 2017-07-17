@@ -115,17 +115,12 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
     fontSize: fixedResponsiveFontSize(12),
   },
-  checkBox: {
-    marginRight: applyWidthDifference(15),
-  },
-  legalInnerContainer: {
+  legalContainer: {
     flexDirection: 'row',
+    width: '85%',
     alignItems: 'center',
-  },
-  textContainer: {
-    flexDirection: 'row',
+    justifyContent: 'center',
     flexWrap: 'wrap',
-    width: applyWidthDifference(250),
   },
   legalLink: {
     textDecorationLine: 'underline',

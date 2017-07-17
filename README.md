@@ -5,7 +5,7 @@ Backbone mobile app for iOS and Android
 
 ## Requirements
 
-- Node.js 6.2.2
+- Node.js 6.9.1
 
 ## Development
 
