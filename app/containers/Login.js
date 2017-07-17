@@ -63,7 +63,6 @@ class Login extends Component {
       containerHeight: 0,
       hideContent: false,
     };
-    this.isFacebookLogin = false;
   }
 
   componentWillMount() {
@@ -92,10 +91,8 @@ class Login extends Component {
         this.props.navigator.resetTo(routes.onboarding);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
-      if (this.isFacebookLogin) {
-        // Logs out the user of Facebook and returns to welcome screen
-        LoginManager.logOut();
-      }
+      // Logs out the user of Facebook and returns to welcome screen
+      LoginManager.logOut();
       // Authentication error
       this.setState({ authError: true });
       // Alert.alert('Authentication Error', nextProps.auth.errorMessage);

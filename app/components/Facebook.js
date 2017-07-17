@@ -11,7 +11,6 @@ import autobind from 'class-autobind';
 import constants from '../utils/constants';
 import authActions from '../actions/auth';
 import styles from '../styles/auth';
-import routes from '../routes';
 import Button from '../components/Button';
 
 class Facebook extends Component {
@@ -26,22 +25,6 @@ class Facebook extends Component {
   constructor() {
     super();
     autobind(this);
-  }
-
-  componentWillMount() {
-    // Check if a valid facebook access token is available when the user logs into
-    // the app using their facebook account.
-    FBAccessToken.getCurrentAccessToken()
-      .then((data) => {
-        if (data) {
-          this.isFacebookLogin = true;
-          this.getFBUserInfo(data);
-        }
-      }
-    )
-    .catch(() => {
-      Alert.alert('Unable to authenticate with Facebook. Try again later.');
-    });
   }
 
   getFBUserInfo(fbAccessToken) {
@@ -83,7 +66,16 @@ class Facebook extends Component {
         onPress={() =>
           LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(result => {
             if (result && !result.isCancelled) {
-              this.props.navigator.push(routes.login);
+              FBAccessToken.getCurrentAccessToken()
+                .then((data) => {
+                  if (data) {
+                    this.getFBUserInfo(data);
+                  }
+                }
+              )
+              .catch(() => {
+                Alert.alert('Unable to authenticate with Facebook. Try again later.');
+              });
             }
           })}
       />
