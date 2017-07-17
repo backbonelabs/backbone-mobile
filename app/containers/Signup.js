@@ -337,11 +337,7 @@ class Signup extends Component {
                     style={styles._CTAButton}
                     text="SIGN UP"
                     primary
-                    disabled={
-                      !email ||
-                      !password ||
-                      !acceptedTOS
-                    }
+                    disabled={!email || !password}
                     onPress={this.signup}
                   />
                 </View>

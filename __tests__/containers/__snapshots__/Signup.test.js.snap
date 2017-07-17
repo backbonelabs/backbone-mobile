@@ -140,46 +140,38 @@ exports[`Signup Component renders as expected 1`] = `
             />
           </View>
           <View>
-            <Checkbox
-              checked={false}
-              iconColor="white"
-              iconSize={36}
-              onCheckedChange={[Function]}
-            />
-            <View>
+            <SecondaryText
+              style={Object {}}
+            >
+              By signing up, you agree to our
+            </SecondaryText>
+            <TouchableOpacity
+              activeOpacity={0.4}
+              focusedOpacity={0.7}
+              onPress={[Function]}
+            >
               <SecondaryText
                 style={Object {}}
               >
-                I agree to the 
+                Terms of Service
               </SecondaryText>
-              <TouchableOpacity
-                activeOpacity={0.4}
-                focusedOpacity={0.7}
-                onPress={[Function]}
-              >
-                <SecondaryText
-                  style={Object {}}
-                >
-                  Terms of Service
-                </SecondaryText>
-              </TouchableOpacity>
+            </TouchableOpacity>
+            <SecondaryText
+              style={Object {}}
+            >
+               and 
+            </SecondaryText>
+            <TouchableOpacity
+              activeOpacity={0.4}
+              focusedOpacity={0.7}
+              onPress={[Function]}
+            >
               <SecondaryText
                 style={Object {}}
               >
-                 and 
+                Privacy Policy
               </SecondaryText>
-              <TouchableOpacity
-                activeOpacity={0.4}
-                focusedOpacity={0.7}
-                onPress={[Function]}
-              >
-                <SecondaryText
-                  style={Object {}}
-                >
-                  Privacy Policy
-                </SecondaryText>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View>

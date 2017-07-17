@@ -26,19 +26,11 @@ describe('Signup Component', () => {
   });
 
   test('Sign up action dispatched when clicked', () => {
-    const checkBox = render.find('Checkbox').shallow();
     render.setState({ email: 'testing@mail.com', password: 'password' });
-    checkBox.simulate('press');
     const btn = render.find('Button').at(1).shallow();
     btn.simulate('press');
     const actions = store.getActions();
     expect(actions).toEqual([{ type: 'SIGNUP__START' }]);
-  });
-
-  test('Checkbox toggles acceptedTOS', () => {
-    const checkBox = render.find('Checkbox').shallow();
-    checkBox.simulate('press');
-    expect(render.state().acceptedTOS).toEqual(true);
   });
 
   test('Sign up button disabled on first render', () => {
@@ -47,9 +39,7 @@ describe('Signup Component', () => {
   });
 
   test('Sign up button disabled remove', () => {
-    const checkBox = render.find('Checkbox').shallow();
     render.setState({ email: 'testing@mail.com', password: 'password' });
-    checkBox.simulate('press');
     const btn = render.find('Button').at(1);
     expect(btn.props().disabled).toEqual(false);
   });
