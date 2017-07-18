@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import HeadingText from './HeadingText';
-import BodyText from './BodyText';
 import styles from '../styles/titleBar';
 
 const TitleBar = (props) => {
@@ -11,14 +10,11 @@ const TitleBar = (props) => {
   const leftButton = previousRoute && props.currentRoute.showBackButton ? (
     <TouchableOpacity style={styles.leftComponent} onPress={props.navigator.pop}>
       <Icon
-        name="angle-left"
+        name="keyboard-arrow-left"
         style={styles.buttonIcon}
         size={styles.$leftButtonIconSize}
         color={styles._buttonIcon.color}
       />
-      <BodyText style={styles._sideContainersText} numberOfLines={1}>
-        {previousRoute.title}
-      </BodyText>
     </TouchableOpacity>
   ) : undefined;
 
@@ -35,7 +31,7 @@ const TitleBar = (props) => {
   const titleBarStyles = props.currentRoute.title ? styles.visibleTitleBar : styles.hiddenTitleBar;
 
   return (
-    <View style={[titleBarStyles, props.style]}>
+    <View style={[titleBarStyles, props.currentRoute.styles, props.style]}>
       <View style={styles.sideContainers}>{leftButton}</View>
       <HeadingText size={2} style={styles._title}>{props.currentRoute.title}</HeadingText>
       <View style={styles.sideContainers}>{rightButton}</View>
@@ -49,6 +45,7 @@ TitleBar.propTypes = {
     title: PropTypes.string,
     showBackButton: PropTypes.bool,
     rightComponent: PropTypes.func,
+    styles: PropTypes.object,
   }),
   style: PropTypes.object,
 };

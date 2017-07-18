@@ -16,7 +16,7 @@ const baseSideButtonStyles = {
 };
 
 export default EStyleSheet.create({
-  $leftButtonIconSize: fixedResponsiveFontSize(28),
+  $leftButtonIconSize: fixedResponsiveFontSize(40),
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
@@ -30,6 +30,7 @@ export default EStyleSheet.create({
     color: '$secondaryColor',
     backgroundColor: 'transparent',
     textAlign: 'center',
+    fontSize: fixedResponsiveFontSize(18),
   },
   sideContainers: {
     flex: 0.25,
