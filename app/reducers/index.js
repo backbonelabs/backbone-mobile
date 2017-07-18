@@ -5,6 +5,7 @@ import app from './app';
 import support from './support';
 import posture from './posture';
 import device from './device';
+import guidedTraining from './guidedTraining';
 
 export default combineReducers({
   auth,
@@ -13,4 +14,5 @@ export default combineReducers({
   support,
   posture,
   device,
+  guidedTraining,
 });
