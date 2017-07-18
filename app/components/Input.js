@@ -44,7 +44,7 @@ class Input extends Component {
 
   onFocus() {
     this.setState({
-      borderWidth: 0.5,
+      borderWidth: 1,
     });
   }
 
