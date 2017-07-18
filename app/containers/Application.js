@@ -65,6 +65,10 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
 });
 
 const isiOS = Platform.OS === 'ios';
+const statusBarProps = {
+  barStyle: 'dark-content',
+  backgroundColor: 'white',
+};
 
 class Application extends Component {
   static propTypes = {
@@ -686,29 +690,6 @@ class Application extends Component {
   }
 
   render() {
-    let backgroundColor = 'white';
-    // Change status bar background color during onBoarding
-    if (this.navigator) {
-      const routeStack = this.navigator.getCurrentRoutes();
-      const currentRoute = routeStack[routeStack.length - 1];
-      if (
-      (currentRoute.title === 'Profile Setup') ||
-      (currentRoute.title === 'Device Setup')
-      ) {
-        backgroundColor = '#F5F5F5';
-      }
-    }
-
-    if (this.state.initialRoute) {
-      if (this.state.initialRoute.title === 'Profile Setup') {
-        backgroundColor = '#F5F5F5';
-      }
-    }
-
-    const statusBarProps = {
-      barStyle: 'dark-content',
-      backgroundColor,
-    };
     return (
       <View style={{ flex: 1 }}>
         <StatusBar {...statusBarProps} />
@@ -717,7 +698,7 @@ class Application extends Component {
           // a static View is overlayed on top of the status bar for all scenes
           <View
             style={{
-              backgroundColor,
+              backgroundColor: 'white',
               height: theme.statusBarHeight,
             }}
           />
