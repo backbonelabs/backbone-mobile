@@ -81,7 +81,7 @@ class Signup extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.accessToken && nextProps.accessToken) {
-      this.props.navigator.resetTo(routes.onboarding);
+      this.props.navigator.resetTo(routes.profileSetupOne);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       Alert.alert('Error', nextProps.errorMessage);
     }

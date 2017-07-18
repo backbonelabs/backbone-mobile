@@ -83,7 +83,7 @@ class Login extends Component {
         this.props.navigator.resetTo(routes.deviceConnect);
       } else {
         // User hasn't completed onboarding process
-        this.props.navigator.resetTo(routes.onboarding);
+        this.props.navigator.resetTo(routes.profileSetupOne);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
       // Authentication error
