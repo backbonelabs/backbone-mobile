@@ -12,7 +12,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import userActions from '../actions/user';
 import styles from '../styles/profile';
 import constants from '../utils/constants';
-import ProfilePicker from '../containers/onBoardingFlow/profile/ProfilePicker';
+import ProfilePicker from './onBoarding/profile/ProfilePicker';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
