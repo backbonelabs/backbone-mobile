@@ -22,6 +22,7 @@ import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
 import firmwareUpdate from './firmwareUpdate';
+import freeTraining from './freeTraining';
 
 export default {
   activity,
@@ -48,4 +49,5 @@ export default {
   device,
   changePassword,
   firmwareUpdate,
+  freeTraining,
 };

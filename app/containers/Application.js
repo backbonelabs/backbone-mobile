@@ -449,7 +449,7 @@ class Application extends Component {
    * Defines the initial scene to mount and ends the initialization process
    * @param {Object} route=routes.welcome Route object, defaults to the welcome route
    */
-  setInitialRoute(route = routes.welcome) {
+  setInitialRoute(route = routes.freeTraining) {
     // Intentionally add a delay because sometimes the initialization process
     // can be so quick that the spinner icon only flashes for a blink of an eye,
     // and it might not be obvious it was a spinner icon indicating some type of
