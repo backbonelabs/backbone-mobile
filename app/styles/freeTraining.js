@@ -9,8 +9,13 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   defaultTabBar: {
+    backgroundColor: '#FFF',
     height: applyWidthDifference(40),
     paddingTop: applyWidthDifference(10),
+    shadowColor: '#bdbdbd',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 3,
   },
   tabBarUnderlineStyle: {
     backgroundColor: '#2196F3',
