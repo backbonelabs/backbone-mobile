@@ -39,10 +39,10 @@ export default EStyleSheet.create({
     paddingLeft: applyWidthDifference(10),
     color: 'black',
   },
-  lockIcon: {
+  icon: {
     color: '#bdbdbd',
   },
-  videoBox: {
+  preview: {
     height: applyWidthDifference(55),
     width: applyWidthDifference(55),
     borderRadius: 5,
