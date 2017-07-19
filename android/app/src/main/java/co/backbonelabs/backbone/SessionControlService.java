@@ -59,6 +59,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     private boolean distanceNotificationStatus;
     private boolean statisticNotificationStatus;
     private boolean slouchNotificationStatus;
+    private boolean accelerometerNotificationStatus;
 
     private boolean forceStoppedSession;
     private boolean notificationStateChanged;
@@ -416,10 +417,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             distanceNotificationStatus = true;
             slouchNotificationStatus = true;
             statisticNotificationStatus = true;
-
-            // Toggle accelerometer notification separately because the app doesn't rely on the
-            // accelerometer notifications to monitor a posture session
-            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, true);
+            accelerometerNotificationStatus = true;
 
             status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
         }
@@ -442,10 +440,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             distanceNotificationStatus = true;
             slouchNotificationStatus = true;
             statisticNotificationStatus = true;
-
-            // Toggle accelerometer notification separately because the app doesn't rely on the
-            // accelerometer notifications to monitor a posture session
-            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, true);
+            accelerometerNotificationStatus = true;
 
             status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
         }
@@ -459,6 +454,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     distanceNotificationStatus = false;
                     slouchNotificationStatus = false;
                     statisticNotificationStatus = true;
+                    accelerometerNotificationStatus = false;
 
                     break;
                 case Constants.SESSION_OPERATIONS.STOP:
@@ -467,6 +463,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     distanceNotificationStatus = false;
                     slouchNotificationStatus = false;
                     statisticNotificationStatus = false;
+                    accelerometerNotificationStatus = false;
 
                     // Save session record for Firehose
                     saveSessionToFirehose();
@@ -476,10 +473,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                     break;
             }
-
-            // Toggle accelerometer notification separately because the app doesn't rely on the
-            // accelerometer notifications to monitor a posture session
-            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, false);
 
             status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
         }
@@ -656,9 +649,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         distanceNotificationStatus = false;
                         statisticNotificationStatus = false;
                         slouchNotificationStatus = false;
+                        accelerometerNotificationStatus = false;
 
-                        bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, false);
-                        bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, distanceNotificationStatus);
+                        bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, statisticNotificationStatus);
 
                         // Save session record for Firehose
                         saveSessionToFirehose();
@@ -798,6 +791,11 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (errorCallBack != null) {
+                            // Toggle accelerometer notification separately because the app doesn't rely on the
+                            // accelerometer notifications to monitor a posture session.
+                            // This must be called at the end of the command flow to prevent concurrency issues
+                            // on older Android versions
+                            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, accelerometerNotificationStatus);
                             errorCallBack.onIntCallBack(0);
                             errorCallBack = null;
                         }
