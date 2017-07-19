@@ -41,8 +41,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.ACTION_CHARACTERISTIC_READ);
-//        filter.addAction(Constants.ACTION_CHARACTERISTIC_WRITE);
         filter.addAction(Constants.ACTION_CHARACTERISTIC_UPDATE);
+        filter.addAction(Constants.ACTION_DESCRIPTOR_WRITE);
         reactContext.registerReceiver(bleBroadcastReceiver, filter);
     }
 
@@ -141,14 +141,8 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                 Timber.d("Request self test");
                 requestingSelfTest = true;
 
-                // Listen to the DeviceStatus notification
+                // Enable the DeviceStatus notification before sending the request
                 bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC, true);
-
-                byte[] commandBytes = new byte[1];
-
-                commandBytes[0] = Constants.SESSION_COMMANDS.SELF_TEST;
-
-                bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
             }
             else {
                 EventEmitter.send(reactContext, "DeviceTestStatus", JSError.make("Self-Test re-run not supported"));
@@ -314,6 +308,18 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                         wm.putBoolean("success", selfTestStatus == 0);
                         EventEmitter.send(reactContext, "DeviceTestStatus", wm);
                     }
+                }
+            }
+            else if (action.equals(Constants.ACTION_DESCRIPTOR_WRITE)) {
+                Timber.d("DescriptorWrite");
+                String uuid = intent.getStringExtra(Constants.EXTRA_BYTE_UUID_VALUE);
+                if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.DEVICE_STATUS_CHARACTERISTIC.toString())) {
+                    // Send the actual command to start self-test after enabling the status notification
+                    byte[] commandBytes = new byte[1];
+
+                    commandBytes[0] = Constants.SESSION_COMMANDS.SELF_TEST;
+
+                    bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
                 }
             }
 //            else if (action.equals(Constants.ACTION_CHARACTERISTIC_WRITE)) {
