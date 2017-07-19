@@ -10,7 +10,7 @@ export default EStyleSheet.create({
   },
   defaultTabBar: {
     backgroundColor: '#FFF',
-    height: applyWidthDifference(40),
+    height: applyWidthDifference(50),
     paddingTop: applyWidthDifference(10),
     shadowColor: '#bdbdbd',
     shadowOffset: { width: 0, height: 0 },
@@ -20,13 +20,14 @@ export default EStyleSheet.create({
   tabBarUnderlineStyle: {
     backgroundColor: '#2196F3',
     height: 3,
+    borderRadius: 100,
   },
   tabBarTextStyle: {
     fontSize: fixedResponsiveFontSize(12),
     fontWeight: 'bold',
   },
   listContainer: {
-    height: applyWidthDifference(70),
+    height: applyWidthDifference(90),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -48,8 +49,8 @@ export default EStyleSheet.create({
     color: '#bdbdbd',
   },
   preview: {
-    height: applyWidthDifference(55),
-    width: applyWidthDifference(55),
+    height: applyWidthDifference(75),
+    width: applyWidthDifference(75),
     borderRadius: 5,
     backgroundColor: '#e0e0e0',
   },
