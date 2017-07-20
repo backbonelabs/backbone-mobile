@@ -1,19 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`__Auth Actions__ create an action when Login is unsuccessful 1`] = `
-Array [
-  Object {
-    "type": "LOGIN__START",
-  },
-  Object {
-    "error": true,
-    "meta": undefined,
-    "payload": [Error: api server error],
-    "type": "LOGIN__ERROR",
-  },
-]
-`;
-
 exports[`__Auth Actions__ creates a SET_ACCESS_TOKEN action 1`] = `
 Object {
   "payload": "testToken",
@@ -80,6 +66,20 @@ Array [
 ]
 `;
 
+exports[`__Auth Actions__ creates an action when Login is unsuccessful 1`] = `
+Array [
+  Object {
+    "type": "LOGIN__START",
+  },
+  Object {
+    "error": true,
+    "meta": undefined,
+    "payload": [Error: api server error],
+    "type": "LOGIN__ERROR",
+  },
+]
+`;
+
 exports[`__Auth Actions__ creates an action when Login returns a server error 1`] = `
 Array [
   Object {
@@ -90,6 +90,20 @@ Array [
     "meta": undefined,
     "payload": [Error: We are encountering server issues. Please try again later.],
     "type": "LOGIN__ERROR",
+  },
+]
+`;
+
+exports[`__Auth Actions__ creates an action when Signup is unsuccessful 1`] = `
+Array [
+  Object {
+    "type": "SIGNUP__START",
+  },
+  Object {
+    "error": true,
+    "meta": undefined,
+    "payload": [Error: api server error],
+    "type": "SIGNUP__ERROR",
   },
 ]
 `;
@@ -132,20 +146,6 @@ Array [
     "meta": undefined,
     "payload": [Error: We are encountering server issues. Please try again later.],
     "type": "PASSWORD_RESET__ERROR",
-  },
-]
-`;
-
-exports[`__Auth Actions__ handles an unsuccessful Signup 1`] = `
-Array [
-  Object {
-    "type": "SIGNUP__START",
-  },
-  Object {
-    "error": true,
-    "meta": undefined,
-    "payload": [Error: api server error],
-    "type": "SIGNUP__ERROR",
   },
 ]
 `;

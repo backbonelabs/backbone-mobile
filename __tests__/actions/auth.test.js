@@ -53,8 +53,8 @@ describe('__Auth Actions__', () => {
     expect(store.getActions()).toMatchSnapshot();
   });
 
-  test('create an action when Login is unsuccessful', async () => {
-    fetch.mockResponseSuccess({ ...user, error: 'api server error' });
+  test('creates an action when Login is unsuccessful', async () => {
+    fetch.mockResponseSuccess({ error: 'api server error' });
     await store.dispatch(authActions.login());
     expect(store.getActions()).toMatchSnapshot();
   });
@@ -77,16 +77,14 @@ describe('__Auth Actions__', () => {
     expect(Mixpanel.identify).toBeCalledWith(body.user._id);
     expect(Mixpanel.setUserProperties).toBeCalledWith(body.user);
     expect(Mixpanel.track).toHaveBeenCalledWith('signup-success');
-      // Tests that the second arguement is equal to userObj
-      // currently Jest has no syntactic sugar for this
     expect(SensitiveInfo.setItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN, accessToken]);
     expect(SensitiveInfo.setItem.mock.calls[1]).toEqual([storageKeys.USER, body.user]);
     expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password }));
     expect(store.getActions()).toMatchSnapshot();
   });
 
-  test('handles an unsuccessful Signup', async () => {
-    fetch.mockResponseSuccess({ user: { ...user }, error: 'api server error' });
+  test('creates an action when Signup is unsuccessful', async () => {
+    fetch.mockResponseSuccess({ error: 'api server error' });
     await store.dispatch(authActions.signup());
     expect(store.getActions()).toMatchSnapshot();
   });
@@ -131,6 +129,12 @@ describe('__Auth Actions__', () => {
   });
 
   test('creates a SIGN_OUT action', () => {
+    store.dispatch(authActions.signOut());
+    expect(UserService.unsetUserId).toHaveBeenCalled();
+    expect(Bugsnag.clearUser).toHaveBeenCalled();
+    expect(Mixpanel.track).toHaveBeenCalledWith('signOut');
+    expect(SensitiveInfo.deleteItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN]);
+    expect(SensitiveInfo.deleteItem.mock.calls[1]).toEqual([storageKeys.USER]);
     expect(authActions.signOut()).toMatchSnapshot();
   });
 
