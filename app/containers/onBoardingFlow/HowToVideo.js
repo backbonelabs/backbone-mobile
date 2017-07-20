@@ -3,7 +3,7 @@ import { WebView, View } from 'react-native';
 import BodyText from '../../components/BodyText';
 import Button from '../../components/Button';
 import Spinner from '../../components/Spinner';
-import styles from '../../styles/onBoarding/device';
+import styles from '../../styles/onBoardingFlow/device';
 import HeadingText from '../../components/HeadingText';
 
 import routes from '../../routes';

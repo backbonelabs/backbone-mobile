@@ -4,7 +4,7 @@ import {
   Image,
   Linking,
 } from 'react-native';
-import styles from '../../styles/onBoarding/notifications';
+import styles from '../../styles/onBoardingFlow/notifications';
 import Button from '../../components/Button';
 import HeadingText from '../../components/HeadingText';
 import SecondaryText from '../../components/SecondaryText';

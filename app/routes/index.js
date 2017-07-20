@@ -19,10 +19,10 @@ import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
 import firmwareUpdate from './firmwareUpdate';
-import profileSetupOne from './onBoarding/profileSetupOne';
-import profileSetupTwo from './onBoarding/profileSetupTwo';
-import deviceSetup from './onBoarding/deviceSetup';
-import howToVideo from './onBoarding/howToVideo';
+import profileSetupOne from './onBoardingFlow/profileSetupOne';
+import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
+import deviceSetup from './onBoardingFlow/deviceSetup';
+import howToVideo from './onBoardingFlow/howToVideo';
 
 export default {
   activity,

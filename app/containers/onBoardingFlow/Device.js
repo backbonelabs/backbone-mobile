@@ -4,7 +4,7 @@ import {
   Image,
 } from 'react-native';
 import Button from '../../components/Button';
-import styles from '../../styles/onBoarding/device';
+import styles from '../../styles/onBoardingFlow/device';
 import HeadingText from '../../components/HeadingText';
 import sensor from '../../images/onboarding/sensor.png';
 import routes from '../../routes';
