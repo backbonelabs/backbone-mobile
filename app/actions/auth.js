@@ -101,7 +101,7 @@ export default {
             UserService.setUserId(id);
 
             // Identify user for Bugsnag
-            Bugsnag.setUser(id, body.user.nickname, body.user.email);
+            Bugsnag.setUser(id, body.user.nickname, body.user.email || '');
 
             // Identify user for Mixpanel tracking
             Mixpanel.identify(id);

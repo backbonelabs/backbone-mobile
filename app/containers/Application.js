@@ -378,7 +378,7 @@ class Application extends Component {
                 UserService.setUserId(id);
 
                 // Identify user for Bugsnag
-                Bugsnag.setUser(id, user.nickname, user.email);
+                Bugsnag.setUser(id, user.nickname, user.email || '');
 
                 // Identify user for Mixpanel
                 Mixpanel.identify(id);

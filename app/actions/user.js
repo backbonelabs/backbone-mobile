@@ -44,7 +44,7 @@ export default {
             throw new Error(body.error);
           }
           // Update user details in Bugsnag
-          Bugsnag.setUser(body._id, body.nickname, body.email);
+          Bugsnag.setUser(body._id, body.nickname, body.email || '');
 
           // Update user profile in Mixpanel
           Mixpanel.setUserProperties(body);
@@ -90,7 +90,7 @@ export default {
           SensitiveInfo.setItem(storageKeys.USER, body);
 
           // Update user details in Bugsnag
-          Bugsnag.setUser(body._id, body.nickname, body.email);
+          Bugsnag.setUser(body._id, body.nickname, body.email || '');
 
           // Update user profile in Mixpanel
           Mixpanel.setUserProperties(body);
