@@ -96,6 +96,7 @@ describe('__Auth Reducer__', () => {
   test('should handle SET_ACCESS_TOKEN', () => {
     expect(authReducer(initialState, {
       type: types.SET_ACCESS_TOKEN,
+      payload: user.accessToken,
     })).toMatchSnapshot();
   });
 });

@@ -62,7 +62,7 @@ Object {
 
 exports[`__Auth Reducer__ should handle SET_ACCESS_TOKEN 1`] = `
 Object {
-  "accessToken": undefined,
+  "accessToken": "testToken",
   "errorMessage": null,
   "inProgress": false,
   "passwordResetSent": false,
