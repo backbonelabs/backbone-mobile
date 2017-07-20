@@ -791,10 +791,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
                         if (errorCallBack != null) {
-                            // Toggle accelerometer notification separately because the app doesn't rely on the
-                            // accelerometer notifications to monitor a posture session.
-                            // This must be called at the end of the command flow to prevent concurrency issues
-                            // on older Android versions
+                            // Toggle accelerometer notification at the end of the 
+                            // command flow to prevent concurrency issues on older Android versions
                             bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, accelerometerNotificationStatus);
                             errorCallBack.onIntCallBack(0);
                             errorCallBack = null;
