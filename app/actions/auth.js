@@ -52,7 +52,7 @@ export default {
             UserService.setUserId(id);
 
             // Identify user for Bugsnag
-            Bugsnag.setUser(id, userObj.nickname, userObj.email);
+            Bugsnag.setUser(id, userObj.nickname, userObj.email || '');
 
             // Identify user for Mixpanel tracking
             Mixpanel.identify(id);
