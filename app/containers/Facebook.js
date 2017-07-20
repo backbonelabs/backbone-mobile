@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import constants from '../utils/constants';
 import authActions from '../actions/auth';
-import styles from '../styles/auth';
+import styles from '../styles/facebook';
 import Button from '../components/Button';
 
 class Facebook extends Component {

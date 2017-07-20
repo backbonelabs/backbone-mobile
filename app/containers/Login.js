@@ -27,7 +27,7 @@ import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
-import Facebook from '../components/Facebook';
+import Facebook from '../containers/Facebook';
 
 const { applyWidthDifference, height } = relativeDimensions;
 // Android statusbar height
