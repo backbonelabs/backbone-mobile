@@ -25,13 +25,16 @@ class Facebook extends Component {
     autobind(this);
   }
 
+  /**
+   * Collects Facebook user profile data and logs into Backbone API
+   * @param {object} fbAccessToken Facebook access token
+   */
   getFBUserInfo(fbAccessToken) {
     const _responseInfoCallback = (error, result) => {
       if (error) {
         Alert.alert('Please try again.');
       } else {
-        // New user object containing request facebook graph fields and login
-        // access tokens from facebook
+        // Dispatches login with Facebook user profile
         const user = Object.assign({}, result, fbAccessToken, {
           authMethod: constants.authMethods.FACEBOOK,
         });
@@ -64,6 +67,8 @@ class Facebook extends Component {
         onPress={() =>
           LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(result => {
             if (result && !result.isCancelled) {
+              // After a Facebook user successfully authenticates, we use the returned Facebook
+              // access token to get their profile.
               FBAccessToken.getCurrentAccessToken()
                 .then((data) => {
                   if (data) {
