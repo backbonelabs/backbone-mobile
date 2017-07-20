@@ -216,8 +216,8 @@ class Login extends Component {
                     hideContent ? null :
                       <View>
                         <Facebook
-                          buttonText={'LOG IN WITH FACEBOOK'}
-                          navigator={this.props.navigator}
+                          buttonText="LOG IN WITH FACEBOOK"
+                          buttonWidth={styles._inputField}
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />

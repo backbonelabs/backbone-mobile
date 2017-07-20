@@ -15,11 +15,9 @@ import Button from '../components/Button';
 
 class Facebook extends Component {
   static propTypes = {
-    buttonText: PropTypes.string,
     dispatch: PropTypes.func,
-    navigator: PropTypes.shape({
-      push: PropTypes.func,
-    }),
+    buttonText: PropTypes.string,
+    buttonWidth: PropTypes.object,
   };
 
   constructor() {
@@ -59,7 +57,7 @@ class Facebook extends Component {
   render() {
     return (
       <Button
-        style={styles._fbBtn}
+        style={Object.assign({}, styles._fbBtn, this.props.buttonWidth)}
         textStyle={styles._fbBtnText}
         text={this.props.buttonText}
         fbBtn
@@ -83,9 +81,4 @@ class Facebook extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const { auth } = state;
-  return auth;
-};
-
-export default connect(mapStateToProps)(Facebook);
+export default connect()(Facebook);

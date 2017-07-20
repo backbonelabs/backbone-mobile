@@ -86,15 +86,6 @@ export default EStyleSheet.create({
   inputField: {
     width: '85%',
   },
-  fbBtn: {
-    width: '85%',
-    borderRadius: 3,
-    height: applyWidthDifference(50),
-  },
-  fbBtnText: {
-    fontSize: fixedResponsiveFontSize(16),
-    fontWeight: 'bold',
-  },
   breakContainer: {
     flexDirection: 'row',
     width: '85%',

@@ -239,8 +239,8 @@ class Signup extends Component {
                     hideContent ? null :
                       <View>
                         <Facebook
-                          buttonText={'SIGN UP WITH FACEBOOK'}
-                          navigator={this.props.navigator}
+                          buttonText="SIGN UP WITH FACEBOOK"
+                          buttonWidth={styles._inputField}
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />
