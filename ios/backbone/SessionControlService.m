@@ -221,7 +221,14 @@ RCT_EXPORT_METHOD(resume:(NSDictionary*)sessionParam callback:(RCTResponseSender
   }
 }
 
-RCT_EXPORT_METHOD(stop:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(stop:(BOOL)waitForResponse callback:(RCTResponseSenderBlock)callback) {
+  if (!waitForResponse) {
+    // Immediately update the current session state without waiting for the command to be sent.
+    // Should only be used when the app needs to forcefully quit the monitor scene
+    DLog(@"Skip Response");
+    currentSessionState = SESSION_STATE_STOPPED;
+  }
+  
   if ([BluetoothServiceInstance isDeviceReady] && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_CONTROL_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SESSION_DATA_CHARACTERISTIC_UUID]
       && [BluetoothServiceInstance getCharacteristicByUUID:SLOUCH_CHARACTERISTIC_UUID]

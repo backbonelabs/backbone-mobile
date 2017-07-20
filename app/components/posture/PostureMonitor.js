@@ -355,7 +355,7 @@ class PostureMonitor extends Component {
     const { forceStoppedSession, sessionState } = this.state;
     // End the session if it's running and not yet stopped
     if (!forceStoppedSession && sessionState !== sessionStates.STOPPED) {
-      SessionControlService.stop(() => {
+      SessionControlService.stop(false, () => {
         // no-op
       });
     }
@@ -757,7 +757,7 @@ class PostureMonitor extends Component {
 
         Mixpanel.track('stopSession');
 
-        SessionControlService.stop(err => {
+        SessionControlService.stop(true, err => {
           if (err) {
             // Only unset this state on errors.
             // This is because on a succesful stop attempt,
