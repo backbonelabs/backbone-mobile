@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
+  ListView,
 } from 'react-native';
 import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+// import styles from '../styles/freeTraining';
 import styles from '../styles/freeTraining';
-import styles2 from '../styles/freeTraining2';
 import SecondaryText from '../components/SecondaryText';
 import List from '../containers/List';
 
@@ -17,56 +18,85 @@ class FreeTraining extends Component {
   constructor() {
     super();
     autobind(this);
-    this.state = {
+    this.db = {
       postureSource: [
-        'Standing Posture',
-        'Seated Posture',
-        'Beginner Posture',
-        'Intermediate Posture',
-        'Advanced Posture',
-        'Walking Posure',
+        'Standing',
+        'Beginner Seated',
+        'Intermediate Seated',
+        'Advanced Seated',
+        'Walking',
+        'Running',
+        'Infinite',
       ],
       exercisesSource: [
-        'Pushups',
-        'Pull ups',
+        'Push-ups',
+        'Pull-ups',
         'Squats',
         'Bench press',
         'Overhead press',
+        'Band Pull-Apart',
+        'Bird Dog',
+        'No Money',
+        'Plank',
+        'Side Plank',
+        'Dead Bug',
       ],
       stretchesSource: [
-        'Stretch 1',
-        'Stretch 2',
-        'Stretch 3',
-        'Stretch 4',
+        'Chest',
+        'Bully',
+        'Lat',
+        'Calf',
+        'Couch',
+        'Low Back',
+        'Hamstring with Band',
+        'Quad',
+        'Pidgeon',
+        'Garland Pose',
+        'Extended Side Angle',
       ],
     };
   }
 
-  formatItemRow(rowData) {
+  getDataSource(dbSource) {
+    const dataSource = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+      sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
+    });
+    return dataSource.cloneWithRowsAndSections(this.convertDataToMap(dbSource));
+  }
+
+  convertDataToMap(data) {
+    const itemMap = {};
+    data.sort().forEach((item) => {
+      if (!itemMap[item[0]]) {
+        itemMap[item[0]] = [];
+      }
+      itemMap[item[0]].push(item);
+    });
+
+    return itemMap;
+  }
+  renderRow(rowData) {
     return (
-      <View style={styles.listContainer}>
-        <View style={styles.listInnerContainer}>
-          <View style={styles.preview} />
-          <SecondaryText style={styles._listText}>{rowData}</SecondaryText>
+      <View style={{ flexDirection: 'column' }}>
+        <View style={styles.listContainer}>
+          <View style={styles.listInnerContainer}>
+            <View style={styles.preview} />
+            <SecondaryText style={styles._listText}>{rowData}</SecondaryText>
+          </View>
+          <FontAwesomeIcon name="heart" style={styles._icon} size={25} />
         </View>
-        <Icon name="lock" style={styles._icon} size={30} />
+        <View style={styles.barContainer}>
+          <View style={styles.bar} />
+        </View>
       </View>
     );
   }
 
-  formatItemRow2(rowData) {
+  renderSectionHeader(sectionData, catagory) {
     return (
-      <View style={{ flexDirection: 'column' }}>
-        <View style={styles2.listContainer}>
-          <View style={styles2.listInnerContainer}>
-            <View style={styles2.preview} />
-            <SecondaryText style={styles2._listText}>{rowData}</SecondaryText>
-          </View>
-          <FontAwesomeIcon name="heart" style={styles2._icon} size={25} />
-        </View>
-        <View style={styles2.barContainer}>
-          <View style={styles2.bar} />
-        </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionText}>{catagory}</Text>
       </View>
     );
   }
@@ -84,35 +114,26 @@ class FreeTraining extends Component {
         tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
         tabBarTextStyle={styles.tabBarTextStyle}
       >
-        <List
+        <ListView
           tabLabel="POSTURE"
-          dataBlob={this.state.postureSource}
-          formatRowData={this.formatItemRow}
+          dataSource={this.getDataSource(this.db.postureSource)}
+          renderRow={this.renderRow}
           onPressRow={() => {}}
+          renderSectionHeader={this.renderSectionHeader}
         />
-        <View tabLabel="EXERCISES">
-          <View style={styles2.indexContainer}>
-            <Text style={styles2.index}>A</Text>
-          </View>
-          <List
-            dataBlob={this.state.exercisesSource}
-            formatRowData={this.formatItemRow2}
-            onPressRow={() => {}}
-          />
-          <View style={styles2.indexContainer}>
-            <Text style={styles2.index}>B</Text>
-          </View>
-          <List
-            dataBlob={this.state.exercisesSource}
-            formatRowData={this.formatItemRow2}
-            onPressRow={() => {}}
-          />
-        </View>
-        <List
-          tabLabel="STRETCHES"
-          dataBlob={this.state.stretchesSource}
-          formatRowData={this.formatItemRow2}
+        <ListView
+          tabLabel="EXERCISES"
+          dataSource={this.getDataSource(this.db.exercisesSource)}
+          renderRow={this.renderRow}
           onPressRow={() => {}}
+          renderSectionHeader={this.renderSectionHeader}
+        />
+        <ListView
+          tabLabel="STRETCHES"
+          dataSource={this.getDataSource(this.db.stretchesSource)}
+          renderRow={this.renderRow}
+          onPressRow={() => {}}
+          renderSectionHeader={this.renderSectionHeader}
         />
       </ScrollableTabView>
     );
