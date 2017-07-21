@@ -30,11 +30,10 @@ describe('__Auth Actions__', () => {
     Mixpanel.identify.mockClear();
     Mixpanel.setUserProperties.mockClear();
     Mixpanel.track.mockClear();
+    Mixpanel.trackWithProperties.mockClear();
     SensitiveInfo.setItem.mockClear();
   });
 
-    // store.getActions() returns an array of actions,
-    // the first index is always the ''__START action
   test('creates an action to Login', async () => {
     const { accessToken, ...userObj } = user;
     fetch.mockResponseSuccess(user);
@@ -45,8 +44,6 @@ describe('__Auth Actions__', () => {
     expect(Mixpanel.identify).toBeCalledWith(user._id);
     expect(Mixpanel.setUserProperties).toBeCalledWith(userObj);
     expect(Mixpanel.track).toHaveBeenCalledWith('login-success');
-      // Tests that the second arguement is equal to userObj
-      // currently Jest has no syntactic sugar for this
     expect(SensitiveInfo.setItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN, accessToken]);
     expect(SensitiveInfo.setItem.mock.calls[1]).toEqual([storageKeys.USER, userObj]);
     expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password }));
@@ -56,14 +53,15 @@ describe('__Auth Actions__', () => {
   test('creates an action when Login is unsuccessful', async () => {
     fetch.mockResponseSuccess({ error: 'api server error' });
     await store.dispatch(authActions.login());
+    expect(Mixpanel.trackWithProperties)
+    .toBeCalledWith('login-error', { errorMessage: 'api server error' });
     expect(store.getActions()).toMatchSnapshot();
   });
 
   test('creates an action when Login returns a server error', async () => {
     fetch.mockResponseFailure();
     await store.dispatch(authActions.login());
-    expect(Mixpanel.trackWithProperties.mock.calls[0])
-      .toEqual(['login-error', { errorMessage: 'api server error' }]);
+    expect(Mixpanel.track).toHaveBeenCalledWith('login-serverError');
     expect(store.getActions()).toMatchSnapshot();
   });
 
@@ -86,14 +84,15 @@ describe('__Auth Actions__', () => {
   test('creates an action when Signup is unsuccessful', async () => {
     fetch.mockResponseSuccess({ error: 'api server error' });
     await store.dispatch(authActions.signup());
+    expect(Mixpanel.trackWithProperties)
+    .toBeCalledWith('signup-error', { errorMessage: 'api server error' });
     expect(store.getActions()).toMatchSnapshot();
   });
 
   test('creates an action when Signup returns a server error', async () => {
     fetch.mockResponseFailure();
     await store.dispatch(authActions.signup());
-    expect(Mixpanel.trackWithProperties.mock.calls[1])
-      .toEqual(['signup-error', { errorMessage: 'api server error' }]);
+    expect(Mixpanel.track).toHaveBeenCalledWith('signup-serverError');
     expect(store.getActions()).toMatchSnapshot();
   });
 
@@ -104,8 +103,8 @@ describe('__Auth Actions__', () => {
       ok: true,
     });
     await store.dispatch(authActions.reset({ email: 'test@mail.com' }));
-    expect(Mixpanel.trackWithProperties.mock.calls[2])
-      .toEqual(['passwordReset-success', { email: 'test@mail.com' }]);
+    expect(Mixpanel.trackWithProperties)
+    .toBeCalledWith('passwordReset-success', { email: 'test@mail.com' });
     expect(store.getActions()).toMatchSnapshot();
   });
 
@@ -114,17 +113,18 @@ describe('__Auth Actions__', () => {
       error: 'api server error',
     });
     await store.dispatch(authActions.reset({ email: 'test@mail.com' }));
-    expect(Mixpanel.trackWithProperties.mock.calls[3])
-    .toEqual([
+    expect(Mixpanel.trackWithProperties)
+    .toBeCalledWith(
       'passwordReset-error',
       { email: 'test@mail.com', errorMessage: 'api server error' },
-    ]);
+    );
     expect(store.getActions()).toMatchSnapshot();
   });
 
   test('creates an action when resetting password returns a server error', async () => {
     fetch.mockResponseFailure();
     await store.dispatch(authActions.reset({ email: 'test@mail.com' }));
+    expect(Mixpanel.track).toHaveBeenCalledWith('passwordReset-serverError');
     expect(store.getActions()).toMatchSnapshot();
   });
 
