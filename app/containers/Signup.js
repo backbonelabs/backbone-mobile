@@ -337,11 +337,7 @@ class Signup extends Component {
                     style={styles._CTAButton}
                     text="SIGN UP"
                     primary
-                    disabled={
-                        this.props.inProgress ||
-                          !email ||
-                          !password
-                      }
+                    disabled={!email || !password}
                     onPress={this.signup}
                   />
                 </View>

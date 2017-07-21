@@ -299,7 +299,7 @@ class Login extends Component {
                     style={styles._CTAButton}
                     text="LOG IN"
                     primary
-                    disabled={inProgress || (!email || !password)}
+                    disabled={!email || !password}
                     onPress={this.login}
                   />
                 </View>
