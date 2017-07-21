@@ -17,7 +17,7 @@ class Facebook extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     buttonText: PropTypes.string,
-    buttonWidth: PropTypes.object,
+    style: PropTypes.object,
   };
 
   constructor() {
@@ -60,7 +60,7 @@ class Facebook extends Component {
   render() {
     return (
       <Button
-        style={Object.assign({}, styles._fbBtn, this.props.buttonWidth)}
+        style={Object.assign({}, styles._fbBtn, this.props.style)}
         textStyle={styles._fbBtnText}
         text={this.props.buttonText}
         fbBtn

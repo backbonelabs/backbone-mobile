@@ -240,7 +240,7 @@ class Signup extends Component {
                       <View>
                         <Facebook
                           buttonText="SIGN UP WITH FACEBOOK"
-                          buttonWidth={styles._inputField}
+                          style={styles._inputField}
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />
