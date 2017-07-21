@@ -104,8 +104,8 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         // Listen to the Activity's lifecycle events
         reactContext.addLifecycleEventListener(this);
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        state = bluetoothAdapter.getState();
+//        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        state = bluetoothAdapter.getState();
     }
 
     public interface DeviceScanCallBack {

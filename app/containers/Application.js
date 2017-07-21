@@ -1,13 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
-  AppState,
   View,
   Image,
   StatusBar,
   Navigator,
   NativeModules,
-  NativeEventEmitter,
   Platform,
   TouchableOpacity,
   BackAndroid,
@@ -15,7 +13,6 @@ import {
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
-import { UPDATE_BLUETOOTH_STATE } from '../actions/types';
 import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
@@ -23,7 +20,6 @@ import settingsInactive from '../images/settingsInactive.png';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
-import postureActions from '../actions/posture';
 import FullModal from '../components/FullModal';
 import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
@@ -39,21 +35,13 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
 
-const { bluetoothStates, deviceModes, deviceStatuses, storageKeys } = constants;
+const { storageKeys } = constants;
 
 const {
-  BluetoothService,
-  DeviceManagementService,
   Environment,
   SessionControlService,
-  DeviceInformationService,
   UserService,
 } = NativeModules;
-
-const BluetoothServiceEvents = new NativeEventEmitter(BluetoothService);
-const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService);
-const DeviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
-const DeviceInformationServiceEvents = new NativeEventEmitter(DeviceInformationService);
 
 const BaseConfig = Navigator.SceneConfigs.FloatFromRight;
 const CustomSceneConfig = Object.assign({}, BaseConfig, {
@@ -139,212 +127,6 @@ class Application extends Component {
       });
     }
 
-    // Get initial Bluetooth state
-    BluetoothService.getState((error, { state }) => {
-      if (!error) {
-        this.props.dispatch({
-          type: UPDATE_BLUETOOTH_STATE,
-          payload: state,
-        });
-      } else {
-        Alert.alert('Error', error);
-      }
-    });
-
-    // For Android only, check if Bluetooth is enabled.
-    // If not, display prompt for user to enable Bluetooth.
-    // This cannot be done on the BluetoothService module side
-    // compared to iOS.
-    if (!isiOS) {
-      BluetoothService.getIsEnabled()
-        .then(isEnabled => !isEnabled && BluetoothService.enable());
-    }
-
-    // Handle changes from the Bluetooth adapter
-    this.bluetoothListener = BluetoothServiceEvents.addListener('BluetoothState', ({ state }) => {
-      this.props.dispatch({
-        type: UPDATE_BLUETOOTH_STATE,
-        payload: state,
-      });
-
-      if (state === bluetoothStates.OFF) {
-        this.props.dispatch(deviceActions.disconnect());
-        Alert.alert('Error', 'Bluetooth is off');
-      }
-    });
-
-    // Handle changes in the device connection status at the app level
-    this.deviceStateListener = BluetoothServiceEvents.addListener('DeviceState', ({ state }) => {
-      switch (state) {
-        case deviceStatuses.CONNECTED:
-          // Retrieve device info
-          this.props.dispatch(deviceActions.getInfo());
-
-          // Check for previous session
-          this.checkActiveSession();
-          break;
-        case deviceStatuses.DISCONNECTED:
-          // Dispatch disconnect action when the device is disconnected
-          this.props.dispatch(deviceActions.didDisconnect());
-          break;
-        default:
-          // no-op
-      }
-    });
-
-    this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
-      ({ message, success }) => {
-        if (message) {
-          Mixpanel.trackWithProperties('selfTest-error', {
-            errorMessage: message,
-          });
-
-          this.props.dispatch(deviceActions.selfTestUpdated(false));
-
-          Alert.alert('Error', 'Your Backbone sensor needs to be fixed. ' +
-            'Perform an update now to continue using your Backbone.', [
-            { text: 'Cancel' },
-            { text: 'Update', onPress: () => this.navigator.push(routes.device) },
-            ]
-          );
-        } else {
-          const result = (success ? 'success' : 'failed');
-          Mixpanel.track(`selfTest-${result}`);
-
-          this.props.dispatch(deviceActions.selfTestUpdated(success));
-        }
-      });
-
-    // Handle SessionState events
-    this.sessionStateListener = SessionControlServiceEvents.addListener('SessionState', event => {
-      if (this.state.isFetchingSessionState) {
-        const routeStack = this.navigator.getCurrentRoutes();
-        const postureRouteName = routes.postureMonitor.name;
-        const isPostureMonitorActive = routeStack.some(route => route.name === postureRouteName);
-
-        // Check if we are not yet in the postureMonitor
-        if (!isPostureMonitorActive) {
-          if (event.hasActiveSession) {
-            // There is an active session,
-            if (this.navigator) {
-              // Not currently on the PostureMonitor scene
-              // Navigate to PostureMonitor to resume session using previous session parameters
-              SensitiveInfo.getItem(storageKeys.SESSION_STATE)
-                .then(prevSessionState => {
-                  const parameters = {};
-                  if (prevSessionState) {
-                    Object.assign(parameters, prevSessionState.parameters);
-                    this.props.dispatch(
-                      postureActions.setSessionTime(parameters.sessionDuration * 60)
-                    );
-
-                    // Hacky workaround:
-                    // When the device gets disconnected while on the PostureMonitor scene and
-                    // the user decides to leave the scene, and then reconnects to the device
-                    // outside the PostureMonitor scene, the DeviceConnect scene will call
-                    // popToRoute or replace on the Navigator. However, we get into a race condition
-                    // where this navigate action may cause the PostureMonitor to be inserted into
-                    // the route stack before popToRoute or replace is called. If that happens, the
-                    // PostureMonitor scene will be unmounted.
-                    // This hack will navigate to PostureMonitor after a short delay to minimize
-                    // the chances of such a race condition.
-                    setTimeout(() => {
-                      this.navigate({
-                        ...routes.postureMonitor,
-                        props: {
-                          sessionState: {
-                            ...parameters,
-                            sessionState: prevSessionState.state,
-                            timeElapsed: event.totalDuration,
-                            slouchTime: event.slouchTime,
-                          },
-                        },
-                      });
-                    }, 250);
-                  }
-                });
-            }
-          } else {
-            // Redirect to the postureMonitor to show the summary
-            SensitiveInfo.getItem(storageKeys.SESSION_STATE)
-              .then(prevSessionState => {
-                if (prevSessionState) {
-                  setTimeout(() => {
-                    this.navigate({
-                      ...routes.postureMonitor,
-                      props: {
-                        sessionState: {
-                          showSummary: true,
-                          previousSessionEvent: event,
-                        },
-                      },
-                    });
-                  }, 250);
-                }
-              });
-          }
-        }
-
-        this.setState({ isFetchingSessionState: false });
-
-        this.props.dispatch(appActions.hidePartialModal());
-      }
-    });
-
-    // Add a listener to the ConnectionStatus event
-    this.connectionStatusListener = DeviceManagementServiceEvents.addListener('ConnectionStatus',
-      status => {
-        if (status.message) {
-          Mixpanel.trackError({
-            errorContent: status,
-            path: 'app/containers/Application',
-            stackTrace: ['componentWillMount', 'DeviceManagementServiceEvents.addListener'],
-          });
-        } else if (this.navigator !== null) {
-          const routeStack = this.navigator.getCurrentRoutes();
-          const currentRoute = routeStack[routeStack.length - 1];
-          const delay = (currentRoute.name === routes.deviceConnect.name ? 1000 : 0);
-
-          if (status.deviceMode === deviceModes.BOOTLOADER) {
-            // When the device failed to load the normal Backbone services,
-            // we should proceed to show firmware update related UI.
-            // Delay is needed when transitioning from the deviceConnect scene
-            // to prevent corrupted navigation stack if the user promptly tap
-            // on the 'Update' button while the deviceConnect scene is being popped.
-            setTimeout(() => {
-              Alert.alert('Error', 'There is something wrong with your Backbone. ' +
-                'Perform an update now to continue using your Backbone.', [
-                { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
-                { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
-                ]
-              );
-            }, delay);
-          } else if (!status.selfTestStatus) {
-            // Self-Test failed, request a re-run
-            Mixpanel.track('selfTest-begin');
-
-            DeviceInformationService.requestSelfTest();
-            this.props.dispatch(deviceActions.selfTestRequested());
-          } else {
-            this.props.dispatch(deviceActions.selfTestUpdated(status.selfTestStatus));
-          }
-        }
-
-        this.props.dispatch(deviceActions.connectStatus(status));
-      }
-    );
-
-    // Check if we need to prepare for restoring previously saved session
-    SensitiveInfo.getItem(storageKeys.SESSION_STATE)
-      .then(prevSessionState => {
-        if (prevSessionState) {
-          this.props.dispatch(deviceActions.restoreSavedSession());
-        }
-      });
-
-    // Listen to when the app switches between foreground and background
-    AppState.addEventListener('change', this.handleAppStateChange);
-
     // Allows us to differentiate between development / production events
     Mixpanel.registerSuperProperties({ DEV_MODE: Environment.DEV_MODE === 'true' });
 
@@ -381,16 +163,7 @@ class Application extends Component {
 
                 if (user.hasOnboarded) {
                   // User completed onboarding
-                  // Check for a saved device
-                  return SensitiveInfo.getItem(storageKeys.DEVICE)
-                    .then((device) => {
-                      if (device) {
-                        // There is a saved device, attempt to connect to it
-                        this.props.dispatch(deviceActions.connect(device.identifier));
-                      }
-                      // Set initial route to posture dashboard
-                      this.setInitialRoute(routes.postureDashboard);
-                    });
+                  this.setInitialRoute(routes.postureDashboard);
                 }
                 // User did not complete onboarding, set initial route to onboarding
                 this.setInitialRoute(routes.onboarding);
@@ -421,28 +194,6 @@ class Application extends Component {
         );
       }
     }
-  }
-
-  componentWillUnmount() {
-    if (this.bluetoothListener) {
-      this.bluetoothListener.remove();
-    }
-    if (this.backAndroidListener) {
-      this.backAndroidListener.remove();
-    }
-    if (this.deviceStateListener) {
-      this.deviceStateListener.remove();
-    }
-    if (this.deviceTestStatusListener) {
-      this.deviceTestStatusListener.remove();
-    }
-    if (this.sessionStateListener) {
-      this.sessionStateListener.remove();
-    }
-    if (this.connectionStatusListener) {
-      this.connectionStatusListener.remove();
-    }
-    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   /**

@@ -208,8 +208,6 @@ public class DeviceManagementService extends ReactContextBaseJavaModule implemen
     @Override
     public void onHostPause() {
         // Activity `onPause`
-        // Stop scanning regardless if a scan is in progress or not
-        stopScanForDevices();
     }
 
     @Override
