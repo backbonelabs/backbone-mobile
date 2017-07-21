@@ -9,7 +9,7 @@ fetch.mockResponseSuccess = (body) => {
       };
       // password reset res
       if (body.ok) {
-        res.ok = Promise.resolve(body.ok);
+        res.ok = body.ok;
       }
       return Promise.resolve(res);
     }

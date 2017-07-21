@@ -97,11 +97,7 @@ describe('__Auth Actions__', () => {
   });
 
   test('creates an action to reset password', async () => {
-    fetch.mockResponseSuccess({
-      email: 'test@mail.com',
-      passwordResetSent: true,
-      ok: true,
-    });
+    fetch.mockResponseSuccess({ ok: true });
     await store.dispatch(authActions.reset({ email: 'test@mail.com' }));
     expect(Mixpanel.trackWithProperties)
     .toBeCalledWith('passwordReset-success', { email: 'test@mail.com' });
