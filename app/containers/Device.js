@@ -7,13 +7,14 @@ import {
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import deviceActions from '../actions/device';
-import sensorSmall from '../images/settings/sensorSmall.png';
+import deviceOrangeIcon from '../images/settings/device-orange-icon.png';
 import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
-import HeadingText from '../components/HeadingText';
+import SecondaryText from '../components/SecondaryText';
 import routes from '../routes';
 import constants from '../utils/constants';
 
@@ -107,16 +108,29 @@ class Device extends Component {
 
   render() {
     const { device, inProgress, isConnecting } = this.props;
+    const batteryIcon = 'battery-three-quarters';
 
     return inProgress || isConnecting ?
       <Spinner />
       :
         <View style={styles.container}>
           <View style={styles.deviceInfoContainer}>
-            <Image source={sensorSmall} style={styles.sensorImage} />
-            <HeadingText size={3}>
-              Firmware Version: { device.firmwareVersion || 'n/a' }
-            </HeadingText>
+            <BodyText style={styles._deviceConnectionText}>
+              Connected to MY BACKBONE
+            </BodyText>
+            <Image source={deviceOrangeIcon} style={styles.sensorImage} />
+            <View style={styles.batteryInfo}>
+              <SecondaryText style={styles._batteryInfoText}>
+                { device.batteryLevel || '--' }%{'  '}
+              </SecondaryText>
+              <FontAwesomeIcon name={batteryIcon} style={styles.batteryIconRed} />
+            </View>
+            <SecondaryText style={styles._deviceInfoText}>
+              Device: { device.firmwareVersion || 'n/a' }
+            </SecondaryText>
+            <SecondaryText style={styles._deviceInfoText}>
+              Version: { device.firmwareVersion || 'n/a' }
+            </SecondaryText>
             { device.updateAvailable &&
               <BodyText style={styles._deviceInfoBodyText}>
                 (Update Available)
@@ -125,7 +139,12 @@ class Device extends Component {
           </View>
           <View style={styles.buttonContainer}>
             { device.firmwareVersion ?
-              <Button primary text="UNPAIR" onPress={this.unpairDevice} />
+              <Button
+                primary
+                style={styles._button}
+                text="DISCONNECT"
+                onPress={this.unpairDevice}
+              />
               :
                 <Button
                   primary
@@ -133,14 +152,14 @@ class Device extends Component {
                   onPress={this.addDevice}
                 />
             }
-            { /* Only show this button if there's a firmware update available */
-              device.updateAvailable && (
-                <Button
-                  style={styles._updateButton}
-                  text="UPDATE"
-                  onPress={this.updateFirmware}
-                />
-              )
+            { /* Enable this button if there's a firmware update available */
+              <Button
+                primary
+                style={styles._button}
+                text="UPDATE"
+                onPress={this.updateFirmware}
+                disabled={!device.updateAvailable}
+              />
             }
           </View>
         </View>;
