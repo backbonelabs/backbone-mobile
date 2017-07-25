@@ -15,12 +15,8 @@ export default EStyleSheet.create({
   button: {
     marginHorizontal: applyWidthDifference(10),
   },
-  sensorImage: {
+  deviceStatusImage: {
     marginBottom: 10 * heightDifference,
-  },
-  deviceInfoBodyText: {
-    marginVertical: 7.5 * heightDifference,
-    color: '$primaryFontColor',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -31,21 +27,42 @@ export default EStyleSheet.create({
   deviceConnectionText: {
     fontWeight: 'bold',
     fontSize: fixedResponsiveFontSize(16),
-    paddingBottom: applyWidthDifference(25),
+    paddingBottom: applyWidthDifference(22),
   },
   batteryInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: applyWidthDifference(5),
+    paddingBottom: applyWidthDifference(8),
+  },
+  deviceStatus: {
+    paddingBottom: applyWidthDifference(8),
   },
   deviceInfo: {
-    fontSize: fixedResponsiveFontSize(13),
+    alignItems: 'center',
   },
   deviceInfoText: {
+    fontSize: fixedResponsiveFontSize(14),
+    color: '#000000',
+  },
+  firmwareUpdateInfoText: {
+    fontSize: fixedResponsiveFontSize(16),
+    marginHorizontal: applyWidthDifference(10),
+    textAlign: 'center',
+    color: '#000000',
+  },
+  firmwareUpdateProgressTextBlack: {
     fontSize: fixedResponsiveFontSize(16),
     color: '#000000',
   },
-  batteryInfoText: {
+  firmwareUpdateProgressTextGreen: {
+    fontSize: fixedResponsiveFontSize(16),
+    color: '#32CD32',
+  },
+  firmwareUpdateProgressTextRed: {
+    fontSize: fixedResponsiveFontSize(16),
+    color: '#FF0000',
+  },
+  batteryInfoTextBlack: {
     fontSize: fixedResponsiveFontSize(16),
     color: '#000000',
   },
@@ -55,10 +72,10 @@ export default EStyleSheet.create({
   },
   batteryIconBlack: {
     color: '#000000',
-    fontSize: fixedResponsiveFontSize(30),
+    fontSize: fixedResponsiveFontSize(25),
   },
   batteryIconRed: {
     color: '#FF0000',
-    fontSize: fixedResponsiveFontSize(30),
+    fontSize: fixedResponsiveFontSize(25),
   },
 });
