@@ -94,12 +94,11 @@ class Login extends Component {
       if (nextProps.auth.errorMessage === 'Invalid login credentials. Please try again.') {
         this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
       // Handles error relating to network issues
-      } else if (nextProps.errorMessage === constants.errorMessages.NETWORK_ERROR) {
-        this.setState({ authError: true, authErrorMessage: constants.errorMessages.NETWORK_ERROR });
-        // For all other errors including Facebook signup
-      } else {
-        Alert.alert('Authentication Error', nextProps.auth.errorMessage);
+      } else if (nextProps.auth.errorMessage === constants.errorMessages.NETWORK_ERROR) {
+        this.setState({ authError: true, authErrorMessage: nextProps.auth.errorMessage });
       }
+      // For Facebook login error messages
+      // Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
   }
 

@@ -88,10 +88,9 @@ class Signup extends Component {
       // Handles error relating to network issues
       } else if (nextProps.errorMessage === constants.errorMessages.NETWORK_ERROR) {
         this.setState({ errorMessage: nextProps.errorMessage });
-      // For all other errors including Facebook signup
-      } else {
-        Alert.alert('Error', nextProps.errorMessage);
       }
+      // For Facebook signup error messages
+      // Alert.alert('Error', nextProps.auth.errorMessage);
     }
   }
 
