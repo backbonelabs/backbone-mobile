@@ -55,11 +55,13 @@ class Login extends Component {
       email: '',
       password: '',
       authError: false,
+      authErrorMessage: '',
       imageHeight: applyWidthDifference(110),
       headingFlex: 1,
       containerHeight: 0,
       hideContent: false,
     };
+    this.loginErrorMessage = 'INCORRECT EMAIL OR PASSWORD';
   }
 
   componentWillMount() {
@@ -88,7 +90,12 @@ class Login extends Component {
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
       // Authentication error
-      this.setState({ authError: true });
+      if (nextProps.auth.errorMessage === 'Invalid login credentials. Please try again.') {
+        this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
+      } else {
+        // For all other errors
+        this.setState({ authError: true, authErrorMessage: constants.errorMessages.NETWORK_ERROR });
+      }
       // Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
   }
@@ -154,6 +161,7 @@ class Login extends Component {
 
   login() {
     const { email, password, authError } = this.state;
+    // Check if email and password if valid on client before sending to API server
     const validPassword = password.length >= 8;
     const validEmail = constants.emailRegex.test(email);
     if (validEmail && validPassword) {
@@ -162,7 +170,7 @@ class Login extends Component {
       }
       this.props.dispatch(authActions.login({ email, password }));
     } else {
-      this.setState({ authError: true });
+      this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
     }
   }
 
@@ -287,7 +295,7 @@ class Login extends Component {
                           size={20}
                         />
                         <BodyText style={styles._warning}>
-                          INCORRECT EMAIL OR PASSWORD
+                          {this.state.authErrorMessage}
                         </BodyText>
                       </View>
                       : null
