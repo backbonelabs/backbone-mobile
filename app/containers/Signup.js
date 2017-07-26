@@ -82,10 +82,13 @@ class Signup extends Component {
     if (!this.props.accessToken && nextProps.accessToken) {
       this.props.navigator.resetTo(routes.onboarding);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
+      // Handles error messages returned from API server
       if (nextProps.errorMessage === 'Email is not available') {
         this.setState({ emailWarning: true, errorMessage: nextProps.errorMessage.toUpperCase() });
+      // Handles error relating to network issues
       } else if (nextProps.errorMessage === constants.errorMessages.NETWORK_ERROR) {
         this.setState({ errorMessage: nextProps.errorMessage });
+      // For all other errors including Facebook signup
       } else {
         Alert.alert('Error', nextProps.errorMessage);
       }
