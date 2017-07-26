@@ -9,6 +9,7 @@ import {
   Text,
   Platform,
   StatusBar,
+  Alert,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -89,14 +90,16 @@ class Login extends Component {
         this.props.navigator.resetTo(routes.onboarding);
       }
     } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
-      // Authentication error
+      // Authentication error returned from API server
       if (nextProps.auth.errorMessage === 'Invalid login credentials. Please try again.') {
         this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
-      } else {
-        // For all other errors
+      // Handles error relating to network issues
+      } else if (nextProps.errorMessage === constants.errorMessages.NETWORK_ERROR) {
         this.setState({ authError: true, authErrorMessage: constants.errorMessages.NETWORK_ERROR });
+        // For all other errors including Facebook signup
+      } else {
+        Alert.alert('Authentication Error', nextProps.auth.errorMessage);
       }
-      // Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
   }
 
@@ -161,7 +164,7 @@ class Login extends Component {
 
   login() {
     const { email, password, authError } = this.state;
-    // Check if email and password if valid on client before sending to API server
+    // Check if email and password is valid on client before sending to API server
     const validPassword = password.length >= 8;
     const validEmail = constants.emailRegex.test(email);
     if (validEmail && validPassword) {
