@@ -177,7 +177,9 @@ class Login extends Component {
 
   render() {
     const { inProgress } = this.props.auth;
-    const { email, password, authError, authErrorMessage, containerHeight, hideContent } = this.state;
+    const {
+      email, password, authError, authErrorMessage, containerHeight, hideContent,
+    } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
     if (!isiOS) {
