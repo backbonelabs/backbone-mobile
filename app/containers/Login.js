@@ -177,7 +177,7 @@ class Login extends Component {
 
   render() {
     const { inProgress } = this.props.auth;
-    const { email, password, authError, containerHeight, hideContent } = this.state;
+    const { email, password, authError, authErrorMessage, containerHeight, hideContent } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
     if (!isiOS) {
@@ -296,7 +296,7 @@ class Login extends Component {
                           size={20}
                         />
                         <BodyText style={styles._warning}>
-                          {this.state.authErrorMessage}
+                          {authErrorMessage}
                         </BodyText>
                       </View>
                       : null
