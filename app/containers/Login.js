@@ -9,7 +9,6 @@ import {
   Text,
   Platform,
   StatusBar,
-  Alert,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
