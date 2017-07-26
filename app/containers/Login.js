@@ -24,6 +24,7 @@ import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
+import constants from '../utils/constants';
 
 const { applyWidthDifference, height } = relativeDimensions;
 // Android statusbar height
@@ -153,10 +154,16 @@ class Login extends Component {
 
   login() {
     const { email, password, authError } = this.state;
-    if (authError) {
-      this.setState({ authError: false });
+    const validPassword = password.length >= 8;
+    const validEmail = constants.emailRegex.test(email);
+    if (validEmail && validPassword) {
+      if (authError) {
+        this.setState({ authError: false });
+      }
+      this.props.dispatch(authActions.login({ email, password }));
+    } else {
+      this.setState({ authError: true });
     }
-    this.props.dispatch(authActions.login({ email, password }));
   }
 
   render() {
