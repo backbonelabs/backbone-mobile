@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../utils/relativeDimensions';
@@ -10,6 +11,20 @@ export default EStyleSheet.create({
     backgroundColor: '$secondaryColor',
     width: applyWidthDifference(150),
     height: applyWidthDifference(50),
+    ...Platform.select({
+      // OS-specific drop shadow styling
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',
