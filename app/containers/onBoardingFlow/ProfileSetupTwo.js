@@ -129,9 +129,9 @@ class ProfileSetupTwo extends Component {
         <View style={styles._container}>
           <View>
             <View style={styles.innerContainer}>
-              <StepBar step={this.props.step} style={styles._stepBar} />
+              <StepBar step={2} style={styles._stepBar} />
               <BodyText style={styles._header}>
-                      Great! Now just some information to help us calibrate your device.
+                Great! Now just some information to help us calibrate your device.
               </BodyText>
               <ProfileBody
                 setPickerType={this.setPickerType}

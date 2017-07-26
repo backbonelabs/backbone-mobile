@@ -107,7 +107,6 @@ class ProfileSetupOne extends Component {
       props: {
         nickname: this.state.nickname,
         gender: this.state.gender,
-        step: 2,
       },
     });
   }
