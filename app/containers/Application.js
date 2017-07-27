@@ -306,7 +306,7 @@ class Application extends Component {
         } else if (this.navigator !== null) {
           const routeStack = this.navigator.getCurrentRoutes();
           const currentRoute = routeStack[routeStack.length - 1];
-          const delay = (currentRoute.name === routes.deviceConnect.name ? 1000 : 0);
+          const delay = (currentRoute.name === routes.deviceSetup.name ? 1000 : 0);
 
           if (status.deviceMode === deviceModes.BOOTLOADER) {
             // When the device failed to load the normal Backbone services,
