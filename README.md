@@ -3,10 +3,6 @@
 
 Backbone mobile app for iOS and Android
 
-## Requirements
-
-- Node.js 6.9.1
-
 ## Development
 
 Use [Yarn](https://yarnpkg.com/) instead of npm to install package dependencies. Using Yarn will ensure you get the same dependency versions. Assuming you already have Yarn installed, simply run `yarn install` from the project root.
