@@ -45,6 +45,7 @@ class Login extends Component {
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
       push: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
     }),
   };
 
@@ -80,6 +81,9 @@ class Login extends Component {
 
   componentWillReceiveProps(nextProps) {
     const newAccessToken = nextProps.auth.accessToken;
+    const routeStack = this.props.navigator.getCurrentRoutes();
+    const currentRoute = routeStack[routeStack.length - 1];
+
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
@@ -88,7 +92,11 @@ class Login extends Component {
         // User hasn't completed onboarding process
         this.props.navigator.resetTo(routes.onboarding);
       }
-    } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
+    } else if (
+      !this.props.auth.errorMessage &&
+      nextProps.auth.errorMessage &&
+      currentRoute.name === 'login'
+    ) {
       // Authentication error returned from API server
       if (nextProps.auth.errorMessage === 'Invalid login credentials. Please try again.') {
         this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
