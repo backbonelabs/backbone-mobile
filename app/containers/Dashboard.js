@@ -3,6 +3,7 @@ import { View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import get from 'lodash/get';
+import Carousel from 'react-native-snap-carousel';
 import BodyText from '../components/BodyText';
 import Card from '../components/Card';
 import BG from '../images/dashboard-bg-plain-orange.jpg';
@@ -38,6 +39,20 @@ class Dashboard extends Component {
     this.state = {};
   }
 
+  getLevelIcons() {
+    const {
+      plans,
+      selectedPlanIdx,
+    } = this.props.training;
+    const levels = plans[selectedPlanIdx].levels;
+
+    return levels.map((level, idx) => (
+      <Image key={idx} source={polygonLg} style={styles.polygon}>
+        <BodyText>{idx + 1}</BodyText>
+      </Image>
+    )).reverse();
+  }
+
   render() {
     const {
       plans,
@@ -45,24 +60,22 @@ class Dashboard extends Component {
       selectedLevelIdx,
       selectedSessionIdx,
     } = this.props.training;
-    const levels = plans[selectedPlanIdx].levels;
-    const polygons = levels.map((level, idx) => {
-      if (idx === selectedLevelIdx) {
-        return (
-          <Image key={idx} source={polygonLg} style={styles.polygon}>
-            <BodyText>{idx + 1}</BodyText>
-          </Image>
-        );
-      }
-      return (
-        <Image key={idx} source={polygonSm} style={styles.polygon}>
-          <BodyText>{idx + 1}</BodyText>
-        </Image>
-      );
-    }).reverse();
+
     return (
       <Image source={BG} style={styles.backgroundImage}>
-        {polygons}
+        <View style={styles.levelSliderContainer}>
+          <Carousel
+            sliderHeight={300}
+            itemHeight={100}
+            inactiveSlideScale={0.7}
+            firstItem={plans[selectedPlanIdx].levels.length - 1 - selectedLevelIdx}
+            snapOnAndroid
+            vertical
+            onSnapToItem={index => console.log('oh snap', index)}
+          >
+            {this.getLevelIcons()}
+          </Carousel>
+        </View>
         <Card style={styles._mainSessionCard}>
           {getSessionWorkouts(
             get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx, selectedSessionIdx], [])
