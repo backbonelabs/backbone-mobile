@@ -21,9 +21,6 @@ export default EStyleSheet.create({
         shadowRadius: 4,
         shadowOpacity: 0.15,
       },
-      android: {
-        elevation: 2,
-      },
     }),
   },
   secondaryBtn: {
