@@ -26,7 +26,7 @@ const applyWidthDifference = input => input * widthDifference;
  * @return {Number}      The adjusted font size
  */
 const fixedResponsiveFontSize = size =>
-  applyWidthDifference(size) * (PixelRatio.get() / PixelRatio.getFontScale());
+  applyWidthDifference(size) / PixelRatio.getFontScale();
 
 export default {
   widthDifference,

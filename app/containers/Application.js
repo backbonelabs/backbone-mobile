@@ -5,13 +5,13 @@ import {
   View,
   Image,
   StatusBar,
-  Navigator,
   NativeModules,
   NativeEventEmitter,
   Platform,
   TouchableOpacity,
-  BackAndroid,
+  BackHandler,
 } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import { clone } from 'lodash';
@@ -107,7 +107,7 @@ class Application extends Component {
     };
 
     this.navigator = null; // Components should use this custom navigator object
-    this.backAndroidListener = null;
+    this.backHandlerListener = null;
   }
 
   componentWillMount() {
@@ -116,7 +116,7 @@ class Application extends Component {
 
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
-      this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
+      this.backHandlerListener = BackHandler.addEventListener('hardwareBackPress', () => {
         const { showFull, showPartial, hideClose } = this.props.app.modal;
         if ((showFull || showPartial) && !hideClose) {
           // There is a modal being displayed, hide it when allowed
@@ -431,8 +431,8 @@ class Application extends Component {
     if (this.bluetoothListener) {
       this.bluetoothListener.remove();
     }
-    if (this.backAndroidListener) {
-      this.backAndroidListener.remove();
+    if (this.backHandlerListener) {
+      this.backHandlerListener.remove();
     }
     if (this.deviceStateListener) {
       this.deviceStateListener.remove();
