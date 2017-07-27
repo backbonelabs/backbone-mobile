@@ -5,18 +5,23 @@ const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   backgroundImage: {
+    flex: 1,
     width: '100%',
-    height: '100%',
     alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  polygon: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   mainSessionCard: {
     width: '70%',
     alignSelf: 'center',
   },
-  sessionActivityRow: {
+  sessionWorkoutRow: {
     flexDirection: 'row',
   },
-  activityBullet: {
+  workoutBullet: {
     alignSelf: 'center',
     marginRight: applyWidthDifference(8),
   },

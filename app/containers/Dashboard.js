@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
+import get from 'lodash/get';
 import BodyText from '../components/BodyText';
 import Card from '../components/Card';
 import BG from '../images/dashboard-bg-plain-orange.jpg';
@@ -10,51 +11,70 @@ import polygonLg from '../images/polygon-lg.png';
 import bulletOrangeOn from '../images/bullet-orange-on.png';
 import styles from '../styles/dashboard';
 
+const getSessionWorkouts = session => (
+  // TODO: If plans is an empty array, add error message telling user
+  // to log back in to see plans
+  session.map(workout => (
+    <View key={workout.title} style={styles.sessionWorkoutRow}>
+      <Image source={bulletOrangeOn} style={styles.workoutBullet} />
+      <BodyText key={workout.title}>{workout.title}</BodyText>
+    </View>
+  ))
+);
+
 class Dashboard extends Component {
   static propTypes = {
-    guidedTraining: PropTypes.shape({
-      levels: PropTypes.array,
-      selectedLevel: PropTypes.number,
-      selectedSession: PropTypes.number,
+    training: PropTypes.shape({
+      plans: PropTypes.array,
+      selectedPlanIdx: PropTypes.number,
+      selectedLevelIdx: PropTypes.number,
+      selectedSessionIdx: PropTypes.number,
     }),
   };
 
   constructor() {
     super();
+    autobind(this);
     this.state = {};
   }
 
-  @autobind
-  getSessionPlan() {
-    const {
-      levels,
-      selectedLevel,
-      selectedSession,
-    } = this.props.guidedTraining;
-    const sessionActivities = levels[selectedLevel].sessions[selectedSession];
-    return sessionActivities.map(activity => (
-      <View key={activity.title} style={styles.sessionActivityRow}>
-        <Image source={bulletOrangeOn} style={styles.activityBullet} />
-        <BodyText key={activity.title}>{activity.title}</BodyText>
-      </View>
-    ));
-  }
-
   render() {
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = this.props.training;
+    const levels = plans[selectedPlanIdx].levels;
+    const polygons = levels.map((level, idx) => {
+      if (idx === selectedLevelIdx) {
+        return (
+          <Image key={idx} source={polygonLg} style={styles.polygon}>
+            <BodyText>{idx + 1}</BodyText>
+          </Image>
+        );
+      }
+      return (
+        <Image key={idx} source={polygonSm} style={styles.polygon}>
+          <BodyText>{idx + 1}</BodyText>
+        </Image>
+      );
+    }).reverse();
     return (
       <Image source={BG} style={styles.backgroundImage}>
-        <Image source={polygonSm} />
-        <Image source={polygonLg} />
+        {polygons}
         <Card style={styles._mainSessionCard}>
-          {this.getSessionPlan()}
+          {getSessionWorkouts(
+            get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx, selectedSessionIdx], [])
+          )}
         </Card>
       </Image>
     );
   }
 }
 
-const mapStateToProps = ({ guidedTraining }) => ({
-  guidedTraining,
+const mapStateToProps = ({ training }) => ({
+  training,
 });
 
 export default connect(mapStateToProps)(Dashboard);
