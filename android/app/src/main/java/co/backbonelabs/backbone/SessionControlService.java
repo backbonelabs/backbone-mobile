@@ -296,7 +296,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stop(final Callback callback) {
+    public void stop(boolean waitForResponse, final Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
 
         if (bluetoothService.isDeviceReady()
@@ -320,6 +320,12 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             else {
                 callback.invoke();
             }
+        }
+        else if (!waitForResponse) {
+            // Immediately update the current session state without waiting for the command to be sent.
+            // Should only be used when the app needs to forcefully quit the monitor scene
+            Timber.d("Skip Response");
+            currentSessionState = Constants.SESSION_STATES.STOPPED;
         }
         else {
             callback.invoke(JSError.make("Session Control is not ready"));

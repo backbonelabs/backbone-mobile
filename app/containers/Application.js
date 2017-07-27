@@ -264,8 +264,8 @@ class Application extends Component {
                   }
                 });
             }
-          } else {
-            // Redirect to the postureMonitor to show the summary
+          } else if (event.totalDuration > 0) {
+            // Redirect to the postureMonitor to show the summary only for valid sessions
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)
               .then(prevSessionState => {
                 if (prevSessionState) {
