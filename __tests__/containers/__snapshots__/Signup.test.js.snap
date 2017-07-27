@@ -94,6 +94,7 @@ exports[`Signup Component renders as expected 1`] = `
             <Input
               autoCapitalize="none"
               autoCorrect={false}
+              autoFocus={false}
               handleRef={[Function]}
               iconFont="MaterialIcon"
               iconLeftName="email"
@@ -119,6 +120,7 @@ exports[`Signup Component renders as expected 1`] = `
             <Input
               autoCapitalize="none"
               autoCorrect={false}
+              autoFocus={false}
               handleRef={[Function]}
               iconFont="MaterialIcon"
               iconLeftName="lock"
