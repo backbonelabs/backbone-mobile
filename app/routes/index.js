@@ -1,10 +1,6 @@
 import activity from './activity';
-import deviceAdd from './device/deviceAdd';
-import deviceConnect from './device/deviceConnect';
-import deviceScan from './device/deviceScan';
 import login from './login';
 import signup from './signup';
-import device from './device';
 import postureDashboard from './posture/postureDashboard';
 import postureCalibrate from './posture/postureCalibrate';
 import postureMonitor from './posture/postureMonitor';
@@ -23,12 +19,10 @@ import profileSetupOne from './onBoardingFlow/profileSetupOne';
 import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
 import deviceSetup from './onBoardingFlow/deviceSetup';
 import howToVideo from './onBoardingFlow/howToVideo';
+import setupDevice from './onBoardingFlow/setupDevice';
 
 export default {
   activity,
-  deviceAdd,
-  deviceConnect,
-  deviceScan,
   login,
   signup,
   postureDashboard,
@@ -43,11 +37,11 @@ export default {
   alerts,
   support,
   howTo,
-  device,
   changePassword,
   firmwareUpdate,
   profileSetupOne,
   profileSetupTwo,
   deviceSetup,
+  setupDevice,
   howToVideo,
 };
