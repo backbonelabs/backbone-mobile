@@ -13,6 +13,8 @@ import {
   DEVICE_CLEAR_SAVED_SESSION,
   DEVICE_FIRMWARE_UPDATE_STARTED,
   DEVICE_FIRMWARE_UPDATE_ENDED,
+  DEVICE_SET_PENDING_UPDATE,
+  DEVICE_UNSET_PENDING_UPDATE,
 } from './types';
 import store from '../store';
 import Fetcher from '../utils/Fetcher';
@@ -258,6 +260,12 @@ const deviceActions = {
   },
   firmwareUpdateEnded() {
     return { type: DEVICE_FIRMWARE_UPDATE_ENDED };
+  },
+  setPendingUpdate() {
+    return { type: DEVICE_SET_PENDING_UPDATE };
+  },
+  unsetPendingUpdate() {
+    return { type: DEVICE_UNSET_PENDING_UPDATE };
   },
 };
 

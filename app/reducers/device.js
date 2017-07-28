@@ -18,6 +18,8 @@ import {
   DEVICE_CLEAR_SAVED_SESSION,
   DEVICE_FIRMWARE_UPDATE_STARTED,
   DEVICE_FIRMWARE_UPDATE_ENDED,
+  DEVICE_SET_PENDING_UPDATE,
+  DEVICE_UNSET_PENDING_UPDATE,
 } from '../actions/types';
 
 export default (state = {
@@ -30,6 +32,7 @@ export default (state = {
   errorMessage: null,
   requestingSelfTest: false,
   isUpdatingFirmware: false,
+  hasPendingUpdate: false,
 }, action) => {
   switch (action.type) {
     case DEVICE_CONNECT__START: {
@@ -163,6 +166,18 @@ export default (state = {
       return {
         ...state,
         isUpdatingFirmware: false,
+      };
+    }
+    case DEVICE_SET_PENDING_UPDATE: {
+      return {
+        ...state,
+        hasPendingUpdate: true,
+      };
+    }
+    case DEVICE_UNSET_PENDING_UPDATE: {
+      return {
+        ...state,
+        hasPendingUpdate: false,
       };
     }
     default:

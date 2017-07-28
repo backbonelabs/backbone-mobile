@@ -71,12 +71,10 @@ class Device extends Component {
       push: PropTypes.func,
       replace: PropTypes.func,
     }),
-    currentRoute: PropTypes.shape({
-      hasPendingUpdate: PropTypes.bool,
-    }),
     isConnected: PropTypes.bool,
     isConnecting: PropTypes.bool,
     inProgress: PropTypes.bool,
+    hasPendingUpdate: PropTypes.bool,
     device: PropTypes.shape({
       name: PropTypes.string,
       deviceMode: PropTypes.number,
@@ -115,7 +113,8 @@ class Device extends Component {
     );
 
     // Initiate firmware update on devices with bootloader issues
-    if (this.props.isConnected && this.props.currentRoute.hasPendingUpdate) {
+    if (this.props.isConnected && this.props.hasPendingUpdate) {
+      this.props.dispatch(deviceActions.unsetPendingUpdate());
       this.initiateFirmwareUpdate();
     }
   }
@@ -131,6 +130,9 @@ class Device extends Component {
       });
 
       Mixpanel.trackWithProperties('firmwareUpdate-error', { message: 'Device disconnected' });
+    } else if (!this.state.isUpdating && nextProps.hasPendingUpdate) {
+      this.props.dispatch(deviceActions.unsetPendingUpdate());
+      this.initiateFirmwareUpdate();
     }
   }
 

@@ -327,11 +327,11 @@ class Application extends Component {
                   {
                     text: 'Update',
                     onPress: () => {
-                      this.navigator.push(
-                        Object.assign({},
-                        routes.device,
-                        { hasPendingUpdate: true })
-                      );
+                      this.props.dispatch(deviceActions.setPendingUpdate());
+
+                      if (currentRoute.name !== routes.device.name) {
+                        this.navigator.push(routes.device);
+                      }
                     },
                   },
                 ]
