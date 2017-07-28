@@ -95,7 +95,6 @@ export default EStyleSheet.create({
   CTAButton: {
     width: '85%',
     alignSelf: 'center',
-    borderRadius: 3,
   },
   skip: {
     textDecorationLine: 'underline',

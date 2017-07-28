@@ -22,6 +22,7 @@ export default EStyleSheet.create({
         shadowOpacity: 0.15,
       },
     }),
+    borderRadius: 3,
   },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',

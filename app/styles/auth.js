@@ -85,7 +85,6 @@ export default EStyleSheet.create({
   },
   fbBtn: {
     width: '85%',
-    borderRadius: 3,
     height: applyWidthDifference(50),
   },
   fbBtnText: {
@@ -128,10 +127,10 @@ export default EStyleSheet.create({
   },
   CTAButton: {
     width: '100%',
+    borderRadius: 0,
   },
   CTAResetBtn: {
     alignSelf: 'center',
-    borderRadius: 3,
     marginTop: applyWidthDifference(10),
     width: '85%',
   },

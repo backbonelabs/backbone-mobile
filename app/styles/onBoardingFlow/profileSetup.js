@@ -41,5 +41,6 @@ export default EStyleSheet.create({
   },
   CTAButton: {
     width: '100%',
+    borderRadius: 0,
   },
 });
