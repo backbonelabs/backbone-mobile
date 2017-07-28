@@ -3,15 +3,18 @@ import {
   Text,
   View,
   ListView,
+  Animated,
+  Alert,
+  TouchableHighlight,
 } from 'react-native';
-import ScrollableTabView, { DefaultTabBar } from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+// import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 // import styles from '../styles/freeTraining';
 import styles from '../styles/freeTraining';
 import SecondaryText from '../components/SecondaryText';
-import List from '../containers/List';
+import FreeTrainingTabBar from './FreeTrainingTabBar';
 
 class FreeTraining extends Component {
 
@@ -55,6 +58,11 @@ class FreeTraining extends Component {
         'Extended Side Angle',
       ],
     };
+    this.state = {
+      bounceValue: new Animated.Value(100),  // This is the initial position of the subview
+      buttonText: 'Show Subview',
+      isHidden: true,
+    };
   }
 
   getDataSource(dbSource) {
@@ -63,6 +71,31 @@ class FreeTraining extends Component {
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
     });
     return dataSource.cloneWithRowsAndSections(this.convertDataToMap(dbSource));
+  }
+
+  toggleSubview() {
+    const { isHidden } = this.state;
+
+    let toValue = 100;
+
+    if (isHidden) {
+      toValue = 0;
+    }
+
+    // This will animate the transalteY of the subview between 0 & 100
+    // depending on its current state 100 comes from the style below,
+    // which is the height of the subview.
+    Animated.spring(
+      this.state.bounceValue,
+      {
+        toValue,
+        velocity: 3,
+        tension: 2,
+        friction: 8,
+      }
+    ).start();
+
+    this.setState({ isHidden: !isHidden });
   }
 
   convertDataToMap(data) {
@@ -103,41 +136,58 @@ class FreeTraining extends Component {
 
   render() {
     return (
-      <ScrollableTabView
-        style={styles.container}
-        renderTabBar={() => <DefaultTabBar
-          style={styles.defaultTabBar}
-        />}
-        tabBarPosition="top"
-        tabBarActiveTextColor="#42a5f5"
-        tabBarInactiveTextColor="#bdbdbd"
-        tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
-        tabBarTextStyle={styles.tabBarTextStyle}
-      >
-        <ListView
-          tabLabel="POSTURE"
-          dataSource={this.getDataSource(this.db.postureSource)}
-          renderRow={this.renderRow}
-          onPressRow={() => {}}
-          renderSectionHeader={this.renderSectionHeader}
-        />
-        <ListView
-          tabLabel="EXERCISES"
-          dataSource={this.getDataSource(this.db.exercisesSource)}
-          renderRow={this.renderRow}
-          onPressRow={() => {}}
-          renderSectionHeader={this.renderSectionHeader}
-        />
-        <ListView
-          tabLabel="STRETCHES"
-          dataSource={this.getDataSource(this.db.stretchesSource)}
-          renderRow={this.renderRow}
-          onPressRow={() => {}}
-          renderSectionHeader={this.renderSectionHeader}
-        />
-      </ScrollableTabView>
+      <View style={{ height: '100%', alignItems: 'center' }}>
+        <ScrollableTabView
+          style={styles.container}
+          renderTabBar={() => <FreeTrainingTabBar toggleSubview={this.toggleSubview} />}
+          tabBarPosition="top"
+          tabBarActiveTextColor="#2196F3"
+          tabBarInactiveTextColor="#bdbdbd"
+          tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
+          tabBarTextStyle={styles.tabBarTextStyle}
+        >
+          <ListView
+            tabLabel="POSTURE"
+            dataSource={this.getDataSource(this.db.postureSource)}
+            renderRow={this.renderRow}
+            onPressRow={() => {}}
+            renderSectionHeader={this.renderSectionHeader}
+          />
+          <ListView
+            tabLabel="EXERCISES"
+            dataSource={this.getDataSource(this.db.exercisesSource)}
+            renderRow={this.renderRow}
+            onPressRow={() => {}}
+            renderSectionHeader={this.renderSectionHeader}
+          />
+          <ListView
+            tabLabel="STRETCHES"
+            dataSource={this.getDataSource(this.db.stretchesSource)}
+            renderRow={this.renderRow}
+            onPressRow={() => {}}
+            renderSectionHeader={this.renderSectionHeader}
+          />
+        </ScrollableTabView>
+        <Animated.View
+          style={[styles.subView,
+              { transform: [{ translateY: this.state.bounceValue }] }]}
+        >
+          <Text>CATEGORIZE LIST:</Text>
+          <TouchableHighlight onPress={() => { Alert.alert('hi'); }}>
+            <Text>ALPHABETICAL ORDER (A-Z)</Text>
+          </TouchableHighlight>
+          <TouchableHighlight>
+            <Text>POPULARITY</Text>
+          </TouchableHighlight>
+          <TouchableHighlight>
+            <Text>EXERCISE</Text>
+          </TouchableHighlight>
+          <TouchableHighlight>
+            <Text>DIFFICULTY</Text>
+          </TouchableHighlight>
+        </Animated.View>
+      </View>
     );
   }
 }
-
 export default FreeTraining;

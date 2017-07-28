@@ -24,7 +24,7 @@ export default EStyleSheet.create({
     shadowRadius: 3,
   },
   tabBarUnderlineStyle: {
-    backgroundColor: '#b3e5fc',
+    backgroundColor: '#2196F3',
     height: 3,
   },
   tabBarTextStyle: {
@@ -49,7 +49,7 @@ export default EStyleSheet.create({
     color: 'black',
   },
   icon: {
-    color: 'red',
+    color: '#D32F2F',
   },
   preview: {
     height: applyWidthDifference(65),
@@ -76,5 +76,16 @@ export default EStyleSheet.create({
     width: '95%',
     height: 1,
     backgroundColor: 'lightgrey',
+  },
+  subView: {
+    position: 'absolute',
+    bottom: -50,
+    left: applyWidthDifference(20),
+    right: 0,
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
+    height: applyWidthDifference(200),
+    width: '90%',
+    borderRadius: 10,
+    alignItems: 'center',
   },
 });
