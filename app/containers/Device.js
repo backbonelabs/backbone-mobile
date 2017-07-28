@@ -476,7 +476,7 @@ class Device extends Component {
         <View style={styles.container}>
           <View style={styles.deviceInfoContainer}>
             <BodyText style={styles._deviceConnectionText}>
-              {!isConnected ? 'Disonnected from ' : 'Connected to '}{name}
+              {!isConnected ? 'Disconnected from ' : 'Connected to '}{name}
             </BodyText>
             <Image source={deviceStatusImage} style={styles.deviceStatusImage} />
             {mainDeviceStatusText}
