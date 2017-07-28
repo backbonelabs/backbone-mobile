@@ -75,7 +75,7 @@ export default {
     EXIT_BOOTLOADER: 59,
   },
   errorMessages: {
-    NETWORK_ERROR: 'We are encountering server issues. Please try again later.',
+    NETWORK_ERROR: 'Unexpected error. Please try again later.',
   },
   heightUnitIdToLabel: {
     1: 'IN',
