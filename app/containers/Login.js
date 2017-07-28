@@ -9,10 +9,8 @@ import {
   Text,
   Platform,
   StatusBar,
+  Alert,
 } from 'react-native';
-import {
-  LoginManager,
-} from 'react-native-fbsdk';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -102,16 +100,17 @@ class Login extends Component {
       currentRoute.name === 'login'
     ) {
       // Logs out the user of Facebook and returns to welcome screen
-      LoginManager.logOut();
+      // LoginManager.logOut();
       // Authentication error returned from API server
-      if (nextProps.auth.errorMessage === 'Invalid login credentials. Please try again.') {
+      if (nextProps.auth.errorMessage === 'Incorrect email or password') {
         this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
       // Handles error relating to network issues
       } else if (nextProps.auth.errorMessage === constants.errorMessages.NETWORK_ERROR) {
         this.setState({ authError: true, authErrorMessage: nextProps.auth.errorMessage });
+      } else {
+        // For Facebook login error messages
+        Alert.alert('Authentication Error', nextProps.auth.errorMessage);
       }
-      // For Facebook login error messages
-      // Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
   }
 
