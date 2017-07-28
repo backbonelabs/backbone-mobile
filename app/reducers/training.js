@@ -2,6 +2,7 @@ import {
   FETCH_USER,
   LOGIN,
   SIGNUP,
+  SELECT_LEVEL,
 } from '../actions/types';
 
 export default (state = {
@@ -32,6 +33,11 @@ export default (state = {
       return {
         ...state,
         plans: payload.user.trainingPlans,
+      };
+    case SELECT_LEVEL:
+      return {
+        ...state,
+        selectedLevelIdx: payload,
       };
     default:
       return state;

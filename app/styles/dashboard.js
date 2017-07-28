@@ -18,7 +18,8 @@ export default EStyleSheet.create({
     applyWidthDifference(largeHexagonHeight) - applyWidthDifference(smallHexagonHeight),
   backgroundImage: {
     flex: 1,
-    width: '100%',
+    width: undefined,
+    height: undefined,
     alignItems: 'center',
     resizeMode: 'cover',
   },
@@ -56,11 +57,15 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  carouselContainer: {
+    position: 'absolute',
+    top: '50% + 10',
+    width: '100%',
+  },
   verticalDivider: {
     backgroundColor: 'white',
     height: '50%',
     width: applyWidthDifference(6),
-    paddingTop: applyWidthDifference(10),
   },
   mainSessionCard: {
     width: '70%',
