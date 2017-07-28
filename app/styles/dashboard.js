@@ -10,7 +10,7 @@ const hexagonConnectorDefaults = {
 };
 
 const largeHexagonHeight = 100;
-const smallHexagonHeight = 66;
+const smallHexagonHeight = 70;
 
 export default EStyleSheet.create({
   $hexagonContainerHeight: applyWidthDifference(largeHexagonHeight),
@@ -45,13 +45,7 @@ export default EStyleSheet.create({
     ...hexagonConnectorDefaults,
     height: '$hexagonContainerHeight',
   },
-  hexagonSm: {
-    width: applyWidthDifference(58),
-    height: applyWidthDifference(66),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  hexagonLg: {
+  hexagon: {
     width: applyWidthDifference(92),
     height: applyWidthDifference(102),
     alignItems: 'center',

@@ -1,5 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Image, ScrollView } from 'react-native';
+import {
+  Animated,
+  Easing,
+  Image,
+  ScrollView,
+  View,
+} from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import get from 'lodash/get';
@@ -8,8 +14,7 @@ import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
 import Card from '../components/Card';
 import BG from '../images/dashboard-bg-plain-orange.jpg';
-import hexagonSm from '../images/dashboard/hexagon-sm.png';
-import hexagonLg from '../images/dashboard/hexagon-lg.png';
+import hexagon from '../images/dashboard/hexagon.png';
 import bulletOrangeOn from '../images/bullet-orange-on.png';
 import styles from '../styles/dashboard';
 
@@ -37,10 +42,12 @@ class Dashboard extends Component {
     }),
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     autobind(this);
-    this.state = {};
+    this.state = {
+      animations: this._getAnimations(props.training),
+    };
     this._scrollView = null;
   }
 
@@ -60,10 +67,27 @@ class Dashboard extends Component {
 
         this._scrollView.scrollTo({
           y,
-          animated: false,
+          animated: true,
         });
       }
     }, 0);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.training.selectedPlanIdx !== nextProps.training.selectedPlanIdx) {
+      this.setState({
+        animations: this._getAnimations(nextProps.training),
+      });
+    }
+  }
+
+  _getAnimations(trainingProps) {
+    const { plans, selectedPlanIdx } = trainingProps;
+    return get(
+      plans,
+      [selectedPlanIdx, 'levels'],
+      []
+    ).map(() => new Animated.Value(0.7));
   }
 
   _onScroll(event) {
@@ -75,10 +99,35 @@ class Dashboard extends Component {
     const levels = get(plans[selectedPlanIdx], 'levels', []);
     const hexagonContainerHeight = styles.$hexagonContainerHeight;
     const hexagonOffsets = getScrollOffset(event) / hexagonContainerHeight;
+    // levelOffset will change after scrolling past the midway point of the bottommost hexagon,
+    // and this will trigger the selection of a new level. In other words, a level will be
+    // selected once more than half of its hexagon container height is in view.
     const levelOffset = Math.round(hexagonOffsets);
-    const activeLevel = levels.length - 1 - levelOffset;
-    if (activeLevel !== selectedLevelIdx) {
-      this.props.selectLevel(levels.length - 1 - levelOffset);
+    const newLevel = levels.length - 1 - levelOffset;
+
+    if (newLevel !== selectedLevelIdx) {
+      this.props.selectLevel(newLevel);
+      const animations = [];
+
+      // Animation for scaling the new selected level's hexagon up
+      animations.push(Animated.timing(this.state.animations[newLevel], {
+        useNativeDriver: true,
+        duration: 300,
+        easing: Easing.linear,
+        toValue: 1,
+      }));
+
+      // Animation for scaling the previously selected level's hexagon down
+      animations.push(Animated.timing(this.state.animations[selectedLevelIdx], {
+        useNativeDriver: true,
+        duration: 300,
+        easing: Easing.linear,
+        toValue: 0.7,
+      }));
+
+      Animated.parallel(animations, {
+        stopTogether: false,
+      }).start();
     }
   }
 
@@ -86,28 +135,27 @@ class Dashboard extends Component {
     const {
       plans,
       selectedPlanIdx,
-      selectedLevelIdx,
     } = this.props.training;
     const levels = plans[selectedPlanIdx].levels;
 
     return levels.map((level, idx) => {
-      if (idx === selectedLevelIdx) {
-        return (
-          <View key={idx} style={styles.hexagonContainer}>
-            <Image source={hexagonLg} style={styles.hexagonLg}>
-              <BodyText>{idx + 1}</BodyText>
-            </Image>
-          </View>
-        );
-      }
-
       const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
       return (
         <View key={idx} style={styles.hexagonContainer}>
           <View style={styles[connectorStyle]} />
-          <Image source={hexagonSm} style={styles.hexagonSm}>
+          <Animated.Image
+            source={hexagon}
+            style={[
+              styles.hexagon,
+              {
+                transform: [{
+                  scale: this.state.animations[idx],
+                }],
+              },
+            ]}
+          >
             <BodyText>{idx + 1}</BodyText>
-          </Image>
+          </Animated.Image>
         </View>
       );
     }).reverse();
