@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference, applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -10,19 +10,19 @@ export default EStyleSheet.create({
   deviceInfoContainer: {
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginTop: 25 * heightDifference,
+    marginTop: applyWidthDifference(25),
   },
   button: {
     marginHorizontal: applyWidthDifference(10),
   },
   deviceStatusImage: {
-    marginBottom: 10 * heightDifference,
+    marginBottom: applyWidthDifference(10),
   },
   buttonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20 * heightDifference,
+    marginTop: applyWidthDifference(20),
   },
   deviceConnectionText: {
     fontWeight: 'bold',
