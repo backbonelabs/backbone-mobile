@@ -33,6 +33,7 @@ const getScrollOffset = event => get(event, 'nativeEvent.contentOffset.y', 0);
 class Dashboard extends Component {
   static propTypes = {
     selectLevel: PropTypes.func.isRequired,
+    selectSession: PropTypes.func.isRequired,
     training: PropTypes.shape({
       plans: PropTypes.array,
       selectedPlanIdx: PropTypes.number,
@@ -170,13 +171,27 @@ class Dashboard extends Component {
     }).reverse();
   }
 
-  render() {
+  _getSessionCards() {
     const {
       plans,
       selectedPlanIdx,
       selectedLevelIdx,
-      selectedSessionIdx,
     } = this.props.training;
+    const sessions = get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx], []);
+
+    return sessions.map((session, idx) => (
+      <Card key={idx} style={styles._sessionCard}>
+        {getSessionWorkouts(session)}
+      </Card>
+    ));
+  }
+
+  _onSelectSession(idx) {
+    this.props.selectSession(idx);
+  }
+
+  render() {
+    const { selectedSessionIdx } = this.props.training;
 
     return (
       <Image source={BG} style={styles.backgroundImage}>
@@ -194,11 +209,14 @@ class Dashboard extends Component {
         </View>
         <View style={styles.verticalDivider} />
         <View style={styles.carouselContainer}>
-          <Card style={styles._mainSessionCard}>
-            {getSessionWorkouts(
-              get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx, selectedSessionIdx], [])
-            )}
-          </Card>
+          <Carousel
+            sliderWidth={styles.$carouselSliderWidth}
+            itemWidth={styles.$carouselItemWidth}
+            onSnapToItem={this._onSelectSession}
+            firstItem={selectedSessionIdx}
+          >
+            {this._getSessionCards()}
+          </Carousel>
         </View>
       </Image>
     );

@@ -16,6 +16,8 @@ export default EStyleSheet.create({
   $hexagonContainerHeight: applyWidthDifference(largeHexagonHeight),
   $hexagonContainerEndHeight:
     applyWidthDifference(largeHexagonHeight) - applyWidthDifference(smallHexagonHeight),
+  $carouselSliderWidth: '100%',
+  $carouselItemWidth: '85%',
   backgroundImage: {
     flex: 1,
     width: undefined,
@@ -61,9 +63,8 @@ export default EStyleSheet.create({
     height: '50%',
     width: applyWidthDifference(6),
   },
-  mainSessionCard: {
-    width: '70%',
-    alignSelf: 'center',
+  sessionCard: {
+    width: '$carouselItemWidth',
   },
   sessionWorkoutRow: {
     flexDirection: 'row',

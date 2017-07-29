@@ -3,6 +3,7 @@ import {
   LOGIN,
   SIGNUP,
   SELECT_LEVEL,
+  SELECT_SESSION,
 } from '../actions/types';
 
 export default (state = {
@@ -38,6 +39,11 @@ export default (state = {
       return {
         ...state,
         selectedLevelIdx: payload,
+      };
+    case SELECT_SESSION:
+      return {
+        ...state,
+        selectedSessionIdx: payload,
       };
     default:
       return state;
