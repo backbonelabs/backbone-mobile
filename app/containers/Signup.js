@@ -54,8 +54,9 @@ class Signup extends Component {
     this.state = {
       email: '',
       password: '',
-      emailWarning: '',
-      passwordWarning: '',
+      emailWarning: false,
+      passwordWarning: false,
+      errorMessage: '',
       imageHeight: applyWidthDifference(110),
       headingFlex: 1,
       containerHeight: 0,
@@ -81,7 +82,15 @@ class Signup extends Component {
     if (!this.props.accessToken && nextProps.accessToken) {
       this.props.navigator.resetTo(routes.onboarding);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      Alert.alert('Error', nextProps.errorMessage);
+      // Handles error messages returned from API server
+      if (nextProps.errorMessage === 'Email is not available') {
+        this.setState({ emailWarning: true, errorMessage: nextProps.errorMessage.toUpperCase() });
+      // Handles error relating to network issues
+      } else if (nextProps.errorMessage === constants.errorMessages.NETWORK_ERROR) {
+        this.setState({ errorMessage: nextProps.errorMessage });
+      }
+      // For Facebook signup error messages
+      // Alert.alert('Error', nextProps.auth.errorMessage);
     }
   }
 
@@ -129,18 +138,21 @@ class Signup extends Component {
     const validEmail = constants.emailRegex.test(email);
 
     if (!validEmail) {
+      this.emailField.focus();
       return this.setState({
-        passwordWarning: '',
-        emailWarning: 'INVALID EMAIL',
+        emailWarning: true,
+        passwordWarning: false,
+        errorMessage: 'INVALID EMAIL',
+      });
+    } else if (!validPassword) {
+      this.passwordField.focus();
+      return this.setState({
+        passwordWarning: true,
+        emailWarning: false,
+        errorMessage: 'PASSWORD MUST BE AT LEAST 8 CHARACTERS',
       });
     }
-
-    if (!validPassword) {
-      return this.setState({
-        emailWarning: '',
-        passwordWarning: 'PASSWORD MUST BE AT LEAST 8 CHARACTERS',
-      });
-    }
+    this.setState({ emailWarning: false, passwordWarning: false });
     this.props.dispatch(authActions.signup({ email, password }));
   }
 
@@ -192,6 +204,7 @@ class Signup extends Component {
       passwordWarning,
       containerHeight,
       hideContent,
+      errorMessage,
     } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
@@ -262,6 +275,7 @@ class Signup extends Component {
                       }}
                       handleRef={ref => (this.emailField = ref)}
                       value={email}
+                      autoFocus={emailWarning}
                       autoCapitalize="none"
                       placeholder="Email"
                       keyboardType="email-address"
@@ -284,6 +298,7 @@ class Signup extends Component {
                       }}
                       handleRef={ref => (this.passwordField = ref)}
                       value={password}
+                      autoFocus={passwordWarning}
                       autoCapitalize="none"
                       placeholder="Password"
                       keyboardType="default"
@@ -295,7 +310,7 @@ class Signup extends Component {
                     />
                   </View>
                   {
-                    (emailWarning || passwordWarning) ?
+                    errorMessage ?
                       <View style={styles.warningContainer}>
                         <Icon
                           name={'warning'}
@@ -303,7 +318,7 @@ class Signup extends Component {
                           size={20}
                         />
                         <BodyText style={styles._warning}>
-                          {passwordWarning || emailWarning}
+                          {errorMessage}
                         </BodyText>
                       </View>
                       : null
@@ -337,11 +352,7 @@ class Signup extends Component {
                     style={styles._CTAButton}
                     text="SIGN UP"
                     primary
-                    disabled={
-                        this.props.inProgress ||
-                          !email ||
-                          !password
-                      }
+                    disabled={!email || !password}
                     onPress={this.signup}
                   />
                 </View>

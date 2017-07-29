@@ -24,6 +24,7 @@ import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
+import constants from '../utils/constants';
 
 const { applyWidthDifference, height } = relativeDimensions;
 // Android statusbar height
@@ -44,6 +45,7 @@ class Login extends Component {
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
       push: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
     }),
   };
 
@@ -54,11 +56,13 @@ class Login extends Component {
       email: '',
       password: '',
       authError: false,
+      authErrorMessage: '',
       imageHeight: applyWidthDifference(110),
       headingFlex: 1,
       containerHeight: 0,
       hideContent: false,
     };
+    this.loginErrorMessage = 'INCORRECT EMAIL OR PASSWORD';
   }
 
   componentWillMount() {
@@ -77,6 +81,9 @@ class Login extends Component {
 
   componentWillReceiveProps(nextProps) {
     const newAccessToken = nextProps.auth.accessToken;
+    const routeStack = this.props.navigator.getCurrentRoutes();
+    const currentRoute = routeStack[routeStack.length - 1];
+
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
@@ -85,9 +92,19 @@ class Login extends Component {
         // User hasn't completed onboarding process
         this.props.navigator.resetTo(routes.onboarding);
       }
-    } else if (!this.props.auth.errorMessage && nextProps.auth.errorMessage) {
-      // Authentication error
-      this.setState({ authError: true });
+    } else if (
+      !this.props.auth.errorMessage &&
+      nextProps.auth.errorMessage &&
+      currentRoute.name === 'login'
+    ) {
+      // Authentication error returned from API server
+      if (nextProps.auth.errorMessage === 'Invalid login credentials. Please try again.') {
+        this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
+      // Handles error relating to network issues
+      } else if (nextProps.auth.errorMessage === constants.errorMessages.NETWORK_ERROR) {
+        this.setState({ authError: true, authErrorMessage: nextProps.auth.errorMessage });
+      }
+      // For Facebook login error messages
       // Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
   }
@@ -153,15 +170,24 @@ class Login extends Component {
 
   login() {
     const { email, password, authError } = this.state;
-    if (authError) {
-      this.setState({ authError: false });
+    // Check if email and password is valid on client before sending to API server
+    const validPassword = password.length >= 8;
+    const validEmail = constants.emailRegex.test(email);
+    if (validEmail && validPassword) {
+      if (authError) {
+        this.setState({ authError: false });
+      }
+      this.props.dispatch(authActions.login({ email, password }));
+    } else {
+      this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
     }
-    this.props.dispatch(authActions.login({ email, password }));
   }
 
   render() {
     const { inProgress } = this.props.auth;
-    const { email, password, authError, containerHeight, hideContent } = this.state;
+    const {
+      email, password, authError, authErrorMessage, containerHeight, hideContent,
+    } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
     if (!isiOS) {
@@ -280,7 +306,7 @@ class Login extends Component {
                           size={20}
                         />
                         <BodyText style={styles._warning}>
-                          INCORRECT EMAIL OR PASSWORD
+                          {authErrorMessage}
                         </BodyText>
                       </View>
                       : null
@@ -299,7 +325,7 @@ class Login extends Component {
                     style={styles._CTAButton}
                     text="LOG IN"
                     primary
-                    disabled={inProgress || (!email || !password)}
+                    disabled={!email || !password}
                     onPress={this.login}
                   />
                 </View>
