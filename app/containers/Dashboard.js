@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Alert,
   Animated,
   Easing,
   Image,
@@ -19,8 +20,6 @@ import bulletOrangeOn from '../images/bullet-orange-on.png';
 import styles from '../styles/dashboard';
 
 const getSessionWorkouts = session => (
-  // TODO: If plans is an empty array, add error message telling user
-  // to log back in to see plans
   session.map(workout => (
     <View key={workout.title} style={styles.sessionWorkoutRow}>
       <Image source={bulletOrangeOn} style={styles.workoutBullet} />
@@ -45,6 +44,16 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     autobind(this);
+
+    // TODO: Use better alert
+    if (props.training.plans.length === 0) {
+      // There are no training plans
+      Alert.alert(
+        'Alert',
+        'Please sign out and sign back in to refresh your account with training plans'
+      );
+    }
+
     this.state = {
       animations: this._getAnimations(props.training),
     };
@@ -136,7 +145,7 @@ class Dashboard extends Component {
       plans,
       selectedPlanIdx,
     } = this.props.training;
-    const levels = plans[selectedPlanIdx].levels;
+    const levels = get(plans, [selectedPlanIdx, 'levels'], []);
 
     return levels.map((level, idx) => {
       const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
