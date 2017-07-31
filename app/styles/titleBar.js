@@ -1,4 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import color from 'color';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
@@ -38,6 +39,9 @@ export default EStyleSheet.create({
   sideContainersText: {
     color: '#FFFFFF',
   },
+  sideContainersTextDisable: {
+    color: color('#FFFFFF').clearer(0.6).rgbString(),
+  },
   leftComponent: {
     ...baseSideButtonStyles,
     flexDirection: 'row',
@@ -48,6 +52,10 @@ export default EStyleSheet.create({
   },
   buttonIcon: {
     color: '$secondaryColor',
+    marginRight: applyWidthDifference(6),
+  },
+  buttonIconDisabled: {
+    color: color('#FFFFFF').clearer(0.6).rgbString(),
     marginRight: applyWidthDifference(6),
   },
 });

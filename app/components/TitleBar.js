@@ -8,10 +8,13 @@ const TitleBar = (props) => {
   const routeStack = props.navigator.getCurrentRoutes();
   const previousRoute = routeStack.length >= 2 ? routeStack[routeStack.length - 2] : null;
   const leftButton = previousRoute && props.currentRoute.showBackButton ? (
-    <TouchableOpacity style={styles.leftComponent} onPress={props.navigator.pop}>
+    <TouchableOpacity
+      style={styles.leftComponent}
+      onPress={props.disableBackButton ? null : props.navigator.pop}
+    >
       <Icon
         name="keyboard-arrow-left"
-        style={styles.buttonIcon}
+        style={props.disableBackButton ? styles.buttonIconDisabled : styles.buttonIcon}
         size={styles.$leftButtonIconSize}
         color={styles._buttonIcon.color}
       />
@@ -47,6 +50,7 @@ TitleBar.propTypes = {
     rightComponent: PropTypes.func,
     styles: PropTypes.object,
   }),
+  disableBackButton: PropTypes.bool,
   style: PropTypes.object,
 };
 
