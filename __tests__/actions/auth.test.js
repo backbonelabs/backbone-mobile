@@ -8,7 +8,7 @@ import Mixpanel from '../../app/utils/Mixpanel';
 import SensitiveInfo from '../../app/utils/SensitiveInfo';
 import constants from '../../app/utils/constants';
 
-const { storageKeys } = constants;
+const { storageKeys, authMethods } = constants;
 const { UserService } = NativeModules;
 
 describe('__Auth Actions__', () => {
@@ -20,7 +20,7 @@ describe('__Auth Actions__', () => {
     password: 'password',
     _id: 'testId',
     accessToken: 'testToken',
-    authMethod: 1,
+    authMethod: authMethods.EMAIL,
   };
   const { email, password, authMethod } = user;
 
@@ -47,7 +47,11 @@ describe('__Auth Actions__', () => {
     expect(Mixpanel.track).toHaveBeenCalledWith('login-success');
     expect(SensitiveInfo.setItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN, accessToken]);
     expect(SensitiveInfo.setItem.mock.calls[1]).toEqual([storageKeys.USER, userObj]);
-    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password, authMethod: 1 }));
+    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({
+      email,
+      password,
+      authMethod: authMethods.EMAIL,
+    }));
     expect(store.getActions()).toMatchSnapshot();
   });
 
@@ -78,7 +82,11 @@ describe('__Auth Actions__', () => {
     expect(Mixpanel.track).toHaveBeenCalledWith('signup-success');
     expect(SensitiveInfo.setItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN, accessToken]);
     expect(SensitiveInfo.setItem.mock.calls[1]).toEqual([storageKeys.USER, body.user]);
-    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password, authMethod: 1 }));
+    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({
+      email,
+      password,
+      authMethod: authActions.EMAIL,
+    }));
     expect(store.getActions()).toMatchSnapshot();
   });
 
