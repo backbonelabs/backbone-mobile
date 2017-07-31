@@ -9,14 +9,21 @@ const TitleBar = (props) => {
   const routeStack = props.navigator.getCurrentRoutes();
   const previousRoute = routeStack.length >= 2 ? routeStack[routeStack.length - 2] : null;
   const leftButton = previousRoute && props.currentRoute.showBackButton ? (
-    <TouchableOpacity style={styles.leftComponent} onPress={props.navigator.pop}>
+    <TouchableOpacity
+      style={styles.leftComponent}
+      onPress={props.disableBackButton ? null : props.navigator.pop}
+    >
       <Icon
         name="angle-left"
-        style={styles.buttonIcon}
+        style={props.disableBackButton ? styles.buttonIconDisabled : styles.buttonIcon}
         size={styles.$leftButtonIconSize}
         color={styles._buttonIcon.color}
       />
-      <BodyText style={styles._sideContainersText} numberOfLines={1}>
+      <BodyText
+        style={props.disableBackButton ? styles._sideContainersTextDisable :
+          styles._sideContainersText}
+        numberOfLines={1}
+      >
         {previousRoute.title}
       </BodyText>
     </TouchableOpacity>
@@ -50,6 +57,7 @@ TitleBar.propTypes = {
     showBackButton: PropTypes.bool,
     rightComponent: PropTypes.func,
   }),
+  disableBackButton: PropTypes.bool,
   style: PropTypes.object,
 };
 
