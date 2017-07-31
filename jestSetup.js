@@ -84,3 +84,9 @@ jest.mock('StatusBar', () => ({
 jest.mock('react-native-fs', () => ({
   downloadFile: jest.fn(),
 }));
+
+jest.mock('react-native-fbsdk', () => ({
+  LoginManager: {
+    logOut: jest.fn(),
+  },
+}));

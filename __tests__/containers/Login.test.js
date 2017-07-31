@@ -27,7 +27,7 @@ describe('Login Component', () => {
   });
 
   test('Login action dispatched when clicked', () => {
-    const btn = render.find('Button').at(1);
+    const btn = render.find('Button').at(0);
     render.setState({ email: 'testing@mail.com', password: 'password' });
     btn.simulate('press');
     const actions = store.getActions();
@@ -35,13 +35,13 @@ describe('Login Component', () => {
   });
 
   test('Login button disabled on first render', () => {
-    const btn = render.find('Button').at(1);
+    const btn = render.find('Button').at(0);
     expect(btn.props().disabled).toEqual(true);
   });
 
   test('Login button disabled remove', () => {
     render.setState({ email: 'testing@mail.com', password: 'password' });
-    const btn = render.find('Button').at(1);
+    const btn = render.find('Button').at(0);
     expect(btn.props().disabled).toEqual(false);
   });
 

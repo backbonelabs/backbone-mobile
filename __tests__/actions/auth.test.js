@@ -20,8 +20,9 @@ describe('__Auth Actions__', () => {
     password: 'password',
     _id: 'testId',
     accessToken: 'testToken',
+    authMethod: 1,
   };
-  const { email, password } = user;
+  const { email, password, authMethod } = user;
 
   beforeEach(() => {
     store.clearActions();
@@ -37,7 +38,7 @@ describe('__Auth Actions__', () => {
   test('creates an action to Login', async () => {
     const { accessToken, ...userObj } = user;
     fetch.mockResponseSuccess(user);
-    await store.dispatch(authActions.login({ email, password }));
+    await store.dispatch(authActions.login({ email, password, authMethod }));
 
     expect(UserService.setUserId).toBeCalledWith(user._id);
     expect(Bugsnag.setUser).toBeCalledWith(user._id, user.nickname, user.email);
@@ -46,13 +47,13 @@ describe('__Auth Actions__', () => {
     expect(Mixpanel.track).toHaveBeenCalledWith('login-success');
     expect(SensitiveInfo.setItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN, accessToken]);
     expect(SensitiveInfo.setItem.mock.calls[1]).toEqual([storageKeys.USER, userObj]);
-    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password }));
+    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password, authMethod: 1 }));
     expect(store.getActions()).toMatchSnapshot();
   });
 
   test('creates an action when Login is unsuccessful', async () => {
     fetch.mockResponseSuccess({ error: 'api server error' });
-    await store.dispatch(authActions.login());
+    await store.dispatch(authActions.login({ authMethod: 1 }));
     expect(Mixpanel.trackWithProperties)
     .toBeCalledWith('login-error', { errorMessage: 'api server error' });
     expect(store.getActions()).toMatchSnapshot();
@@ -60,7 +61,7 @@ describe('__Auth Actions__', () => {
 
   test('creates an action when Login returns a server error', async () => {
     fetch.mockResponseFailure();
-    await store.dispatch(authActions.login());
+    await store.dispatch(authActions.login({ authMethod: 1 }));
     expect(Mixpanel.track).toHaveBeenCalledWith('login-serverError');
     expect(store.getActions()).toMatchSnapshot();
   });
@@ -77,7 +78,7 @@ describe('__Auth Actions__', () => {
     expect(Mixpanel.track).toHaveBeenCalledWith('signup-success');
     expect(SensitiveInfo.setItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN, accessToken]);
     expect(SensitiveInfo.setItem.mock.calls[1]).toEqual([storageKeys.USER, body.user]);
-    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password }));
+    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password, authMethod: 1 }));
     expect(store.getActions()).toMatchSnapshot();
   });
 

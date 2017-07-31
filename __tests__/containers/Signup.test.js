@@ -27,20 +27,20 @@ describe('Signup Component', () => {
 
   test('Sign up action dispatched when clicked', () => {
     render.setState({ email: 'testing@mail.com', password: 'password' });
-    const btn = render.find('Button').at(1).shallow();
+    const btn = render.find('Button').at(0).shallow();
     btn.simulate('press');
     const actions = store.getActions();
     expect(actions).toEqual([{ type: 'SIGNUP__START' }]);
   });
 
   test('Sign up button disabled on first render', () => {
-    const btn = render.find('Button').at(1);
+    const btn = render.find('Button').at(0);
     expect(btn.props().disabled).toEqual(true);
   });
 
   test('Sign up button disabled remove', () => {
     render.setState({ email: 'testing@mail.com', password: 'password' });
-    const btn = render.find('Button').at(1);
+    const btn = render.find('Button').at(0);
     expect(btn.props().disabled).toEqual(false);
   });
 
