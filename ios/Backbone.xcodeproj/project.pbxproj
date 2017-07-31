@@ -43,6 +43,7 @@
 		69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69AAF58E1E1D6314005FD0BF /* NotificationService.m */; };
 		69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 69CCE72A1DD4B01C0038157C /* Utilities.m */; };
 		69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69EB80541E0170E200A29ADA /* BootLoaderService.m */; };
+		69FF10731F2742E50049EC33 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69FF10721F2742DE0049EC33 /* Lato-Bold.ttf */; };
 		7421DBC3E1DC404A9DDD0071 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F93A369649D4F528ED3E371 /* libz.tbd */; };
 		7593D56BEF6AA0DB5D4CE824 /* libPods-BackboneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B98A4387B7B289536F06F13 /* libPods-BackboneTests.a */; };
 		7779D69F1C23415988AEFB18 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BCFC5E6C6634C03AB0BF3CF /* libRNSVG.a */; };
@@ -391,6 +392,7 @@
 		69EB80531E0170E200A29ADA /* BootLoaderService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BootLoaderService.h; path = backbone/BootLoaderService.h; sourceTree = "<group>"; };
 		69EB80541E0170E200A29ADA /* BootLoaderService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BootLoaderService.m; path = backbone/BootLoaderService.m; sourceTree = "<group>"; };
 		69FCAED01DB67B8E007712A4 /* Backbone-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Backbone-Prefix.pch"; path = "backbone/Backbone-Prefix.pch"; sourceTree = "<group>"; };
+		69FF10721F2742DE0049EC33 /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Bold.ttf"; path = "../android/app/src/main/assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; };
 		6A15BB33B0615E5E8DE43744 /* libPods-Backbone.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Backbone.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7F93A369649D4F528ED3E371 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -678,6 +680,7 @@
 			isa = PBXGroup;
 			children = (
 				66F918791DA9F82B00649391 /* Lato.ttf */,
+				69FF10721F2742DE0049EC33 /* Lato-Bold.ttf */,
 			);
 			name = Fonts;
 			sourceTree = "<group>";
@@ -1238,6 +1241,7 @@
 				449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */,
 				662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */,
 				662BD3491DFC92E900CF71D1 /* Debug.local.xcconfig in Resources */,
+				69FF10731F2742E50049EC33 /* Lato-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

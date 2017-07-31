@@ -66,6 +66,7 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
           
           if ([BluetoothServiceInstance isDeviceReady]) {
             NSMutableDictionary *deviceInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                               BluetoothServiceInstance.currentDevice.name, @"name",
                                                @(BluetoothServiceInstance.currentDeviceMode), @"deviceMode",
                                                str, @"firmwareVersion",
                                                @(value), @"batteryLevel",
@@ -87,7 +88,12 @@ RCT_EXPORT_METHOD(getDeviceInformation:(RCTResponseSenderBlock)callback) {
     else {
       // Required characteristics are not available, return default values
       hasPendingCallback = NO;
-      callback(@[[NSNull null], @{@"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode), @"firmwareVersion" : @"", @"batteryLevel" : @(-1), @"identifier" : BluetoothServiceInstance.currentDeviceIdentifier }]);
+      callback(@[[NSNull null], @{
+                   @"name" : BluetoothServiceInstance.currentDevice.name,
+                   @"deviceMode" : @(BluetoothServiceInstance.currentDeviceMode),
+                   @"firmwareVersion" : @"",
+                   @"batteryLevel" : @(-1),
+                   @"identifier" : BluetoothServiceInstance.currentDeviceIdentifier }]);
     }
   }
   else {

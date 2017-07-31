@@ -90,6 +90,7 @@ class Application extends Component {
     }),
     device: PropTypes.shape({
       selfTestStatus: PropTypes.bool,
+      isUpdatingFirmware: PropTypes.bool,
       device: PropTypes.shape({
         batteryLevel: PropTypes.number,
       }),
@@ -317,9 +318,22 @@ class Application extends Component {
             // on the 'Update' button while the deviceConnect scene is being popped.
             setTimeout(() => {
               Alert.alert('Error', 'There is something wrong with your Backbone. ' +
-                'Perform an update now to continue using your Backbone.', [
-                { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
-                { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
+                'Perform an update now to continue using your Backbone.',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => this.props.dispatch(deviceActions.disconnect()),
+                  },
+                  {
+                    text: 'Update',
+                    onPress: () => {
+                      this.props.dispatch(deviceActions.setPendingUpdate());
+
+                      if (currentRoute.name !== routes.device.name) {
+                        this.navigator.push(routes.device);
+                      }
+                    },
+                  },
                 ]
               );
             }, delay);
@@ -670,6 +684,7 @@ class Application extends Component {
         <TitleBar
           navigator={this.navigator}
           currentRoute={currentRoute}
+          disableBackButton={this.props.device.isUpdatingFirmware}
         />
         <FullModal show={modalProps.showFull} onClose={modalProps.onClose}>
           {modalProps.content}

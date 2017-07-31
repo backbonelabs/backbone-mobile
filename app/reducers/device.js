@@ -16,6 +16,10 @@ import {
   DEVICE_SELF_TEST_UPDATED,
   DEVICE_RESTORE_SAVED_SESSION,
   DEVICE_CLEAR_SAVED_SESSION,
+  DEVICE_FIRMWARE_UPDATE_STARTED,
+  DEVICE_FIRMWARE_UPDATE_ENDED,
+  DEVICE_SET_PENDING_UPDATE,
+  DEVICE_UNSET_PENDING_UPDATE,
 } from '../actions/types';
 
 export default (state = {
@@ -27,6 +31,8 @@ export default (state = {
   selfTestStatus: false,
   errorMessage: null,
   requestingSelfTest: false,
+  isUpdatingFirmware: false,
+  hasPendingUpdate: false,
 }, action) => {
   switch (action.type) {
     case DEVICE_CONNECT__START: {
@@ -92,6 +98,7 @@ export default (state = {
         inProgress: false,
         isConnected: false,
         selfTestStatus: false,
+        isUpdatingFirmware: false,
         device: {},
       };
     }
@@ -147,6 +154,30 @@ export default (state = {
       return {
         ...state,
         hasSavedSession: false,
+      };
+    }
+    case DEVICE_FIRMWARE_UPDATE_STARTED: {
+      return {
+        ...state,
+        isUpdatingFirmware: true,
+      };
+    }
+    case DEVICE_FIRMWARE_UPDATE_ENDED: {
+      return {
+        ...state,
+        isUpdatingFirmware: false,
+      };
+    }
+    case DEVICE_SET_PENDING_UPDATE: {
+      return {
+        ...state,
+        hasPendingUpdate: true,
+      };
+    }
+    case DEVICE_UNSET_PENDING_UPDATE: {
+      return {
+        ...state,
+        hasPendingUpdate: false,
       };
     }
     default:

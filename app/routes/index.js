@@ -20,7 +20,6 @@ import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
-import firmwareUpdate from './firmwareUpdate';
 import dashboard from './dashboard';
 
 export default {
@@ -46,6 +45,5 @@ export default {
   howTo,
   device,
   changePassword,
-  firmwareUpdate,
   dashboard,
 };
