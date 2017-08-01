@@ -3062,10 +3062,6 @@ lodash.cond@^4.3.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.cond/-/lodash.cond-4.5.2.tgz#f471a1da486be60f6ab955d17115523dd1d255d5"
 
-lodash.debounce@4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
-
 lodash.defaults@^4.0.1:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
@@ -3728,7 +3724,7 @@ promise@^7, promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4:
+prop-types@^15.5.4:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -3782,13 +3778,6 @@ raw-body@~2.1.2:
     iconv-lite "0.4.13"
     unpipe "1.0.0"
 
-react-addons-shallow-compare@15.6.0:
-  version "15.6.0"
-  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.0.tgz#b7a4e5ff9f2704c20cf686dd8a05dd08b26de252"
-  dependencies:
-    fbjs "^0.8.4"
-    object-assign "^4.1.0"
-
 react-addons-test-utils@15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-addons-test-utils/-/react-addons-test-utils-15.4.2.tgz#93bcaa718fcae7360d42e8fb1c09756cc36302a2"
@@ -3826,7 +3815,7 @@ react-native-extended-stylesheet@0.3.0:
     object-resolve-path "^1.1.0"
 
 react-native-fs@2.1.0-rc.1:
-  version "2.1.0-rc.1"
+  version v2.1.0-rc.1
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.1.0-rc.1.tgz#f6078891005478648738db396e822ec0aefc4b95"
   dependencies:
     base-64 "^0.1.0"
@@ -3848,13 +3837,9 @@ react-native-sensitive-info@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-3.0.2.tgz#b2919b9081cdba640b0fa752ef608565babfad1e"
 
-react-native-snap-carousel@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-2.4.0.tgz#e0711cc804ca5b11f1c154ba61f5884512a27a71"
-  dependencies:
-    lodash.debounce "4.0.8"
-    prop-types "^15.5.10"
-    react-addons-shallow-compare "15.6.0"
+react-native-snap-carousel@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-1.2.0.tgz#c3a70c529bd69d8830adf8b41b8f4a2108f57aaf"
 
 react-native-svg@5.1.5:
   version "5.1.5"
