@@ -80,7 +80,7 @@ class Application extends Component {
         showPartial: PropTypes.bool,
         content: PropTypes.node,
         onClose: PropTypes.func,
-        hideClose: PropTypes.bool,
+        buttonConfigs: PropTypes.array,
       }),
     }),
     user: PropTypes.shape({
@@ -118,8 +118,8 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        const { showFull, showPartial, hideClose } = this.props.app.modal;
-        if ((showFull || showPartial) && !hideClose) {
+        const { showFull, showPartial, buttonConfigs } = this.props.app.modal;
+        if ((showFull || showPartial) && buttonConfigs && buttonConfigs.length > 0) {
           // There is a modal being displayed, hide it when allowed
           this.props.dispatch(appActions.hideFullModal());
           this.props.dispatch(appActions.hidePartialModal());
@@ -533,7 +533,6 @@ class Application extends Component {
                   </View>
                 </View>
               ),
-              hideClose: true,
             }));
 
             // Start fetching the previous session state
@@ -695,7 +694,7 @@ class Application extends Component {
           <PartialModal
             show={modalProps.showPartial}
             onClose={modalProps.onClose}
-            hideClose={modalProps.hideClose}
+            buttonConfigs={modalProps.buttonConfigs}
           >
             {modalProps.content}
           </PartialModal>

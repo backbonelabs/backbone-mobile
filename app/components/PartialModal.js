@@ -1,10 +1,28 @@
 import React, { PropTypes } from 'react';
-import { Modal, View, TouchableOpacity } from 'react-native';
+import { Modal, View } from 'react-native';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { isFunction } from 'lodash';
+// import { isFunction } from 'lodash';
 import appActions from '../actions/app';
+import Button from '../components/Button';
 import styles from '../styles/partialModal';
+
+const getButtons = (props) => {
+  const buttonConfigs = props.buttonConfigs;
+  const buttons = [];
+  for (let i = 0; i < buttonConfigs.length; i++) {
+    const param = buttonConfigs[i];
+    buttons.push(
+      <Button
+        style={styles._button}
+        text={param.caption}
+        key={i}
+        onPress={() => props.dispatch(appActions.hidePartialModal())}
+        primary={i === buttonConfigs.length - 1}
+      />
+    );
+  }
+  return buttons;
+};
 
 const PartialModal = props => ((props.show &&
   <Modal
@@ -18,26 +36,13 @@ const PartialModal = props => ((props.show &&
   >
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
-        <View style={styles.buttonContainer}>
-          {
-            !props.hideClose &&
-            <TouchableOpacity
-              onPress={() => {
-                props.dispatch(appActions.hidePartialModal());
-                if (isFunction(props.onClose)) {
-                  props.onClose();
-                }
-              }}
-            >
-              <Icon
-                name="close"
-                size={styles.$iconSize}
-                color={styles._closeIcon.color}
-              />
-            </TouchableOpacity>
-          }
-        </View>
         {props.children}
+        {
+          props.buttonConfigs && props.buttonConfigs.length > 0 &&
+          <View style={styles.buttonContainer}>
+            {getButtons(props)}
+          </View>
+        }
       </View>
     </View>
   </Modal>
@@ -47,7 +52,7 @@ PartialModal.propTypes = {
   children: PropTypes.node,
   dispatch: PropTypes.func,
   onClose: PropTypes.func,
-  hideClose: PropTypes.bool,
+  buttonConfigs: PropTypes.array,
   show: PropTypes.bool,
 };
 

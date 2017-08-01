@@ -22,12 +22,17 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import arrow from '../images/settings/arrow.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
+import deviceOrangeIcon from '../images/settings/device-orange-icon.png';
 import styles from '../styles/settings';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 import Mixpanel from '../utils/Mixpanel';
+
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const { storageKeys, bluetoothStates } = constants;
 const { BluetoothService, Environment } = NativeModules;
@@ -322,22 +327,40 @@ class Settings extends Component {
         this.props.dispatch(appActions.showPartialModal({
           content: (
             <View>
-              <BodyText>We've got your back!</BodyText>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-                <Button
-                  style={{ width: 100 }}
-                  text="Cancel"
-                  onPress={() => this.props.dispatch(appActions.hidePartialModal())}
+              <View style={{ alignItems: 'center' }}>
+                <Image
+                  source={deviceOrangeIcon}
+                  style={{ marginVertical: applyWidthDifference(30) }}
                 />
-                <Button
-                  style={{ width: 100 }}
-                  text="OK"
-                  primary
-                  onPress={() => this.props.dispatch(appActions.hidePartialModal())}
-                />
+                <BodyText
+                  style={{
+                    textAlign: 'center',
+                    color: '#DD523B',
+                    fontSize: fixedResponsiveFontSize(22),
+                    fontWeight: '500',
+                    marginBottom: applyWidthDifference(10),
+                  }}
+                >
+                  Connection Lost
+                </BodyText>
+                <BodyText
+                  style={{
+                    textAlign: 'center',
+                    color: '#000000',
+                    fontSize: fixedResponsiveFontSize(14),
+                    marginBottom: applyWidthDifference(15),
+                    marginHorizontal: applyWidthDifference(12),
+                  }}
+                >
+                  It looks like we've lost contact with your device! Try to reconnect?
+                </BodyText>
               </View>
             </View>
           ),
+          buttonConfigs: [
+            { caption: 'CANCEL' },
+            { caption: 'OKAY' },
+          ],
         }));
       },
     }, {
