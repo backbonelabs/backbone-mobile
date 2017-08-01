@@ -4,9 +4,10 @@ import {
   SIGNUP,
   SELECT_LEVEL,
   SELECT_SESSION,
+  SIGN_OUT,
 } from '../actions/types';
 
-export default (state = {
+const defaultState = {
   plans: [{
     name: '',
     levels: [
@@ -21,7 +22,9 @@ export default (state = {
   selectedPlanIdx: 0,
   selectedLevelIdx: 0,
   selectedSessionIdx: 0,
-}, action) => {
+};
+
+export default (state = defaultState, action) => {
   const { type, payload } = action;
   switch (type) {
     case FETCH_USER:
@@ -45,6 +48,8 @@ export default (state = {
         ...state,
         selectedSessionIdx: payload,
       };
+    case SIGN_OUT:
+      return defaultState;
     default:
       return state;
   }
