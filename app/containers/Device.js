@@ -76,7 +76,6 @@ class Device extends Component {
     inProgress: PropTypes.bool,
     hasPendingUpdate: PropTypes.bool,
     device: PropTypes.shape({
-      name: PropTypes.string,
       deviceMode: PropTypes.number,
       batteryLevel: PropTypes.number,
       firmwareVersion: PropTypes.string,
@@ -221,21 +220,6 @@ class Device extends Component {
     this.props.dispatch(deviceActions.getInfo());
   }
 
-  disconnectDevice() {
-    // Prompt user to confirm that they want to disconnect current device
-    Alert.alert(
-      'Are you sure?',
-      'Do you want to disconnect from your Backbone',
-      [
-        { text: 'Cancel' },
-        {
-          text: 'Disconnect',
-          onPress: () => this.props.dispatch(deviceActions.disconnect()),
-        },
-      ]
-    );
-  }
-
   unpairDevice() {
     // Prompt user to confirm that they want to unpair device
     Alert.alert(
@@ -346,7 +330,7 @@ class Device extends Component {
 
   render() {
     const { device, inProgress, isConnecting, isConnected } = this.props;
-    const { name, updateAvailable, batteryLevel } = device;
+    const { updateAvailable, batteryLevel } = device;
     const { isUpdating, isUpdateMode, updateSuccess, updateProgress } = this.state;
 
     let mainDeviceStatusText;
@@ -356,7 +340,7 @@ class Device extends Component {
       mainDeviceStatusText = (
         <View style={styles.deviceStatus}>
           <SecondaryText style={styles._firmwareUpdateProgressTextBlack}>
-            Make sure your device is close by and charged
+            Make sure your device is close by and charged.
           </SecondaryText>
         </View>
       );
@@ -385,8 +369,8 @@ class Device extends Component {
         subDeviceStatusText = (
           <View>
             <SecondaryText style={styles._firmwareUpdateInfoText}>
-              Please do not attempt to disconnect your backbone device
-              during installations.
+              Please do not disconnect your Backbone during
+              the firmware update.
             </SecondaryText>
           </View>
         );
@@ -422,7 +406,7 @@ class Device extends Component {
           <View>
             <SecondaryText style={styles._firmwareUpdateInfoText}>
               Make sure your device is close by, at least 15% charged and that
-              you have an internet connection
+              you have an internet connection.
             </SecondaryText>
           </View>
         );
@@ -478,8 +462,7 @@ class Device extends Component {
         <View style={styles.container}>
           <View style={styles.deviceInfoContainer}>
             <BodyText style={styles._deviceConnectionText}>
-              {!isConnected ? 'Disconnected from ' : 'Connected to '}
-              {name && name.length > 0 ? name : 'Backbone'}
+              {!isConnected ? 'Disconnected from ' : 'Connected to '}Backbone
             </BodyText>
             <Image source={deviceStatusImage} style={styles.deviceStatusImage} />
             {mainDeviceStatusText}
@@ -491,7 +474,7 @@ class Device extends Component {
                 primary
                 style={styles._button}
                 text="DISCONNECT"
-                onPress={this.disconnectDevice}
+                onPress={this.unpairDevice}
                 disabled={isUpdating}
               />
               :

@@ -60,7 +60,7 @@ export default EStyleSheet.create({
   },
   firmwareUpdateProgressTextRed: {
     fontSize: fixedResponsiveFontSize(16),
-    color: '#FF0000',
+    color: '#DD523B',
   },
   batteryInfoTextBlack: {
     fontSize: fixedResponsiveFontSize(16),
@@ -68,14 +68,14 @@ export default EStyleSheet.create({
   },
   batteryInfoTextRed: {
     fontSize: fixedResponsiveFontSize(16),
-    color: '#FF0000',
+    color: '#DD523B',
   },
   batteryIconBlack: {
     color: '#000000',
     fontSize: fixedResponsiveFontSize(25),
   },
   batteryIconRed: {
-    color: '#FF0000',
+    color: '#DD523B',
     fontSize: fixedResponsiveFontSize(25),
   },
 });
