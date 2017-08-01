@@ -10,12 +10,9 @@ const hexagonConnectorDefaults = {
 };
 
 const largeHexagonHeight = 100;
-const smallHexagonHeight = 70;
 
 export default EStyleSheet.create({
   $hexagonContainerHeight: applyWidthDifference(largeHexagonHeight),
-  $hexagonContainerEndHeight:
-    applyWidthDifference(largeHexagonHeight) - applyWidthDifference(smallHexagonHeight),
   $carouselSliderWidth: '100%',
   $carouselItemWidth: '85%',
   backgroundImage: {
@@ -40,8 +37,8 @@ export default EStyleSheet.create({
   },
   hexagonConnectorTop: {
     ...hexagonConnectorDefaults,
-    height: '$hexagonContainerEndHeight',
-    top: '$hexagonContainerHeight - $hexagonContainerEndHeight',
+    height: '$hexagonContainerHeight * 0.5',
+    top: '$hexagonContainerHeight * 0.51', // extra 0.01 to remove small gap on low density screens
   },
   hexagonConnector: {
     ...hexagonConnectorDefaults,
@@ -49,7 +46,7 @@ export default EStyleSheet.create({
   },
   hexagon: {
     width: applyWidthDifference(92),
-    height: applyWidthDifference(102),
+    height: applyWidthDifference(largeHexagonHeight),
     alignItems: 'center',
     justifyContent: 'center',
   },
