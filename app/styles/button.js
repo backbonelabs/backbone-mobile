@@ -47,17 +47,17 @@ export default EStyleSheet.create({
   },
   disabledButton: {
     backgroundColor: () => (
-      color(EStyleSheet.value('$secondaryColor')).clearer(0.0).rgbString() // 40% opacity
+      color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 40% opacity
     ),
   },
   disabledSecondaryText: {
     color: () => (
-      color(EStyleSheet.value('$primaryColor')).clearer(0.6).rgbString() // 40% opacity
+      color(EStyleSheet.value('$primaryColor')).clearer(0.4).rgbString() // 40% opacity
     ),
   },
   disabledSecondaryBorder: {
     borderColor: () => (
-      color(EStyleSheet.value('$primaryColor')).clearer(0.6).rgbString() // 40% opacity
+      color(EStyleSheet.value('$primaryColor')).clearer(0.4).rgbString() // 40% opacity
     ),
   },
   text: {
@@ -68,7 +68,7 @@ export default EStyleSheet.create({
   },
   disabledText: {
     color: () => (
-      color('#FFFFFF').clearer(0.6).rgbString() // 40% opacity
+      color('#FFFFFF').clearer(0.4).rgbString() // 40% opacity
     ),
   },
 });

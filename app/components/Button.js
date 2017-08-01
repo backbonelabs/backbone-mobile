@@ -55,7 +55,6 @@ class Button extends Component {
     if (this.props.primary) {
       buttonType = (
         <TouchableHighlight
-          activeOpacity={0.4}
           style={buttonStyles}
           underlayColor={'#FB8C00'}
           onHideUnderlay={this._onHideUnderlay}
