@@ -3778,6 +3778,13 @@ raw-body@~2.1.2:
     iconv-lite "0.4.13"
     unpipe "1.0.0"
 
+react-addons-shallow-compare@latest:
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.0.tgz#b7a4e5ff9f2704c20cf686dd8a05dd08b26de252"
+  dependencies:
+    fbjs "^0.8.4"
+    object-assign "^4.1.0"
+
 react-addons-test-utils@15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-addons-test-utils/-/react-addons-test-utils-15.4.2.tgz#93bcaa718fcae7360d42e8fb1c09756cc36302a2"
@@ -3815,7 +3822,7 @@ react-native-extended-stylesheet@0.3.0:
     object-resolve-path "^1.1.0"
 
 react-native-fs@2.1.0-rc.1:
-  version v2.1.0-rc.1
+  version "2.1.0-rc.1"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.1.0-rc.1.tgz#f6078891005478648738db396e822ec0aefc4b95"
   dependencies:
     base-64 "^0.1.0"
@@ -3837,9 +3844,11 @@ react-native-sensitive-info@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-3.0.2.tgz#b2919b9081cdba640b0fa752ef608565babfad1e"
 
-react-native-snap-carousel@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-1.2.0.tgz#c3a70c529bd69d8830adf8b41b8f4a2108f57aaf"
+react-native-snap-carousel@1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-1.6.1.tgz#64caae3300cc9a9c9c34a76813b03b590d9dfd32"
+  dependencies:
+    react-addons-shallow-compare latest
 
 react-native-svg@5.1.5:
   version "5.1.5"

@@ -28,6 +28,12 @@ const getSessionWorkouts = session => (
   ))
 );
 
+const getSessionCards = (session, idx) => (
+  <Card key={idx}>
+    {getSessionWorkouts(session)}
+  </Card>
+);
+
 const getScrollOffset = event => get(event, 'nativeEvent.contentOffset.y', 0);
 
 class Dashboard extends Component {
@@ -171,27 +177,18 @@ class Dashboard extends Component {
     }).reverse();
   }
 
-  _getSessionCards() {
-    const {
-      plans,
-      selectedPlanIdx,
-      selectedLevelIdx,
-    } = this.props.training;
-    const sessions = get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx], []);
-
-    return sessions.map((session, idx) => (
-      <Card key={idx} style={styles._sessionCard}>
-        {getSessionWorkouts(session)}
-      </Card>
-    ));
-  }
-
   _onSelectSession(idx) {
     this.props.selectSession(idx);
   }
 
   render() {
-    const { selectedSessionIdx } = this.props.training;
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = this.props.training;
+    const sessions = get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx], []);
 
     return (
       <Image source={BG} style={styles.backgroundImage}>
@@ -209,14 +206,19 @@ class Dashboard extends Component {
         </View>
         <View style={styles.verticalDivider} />
         <View style={styles.carouselContainer}>
-          <Carousel
-            sliderWidth={styles.$carouselSliderWidth}
-            itemWidth={styles.$carouselItemWidth}
-            onSnapToItem={this._onSelectSession}
-            firstItem={selectedSessionIdx}
-          >
-            {this._getSessionCards()}
-          </Carousel>
+          {!!sessions.length &&
+            <Carousel
+              items={sessions}
+              renderItem={getSessionCards}
+              sliderWidth={styles.$carouselSliderWidth}
+              itemWidth={styles.$carouselItemWidth}
+              onSnapToItem={this._onSelectSession}
+              firstItem={selectedSessionIdx}
+              slideStyle={styles.sessionCard}
+              enableSnap
+              snapOnAndroid
+            />
+          }
         </View>
       </Image>
     );
