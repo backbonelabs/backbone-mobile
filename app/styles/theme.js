@@ -1,5 +1,4 @@
-import { Dimensions } from 'react-native';
-import { Navigator } from 'react-native-deprecated-custom-components';
+import { Dimensions, Navigator } from 'react-native';
 import relativeDimensions from '../utils/relativeDimensions';
 
 const { fixedResponsiveFontSize, heightDifference } = relativeDimensions;

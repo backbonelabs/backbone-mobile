@@ -7,7 +7,7 @@ import {
   NativeModules,
   NativeEventEmitter,
   Platform,
-  BackHandler,
+  BackAndroid,
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
@@ -168,7 +168,7 @@ class PostureMonitor extends Component {
     this.sessionControlStateListener = null;
     // Debounce update of user posture threshold setting to limit the number of API requests
     this.updateUserPostureThreshold = debounce(this.updateUserPostureThreshold, 1000);
-    this.backHandlerListener = null;
+    this.backAndroidListener = null;
   }
 
   componentWillMount() {
@@ -270,7 +270,7 @@ class PostureMonitor extends Component {
 
     // ANDROID ONLY: Listen to the hardware back button
     if (!isiOS) {
-      this.backHandlerListener = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
         if (this.props.sessionState && this.props.sessionState.showSummary) {
           this.props.navigator.resetTo(routes.postureDashboard);
         } else if (this.state.sessionState !== sessionStates.STOPPED
@@ -371,8 +371,8 @@ class PostureMonitor extends Component {
       this.sessionControlStateListener.remove();
     }
 
-    if (this.backHandlerListener) {
-      this.backHandlerListener.remove();
+    if (this.backAndroidListener) {
+      this.backAndroidListener.remove();
     }
 
     AppState.removeEventListener('change', this.handleAppStateChange);
