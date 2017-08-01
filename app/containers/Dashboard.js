@@ -14,10 +14,23 @@ import Carousel from 'react-native-snap-carousel';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
 import Card from '../components/Card';
-import BG from '../images/dashboard-bg-plain-orange.jpg';
+import purpleBg from '../images/dashboard/dashboard-bg-purple.jpg';
+import blueBg from '../images/dashboard/dashboard-bg-blue.jpg';
+import greenBg from '../images/dashboard/dashboard-bg-green.jpg';
+import orangeBg from '../images/dashboard/dashboard-bg-orange.jpg';
+import redBg from '../images/dashboard/dashboard-bg-red.jpg';
 import hexagon from '../images/dashboard/hexagon.png';
 import bulletOrangeOn from '../images/bullet-orange-on.png';
+import mapLevelToColor from '../utils/mapLevelToColor';
 import styles from '../styles/dashboard';
+
+const colorBackgrounds = {
+  purple: purpleBg,
+  blue: blueBg,
+  green: greenBg,
+  orange: orangeBg,
+  red: redBg,
+};
 
 const getSessionWorkouts = session => (
   session.map(workout => (
@@ -191,7 +204,10 @@ class Dashboard extends Component {
     const sessions = get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx], []);
 
     return (
-      <Image source={BG} style={styles.backgroundImage}>
+      <Image
+        source={colorBackgrounds[mapLevelToColor(selectedLevelIdx)]}
+        style={styles.backgroundImage}
+      >
         <View style={styles.levelSliderOuterContainer}>
           <ScrollView
             ref={(scrollView) => { this._scrollView = scrollView; }}
