@@ -10,7 +10,7 @@ import routes from '../../routes';
 
 const DeviceSetup = ({ navigator }) => {
   const skip = () => navigator.push(routes.howToVideo);
-  const setup = () => navigator.push(routes.setupDevice);
+  const setup = () => navigator.push({ ...routes.deviceScan, props: { showSkip: true } });
 
   return (
     <View style={styles._container}>

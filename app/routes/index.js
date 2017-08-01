@@ -18,7 +18,8 @@ import profileSetupOne from './onBoardingFlow/profileSetupOne';
 import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
 import deviceSetup from './onBoardingFlow/deviceSetup';
 import howToVideo from './onBoardingFlow/howToVideo';
-import setupDevice from './onBoardingFlow/setupDevice';
+import deviceScan from './onBoardingFlow/deviceScan';
+import device from './device';
 
 export default {
   activity,
@@ -40,6 +41,7 @@ export default {
   profileSetupOne,
   profileSetupTwo,
   deviceSetup,
-  setupDevice,
+  deviceScan,
   howToVideo,
+  device,
 };

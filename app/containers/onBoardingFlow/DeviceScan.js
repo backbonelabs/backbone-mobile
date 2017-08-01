@@ -51,11 +51,13 @@ const getRssiIcon = (rssi) => {
   return <Image source={iconSource} style={styles.receptionIcon} />;
 };
 
-class SetupDevice extends Component {
+class DeviceScan extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       replace: PropTypes.func,
       push: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
+      pop: PropTypes.func,
     }),
     device: PropTypes.shape({
       identifier: PropTypes.string,
@@ -65,6 +67,7 @@ class SetupDevice extends Component {
     isConnecting: PropTypes.bool,
     isConnected: PropTypes.bool,
     errorMessage: PropTypes.string,
+    showSkip: PropTypes.bool,
   };
 
   constructor() {
@@ -82,18 +85,11 @@ class SetupDevice extends Component {
   }
 
   componentWillMount() {
-    if (this.props.device.identifier) {
-      this.setState((prevState, props) => ({
-        selectedIdentifier: props.device.identifier,
-        deviceList: [{ identifier: props.device.identifier }],
-      }));
-    }
-
     // Set listener for updating deviceList with discovered devices
     this.devicesFoundListener = deviceManagementServiceEvents.addListener(
       'DevicesFound',
       deviceList => {
-        this.setState(() => ({ deviceList: [...this.state.deviceList, ...deviceList] }));
+        this.setState(() => ({ deviceList }));
       }
     );
 
@@ -122,9 +118,16 @@ class SetupDevice extends Component {
       });
     }
 
-    // Go to next step after connecting
+    // After connecting
+    // if previous route is deviceSetup, replace with howtovideo
+    // else go back to previous route
     if (!this.props.isConnected && nextProps.isConnected) {
-      this.props.navigator.replace(routes.howToVideo);
+      const routeStack = this.props.navigator.getCurrentRoutes();
+      const lastRoute = routeStack[routeStack.length - 2];
+      if (lastRoute.name === 'deviceSetup') {
+        return this.props.navigator.replace(routes.howToVideo);
+      }
+      return this.props.navigator.pop();
     }
   }
 
@@ -143,6 +146,12 @@ class SetupDevice extends Component {
    * Initiates a 5 second scanning for Backbone devices.
    */
   initiateScanning() {
+    if (this.state.inProgress || this.props.isConnecting ||
+      (this.props.bluetoothState === constants.bluetoothStates.OFF)
+    ) {
+      return;
+    }
+
     this.setState({ inProgress: true });
     Mixpanel.track('scanForDevices');
     DeviceManagementService.scanForDevices(error => {
@@ -282,11 +291,12 @@ class SetupDevice extends Component {
                 <Spinner style={styles.devicesNotFound} color={'#66BB6A'} size="large" /> : null
             }
             <List
+              containerStyle={{ flex: 1 }}
               dataBlob={deviceList}
               formatRowData={this.formatDeviceRow}
               onPressRow={
-                isBluetoothOn ? this.selectDevice : null
-              }
+                  isBluetoothOn ? this.selectDevice : null
+                }
             />
           </View>
         </View>
@@ -296,20 +306,21 @@ class SetupDevice extends Component {
               onPress={this.initiateScanning}
               style={styles._CTAButton}
               text={btn}
-              disabled={
-                inProgress || isConnecting ||
-                (this.props.bluetoothState === bluetoothStates.OFF)}
               primary
+              disabled={inProgress || isConnecting ||
+                (this.props.bluetoothState === bluetoothStates.OFF)}
             />
           </View>
-          <TouchableOpacity
-            activeOpacity={0.4}
-            onPress={this.skip}
-          >
-            <SecondaryText style={styles._skip}>
-              Skip Setup
-            </SecondaryText>
-          </TouchableOpacity>
+          {
+            this.props.showSkip ? <TouchableOpacity
+              activeOpacity={0.4}
+              onPress={this.skip}
+            >
+              <SecondaryText style={styles._skip}>
+                Skip Setup
+              </SecondaryText>
+            </TouchableOpacity> : null
+          }
         </View>
       </View>
     );
@@ -321,4 +332,4 @@ const mapStateToProps = state => {
   return { ...app, ...device };
 };
 
-export default connect(mapStateToProps)(SetupDevice);
+export default connect(mapStateToProps)(DeviceScan);
