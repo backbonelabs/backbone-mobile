@@ -3844,9 +3844,9 @@ react-native-sensitive-info@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-3.0.2.tgz#b2919b9081cdba640b0fa752ef608565babfad1e"
 
-react-native-snap-carousel@1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-1.6.1.tgz#64caae3300cc9a9c9c34a76813b03b590d9dfd32"
+react-native-snap-carousel@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-1.5.0.tgz#099d8eee49d7a37baaeff6782d565b8b1426c64b"
   dependencies:
     react-addons-shallow-compare latest
 
