@@ -15,7 +15,7 @@ const DeviceSetup = ({ navigator }) => {
   return (
     <View style={styles._container}>
       <StepBar step={3} style={styles._stepBar} />
-      <BodyText>
+      <BodyText style={styles._deviceSetup_header}>
           Excellent! Now let's Connect your Device
       </BodyText>
       <View style={styles.innerContainer}>

@@ -32,6 +32,7 @@ export default EStyleSheet.create({
     backgroundColor: 'transparent',
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(18),
+    fontWeight: 'bold',
   },
   sideContainers: {
     flex: 0.25,

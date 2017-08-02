@@ -14,8 +14,12 @@ export default EStyleSheet.create({
     marginBottom: applyWidthDifference(30),
     marginTop: applyWidthDifference(20),
   },
-  header: {
+  deviceScan_header: {
     marginTop: applyWidthDifference(25),
+    fontWeight: 'bold',
+  },
+  deviceSetup_header: {
+    fontWeight: 'bold',
   },
   innerContainer: {
     flex: 2,

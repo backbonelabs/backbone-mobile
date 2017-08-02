@@ -21,6 +21,7 @@ export default EStyleSheet.create({
   header: {
     textAlign: 'center',
     marginBottom: applyWidthDifference(25),
+    fontWeight: 'bold',
   },
   genderContainer: {
     marginTop: applyWidthDifference(45),

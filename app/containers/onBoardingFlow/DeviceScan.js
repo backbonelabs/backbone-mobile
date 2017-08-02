@@ -267,7 +267,7 @@ class DeviceScan extends Component {
 
     return (
       <View style={styles._container}>
-        <BodyText style={styles._header}>
+        <BodyText style={styles._deviceScan_header}>
           Setup a device to connect
         </BodyText>
         <View style={styles.innerContainer}>
