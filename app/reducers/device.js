@@ -120,7 +120,10 @@ export default (state = {
       return {
         ...state,
         inProgress: false,
-        device: action.payload,
+        device: {
+          ...action.payload,
+          batteryLevel: 10,
+        },
       };
     }
     case DEVICE_GET_INFO__ERROR: {

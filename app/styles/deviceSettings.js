@@ -1,5 +1,6 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
+import theme from '../styles/theme';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
@@ -60,7 +61,7 @@ export default EStyleSheet.create({
   },
   firmwareUpdateProgressTextRed: {
     fontSize: fixedResponsiveFontSize(16),
-    color: '#DD523B',
+    color: theme.warningColor,
   },
   batteryInfoTextBlack: {
     fontSize: fixedResponsiveFontSize(16),
@@ -68,14 +69,14 @@ export default EStyleSheet.create({
   },
   batteryInfoTextRed: {
     fontSize: fixedResponsiveFontSize(16),
-    color: '#DD523B',
+    color: theme.warningColor,
   },
   batteryIconBlack: {
     color: '#000000',
     fontSize: fixedResponsiveFontSize(25),
   },
   batteryIconRed: {
-    color: '#DD523B',
+    color: theme.warningColor,
     fontSize: fixedResponsiveFontSize(25),
   },
 });

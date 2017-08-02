@@ -17,8 +17,8 @@ export default (state = {
     showFull: false,
     showPartial: false,
     content: null,
+    config: null,
     onClose: null,
-    buttonConfigs: [],
   },
   nextStep: false,
 }, action) => {
@@ -73,8 +73,9 @@ export default (state = {
       return {
         ...state,
         modal: {
-          ...action.payload,
           showPartial: true,
+          config: { ...action.payload },
+          onClose: null,
         },
       };
     }
@@ -84,7 +85,6 @@ export default (state = {
         modal: {
           showPartial: false,
           content: null,
-          buttonConfigs: [],
           onClose: null,
         },
       };

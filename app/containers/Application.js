@@ -20,6 +20,7 @@ import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
 import settingsInactive from '../images/settingsInactive.png';
+import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -29,7 +30,6 @@ import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
-import BodyText from '../components/BodyText';
 import Banner from '../components/Banner';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -79,8 +79,20 @@ class Application extends Component {
         showFull: PropTypes.bool,
         showPartial: PropTypes.bool,
         content: PropTypes.node,
+        config: PropTypes.shape({
+          topView: PropTypes.node,
+          title: PropTypes.shape({
+            caption: PropTypes.string,
+            color: PropTypes.string,
+          }),
+          detail: PropTypes.shape({
+            caption: PropTypes.string,
+            color: PropTypes.string,
+          }),
+          buttons: PropTypes.array,
+          allowBackButton: PropTypes.bool,
+        }),
         onClose: PropTypes.func,
-        buttonConfigs: PropTypes.array,
       }),
     }),
     user: PropTypes.shape({
@@ -118,18 +130,17 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        const { showFull, showPartial, buttonConfigs } = this.props.app.modal;
-        if ((showFull || showPartial) && buttonConfigs && buttonConfigs.length > 0) {
-          // There is a modal being displayed, hide it when allowed
-          this.props.dispatch(appActions.hideFullModal());
-          this.props.dispatch(appActions.hidePartialModal());
-          return true;
-        }
-
         const routeStack = this.navigator.getCurrentRoutes();
         const currentRoute = routeStack[routeStack.length - 1];
         if (currentRoute.name === routes.postureMonitor.name) {
           // Delegate to the PostureMonitor to handle this scenario
+          return true;
+        }
+
+        const { showFull } = this.props.app.modal;
+        if (showFull) {
+          // There is a full modal being displayed, dismiss it.
+          this.props.dispatch(appActions.hideFullModal());
           return true;
         }
 
@@ -433,10 +444,16 @@ class Application extends Component {
       const { batteryLevel } = nextProps.device.device;
       if (batteryLevel <= 15 && batteryLevel > 0) {
         this.setState({ hasDisplayedLowBatteryWarning: true });
-        Alert.alert(
-          'Your Backbone battery is low',
-          `Your Backbone battery is at ${batteryLevel}%. Charge your Backbone as soon as possible.`
-        );
+        this.props.dispatch(appActions.showPartialModal({
+          topView: (<Image source={deviceLowBatteryIcon} />),
+          title: { caption: 'Low Battery', color: theme.warningColor },
+          detail: {
+            caption: `Your Backbone battery is at ${batteryLevel}%. ` + // eslint-disable-line prefer-template, max-len
+            'Charge your Backbone as soon as possible.',
+          },
+          buttons: [{ caption: 'CLOSE' }],
+          allowBackButton: true,
+        }));
       }
     }
   }
@@ -521,18 +538,9 @@ class Application extends Component {
           // Only display if no other pop-ups are visible
           if (shouldShowLoading && !showPartial && !showFull) {
             this.props.dispatch(appActions.showPartialModal({
-              content: (
-                <View>
-                  <View>
-                    <BodyText style={styles._partialModalBodyText}>
-                      Checking for previous session
-                    </BodyText>
-                  </View>
-                  <View style={styles.partialSpinnerContainer}>
-                    <Spinner />
-                  </View>
-                </View>
-              ),
+              topView: (<Spinner style={styles._partialSpinnerContainer} />),
+              title: { caption: 'Loading' },
+              detail: { caption: 'Checking for previous session' },
             }));
 
             // Start fetching the previous session state
@@ -693,8 +701,7 @@ class Application extends Component {
           <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
           <PartialModal
             show={modalProps.showPartial}
-            onClose={modalProps.onClose}
-            buttonConfigs={modalProps.buttonConfigs}
+            config={modalProps.config}
           >
             {modalProps.content}
           </PartialModal>
