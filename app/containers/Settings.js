@@ -30,10 +30,6 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 import Mixpanel from '../utils/Mixpanel';
 
-import relativeDimensions from '../utils/relativeDimensions';
-
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
-
 const { storageKeys, bluetoothStates } = constants;
 const { BluetoothService, Environment } = NativeModules;
 
@@ -325,39 +321,17 @@ class Settings extends Component {
       label: 'Partial modal example',
       handler: () => {
         this.props.dispatch(appActions.showPartialModal({
-          content: (
-            <View>
-              <View style={{ alignItems: 'center' }}>
-                <Image
-                  source={deviceOrangeIcon}
-                  style={{ marginVertical: applyWidthDifference(30) }}
-                />
-                <BodyText
-                  style={{
-                    textAlign: 'center',
-                    color: '#DD523B',
-                    fontSize: fixedResponsiveFontSize(22),
-                    fontWeight: '500',
-                    marginBottom: applyWidthDifference(10),
-                  }}
-                >
-                  Connection Lost
-                </BodyText>
-                <BodyText
-                  style={{
-                    textAlign: 'center',
-                    color: '#000000',
-                    fontSize: fixedResponsiveFontSize(14),
-                    marginBottom: applyWidthDifference(15),
-                    marginHorizontal: applyWidthDifference(12),
-                  }}
-                >
-                  It looks like we've lost contact with your device! Try to reconnect?
-                </BodyText>
-              </View>
-            </View>
+          topView: (
+            <Image source={deviceOrangeIcon} />
           ),
-          buttonConfigs: [
+          title: {
+            caption: 'Connection Lost',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: "It looks like we've lost contact with your device! Try to reconnect?",
+          },
+          buttons: [
             { caption: 'CANCEL' },
             { caption: 'OKAY' },
           ],

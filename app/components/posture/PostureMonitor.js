@@ -3,6 +3,7 @@ import {
   Alert,
   AppState,
   View,
+  Image,
   Vibration,
   NativeModules,
   NativeEventEmitter,
@@ -28,6 +29,7 @@ import routes from '../../routes';
 import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
 import SensitiveInfo from '../../utils/SensitiveInfo';
+import deviceWarningIcon from '../../images/settings/device-warning-icon.png';
 
 const {
   BluetoothService,
@@ -280,22 +282,7 @@ class PostureMonitor extends Component {
           if (this.props.currentRoute.name === routes.postureMonitor.name) {
             // PostureMonitor is the current scene.
             // Confirm if the user wants to quit the current session.
-            Alert.alert(
-              'End Session',
-              'Do you want to end the current session?',
-              [
-                {
-                  text: 'Cancel',
-                },
-                {
-                  text: 'End Session',
-                  onPress: () => {
-                    // Exit the current session
-                    this.stopSession();
-                  },
-                },
-              ]
-            );
+            this.confirmStopSession();
           }
         }
       });
@@ -783,6 +770,30 @@ class PostureMonitor extends Component {
     }
   }
 
+  confirmStopSession() {
+    this.props.dispatch(appActions.showPartialModal({
+      topView: (
+        <Image source={deviceWarningIcon} />
+      ),
+      title: {
+        caption: 'Stop Session?',
+      },
+      detail: {
+        caption: 'Are you sure you want to stop your current session?',
+      },
+      buttons: [
+        {
+          caption: 'STOP',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+            this.stopSession();
+          },
+        },
+        { caption: 'RESUME' },
+      ],
+    }));
+  }
+
   /**
    * Updates a user's last session date and updates their daily streak as needed
    */
@@ -986,7 +997,7 @@ class PostureMonitor extends Component {
             <MonitorButton alertsDisabled disabled /> :
               <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />
           }
-          <MonitorButton stop onPress={this.stopSession} />
+          <MonitorButton stop onPress={this.confirmStopSession} />
         </View>
       </View>
     );

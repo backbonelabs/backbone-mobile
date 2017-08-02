@@ -10,6 +10,7 @@ import autobind from 'class-autobind';
 import ReactNativeFS from 'react-native-fs';
 import { connect } from 'react-redux';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import appActions from '../actions/app';
 import deviceActions from '../actions/device';
 import deviceOrangeIcon from '../images/settings/device-orange-icon.png';
 import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
@@ -17,6 +18,7 @@ import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
 import deviceSpinnerGif from '../images/settings/device-spinner.gif';
 import deviceSuccessIcon from '../images/settings/device-success-icon.png';
 import deviceErrorIcon from '../images/settings/device-error-icon.png';
+import deviceWarningIcon from '../images/settings/device-warning-icon.png';
 import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
@@ -222,17 +224,22 @@ class Device extends Component {
 
   unpairDevice() {
     // Prompt user to confirm that they want to unpair device
-    Alert.alert(
-      'Are you sure?',
-      'This will remove your Backbone',
-      [
-        { text: 'Cancel' },
+    this.props.dispatch(appActions.showPartialModal({
+      topView: (<Image source={deviceWarningIcon} />),
+      title: { caption: 'Disconnect Device?' },
+      detail: { caption: 'Are you sure you want to disconnect your Backbone?' },
+      buttons: [
         {
-          text: 'Unpair',
-          onPress: () => this.props.dispatch(deviceActions.forget()),
+          caption: 'DISCONNECT',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+            this.props.dispatch(deviceActions.forget());
+          },
         },
-      ]
-    );
+        { caption: 'CANCEL' },
+      ],
+      allowBackButton: true,
+    }));
   }
 
   showBluetoothError() {
