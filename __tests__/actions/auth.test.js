@@ -65,7 +65,7 @@ describe('__Auth Actions__', () => {
 
   test('creates an action when Login returns a server error', async () => {
     fetch.mockResponseFailure();
-    await store.dispatch(authActions.login({ authMethod: 1 }));
+    await store.dispatch(authActions.login({ authMethod: authMethod.EMAIL }));
     expect(Mixpanel.track).toHaveBeenCalledWith('login-serverError');
     expect(store.getActions()).toMatchSnapshot();
   });
@@ -74,7 +74,7 @@ describe('__Auth Actions__', () => {
     const { accessToken, ...userObj } = user;
     const body = { user: { ...userObj } };
     fetch.mockResponseSuccess({ ...body, accessToken });
-    await store.dispatch(authActions.signup({ email, password }));
+    await store.dispatch(authActions.signup({ email, password, authMethod: authMethods.EMAIL }));
     expect(UserService.setUserId).toBeCalledWith(body.user._id);
     expect(Bugsnag.setUser).toBeCalledWith(body.user._id, body.user.nickname, body.user.email);
     expect(Mixpanel.identify).toBeCalledWith(body.user._id);
@@ -85,7 +85,7 @@ describe('__Auth Actions__', () => {
     expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({
       email,
       password,
-      authMethod: authActions.EMAIL,
+      authMethod: authMethods.EMAIL,
     }));
     expect(store.getActions()).toMatchSnapshot();
   });
