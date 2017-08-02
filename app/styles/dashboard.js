@@ -69,5 +69,7 @@ export default EStyleSheet.create({
   workoutBullet: {
     alignSelf: 'center',
     marginRight: applyWidthDifference(8),
+    width: applyWidthDifference(10),
+    height: applyWidthDifference(10),
   },
 });
