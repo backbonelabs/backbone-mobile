@@ -1,4 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import Dimensions from 'Dimensions';
 import relativeDimensions from '../utils/relativeDimensions';
 
 const {
@@ -79,13 +80,57 @@ export default EStyleSheet.create({
   },
   subView: {
     position: 'absolute',
-    bottom: -50,
-    left: applyWidthDifference(20),
-    right: 0,
+    // top: 0,
+    // bottom: applyWidthDifference(0),
+    // left: applyWidthDifference(20),
+    // right: 0,
     backgroundColor: 'rgba(52, 52, 52, 0.8)',
-    height: applyWidthDifference(200),
-    width: '90%',
-    borderRadius: 10,
+    height: '100%',
+    paddingBottom: applyWidthDifference(40),
+    width: '100%',
+    // borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  subViewCancel: {
+    fontWeight: '900',
+    fontSize: 11,
+    color: '#424242',
+  },
+  subViewButtonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: applyWidthDifference(10),
+    backgroundColor: '#E0E0E0',
+  },
+  subViewSortButton: {
+    backgroundColor: '#FFFF',
+    width: '93%',
+    alignItems: 'center',
+    height: applyWidthDifference(40),
+    justifyContent: 'center',
+    marginVertical: 0.5,
+  },
+  subViewSortButtonText: {
+    fontWeight: 'bold',
+    fontSize: 11,
+    color: '#424242',
+  },
+  subViewHeaderText: {
+    fontSize: 8,
+    color: '#757575',
+    fontWeight: '900',
+    backgroundColor: '#EEEEEE',
+    width: '93%',
+    paddingVertical: 5,
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
+  subViewCancelButton: {
+    backgroundColor: '#FFFF',
+    width: '93%',
+    alignItems: 'center',
+    height: applyWidthDifference(40),
+    justifyContent: 'center',
   },
 });

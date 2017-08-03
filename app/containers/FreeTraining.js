@@ -6,6 +6,7 @@ import {
   Animated,
   Alert,
   TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
@@ -21,45 +22,55 @@ class FreeTraining extends Component {
   constructor() {
     super();
     autobind(this);
-    this.db = {
-      postureSource: [
-        'Standing',
-        'Beginner Seated',
-        'Intermediate Seated',
-        'Advanced Seated',
-        'Walking',
-        'Running',
-        'Infinite',
-      ],
-      exercisesSource: [
-        'Push-ups',
-        'Pull-ups',
-        'Squats',
-        'Bench press',
-        'Overhead press',
-        'Band Pull-Apart',
-        'Bird Dog',
-        'No Money',
-        'Plank',
-        'Side Plank',
-        'Dead Bug',
-      ],
-      stretchesSource: [
-        'Chest',
-        'Bully',
-        'Lat',
-        'Calf',
-        'Couch',
-        'Low Back',
-        'Hamstring with Band',
-        'Quad',
-        'Pidgeon',
-        'Garland Pose',
-        'Extended Side Angle',
-      ],
-    };
+    this.sortCategories = ['ALPHABETICAL ORDER (A-Z)', 'POPULARITY', 'EXERCISE', 'DIFFICULTY'];
+    this.db = [
+      {
+        name: 'POSTURE',
+        workout: [
+          'Standing',
+          'Beginner Seated',
+          'Intermediate Seated',
+          'Advanced Seated',
+          'Walking',
+          'Running',
+          'Infinite',
+        ],
+      },
+      {
+        name: 'EXERCISES',
+        workout: [
+          'Push-ups',
+          'Pull-ups',
+          'Squats',
+          'Bench press',
+          'Overhead press',
+          'Band Pull-Apart',
+          'Bird Dog',
+          'No Money',
+          'Plank',
+          'Side Plank',
+          'Dead Bug',
+        ],
+      },
+      {
+        name: 'STRETCHES',
+        workout: [
+          'Chest',
+          'Bully',
+          'Lat',
+          'Calf',
+          'Couch',
+          'Low Back',
+          'Hamstring with Band',
+          'Quad',
+          'Pidgeon',
+          'Garland Pose',
+          'Extended Side Angle',
+        ],
+      },
+    ];
     this.state = {
-      bounceValue: new Animated.Value(100),  // This is the initial position of the subview
+      bounceValue: new Animated.Value(600),  // This is the initial position of the subview
       buttonText: 'Show Subview',
       isHidden: true,
     };
@@ -76,7 +87,7 @@ class FreeTraining extends Component {
   toggleSubview() {
     const { isHidden } = this.state;
 
-    let toValue = 100;
+    let toValue = 600;
 
     if (isHidden) {
       toValue = 0;
@@ -126,15 +137,31 @@ class FreeTraining extends Component {
     );
   }
 
-  renderSectionHeader(sectionData, catagory) {
+  renderSectionHeader(sectionData, category) {
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionText}>{catagory}</Text>
+        <Text style={styles.sectionText}>{category}</Text>
       </View>
     );
   }
 
   render() {
+    const activityViews = this.db.map((plan) =>
+      (<ListView
+        key={plan.name}
+        tabLabel={plan.name}
+        dataSource={this.getDataSource(plan.workout)}
+        renderRow={this.renderRow}
+        onPressRow={() => {}}
+        renderSectionHeader={this.renderSectionHeader}
+      />)
+    );
+
+    const sortViews = this.sortCategories.map((category) => (
+      <TouchableOpacity key={category} style={styles.subViewSortButton}>
+        <Text style={styles.subViewSortButtonText}>{category}</Text>
+      </TouchableOpacity>
+    ));
     return (
       <View style={{ height: '100%', alignItems: 'center' }}>
         <ScrollableTabView
@@ -146,45 +173,19 @@ class FreeTraining extends Component {
           tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
           tabBarTextStyle={styles.tabBarTextStyle}
         >
-          <ListView
-            tabLabel="POSTURE"
-            dataSource={this.getDataSource(this.db.postureSource)}
-            renderRow={this.renderRow}
-            onPressRow={() => {}}
-            renderSectionHeader={this.renderSectionHeader}
-          />
-          <ListView
-            tabLabel="EXERCISES"
-            dataSource={this.getDataSource(this.db.exercisesSource)}
-            renderRow={this.renderRow}
-            onPressRow={() => {}}
-            renderSectionHeader={this.renderSectionHeader}
-          />
-          <ListView
-            tabLabel="STRETCHES"
-            dataSource={this.getDataSource(this.db.stretchesSource)}
-            renderRow={this.renderRow}
-            onPressRow={() => {}}
-            renderSectionHeader={this.renderSectionHeader}
-          />
+          {activityViews}
         </ScrollableTabView>
         <Animated.View
           style={[styles.subView,
               { transform: [{ translateY: this.state.bounceValue }] }]}
         >
-          <Text>CATEGORIZE LIST:</Text>
-          <TouchableHighlight onPress={() => { Alert.alert('hi'); }}>
-            <Text>ALPHABETICAL ORDER (A-Z)</Text>
-          </TouchableHighlight>
-          <TouchableHighlight>
-            <Text>POPULARITY</Text>
-          </TouchableHighlight>
-          <TouchableHighlight>
-            <Text>EXERCISE</Text>
-          </TouchableHighlight>
-          <TouchableHighlight>
-            <Text>DIFFICULTY</Text>
-          </TouchableHighlight>
+          <View style={styles.subViewButtonContainer}>
+            <Text style={styles.subViewHeaderText}>CATEGORIZED LIST:</Text>
+            {sortViews}
+          </View>
+          <TouchableOpacity onPress={() => { this.toggleSubview(); }} style={styles.subViewCancelButton} >
+            <Text style={styles.subViewCancel}>CANCEL</Text>
+          </TouchableOpacity>
         </Animated.View>
       </View>
     );
