@@ -17,6 +17,7 @@ import styles from '../../styles/onBoardingFlow/profileSetup';
 import theme from '../../styles/theme';
 import routes from '../../routes';
 import relativeDimensions from '../../utils/relativeDimensions';
+import constants from '../../utils/constants';
 import Input from '../../components/Input';
 import StepBar from '../../components/StepBar';
 import femaleIcon from '../../images/onboarding/female-icon-off.png';
@@ -29,6 +30,7 @@ import transgenderIconOn from '../../images/onboarding/transgender-icon-on.png';
 const isiOS = Platform.OS === 'ios';
 const statusBarHeightDroid = StatusBar.currentHeight;
 const { height } = relativeDimensions;
+const { male, female, other } = constants.gender;
 
 class ProfileSetupOne extends Component {
   static propTypes = {
@@ -73,15 +75,15 @@ class ProfileSetupOne extends Component {
   }
 
   handleOnMalePress() {
-    this.setState({ gender: 1 });
+    this.setState({ gender: male });
   }
 
   handleOnFemalePress() {
-    this.setState({ gender: 2 });
+    this.setState({ gender: female });
   }
 
   handleOnTransgenderPress() {
-    this.setState({ gender: 3 });
+    this.setState({ gender: other });
   }
 
   keyboardDidShow(e) {
@@ -126,7 +128,7 @@ class ProfileSetupOne extends Component {
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles._container}>
+        <View style={styles.container}>
           <View style={{ height: newHeight }}>
             <View style={styles.innerContainer}>
               <StepBar step={1} style={styles._stepBar} />
@@ -158,7 +160,7 @@ class ProfileSetupOne extends Component {
                   <View>
                     <Image
                       style={styles.gender}
-                      source={gender === 1 ? maleIconOn : maleIcon}
+                      source={gender === male ? maleIconOn : maleIcon}
                     />
                     <Text style={styles.genderLabel}>MALE</Text>
                   </View>
@@ -171,7 +173,7 @@ class ProfileSetupOne extends Component {
                   <View>
                     <Image
                       style={styles.gender}
-                      source={gender === 2 ? femaleIconOn : femaleIcon}
+                      source={gender === female ? femaleIconOn : femaleIcon}
                     />
                     <Text style={styles.genderLabel}>FEMALE</Text>
                   </View>
@@ -184,7 +186,7 @@ class ProfileSetupOne extends Component {
                   <View>
                     <Image
                       style={styles.gender}
-                      source={gender === 3 ? transgenderIconOn : transgenderIcon}
+                      source={gender === other ? transgenderIconOn : transgenderIcon}
                     />
                     <Text style={styles.genderLabel}>OTHER</Text>
                   </View>
