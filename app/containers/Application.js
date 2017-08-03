@@ -21,6 +21,7 @@ import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
 import settingsInactive from '../images/settingsInactive.png';
 import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
+import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -90,7 +91,7 @@ class Application extends Component {
             color: PropTypes.string,
           }),
           buttons: PropTypes.array,
-          allowBackButton: PropTypes.bool,
+          backButtonHandler: PropTypes.func,
         }),
         onClose: PropTypes.func,
       }),
@@ -328,16 +329,30 @@ class Application extends Component {
             // to prevent corrupted navigation stack if the user promptly tap
             // on the 'Update' button while the deviceConnect scene is being popped.
             setTimeout(() => {
-              Alert.alert('Error', 'There is something wrong with your Backbone. ' +
-                'Perform an update now to continue using your Backbone.',
-                [
+              this.props.dispatch(appActions.showPartialModal({
+                topView: (
+                  <Image source={deviceFirmwareIcon} />
+                ),
+                title: {
+                  caption: 'Update Needed',
+                  color: theme.warningColor,
+                },
+                detail: {
+                  caption: 'There is something wrong with your Backbone. ' +
+                  'Perform an update now to continue using your Backbone.',
+                },
+                buttons: [
                   {
-                    text: 'Cancel',
-                    onPress: () => this.props.dispatch(deviceActions.disconnect()),
+                    caption: 'CANCEL',
+                    onPress: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
+                      this.props.dispatch(deviceActions.disconnect());
+                    },
                   },
                   {
-                    text: 'Update',
+                    caption: 'UPDATE',
                     onPress: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
                       this.props.dispatch(deviceActions.setPendingUpdate());
 
                       if (currentRoute.name !== routes.device.name) {
@@ -345,8 +360,8 @@ class Application extends Component {
                       }
                     },
                   },
-                ]
-              );
+                ],
+              }));
             }, delay);
           } else if (!status.selfTestStatus) {
             // Self-Test failed, request a re-run
@@ -452,7 +467,9 @@ class Application extends Component {
             'Charge your Backbone as soon as possible.',
           },
           buttons: [{ caption: 'CLOSE' }],
-          allowBackButton: true,
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
         }));
       }
     }

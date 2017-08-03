@@ -33,13 +33,11 @@ const PartialModal = props => ((props.show &&
     animationType="none"
     transparent
     visible
-    onRequestClose={() => {
-      // This is called on Android when the hardware back button is pressed.
-      // Dismiss the popup when allowed.
-      if (props.config.allowBackButton) {
-        props.dispatch(appActions.hidePartialModal());
+    onRequestClose={props.config.backButtonHandler ? props.config.backButtonHandler :
+      () => {
+        // Empty default handler
       }
-    }}
+    }
   >
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
@@ -84,7 +82,7 @@ PartialModal.propTypes = {
       color: PropTypes.string,
     }),
     buttons: PropTypes.array,
-    allowBackButton: PropTypes.bool, // Only used in Android
+    backButtonHandler: PropTypes.func,  // Only used in Android
   }),
   show: PropTypes.bool,
 };

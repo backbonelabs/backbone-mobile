@@ -3,6 +3,7 @@ import {
   Image,
   View,
   Alert,
+  InteractionManager,
   NativeModules,
   NativeEventEmitter,
 } from 'react-native';
@@ -112,12 +113,16 @@ class Device extends Component {
       'FirmwareUploadProgress',
       this.firmwareUploadProgressHandler,
     );
+  }
 
-    // Initiate firmware update on devices with bootloader issues
-    if (this.props.isConnected && this.props.hasPendingUpdate) {
-      this.props.dispatch(deviceActions.unsetPendingUpdate());
-      this.initiateFirmwareUpdate();
-    }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      // Initiate firmware update on devices with bootloader issues
+      if (this.props.isConnected && this.props.hasPendingUpdate) {
+        this.props.dispatch(deviceActions.unsetPendingUpdate());
+        this.initiateFirmwareUpdate();
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -238,7 +243,9 @@ class Device extends Component {
         },
         { caption: 'CANCEL' },
       ],
-      allowBackButton: true,
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
     }));
   }
 

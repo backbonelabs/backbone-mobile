@@ -29,7 +29,10 @@ import routes from '../../routes';
 import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
 import SensitiveInfo from '../../utils/SensitiveInfo';
+import theme from '../../styles/theme';
+import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import deviceWarningIcon from '../../images/settings/device-warning-icon.png';
+import deviceSuccessIcon from '../../images/settings/device-success-icon.png';
 
 const {
   BluetoothService,
@@ -93,6 +96,11 @@ class PostureMonitor extends Component {
     currentRoute: PropTypes.shape({
       name: PropTypes.string,
     }),
+    app: PropTypes.shape({
+      modal: PropTypes.shape({
+        showPartial: PropTypes.bool,
+      }),
+    }),
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
     }),
@@ -138,6 +146,7 @@ class PostureMonitor extends Component {
     super(props);
     autobind(this);
     this.state = {
+      attemptReconnect: false,
       sessionState: sessionStates.STOPPED,
       hasPendingSessionOperation: false,
       forceStoppedSession: false,
@@ -276,7 +285,7 @@ class PostureMonitor extends Component {
         if (this.props.sessionState && this.props.sessionState.showSummary) {
           this.props.navigator.resetTo(routes.postureDashboard);
         } else if (this.state.sessionState !== sessionStates.STOPPED
-          && !this.state.hasPendingSessionOperation) {
+          && !this.state.hasPendingSessionOperation && !this.props.app.modal.showPartial) {
           // Back button was pressed during an active session.
           // Check if PostureMonitor is the current scene.
           if (this.props.currentRoute.name === routes.postureMonitor.name) {
@@ -331,10 +340,14 @@ class PostureMonitor extends Component {
       });
     }
 
-    if (this.props.device.isConnecting && !nextProps.device.isConnecting &&
-      !this.props.device.errorMessage && nextProps.device.errorMessage) {
-      // There was an error on connect, prompt user for action
-      this.showAlertOnFailedConnection();
+    if (this.props.device.isConnecting && !nextProps.device.isConnecting) {
+      if (!this.props.device.errorMessage && nextProps.device.errorMessage) {
+        // There was an error on connect, prompt user for action
+        this.showAlertOnFailedConnection();
+      } else if (!this.props.device.isConnected && nextProps.device.isConnected) {
+        // Reconnect success, proceed to display success alert
+        this.showReconnectSuccessIndicator();
+      }
     }
   }
 
@@ -435,14 +448,54 @@ class PostureMonitor extends Component {
     }
   }
 
+  showReconnectStartedIndicator() {
+    this.props.dispatch(appActions.showPartialModal({
+      topView: (<Spinner style={styles._partialSpinnerContainer} />),
+      title: {
+        caption: 'Reconnecting',
+      },
+      detail: {
+        caption: 'Attempting to reconnect to your Backbone',
+      },
+    }));
+  }
+
+  showReconnectSuccessIndicator() {
+    this.props.dispatch(appActions.showPartialModal({
+      topView: (<Image source={deviceSuccessIcon} />),
+      title: {
+        caption: 'Backbone Reconnected',
+      },
+      detail: {
+        caption: 'Your Backbone has been successfully reconnected',
+      },
+      buttons: [
+        {
+          caption: 'CLOSE',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        },
+      ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
+    }));
+  }
+
   showAlertOnFailedConnection() {
     const { sessionState } = this.state;
 
+    let title = 'Connection Lost';
     let message;
-    if (sessionState === sessionStates.RUNNING) {
-      message = 'Your Backbone was disconnected, but Backbone is still monitoring your posture! ' +
-        'Do you want to leave and keep the session running on your Backbone, or attempt to ' +
-        'reconnect to your Backbone now to see your posture?';
+    if (this.state.attemptReconnect) {
+      this.setState({ attemptReconnect: false });
+      title = 'Connection Failed';
+      message = 'Make sure your Backbone is in range and charged';
+    } else if (sessionState === sessionStates.RUNNING) {
+      message = 'Your Backbone was disconnected, but Backbone is still monitoring ' +
+        'your posture!\n\nDo you want to leave and keep the session running on your ' +
+        'Backbone, or attempt to reconnect to your Backbone now to see your posture?';
     } else if (sessionState === sessionStates.PAUSED) {
       message = 'Your Backbone was disconnected while your session was paused. ' +
         'Do you want to leave to continue your session later, or attempt to reconnect to your ' +
@@ -452,16 +505,35 @@ class PostureMonitor extends Component {
         'your Backbone?';
     }
 
-    this.sessionCommandAlert({
-      title: 'Backbone disconnected',
-      message,
-      leftButtonLabel: 'Leave',
-      leftButtonAction: this.props.navigator.pop,
-      rightButtonLabel: 'Reconnect',
-      rightButtonAction: () => {
-        this.props.dispatch(deviceActions.connect(this.props.device.device.identifier));
+    this.props.dispatch(appActions.showPartialModal({
+      topView: (
+        <Image source={deviceErrorIcon} />
+      ),
+      title: {
+        caption: title,
+        color: theme.warningColor,
       },
-    });
+      detail: {
+        caption: message,
+      },
+      buttons: [
+        {
+          caption: 'LEAVE',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+            this.props.navigator.pop();
+          },
+        },
+        {
+          caption: 'RECONNECT',
+          onPress: () => {
+            this.setState({ attemptReconnect: true });
+            this.props.dispatch(deviceActions.connect(this.props.device.device.identifier));
+            this.showReconnectStartedIndicator();
+          },
+        },
+      ],
+    }));
   }
 
   /**
@@ -789,8 +861,16 @@ class PostureMonitor extends Component {
             this.stopSession();
           },
         },
-        { caption: 'RESUME' },
+        {
+          caption: 'RESUME',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        },
       ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
     }));
   }
 
@@ -1005,8 +1085,8 @@ class PostureMonitor extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { device, posture, user: { user } } = state;
-  return { device, posture, user };
+  const { app, device, posture, user: { user } } = state;
+  return { app, device, posture, user };
 };
 
 export default connect(mapStateToProps)(PostureMonitor);

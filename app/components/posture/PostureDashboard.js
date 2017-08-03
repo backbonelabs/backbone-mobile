@@ -149,6 +149,10 @@ class PostureDashboard extends Component {
             },
           },
         ],
+        backButtonHandler: () => {
+          Mixpanel.track(`${baselineSurveyEventName}-decline`);
+          markSurveySeenAndHideModal();
+        },
       }));
     }
 
@@ -309,6 +313,10 @@ class PostureDashboard extends Component {
           },
         },
       ],
+      backButtonHandler: () => {
+        Mixpanel.track(`${appRatingEventName}-decline`);
+        markAppRatingSeenAndHideModal();
+      },
     }));
   }
 
@@ -366,6 +374,10 @@ class PostureDashboard extends Component {
           },
         },
       ],
+      backButtonHandler: () => {
+        Mixpanel.track(`${feedbackSurveyEventName}-decline`);
+        markFeedbackSurveySeenAndHideModal();
+      },
     }));
   }
 
