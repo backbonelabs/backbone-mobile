@@ -1,5 +1,4 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Dimensions from 'Dimensions';
 import relativeDimensions from '../utils/relativeDimensions';
 
 const {

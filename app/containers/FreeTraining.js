@@ -4,8 +4,6 @@ import {
   View,
   ListView,
   Animated,
-  Alert,
-  TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -183,7 +181,10 @@ class FreeTraining extends Component {
             <Text style={styles.subViewHeaderText}>CATEGORIZED LIST:</Text>
             {sortViews}
           </View>
-          <TouchableOpacity onPress={() => { this.toggleSubview(); }} style={styles.subViewCancelButton} >
+          <TouchableOpacity
+            onPress={() => { this.toggleSubview(); }}
+            style={styles.subViewCancelButton}
+          >
             <Text style={styles.subViewCancel}>CANCEL</Text>
           </TouchableOpacity>
         </Animated.View>

@@ -4,7 +4,6 @@ import {
   View,
   Animated,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import autobind from 'class-autobind';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -34,8 +33,8 @@ class FreeTrainingTabBar extends Component {
   }
 
 
-  renderTabOption(name, page) {
-  }
+  // renderTabOption(name, page) {
+  // }
 
   renderTab(name, page, isTabActive, onPressHandler) {
     const { activeTextColor, inactiveTextColor, textStyle } = this.props;
