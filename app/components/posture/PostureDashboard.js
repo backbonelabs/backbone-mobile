@@ -22,12 +22,14 @@ import Button from '../../components/Button';
 import constants from '../../utils/constants';
 import SensitiveInfo from '../../utils/SensitiveInfo';
 import styles from '../../styles/posture/postureDashboard';
+import theme from '../../styles/theme';
 import Icon5Min from '../../images/session/5min.png';
 import Icon10Min from '../../images/session/10min.png';
 import Icon15Min from '../../images/session/15min.png';
 import Icon20Min from '../../images/session/20min.png';
 import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
+import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import routes from '../../routes';
 import Mixpanel from '../../utils/Mixpanel';
 
@@ -422,25 +424,41 @@ class PostureDashboard extends Component {
               Alert.alert('Error', 'Fixing Backbone sensor');
             } else {
               // Display an alert to let the user choose whether to auto-fix or not
-              Alert.alert(
-                'Error',
-                'There is an issue with the Backbone sensor. ' +
-                'Would you like to have it try to fix itself now?',
-                [
+              this.props.dispatch(appActions.showPartialModal({
+                topView: (
+                  <Image source={deviceErrorIcon} />
+                ),
+                title: {
+                  caption: 'Sensor Error',
+                  color: theme.warningColor,
+                },
+                detail: {
+                  caption: 'There is an issue with the Backbone sensor.\n' +
+                  'Would you like to have it try to fix itself now?',
+                },
+                buttons: [
                   {
-                    text: 'Cancel',
+                    caption: 'CANCEL',
+                    onPress: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
+                    },
                   },
                   {
-                    text: 'Fix',
+                    caption: 'FIX',
                     onPress: () => {
                       Mixpanel.track('selfTest-begin');
 
                       DeviceInformationService.requestSelfTest();
                       this.props.dispatch(deviceActions.selfTestRequested());
+
+                      this.props.dispatch(appActions.hidePartialModal());
                     },
                   },
-                ]
-              );
+                ],
+                backButtonHandler: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                },
+              }));
             }
           } else {
             // Self-test passed, proceed to the Calibration scene

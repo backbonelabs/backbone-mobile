@@ -212,18 +212,47 @@ class Application extends Component {
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
       ({ message, success }) => {
         if (message) {
+          const routeStack = this.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+
           Mixpanel.trackWithProperties('selfTest-error', {
             errorMessage: message,
           });
 
           this.props.dispatch(deviceActions.selfTestUpdated(false));
 
-          Alert.alert('Error', 'Your Backbone sensor needs to be fixed. ' +
-            'Perform an update now to continue using your Backbone.', [
-            { text: 'Cancel' },
-            { text: 'Update', onPress: () => this.navigator.push(routes.device) },
-            ]
-          );
+          this.props.dispatch(appActions.showPartialModal({
+            topView: (
+              <Image source={deviceFirmwareIcon} />
+            ),
+            title: {
+              caption: 'Update Needed',
+              color: theme.warningColor,
+            },
+            detail: {
+              caption: 'Your Backbone sensor needs to be fixed.\n' +
+              'Perform an update now to continue using your Backbone.',
+            },
+            buttons: [
+              {
+                caption: 'CANCEL',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                },
+              },
+              {
+                caption: 'UPDATE',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                  this.props.dispatch(deviceActions.setPendingUpdate());
+
+                  if (currentRoute.name !== routes.device.name) {
+                    this.navigator.push(routes.device);
+                  }
+                },
+              },
+            ],
+          }));
         } else {
           const result = (success ? 'success' : 'failed');
           Mixpanel.track(`selfTest-${result}`);
