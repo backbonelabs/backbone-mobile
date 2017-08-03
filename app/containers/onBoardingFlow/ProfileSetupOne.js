@@ -193,15 +193,13 @@ class ProfileSetupOne extends Component {
                 </TouchableHighlight>
               </View>
             </View>
-            <View style={styles.CTAContainer}>
-              <Button
-                style={styles._CTAButton}
-                text="CONTINUE"
-                primary
-                disabled={!nickname || !gender}
-                onPress={this.continue}
-              />
-            </View>
+            <Button
+              style={styles._CTAButton}
+              text="CONTINUE"
+              primary
+              disabled={!nickname || !gender}
+              onPress={this.continue}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>

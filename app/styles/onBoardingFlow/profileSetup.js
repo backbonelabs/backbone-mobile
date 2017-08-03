@@ -37,9 +37,6 @@ export default EStyleSheet.create({
     marginTop: applyWidthDifference(10),
     color: '#757575',
   },
-  CTAContainer: {
-    justifyContent: 'flex-end',
-  },
   CTAButton: {
     width: '100%',
     borderRadius: 0,

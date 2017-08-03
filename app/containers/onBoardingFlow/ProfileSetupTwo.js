@@ -126,12 +126,13 @@ class ProfileSetupTwo extends Component {
 
     return (
       <TouchableWithoutFeedback onPress={this.handleOnClick}>
-        <View style={styles._container}>
+        <View style={styles.container}>
           <View>
             <View style={styles.innerContainer}>
               <StepBar step={2} style={styles._stepBar} />
               <BodyText style={styles._header}>
-                Great! Now just some basic information to help us better customize your experience.
+                Great! Now just some basic information
+                to help us better customize your experience.
               </BodyText>
               <ProfileBody
                 setPickerType={this.setPickerType}
@@ -141,15 +142,13 @@ class ProfileSetupTwo extends Component {
                 currentPickerType={this.state.pickerType}
               />
             </View>
-            <View style={styles.CTAContainer}>
-              <Button
-                style={styles._CTAButton}
-                text="CONTINUE"
-                primary
-                disabled={!height.value || !weight.value || !birthdate}
-                onPress={this.save}
-              />
-            </View>
+            <Button
+              style={styles._CTAButton}
+              text="CONTINUE"
+              primary
+              disabled={!height.value || !weight.value || !birthdate}
+              onPress={this.save}
+            />
             { this.state.pickerType ?
               <ProfilePicker
                 birthdate={this.state.birthdate}
