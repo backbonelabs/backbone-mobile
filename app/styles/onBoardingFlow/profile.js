@@ -30,7 +30,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   profilePickerContainer: {
-    height: applyWidthDifference(200),
+    flex: 0.5,
   },
   profilePickerItemsContainer: {
     flexDirection: 'row',
