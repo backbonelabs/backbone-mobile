@@ -270,6 +270,10 @@ class DeviceScan extends Component {
   }
 
   skip() {
+    if (this.props.isConnecting) {
+      return;
+    }
+
     this.props.navigator.push(routes.howToVideo);
   }
 
