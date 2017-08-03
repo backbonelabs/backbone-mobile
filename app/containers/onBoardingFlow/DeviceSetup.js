@@ -16,7 +16,7 @@ const DeviceSetup = ({ navigator }) => {
     <View style={styles._container}>
       <StepBar step={3} style={styles._stepBar} />
       <BodyText style={styles._deviceSetup_header}>
-          Excellent! Now let's Connect your Device
+          Excellent! Now let's connect your device.
       </BodyText>
       <View style={styles.innerContainer}>
         <Image
@@ -28,7 +28,7 @@ const DeviceSetup = ({ navigator }) => {
         <View style={styles.CTAContainer}>
           <Button
             style={styles._CTAButton}
-            text="SETUP DEVICE"
+            text="SET UP DEVICE"
             primary
             onPress={setup}
           />
