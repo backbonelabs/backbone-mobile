@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
+import uniqBy from 'lodash/uniqBy';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../../styles/onBoardingFlow/deviceSetup';
 import List from '../../containers/List';
@@ -85,11 +86,24 @@ class DeviceScan extends Component {
   }
 
   componentWillMount() {
+    // If there is a device in our store
+    if (this.props.device.identifier) {
+      this.setState(() => ({
+        deviceList: this.state.deviceList.concat(this.props.device),
+        selectedIdentifier: this.props.device.identifier,
+      }));
+    }
+
     // Set listener for updating deviceList with discovered devices
     this.devicesFoundListener = deviceManagementServiceEvents.addListener(
       'DevicesFound',
       deviceList => {
-        this.setState(() => ({ deviceList }));
+        if (this.props.device.identifier) {
+          return this.setState(() => ({
+            deviceList: uniqBy([this.props.device, ...deviceList], 'identifier'),
+          }));
+        }
+        return this.setState({ deviceList });
       }
     );
 
@@ -220,12 +234,13 @@ class DeviceScan extends Component {
    */
   formatDeviceRow(rowData) {
     const { selectedIdentifier } = this.state;
-    const { isConnected, isConnecting } = this.props;
+    const { isConnected, isConnecting, device } = this.props;
     let message = null;
     let messageColor = theme.primaryFontColor;
     let icon = getRssiIcon(rowData.RSSI);
     const connecting = isConnecting && (selectedIdentifier === rowData.identifier);
-    const connected = isConnected && (selectedIdentifier === rowData.identifier);
+    const connected = isConnected &&
+    ((device.identifier || selectedIdentifier) === rowData.identifier);
 
     // row icons
     const spinner = <Spinner style={styles.spinner} color={'#66BB6A'} size="small" />;
