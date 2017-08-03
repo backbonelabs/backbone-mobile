@@ -11,9 +11,6 @@ export default EStyleSheet.create({
   $placeholderTextColor: '#9E9E9E',
   $iconColor: '$primaryFontColor',
   $iconSize: '$inputIconSize',
-  container: {
-    alignItems: 'center',
-  },
   innerContainer: {
     flexDirection: 'row',
     alignItems: 'center',

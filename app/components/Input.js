@@ -80,7 +80,7 @@ class Input extends Component {
     const Icon = iconMap[iconFont];
 
     return (
-      <View style={[styles.container, containerStyles]}>
+      <View style={containerStyles}>
         <View style={styles.innerContainer}>
           {Icon && iconLeftName
           ? <Icon
