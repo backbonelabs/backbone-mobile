@@ -32,7 +32,6 @@ class FreeTrainingTabBar extends Component {
     autobind(this);
   }
 
-
   // renderTabOption(name, page) {
   // }
 
