@@ -127,13 +127,7 @@ export default class ProfilePicker extends Component {
   }
 
   _valueChangeHandler(value) {
-    this.setState({ currentValue: value });
-    this.props.updateProfile(this.props.pickerType, {
-      ...this.props[this.props.pickerType],
-      value,
-      unit: this.state.currentUnit,
-      label: this._getLabel(this.props.pickerType, value),
-    });
+    this.setState(() => ({ currentValue: value }), this._updateProfile);
   }
 
   _onDateChange(date) {
@@ -153,14 +147,7 @@ export default class ProfilePicker extends Component {
       this.setState(() => ({
         currentValue: equalsInch ? centimeterToInch : inchToCentimeter,
         currentUnit: unit,
-      }), () => {
-        this.props.updateProfile(this.props.pickerType, {
-          ...this.props[this.props.pickerType],
-          value: this.state.currentValue,
-          unit: this.state.currentUnit,
-          label: this._getLabel(this.props.pickerType, this.state.currentValue),
-        });
-      });
+      }), this._updateProfile);
     }
   }
 
@@ -174,14 +161,7 @@ export default class ProfilePicker extends Component {
       this.setState(() => ({
         currentValue: equalsPound ? kilogramToPound : poundToKilogram,
         currentUnit: unit,
-      }), () => {
-        this.props.updateProfile(this.props.pickerType, {
-          ...this.props[this.props.pickerType],
-          value: this.state.currentValue,
-          unit: this.state.currentUnit,
-          label: this._getLabel(this.props.pickerType, this.state.currentValue),
-        });
-      });
+      }), this._updateProfile);
     }
   }
 
@@ -194,6 +174,15 @@ export default class ProfilePicker extends Component {
       default:
         return;
     }
+  }
+
+  _updateProfile() {
+    return this.props.updateProfile(this.props.pickerType, {
+      ...this.props[this.props.pickerType],
+      value: this.state.currentValue,
+      unit: this.state.currentUnit,
+      label: this._getLabel(this.props.pickerType, this.state.currentValue),
+    });
   }
 
   _showPickers() {
