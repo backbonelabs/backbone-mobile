@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/freeTraining';
 import SecondaryText from '../components/SecondaryText';
 import FreeTrainingTabBar from './FreeTrainingTabBar';
@@ -24,6 +24,7 @@ class FreeTraining extends Component {
       buttonText: 'Show Subview',
       isHidden: true,
       sortBy: 0,
+      userFavorites: [],
     };
     this.sortCategories = [
       'ALPHABETICAL ORDER (A-Z)',
@@ -57,15 +58,14 @@ class FreeTraining extends Component {
   convertDataToMap(data) {
     const itemMap = [];
     if (this.state.sortBy === 0) {
-      data.workouts.map((v) => v.title).sort().forEach((item) => {
-        if (!itemMap[item[0]]) {
-          itemMap[item[0]] = [];
+      data.workouts.sort((a, b) => b.title - a.title).forEach((item) => {
+        if (!itemMap[item.title[0]]) {
+          itemMap[item.title[0]] = [];
         }
-        itemMap[item[0]].push(item);
+        itemMap[item.title[0]].push(item);
       });
     } else if (this.state.sortBy === 1) {
-      data.workouts.sort((a, b) => b.popularity - a.popularity);
-      itemMap['Most Popular'] = data.workouts.map((v) => v.title);
+      itemMap['Most Popular'] = data.workouts.sort((a, b) => b.popularity - a.popularity);
     } else if (this.state.sortBy === 2) {
       data.workouts.sort((a, b) => a.difficulty - b.difficulty).forEach((item) => {
         let difficultyLabel = '';
@@ -85,7 +85,7 @@ class FreeTraining extends Component {
         if (!itemMap[difficultyLabel]) {
           itemMap[difficultyLabel] = [];
         }
-        itemMap[difficultyLabel].push(item.title);
+        itemMap[difficultyLabel].push(item);
       });
     }
     return itemMap;
@@ -117,14 +117,35 @@ class FreeTraining extends Component {
 
 
   renderRow(rowData) {
+    const newUserFavorites = this.state.userFavorites;
+    let iconName = '';
+    if (newUserFavorites.indexOf(rowData._id) === -1) {
+      iconName = 'heart-o';
+    } else {
+      iconName = 'heart';
+    }
     return (
       <View style={{ flexDirection: 'column' }}>
         <View style={styles.listContainer}>
           <View style={styles.listInnerContainer}>
             <View style={styles.preview} />
-            <SecondaryText style={styles._listText}>{rowData}</SecondaryText>
+            <SecondaryText style={styles._listText}>{rowData.title}</SecondaryText>
           </View>
-          <FontAwesomeIcon name="heart" style={styles._icon} size={25} />
+          <TouchableOpacity
+            onPress={() => {
+              if (newUserFavorites.indexOf(rowData._id) === -1) {
+                newUserFavorites.push(rowData._id);
+                this.setState({ userFavorites: newUserFavorites });
+                this.setState({ heartIcon: 'heart' });
+              } else {
+                const idIndex = newUserFavorites.indexOf(rowData._id);
+                this.state.userFavorites.splice(idIndex, 1);
+                this.setState({ heartIcon: 'heart-o' });
+              }
+            }}
+          >
+            <Icon name={iconName} style={styles._icon} size={25} />
+          </TouchableOpacity>
         </View>
         <View style={styles.barContainer}>
           <View style={styles.bar} />
