@@ -29,7 +29,7 @@ import transgenderIconOn from '../../images/onboarding/transgender-icon-on.png';
 
 const isiOS = Platform.OS === 'ios';
 const statusBarHeightDroid = StatusBar.currentHeight;
-const { height } = relativeDimensions;
+const { height, applyWidthDifference } = relativeDimensions;
 const { male, female, other } = constants.gender;
 
 class ProfileSetupOne extends Component {
@@ -116,13 +116,14 @@ class ProfileSetupOne extends Component {
   render() {
     const { containerHeight, gender, nickname } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight - theme.titleBarHeight;
-    const androidInputContainer = {};
+    const androidGenderContainer = { marginTop: applyWidthDifference(45) };
 
     // Android styles
     if (!isiOS) {
       newHeight -= statusBarHeightDroid;
+      // if keyboard is displayed
       if (containerHeight) {
-        androidInputContainer.flex = 1;
+        androidGenderContainer.marginTop = applyWidthDifference(5);
       }
     }
 
@@ -140,7 +141,6 @@ class ProfileSetupOne extends Component {
               }
               <Input
                 iconStyle={{ color: 'black' }}
-                containerStyles={androidInputContainer}
                 value={this.state.nickname}
                 autoCapitalize="none"
                 placeholder="Nickname"
@@ -151,7 +151,7 @@ class ProfileSetupOne extends Component {
                 iconFont="MaterialIcon"
                 iconLeftName="person"
               />
-              <View style={styles.genderContainer}>
+              <View style={[styles.genderContainer, androidGenderContainer]}>
                 <TouchableHighlight
                   onPress={this.handleOnMalePress}
                   underlayColor={'transparent'}

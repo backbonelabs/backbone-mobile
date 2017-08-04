@@ -24,7 +24,6 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
   },
   genderContainer: {
-    marginTop: applyWidthDifference(45),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
