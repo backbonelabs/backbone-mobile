@@ -26,8 +26,6 @@ export default EStyleSheet.create({
   },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '$primaryColor',
   },
   facebookBtn: {
     justifyContent: 'center',
@@ -35,15 +33,15 @@ export default EStyleSheet.create({
     width: '100%',
   },
   secondaryActive: {
-    borderColor: '$activeBorderColor',
+    borderColor: '#CCCCCC',
     borderWidth: 1,
     backgroundColor: '#FFF',
   },
   secondaryTextStyles: {
-    color: '$primaryColor',
+    color: '#AAAAAA',
   },
   secondaryTextActive: {
-    color: '$activeBorderColor',
+    color: '#000000',
   },
   disabledButton: {
     backgroundColor: () => (

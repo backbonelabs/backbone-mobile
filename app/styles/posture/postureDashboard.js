@@ -47,15 +47,4 @@ export default EStyleSheet.create({
   streakCounter: {
     marginTop: applyWidthDifference(-73),
   },
-  partialModalBodyText: {
-    textAlign: 'center',
-  },
-  partialModalButtonView: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: applyWidthDifference(10),
-  },
-  partialModalButton: {
-    width: applyWidthDifference(125),
-  },
 });

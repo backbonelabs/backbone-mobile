@@ -99,4 +99,7 @@ export default EStyleSheet.create({
   devMenuItem: {
     marginTop: applyWidthDifference(2),
   },
+  spinner: {
+    height: applyWidthDifference(25),
+  },
 });

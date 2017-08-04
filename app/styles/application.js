@@ -51,10 +51,7 @@ export default EStyleSheet.create({
     width: applyWidthDifference(30),
     resizeMode: 'contain',
   },
-  partialModalBodyText: {
-    textAlign: 'center',
-  },
   partialSpinnerContainer: {
-    height: 50,
+    height: applyWidthDifference(25),
   },
 });

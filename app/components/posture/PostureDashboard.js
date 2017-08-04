@@ -22,12 +22,14 @@ import Button from '../../components/Button';
 import constants from '../../utils/constants';
 import SensitiveInfo from '../../utils/SensitiveInfo';
 import styles from '../../styles/posture/postureDashboard';
+import theme from '../../styles/theme';
 import Icon5Min from '../../images/session/5min.png';
 import Icon10Min from '../../images/session/10min.png';
 import Icon15Min from '../../images/session/15min.png';
 import Icon20Min from '../../images/session/20min.png';
 import IconInfinity from '../../images/session/infinity.png';
 import DailyStreakBanner from '../../images/session/dailyStreakBanner.png';
+import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import routes from '../../routes';
 import Mixpanel from '../../utils/Mixpanel';
 
@@ -110,58 +112,48 @@ class PostureDashboard extends Component {
       const baselineSurveyEventName = 'baselineUserSurvey';
 
       this.props.dispatch(appActions.showPartialModal({
-        content: (
-          <View>
-            <BodyText style={styles._partialModalBodyText}>
-              Have a minute? Help us improve Backbone by taking this 60-second survey!
-            </BodyText>
-            <View style={styles.partialModalButtonView}>
-              <Button
-                style={styles._partialModalButton}
-                text="No, thanks"
-                onPress={() => {
-                  Mixpanel.track(`${baselineSurveyEventName}-decline`);
-                  markSurveySeenAndHideModal();
-                }}
-              />
-              <Button
-                style={styles._partialModalButton}
-                text="OK, sure"
-                primary
-                onPress={() => {
-                  const url = `${surveyUrls.baseline}?user_id=${userId}`;
-                  Linking.canOpenURL(url)
-                    .then(supported => {
-                      if (supported) {
-                        return Linking.openURL(url);
-                      }
-                      throw new Error();
-                    })
-                    .catch(() => {
-                      // This catch handler will handle rejections from Linking.openURL
-                      // as well as when the user's phone doesn't have any apps
-                      // to open the URL
-                      Alert.alert(
-                        'Error',
-                        'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
-                        'Please contact us to fill out the survey.',
-                      );
-                    });
+        detail: {
+          caption: 'Have a minute? Help us improve Backbone by taking this 60-second survey!',
+        },
+        buttons: [
+          {
+            caption: 'No, thanks',
+            onPress: () => {
+              Mixpanel.track(`${baselineSurveyEventName}-decline`);
+              markSurveySeenAndHideModal();
+            },
+          },
+          {
+            caption: 'OK, sure',
+            onPress: () => {
+              const url = `${surveyUrls.baseline}?user_id=${userId}`;
+              Linking.canOpenURL(url)
+                .then(supported => {
+                  if (supported) {
+                    return Linking.openURL(url);
+                  }
+                  throw new Error();
+                })
+                .catch(() => {
+                  // This catch handler will handle rejections from Linking.openURL
+                  // as well as when the user's phone doesn't have any apps
+                  // to open the URL
+                  Alert.alert(
+                    'Error',
+                    'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
+                    'Please contact us to fill out the survey.',
+                  );
+                });
 
-                  Mixpanel.track(`${baselineSurveyEventName}-accept`);
+              Mixpanel.track(`${baselineSurveyEventName}-accept`);
 
-                  markSurveySeenAndHideModal();
-                }}
-              />
-            </View>
-          </View>
-        ),
-        onClose: () => {
+              markSurveySeenAndHideModal();
+            },
+          },
+        ],
+        backButtonHandler: () => {
           Mixpanel.track(`${baselineSurveyEventName}-decline`);
-          this.props.dispatch(userActions.updateUser({
-            _id: userId,
-            seenBaselineSurvey: true,
-          }));
+          markSurveySeenAndHideModal();
         },
       }));
     }
@@ -282,60 +274,50 @@ class PostureDashboard extends Component {
     };
 
     this.props.dispatch(appActions.showPartialModal({
-      content: (
-        <View>
-          <BodyText style={styles._partialModalBodyText}>
-            We hope you are enjoying Backbone. Would you mind telling
-            us about your experience in the {isiOS ? 'App' : 'Play'} Store?
-          </BodyText>
-          <View style={styles.partialModalButtonView}>
-            <Button
-              style={styles._partialModalButton}
-              text="No, thanks"
-              onPress={() => {
-                Mixpanel.track(`${appRatingEventName}-decline`);
-                markAppRatingSeenAndHideModal();
-              }}
-            />
-            <Button
-              style={styles._partialModalButton}
-              text="OK, sure"
-              primary
-              onPress={() => {
-                const url = isiOS ? appUrls.ios : appUrls.android;
-                Linking.canOpenURL(url)
-                  .then(supported => {
-                    if (supported) {
-                      return Linking.openURL(url);
-                    }
-                    throw new Error();
-                  })
-                  .catch(() => {
-                    // This catch handler will handle rejections from Linking.openURL
-                    // as well as when the user's phone doesn't have any apps
-                    // to open the URL
-                    Alert.alert(
-                      'Error',
-                      'We could not launch the ' + (isiOS ? 'App' : 'Play') + ' Store. ' + // eslint-disable-line prefer-template, max-len
-                      'You can still share your feedback with us by filling out the ' +
-                      'support form in Settings.'
-                    );
-                  });
+      detail: {
+        caption: 'We hope you are enjoying Backbone. Would you mind telling ' + // eslint-disable-line prefer-template, max-len
+        `us about your experience in the ${isiOS ? 'App' : 'Play'} Store?`,
+      },
+      buttons: [
+        {
+          caption: 'No, thanks',
+          onPress: () => {
+            Mixpanel.track(`${appRatingEventName}-decline`);
+            markAppRatingSeenAndHideModal();
+          },
+        },
+        {
+          caption: 'OK, sure',
+          onPress: () => {
+            const url = isiOS ? appUrls.ios : appUrls.android;
+            Linking.canOpenURL(url)
+              .then(supported => {
+                if (supported) {
+                  return Linking.openURL(url);
+                }
+                throw new Error();
+              })
+              .catch(() => {
+                // This catch handler will handle rejections from Linking.openURL
+                // as well as when the user's phone doesn't have any apps
+                // to open the URL
+                Alert.alert(
+                  'Error',
+                  'We could not launch the ' + (isiOS ? 'App' : 'Play') + ' Store. ' + // eslint-disable-line prefer-template, max-len
+                  'You can still share your feedback with us by filling out the ' +
+                  'support form in Settings.'
+                );
+              });
 
-                Mixpanel.track(`${appRatingEventName}-accept`);
+            Mixpanel.track(`${appRatingEventName}-accept`);
 
-                markAppRatingSeenAndHideModal();
-              }}
-            />
-          </View>
-        </View>
-      ),
-      onClose: () => {
+            markAppRatingSeenAndHideModal();
+          },
+        },
+      ],
+      backButtonHandler: () => {
         Mixpanel.track(`${appRatingEventName}-decline`);
-        this.props.dispatch(userActions.updateUser({
-          _id: userId,
-          seenAppRating: true,
-        }));
+        markAppRatingSeenAndHideModal();
       },
     }));
   }
@@ -354,60 +336,49 @@ class PostureDashboard extends Component {
     };
 
     this.props.dispatch(appActions.showPartialModal({
-      content: (
-        <View>
-          <BodyText style={styles._partialModalBodyText}>
-            Is Backbone working for you?
-            If you're having a problem or have any other feedback,
-            please let us know!
-          </BodyText>
-          <View style={styles.partialModalButtonView}>
-            <Button
-              style={styles._partialModalButton}
-              text="No, thanks"
-              onPress={() => {
-                Mixpanel.track(`${feedbackSurveyEventName}-decline`);
-                markFeedbackSurveySeenAndHideModal();
-              }}
-            />
-            <Button
-              style={styles._partialModalButton}
-              text="OK, sure"
-              primary
-              onPress={() => {
-                const url = `${surveyUrls.feedback}?user_id=${userId}`;
-                Linking.canOpenURL(url)
-                  .then(supported => {
-                    if (supported) {
-                      return Linking.openURL(url);
-                    }
-                    throw new Error();
-                  })
-                  .catch(() => {
-                    // This catch handler will handle rejections from Linking.openURL
-                    // as well as when the user's phone doesn't have any apps
-                    // to open the URL
-                    Alert.alert(
-                      'Error',
-                      'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
-                      'Please contact us to fill out the survey.',
-                    );
-                  });
+      detail: {
+        caption: 'Is Backbone working for you?\n' + // eslint-disable-line prefer-template, max-len
+        "If you're having a problem or have any other feedback, please let us know!",
+      },
+      buttons: [
+        {
+          caption: 'No, thanks',
+          onPress: () => {
+            Mixpanel.track(`${feedbackSurveyEventName}-decline`);
+            markFeedbackSurveySeenAndHideModal();
+          },
+        },
+        {
+          caption: 'OK, sure',
+          onPress: () => {
+            const url = `${surveyUrls.feedback}?user_id=${userId}`;
+            Linking.canOpenURL(url)
+              .then(supported => {
+                if (supported) {
+                  return Linking.openURL(url);
+                }
+                throw new Error();
+              })
+              .catch(() => {
+                // This catch handler will handle rejections from Linking.openURL
+                // as well as when the user's phone doesn't have any apps
+                // to open the URL
+                Alert.alert(
+                  'Error',
+                  'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
+                  'Please contact us to fill out the survey.',
+                );
+              });
 
-                Mixpanel.track(`${feedbackSurveyEventName}-accept`);
+            Mixpanel.track(`${feedbackSurveyEventName}-accept`);
 
-                markFeedbackSurveySeenAndHideModal();
-              }}
-            />
-          </View>
-        </View>
-      ),
-      onClose: () => {
+            markFeedbackSurveySeenAndHideModal();
+          },
+        },
+      ],
+      backButtonHandler: () => {
         Mixpanel.track(`${feedbackSurveyEventName}-decline`);
-        this.props.dispatch(userActions.updateUser({
-          _id: userId,
-          seenFeedbackSurvey: true,
-        }));
+        markFeedbackSurveySeenAndHideModal();
       },
     }));
   }
@@ -451,25 +422,41 @@ class PostureDashboard extends Component {
               Alert.alert('Error', 'Fixing Backbone sensor');
             } else {
               // Display an alert to let the user choose whether to auto-fix or not
-              Alert.alert(
-                'Error',
-                'There is an issue with the Backbone sensor. ' +
-                'Would you like to have it try to fix itself now?',
-                [
+              this.props.dispatch(appActions.showPartialModal({
+                topView: (
+                  <Image source={deviceErrorIcon} />
+                ),
+                title: {
+                  caption: 'Sensor Error',
+                  color: theme.warningColor,
+                },
+                detail: {
+                  caption: 'There is an issue with the Backbone sensor.\n' +
+                  'Would you like to have it try to fix itself now?',
+                },
+                buttons: [
                   {
-                    text: 'Cancel',
+                    caption: 'CANCEL',
+                    onPress: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
+                    },
                   },
                   {
-                    text: 'Fix',
+                    caption: 'FIX',
                     onPress: () => {
                       Mixpanel.track('selfTest-begin');
 
                       DeviceInformationService.requestSelfTest();
                       this.props.dispatch(deviceActions.selfTestRequested());
+
+                      this.props.dispatch(appActions.hidePartialModal());
                     },
                   },
-                ]
-              );
+                ],
+                backButtonHandler: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                },
+              }));
             }
           } else {
             // Self-test passed, proceed to the Calibration scene
