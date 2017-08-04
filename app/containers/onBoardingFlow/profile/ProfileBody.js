@@ -8,6 +8,7 @@ import heightIcon from '../../../images/onboarding/height-icon-on.png';
 import weightIconOff from '../../../images/onboarding/weight-icon-off.png';
 import weightIcon from '../../../images/onboarding/weight-icon-on.png';
 import ProfileField from './ProfileField';
+import theme from '../../../styles/theme';
 
 const ProfileBody = (props) => {
   const {
@@ -34,7 +35,8 @@ const ProfileBody = (props) => {
           <ProfileField
             styles={{
               borderWidth: val.type === props.currentPickerType ? 1 : 0,
-              borderColor: val.type === props.currentPickerType ? '#FF9800' : 'transparent',
+              borderColor: val.type === props.currentPickerType ?
+              theme.secondaryColor : 'transparent',
             }}
             value={val}
             key={val.type}
