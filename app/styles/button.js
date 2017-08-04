@@ -5,24 +5,30 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
+const buttonShadow = {
+  ...Platform.select({
+      // OS-specific drop shadow styling
+    ios: {
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowRadius: 4,
+      shadowOpacity: 0.15,
+    },
+  }),
+};
+
 export default EStyleSheet.create({
   button: {
     justifyContent: 'center',
     backgroundColor: '$secondaryColor',
     width: applyWidthDifference(150),
     height: applyWidthDifference(50),
-    ...Platform.select({
-      // OS-specific drop shadow styling
-      ios: {
-        shadowOffset: {
-          width: 0,
-          height: 3,
-        },
-        shadowRadius: 4,
-        shadowOpacity: 0.15,
-      },
-    }),
     borderRadius: 3,
+  },
+  primaryBtn: {
+    ...buttonShadow,
   },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',
@@ -31,11 +37,10 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#3b5998',
     width: '100%',
+    ...buttonShadow,
   },
   secondaryActive: {
-    borderColor: '#CCCCCC',
-    borderWidth: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
   },
   secondaryTextStyles: {
     color: '#AAAAAA',
