@@ -203,20 +203,6 @@ class Device extends Component {
     this.firmwareUpdateErrorMessage = err.message;
   }
 
-  addDevice() {
-    BluetoothService.getState((error, { state }) => {
-      if (!error) {
-        if (state === bluetoothStates.ON) {
-          this.props.navigator.push(routes.deviceAdd);
-        } else {
-          this.showBluetoothError();
-        }
-      } else {
-        this.showBluetoothError();
-      }
-    });
-  }
-
   connectDevice() {
     this.props.dispatch(deviceActions.getInfo());
   }
@@ -317,7 +303,7 @@ class Device extends Component {
           { text: 'Cancel' },
           {
             text: 'Connect',
-            onPress: () => this.props.navigator.push(routes.deviceConnect),
+            onPress: () => this.props.navigator.push(routes.deviceScan),
           },
         ]
       );

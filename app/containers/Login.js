@@ -87,7 +87,7 @@ class Login extends Component {
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
-        this.props.navigator.resetTo(routes.deviceConnect);
+        this.props.navigator.resetTo(routes.deviceSetup);
       } else {
         // User hasn't completed onboarding process
         this.props.navigator.resetTo(routes.profileSetupOne);
