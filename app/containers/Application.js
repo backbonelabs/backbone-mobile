@@ -20,6 +20,8 @@ import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
 import settingsInactive from '../images/settingsInactive.png';
+import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
+import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -29,7 +31,6 @@ import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
-import BodyText from '../components/BodyText';
 import Banner from '../components/Banner';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -79,8 +80,20 @@ class Application extends Component {
         showFull: PropTypes.bool,
         showPartial: PropTypes.bool,
         content: PropTypes.node,
+        config: PropTypes.shape({
+          topView: PropTypes.node,
+          title: PropTypes.shape({
+            caption: PropTypes.string,
+            color: PropTypes.string,
+          }),
+          detail: PropTypes.shape({
+            caption: PropTypes.string,
+            color: PropTypes.string,
+          }),
+          buttons: PropTypes.array,
+          backButtonHandler: PropTypes.func,
+        }),
         onClose: PropTypes.func,
-        hideClose: PropTypes.bool,
       }),
     }),
     user: PropTypes.shape({
@@ -118,18 +131,17 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        const { showFull, showPartial, hideClose } = this.props.app.modal;
-        if ((showFull || showPartial) && !hideClose) {
-          // There is a modal being displayed, hide it when allowed
-          this.props.dispatch(appActions.hideFullModal());
-          this.props.dispatch(appActions.hidePartialModal());
-          return true;
-        }
-
         const routeStack = this.navigator.getCurrentRoutes();
         const currentRoute = routeStack[routeStack.length - 1];
         if (currentRoute.name === routes.postureMonitor.name) {
           // Delegate to the PostureMonitor to handle this scenario
+          return true;
+        }
+
+        const { showFull } = this.props.app.modal;
+        if (showFull) {
+          // There is a full modal being displayed, dismiss it.
+          this.props.dispatch(appActions.hideFullModal());
           return true;
         }
 
@@ -200,18 +212,47 @@ class Application extends Component {
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
       ({ message, success }) => {
         if (message) {
+          const routeStack = this.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+
           Mixpanel.trackWithProperties('selfTest-error', {
             errorMessage: message,
           });
 
           this.props.dispatch(deviceActions.selfTestUpdated(false));
 
-          Alert.alert('Error', 'Your Backbone sensor needs to be fixed. ' +
-            'Perform an update now to continue using your Backbone.', [
-            { text: 'Cancel' },
-            { text: 'Update', onPress: () => this.navigator.push(routes.device) },
-            ]
-          );
+          this.props.dispatch(appActions.showPartialModal({
+            topView: (
+              <Image source={deviceFirmwareIcon} />
+            ),
+            title: {
+              caption: 'Update Needed',
+              color: theme.warningColor,
+            },
+            detail: {
+              caption: 'Your Backbone sensor needs to be fixed.\n' +
+              'Perform an update now to continue using your Backbone.',
+            },
+            buttons: [
+              {
+                caption: 'CANCEL',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                },
+              },
+              {
+                caption: 'UPDATE',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                  this.props.dispatch(deviceActions.setPendingUpdate());
+
+                  if (currentRoute.name !== routes.device.name) {
+                    this.navigator.push(routes.device);
+                  }
+                },
+              },
+            ],
+          }));
         } else {
           const result = (success ? 'success' : 'failed');
           Mixpanel.track(`selfTest-${result}`);
@@ -317,16 +358,30 @@ class Application extends Component {
             // to prevent corrupted navigation stack if the user promptly tap
             // on the 'Update' button while the deviceConnect scene is being popped.
             setTimeout(() => {
-              Alert.alert('Error', 'There is something wrong with your Backbone. ' +
-                'Perform an update now to continue using your Backbone.',
-                [
+              this.props.dispatch(appActions.showPartialModal({
+                topView: (
+                  <Image source={deviceFirmwareIcon} />
+                ),
+                title: {
+                  caption: 'Update Needed',
+                  color: theme.warningColor,
+                },
+                detail: {
+                  caption: 'There is something wrong with your Backbone. ' +
+                  'Perform an update now to continue using your Backbone.',
+                },
+                buttons: [
                   {
-                    text: 'Cancel',
-                    onPress: () => this.props.dispatch(deviceActions.disconnect()),
+                    caption: 'CANCEL',
+                    onPress: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
+                      this.props.dispatch(deviceActions.disconnect());
+                    },
                   },
                   {
-                    text: 'Update',
+                    caption: 'UPDATE',
                     onPress: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
                       this.props.dispatch(deviceActions.setPendingUpdate());
 
                       if (currentRoute.name !== routes.device.name) {
@@ -334,8 +389,8 @@ class Application extends Component {
                       }
                     },
                   },
-                ]
-              );
+                ],
+              }));
             }, delay);
           } else if (!status.selfTestStatus) {
             // Self-Test failed, request a re-run
@@ -433,10 +488,18 @@ class Application extends Component {
       const { batteryLevel } = nextProps.device.device;
       if (batteryLevel <= 15 && batteryLevel > 0) {
         this.setState({ hasDisplayedLowBatteryWarning: true });
-        Alert.alert(
-          'Your Backbone battery is low',
-          `Your Backbone battery is at ${batteryLevel}%. Charge your Backbone as soon as possible.`
-        );
+        this.props.dispatch(appActions.showPartialModal({
+          topView: (<Image source={deviceLowBatteryIcon} />),
+          title: { caption: 'Low Battery', color: theme.warningColor },
+          detail: {
+            caption: `Your Backbone battery is at ${batteryLevel}%. ` + // eslint-disable-line prefer-template, max-len
+            'Charge your Backbone as soon as possible.',
+          },
+          buttons: [{ caption: 'CLOSE' }],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }
@@ -521,19 +584,9 @@ class Application extends Component {
           // Only display if no other pop-ups are visible
           if (shouldShowLoading && !showPartial && !showFull) {
             this.props.dispatch(appActions.showPartialModal({
-              content: (
-                <View>
-                  <View>
-                    <BodyText style={styles._partialModalBodyText}>
-                      Checking for previous session
-                    </BodyText>
-                  </View>
-                  <View style={styles.partialSpinnerContainer}>
-                    <Spinner />
-                  </View>
-                </View>
-              ),
-              hideClose: true,
+              topView: (<Spinner style={styles._partialSpinnerContainer} />),
+              title: { caption: 'Loading' },
+              detail: { caption: 'Checking for previous session' },
             }));
 
             // Start fetching the previous session state
@@ -694,8 +747,7 @@ class Application extends Component {
           <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
           <PartialModal
             show={modalProps.showPartial}
-            onClose={modalProps.onClose}
-            hideClose={modalProps.hideClose}
+            config={modalProps.config}
           >
             {modalProps.content}
           </PartialModal>
