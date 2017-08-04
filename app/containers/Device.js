@@ -3,6 +3,7 @@ import {
   Image,
   View,
   Alert,
+  InteractionManager,
   NativeModules,
   NativeEventEmitter,
 } from 'react-native';
@@ -10,6 +11,7 @@ import autobind from 'class-autobind';
 import ReactNativeFS from 'react-native-fs';
 import { connect } from 'react-redux';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import appActions from '../actions/app';
 import deviceActions from '../actions/device';
 import deviceOrangeIcon from '../images/settings/device-orange-icon.png';
 import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
@@ -17,6 +19,7 @@ import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
 import deviceSpinnerGif from '../images/settings/device-spinner.gif';
 import deviceSuccessIcon from '../images/settings/device-success-icon.png';
 import deviceErrorIcon from '../images/settings/device-error-icon.png';
+import deviceWarningIcon from '../images/settings/device-warning-icon.png';
 import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
@@ -76,7 +79,6 @@ class Device extends Component {
     inProgress: PropTypes.bool,
     hasPendingUpdate: PropTypes.bool,
     device: PropTypes.shape({
-      name: PropTypes.string,
       deviceMode: PropTypes.number,
       batteryLevel: PropTypes.number,
       firmwareVersion: PropTypes.string,
@@ -111,12 +113,16 @@ class Device extends Component {
       'FirmwareUploadProgress',
       this.firmwareUploadProgressHandler,
     );
+  }
 
-    // Initiate firmware update on devices with bootloader issues
-    if (this.props.isConnected && this.props.hasPendingUpdate) {
-      this.props.dispatch(deviceActions.unsetPendingUpdate());
-      this.initiateFirmwareUpdate();
-    }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      // Initiate firmware update on devices with bootloader issues
+      if (this.props.isConnected && this.props.hasPendingUpdate) {
+        this.props.dispatch(deviceActions.unsetPendingUpdate());
+        this.initiateFirmwareUpdate();
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -221,34 +227,26 @@ class Device extends Component {
     this.props.dispatch(deviceActions.getInfo());
   }
 
-  disconnectDevice() {
-    // Prompt user to confirm that they want to disconnect current device
-    Alert.alert(
-      'Are you sure?',
-      'Do you want to disconnect from your Backbone',
-      [
-        { text: 'Cancel' },
-        {
-          text: 'Disconnect',
-          onPress: () => this.props.dispatch(deviceActions.disconnect()),
-        },
-      ]
-    );
-  }
-
   unpairDevice() {
     // Prompt user to confirm that they want to unpair device
-    Alert.alert(
-      'Are you sure?',
-      'This will remove your Backbone',
-      [
-        { text: 'Cancel' },
+    this.props.dispatch(appActions.showPartialModal({
+      topView: (<Image source={deviceWarningIcon} />),
+      title: { caption: 'Disconnect Device?' },
+      detail: { caption: 'Are you sure you want to disconnect your Backbone?' },
+      buttons: [
         {
-          text: 'Unpair',
-          onPress: () => this.props.dispatch(deviceActions.forget()),
+          caption: 'DISCONNECT',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+            this.props.dispatch(deviceActions.forget());
+          },
         },
-      ]
-    );
+        { caption: 'CANCEL' },
+      ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
+    }));
   }
 
   showBluetoothError() {
@@ -346,7 +344,7 @@ class Device extends Component {
 
   render() {
     const { device, inProgress, isConnecting, isConnected } = this.props;
-    const { name, updateAvailable, batteryLevel } = device;
+    const { updateAvailable, batteryLevel } = device;
     const { isUpdating, isUpdateMode, updateSuccess, updateProgress } = this.state;
 
     let mainDeviceStatusText;
@@ -356,7 +354,7 @@ class Device extends Component {
       mainDeviceStatusText = (
         <View style={styles.deviceStatus}>
           <SecondaryText style={styles._firmwareUpdateProgressTextBlack}>
-            Make sure your device is close by and charged
+            Make sure your device is close by and charged.
           </SecondaryText>
         </View>
       );
@@ -385,8 +383,8 @@ class Device extends Component {
         subDeviceStatusText = (
           <View>
             <SecondaryText style={styles._firmwareUpdateInfoText}>
-              Please do not attempt to disconnect your backbone device
-              during installations.
+              Please do not disconnect your Backbone during
+              the firmware update.
             </SecondaryText>
           </View>
         );
@@ -422,7 +420,7 @@ class Device extends Component {
           <View>
             <SecondaryText style={styles._firmwareUpdateInfoText}>
               Make sure your device is close by, at least 15% charged and that
-              you have an internet connection
+              you have an internet connection.
             </SecondaryText>
           </View>
         );
@@ -478,8 +476,7 @@ class Device extends Component {
         <View style={styles.container}>
           <View style={styles.deviceInfoContainer}>
             <BodyText style={styles._deviceConnectionText}>
-              {!isConnected ? 'Disconnected from ' : 'Connected to '}
-              {name && name.length > 0 ? name : 'Backbone'}
+              {!isConnected ? 'Disconnected from ' : 'Connected to '}Backbone
             </BodyText>
             <Image source={deviceStatusImage} style={styles.deviceStatusImage} />
             {mainDeviceStatusText}
@@ -491,7 +488,7 @@ class Device extends Component {
                 primary
                 style={styles._button}
                 text="DISCONNECT"
-                onPress={this.disconnectDevice}
+                onPress={this.unpairDevice}
                 disabled={isUpdating}
               />
               :

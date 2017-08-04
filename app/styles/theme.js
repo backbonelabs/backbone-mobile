@@ -18,6 +18,7 @@ const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
 const activeBorderColor = '#85181C';
 const bannerColor = '#EEE';
+const warningColor = '#DD523B';
 
 export default {
   primaryColor,
@@ -31,6 +32,7 @@ export default {
   iconButtonSize,
   inputIconSize,
   bannerColor,
+  warningColor,
   buttonBorderRadius: 4,
   titleBarHeight,
   statusBarHeight,
