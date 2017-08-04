@@ -36,15 +36,12 @@ const { firmwareUpdateStates: {
 } } = constants;
 
 const {
-  BluetoothService,
   BootLoaderService,
   Environment,
 } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(BootLoaderService);
 const baseFirmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
-
-const { bluetoothStates } = constants;
 
 const getBatteryIcon = (batteryLevel) => {
   let batteryIcon;
