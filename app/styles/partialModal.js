@@ -24,12 +24,12 @@ export default EStyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 2,
         shadowOffset: {
-          height: applyWidthDifference(4),
-          width: applyWidthDifference(2),
+          height: 0,
+          width: 0,
         },
       },
       android: {
-        elevation: 4,
+        elevation: 2,
       },
     }),
   },

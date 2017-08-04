@@ -12,20 +12,15 @@ const getButtons = (props) => {
     props.dispatch(appActions.hidePartialModal());
   };
   const buttonConfigs = props.config.buttons;
-  const buttons = [];
-  for (let i = 0; i < buttonConfigs.length; i++) {
-    const param = buttonConfigs[i];
-    buttons.push(
-      <Button
-        style={styles._button}
-        text={param.caption}
-        key={i}
-        onPress={param.onPress ? param.onPress : defaultHandler}
-        primary={i === buttonConfigs.length - 1}
-      />
-    );
-  }
-  return buttons;
+  return buttonConfigs.map((val, index) => (
+    <Button
+      style={styles._button}
+      text={val.caption}
+      key={index}
+      onPress={val.onPress ? val.onPress : defaultHandler}
+      primary={index === buttonConfigs.length - 1}
+    />
+  ));
 };
 
 const PartialModal = props => ((props.show &&
