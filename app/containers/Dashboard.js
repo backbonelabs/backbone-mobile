@@ -84,6 +84,7 @@ class Dashboard extends Component {
 
   componentDidMount() {
     setTimeout(() => {
+      // Automatically scroll to the next incomplete level when the component mounts
       if (this._scrollView) {
         const {
           plans,
@@ -106,12 +107,21 @@ class Dashboard extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.training.selectedPlanIdx !== nextProps.training.selectedPlanIdx) {
+      // A different training plan got selected. Set up new animations for each level.
       this.setState({
         animations: this._getAnimations(nextProps.training),
       });
     }
   }
 
+  /**
+   * Sets up animation values for each level in a training plan. The animation values are used
+   * in the scale function for the transform style applied to the hexagon icons for each level.
+   *
+   * @param  {Object} trainingProps The state object of the training reducer slice from the
+   *                                Redux store
+   * @return {Animated.Value[]}
+   */
   _getAnimations(trainingProps) {
     const { plans, selectedPlanIdx } = trainingProps;
     return get(
@@ -121,6 +131,13 @@ class Dashboard extends Component {
     ).map(() => new Animated.Value(0.7));
   }
 
+  /**
+   * Handler for the scroll event triggered by the level SrollView. When a new level gets
+   * scrolled to, trigger animations to enlarge the hexagon icon of the new level and to
+   * shrink the icon of the previous level.
+   *
+   * @param {Object} event
+   */
   _onScroll(event) {
     const {
       plans,
@@ -162,6 +179,12 @@ class Dashboard extends Component {
     }
   }
 
+  /**
+   * Returns the hexagon icons for each level in the current training plan, as well as the
+   * line separator between each icon.
+   *
+   * @return {Component[]}
+   */
   _getLevelIcons() {
     const {
       plans,
@@ -192,10 +215,19 @@ class Dashboard extends Component {
     }).reverse();
   }
 
+  /**
+   * Fires the action creator for changing the session
+   * @param {Number} idx Integer index of the session
+   */
   _onSelectSession(idx) {
     this.props.selectSession(idx);
   }
 
+  /**
+   * Returns a Card for displaying the workouts contained in a session
+   * @param {Object} session
+   * @param {Number} idx     The index of the session within the level
+   */
   _getSessionCards(session, idx) {
     const sessionWorkouts = session.map(workout => (
       <View key={workout.title} style={styles.sessionWorkoutRow}>
