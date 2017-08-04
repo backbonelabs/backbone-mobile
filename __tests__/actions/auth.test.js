@@ -57,7 +57,7 @@ describe('__Auth Actions__', () => {
 
   test('creates an action when Login is unsuccessful', async () => {
     fetch.mockResponseSuccess({ error: 'api server error' });
-    await store.dispatch(authActions.login({ authMethod: 1 }));
+    await store.dispatch(authActions.login({ authMethod: constants.authMethods.EMAIL }));
     expect(Mixpanel.trackWithProperties)
     .toBeCalledWith('login-error', { errorMessage: 'api server error' });
     expect(store.getActions()).toMatchSnapshot();
