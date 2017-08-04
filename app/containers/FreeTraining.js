@@ -5,6 +5,7 @@ import {
   ListView,
   Animated,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
@@ -25,6 +26,8 @@ class FreeTraining extends Component {
       isHidden: true,
       sortBy: 0,
       userFavorites: [],
+      showSearchBar: false,
+      searchText: '',
     };
     this.sortCategories = [
       'ALPHABETICAL ORDER (A-Z)',
@@ -57,17 +60,27 @@ class FreeTraining extends Component {
 
   convertDataToMap(data) {
     const itemMap = [];
+    // Filters the workouts that only matches the text from search bar
+    const searchedWorkouts = data.workouts.filter((workout) => {
+      const searchRegex = new RegExp(this.state.searchText, 'g');
+      return searchRegex.test(workout.title);
+    });
+    const newData = Object.assign({}, data, { workouts: searchedWorkouts });
+
     if (this.state.sortBy === 0) {
-      data.workouts.sort((a, b) => b.title - a.title).forEach((item) => {
+      // Sort by alphabetical order
+      newData.workouts.sort((a, b) => b.title - a.title).forEach((item) => {
         if (!itemMap[item.title[0]]) {
           itemMap[item.title[0]] = [];
         }
         itemMap[item.title[0]].push(item);
       });
     } else if (this.state.sortBy === 1) {
-      itemMap['Most Popular'] = data.workouts.sort((a, b) => b.popularity - a.popularity);
+      // Sort by most popular
+      itemMap['Most Popular'] = newData.workouts.sort((a, b) => b.popularity - a.popularity);
     } else if (this.state.sortBy === 2) {
-      data.workouts.sort((a, b) => a.difficulty - b.difficulty).forEach((item) => {
+      // Sort by difficulty
+      newData.workouts.sort((a, b) => a.difficulty - b.difficulty).forEach((item) => {
         let difficultyLabel = '';
         switch (item.difficulty) {
           case 1:
@@ -89,6 +102,10 @@ class FreeTraining extends Component {
       });
     }
     return itemMap;
+  }
+
+  toggleSearchBar() {
+    this.setState({ showSearchBar: false, searchText: '' });
   }
 
   toggleSubview() {
@@ -115,6 +132,11 @@ class FreeTraining extends Component {
     this.setState({ isHidden: !isHidden });
   }
 
+  handleScroll(event) {
+    if (event.nativeEvent.contentOffset.y < 0) {
+      this.setState({ showSearchBar: true });
+    }
+  }
 
   renderRow(rowData) {
     const newUserFavorites = this.state.userFavorites;
@@ -163,15 +185,32 @@ class FreeTraining extends Component {
   }
 
   render() {
-    const activityViews = this.dataSource.map((workoutList) =>
-    (<ListView
-      key={workoutList.title}
+    const listViews = this.dataSource.map((workoutList) =>
+    (<View
       tabLabel={workoutList.title}
-      dataSource={this.getDataSource(workoutList)}
-      renderRow={this.renderRow}
-      onPressRow={() => {}}
-      renderSectionHeader={this.renderSectionHeader}
-    />)
+      key={workoutList.title}
+    >
+      { this.state.showSearchBar ?
+        <View style={styles.searchBarContainer}>
+          <View style={styles.searchBarIconContainer}>
+            <Icon name="search" style={styles.searhBarIcon} color="#BDBDBD" size={15} />
+          </View>
+          <TextInput
+            style={styles.searchBarTextInput}
+            placeholder="Search"
+            autoCorrect={false}
+            autoCapitalize="none"
+            onChangeText={(text) => { this.setState({ searchText: text }); }}
+          />
+        </View> : null}
+      <ListView
+        dataSource={this.getDataSource(workoutList)}
+        renderRow={this.renderRow}
+        onPressRow={() => {}}
+        renderSectionHeader={this.renderSectionHeader}
+        onScroll={this.handleScroll}
+      />
+    </View>)
     );
 
     const sortViews = this.sortCategories.map((label, index) => (
@@ -190,14 +229,18 @@ class FreeTraining extends Component {
       <View style={{ height: '100%', alignItems: 'center' }}>
         <ScrollableTabView
           style={styles.container}
-          renderTabBar={() => <FreeTrainingTabBar toggleSubview={this.toggleSubview} />}
+          renderTabBar={() =>
+            <FreeTrainingTabBar
+              toggleSearchBar={this.toggleSearchBar}
+              toggleSubview={this.toggleSubview}
+            />}
           tabBarPosition="top"
           tabBarActiveTextColor="#2196F3"
           tabBarInactiveTextColor="#bdbdbd"
           tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
           tabBarTextStyle={styles.tabBarTextStyle}
         >
-          {activityViews}
+          {listViews}
         </ScrollableTabView>
         <Animated.View
           style={[styles.subView,

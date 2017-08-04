@@ -25,6 +25,7 @@ class FreeTrainingTabBar extends Component {
     containerWidth: PropTypes.number,
     style: PropTypes.object,
     toggleSubview: PropTypes.func,
+    toggleSearchBar: PropTypes.func,
   }
 
   constructor() {
@@ -48,6 +49,7 @@ class FreeTrainingTabBar extends Component {
         accessibilityLabel={name}
         accessibilityTraits="button"
         onPress={() => {
+          this.props.toggleSearchBar();
           if (isTabActive) {
             return this.props.toggleSubview();
           }
