@@ -51,6 +51,15 @@ const colorBullets = {
 
 const getScrollOffset = event => get(event, 'nativeEvent.contentOffset.y', 0);
 
+/**
+ * Sets up animation values to be used for each level icon. The animation values are used
+ * in the scale function for the transform style applied to the hexagon icons for each level.
+ *
+ * @param  {Object[]} levels
+ * @return {Animated.Value[]}
+ */
+const getAnimationsForLevels = (levels = []) => levels.map(() => new Animated.Value(0.7));
+
 class Dashboard extends Component {
   static propTypes = {
     selectLevel: PropTypes.func.isRequired,
@@ -76,8 +85,12 @@ class Dashboard extends Component {
       );
     }
 
+    const {
+      plans,
+      selectedPlanIdx,
+    } = props.training;
     this.state = {
-      animations: this._getAnimations(props.training),
+      animations: getAnimationsForLevels(get(plans, [selectedPlanIdx, 'levels'], [])),
     };
     this._scrollView = null;
   }
@@ -108,27 +121,11 @@ class Dashboard extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.training.selectedPlanIdx !== nextProps.training.selectedPlanIdx) {
       // A different training plan got selected. Set up new animations for each level.
+      const { plans, selectedPlanIdx } = nextProps.training;
       this.setState({
-        animations: this._getAnimations(nextProps.training),
+        animations: getAnimationsForLevels(get(plans, [selectedPlanIdx, 'levels'], [])),
       });
     }
-  }
-
-  /**
-   * Sets up animation values for each level in a training plan. The animation values are used
-   * in the scale function for the transform style applied to the hexagon icons for each level.
-   *
-   * @param  {Object} trainingProps The state object of the training reducer slice from the
-   *                                Redux store
-   * @return {Animated.Value[]}
-   */
-  _getAnimations(trainingProps) {
-    const { plans, selectedPlanIdx } = trainingProps;
-    return get(
-      plans,
-      [selectedPlanIdx, 'levels'],
-      []
-    ).map(() => new Animated.Value(0.7));
   }
 
   /**
@@ -180,18 +177,12 @@ class Dashboard extends Component {
   }
 
   /**
-   * Returns the hexagon icons for each level in the current training plan, as well as the
-   * line separator between each icon.
+   * Returns the hexagon icons for each level, as well as the line separator between each icon
    *
+   * @param  {Object[]} levels
    * @return {Component[]}
    */
-  _getLevelIcons() {
-    const {
-      plans,
-      selectedPlanIdx,
-    } = this.props.training;
-    const levels = get(plans, [selectedPlanIdx, 'levels'], []);
-
+  _getLevelIcons(levels = []) {
     return levels.map((level, idx) => {
       const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
       return (
@@ -270,7 +261,7 @@ class Dashboard extends Component {
             showsVerticalScrollIndicator={false}
             bounces={false}
           >
-            {this._getLevelIcons()}
+            {this._getLevelIcons(get(plans, [selectedPlanIdx, 'levels'], []))}
           </ScrollView>
         </View>
         <View style={styles.verticalDivider} />
