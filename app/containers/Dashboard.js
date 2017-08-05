@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   Animated,
   Easing,
   Image,
@@ -11,6 +10,8 @@ import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import get from 'lodash/get';
 import Carousel from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import appActions from '../actions/app';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
 import Card from '../components/Card';
@@ -64,6 +65,8 @@ class Dashboard extends Component {
   static propTypes = {
     selectLevel: PropTypes.func.isRequired,
     selectSession: PropTypes.func.isRequired,
+    showPartialModal: PropTypes.func.isRequired,
+    hidePartialModal: PropTypes.func.isRequired,
     training: PropTypes.shape({
       plans: PropTypes.array,
       selectedPlanIdx: PropTypes.number,
@@ -75,16 +78,6 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     autobind(this);
-
-    // TODO: Use better alert
-    if (props.training.plans.length === 0) {
-      // There are no training plans
-      Alert.alert(
-        'Alert',
-        'Please sign out and sign back in to refresh your account with training plans'
-      );
-    }
-
     const {
       plans,
       selectedPlanIdx,
@@ -96,6 +89,22 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    if (this.props.training.plans.length === 0) {
+      // There are no training plans
+      this.props.showPartialModal({
+        topView: (
+          <Icon name="error-outline" size={styles.$errorIconSize} style={styles.errorIcon} />
+        ),
+        detail: {
+          caption: 'Please sign out and sign back in to refresh your account with training plans',
+        },
+        buttons: [{
+          caption: 'OK',
+          onPress: this.props.hidePartialModal,
+        }],
+      });
+    }
+
     setTimeout(() => {
       // Automatically scroll to the next incomplete level when the component mounts
       if (this._scrollView) {
@@ -289,4 +298,7 @@ const mapStateToProps = ({ training }) => ({
   training,
 });
 
-export default connect(mapStateToProps, trainingActions)(Dashboard);
+export default connect(mapStateToProps, {
+  ...appActions,
+  ...trainingActions,
+})(Dashboard);

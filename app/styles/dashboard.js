@@ -1,5 +1,6 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
+import theme from '../styles/theme';
 
 const { applyWidthDifference } = relativeDimensions;
 
@@ -12,9 +13,13 @@ const hexagonConnectorDefaults = {
 const largeHexagonHeight = 100;
 
 export default EStyleSheet.create({
+  $errorIconSize: applyWidthDifference(100),
   $hexagonContainerHeight: applyWidthDifference(largeHexagonHeight),
   $carouselSliderWidth: '100%',
   $carouselItemWidth: '85%',
+  errorIcon: {
+    color: theme.warningColor,
+  },
   backgroundImage: {
     flex: 1,
     width: undefined,
