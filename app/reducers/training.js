@@ -27,9 +27,9 @@ const defaultState = {
 export default (state = defaultState, action) => {
   const { type, payload } = action;
   switch (type) {
-    // TODO: When we get the user, we'll also need to know the user's progress for their training plans
-    // so we can set the selectedLevelIdx and selectedSessionIdx to default to the next level/session
-    // they haven't started yet.
+    // TODO: When we get the user, we'll also need to know the user's progress for their training
+    // plans so we can set the selectedLevelIdx and selectedSessionIdx to default to the next
+    // level/session they haven't started yet.
     case FETCH_USER:
     case LOGIN:
       return {
