@@ -11,7 +11,7 @@ import constants from '../../app/utils/constants';
 const { storageKeys } = constants;
 const { UserService } = NativeModules;
 
-describe('__Auth Actions__', () => {
+describe('Auth Actions', () => {
   const store = configureStore([asyncActionMiddleware, thunk])({});
 
   const user = {

@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dashboard Component renders as expected 1`] = `
+<Image
+  source={1}
+>
+  <View>
+    <ScrollViewMock
+      bounces={false}
+      onScroll={[Function]}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+    >
+      <View>
+        <View />
+        <AnimatedComponent
+          source={1}
+          style={
+            Array [
+              undefined,
+              Object {
+                "transform": Array [
+                  Object {
+                    "scale": 0.7,
+                  },
+                ],
+              },
+            ]
+          }
+        >
+          <BodyText
+            style={Object {}}
+          >
+            2
+          </BodyText>
+        </AnimatedComponent>
+      </View>
+      <View>
+        <View />
+        <AnimatedComponent
+          source={1}
+          style={
+            Array [
+              undefined,
+              Object {
+                "transform": Array [
+                  Object {
+                    "scale": 0.7,
+                  },
+                ],
+              },
+            ]
+          }
+        >
+          <BodyText
+            style={Object {}}
+          >
+            1
+          </BodyText>
+        </AnimatedComponent>
+      </View>
+    </ScrollViewMock>
+  </View>
+  <View />
+  <View>
+    <Carousel
+      animationFunc="timing"
+      animationOptions={
+        Object {
+          "easing": [Function],
+        }
+      }
+      autoplay={false}
+      autoplayDelay={5000}
+      autoplayInterval={3000}
+      containerCustomStyle={null}
+      contentContainerCustomStyle={null}
+      enableSnap={true}
+      firstItem={0}
+      inactiveSlideOpacity={1}
+      inactiveSlideScale={0.9}
+      items={
+        Array [
+          Array [
+            Object {
+              "title": "Beginner Chest Stretch",
+              "workout": Object {
+                "_id": "cheststretch",
+                "title": "Chest Stretch",
+              },
+            },
+            Object {
+              "title": "Intermediate Upper Back Stretch",
+              "workout": Object {
+                "_id": "nomoney",
+                "title": "No Money",
+              },
+            },
+            Object {
+              "title": "Beginner Posture Session",
+              "workout": Object {
+                "_id": "5minposture",
+                "title": "5-Minute Posture Session",
+              },
+            },
+          ],
+        ]
+      }
+      onSnapToItem={[Function]}
+      renderItem={[Function]}
+      shouldOptimizeUpdates={true}
+      slideStyle={Object {}}
+      snapOnAndroid={true}
+      swipeThreshold={20}
+    />
+  </View>
+</Image>
+`;
