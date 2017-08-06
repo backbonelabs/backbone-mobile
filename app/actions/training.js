@@ -12,6 +12,10 @@ const getCurrentTrainingData = () => {
 };
 
 export default {
+  /**
+   * Sets the current level in a training plan
+   * @param {Number} level Index of the level within the training plan
+   */
   selectLevel(level) {
     Mixpanel.trackWithProperties('selectLevel', {
       ...getCurrentTrainingData(),
@@ -24,6 +28,10 @@ export default {
     };
   },
 
+  /**
+   * Sets the current session in a training plan level
+   * @param {Number} session Index of the session within the training plan level
+   */
   selectSession(session) {
     Mixpanel.trackWithProperties('selectSession', {
       ...getCurrentTrainingData(),
