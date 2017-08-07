@@ -1,16 +1,11 @@
 import React, { PropTypes } from 'react';
-import { View, WebView } from 'react-native';
+import { View } from 'react-native';
 import BodyText from '../../components/BodyText';
 import Button from '../../components/Button';
 import styles from '../../styles/onBoardingFlow/deviceSetup';
 import StepBar from '../../components/StepBar';
-import Spinner from '../../components/Spinner';
 import routes from '../../routes';
-
-const showSpinner = () => <Spinner color={'#66BB6A'} />;
-const showErrorMessage = () => (
-  <BodyText>An error has occur, Please try again later</BodyText>
-);
+import VideoPlayer from '../../components/VideoPlayer';
 
 const HowToVideo = (props) => (
   <View style={styles.howToContainer}>
@@ -19,14 +14,8 @@ const HowToVideo = (props) => (
       Tutorial
     </BodyText>
     <View style={styles.howToInnerContainer}>
-      <WebView
-        style={styles.howToVideo}
-        source={{
-          uri: 'https://www.youtube.com/embed/Uo27rJAjriw?rel=0&autoplay=0&showinfo=0&controls=0' }}
-        javaScriptEnabled
-        startInLoadingState
-        renderLoading={showSpinner}
-        renderError={showErrorMessage}
+      <VideoPlayer
+        video={{ uri: 'https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4' }} // video example
       />
     </View>
     <View style={styles.btnContainer}>

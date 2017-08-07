@@ -50,6 +50,10 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
             </intent-filter>
         </receiver>
+        <activity
+            android:name=".VideoActivity"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>

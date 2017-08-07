@@ -112,6 +112,7 @@ export default EStyleSheet.create({
   },
   howToInnerContainer: {
     flex: 2,
+    justifyContent: 'center',
   },
   howToVideo: {
     width: '85%',
