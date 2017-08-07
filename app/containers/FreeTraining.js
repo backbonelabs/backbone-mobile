@@ -22,12 +22,11 @@ class FreeTraining extends Component {
     autobind(this);
     this.state = {
       bounceValue: new Animated.Value(600),  // This is the initial position of the subview
-      buttonText: 'Show Subview',
-      isHidden: true,
-      sortBy: 0,
-      userFavorites: [],
-      showSearchBar: false,
+      subViewIsHidden: true,
+      searchBarIsHidden: true,
       searchText: '',
+      sortListBy: 0, // 0 is alpha, 1 is popularity, 2 is difficulty
+      userFavorites: [], // temporary until mongo db connection is established
     };
     this.sortCategories = [
       'ALPHABETICAL ORDER (A-Z)',
@@ -67,7 +66,7 @@ class FreeTraining extends Component {
     });
     const newData = Object.assign({}, data, { workouts: searchedWorkouts });
 
-    if (this.state.sortBy === 0) {
+    if (this.state.sortListBy === 0) {
       // Sort by alphabetical order
       newData.workouts.sort((a, b) => b.title - a.title).forEach((item) => {
         if (!itemMap[item.title[0]]) {
@@ -75,10 +74,10 @@ class FreeTraining extends Component {
         }
         itemMap[item.title[0]].push(item);
       });
-    } else if (this.state.sortBy === 1) {
+    } else if (this.state.sortListBy === 1) {
       // Sort by most popular
       itemMap['Most Popular'] = newData.workouts.sort((a, b) => b.popularity - a.popularity);
-    } else if (this.state.sortBy === 2) {
+    } else if (this.state.sortListBy === 2) {
       // Sort by difficulty
       newData.workouts.sort((a, b) => a.difficulty - b.difficulty).forEach((item) => {
         let difficultyLabel = '';
@@ -105,14 +104,14 @@ class FreeTraining extends Component {
   }
 
   toggleSearchBar() {
-    this.setState({ showSearchBar: false, searchText: '' });
+    this.setState({ searchBarIsHidden: true, searchText: '' });
   }
 
   toggleSubview() {
-    const { isHidden } = this.state;
+    const { subViewIsHidden } = this.state;
     let toValue = 600;
 
-    if (isHidden) {
+    if (subViewIsHidden) {
       toValue = 0;
     }
 
@@ -129,22 +128,22 @@ class FreeTraining extends Component {
       }
     ).start();
 
-    this.setState({ isHidden: !isHidden });
+    this.setState({ subViewIsHidden: !subViewIsHidden });
   }
 
   handleScroll(event) {
     if (event.nativeEvent.contentOffset.y < 0) {
-      this.setState({ showSearchBar: true });
+      this.setState({ searchBarIsHidden: false });
     }
   }
 
   renderRow(rowData) {
     const newUserFavorites = this.state.userFavorites;
     let iconName = '';
-    if (newUserFavorites.indexOf(rowData._id) === -1) {
-      iconName = 'heart-o';
-    } else {
+    if (newUserFavorites.includes(rowData._id)) {
       iconName = 'heart';
+    } else {
+      iconName = 'heart-o';
     }
     return (
       <View style={{ flexDirection: 'column' }}>
@@ -155,7 +154,7 @@ class FreeTraining extends Component {
           </View>
           <TouchableOpacity
             onPress={() => {
-              if (newUserFavorites.indexOf(rowData._id) === -1) {
+              if (!newUserFavorites.includes(rowData._id)) {
                 newUserFavorites.push(rowData._id);
                 this.setState({ userFavorites: newUserFavorites });
                 this.setState({ heartIcon: 'heart' });
@@ -190,7 +189,7 @@ class FreeTraining extends Component {
       tabLabel={workoutList.title}
       key={workoutList.title}
     >
-      { this.state.showSearchBar ?
+      { this.state.searchBarIsHidden ? null :
         <View style={styles.searchBarContainer}>
           <View style={styles.searchBarIconContainer}>
             <Icon name="search" style={styles.searhBarIcon} color="#BDBDBD" size={15} />
@@ -202,7 +201,7 @@ class FreeTraining extends Component {
             autoCapitalize="none"
             onChangeText={(text) => { this.setState({ searchText: text }); }}
           />
-        </View> : null}
+        </View>}
       <ListView
         dataSource={this.getDataSource(workoutList)}
         renderRow={this.renderRow}
@@ -218,7 +217,7 @@ class FreeTraining extends Component {
         key={label}
         style={styles.subViewSortButton}
         onPress={() => {
-          this.setState({ sortBy: index });
+          this.setState({ sortListBy: index });
           this.toggleSubview();
         }}
       >
