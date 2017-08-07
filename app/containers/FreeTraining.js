@@ -225,9 +225,9 @@ class FreeTraining extends Component {
       </TouchableOpacity>
     ));
     return (
-      <View style={{ height: '100%', alignItems: 'center' }}>
+      <View style={styles.container}>
         <ScrollableTabView
-          style={styles.container}
+          style={styles.scrollableTabViewContainer}
           renderTabBar={() =>
             <FreeTrainingTabBar
               toggleSearchBar={this.toggleSearchBar}

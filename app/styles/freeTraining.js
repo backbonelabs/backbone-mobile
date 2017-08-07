@@ -8,8 +8,13 @@ const {
 
 export default EStyleSheet.create({
   container: {
+    height: '81%',
+    alignItems: 'center',
+  },
+  scrollableTabViewContainer: {
     backgroundColor: '#f5f5f5',
     justifyContent: 'center',
+    height: applyWidthDifference(20),
   },
   defaultTabBar: {
     backgroundColor: '#FFF',
@@ -79,15 +84,10 @@ export default EStyleSheet.create({
   },
   subView: {
     position: 'absolute',
-    // top: 0,
-    // bottom: applyWidthDifference(0),
-    // left: applyWidthDifference(20),
-    // right: 0,
     backgroundColor: 'rgba(52, 52, 52, 0.8)',
-    height: '100%',
+    height: '85%',
     paddingBottom: applyWidthDifference(40),
     width: '100%',
-    // borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
