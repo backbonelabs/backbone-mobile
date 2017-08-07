@@ -19,8 +19,8 @@
   int currentCommand;
   
   int sessionDuration;
-  int sessionDistanceThreshold;
-  int sessionTimeThreshold;
+  int slouchDistanceThreshold;
+  int slouchTimeThreshold;
   
   int vibrationPattern;
   int vibrationSpeed;

@@ -533,7 +533,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
         String startDateTime = timestampFormatter.format(new Date(sessionStartTimestamp));
         String endDateTime = timestampFormatter.format(new Date());
-        String record = String.format("%s,%s,%s,%s\n", sessionId, userId, startDateTime, endDateTime);
+        String record = String.format("%s,%s,%d,%d,%s,%s\n", sessionId, userId, sessionDuration, slouchTimeThreshold, startDateTime, endDateTime);
         Timber.d("Firehose posture session record: %s", record);
         firehoseRecorder.saveRecord(record, Constants.FIREHOSE_STREAMS.POSTURE_SESSION);
 
@@ -672,15 +672,15 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     if (currentSessionState == Constants.SESSION_STATES.RUNNING) {
                         // Only save data to Firehose if session is running in case other modules are
                         // enabling accelerometer notifications outside of a posture session
-                        float x = Utilities.getFloatFromByteArray(responseArray, 0);
-                        float y = Utilities.getFloatFromByteArray(responseArray, 4);
-                        float z = Utilities.getFloatFromByteArray(responseArray, 8);
+                        float accX = Utilities.getFloatFromByteArray(responseArray, 0);
+                        float accY = Utilities.getFloatFromByteArray(responseArray, 4);
+                        float accZ = Utilities.getFloatFromByteArray(responseArray, 8);
 
-                        Timber.d("Accelerometer data %f %f %f", x, y, z);
+                        Timber.d("Accelerometer data %f %f %f", accX, accY, accZ);
 
                         // Queue accelerometer record for Firehose
                         String now = timestampFormatter.format(new Date());
-                        firehoseRecorder.saveRecord(String.format("%s,%s,%f,%f,%f\n", sessionId, now, x, y, z), Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
+                        firehoseRecorder.saveRecord(String.format("%s,%s,%f,%f,%f,,,,%d\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold), Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
 
                         // Periodically submit records to Firehose to make
                         // sure the storage limit isn't reached. This will be
