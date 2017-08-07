@@ -2,7 +2,6 @@ import activity from './activity';
 import deviceAdd from './device/deviceAdd';
 import deviceConnect from './device/deviceConnect';
 import deviceScan from './device/deviceScan';
-import welcome from './welcome';
 import login from './login';
 import signup from './signup';
 import device from './device';
@@ -21,7 +20,6 @@ import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
-import firmwareUpdate from './firmwareUpdate';
 import freeTraining from './freeTraining';
 
 export default {
@@ -29,7 +27,6 @@ export default {
   deviceAdd,
   deviceConnect,
   deviceScan,
-  welcome,
   login,
   signup,
   postureDashboard,
@@ -48,6 +45,5 @@ export default {
   howTo,
   device,
   changePassword,
-  firmwareUpdate,
   freeTraining,
 };

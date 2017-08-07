@@ -1,31 +1,51 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
+const {
+  applyWidthDifference,
+  fixedResponsiveFontSize,
+} = relativeDimensions;
 
 export default EStyleSheet.create({
-  $placeholderTextColor: '$secondaryFontColor',
+  $placeholderTextColor: '#9E9E9E',
   $iconColor: '$primaryFontColor',
   $iconSize: '$inputIconSize',
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'white',
+    ...Platform.select({
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        shadowRadius: 3,
+        shadowOpacity: 0.15,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+    borderRadius: 3,
   },
   inputField: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: fixedResponsiveFontSize(18),
-    borderColor: '#979797',
-    borderWidth: 1,
-    borderRadius: 5,
+    fontSize: fixedResponsiveFontSize(16),
     width: applyWidthDifference(235),
-    height: 44 * heightDifference,
-    paddingHorizontal: applyWidthDifference(25),
-    paddingVertical: 10 * heightDifference,
+    height: applyWidthDifference(50),
+    paddingHorizontal: applyWidthDifference(45),
+    paddingVertical: applyWidthDifference(10),
+    borderColor: '$secondaryColor',
+    borderRadius: 3,
   },
   icon: {
-    position: 'relative',
-    right: applyWidthDifference(25),
+    position: 'absolute',
+    fontSize: '$inputIconSize',
+    left: applyWidthDifference(15),
+    color: '#9E9E9E',
   },
   disabled: {
     color: '$disabledColor',

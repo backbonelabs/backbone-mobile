@@ -8,7 +8,7 @@ export default EStyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#EEE',
+    backgroundColor: '#FFF',
   },
   cardStyle: {
     width: '100%',

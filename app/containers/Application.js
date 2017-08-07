@@ -20,6 +20,8 @@ import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
 import settingsActive from '../images/settingsActive.png';
 import settingsInactive from '../images/settingsInactive.png';
+import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
+import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -29,7 +31,6 @@ import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import TitleBar from '../components/TitleBar';
-import BodyText from '../components/BodyText';
 import Banner from '../components/Banner';
 import routes from '../routes';
 import styles from '../styles/application';
@@ -66,6 +67,11 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
 
 const isiOS = Platform.OS === 'ios';
 
+const statusBarProps = {
+  barStyle: 'dark-content',
+  backgroundColor: 'white',
+};
+
 class Application extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
@@ -74,8 +80,20 @@ class Application extends Component {
         showFull: PropTypes.bool,
         showPartial: PropTypes.bool,
         content: PropTypes.node,
+        config: PropTypes.shape({
+          topView: PropTypes.node,
+          title: PropTypes.shape({
+            caption: PropTypes.string,
+            color: PropTypes.string,
+          }),
+          detail: PropTypes.shape({
+            caption: PropTypes.string,
+            color: PropTypes.string,
+          }),
+          buttons: PropTypes.array,
+          backButtonHandler: PropTypes.func,
+        }),
         onClose: PropTypes.func,
-        hideClose: PropTypes.bool,
       }),
     }),
     user: PropTypes.shape({
@@ -85,6 +103,7 @@ class Application extends Component {
     }),
     device: PropTypes.shape({
       selfTestStatus: PropTypes.bool,
+      isUpdatingFirmware: PropTypes.bool,
       device: PropTypes.shape({
         batteryLevel: PropTypes.number,
       }),
@@ -112,28 +131,26 @@ class Application extends Component {
     // ANDROID ONLY: Listen to the hardware back button to either navigate back or exit app
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
-        const { showFull, showPartial, hideClose } = this.props.app.modal;
-        if ((showFull || showPartial) && !hideClose) {
-          // There is a modal being displayed, hide it when allowed
-          this.props.dispatch(appActions.hideFullModal());
-          this.props.dispatch(appActions.hidePartialModal());
+        const routeStack = this.navigator.getCurrentRoutes();
+        const currentRoute = routeStack[routeStack.length - 1];
+        if (currentRoute.name === routes.postureMonitor.name) {
+          // Delegate to the PostureMonitor to handle this scenario
           return true;
         }
 
-        if (this.navigator) {
-          const routeStack = this.navigator.getCurrentRoutes();
-          const currentRoute = routeStack[routeStack.length - 1];
-          if (currentRoute.name === routes.postureMonitor.name) {
-            // Delegate to the PostureMonitor to handle this scenario
-            return true;
-          } else if (this.navigator.getCurrentRoutes().length > 1) {
-            // There are subsequent routes after the initial route,
-            // so pop the route stack to navigate one scene back
-            this.navigator.pop();
-            return true;
-          }
+        const { showFull } = this.props.app.modal;
+        if (showFull) {
+          // There is a full modal being displayed, dismiss it.
+          this.props.dispatch(appActions.hideFullModal());
+          return true;
         }
 
+        if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
+          // There are subsequent routes after the initial route,
+          // so pop the route stack to navigate one scene back
+          this.navigator.pop();
+          return true;
+        }
         // There are no routes to pop, exit app
         return false;
       });
@@ -195,18 +212,47 @@ class Application extends Component {
     this.deviceTestStatusListener = DeviceInformationServiceEvents.addListener('DeviceTestStatus',
       ({ message, success }) => {
         if (message) {
+          const routeStack = this.navigator.getCurrentRoutes();
+          const currentRoute = routeStack[routeStack.length - 1];
+
           Mixpanel.trackWithProperties('selfTest-error', {
             errorMessage: message,
           });
 
           this.props.dispatch(deviceActions.selfTestUpdated(false));
 
-          Alert.alert('Error', 'Your Backbone sensor needs to be fixed. ' +
-            'Perform an update now to continue using your Backbone.', [
-            { text: 'Cancel' },
-            { text: 'Update', onPress: () => this.navigator.push(routes.device) },
-            ]
-          );
+          this.props.dispatch(appActions.showPartialModal({
+            topView: (
+              <Image source={deviceFirmwareIcon} />
+            ),
+            title: {
+              caption: 'Update Needed',
+              color: theme.warningColor,
+            },
+            detail: {
+              caption: 'Your Backbone sensor needs to be fixed.\n' +
+              'Perform an update now to continue using your Backbone.',
+            },
+            buttons: [
+              {
+                caption: 'CANCEL',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                },
+              },
+              {
+                caption: 'UPDATE',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                  this.props.dispatch(deviceActions.setPendingUpdate());
+
+                  if (currentRoute.name !== routes.device.name) {
+                    this.navigator.push(routes.device);
+                  }
+                },
+              },
+            ],
+          }));
         } else {
           const result = (success ? 'success' : 'failed');
           Mixpanel.track(`selfTest-${result}`);
@@ -312,12 +358,39 @@ class Application extends Component {
             // to prevent corrupted navigation stack if the user promptly tap
             // on the 'Update' button while the deviceConnect scene is being popped.
             setTimeout(() => {
-              Alert.alert('Error', 'There is something wrong with your Backbone. ' +
-                'Perform an update now to continue using your Backbone.', [
-                { text: 'Cancel', onPress: () => this.props.dispatch(deviceActions.disconnect()) },
-                { text: 'Update', onPress: () => this.navigator.push(routes.firmwareUpdate) },
-                ]
-              );
+              this.props.dispatch(appActions.showPartialModal({
+                topView: (
+                  <Image source={deviceFirmwareIcon} />
+                ),
+                title: {
+                  caption: 'Update Needed',
+                  color: theme.warningColor,
+                },
+                detail: {
+                  caption: 'There is something wrong with your Backbone. ' +
+                  'Perform an update now to continue using your Backbone.',
+                },
+                buttons: [
+                  {
+                    caption: 'CANCEL',
+                    onPress: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
+                      this.props.dispatch(deviceActions.disconnect());
+                    },
+                  },
+                  {
+                    caption: 'UPDATE',
+                    onPress: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
+                      this.props.dispatch(deviceActions.setPendingUpdate());
+
+                      if (currentRoute.name !== routes.device.name) {
+                        this.navigator.push(routes.device);
+                      }
+                    },
+                  },
+                ],
+              }));
             }, delay);
           } else if (!status.selfTestStatus) {
             // Self-Test failed, request a re-run
@@ -415,10 +488,18 @@ class Application extends Component {
       const { batteryLevel } = nextProps.device.device;
       if (batteryLevel <= 15 && batteryLevel > 0) {
         this.setState({ hasDisplayedLowBatteryWarning: true });
-        Alert.alert(
-          'Your Backbone battery is low',
-          `Your Backbone battery is at ${batteryLevel}%. Charge your Backbone as soon as possible.`
-        );
+        this.props.dispatch(appActions.showPartialModal({
+          topView: (<Image source={deviceLowBatteryIcon} />),
+          title: { caption: 'Low Battery', color: theme.warningColor },
+          detail: {
+            caption: `Your Backbone battery is at ${batteryLevel}%. ` + // eslint-disable-line prefer-template, max-len
+            'Charge your Backbone as soon as possible.',
+          },
+          buttons: [{ caption: 'CLOSE' }],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }
@@ -447,9 +528,9 @@ class Application extends Component {
 
   /**
    * Defines the initial scene to mount and ends the initialization process
-   * @param {Object} route=routes.welcome Route object, defaults to the welcome route
+   * @param {Object} route=routes.login Route object, defaults to the login route
    */
-  setInitialRoute(route = routes.freeTraining) {
+  setInitialRoute(route = routes.login) {
     // Intentionally add a delay because sometimes the initialization process
     // can be so quick that the spinner icon only flashes for a blink of an eye,
     // and it might not be obvious it was a spinner icon indicating some type of
@@ -503,19 +584,9 @@ class Application extends Component {
           // Only display if no other pop-ups are visible
           if (shouldShowLoading && !showPartial && !showFull) {
             this.props.dispatch(appActions.showPartialModal({
-              content: (
-                <View>
-                  <View>
-                    <BodyText style={styles._partialModalBodyText}>
-                      Checking for previous session
-                    </BodyText>
-                  </View>
-                  <View style={styles.partialSpinnerContainer}>
-                    <Spinner />
-                  </View>
-                </View>
-              ),
-              hideClose: true,
+              topView: (<Spinner style={styles._partialSpinnerContainer} />),
+              title: { caption: 'Loading' },
+              detail: { caption: 'Checking for previous session' },
             }));
 
             // Start fetching the previous session state
@@ -666,6 +737,7 @@ class Application extends Component {
         <TitleBar
           navigator={this.navigator}
           currentRoute={currentRoute}
+          disableBackButton={this.props.device.isUpdatingFirmware}
         />
         <FullModal show={modalProps.showFull} onClose={modalProps.onClose}>
           {modalProps.content}
@@ -675,8 +747,7 @@ class Application extends Component {
           <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
           <PartialModal
             show={modalProps.showPartial}
-            onClose={modalProps.onClose}
-            hideClose={modalProps.hideClose}
+            config={modalProps.config}
           >
             {modalProps.content}
           </PartialModal>
@@ -687,13 +758,6 @@ class Application extends Component {
   }
 
   render() {
-    const statusBarProps = {};
-    if (isiOS) {
-      statusBarProps.barStyle = 'light-content';
-    } else {
-      statusBarProps.backgroundColor = theme.primaryColor;
-    }
-
     return (
       <View style={{ flex: 1 }}>
         <StatusBar {...statusBarProps} />
@@ -702,7 +766,7 @@ class Application extends Component {
           // a static View is overlayed on top of the status bar for all scenes
           <View
             style={{
-              backgroundColor: theme.primaryColor,
+              backgroundColor: 'white',
               height: theme.statusBarHeight,
             }}
           />

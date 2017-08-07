@@ -16,9 +16,7 @@
   "jest": {
     "preset": "react-native",
     "verbose": true,
-    "setupFiles": [
-      "./jestSetup.js"
-    ],
+    "setupFiles": ["./jestSetup.js"],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],

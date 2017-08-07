@@ -266,7 +266,7 @@ class OnBoarding extends Component {
   exitOnboarding() {
     // Remove locally stored user data and reset Redux auth/user store
     this.props.dispatch(authActions.signOut());
-    this.props.navigator.resetTo(routes.welcome);
+    this.props.navigator.resetTo(routes.login);
   }
 
   /**

@@ -1,28 +1,66 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
-import theme from './theme';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $iconSize: fixedResponsiveFontSize(40),
   outerContainer: {
     flex: 1,
-    marginTop: theme.totalNavHeight,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   innerContainer: {
     flex: undefined,
+    alignItems: 'center',
     backgroundColor: '#FFFFFF',
     padding: applyWidthDifference(10),
-    width: applyWidthDifference(300),
+    width: applyWidthDifference(340),
+    borderRadius: applyWidthDifference(10),
+    ...Platform.select({ // OS-specific drop shadow styling
+      ios: {
+        shadowColor: 'rgba(0, 0, 0, 0.2)',
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        shadowOffset: {
+          height: 0,
+          width: 0,
+        },
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+  topView: {
+    marginTop: applyWidthDifference(30),
+    marginBottom: applyWidthDifference(20),
+  },
+  titleText: {
+    textAlign: 'center',
+    color: '#000000',
+    fontSize: fixedResponsiveFontSize(22),
+    fontWeight: '500',
+    marginTop: applyWidthDifference(10),
+    marginHorizontal: applyWidthDifference(12),
+  },
+  detailText: {
+    textAlign: 'center',
+    color: '#000000',
+    fontSize: fixedResponsiveFontSize(15),
+    marginTop: applyWidthDifference(10),
+    marginBottom: applyWidthDifference(10),
+    marginHorizontal: applyWidthDifference(12),
   },
   buttonContainer: {
-    alignItems: 'flex-end',
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    marginTop: applyWidthDifference(10),
+    marginBottom: applyWidthDifference(10),
   },
-  closeIcon: {
-    color: '$primaryFontColor',
+  button: {
+    width: applyWidthDifference(300),
   },
 });
