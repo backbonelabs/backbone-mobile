@@ -35,7 +35,7 @@ const HowToVideo = (props) => (
           style={styles._CTAButton}
           text="Done"
           primary
-          onPress={() => props.navigator.replace(routes.postureDashboard)}
+          onPress={() => props.navigator.resetTo(routes.postureDashboard)}
         />
       </View>
     </View>
@@ -44,7 +44,7 @@ const HowToVideo = (props) => (
 
 HowToVideo.propTypes = {
   navigator: PropTypes.shape({
-    replace: PropTypes.func,
+    resetTo: PropTypes.func,
   }),
 };
 
