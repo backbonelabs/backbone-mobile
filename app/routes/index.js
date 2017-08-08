@@ -19,7 +19,7 @@ import profileSetupOne from './onBoardingFlow/profileSetupOne';
 import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
 import deviceSetup from './onBoardingFlow/deviceSetup';
 import howToVideo from './onBoardingFlow/howToVideo';
-import deviceScan from './onBoardingFlow/deviceScan';
+import deviceScan from './deviceScan';
 import device from './device';
 
 export default {
