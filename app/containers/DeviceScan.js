@@ -5,7 +5,7 @@ import {
   NativeEventEmitter,
   TouchableOpacity,
   Image,
-  Text,
+  Platform,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -31,6 +31,7 @@ import reception4 from '../images/onboarding/reception-icon-4.png';
 const { BluetoothService, DeviceManagementService } = NativeModules;
 const deviceManagementServiceEvents = new NativeEventEmitter(DeviceManagementService);
 const { ON, OFF, TURNING_ON, TURNING_OFF } = constants.bluetoothStates;
+const isiOS = Platform.OS === 'ios';
 
 /**
  * Returns a RSSI icon based on the RSSI strength
@@ -274,12 +275,13 @@ class DeviceScan extends Component {
 
     return (
       <View style={styles.deviceRow}>
-        <Text style={styles._deviceName}>
-          {rowData.identifier.substr(-12)}
-        </Text>
-        <Text style={[styles._deviceMessage, { color: messageColor }]}>
+        <BodyText style={styles._deviceName}>
+          { isiOS ? rowData.identifier.substr(rowData.identifier.lastIndexOf('-') + 1)
+          : rowData.identifier}
+        </BodyText>
+        <BodyText style={[styles._deviceMessage, { color: messageColor }]}>
           {message}
-        </Text>
+        </BodyText>
         {icon}
       </View>
     );
