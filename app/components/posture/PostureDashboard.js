@@ -407,8 +407,9 @@ class PostureDashboard extends Component {
                       SensitiveInfo.getItem(storageKeys.DEVICE)
                         .then(device => {
                           if (device) {
-                            this.props.dispatch(deviceActions.connect(device.identifier));
+                            return this.props.dispatch(deviceActions.connect(device.identifier));
                           }
+                          return this.props.navigator.push(routes.deviceScan);
                         });
                     },
                   },
