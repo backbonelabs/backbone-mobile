@@ -5,6 +5,7 @@ import {
   UPDATE_USER_SETTINGS,
   FETCH_USER_SESSIONS,
   PREPARE_USER_UPDATE,
+  FETCH_USER_WORKOUTS,
 } from './types';
 import store from '../store';
 import constants from '../utils/constants';
@@ -18,6 +19,7 @@ const { storageKeys, errorMessages } = constants;
 const baseUrl = `${Environment.API_SERVER_URL}/users`;
 const settingsUrl = `${baseUrl}/settings`;
 const sessionsUrl = `${baseUrl}/sessions`;
+const workoutsUrl = `${baseUrl}/workouts`;
 
 const handleNetworkError = mixpanelEvent => {
   Mixpanel.track(`${mixpanelEvent}-serverError`);
@@ -194,6 +196,39 @@ export default {
         }),
     };
   },
+
+  fetchUserWorkouts() {
+    const state = store.getState();
+    const { accessToken } = state.auth;
+    const { user: { _id } } = state.user;
+    const fetchUserWorkoutsEventName = 'fetchUserWorkouts';
+
+    return {
+      type: FETCH_USER_WORKOUTS,
+      payload: () => Fetcher.get({
+        url: `${workoutsUrl}/${_id}`,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+        .catch(() => handleNetworkError(fetchUserWorkoutsEventName))
+        .then(response => response.json())
+        .then((body) => {
+          if (body.error) {
+            throw new Error(body.error);
+          }
+          // Update user details in Bugsnag
+          // Bugsnag.setUser(body._id, body.nickname, body.email);
+
+          // // Update user profile in Mixpanel
+          // Mixpanel.setUserProperties(body);
+
+          // // Store user in local storage
+          // SensitiveInfo.setItem(storageKeys.USER, body);
+
+          return body;
+        }),
+    };
+  },
+
 
   prepareUserUpdate(user) {
     return {

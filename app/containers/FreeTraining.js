@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
@@ -9,18 +9,30 @@ import {
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
+import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/freeTraining';
 import SecondaryText from '../components/SecondaryText';
 import FreeTrainingTabBar from './FreeTrainingTabBar';
-import mongoDb from '../workouts.js';
+import userActions from '../actions/user';
+import Spinner from '../components/Spinner';
 
 class FreeTraining extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func,
+    workouts: PropTypes.array,
+    isFetchingWorkouts: PropTypes.bool,
+  }
 
   constructor() {
     super();
     autobind(this);
     this.state = {
+      workouts: [
+        { title: 'EXERCISES', type: 1, workouts: [] },
+        { title: 'STRETCHES', type: 2, workouts: [] },
+        { title: 'POSTURE', type: 3, workouts: [] },
+      ],
       bounceValue: new Animated.Value(600),  // This is the initial position of the subview
       subViewIsHidden: true,
       searchBarIsHidden: true,
@@ -28,25 +40,31 @@ class FreeTraining extends Component {
       sortListBy: 0, // 0 is alpha, 1 is popularity, 2 is difficulty
       userFavorites: [], // temporary until mongo db connection is established
     };
+
     this.sortCategories = [
       'ALPHABETICAL ORDER (A-Z)',
       'POPULARITY',
       'DIFFICULTY'];
-    this.dataSource = [
-      { title: 'EXERCISES', type: 1, workouts: [] },
-      { title: 'STRETCHES', type: 2, workouts: [] },
-      { title: 'POSTURE', type: 3, workouts: [] },
-    ];
-    // Temporary workout database generated randomly
-    mongoDb.forEach((workout) => {
-      if (workout.type === this.dataSource[0].type) {
-        this.dataSource[0].workouts.push(workout);
-      } else if (workout.type === this.dataSource[1].type) {
-        this.dataSource[1].workouts.push(workout);
-      } else if (workout.type === this.dataSource[2].type) {
-        this.dataSource[2].workouts.push(workout);
+  }
+
+  componentDidMount() {
+    this.props.dispatch(userActions.fetchUserWorkouts());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // catagorizes the workouts by type
+    const workouts = this.state.workouts;
+    nextProps.workouts.forEach((workout) => {
+      if (workout.type === workouts[0].type) {
+        workouts[0].workouts.push(workout);
+      } else if (workout.type === workouts[1].type) {
+        workouts[1].workouts.push(workout);
+      } else if (workout.type === workouts[2].type) {
+        workouts[2].workouts.push(workout);
       }
     });
+
+    this.setState({ workouts });
   }
 
   getDataSource(dbSource) {
@@ -184,7 +202,7 @@ class FreeTraining extends Component {
   }
 
   render() {
-    const listViews = this.dataSource.map((workoutList) =>
+    const listViews = this.state.workouts.map((workoutList) =>
     (<View
       tabLabel={workoutList.title}
       key={workoutList.title}
@@ -224,6 +242,11 @@ class FreeTraining extends Component {
         <Text style={styles.subViewSortButtonText}>{label}</Text>
       </TouchableOpacity>
     ));
+
+    if (this.props.isFetchingWorkouts) {
+      return <Spinner />;
+    }
+
     return (
       <View style={styles.container}>
         <ScrollableTabView
@@ -260,4 +283,10 @@ class FreeTraining extends Component {
     );
   }
 }
-export default FreeTraining;
+
+const mapStateToProps = (state) => ({
+  workouts: state.user.workouts,
+  isFetchingWorkouts: state.user.isFetchingWorkouts,
+});
+
+export default connect(mapStateToProps)(FreeTraining);
