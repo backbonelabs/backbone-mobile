@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Alert,
   NativeModules,
   NativeEventEmitter,
   TouchableOpacity,
@@ -21,9 +20,9 @@ import Spinner from '../components/Spinner';
 import theme from '../styles/theme';
 import routes from '../routes';
 import constants from '../utils/constants';
-import SensitiveInfo from '../utils/SensitiveInfo';
 import Mixpanel from '../utils/Mixpanel';
 import deviceActions from '../actions/device';
+import appActions from '../actions/app';
 import reception1 from '../images/onboarding/reception-icon-1.png';
 import reception2 from '../images/onboarding/reception-icon-2.png';
 import reception3 from '../images/onboarding/reception-icon-3.png';
@@ -112,7 +111,21 @@ class DeviceScan extends Component {
       this.initiateScanning();
     } else {
       // Remind user that their Bluetooth is off
-      Alert.alert('Error', 'Unable to scan. Turn Bluetooth on first');
+      // this.props.dispatch(appActions.showPartialModal({
+      //   title: {
+      //     caption: 'Error',
+      //     color: theme.warningColor,
+      //   },
+      //   detail: {
+      //     caption: 'Unable to scan. Turn Bluetooth on first',
+      //   },
+      //   buttons: [
+      //     { caption: 'OKAY' },
+      //   ],
+      //   backButtonHandler: () => {
+      //     this.props.dispatch(appActions.hidePartialModal());
+      //   },
+      // }));
     }
   }
 
@@ -138,7 +151,7 @@ class DeviceScan extends Component {
     if (!this.props.isConnected && nextProps.isConnected) {
       const routeStack = this.props.navigator.getCurrentRoutes();
       const lastRoute = routeStack[routeStack.length - 2];
-      if (lastRoute.name === 'deviceSetup') {
+      if (lastRoute.name === routes.deviceSetup.name) {
         return this.props.navigator.replace(routes.howToVideo);
       }
       return this.props.navigator.pop();
@@ -174,7 +187,7 @@ class DeviceScan extends Component {
 
         Mixpanel.trackError({
           errorContent: error,
-          path: 'app/containers/device/DeviceScan',
+          path: 'app/containers/DeviceScan',
           stackTrace: ['initiateScanning', 'DeviceManagementService.scanForDevices'],
         });
       } else {
@@ -209,22 +222,25 @@ class DeviceScan extends Component {
     BluetoothService.getState((error, { state }) => {
       if (!error) {
         if (state === ON) {
-          // If deviceIdentifier is truthy, attempt to connect to specified device
-          if (deviceData.identifier) {
-            return this.props.dispatch(deviceActions.connect(deviceData.identifier));
-          }
-
-          // Attempt to use saved device identifier, if any
-          return SensitiveInfo.getItem(constants.storageKeys.DEVICE)
-            .then(savedDevice => {
-              if (savedDevice) {
-                return this.props.dispatch(deviceActions.connect(savedDevice.identifier));
-              }
-            });
+          return this.props.dispatch(deviceActions.connect(deviceData.identifier));
         }
       }
 
-      return Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+      return this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Error',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'Bluetooth is off. Turn on Bluetooth before continuing.',
+        },
+        buttons: [
+          { caption: 'OKAY' },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     });
   }
 
@@ -243,7 +259,7 @@ class DeviceScan extends Component {
     ((device.identifier || selectedIdentifier) === rowData.identifier);
 
     // row icons
-    const spinner = <Spinner style={styles.spinner} color={'#66BB6A'} size="small" />;
+    const spinner = <Spinner style={styles.spinner} color={theme.secondaryColor} size="small" />;
     const iconCheck = <Icon name={'check'} color={'#66BB6A'} size={25} />;
 
     if (connecting) {
@@ -306,8 +322,12 @@ class DeviceScan extends Component {
                 </View> : null
             }
             {
-              inProgress && (deviceList.length === 0 || !isBluetoothOn) ?
-                <Spinner style={styles.devicesNotFound} color={'#66BB6A'} size="large" /> : null
+              inProgress && (deviceList.length === 0) ?
+                <Spinner
+                  style={styles.devicesNotFound}
+                  color={theme.secondaryColor}
+                  size="large"
+                /> : null
             }
             <List
               containerStyle={{ flex: 1 }}
