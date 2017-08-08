@@ -18,7 +18,6 @@ export default (state = {
     config: null,
     onClose: null,
   },
-  nextStep: false,
 }, action) => {
   switch (action.type) {
     case UPDATE_BLUETOOTH_STATE: {
@@ -83,6 +82,7 @@ export default (state = {
         modal: {
           showPartial: false,
           content: null,
+          config: null,
           onClose: null,
         },
       };
