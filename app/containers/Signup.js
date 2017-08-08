@@ -206,6 +206,7 @@ class Signup extends Component {
       hideContent,
       errorMessage,
     } = this.state;
+    const { warningColor, primaryFontColor, inputIconColor } = theme;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
     if (!isiOS) {
@@ -266,9 +267,9 @@ class Signup extends Component {
                   }
                   <Input
                     containerStyles={styles._inputFieldContainer}
-                    style={{ color: emailWarning ? '#F44336' : '#231F20' }}
+                    style={{ color: emailWarning ? warningColor : primaryFontColor }}
                     iconStyle={{
-                      color: emailWarning ? '#F44336' : '#9E9E9E',
+                      color: emailWarning ? warningColor : inputIconColor,
                     }}
                     handleRef={ref => (this.emailField = ref)}
                     value={email}
@@ -285,8 +286,8 @@ class Signup extends Component {
                   />
                   <Input
                     containerStyles={styles._inputFieldContainer}
-                    style={{ color: passwordWarning ? '#F44336' : '#231F20' }}
-                    iconStyle={{ color: passwordWarning ? '#F44336' : '#9E9E9E' }}
+                    style={{ color: passwordWarning ? warningColor : primaryFontColor }}
+                    iconStyle={{ color: passwordWarning ? warningColor : inputIconColor }}
                     handleRef={ref => (this.passwordField = ref)}
                     value={password}
                     autoFocus={passwordWarning}
@@ -304,7 +305,7 @@ class Signup extends Component {
                       <View style={styles.warningContainer}>
                         <Icon
                           name={'warning'}
-                          color={'#F44336'}
+                          color={warningColor}
                           size={20}
                         />
                         <BodyText style={styles._warning}>

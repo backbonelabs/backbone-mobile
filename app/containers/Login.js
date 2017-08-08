@@ -185,6 +185,7 @@ class Login extends Component {
 
   render() {
     const { inProgress } = this.props.auth;
+    const { warningColor, primaryFontColor, inputIconColor } = theme;
     const {
       email, password, authError, authErrorMessage, containerHeight, hideContent,
     } = this.state;
@@ -250,8 +251,8 @@ class Login extends Component {
                   }
                   <Input
                     containerStyles={styles._inputFieldContainer}
-                    style={{ color: authError ? '#F44336' : '#231F20' }}
-                    iconStyle={{ color: authError ? '#F44336' : '#9E9E9E' }}
+                    style={{ color: authError ? warningColor : primaryFontColor }}
+                    iconStyle={{ color: authError ? warningColor : inputIconColor }}
                     handleRef={ref => (this.emailField = ref)}
                     value={this.state.email}
                     autoCapitalize="none"
@@ -266,8 +267,8 @@ class Login extends Component {
                   />
                   <Input
                     containerStyles={styles._inputFieldContainer}
-                    style={{ color: authError ? '#F44336' : '#231F20' }}
-                    iconStyle={{ color: authError ? '#F44336' : '#9E9E9E' }}
+                    style={{ color: authError ? warningColor : primaryFontColor }}
+                    iconStyle={{ color: authError ? warningColor : inputIconColor }}
                     handleRef={ref => (this.passwordField = ref)}
                     value={this.state.password}
                     autoCapitalize="none"
@@ -290,7 +291,7 @@ class Login extends Component {
                       <View style={styles.warningContainer}>
                         <Icon
                           name={'warning'}
-                          color={'#F44336'}
+                          color={warningColor}
                           size={20}
                         />
                         <BodyText style={styles._warning}>
