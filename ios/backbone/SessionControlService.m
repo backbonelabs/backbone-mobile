@@ -597,7 +597,8 @@ RCT_EXPORT_METHOD(getSessionState) {
         
         // Queue accelerometer record for Firehose
         NSString *now = [timestampFormatter stringFromDate:[NSDate date]];
-        NSString *recordString = [NSString stringWithFormat:@"%@,%@,%f,%f,%f,,,,%f\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold];
+        NSString *recordString = [NSString stringWithFormat:@"%@,%@,%f,%f,%f,,,,%f\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold / 10000.0];
+        DLog(@"Record %@", recordString);
         NSData *record = [recordString dataUsingEncoding:NSUTF8StringEncoding];
         [firehoseRecorder saveRecord:record streamName:FIREHOSE_POSTURE_SESSION_STREAM];
         
