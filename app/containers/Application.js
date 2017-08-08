@@ -744,7 +744,7 @@ class Application extends Component {
         { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.showFull ? hiddenStyles : {}, { flex: 1 }]}>
           <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
-          <PartialModal show={modalProps.showPartial} config={modalProps.config} />
+          <PartialModal />
           { route.showTabBar && TabBar }
         </View>
       </View>

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
+import autobind from 'class-autobind';
 import { Modal, View } from 'react-native';
 import { connect } from 'react-redux';
 import appActions from '../actions/app';
@@ -7,62 +8,75 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import styles from '../styles/partialModal';
 
-const getButtons = (props) => {
-  const defaultHandler = () => {
-    props.dispatch(appActions.hidePartialModal());
-  };
-  const buttonConfigs = props.config.buttons;
-  return buttonConfigs.map((val, index) => (
-    <Button
-      style={styles._button}
-      text={val.caption}
-      key={index}
-      onPress={val.onPress ? val.onPress : defaultHandler}
-      primary={index === buttonConfigs.length - 1}
-    />
-  ));
-};
+class PartialModal extends Component {
+  constructor(props) {
+    super(props);
+    autobind(this);
+  }
 
-const PartialModal = props => ((props.show &&
-  <Modal
-    animationType="none"
-    transparent
-    visible
-    onRequestClose={props.config.backButtonHandler ? props.config.backButtonHandler :
-      () => {
-        // Empty default handler
-      }
+  getButtons() {
+    const buttonConfigs = this.props.config.buttons;
+    return buttonConfigs.map((val, index) => (
+      <Button
+        style={styles._button}
+        text={val.caption}
+        key={index}
+        onPress={val.onPress ? val.onPress : this.defaultHandler}
+        primary={index === buttonConfigs.length - 1}
+      />
+    ));
+  }
+
+  defaultHandler() {
+    this.props.dispatch(appActions.hidePartialModal());
+  }
+
+  render() {
+    if (!this.props.showPartial) {
+      return null;
     }
-  >
-    <View style={styles.outerContainer}>
-      <View style={styles.innerContainer}>
-        { props.config.topView &&
-          <View style={styles.topView}>
-            {props.config.topView}
+    return (
+      <Modal
+        animationType="none"
+        transparent
+        visible
+        onRequestClose={this.props.config.backButtonHandler ? this.props.config.backButtonHandler :
+          () => {
+            // Empty default handler
+          }
+        }
+      >
+        <View style={styles.outerContainer}>
+          <View style={styles.innerContainer}>
+            { this.props.config.topView &&
+              <View style={styles.topView}>
+                {this.props.config.topView}
+              </View>
+            }
+            { this.props.config.title &&
+              <BodyText
+                style={[
+                  styles._titleText,
+                  this.props.config.title.color && { color: this.props.config.title.color },
+                ]}
+              >
+                {this.props.config.title.caption}
+              </BodyText>
+            }
+            <SecondaryText style={styles._detailText}>
+              {this.props.config.detail.caption}
+            </SecondaryText>
+            { this.props.config.buttons && this.props.config.buttons.length > 0 &&
+              <View style={styles.buttonContainer}>
+                {this.getButtons()}
+              </View>
+            }
           </View>
-        }
-        { props.config.title &&
-          <BodyText
-            style={[
-              styles._titleText,
-              props.config.title.color && { color: props.config.title.color },
-            ]}
-          >
-            {props.config.title.caption}
-          </BodyText>
-        }
-        <SecondaryText style={styles._detailText}>
-          {props.config.detail.caption}
-        </SecondaryText>
-        { props.config.buttons && props.config.buttons.length > 0 &&
-          <View style={styles.buttonContainer}>
-            {getButtons(props)}
-          </View>
-        }
-      </View>
-    </View>
-  </Modal>
-) || null);
+        </View>
+      </Modal>
+    );
+  }
+}
 
 PartialModal.propTypes = {
   dispatch: PropTypes.func,
@@ -79,7 +93,12 @@ PartialModal.propTypes = {
     buttons: PropTypes.array,
     backButtonHandler: PropTypes.func,  // Only used in Android
   }),
-  show: PropTypes.bool,
+  showPartial: PropTypes.bool,
 };
 
-export default connect()(PartialModal);
+const mapStateToProps = (state) => {
+  const { app: { modal } } = state;
+  return { ...modal };
+};
+
+export default connect(mapStateToProps)(PartialModal);

@@ -112,21 +112,21 @@ class DeviceScan extends Component {
       this.initiateScanning();
     } else {
       // Remind user that their Bluetooth is off
-      // this.props.dispatch(appActions.showPartialModal({
-      //   title: {
-      //     caption: 'Error',
-      //     color: theme.warningColor,
-      //   },
-      //   detail: {
-      //     caption: 'Unable to scan. Turn Bluetooth on first',
-      //   },
-      //   buttons: [
-      //     { caption: 'OKAY' },
-      //   ],
-      //   backButtonHandler: () => {
-      //     this.props.dispatch(appActions.hidePartialModal());
-      //   },
-      // }));
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Error',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'Unable to scan. Turn Bluetooth on first',
+        },
+        buttons: [
+          { caption: 'OKAY' },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     }
   }
 
