@@ -29,9 +29,6 @@ export default EStyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  profilePickerContainer: {
-    flex: 0.5,
-  },
   profilePickerItemsContainer: {
     flexDirection: 'row',
     backgroundColor: 'white',
