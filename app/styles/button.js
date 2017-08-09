@@ -52,13 +52,9 @@ export default EStyleSheet.create({
     color: '#000000',
   },
   disabledButton: {
-    ...Platform.select({
-      ios: {
-        backgroundColor: () => (
-          color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 60% opacity
-        ),
-      },
-    }),
+    backgroundColor: () => (
+      color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 60% opacity
+    ),
   },
   disabledSecondaryText: {
     color: () => (
