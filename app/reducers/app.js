@@ -63,6 +63,7 @@ export default (state = {
           showFull: false,
           content: null,
           onClose: null,
+          config: null,
         },
       };
     }
