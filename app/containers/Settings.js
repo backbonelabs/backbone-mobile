@@ -265,11 +265,6 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     autobind(this);
-    this.state = {
-      notificationsEnabled: false,
-      loading: true,
-      sliderActive: false,
-    };
 
     const {
       backboneVibration,
@@ -284,6 +279,10 @@ class Settings extends Component {
     // the user settings in the backend, and that will cause a flicker/lag in
     // the UI when modifying each setting
     this.state = {
+      notificationsEnabled: false,
+      pushNotificationEnabled: true,
+      loading: true,
+      sliderActive: false,
       backboneVibration,
       vibrationStrength,
       vibrationPattern,
