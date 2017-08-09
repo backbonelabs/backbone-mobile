@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Training Actions creates an action to select a level 1`] = `
+Array [
+  Object {
+    "payload": 2,
+    "type": "SELECT_LEVEL",
+  },
+]
+`;
+
+exports[`Training Actions creates an action to select a session 1`] = `
+Array [
+  Object {
+    "payload": 2,
+    "type": "SELECT_SESSION",
+  },
+]
+`;

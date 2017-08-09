@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Training Reducer should handle SELECT_LEVEL 1`] = `
+Object {
+  "plans": Array [
+    Object {
+      "levels": Array [
+        Array [
+          Array [
+            Object {
+              "title": "",
+              "workout": Object {},
+            },
+          ],
+        ],
+      ],
+      "name": "",
+    },
+  ],
+  "selectedLevelIdx": 1,
+  "selectedPlanIdx": 0,
+  "selectedSessionIdx": 0,
+}
+`;
+
+exports[`Training Reducer should handle SELECT_SESSION 1`] = `
+Object {
+  "plans": Array [
+    Object {
+      "levels": Array [
+        Array [
+          Array [
+            Object {
+              "title": "",
+              "workout": Object {},
+            },
+          ],
+        ],
+      ],
+      "name": "",
+    },
+  ],
+  "selectedLevelIdx": 0,
+  "selectedPlanIdx": 0,
+  "selectedSessionIdx": 2,
+}
+`;
+
+exports[`Training Reducer should return initial state 1`] = `
+Object {
+  "plans": Array [
+    Object {
+      "levels": Array [
+        Array [
+          Array [
+            Object {
+              "title": "",
+              "workout": Object {},
+            },
+          ],
+        ],
+      ],
+      "name": "",
+    },
+  ],
+  "selectedLevelIdx": 0,
+  "selectedPlanIdx": 0,
+  "selectedSessionIdx": 0,
+}
+`;
