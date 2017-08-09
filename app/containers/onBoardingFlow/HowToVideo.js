@@ -6,8 +6,9 @@ import styles from '../../styles/onBoardingFlow/deviceSetup';
 import StepBar from '../../components/StepBar';
 import Spinner from '../../components/Spinner';
 import routes from '../../routes';
+import theme from '../../styles/theme';
 
-const showSpinner = () => <Spinner color={'#66BB6A'} />;
+const showSpinner = () => <Spinner color={theme.secondaryColor} />;
 const showErrorMessage = () => (
   <BodyText>An error has occur, Please try again later</BodyText>
 );
