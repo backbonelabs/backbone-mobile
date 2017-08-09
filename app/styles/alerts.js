@@ -8,11 +8,6 @@ const border = {
   borderColor: '#EEEEEE',
 };
 
-const sliderStyle = {
-  width: '85%',
-  justifyContent: 'center',
-};
-
 export default EStyleSheet.create({
   container: {
     width: '100%',
@@ -22,19 +17,6 @@ export default EStyleSheet.create({
     flex: 0.09,
     ...border,
   },
-  vibrationContainer: {
-    flex: 0.08,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: applyWidthDifference(10),
-    ...border,
-  },
-  vibrationText: {
-    flex: 0.85,
-  },
-  vibrationSwitch: {
-    flex: 0.15,
-  },
   vibrationSettingsContainer: {
     flex: 0.39,
     ...border,
@@ -42,22 +24,38 @@ export default EStyleSheet.create({
   sliderContainer: {
     flex: 0.5,
     justifyContent: 'center',
-    alignItems: 'center',
+    marginVertical: applyWidthDifference(15),
   },
   slider: {
     flex: 0.25,
-    ...sliderStyle,
+    justifyContent: 'center',
+    paddingHorizontal: applyWidthDifference(15),
+    width: '100%',
+  },
+  sliderThumb: {
+    width: applyWidthDifference(20),
+    height: applyWidthDifference(20),
+    backgroundColor: '#396600',
+    top: applyWidthDifference(25),
+  },
+  sliderTrack: {
+    height: applyWidthDifference(10),
+    borderRadius: 8,
+    backgroundColor: '#d8d8d8',
   },
   sliderText: {
     flex: 0.4,
     alignItems: 'flex-start',
-    ...sliderStyle,
+    paddingHorizontal: applyWidthDifference(15),
+    justifyContent: 'center',
+    width: '100%',
   },
   sliderDetails: {
     flex: 0.35,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    ...sliderStyle,
+    paddingHorizontal: applyWidthDifference(15),
+    width: '100.0%',
   },
   sliderDetailsText: {
     color: '$primaryFontColor',
@@ -76,11 +74,11 @@ export default EStyleSheet.create({
   },
   batteryLifeWarningContainer: {
     flex: 0.36,
-    alignItems: 'center',
-    paddingTop: applyWidthDifference(15),
-    paddingHorizontal: applyWidthDifference(5),
+    paddingBottom: applyWidthDifference(15),
+    paddingHorizontal: applyWidthDifference(15),
   },
   batteryLifeWarningText: {
+    color: '$primaryFontColor',
     fontSize: fixedResponsiveFontSize(13),
   },
   systemSettingButton: {

@@ -3,27 +3,35 @@ import {
   View,
   Image,
   Alert,
+  AppState,
   Linking,
   ScrollView,
   TouchableOpacity,
+  Platform,
+  PushNotificationIOS,
   NativeModules,
   InteractionManager,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { debounce } from 'lodash';
+import Slider from 'react-native-slider';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
+import userAction from '../actions/user';
 import deviceActions from '../actions/device';
 import routes from '../routes';
 import Button from '../components/Button';
+import Toggle from '../components/Toggle';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import arrow from '../images/settings/arrow.png';
-import sensorSmall from '../images/settings/sensorSmall.png';
 import deviceOrangeIcon from '../images/settings/device-orange-icon.png';
+import deviceErrorIcon from '../images/settings/device-error-icon.png';
+import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
 import styles from '../styles/settings';
+import alertsStyles from '../styles/alerts';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
@@ -31,7 +39,9 @@ import Spinner from '../components/Spinner';
 import Mixpanel from '../utils/Mixpanel';
 
 const { storageKeys, bluetoothStates } = constants;
-const { BluetoothService, Environment } = NativeModules;
+const { BluetoothService, Environment, NotificationService, UserSettingService } = NativeModules;
+
+const isiOS = Platform.OS === 'ios';
 
 const ArrowIcon = () => (
   <View style={styles.settingsRightIcon}>
@@ -55,6 +65,19 @@ const getBatteryIcon = (batteryLevel) => {
   return batteryLevel < 25 ?
     <FontAwesomeIcon name={batteryIcon} style={styles.batteryIconRed} /> :
       <FontAwesomeIcon name={batteryIcon} style={styles.batteryIconGreen} />;
+};
+
+const getDeviceIcon = (props) => {
+  let deviceIcon;
+  if (!props.isConnected) {
+    deviceIcon = deviceErrorIcon;
+  } else if (props.device.batteryLevel < 25) {
+    deviceIcon = deviceLowBatteryIcon;
+  } else {
+    deviceIcon = deviceOrangeIcon;
+  }
+
+  return deviceIcon;
 };
 
 const SensorSettings = props => (
@@ -81,12 +104,17 @@ const SensorSettings = props => (
     style={styles.sensorSettingsContainer}
   >
     <View style={styles.sensorIconContainer}>
-      <Image source={sensorSmall} style={styles.sensorIcon} />
+      <Image source={getDeviceIcon(props)} style={styles.sensorIcon} />
     </View>
     <View style={styles.sensorText}>
-      <BodyText style={styles._sensorTextTitle}>MY BACKBONE</BodyText>
+      <BodyText style={styles._sensorTextTitle}>BACKBONE</BodyText>
       <SecondaryText style={styles._deviceInfoText}>
-        Status: { props.isConnected ? 'Connected' : 'Disconnected' }
+        Status:
+        <SecondaryText
+          style={props.isConnected ? styles._deviceInfoTextGreen : styles._deviceInfoTextRed}
+        >
+          { props.isConnected ? ' Connected' : ' Disconnected' }
+        </SecondaryText>
       </SecondaryText>
       {props.isConnected &&
         <View style={styles.batteryInfo}>
@@ -112,16 +140,6 @@ SensorSettings.propTypes = {
   }),
 };
 
-const SettingsIcon = props => (
-  <View style={styles.settingsLeftIcon}>
-    <Icon name={props.iconName} size={styles.$settingsIconSize} color={theme.primaryColor} />
-  </View>
-);
-
-SettingsIcon.propTypes = {
-  iconName: PropTypes.string,
-};
-
 const SettingsText = props => (
   <View style={styles.settingsText}>
     <BodyText>{props.text}</BodyText>
@@ -130,46 +148,6 @@ const SettingsText = props => (
 
 SettingsText.propTypes = {
   text: PropTypes.string,
-};
-
-const AccountRemindersSettings = props => (
-  <View>
-    <View style={styles.settingsHeader}>
-      <BodyText>ACCOUNT & REMINDERS</BodyText>
-    </View>
-    <TouchableOpacity
-      style={styles.settingsRow}
-      onPress={() => props.navigator.push(routes.profile)}
-    >
-      <SettingsIcon iconName="person" />
-      <SettingsText text="Profile" />
-      <ArrowIcon />
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={styles.settingsRow}
-      onPress={() => props.navigator.push(routes.changePassword)}
-    >
-      <SettingsIcon iconName="lock" />
-      <SettingsText text="Change Password" />
-      <ArrowIcon />
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={styles.settingsRow}
-      onPress={() => props.navigator.push(routes.alerts)}
-    >
-      <SettingsIcon iconName="notifications" />
-      <SettingsText text="Alerts" />
-      <ArrowIcon />
-    </TouchableOpacity>
-  </View>
-);
-
-AccountRemindersSettings.propTypes = {
-  updateNotifications: PropTypes.func,
-  notificationsEnabled: PropTypes.bool,
-  navigator: PropTypes.shape({
-    push: PropTypes.func,
-  }),
 };
 
 const openTOS = () => {
@@ -218,26 +196,13 @@ const openPrivacyPolicy = () => {
 
 const HelpSettings = props => (
   <View>
-    <View style={styles.settingsHeader}>
-      <BodyText>HELP</BodyText>
+    <View style={styles.settingsRowEmpty}>
+      <BodyText />
     </View>
-    <TouchableOpacity
-      style={styles.settingsRow}
-      onPress={() => {
-        Mixpanel.track('openHowTo');
-
-        props.navigator.push(routes.howTo);
-      }}
-    >
-      <SettingsIcon iconName="live-tv" />
-      <SettingsText text="How To" />
-      <ArrowIcon />
-    </TouchableOpacity>
     <TouchableOpacity
       style={styles.settingsRow}
       onPress={() => props.navigator.push(routes.support)}
     >
-      <SettingsIcon iconName="help" />
       <SettingsText text="Support" />
       <ArrowIcon />
     </TouchableOpacity>
@@ -245,7 +210,6 @@ const HelpSettings = props => (
       style={styles.settingsRow}
       onPress={openPrivacyPolicy}
     >
-      <SettingsIcon iconName="description" />
       <SettingsText text="Privacy Policy" />
       <ArrowIcon />
     </TouchableOpacity>
@@ -253,7 +217,6 @@ const HelpSettings = props => (
       style={styles.settingsRow}
       onPress={openTOS}
     >
-      <SettingsIcon iconName="description" />
       <SettingsText text="Terms of Service" />
       <ArrowIcon />
     </TouchableOpacity>
@@ -282,26 +245,101 @@ class Settings extends Component {
     device: PropTypes.shape({
       isConnected: PropTypes.bool,
     }),
+    user: PropTypes.shape({
+      user: PropTypes.shape({
+        _id: PropTypes.string,
+        settings: PropTypes.shape({
+          slouchTimeThreshold: PropTypes.number,
+          postureThreshold: PropTypes.number,
+          backboneVibration: PropTypes.bool,
+          slouchNotification: PropTypes.bool,
+          phoneVibration: PropTypes.bool,
+          vibrationStrength: PropTypes.number,
+          vibrationPattern: PropTypes.number,
+        }),
+      }),
+      errorMessage: PropTypes.string,
+    }),
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     autobind(this);
     this.state = {
       notificationsEnabled: false,
       loading: true,
+      sliderActive: false,
     };
+
+    const {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
+    } = this.props.user.user.settings;
+
+    // Maintain settings in component state because the user settings object
+    // will change back and forth during the asynchronous action for updating
+    // the user settings in the backend, and that will cause a flicker/lag in
+    // the UI when modifying each setting
+    this.state = {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
+    };
+
+    // Debounce state update to smoothen quick slider value changes
+    this.updateSetting = debounce(this.updateSetting, 150);
+    // Debounce user profile update to limit the number of API requests
+    this.updateUserSettingsFromState = debounce(this.updateUserSettingsFromState, 1000);
   }
 
   componentDidMount() {
     // Run expensive operations after the scene is loaded
     InteractionManager.runAfterInteractions(() => {
+      this.checkNotificationPermission();
+      AppState.addEventListener('change', this.handleAppState);
+
       this.props.dispatch(deviceActions.getInfo());
       this.setState({ loading: false });
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    // Check if errorMessage is present in nextProps
+    if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
+      // Check if API error prevented settings update
+      if (this.props.user.user.settings === nextProps.user.user.settings) {
+        Alert.alert('Error', 'Your settings were NOT saved, please try again.');
+      }
+    }
+  }
+
   componentWillUnmount() {
+    // Remove all listeners
+    AppState.removeEventListener('change', this.handleAppState);
+  }
+
+  onSlidingStart() {
+    if (isiOS) {
+      // Disable scrolling when slider is active, only relevant in iOS
+      // as the scrollview is still scrollable when slider is active without this tweak
+      this.setState({ sliderActive: true });
+    }
+  }
+
+  onSlidingComplete(field, value) {
+    if (isiOS) {
+      // Enable scrolling when slider is inactive, only relevant in iOS
+      // as the scrollview is still scrollable when slider is active without this tweak
+      this.setState({ sliderActive: false });
+    }
+
+    // Update value from slider-type settings only after the user has finished sliding
+    this.updateSetting(field, value);
   }
 
   getDevMenu() {
@@ -354,6 +392,67 @@ class Settings extends Component {
     );
   }
 
+  handleAppState(state) {
+    if (state === 'active') {
+      this.checkNotificationPermission();
+    }
+  }
+
+  checkNotificationPermission() {
+    if (isiOS) {
+      PushNotificationIOS.checkPermissions(permissions => {
+        // Update pushNotificationEnabled to true if permissions enabled
+        this.setState({ pushNotificationEnabled: !!permissions.alert });
+      });
+    } else {
+      NotificationService.isPushNotificationEnabled((error, { notificationEnabled }) => {
+        this.setState({ pushNotificationEnabled: notificationEnabled });
+      });
+    }
+  }
+
+  updateSetting(field, value) {
+    this.setState({ [field]: value });
+    this.updateUserSettingsFromState();
+  }
+
+  /**
+   * Update user settings in the backend
+   */
+  updateUserSettingsFromState() {
+    const { _id, settings } = this.props.user.user;
+
+    // Filter through states to exclude non-user-setting fields
+    const {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
+    } = this.state;
+
+    const newSettings = {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
+    };
+
+    this.props.dispatch(userAction.updateUserSettings({
+      _id,
+      settings: Object.assign({}, settings, newSettings),
+    }));
+  }
+
+  openSystemSetting() {
+    if (isiOS) {
+      Linking.openURL('app-settings:');
+    } else {
+      UserSettingService.launchAppSettings();
+    }
+  }
+
   signOut() {
     Alert.alert(
       'Sign Out',
@@ -383,18 +482,128 @@ class Settings extends Component {
       app: { config },
     } = this.props;
 
+    const {
+      backboneVibration,
+      vibrationStrength,
+      vibrationPattern,
+      phoneVibration,
+      slouchNotification,
+      pushNotificationEnabled,
+      sliderActive,
+    } = this.state;
+
     if (this.state.loading) {
       return <Spinner />;
     }
 
     return (
-      <ScrollView>
+      <ScrollView scrollEnabled={!sliderActive}>
         <View style={styles.container}>
           <SensorSettings navigator={navigator} isConnected={isConnected} device={device} />
-          <AccountRemindersSettings
-            navigator={navigator}
-            notificationsEnabled={this.state.notificationsEnabled}
-            updateNotifications={this.updateNotifications}
+          <Toggle
+            value={slouchNotification && pushNotificationEnabled}
+            onChange={this.updateSetting}
+            disabled={!pushNotificationEnabled}
+            text="Slouch Notification"
+            settingName="slouchNotification"
+          />
+          {!pushNotificationEnabled &&
+            <View style={alertsStyles.notificationDisabledWarningContainer}>
+              <SecondaryText style={alertsStyles._notificationDisabledWarningText}>
+                Notifications are disabled in your phone's settings.
+              </SecondaryText>
+              <Button
+                style={alertsStyles._systemSettingButton}
+                primary text="Open Phone Settings"
+                onPress={this.openSystemSetting}
+              />
+            </View>
+          }
+          <Toggle
+            value={false}
+            text="Scheduling"
+            settingName="scheduledReminder"
+            disabled
+          />
+          <View style={styles.settingsRowEmpty}>
+            <BodyText />
+          </View>
+          <Toggle
+            value={backboneVibration}
+            onChange={this.updateSetting}
+            text="Backbone Vibration"
+            settingName="backboneVibration"
+          />
+          <View style={alertsStyles.vibrationSettingsContainer}>
+            <View style={alertsStyles.sliderContainer}>
+              <View style={alertsStyles.sliderText}>
+                <BodyText>Vibration Strength</BodyText>
+              </View>
+              <View style={alertsStyles.slider}>
+                <Slider
+                  minimumValue={20}
+                  maximumValue={100}
+                  step={10}
+                  thumbStyle={alertsStyles.sliderThumb}
+                  trackStyle={alertsStyles.sliderTrack}
+                  minimumTrackTintColor={'#6dc300'}
+                  value={vibrationStrength}
+                  onSlidingStart={this.onSlidingStart}
+                  onSlidingComplete={value => this.onSlidingComplete('vibrationStrength', value)}
+                />
+              </View>
+              <View style={alertsStyles.sliderDetails}>
+                <View style={{ flex: 0.5 }}>
+                  <SecondaryText style={alertsStyles._sliderDetailsText}>LOW</SecondaryText>
+                </View>
+                <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
+                  <SecondaryText style={alertsStyles._sliderDetailsText}>HIGH</SecondaryText>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View style={alertsStyles.vibrationSettingsContainer}>
+            <View style={alertsStyles.sliderContainer}>
+              <View style={alertsStyles.sliderText}>
+                <BodyText>Vibration Pattern (Buzzes)</BodyText>
+              </View>
+              <View style={alertsStyles.slider}>
+                <Slider
+                  minimumValue={1}
+                  maximumValue={3}
+                  step={1}
+                  thumbStyle={alertsStyles.sliderThumb}
+                  trackStyle={alertsStyles.sliderTrack}
+                  minimumTrackTintColor={'#6dc300'}
+                  value={vibrationPattern}
+                  onSlidingStart={this.onSlidingStart}
+                  onSlidingComplete={value => this.onSlidingComplete('vibrationPattern', value)}
+                />
+              </View>
+              <View style={alertsStyles.sliderDetails}>
+                <View style={{ flex: 0.33 }}>
+                  <SecondaryText style={alertsStyles._sliderDetailsText}>1</SecondaryText>
+                </View>
+                <View style={{ flex: 0.33, alignItems: 'center' }}>
+                  <SecondaryText style={alertsStyles._sliderDetailsText}>2</SecondaryText>
+                </View>
+                <View style={{ flex: 0.33, alignItems: 'flex-end' }}>
+                  <SecondaryText style={alertsStyles._sliderDetailsText}>3</SecondaryText>
+                </View>
+              </View>
+            </View>
+            <View style={alertsStyles.batteryLifeWarningContainer}>
+              <SecondaryText style={alertsStyles._batteryLifeWarningText}>
+                Increasing the vibration strength and pattern of
+                your Backbone will decrease its battery life.
+              </SecondaryText>
+            </View>
+          </View>
+          <Toggle
+            value={phoneVibration}
+            onChange={this.updateSetting}
+            text="Phone Vibration"
+            settingName="phoneVibration"
           />
           <HelpSettings navigator={navigator} />
           <View style={styles.buttonContainer}>
@@ -412,8 +621,8 @@ class Settings extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, device } = state;
-  return { app, device };
+  const { app, device, user } = state;
+  return { app, device, user };
 };
 
 export default connect(mapStateToProps)(Settings);
