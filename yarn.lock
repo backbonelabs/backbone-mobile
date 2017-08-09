@@ -3778,6 +3778,13 @@ raw-body@~2.1.2:
     iconv-lite "0.4.13"
     unpipe "1.0.0"
 
+react-addons-shallow-compare@^15.0.2:
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.0.tgz#b7a4e5ff9f2704c20cf686dd8a05dd08b26de252"
+  dependencies:
+    fbjs "^0.8.4"
+    object-assign "^4.1.0"
+
 react-addons-test-utils@15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-addons-test-utils/-/react-addons-test-utils-15.4.2.tgz#93bcaa718fcae7360d42e8fb1c09756cc36302a2"
@@ -3815,7 +3822,7 @@ react-native-extended-stylesheet@0.3.0:
     object-resolve-path "^1.1.0"
 
 react-native-fs@2.1.0-rc.1:
-  version v2.1.0-rc.1
+  version "2.1.0-rc.1"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.1.0-rc.1.tgz#f6078891005478648738db396e822ec0aefc4b95"
   dependencies:
     base-64 "^0.1.0"
@@ -3836,6 +3843,13 @@ react-native-material-kit@0.4.1:
 react-native-sensitive-info@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-3.0.2.tgz#b2919b9081cdba640b0fa752ef608565babfad1e"
+
+react-native-slider@0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/react-native-slider/-/react-native-slider-0.9.1.tgz#f8ea5e3c48aa3577656719b911fd7dd4c62bf81a"
+  dependencies:
+    react-addons-shallow-compare "^15.0.2"
+    style-equal "^1.0.0"
 
 react-native-snap-carousel@1.2.0:
   version "1.2.0"
@@ -4481,6 +4495,10 @@ strip-bom@^2.0.0:
 strip-json-comments@~1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-1.0.4.tgz#1e15fbcac97d3ee99bf2d73b4c656b082bbafb91"
+
+style-equal@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/style-equal/-/style-equal-1.0.0.tgz#98a1c5922226bfe13c196e73f1940e91b8e66595"
 
 supports-color@^2.0.0:
   version "2.0.0"
