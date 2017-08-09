@@ -461,7 +461,7 @@ class Application extends Component {
                         this.props.dispatch(deviceActions.connect(device.identifier));
                       }
                       // Set initial route to posture dashboard
-                      this.setInitialRoute(routes.postureDashboard);
+                      this.setInitialRoute(routes.dashboard);
                     });
                 }
                 // User did not complete onboarding, set initial route to onboarding
@@ -647,7 +647,7 @@ class Application extends Component {
     const tabBarRoutes = [
       {
         name: 'Session',
-        routeName: 'postureDashboard',
+        routeName: 'dashboard',
         active: sessionActive,
         inactive: sessionInactive,
       },
@@ -677,9 +677,9 @@ class Application extends Component {
                 style={styles.tabBarItem}
                 onPress={() => {
                   if (!isSameRoute) {
-                    // Reset the navigator stack if not on the posture dashboard so
+                    // Reset the navigator stack if not on the dashboard so
                     // the nav stack won't continue to expand.
-                    if (route.name === routes.postureDashboard.name) {
+                    if (route.name === routes.dashboard.name) {
                       this.navigator.push(routes[value.routeName]);
                     } else {
                       this.navigator.resetTo(routes[value.routeName]);

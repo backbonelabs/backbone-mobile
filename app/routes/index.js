@@ -21,6 +21,7 @@ import deviceSetup from './onBoardingFlow/deviceSetup';
 import howToVideo from './onBoardingFlow/howToVideo';
 import deviceScan from './deviceScan';
 import device from './device';
+import dashboard from './dashboard';
 
 export default {
   activity,
@@ -46,4 +47,5 @@ export default {
   deviceScan,
   howToVideo,
   device,
+  dashboard,
 };

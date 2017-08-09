@@ -33,7 +33,7 @@ const HowToVideo = (props) => (
           style={styles._CTAButton}
           text="Done"
           primary
-          onPress={() => props.navigator.resetTo(routes.postureDashboard)}
+          onPress={() => props.navigator.resetTo(routes.dashboard)}
         />
       </View>
     </View>
