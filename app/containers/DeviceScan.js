@@ -118,7 +118,7 @@ class DeviceScan extends Component {
           color: theme.warningColor,
         },
         detail: {
-          caption: 'Unable to scan. Turn Bluetooth on first',
+          caption: 'Unable to scan. Turn on Bluetooth first.',
         },
         buttons: [
           { caption: 'OKAY' },
