@@ -450,7 +450,7 @@ RCT_EXPORT_METHOD(getSessionState) {
   
   NSString *startDateTime = [timestampFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:sessionStartTimestamp]];
   NSString *endDateTime = [timestampFormatter stringFromDate:[NSDate date]];
-  NSString *recordString = [NSString stringWithFormat:@"%@,%@,%d,%d,%@,%@\n", sessionId, userId, sessionDuration, slouchTimeThreshold, startDateTime, endDateTime];
+  NSString *recordString = [NSString stringWithFormat:@"%@,%@,%d,%@,%@\n", sessionId, userId, sessionDuration, startDateTime, endDateTime];
   DLog(@"Firehose posture session record: %@", recordString);
   NSData *record = [recordString dataUsingEncoding:NSUTF8StringEncoding];
   [firehoseRecorder saveRecord:record streamName:FIREHOSE_POSTURE_SESSION];
@@ -597,7 +597,7 @@ RCT_EXPORT_METHOD(getSessionState) {
         
         // Queue accelerometer record for Firehose
         NSString *now = [timestampFormatter stringFromDate:[NSDate date]];
-        NSString *recordString = [NSString stringWithFormat:@"%@,%@,%f,%f,%f,,,,%f\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold / 10000.0];
+        NSString *recordString = [NSString stringWithFormat:@"%@,%@,%f,%f,%f,,,,%f,%d\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold / 10000.0, slouchTimeThreshold];
         DLog(@"Record %@", recordString);
         NSData *record = [recordString dataUsingEncoding:NSUTF8StringEncoding];
         [firehoseRecorder saveRecord:record streamName:FIREHOSE_POSTURE_SESSION_STREAM];

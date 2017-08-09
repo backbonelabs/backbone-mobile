@@ -533,7 +533,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
         String startDateTime = timestampFormatter.format(new Date(sessionStartTimestamp));
         String endDateTime = timestampFormatter.format(new Date());
-        String record = String.format("%s,%s,%d,%d,%s,%s\n", sessionId, userId, sessionDuration, slouchTimeThreshold, startDateTime, endDateTime);
+        String record = String.format("%s,%s,%d,%s,%s\n", sessionId, userId, sessionDuration, startDateTime, endDateTime);
         Timber.d("Firehose posture session record: %s", record);
         firehoseRecorder.saveRecord(record, Constants.FIREHOSE_STREAMS.POSTURE_SESSION);
 
@@ -680,7 +680,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                         // Queue accelerometer record for Firehose
                         String now = timestampFormatter.format(new Date());
-                        firehoseRecorder.saveRecord(String.format("%s,%s,%f,%f,%f,,,,%f\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold / 10000.0), Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
+                        firehoseRecorder.saveRecord(String.format("%s,%s,%f,%f,%f,,,,%f,%d\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold / 10000.0, slouchTimeThreshold), Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
 
                         // Periodically submit records to Firehose to make
                         // sure the storage limit isn't reached. This will be
