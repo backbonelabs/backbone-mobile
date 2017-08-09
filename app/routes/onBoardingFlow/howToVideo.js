@@ -2,7 +2,7 @@ import HowToVideo from '../../containers/onBoardingFlow/HowToVideo';
 
 export default {
   name: 'howToVideo',
-  title: 'How To',
+  title: 'Get Started',
   component: HowToVideo,
   showBackButton: true,
   styles: {
