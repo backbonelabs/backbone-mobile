@@ -16,9 +16,6 @@ const showErrorMessage = () => (
 const HowToVideo = (props) => (
   <View style={styles.howToContainer}>
     <StepBar step={4} style={styles._stepBar} />
-    <BodyText style={styles._howToHeader}>
-      Tutorial
-    </BodyText>
     <View style={styles.howToInnerContainer}>
       <WebView
         style={styles.howToVideo}
