@@ -209,38 +209,5 @@ describe('Dashboard Component', () => {
     const carouselWrapper = wrapper.find('Carousel');
     expect(carouselWrapper.props().firstItem).toBe(initialState.training.selectedSessionIdx);
   });
-
-  // test('Sign up action dispatched when clicked', () => {
-  //   wrapper.setState({ email: 'testing@mail.com', password: 'password' });
-  //   const btn = wrapper.find('Button').at(1).shallow();
-  //   btn.simulate('press');
-  //   const actions = store.getActions();
-  //   expect(actions).toEqual([{ type: 'SIGNUP__START' }]);
-  // });
-
-  // test('Sign up button disabled on first render', () => {
-  //   const btn = wrapper.find('Button').at(1);
-  //   expect(btn.props().disabled).toEqual(true);
-  // });
-
-  // test('Sign up button disabled remove', () => {
-  //   wrapper.setState({ email: 'testing@mail.com', password: 'password' });
-  //   const btn = wrapper.find('Button').at(1);
-  //   expect(btn.props().disabled).toEqual(false);
-  // });
-
-  // test('Email state updates when text change', () => {
-  //   const emailInput = wrapper.find('Input').at(0);
-  //   const nextValue = 'some email';
-  //   emailInput.simulate('changeText', nextValue);
-  //   expect(wrapper.state().email).toEqual(nextValue);
-  // });
-
-  // test('Password state updates when text change', () => {
-  //   const passwordInput = wrapper.find('Input').at(1);
-  //   const nextValue = 'some password';
-  //   passwordInput.simulate('changeText', nextValue);
-  //   expect(wrapper.state().password).toEqual(nextValue);
-  // });
 });
 
