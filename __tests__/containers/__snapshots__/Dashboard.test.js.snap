@@ -109,6 +109,7 @@ exports[`Dashboard Component renders as expected 1`] = `
       onSnapToItem={[Function]}
       renderItem={[Function]}
       shouldOptimizeUpdates={true}
+      showsHorizontalScrollIndicator={false}
       slideStyle={Object {}}
       snapOnAndroid={true}
       swipeThreshold={20}

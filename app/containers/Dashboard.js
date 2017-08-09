@@ -281,6 +281,7 @@ class Dashboard extends Component {
               renderItem={this._getSessionCards}
               sliderWidth={styles.$carouselSliderWidth}
               itemWidth={styles.$carouselItemWidth}
+              showsHorizontalScrollIndicator={false}
               onSnapToItem={this._onSelectSession}
               firstItem={selectedSessionIdx}
               slideStyle={styles.sessionCard}
