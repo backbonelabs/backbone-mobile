@@ -50,13 +50,13 @@ export default EStyleSheet.create({
   deviceRow: {
     flexDirection: 'row',
     marginTop: applyWidthDifference(20),
-    width: '85%',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: applyWidthDifference(15),
   },
   deviceName: {
     color: 'black',
-    fontSize: fixedResponsiveFontSize(12),
+    fontSize: fixedResponsiveFontSize(14),
   },
   devicesNotFound: {
     alignSelf: 'center',
@@ -68,10 +68,7 @@ export default EStyleSheet.create({
     marginBottom: applyWidthDifference(10),
   },
   deviceMessage: {
-    fontSize: fixedResponsiveFontSize(12),
-    flex: 1,
-    textAlign: 'right',
-    paddingRight: applyWidthDifference(10),
+    fontSize: fixedResponsiveFontSize(14),
   },
   receptionIcon: {
     width: applyWidthDifference(20),
@@ -102,9 +99,6 @@ export default EStyleSheet.create({
   },
   skip: {
     textDecorationLine: 'underline',
-  },
-  spinner: {
-    flex: 0,
   },
   howToContainer: {
     flex: 1,

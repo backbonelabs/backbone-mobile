@@ -1,7 +1,7 @@
 import * as types from '../../app/actions/types';
 import authReducer from '../../app/reducers/auth';
 
-describe('__Auth Reducer__', () => {
+describe('Auth Reducer', () => {
   const initialState = {
     accessToken: null,
     passwordResetSent: false,

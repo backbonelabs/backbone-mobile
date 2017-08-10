@@ -23,6 +23,10 @@ export const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN';
 export const SET_ACCESS_TOKEN__START = 'SET_ACCESS_TOKEN__START';
 export const SET_ACCESS_TOKEN__ERROR = 'SET_ACCESS_TOKEN__ERROR';
 
+// dashboard actions
+export const SELECT_LEVEL = 'SELECT_LEVEL';
+export const SELECT_SESSION = 'SELECT_SESSION';
+
 // device actions
 export const DEVICE_CONNECT = 'DEVICE_CONNECT';
 export const DEVICE_CONNECT__START = 'DEVICE_CONNECT__START';

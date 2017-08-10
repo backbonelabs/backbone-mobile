@@ -11,10 +11,13 @@ const buttonShadow = {
     ios: {
       shadowOffset: {
         width: 0,
-        height: 3,
+        height: 1,
       },
-      shadowRadius: 4,
-      shadowOpacity: 0.15,
+      shadowRadius: 2,
+      shadowOpacity: 0.3,
+    },
+    android: {
+      elevation: 1,
     },
   }),
 };
@@ -49,18 +52,26 @@ export default EStyleSheet.create({
     color: '#000000',
   },
   disabledButton: {
-    backgroundColor: () => (
-      color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 40% opacity
-    ),
+    ...Platform.select({
+      // OS-specific drop shadow styling
+      ios: {
+        backgroundColor: () => (
+          color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 60% opacity
+        ),
+      },
+      android: {
+        backgroundColor: '#FFCC80',
+      },
+    }),
   },
   disabledSecondaryText: {
     color: () => (
-      color(EStyleSheet.value('$primaryColor')).clearer(0.4).rgbString() // 40% opacity
+      color(EStyleSheet.value('$primaryColor')).clearer(0.4).rgbString() // 60% opacity
     ),
   },
   disabledSecondaryBorder: {
     borderColor: () => (
-      color(EStyleSheet.value('$primaryColor')).clearer(0.4).rgbString() // 40% opacity
+      color(EStyleSheet.value('$primaryColor')).clearer(0.4).rgbString() // 60% opacity
     ),
   },
   text: {
@@ -71,7 +82,7 @@ export default EStyleSheet.create({
   },
   disabledText: {
     color: () => (
-      color('#FFFFFF').clearer(0.4).rgbString() // 40% opacity
+      color('#FFFFFF').clearer(0.4).rgbString() // 60% opacity
     ),
   },
 });

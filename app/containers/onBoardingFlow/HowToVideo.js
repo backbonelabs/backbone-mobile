@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import { View } from 'react-native';
-import BodyText from '../../components/BodyText';
 import Button from '../../components/Button';
 import styles from '../../styles/onBoardingFlow/deviceSetup';
 import StepBar from '../../components/StepBar';
@@ -10,9 +9,6 @@ import VideoPlayer from '../../components/VideoPlayer';
 const HowToVideo = (props) => (
   <View style={styles.howToContainer}>
     <StepBar step={4} style={styles._stepBar} />
-    <BodyText style={styles._howToHeader}>
-      Tutorial
-    </BodyText>
     <View style={styles.howToInnerContainer}>
       <VideoPlayer
         video={{ uri: 'https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4' }} // video example
@@ -24,7 +20,7 @@ const HowToVideo = (props) => (
           style={styles._CTAButton}
           text="Done"
           primary
-          onPress={() => props.navigator.replace(routes.postureDashboard)}
+          onPress={() => props.navigator.resetTo(routes.dashboard)}
         />
       </View>
     </View>
@@ -33,7 +29,7 @@ const HowToVideo = (props) => (
 
 HowToVideo.propTypes = {
   navigator: PropTypes.shape({
-    replace: PropTypes.func,
+    resetTo: PropTypes.func,
   }),
 };
 

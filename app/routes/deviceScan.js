@@ -1,4 +1,4 @@
-import DeviceScan from '../../containers/onBoardingFlow/DeviceScan';
+import DeviceScan from '../containers/DeviceScan';
 
 export default {
   name: 'deviceScan',

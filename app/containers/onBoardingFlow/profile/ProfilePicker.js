@@ -11,6 +11,7 @@ import autobind from 'class-autobind';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoardingFlow/profile';
 
+const isiOS = Platform.OS === 'ios';
 const {
   height: heightConstants,
   weight: weightConstants,
@@ -239,15 +240,25 @@ export default class ProfilePicker extends Component {
   }
 
   render() {
+    const profilePickerContainer = { flex: 0.5 };
+
+    if (!isiOS) {
+      if (this.props.pickerType === 'birthdate') {
+        profilePickerContainer.flex = 0;
+      } else {
+        profilePickerContainer.flex = 0.2;
+      }
+    }
+
     return (
-      <View style={styles.profilePickerContainer}>
+      <View style={profilePickerContainer}>
         { (() => {
           const currentDate = new Date();
 
           switch (this.props.pickerType) {
             case 'birthdate':
               // Show the appropriate date component based on OS
-              if (Platform.OS === 'ios') {
+              if (isiOS) {
                 // iOS
                 return (
                   <DatePickerIOS

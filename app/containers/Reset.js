@@ -125,6 +125,7 @@ class Reset extends Component {
 
   render() {
     const { email, emailWarning, containerHeight, logoHeight } = this.state;
+    const { warningColor, primaryFontColor, inputIconColor } = theme;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
     if (!isiOS) {
@@ -154,9 +155,9 @@ class Reset extends Component {
                   <Input
                     style={{
                       ...styles._inputField,
-                      color: emailWarning ? '#F44336' : '#231F20',
+                      color: emailWarning ? warningColor : primaryFontColor,
                     }}
-                    iconStyle={{ color: emailWarning ? '#F44336' : '#9E9E9E' }}
+                    iconStyle={{ color: emailWarning ? warningColor : inputIconColor }}
                     autoCapitalize="none"
                     placeholder="Email"
                     keyboardType="email-address"
@@ -177,7 +178,7 @@ class Reset extends Component {
                     <View style={styles.warningContainer}>
                       <Icon
                         name={'warning'}
-                        color={'#F44336'}
+                        color={warningColor}
                         size={20}
                       />
                       <BodyText style={styles._warning}>

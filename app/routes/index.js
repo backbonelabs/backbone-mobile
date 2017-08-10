@@ -2,7 +2,6 @@ import activity from './activity';
 import login from './login';
 import signup from './signup';
 import profile from './profile';
-import postureDashboard from './posture/postureDashboard';
 import postureCalibrate from './posture/postureCalibrate';
 import postureMonitor from './posture/postureMonitor';
 import postureReport from './posture/postureReport';
@@ -19,14 +18,14 @@ import profileSetupOne from './onBoardingFlow/profileSetupOne';
 import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
 import deviceSetup from './onBoardingFlow/deviceSetup';
 import howToVideo from './onBoardingFlow/howToVideo';
-import deviceScan from './onBoardingFlow/deviceScan';
+import deviceScan from './deviceScan';
 import device from './device';
+import dashboard from './dashboard';
 
 export default {
   activity,
   login,
   signup,
-  postureDashboard,
   postureCalibrate,
   postureMonitor,
   postureReport,
@@ -46,4 +45,5 @@ export default {
   deviceScan,
   howToVideo,
   device,
+  dashboard,
 };
