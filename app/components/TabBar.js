@@ -4,10 +4,11 @@ import {
   View,
   Animated,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import autobind from 'class-autobind';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import styles from '../styles/freeTrainingTabBar';
+import styles from '../styles/tabBar';
 
 class FreeTrainingTabBar extends Component {
   static propTypes = {
@@ -49,9 +50,11 @@ class FreeTrainingTabBar extends Component {
         accessibilityLabel={name}
         accessibilityTraits="button"
         onPress={() => {
-          this.props.toggleSearchBar();
           if (isTabActive) {
-            return this.props.toggleSubview();
+            this.props.toggleSubview();
+          }
+          if (Platform.OS === 'ios') {
+            this.props.toggleSearchBar();
           }
 
           return onPressHandler(page);
@@ -86,7 +89,6 @@ class FreeTrainingTabBar extends Component {
       <View
         style={[
           styles.tabs,
-          { backgroundColor: this.props.backgroundColor },
           this.props.style]}
       >
         {this.props.tabs.map((name, page) => {

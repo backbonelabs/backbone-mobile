@@ -6,6 +6,8 @@ import {
   Animated,
   TouchableOpacity,
   TextInput,
+  InteractionManager,
+  Platform,
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
@@ -13,60 +15,80 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/freeTraining';
 import SecondaryText from '../components/SecondaryText';
-import FreeTrainingTabBar from './FreeTrainingTabBar';
+import TabBar from '../components/TabBar';
 import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
+
 
 class FreeTraining extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     workouts: PropTypes.array,
     isFetchingWorkouts: PropTypes.bool,
+    user: PropTypes.shape({
+      _id: PropTypes.string,
+      favoriteWorkouts: PropTypes.array,
+    }),
   }
 
   constructor() {
     super();
     autobind(this);
-    this.state = {
-      workouts: [
-        { title: 'EXERCISES', type: 1, workouts: [] },
-        { title: 'STRETCHES', type: 2, workouts: [] },
-        { title: 'POSTURE', type: 3, workouts: [] },
-      ],
-      bounceValue: new Animated.Value(600),  // This is the initial position of the subview
-      subViewIsHidden: true,
-      searchBarIsHidden: true,
-      searchText: '',
-      sortListBy: 0, // 0 is alpha, 1 is popularity, 2 is difficulty
-      userFavorites: [], // temporary until mongo db connection is established
-    };
-
+    this.isiOS = Platform.OS === 'ios';
+    this.subViewInitialPosition = this.isiOS ? 600 : 800;
     this.sortCategories = [
       'ALPHABETICAL ORDER (A-Z)',
       'POPULARITY',
       'DIFFICULTY'];
+    // Template for categorizing all workouts into their type
+    this.workoutCategories = [
+        { title: 'EXERCISES', type: 1, workouts: [] },
+        { title: 'STRETCHES', type: 2, workouts: [] },
+        { title: 'POSTURE', type: 3, workouts: [] },
+    ];
+    this.state = {
+      workouts: [],
+      // This is the initial position of the subview
+      bounceValue: new Animated.Value(this.subViewInitialPosition),
+      subViewIsHidden: true,
+      searchBarIsHidden: true,
+      searchText: '',
+      sortListBy: 0, // 0 is alpha, 1 is popularity, 2 is difficulty
+      isLoading: true,
+    };
   }
 
   componentDidMount() {
-    this.props.dispatch(userActions.fetchUserWorkouts());
+    InteractionManager.runAfterInteractions(() => {
+      this.props.dispatch(userActions.fetchUserWorkouts());
+      this.props.dispatch(userActions.fetchUser());
+      this.setState({ isLoading: false });
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     // catagorizes the workouts by type
-    const workouts = this.state.workouts;
-    nextProps.workouts.forEach((workout) => {
-      if (workout.type === workouts[0].type) {
-        workouts[0].workouts.push(workout);
-      } else if (workout.type === workouts[1].type) {
-        workouts[1].workouts.push(workout);
-      } else if (workout.type === workouts[2].type) {
-        workouts[2].workouts.push(workout);
-      }
-    });
+    if (this.props.workouts !== nextProps.workouts) {
+      const workouts = this.workoutCategories.slice();
+      nextProps.workouts.forEach((workout) => {
+        if (workout.type === workouts[0].type) {
+          workouts[0].workouts.push(workout);
+        } else if (workout.type === workouts[1].type) {
+          workouts[1].workouts.push(workout);
+        } else if (workout.type === workouts[2].type) {
+          workouts[2].workouts.push(workout);
+        }
+      });
 
-    this.setState({ workouts });
+      this.setState({ workouts });
+    }
   }
 
+  /**
+   * Creates a new ListView object
+   * @param {Array} dbSource
+   * @return {ListView.DataSource} new ListView object
+   */
   getDataSource(dbSource) {
     const dataSource = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
@@ -75,6 +97,11 @@ class FreeTraining extends Component {
     return dataSource.cloneWithRowsAndSections(this.convertDataToMap(dbSource));
   }
 
+  /**
+   * Filters and sorts workouts for the list view
+   * @param {Array} workouts data
+   * @return {Array} An array of sorted workouts objects
+   */
   convertDataToMap(data) {
     const itemMap = [];
     // Filters the workouts that only matches the text from search bar
@@ -86,20 +113,25 @@ class FreeTraining extends Component {
 
     if (this.state.sortListBy === 0) {
       // Sort by alphabetical order
-      newData.workouts.sort((a, b) => b.title - a.title).forEach((item) => {
-        if (!itemMap[item.title[0]]) {
-          itemMap[item.title[0]] = [];
+      newData.workouts.sort((a, b) => {
+        if (b.title > a.title) return -1;
+        if (b.title < a.title) return 1;
+        return 0;
+      }).forEach((workout) => {
+        const charIndex = (workout.title[0]).toLowerCase();
+        if (!itemMap[charIndex]) {
+          itemMap[charIndex] = [];
         }
-        itemMap[item.title[0]].push(item);
+        itemMap[charIndex].push(workout);
       });
     } else if (this.state.sortListBy === 1) {
       // Sort by most popular
       itemMap['Most Popular'] = newData.workouts.sort((a, b) => b.popularity - a.popularity);
     } else if (this.state.sortListBy === 2) {
       // Sort by difficulty
-      newData.workouts.sort((a, b) => a.difficulty - b.difficulty).forEach((item) => {
+      newData.workouts.sort((a, b) => a.difficulty - b.difficulty).forEach((workout) => {
         let difficultyLabel = '';
-        switch (item.difficulty) {
+        switch (workout.difficulty) {
           case 1:
             difficultyLabel = 'Beginner';
             break;
@@ -115,19 +147,26 @@ class FreeTraining extends Component {
         if (!itemMap[difficultyLabel]) {
           itemMap[difficultyLabel] = [];
         }
-        itemMap[difficultyLabel].push(item);
+        itemMap[difficultyLabel].push(workout);
       });
     }
     return itemMap;
   }
 
+  /**
+   * Toggles the appearance of the search bar only for iOS
+   * Android will have a permanently showing search bar
+   */
   toggleSearchBar() {
     this.setState({ searchBarIsHidden: true, searchText: '' });
   }
 
+  /**
+   * Toggles the subView menu for sorting
+   */
   toggleSubview() {
     const { subViewIsHidden } = this.state;
-    let toValue = 600;
+    let toValue = this.subViewInitialPosition;
 
     if (subViewIsHidden) {
       toValue = 0;
@@ -149,54 +188,82 @@ class FreeTraining extends Component {
     this.setState({ subViewIsHidden: !subViewIsHidden });
   }
 
+  /**
+   * Detects when the listView scrolls beyong the top so
+   * the search bar will appear
+   * @param {Object} event
+   */
   handleScroll(event) {
     if (event.nativeEvent.contentOffset.y < 0) {
       this.setState({ searchBarIsHidden: false });
     }
   }
 
+  /**
+   * Renders the rows for the list view
+   * @param {Object} rowData
+   */
   renderRow(rowData) {
-    const newUserFavorites = this.state.userFavorites;
+    const { _id: userId, favoriteWorkouts } = this.props.user;
+    const { _id: workoutId, title: workoutTitle } = rowData;
+
     let iconName = '';
-    if (newUserFavorites.includes(rowData._id)) {
+    if (favoriteWorkouts.includes(workoutId)) {
       iconName = 'heart';
     } else {
       iconName = 'heart-o';
     }
     return (
-      <View style={{ flexDirection: 'column' }}>
+      <View style={{ flexDirection: 'column' }} >
         <View style={styles.listContainer}>
           <View style={styles.listInnerContainer}>
-            <View style={styles.preview} />
-            <SecondaryText style={styles._listText}>{rowData.title}</SecondaryText>
+            <View style={styles.workoutPreviewBox} />
+            <SecondaryText style={styles._listText}>{workoutTitle}</SecondaryText>
           </View>
           <TouchableOpacity
             onPress={() => {
-              if (!newUserFavorites.includes(rowData._id)) {
-                newUserFavorites.push(rowData._id);
-                this.setState({ userFavorites: newUserFavorites });
-                this.setState({ heartIcon: 'heart' });
+              const newFavoriteWorkouts = favoriteWorkouts.slice();
+              if (!favoriteWorkouts.includes(workoutId)) {
+                newFavoriteWorkouts.push(workoutId);
               } else {
-                const idIndex = newUserFavorites.indexOf(rowData._id);
-                this.state.userFavorites.splice(idIndex, 1);
-                this.setState({ heartIcon: 'heart-o' });
+                const idIndex = newFavoriteWorkouts.indexOf(workoutId);
+                newFavoriteWorkouts.splice(idIndex, 1);
               }
+              this.props.dispatch(userActions.updateUser({
+                _id: userId,
+                favoriteWorkouts: newFavoriteWorkouts,
+              }));
             }}
           >
-            <Icon name={iconName} style={styles._icon} size={25} />
+            <Icon name={iconName} style={styles._heartIcon} size={25} />
           </TouchableOpacity>
-        </View>
-        <View style={styles.barContainer}>
-          <View style={styles.bar} />
         </View>
       </View>
     );
   }
 
+  /**
+   * Renders the header for each list view section
+   * @param {Object} sectionData
+   * @param {String} category
+   */
   renderSectionHeader(sectionData, category) {
     return (
       <View style={styles.section}>
         <Text style={styles.sectionText}>{category}</Text>
+      </View>
+    );
+  }
+
+  /**
+   * Renders list view item seperator
+   * @param {Int} sectionID
+   * @param {Int} rowID
+   */
+  renderSeparator(sectionID, rowID) {
+    return (
+      <View style={styles.barContainer} key={sectionID + rowID}>
+        <View style={styles.bar} key={rowID} />
       </View>
     );
   }
@@ -207,24 +274,39 @@ class FreeTraining extends Component {
       tabLabel={workoutList.title}
       key={workoutList.title}
     >
-      { this.state.searchBarIsHidden ? null :
+      { this.state.searchBarIsHidden && this.isiOS ? null :
         <View style={styles.searchBarContainer}>
           <View style={styles.searchBarIconContainer}>
             <Icon name="search" style={styles.searhBarIcon} color="#BDBDBD" size={15} />
           </View>
-          <TextInput
-            style={styles.searchBarTextInput}
-            placeholder="Search"
-            autoCorrect={false}
-            autoCapitalize="none"
-            onChangeText={(text) => { this.setState({ searchText: text }); }}
-          />
-        </View>}
+          <View>
+            <TextInput
+              style={[styles.searchBarTextInput]}
+              underlineColorAndroid="#EEEEEE"
+              returnKeyType="search"
+              returnKeyLabel="search"
+              placeholder="Search"
+              autoCorrect={false}
+              autoCapitalize="none"
+              overScrollMode="always"
+              onChangeText={(text) => { this.setState({ searchText: text }); }}
+            />
+          </View>
+        </View>
+    }
       <ListView
         dataSource={this.getDataSource(workoutList)}
+        stickySectionHeadersEnabled
+        stickyHeaderIndices={[0]}
+        overScrollMode={'always'}
         renderRow={this.renderRow}
+        renderSeparator={this.renderSeparator}
+        renderFooter={() =>
+          (this.state.searchBarIsHidden && this.isiOS ? null : <View style={styles.footerSpaceBox} />)
+        }
         onPressRow={() => {}}
         renderSectionHeader={this.renderSectionHeader}
+        enableEmptySections
         onScroll={this.handleScroll}
       />
     </View>)
@@ -243,7 +325,7 @@ class FreeTraining extends Component {
       </TouchableOpacity>
     ));
 
-    if (this.props.isFetchingWorkouts) {
+    if (this.props.isFetchingWorkouts || this.state.isLoading) {
       return <Spinner />;
     }
 
@@ -252,7 +334,7 @@ class FreeTraining extends Component {
         <ScrollableTabView
           style={styles.scrollableTabViewContainer}
           renderTabBar={() =>
-            <FreeTrainingTabBar
+            <TabBar
               toggleSearchBar={this.toggleSearchBar}
               toggleSubview={this.toggleSubview}
             />}
@@ -287,6 +369,8 @@ class FreeTraining extends Component {
 const mapStateToProps = (state) => ({
   workouts: state.user.workouts,
   isFetchingWorkouts: state.user.isFetchingWorkouts,
+  favoriteWorkouts: state.user.user.favoriteWorkouts,
+  user: state.user.user,
 });
 
 export default connect(mapStateToProps)(FreeTraining);

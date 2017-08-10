@@ -8,29 +8,16 @@ const {
 
 export default EStyleSheet.create({
   container: {
-    height: '81%',
     alignItems: 'center',
+    flex: 1,
   },
   scrollableTabViewContainer: {
     backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    height: applyWidthDifference(20),
-  },
-  defaultTabBar: {
-    backgroundColor: '#FFF',
-    height: applyWidthDifference(40),
-    paddingTop: applyWidthDifference(10),
-    shadowColor: '#bdbdbd',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 3,
   },
   tabBarUnderlineStyle: {
     backgroundColor: '#2196F3',
-    height: 3,
+    height: 4,
+    borderRadius: 5,
   },
   tabBarTextStyle: {
     fontSize: fixedResponsiveFontSize(12),
@@ -53,10 +40,13 @@ export default EStyleSheet.create({
     width: '60%',
     color: 'black',
   },
-  icon: {
+  heartIcon: {
     color: '#D32F2F',
   },
-  preview: {
+  footerSpaceBox: {
+    height: applyWidthDifference(50),
+  },
+  workoutPreviewBox: {
     height: applyWidthDifference(65),
     width: applyWidthDifference(65),
     borderRadius: 5,
@@ -69,7 +59,7 @@ export default EStyleSheet.create({
     color: '#FFF',
     paddingLeft: 15,
     padding: 7,
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '900',
 
   },
@@ -108,7 +98,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     height: applyWidthDifference(40),
     justifyContent: 'center',
-    marginVertical: 0.5,
+    marginTop: 0.5,
   },
   subViewSortButtonText: {
     fontWeight: 'bold',
@@ -134,29 +124,21 @@ export default EStyleSheet.create({
   },
   searchBarContainer: {
     height: applyWidthDifference(50),
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
   },
   searchBarIconContainer: {
     backgroundColor: '#EEEEEE',
+    justifyContent: 'center',
     height: applyWidthDifference(30),
-    paddingTop: 5,
-    paddingLeft: 8,
-    marginTop: 3,
-    borderTopLeftRadius: 2,
-    borderBottomLeftRadius: 2,
+    paddingHorizontal: 10,
   },
   searchBarTextInput: {
     backgroundColor: '#EEEEEE',
+    justifyContent: 'center',
     height: applyWidthDifference(30),
-    fontSize: 12,
-    paddingLeft: 10,
-    marginTop: 10,
-    width: '90%',
-    borderTopRightRadius: 2,
-    borderBottomRightRadius: 2,
+    fontSize: 14,
+    width: '80%',
   },
 });
