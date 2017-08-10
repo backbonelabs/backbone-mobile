@@ -13,16 +13,22 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.bugsnag.android.Bugsnag;
+
+import timber.log.Timber;
+
 public class VideoActivity extends AppCompatActivity {
     private String videoPath;
 
     private static ProgressDialog progressDialog;
     VideoView myVideoView;
 
+    private final String TAG = VideoActivity.this.getClass().getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.player_fullscreen);
         Intent i = getIntent();
         if(i != null){
@@ -32,11 +38,9 @@ public class VideoActivity extends AppCompatActivity {
             progressDialog.setCancelable(true);
             PlayVideo();
         }
-        else{
-            Toast.makeText(VideoActivity.this, "VideoURL not found", Toast.LENGTH_SHORT).show();
+        else {
+            Toast.makeText(VideoActivity.this, "Video not found", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     private void PlayVideo() {
@@ -46,11 +50,41 @@ public class VideoActivity extends AppCompatActivity {
             mediaController.setAnchorView(myVideoView);
 
             Uri video = Uri.parse(videoPath);
+            Timber.d("Video uri: %s", video.toString());
             myVideoView.setMediaController(mediaController);
             myVideoView.setVideoURI(video);
             myVideoView.requestFocus();
+            myVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    Timber.d("onCompletion called");
+                    try {
+                        mp.prepare();
+                        Timber.d("Video is prepared");
+                    } catch (Exception e) {
+                        Timber.e("MediaPlayer error");
+                        Timber.d("Dismissing progress dialog");
+                        progressDialog.dismiss();
+                        Timber.d("Closing %s", TAG);
+                        finish();
+                    }
+                }
+            });
+            myVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Timber.e("onError called %d %d", what, extra);
+                    Bugsnag.notify(
+                            new Exception(String.format("MediaController error. what = %d, extra = %d", what, extra))
+                    );
+                    // return false so the default error dialog is shown indicating video can't be played
+                    return false;
+                }
+            });
             myVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
                 public void onPrepared(MediaPlayer mp) {
+                    Timber.d("Video prepared, now starting video");
                     progressDialog.dismiss();
                     myVideoView.start();
                 }
@@ -58,8 +92,10 @@ public class VideoActivity extends AppCompatActivity {
 
 
         } catch (Exception e) {
+            Timber.e("PlayVideo error %s", e.toString());
             progressDialog.dismiss();
-            System.out.println("Video Play Error :" + e.toString());
+            Bugsnag.notify(e);
+            Log.e(TAG, "Video play error: " + e.toString());
             finish();
         }
 
