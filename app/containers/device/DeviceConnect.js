@@ -148,7 +148,7 @@ class DeviceConnect extends Component {
     const routebackScenes = {
       onboarding: 'onboarding',
       device: 'device',
-      postureDashboard: 'postureDashboard',
+      dashboard: 'dashboard',
     };
 
     // Loop through routeStack starting with the most recent route
@@ -157,7 +157,7 @@ class DeviceConnect extends Component {
     for (let i = 0; i < routeStack.length; i++) {
       const routeName = routeStack[i].name;
       // Route to the last route before DeviceScan / DeviceConnect
-      // If it matches device or postureDashboard in that order
+      // If it matches device or dashboard in that order
       if (routebackScenes[routeName]) {
         if (routebackScenes[routeName] === 'onboarding') {
           this.props.dispatch(appActions.nextStep());
@@ -166,8 +166,8 @@ class DeviceConnect extends Component {
       }
     }
 
-    // If it doesn't match a property in routebackScenes send to PostureDashboard
-    return this.props.navigator.replace(routes.postureDashboard);
+    // If it doesn't match a property in routebackScenes send to dashboard
+    return this.props.navigator.replace(routes.dashboard);
   }
 
   showBluetoothError() {

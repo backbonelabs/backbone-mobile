@@ -11,11 +11,12 @@ export default (state = {
   isFetchingSessions: false,
   isFetchingWorkouts: false,
 }, action) => {
-  switch (action.type) {
+  const { type, payload } = action;
+  switch (type) {
     case 'LOGIN': {
       return {
         ...state,
-        user: omit(action.payload, 'accessToken'),
+        user: omit(payload, 'accessToken'),
       };
     }
     case 'FETCH_USER__START': {
@@ -29,7 +30,7 @@ export default (state = {
       return {
         ...state,
         isFetching: false,
-        user: action.payload,
+        user: payload,
         errorMessage: null,
       };
     }
@@ -37,7 +38,7 @@ export default (state = {
       return {
         ...state,
         isFetching: false,
-        errorMessage: action.payload.message,
+        errorMessage: payload.message,
       };
     }
     case 'UPDATE_USER__START': {
@@ -52,7 +53,7 @@ export default (state = {
         ...state,
         isUpdating: false,
         errorMessage: null,
-        user: action.payload,
+        user: payload,
         pendingUser: null,
       };
     }
@@ -60,7 +61,7 @@ export default (state = {
       return {
         ...state,
         isUpdating: false,
-        errorMessage: action.payload.message,
+        errorMessage: payload.message,
       };
     }
     case 'UPDATE_USER_SETTINGS__START': {
@@ -76,7 +77,7 @@ export default (state = {
         isUpdating: false,
         user: {
           ...state.user,
-          settings: action.payload,
+          settings: payload,
         },
         errorMessage: null,
       };
@@ -85,10 +86,10 @@ export default (state = {
       return {
         ...state,
         isUpdating: false,
-        errorMessage: action.payload.message,
+        errorMessage: payload.message,
         user: {
           ...state.user,
-          settings: action.payload.settings || state.user.settings,
+          settings: payload.settings || state.user.settings,
         },
       };
     }
@@ -97,7 +98,7 @@ export default (state = {
         ...state,
         isFetchingSessions: false,
         errorMessage: null,
-        sessions: action.payload,
+        sessions: payload,
       };
     }
     case 'FETCH_USER_SESSIONS__START': {
@@ -111,13 +112,13 @@ export default (state = {
       return {
         ...state,
         isFetchingSessions: false,
-        errorMessage: action.payload.message,
+        errorMessage: payload.message,
       };
     }
     case 'SIGNUP': {
       return {
         ...state,
-        user: action.payload.user,
+        user: payload.user,
       };
     }
     case 'SIGN_OUT': {
@@ -133,7 +134,7 @@ export default (state = {
     case 'PREPARE_USER_UPDATE': {
       return {
         ...state,
-        pendingUser: action.payload,
+        pendingUser: payload,
       };
     }
     case 'FETCH_USER_WORKOUTS': {

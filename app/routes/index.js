@@ -21,6 +21,7 @@ import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
 import freeTraining from './freeTraining';
+import dashboard from './dashboard';
 
 export default {
   activity,
@@ -46,4 +47,5 @@ export default {
   device,
   changePassword,
   freeTraining,
+  dashboard,
 };

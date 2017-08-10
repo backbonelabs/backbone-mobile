@@ -16,7 +16,9 @@
   "jest": {
     "preset": "react-native",
     "verbose": true,
-    "setupFiles": ["./jestSetup.js"],
+    "setupFiles": [
+      "./jestSetup.js"
+    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
@@ -40,7 +42,7 @@
     "react-native-material-kit": "0.4.1",
     "react-native-scrollable-tab-view": "0.7.4",
     "react-native-sensitive-info": "3.0.2",
-    "react-native-snap-carousel": "1.2.0",
+    "react-native-snap-carousel": "1.5.0",
     "react-native-svg": "5.1.5",
     "react-native-vector-icons": "2.1.0",
     "react-redux": "4.4.5",
@@ -65,6 +67,7 @@
     "localenv": "0.2.2",
     "react-addons-test-utils": "15.4.2",
     "react-dom": "15.4.2",
+    "react-native-mock": "0.3.1",
     "react-test-renderer": "15.4.2",
     "redux-mock-store": "1.2.3",
     "request": "2.81.0"
