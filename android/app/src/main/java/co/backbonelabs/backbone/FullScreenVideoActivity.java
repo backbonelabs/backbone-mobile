@@ -17,13 +17,13 @@ import com.bugsnag.android.Bugsnag;
 
 import timber.log.Timber;
 
-public class VideoActivity extends AppCompatActivity {
+public class FullScreenVideoActivity extends AppCompatActivity {
     private String videoPath;
 
     private static ProgressDialog progressDialog;
     VideoView myVideoView;
 
-    private final String TAG = VideoActivity.this.getClass().getSimpleName();
+    private final String TAG = FullScreenVideoActivity.this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,20 +34,20 @@ public class VideoActivity extends AppCompatActivity {
         if(i != null){
             myVideoView = (VideoView) findViewById(R.id.videoView);
             videoPath = i.getStringExtra("VIDEO_URL");
-            progressDialog = ProgressDialog.show(VideoActivity.this, "", "Buffering video...", true);
+            progressDialog = ProgressDialog.show(FullScreenVideoActivity.this, "", "Buffering video...", true);
             progressDialog.setCancelable(true); // allow dialog to be dismissed with back button
             progressDialog.setCanceledOnTouchOutside(false); // prevent dialog from being dismissed when touching outside the dialog
             PlayVideo();
         }
         else {
-            Toast.makeText(VideoActivity.this, "Video not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(FullScreenVideoActivity.this, "Video not found", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void PlayVideo() {
         try {
             getWindow().setFormat(PixelFormat.TRANSLUCENT);
-            MediaController mediaController = new MediaController(VideoActivity.this);
+            MediaController mediaController = new MediaController(FullScreenVideoActivity.this);
             mediaController.setAnchorView(myVideoView);
 
             Uri video = Uri.parse(videoPath);
