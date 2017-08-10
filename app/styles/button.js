@@ -52,9 +52,17 @@ export default EStyleSheet.create({
     color: '#000000',
   },
   disabledButton: {
-    backgroundColor: () => (
-      color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 60% opacity
+    ...Platform.select({
+      // OS-specific drop shadow styling
+      ios: {
+        backgroundColor: () => (
+          color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 60% opacity
     ),
+      },
+      android: {
+        backgroundColor: '#FFCC80',
+      },
+    }),
   },
   disabledSecondaryText: {
     color: () => (
