@@ -11,7 +11,7 @@ export default EStyleSheet.create({
   $placeholderTextColor: '#9E9E9E',
   $iconColor: '$primaryFontColor',
   $iconSize: '$inputIconSize',
-  container: {
+  innerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
@@ -34,7 +34,7 @@ export default EStyleSheet.create({
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: fixedResponsiveFontSize(16),
-    width: applyWidthDifference(235),
+    width: '85%',
     height: applyWidthDifference(50),
     paddingHorizontal: applyWidthDifference(45),
     paddingVertical: applyWidthDifference(10),

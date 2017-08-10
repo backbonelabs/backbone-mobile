@@ -39,15 +39,12 @@ const { firmwareUpdateStates: {
 } } = constants;
 
 const {
-  BluetoothService,
   BootLoaderService,
   Environment,
 } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(BootLoaderService);
 const baseFirmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
-
-const { bluetoothStates } = constants;
 
 const getBatteryIcon = (batteryLevel) => {
   let batteryIcon;
@@ -209,20 +206,6 @@ class Device extends Component {
     this.firmwareUpdateErrorMessage = err.message;
   }
 
-  addDevice() {
-    BluetoothService.getState((error, { state }) => {
-      if (!error) {
-        if (state === bluetoothStates.ON) {
-          this.props.navigator.push(routes.deviceAdd);
-        } else {
-          this.showBluetoothError();
-        }
-      } else {
-        this.showBluetoothError();
-      }
-    });
-  }
-
   connectDevice() {
     this.props.dispatch(deviceActions.getInfo());
   }
@@ -315,7 +298,7 @@ class Device extends Component {
           { text: 'Cancel' },
           {
             text: 'Connect',
-            onPress: () => this.props.navigator.push(routes.deviceConnect),
+            onPress: () => this.props.navigator.push(routes.deviceScan),
           },
         ]
       );
