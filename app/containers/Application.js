@@ -462,7 +462,7 @@ class Application extends Component {
                         this.props.dispatch(deviceActions.connect(device.identifier));
                       }
                       // Set initial route to posture dashboard
-                      this.setInitialRoute(routes.settings);
+                      this.setInitialRoute(routes.dashboard);
                     });
                 }
                 // User did not complete onboarding, set initial route to onboarding
