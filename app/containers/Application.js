@@ -66,7 +66,6 @@ const CustomSceneConfig = Object.assign({}, BaseConfig, {
 });
 
 const isiOS = Platform.OS === 'ios';
-
 const statusBarProps = {
   barStyle: 'dark-content',
   backgroundColor: 'white',
@@ -349,7 +348,7 @@ class Application extends Component {
         } else if (this.navigator !== null) {
           const routeStack = this.navigator.getCurrentRoutes();
           const currentRoute = routeStack[routeStack.length - 1];
-          const delay = (currentRoute.name === routes.deviceConnect.name ? 1000 : 0);
+          const delay = (currentRoute.name === routes.deviceSetup.name ? 1000 : 0);
 
           if (status.deviceMode === deviceModes.BOOTLOADER) {
             // When the device failed to load the normal Backbone services,
@@ -466,7 +465,7 @@ class Application extends Component {
                     });
                 }
                 // User did not complete onboarding, set initial route to onboarding
-                this.setInitialRoute(routes.onboarding);
+                this.setInitialRoute(routes.profileSetupOne);
               } else {
                 // There is no user profile in local storage
                 this.setInitialRoute();
@@ -745,12 +744,7 @@ class Application extends Component {
         { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.showFull ? hiddenStyles : {}, { flex: 1 }]}>
           <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
-          <PartialModal
-            show={modalProps.showPartial}
-            config={modalProps.config}
-          >
-            {modalProps.content}
-          </PartialModal>
+          <PartialModal />
           { route.showTabBar && TabBar }
         </View>
       </View>

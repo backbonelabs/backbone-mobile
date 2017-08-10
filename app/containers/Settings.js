@@ -91,7 +91,7 @@ const SensorSettings = props => (
         BluetoothService.getState((error, { state }) => {
           if (!error) {
             if (state === bluetoothStates.ON) {
-              props.navigator.push(routes.deviceAdd);
+              props.navigator.push(routes.deviceScan);
             } else {
               Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
             }

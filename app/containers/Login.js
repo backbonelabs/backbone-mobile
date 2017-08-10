@@ -87,10 +87,10 @@ class Login extends Component {
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
       // User has already gone through onboarding
       if (nextProps.user.hasOnboarded) {
-        this.props.navigator.resetTo(routes.deviceConnect);
+        this.props.navigator.resetTo(routes.dashboard);
       } else {
         // User hasn't completed onboarding process
-        this.props.navigator.resetTo(routes.onboarding);
+        this.props.navigator.resetTo(routes.profileSetupOne);
       }
     } else if (
       !this.props.auth.errorMessage &&
@@ -185,6 +185,7 @@ class Login extends Component {
 
   render() {
     const { inProgress } = this.props.auth;
+    const { warningColor, primaryFontColor, inputIconColor } = theme;
     const {
       email, password, authError, authErrorMessage, containerHeight, hideContent,
     } = this.state;
@@ -248,61 +249,49 @@ class Login extends Component {
                         </View>
                       </View>
                   }
-                  <View style={styles.inputFieldContainer}>
-                    <Input
-                      style={{
-                        ...styles._inputField,
-                        color: authError ? '#F44336' : '#231F20',
-                      }}
-                      iconStyle={{
-                        color: authError ? '#F44336' : '#9E9E9E',
-                      }}
-                      handleRef={ref => (this.emailField = ref)}
-                      value={this.state.email}
-                      autoCapitalize="none"
-                      placeholder="Email"
-                      keyboardType="email-address"
-                      onChangeText={this.onEmailChange}
-                      onSubmitEditing={() => this.passwordField.focus()}
-                      autoCorrect={false}
-                      returnKeyType="next"
-                      iconFont="MaterialIcon"
-                      iconLeftName="email"
-                    />
-                  </View>
-                  <View style={styles.inputFieldContainer}>
-                    <Input
-                      style={{
-                        ...styles._inputField,
-                        color: authError ? '#F44336' : '#231F20',
-                      }}
-                      iconStyle={{
-                        color: authError ? '#F44336' : '#9E9E9E',
-                      }}
-                      handleRef={ref => (this.passwordField = ref)}
-                      value={this.state.password}
-                      autoCapitalize="none"
-                      placeholder="Password"
-                      keyboardType="default"
-                      onChangeText={this.onPasswordChange}
-                      onSubmitEditing={
+                  <Input
+                    containerStyles={styles._inputFieldContainer}
+                    style={{ color: authError ? warningColor : primaryFontColor }}
+                    iconStyle={{ color: authError ? warningColor : inputIconColor }}
+                    handleRef={ref => (this.emailField = ref)}
+                    value={this.state.email}
+                    autoCapitalize="none"
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    onChangeText={this.onEmailChange}
+                    onSubmitEditing={() => this.passwordField.focus()}
+                    autoCorrect={false}
+                    returnKeyType="next"
+                    iconFont="MaterialIcon"
+                    iconLeftName="email"
+                  />
+                  <Input
+                    containerStyles={styles._inputFieldContainer}
+                    style={{ color: authError ? warningColor : primaryFontColor }}
+                    iconStyle={{ color: authError ? warningColor : inputIconColor }}
+                    handleRef={ref => (this.passwordField = ref)}
+                    value={this.state.password}
+                    autoCapitalize="none"
+                    placeholder="Password"
+                    keyboardType="default"
+                    onChangeText={this.onPasswordChange}
+                    onSubmitEditing={
                           !email || !password
                             ? null
                             : this.login
                         }
-                      autoCorrect={false}
-                      secureTextEntry
-                      iconFont="MaterialIcon"
-                      iconLeftName="lock"
-                      returnKeyType="go"
-                    />
-                  </View>
+                    autoCorrect={false}
+                    secureTextEntry
+                    iconFont="MaterialIcon"
+                    iconLeftName="lock"
+                    returnKeyType="go"
+                  />
                   {
                     authError ?
                       <View style={styles.warningContainer}>
                         <Icon
                           name={'warning'}
-                          color={'#F44336'}
+                          color={warningColor}
                           size={20}
                         />
                         <BodyText style={styles._warning}>

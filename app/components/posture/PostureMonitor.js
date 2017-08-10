@@ -283,7 +283,7 @@ class PostureMonitor extends Component {
     if (!isiOS) {
       this.backAndroidListener = BackAndroid.addEventListener('hardwareBackPress', () => {
         if (this.props.sessionState && this.props.sessionState.showSummary) {
-          this.props.navigator.resetTo(routes.postureDashboard);
+          this.props.navigator.resetTo(routes.dashboard);
         } else if (this.state.sessionState !== sessionStates.STOPPED
           && !this.state.hasPendingSessionOperation && !this.props.app.modal.showPartial) {
           // Back button was pressed during an active session.
@@ -946,7 +946,7 @@ class PostureMonitor extends Component {
 
     this.trackUserSession();
     this.props.dispatch(appActions.showFullModal({
-      onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
+      onClose: () => this.props.navigator.resetTo(routes.dashboard),
       content:
         <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
     }));

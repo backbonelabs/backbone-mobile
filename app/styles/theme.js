@@ -17,8 +17,9 @@ const primaryFont = 'Lato';
 const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
 const activeBorderColor = '#85181C';
+const inputIconColor = '#9E9E9E';
 const bannerColor = '#EEE';
-const warningColor = '#DD523B';
+const warningColor = '#D32F2F';
 
 export default {
   primaryColor,
@@ -38,4 +39,5 @@ export default {
   statusBarHeight,
   totalNavHeight,
   screenWidth,
+  inputIconColor,
 };
