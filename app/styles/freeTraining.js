@@ -7,6 +7,7 @@ const {
 } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $settingsIconSize: fixedResponsiveFontSize(25),
   container: {
     alignItems: 'center',
     flex: 1,
@@ -42,6 +43,7 @@ export default EStyleSheet.create({
   },
   heartIcon: {
     color: '#D32F2F',
+    marginRight: applyWidthDifference(5),
   },
   footerSpaceBox: {
     height: applyWidthDifference(50),

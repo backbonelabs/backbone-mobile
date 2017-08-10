@@ -235,7 +235,7 @@ class FreeTraining extends Component {
               }));
             }}
           >
-            <Icon name={iconName} style={styles._heartIcon} size={25} />
+            <Icon name={iconName} style={styles._heartIcon} size={styles.$settingsIconSize} />
           </TouchableOpacity>
         </View>
       </View>
@@ -277,7 +277,7 @@ class FreeTraining extends Component {
       { this.state.searchBarIsHidden && this.isiOS ? null :
         <View style={styles.searchBarContainer}>
           <View style={styles.searchBarIconContainer}>
-            <Icon name="search" style={styles.searhBarIcon} color="#BDBDBD" size={15} />
+            <Icon name="search" style={styles.searchBarIcon} color="#BDBDBD" size={15} />
           </View>
           <View>
             <TextInput
@@ -302,7 +302,8 @@ class FreeTraining extends Component {
         renderRow={this.renderRow}
         renderSeparator={this.renderSeparator}
         renderFooter={() =>
-          (this.state.searchBarIsHidden && this.isiOS ? null : <View style={styles.footerSpaceBox} />)
+          (this.state.searchBarIsHidden && this.isiOS ?
+          null : <View style={styles.footerSpaceBox} />)
         }
         onPressRow={() => {}}
         renderSectionHeader={this.renderSectionHeader}
