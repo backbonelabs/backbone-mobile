@@ -35,7 +35,8 @@ public class VideoActivity extends AppCompatActivity {
             myVideoView = (VideoView) findViewById(R.id.videoView);
             videoPath = i.getStringExtra("VIDEO_URL");
             progressDialog = ProgressDialog.show(VideoActivity.this, "", "Buffering video...", true);
-            progressDialog.setCancelable(true);
+            progressDialog.setCancelable(true); // allow dialog to be dismissed with back button
+            progressDialog.setCanceledOnTouchOutside(false); // prevent dialog from being dismissed when touching outside the dialog
             PlayVideo();
         }
         else {
