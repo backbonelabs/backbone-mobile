@@ -28,7 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
-                new BridgePackage(),
+                new FullScreenBridgePackage(),
                 new ReactVideoPackage(),
                 BugsnagReactNative.getPackage(),
                 new RNFSPackage(),

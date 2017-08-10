@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BridgePackage implements ReactPackage {
+public class FullScreenBridgePackage implements ReactPackage {
 
     @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
@@ -27,7 +27,7 @@ public class BridgePackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new BridgeModule(reactContext));
+        modules.add(new FullScreenBridgeModule(reactContext));
 
         return modules;
     }

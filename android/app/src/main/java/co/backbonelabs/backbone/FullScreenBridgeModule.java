@@ -7,14 +7,14 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
-public class BridgeModule extends ReactContextBaseJavaModule{
-    public BridgeModule(ReactApplicationContext reactContext) {
+public class FullScreenBridgeModule extends ReactContextBaseJavaModule{
+    public FullScreenBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @Override
     public String getName() {
-        return "BridgeModule";
+        return "FullScreenBridgeModule";
     }
     @ReactMethod
     public void showFullscreen(String videoUri) {

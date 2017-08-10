@@ -132,7 +132,7 @@ export default class VideoPlayer extends Component {
   onToggleFullScreen() {
     if (Platform.OS === 'android') {
       const uri = this.props.video.uri;
-      NativeModules.BridgeModule.showFullscreen(uri);
+      NativeModules.FullScreenBridgeModule.showFullscreen(uri);
     } else {
       this.player.presentFullscreenPlayer();
     }
