@@ -24,6 +24,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
     VideoView myVideoView;
 
     private final String TAG = FullScreenVideoActivity.this.getClass().getSimpleName();
+    private boolean hasMediaPlayerError = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +60,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     Timber.d("onCompletion called");
-                    try {
-                        mp.prepare();
-                        Timber.d("Video is prepared");
-                    } catch (Exception e) {
+                    if (hasMediaPlayerError) {
                         Timber.e("MediaPlayer error");
                         Timber.d("Dismissing progress dialog");
                         progressDialog.dismiss();
@@ -75,6 +73,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
                 @Override
                 public boolean onError(MediaPlayer mp, int what, int extra) {
                     Timber.e("onError called %d %d", what, extra);
+                    hasMediaPlayerError = true;
                     Bugsnag.notify(
                             new Exception(String.format("MediaController error. what = %d, extra = %d", what, extra))
                     );
