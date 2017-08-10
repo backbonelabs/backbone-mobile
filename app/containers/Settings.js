@@ -377,6 +377,9 @@ class Settings extends Component {
     }, {
       label: 'Posture Report',
       handler: () => this.props.navigator.push(routes.postureReport),
+    }, {
+      label: 'Sign Out',
+      handler: () => this.signOut(),
     }];
 
     return (
@@ -605,12 +608,8 @@ class Settings extends Component {
             settingName="phoneVibration"
           />
           <HelpSettings navigator={navigator} />
-          <View style={styles.buttonContainer}>
-            <Button
-              primary
-              text="SIGN OUT"
-              onPress={this.signOut}
-            />
+          <View style={styles.settingsRowEmpty}>
+            <BodyText />
           </View>
         </View>
         {config.DEV_MODE && this.getDevMenu()}
