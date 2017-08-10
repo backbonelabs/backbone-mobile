@@ -57,7 +57,7 @@ export default EStyleSheet.create({
       ios: {
         backgroundColor: () => (
           color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 60% opacity
-    ),
+        ),
       },
       android: {
         backgroundColor: '#FFCC80',
