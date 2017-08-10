@@ -31,7 +31,7 @@ const HowToVideo = (props) => (
         primary
         style={styles._button}
         text="DONE"
-        onPress={() => props.navigator.replace(routes.postureDashboard)}
+        onPress={() => props.navigator.replace(routes.dashboard)}
       />
       <View style={{ paddingTop: 15 }}>
         <Button

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`__Auth Reducer__ should handle LOGIN 1`] = `
+exports[`Auth Reducer should handle LOGIN 1`] = `
 Object {
   "accessToken": "testToken",
   "errorMessage": null,
@@ -10,7 +10,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle LOGIN__ERROR 1`] = `
+exports[`Auth Reducer should handle LOGIN__ERROR 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": "testError",
@@ -20,7 +20,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle LOGIN__START 1`] = `
+exports[`Auth Reducer should handle LOGIN__START 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": null,
@@ -30,7 +30,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle PASSWORD_RESET 1`] = `
+exports[`Auth Reducer should handle PASSWORD_RESET 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": null,
@@ -40,7 +40,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle PASSWORD_RESET__ERROR 1`] = `
+exports[`Auth Reducer should handle PASSWORD_RESET__ERROR 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": "testError",
@@ -50,7 +50,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle PASSWORD_RESET__START 1`] = `
+exports[`Auth Reducer should handle PASSWORD_RESET__START 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": null,
@@ -60,7 +60,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle SET_ACCESS_TOKEN 1`] = `
+exports[`Auth Reducer should handle SET_ACCESS_TOKEN 1`] = `
 Object {
   "accessToken": "testToken",
   "errorMessage": null,
@@ -70,7 +70,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle SIGN_OUT 1`] = `
+exports[`Auth Reducer should handle SIGN_OUT 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": null,
@@ -80,7 +80,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle SIGNUP 1`] = `
+exports[`Auth Reducer should handle SIGNUP 1`] = `
 Object {
   "accessToken": "testToken",
   "errorMessage": null,
@@ -90,7 +90,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle SIGNUP__ERROR 1`] = `
+exports[`Auth Reducer should handle SIGNUP__ERROR 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": "testError",
@@ -100,7 +100,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should handle SIGNUP__START 1`] = `
+exports[`Auth Reducer should handle SIGNUP__START 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": null,
@@ -110,7 +110,7 @@ Object {
 }
 `;
 
-exports[`__Auth Reducer__ should return initial state 1`] = `
+exports[`Auth Reducer should return initial state 1`] = `
 Object {
   "accessToken": null,
   "errorMessage": null,
