@@ -20,6 +20,7 @@ const activeBorderColor = '#85181C';
 const inputIconColor = '#9E9E9E';
 const bannerColor = '#EEE';
 const warningColor = '#D32F2F';
+const infoColor = '#32CD32';
 
 export default {
   primaryColor,
@@ -34,6 +35,7 @@ export default {
   inputIconSize,
   bannerColor,
   warningColor,
+  infoColor,
   buttonBorderRadius: 4,
   titleBarHeight,
   statusBarHeight,

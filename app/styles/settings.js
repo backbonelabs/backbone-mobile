@@ -53,10 +53,10 @@ export default EStyleSheet.create({
     color: '$primaryFontColor',
   },
   batteryIconGreen: {
-    color: '#32CD32',
+    color: '$infoColor',
   },
   batteryIconRed: {
-    color: '#FF0000',
+    color: '$warningColor',
   },
   settingsHeader: {
     ...bottomBorder,
