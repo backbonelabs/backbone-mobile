@@ -86,57 +86,53 @@ exports[`Signup Component renders as expected 1`] = `
               <View />
             </View>
           </View>
-          <View>
-            <Input
-              autoCapitalize="none"
-              autoCorrect={false}
-              autoFocus={false}
-              handleRef={[Function]}
-              iconFont="MaterialIcon"
-              iconLeftName="email"
-              iconStyle={
-                Object {
-                  "color": "#9E9E9E",
-                }
+          <Input
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoFocus={false}
+            handleRef={[Function]}
+            iconFont="MaterialIcon"
+            iconLeftName="email"
+            iconStyle={
+              Object {
+                "color": "#9E9E9E",
               }
-              keyboardType="email-address"
-              onChangeText={[Function]}
-              onSubmitEditing={[Function]}
-              placeholder="Email"
-              returnKeyType="next"
-              style={
-                Object {
-                  "color": "#231F20",
-                }
+            }
+            keyboardType="email-address"
+            onChangeText={[Function]}
+            onSubmitEditing={[Function]}
+            placeholder="Email"
+            returnKeyType="next"
+            style={
+              Object {
+                "color": "#231F20",
               }
-              value=""
-            />
-          </View>
-          <View>
-            <Input
-              autoCapitalize="none"
-              autoCorrect={false}
-              autoFocus={false}
-              handleRef={[Function]}
-              iconFont="MaterialIcon"
-              iconLeftName="lock"
-              iconStyle={
-                Object {
-                  "color": "#9E9E9E",
-                }
+            }
+            value=""
+          />
+          <Input
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoFocus={false}
+            handleRef={[Function]}
+            iconFont="MaterialIcon"
+            iconLeftName="lock"
+            iconStyle={
+              Object {
+                "color": "#9E9E9E",
               }
-              keyboardType="default"
-              onChangeText={[Function]}
-              placeholder="Password"
-              secureTextEntry={true}
-              style={
-                Object {
-                  "color": "#231F20",
-                }
+            }
+            keyboardType="default"
+            onChangeText={[Function]}
+            placeholder="Password"
+            secureTextEntry={true}
+            style={
+              Object {
+                "color": "#231F20",
               }
-              value=""
-            />
-          </View>
+            }
+            value=""
+          />
           <View>
             <SecondaryText
               style={Object {}}

@@ -28,7 +28,7 @@ const Banner = props => {
     return (
       <TouchableOpacity
         style={styles.banner}
-        onPress={() => !isConnecting && props.navigator.push(routes.deviceConnect)}
+        onPress={() => !isConnecting && props.navigator.push(routes.deviceScan)}
       >
         { isConnecting || requestingSelfTest ?
           <View><Spinner size="small" /></View>

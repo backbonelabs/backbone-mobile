@@ -81,7 +81,7 @@ class Signup extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.accessToken && nextProps.accessToken) {
-      this.props.navigator.resetTo(routes.onboarding);
+      this.props.navigator.resetTo(routes.profileSetupOne);
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Handles error messages returned from API server
       if (nextProps.errorMessage === 'Email is not available') {
@@ -208,6 +208,7 @@ class Signup extends Component {
       hideContent,
       errorMessage,
     } = this.state;
+    const { warningColor, primaryFontColor, inputIconColor } = theme;
     let newHeight = height - containerHeight - theme.statusBarHeight;
 
     if (!isiOS) {
@@ -263,57 +264,47 @@ class Signup extends Component {
                         </View>
                       </View>
                   }
-                  <View style={styles.inputFieldContainer}>
-                    <Input
-                      style={{
-                        ...styles._inputField,
-                        color: emailWarning ? '#F44336' : '#231F20',
-                      }}
-                      iconStyle={{
-                        color: emailWarning ? '#F44336' : '#9E9E9E',
-                      }}
-                      handleRef={ref => (this.emailField = ref)}
-                      value={email}
-                      autoFocus={emailWarning}
-                      autoCapitalize="none"
-                      placeholder="Email"
-                      keyboardType="email-address"
-                      onChangeText={this.onEmailChange}
-                      onSubmitEditing={() => this.passwordField.focus()}
-                      autoCorrect={false}
-                      returnKeyType="next"
-                      iconFont="MaterialIcon"
-                      iconLeftName="email"
-                    />
-                  </View>
-                  <View style={styles.inputFieldContainer}>
-                    <Input
-                      style={{
-                        ...styles._inputField,
-                        color: passwordWarning ? '#F44336' : '#231F20',
-                      }}
-                      iconStyle={{
-                        color: passwordWarning ? '#F44336' : '#9E9E9E',
-                      }}
-                      handleRef={ref => (this.passwordField = ref)}
-                      value={password}
-                      autoFocus={passwordWarning}
-                      autoCapitalize="none"
-                      placeholder="Password"
-                      keyboardType="default"
-                      onChangeText={this.onPasswordChange}
-                      autoCorrect={false}
-                      secureTextEntry
-                      iconFont="MaterialIcon"
-                      iconLeftName="lock"
-                    />
-                  </View>
+                  <Input
+                    containerStyles={styles._inputFieldContainer}
+                    style={{ color: emailWarning ? warningColor : primaryFontColor }}
+                    iconStyle={{
+                      color: emailWarning ? warningColor : inputIconColor,
+                    }}
+                    handleRef={ref => (this.emailField = ref)}
+                    value={email}
+                    autoFocus={emailWarning}
+                    autoCapitalize="none"
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    onChangeText={this.onEmailChange}
+                    onSubmitEditing={() => this.passwordField.focus()}
+                    autoCorrect={false}
+                    returnKeyType="next"
+                    iconFont="MaterialIcon"
+                    iconLeftName="email"
+                  />
+                  <Input
+                    containerStyles={styles._inputFieldContainer}
+                    style={{ color: passwordWarning ? warningColor : primaryFontColor }}
+                    iconStyle={{ color: passwordWarning ? warningColor : inputIconColor }}
+                    handleRef={ref => (this.passwordField = ref)}
+                    value={password}
+                    autoFocus={passwordWarning}
+                    autoCapitalize="none"
+                    placeholder="Password"
+                    keyboardType="default"
+                    onChangeText={this.onPasswordChange}
+                    autoCorrect={false}
+                    secureTextEntry
+                    iconFont="MaterialIcon"
+                    iconLeftName="lock"
+                  />
                   {
                     errorMessage ?
                       <View style={styles.warningContainer}>
                         <Icon
                           name={'warning'}
-                          color={'#F44336'}
+                          color={warningColor}
                           size={20}
                         />
                         <BodyText style={styles._warning}>

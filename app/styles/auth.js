@@ -46,7 +46,7 @@ export default EStyleSheet.create({
   },
   tabsContainer: {
     flexDirection: 'row',
-    height: applyWidthDifference(40),
+    height: applyWidthDifference(50),
   },
   tab: {
     flex: 1,
@@ -122,10 +122,10 @@ export default EStyleSheet.create({
   },
   CTAButton: {
     width: '100%',
+    borderRadius: 0,
   },
   CTAResetBtn: {
     alignSelf: 'center',
-    borderRadius: 3,
     marginTop: applyWidthDifference(10),
     width: '85%',
   },

@@ -1,43 +1,39 @@
 import React, { PropTypes } from 'react';
-import { WebView, View } from 'react-native';
+import { View, WebView } from 'react-native';
 import BodyText from '../../components/BodyText';
 import Button from '../../components/Button';
+import styles from '../../styles/onBoardingFlow/deviceSetup';
+import StepBar from '../../components/StepBar';
 import Spinner from '../../components/Spinner';
-import styles from '../../styles/onBoarding/device';
-import HeadingText from '../../components/HeadingText';
-
 import routes from '../../routes';
+import theme from '../../styles/theme';
 
-const showSpinner = () => <Spinner />;
+const showSpinner = () => <Spinner color={theme.secondaryColor} />;
 const showErrorMessage = () => (
   <BodyText>An error has occur, Please try again later</BodyText>
 );
 
 const HowToVideo = (props) => (
-  <View key={props.key} style={styles.container}>
-    <View style={styles.headerTextContainer}>
-      <HeadingText size={2}>Tutorial</HeadingText>
-    </View>
-    {props.step === 2 ? <WebView
-      source={{
-        uri: 'https://www.youtube.com/embed/Uo27rJAjriw?rel=0&autoplay=0&showinfo=0&controls=0' }}
-      javaScriptEnabled
-      startInLoadingState
-      renderLoading={showSpinner}
-      renderError={showErrorMessage}
-    /> : null}
-    <View style={styles.buttonContainer}>
-      <Button
-        primary
-        style={styles._button}
-        text="DONE"
-        onPress={() => props.navigator.replace(routes.dashboard)}
+  <View style={styles.howToContainer}>
+    <StepBar step={4} style={styles._stepBar} />
+    <View style={styles.howToInnerContainer}>
+      <WebView
+        style={styles.howToVideo}
+        source={{
+          uri: 'https://www.youtube.com/embed/Uo27rJAjriw?rel=0&autoplay=0&showinfo=0&controls=0' }}
+        javaScriptEnabled
+        startInLoadingState
+        renderLoading={showSpinner}
+        renderError={showErrorMessage}
       />
-      <View style={{ paddingTop: 15 }}>
+    </View>
+    <View style={styles.btnContainer}>
+      <View style={styles.CTAContainer}>
         <Button
-          style={styles._button}
-          text="BACK"
-          onPress={props.previousStep}
+          style={styles._CTAButton}
+          text="Done"
+          primary
+          onPress={() => props.navigator.resetTo(routes.dashboard)}
         />
       </View>
     </View>
@@ -45,12 +41,9 @@ const HowToVideo = (props) => (
 );
 
 HowToVideo.propTypes = {
-  key: PropTypes.number,
-  step: PropTypes.number,
   navigator: PropTypes.shape({
-    replace: PropTypes.func,
+    resetTo: PropTypes.func,
   }),
-  previousStep: PropTypes.func,
 };
 
 export default HowToVideo;
