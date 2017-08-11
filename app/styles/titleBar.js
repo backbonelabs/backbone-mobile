@@ -54,4 +54,8 @@ export default EStyleSheet.create({
   buttonIcon: {
     marginRight: applyWidthDifference(6),
   },
+  settingsIcon: {
+    width: applyWidthDifference(30),
+    height: applyWidthDifference(30),
+  },
 });

@@ -1,9 +1,15 @@
 import React, { PropTypes } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import {
+  Image,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import color from 'color';
 import HeadingText from '../components/HeadingText';
+import settingsIcon from '../images/settings-icon.png';
+import routes from '../routes';
 import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/titleBar';
 
@@ -33,14 +39,27 @@ const TitleBar = (props) => {
     </TouchableOpacity>
   ) : undefined;
 
-  // The route's rightComponent, if present, will be passed the navigator object
-  // so it can perform navigation functions
-  const RightComponent = props.titleBar.rightComponent;
-  const rightButton = RightComponent ? (
-    <View style={[styles.rightComponent, { color: getColorHexForLevel(level) }]}>
-      <RightComponent navigator={props.navigator} />
+  // The right component will be the settings icon by default, but can be
+  // overridden by defining a rightComponent in the route config. The
+  // route's rightComponent, if present, will be passed the navigator
+  // object so it can perform navigation functions.
+  const rightComponent = props.titleBar.rightComponent ? (
+    <props.titleBar.rightComponent navigator={props.navigator} />
+  ) : (
+    <TouchableOpacity
+      onPress={() => {
+        props.navigator.push(routes.settings);
+      }}
+    >
+      <Image source={settingsIcon} style={styles.settingsIcon} />
+    </TouchableOpacity>
+  );
+
+  const rightButton = props.titleBar.showRightComponent && (
+    <View style={styles.rightComponent}>
+      {rightComponent}
     </View>
-  ) : undefined;
+  );
 
   // TitleBar will be visible, i.e., extend pass the status bar, only if the route has a title
   const titleBarStyles = props.titleBar.title ? styles.visibleTitleBar : styles.hiddenTitleBar;
@@ -67,9 +86,9 @@ TitleBar.propTypes = {
     title: PropTypes.string,
     component: PropTypes.oneOfType([null, PropTypes.node]),
     showBackButton: PropTypes.bool,
-    showNavbar: PropTypes.bool,
-    centerComponent: PropTypes.node,
-    rightComponent: PropTypes.node,
+    showRightComponent: PropTypes.bool,
+    centerComponent: PropTypes.oneOfType([null, PropTypes.node]),
+    rightComponent: PropTypes.oneOfType([null, PropTypes.node]),
     styles: PropTypes.object,
   }).isRequired,
   training: PropTypes.shape({
