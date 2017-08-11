@@ -143,4 +143,7 @@ export default EStyleSheet.create({
     borderBottomRightRadius: responsiveWidthHalfCircle * 2,
     backgroundColor: '#FFF',
   },
+  partialSpinnerContainer: {
+    height: applyWidthDifference(25),
+  },
 });

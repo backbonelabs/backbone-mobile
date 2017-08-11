@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   View,
+  Image,
   Alert,
   NativeModules,
 } from 'react-native';
@@ -14,6 +15,8 @@ import deviceActions from '../../actions/device';
 import Spinner from '../../components/Spinner';
 import HeadingText from '../../components/HeadingText';
 import appActions from '../../actions/app';
+import theme from '../../styles/theme';
+import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 
 const { BluetoothService } = NativeModules;
 const { bluetoothStates, storageKeys } = constants;
@@ -90,27 +93,47 @@ class DeviceConnect extends Component {
         if (!error) {
           if (state === bluetoothStates.ON) {
             // Prompt user to reattempt connect upon failed attempt
-            Alert.alert('Error', nextProps.errorMessage, [
-              { text: 'Cancel', onPress: this.goBackToScene },
-              {
-                text: 'Retry',
-                onPress: () => {
-                  if (deviceIdentifier) {
-                    this.props.dispatch(deviceActions.connect(deviceIdentifier));
-                  } else {
-                    // Attempt to use saved device identifier, if any
-                    SensitiveInfo.getItem(storageKeys.DEVICE)
-                      .then(savedDevice => {
-                        if (savedDevice) {
-                          this.props.dispatch(deviceActions.connect(savedDevice.identifier));
-                        } else {
-                          this.props.navigator.replace(routes.deviceScan);
-                        }
-                      });
-                  }
-                },
+            this.props.dispatch(appActions.showPartialModal({
+              topView: (
+                <Image source={deviceErrorIcon} />
+              ),
+              title: {
+                caption: 'Connection Failed',
+                color: theme.warningColor,
               },
-            ]);
+              detail: {
+                caption: nextProps.errorMessage,
+              },
+              buttons: [
+                {
+                  caption: 'CANCEL',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.goBackToScene();
+                  },
+                },
+                {
+                  caption: 'RETRY',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+
+                    if (deviceIdentifier) {
+                      this.props.dispatch(deviceActions.connect(deviceIdentifier));
+                    } else {
+                      // Attempt to use saved device identifier, if any
+                      SensitiveInfo.getItem(storageKeys.DEVICE)
+                        .then(savedDevice => {
+                          if (savedDevice) {
+                            this.props.dispatch(deviceActions.connect(savedDevice.identifier));
+                          } else {
+                            this.props.navigator.replace(routes.deviceScan);
+                          }
+                        });
+                    }
+                  },
+                },
+              ],
+            }));
           } else {
             this.showBluetoothError();
           }
@@ -125,7 +148,7 @@ class DeviceConnect extends Component {
     const routebackScenes = {
       onboarding: 'onboarding',
       device: 'device',
-      postureDashboard: 'postureDashboard',
+      dashboard: 'dashboard',
     };
 
     // Loop through routeStack starting with the most recent route
@@ -134,7 +157,7 @@ class DeviceConnect extends Component {
     for (let i = 0; i < routeStack.length; i++) {
       const routeName = routeStack[i].name;
       // Route to the last route before DeviceScan / DeviceConnect
-      // If it matches device or postureDashboard in that order
+      // If it matches device or dashboard in that order
       if (routebackScenes[routeName]) {
         if (routebackScenes[routeName] === 'onboarding') {
           this.props.dispatch(appActions.nextStep());
@@ -143,8 +166,8 @@ class DeviceConnect extends Component {
       }
     }
 
-    // If it doesn't match a property in routebackScenes send to PostureDashboard
-    return this.props.navigator.replace(routes.postureDashboard);
+    // If it doesn't match a property in routebackScenes send to dashboard
+    return this.props.navigator.replace(routes.dashboard);
   }
 
   showBluetoothError() {

@@ -22,7 +22,7 @@ const DeviceScanSkipButton = props => (
       }
 
       // Else redirect to dashboard
-      return props.navigator.replace(routes.postureDashboard);
+      return props.navigator.replace(routes.dashboard);
     }}
   >
     <BodyText style={{ color: '#FFFFFF' }}>Skip</BodyText>

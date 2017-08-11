@@ -89,6 +89,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
 
                                 if (bluetoothService.isDeviceReady()) {
                                     WritableMap wm = Arguments.createMap();
+                                    wm.putString("name", bluetoothService.getCurrentDevice().getName());
                                     wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
                                     wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
                                     wm.putString("firmwareVersion", version);
@@ -108,6 +109,7 @@ public class DeviceInformationService extends ReactContextBaseJavaModule {
                 hasPendingCallback = false;
 
                 WritableMap wm = Arguments.createMap();
+                wm.putString("name", bluetoothService.getCurrentDevice().getName());
                 wm.putInt("deviceMode", bluetoothService.getCurrentDeviceMode());
                 wm.putString("identifier", bluetoothService.getCurrentDeviceIdentifier());
                 wm.putString("firmwareVersion", "");

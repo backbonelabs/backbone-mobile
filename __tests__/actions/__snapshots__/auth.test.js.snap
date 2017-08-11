@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`__Auth Actions__ creates a SET_ACCESS_TOKEN action 1`] = `
+exports[`Auth Actions creates a SET_ACCESS_TOKEN action 1`] = `
 Object {
   "payload": "testToken",
   "type": "SET_ACCESS_TOKEN",
 }
 `;
 
-exports[`__Auth Actions__ creates a SIGN_OUT action 1`] = `
+exports[`Auth Actions creates a SIGN_OUT action 1`] = `
 Object {
   "type": "SIGN_OUT",
 }
 `;
 
-exports[`__Auth Actions__ creates an action to Login 1`] = `
+exports[`Auth Actions creates an action to Login 1`] = `
 Array [
   Object {
     "type": "LOGIN__START",
@@ -33,7 +33,7 @@ Array [
 ]
 `;
 
-exports[`__Auth Actions__ creates an action to Signup 1`] = `
+exports[`Auth Actions creates an action to Signup 1`] = `
 Array [
   Object {
     "type": "SIGNUP__START",
@@ -55,7 +55,7 @@ Array [
 ]
 `;
 
-exports[`__Auth Actions__ creates an action to reset password 1`] = `
+exports[`Auth Actions creates an action to reset password 1`] = `
 Array [
   Object {
     "type": "PASSWORD_RESET__START",
@@ -68,7 +68,7 @@ Array [
 ]
 `;
 
-exports[`__Auth Actions__ creates an action when Login is unsuccessful 1`] = `
+exports[`Auth Actions creates an action when Login is unsuccessful 1`] = `
 Array [
   Object {
     "type": "LOGIN__START",
@@ -82,7 +82,7 @@ Array [
 ]
 `;
 
-exports[`__Auth Actions__ creates an action when Login returns a server error 1`] = `
+exports[`Auth Actions creates an action when Login returns a server error 1`] = `
 Array [
   Object {
     "type": "LOGIN__START",
@@ -96,7 +96,7 @@ Array [
 ]
 `;
 
-exports[`__Auth Actions__ creates an action when Signup is unsuccessful 1`] = `
+exports[`Auth Actions creates an action when Signup is unsuccessful 1`] = `
 Array [
   Object {
     "type": "SIGNUP__START",
@@ -110,7 +110,7 @@ Array [
 ]
 `;
 
-exports[`__Auth Actions__ creates an action when Signup returns a server error 1`] = `
+exports[`Auth Actions creates an action when Signup returns a server error 1`] = `
 Array [
   Object {
     "type": "SIGNUP__START",
@@ -124,7 +124,7 @@ Array [
 ]
 `;
 
-exports[`__Auth Actions__ creates an action when resetting password is unsuccessful 1`] = `
+exports[`Auth Actions creates an action when resetting password is unsuccessful 1`] = `
 Array [
   Object {
     "type": "PASSWORD_RESET__START",
@@ -138,7 +138,7 @@ Array [
 ]
 `;
 
-exports[`__Auth Actions__ creates an action when resetting password returns a server error 1`] = `
+exports[`Auth Actions creates an action when resetting password returns a server error 1`] = `
 Array [
   Object {
     "type": "PASSWORD_RESET__START",

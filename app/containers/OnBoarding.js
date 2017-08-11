@@ -126,7 +126,7 @@ class OnBoarding extends Component {
       case 1:
         return this.nextStep();
       default:
-        this.props.navigator.replace(routes.postureDashboard);
+        this.props.navigator.replace(routes.dashboard);
     }
   }
 

@@ -22,6 +22,7 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import arrow from '../images/settings/arrow.png';
 import sensorSmall from '../images/settings/sensorSmall.png';
+import deviceOrangeIcon from '../images/settings/device-orange-icon.png';
 import styles from '../styles/settings';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
@@ -29,8 +30,8 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 import Mixpanel from '../utils/Mixpanel';
 
-const { storageKeys } = constants;
-const { Environment } = NativeModules;
+const { storageKeys, bluetoothStates } = constants;
+const { BluetoothService, Environment } = NativeModules;
 
 const ArrowIcon = () => (
   <View style={styles.settingsRightIcon}>
@@ -58,7 +59,25 @@ const getBatteryIcon = (batteryLevel) => {
 
 const SensorSettings = props => (
   <TouchableOpacity
-    onPress={() => props.navigator.push(routes.device)}
+    onPress={() => {
+      // If there's any previously paired device, proceed to the device setting,
+      // else, redirect to the device scanner
+      if (props.device.firmwareVersion) {
+        props.navigator.push(routes.device);
+      } else {
+        BluetoothService.getState((error, { state }) => {
+          if (!error) {
+            if (state === bluetoothStates.ON) {
+              props.navigator.push(routes.deviceAdd);
+            } else {
+              Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+            }
+          } else {
+            Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+          }
+        });
+      }
+    }}
     style={styles.sensorSettingsContainer}
   >
     <View style={styles.sensorIconContainer}>
@@ -88,6 +107,7 @@ SensorSettings.propTypes = {
   }),
   isConnected: PropTypes.bool,
   device: PropTypes.shape({
+    firmwareVersion: PropTypes.string,
     batteryLevel: PropTypes.number,
   }),
 };
@@ -301,24 +321,20 @@ class Settings extends Component {
       label: 'Partial modal example',
       handler: () => {
         this.props.dispatch(appActions.showPartialModal({
-          content: (
-            <View>
-              <BodyText>We've got your back!</BodyText>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 10 }}>
-                <Button
-                  style={{ width: 100 }}
-                  text="Cancel"
-                  onPress={() => this.props.dispatch(appActions.hidePartialModal())}
-                />
-                <Button
-                  style={{ width: 100 }}
-                  text="OK"
-                  primary
-                  onPress={() => this.props.dispatch(appActions.hidePartialModal())}
-                />
-              </View>
-            </View>
+          topView: (
+            <Image source={deviceOrangeIcon} />
           ),
+          title: {
+            caption: 'Connection Lost',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: "It looks like we've lost contact with your device! Try to reconnect?",
+          },
+          buttons: [
+            { caption: 'CANCEL' },
+            { caption: 'OKAY' },
+          ],
         }));
       },
     }, {
