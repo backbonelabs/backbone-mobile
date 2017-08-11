@@ -30,8 +30,8 @@ import FullModal from '../components/FullModal';
 import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
-import TitleBar from '../components/TitleBar';
 import Banner from '../components/Banner';
+import TitleBar from '../containers/TitleBar';
 import routes from '../routes';
 import styles from '../styles/application';
 import theme from '../styles/theme';
@@ -75,16 +75,6 @@ class Application extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     app: PropTypes.shape({
-      titleBar: PropTypes.shape({
-        name: PropTypes.string,
-        title: PropTypes.string,
-        component: PropTypes.oneOfType([null, PropTypes.node]),
-        showBackButton: PropTypes.bool,
-        showNavbar: PropTypes.bool,
-        centerComponent: PropTypes.node,
-        rightComponent: PropTypes.node,
-        styles: PropTypes.object,
-      }),
       modal: PropTypes.shape({
         showFull: PropTypes.bool,
         showPartial: PropTypes.bool,
@@ -660,8 +650,6 @@ class Application extends Component {
   }
 
   renderScene(route, navigator) {
-    const { titleBar } = this.props.app;
-
     // Tab bar component data
     const tabBarRoutes = [
       {
@@ -684,7 +672,7 @@ class Application extends Component {
           // Iterate through tabBarRoutes and set tab bar item info
           tabBarRoutes.map((value, key) => {
             // Check if current route matches tab bar route
-            const isSameRoute = titleBar.name === value.routeName;
+            const isSameRoute = route.name === value.routeName;
             // Set icon to active color if current route matches tab bar route
             const tabBarTextColor = isSameRoute ?
             styles._activeTabBarImage.color : styles._inactiveTabBarImage.color;
@@ -698,7 +686,7 @@ class Application extends Component {
                   if (!isSameRoute) {
                     // Reset the navigator stack if not on the dashboard so
                     // the nav stack won't continue to expand.
-                    if (titleBar.name === routes.dashboard.name) {
+                    if (route.name === routes.dashboard.name) {
                       this.navigator.push(routes[value.routeName]);
                     } else {
                       this.navigator.resetTo(routes[value.routeName]);
@@ -749,7 +737,7 @@ class Application extends Component {
     const { modal: modalProps } = this.props.app;
     const routeStack = this.navigator.getCurrentRoutes();
     const currentRoute = routeStack[routeStack.length - 1];
-    const { component: RouteComponent } = titleBar;
+    const { component: RouteComponent } = route;
 
     return (
       <View style={{ flex: 1 }}>
@@ -761,11 +749,11 @@ class Application extends Component {
         <FullModal show={modalProps.showFull} onClose={modalProps.onClose}>
           {modalProps.content}
         </FullModal>
-        { titleBar.showBanner && <Banner navigator={this.navigator} /> }
+        { route.showBanner && <Banner navigator={this.navigator} /> }
         <View style={[modalProps.showFull ? hiddenStyles : {}, { flex: 1 }]}>
-          <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...titleBar.props} />
+          <RouteComponent navigator={this.navigator} currentRoute={currentRoute} {...route.props} />
           <PartialModal />
-          { titleBar.showTabBar && TabBar }
+          { route.showTabBar && TabBar }
         </View>
       </View>
     );
@@ -801,7 +789,13 @@ class Application extends Component {
 
 const mapStateToProps = (state) => {
   const { app, user: { user }, device } = state;
-  return { app, user, device };
+  return {
+    app: {
+      modal: app.modal,
+    },
+    user,
+    device,
+  };
 };
 
 export default connect(mapStateToProps)(Application);

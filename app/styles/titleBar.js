@@ -26,7 +26,7 @@ export default EStyleSheet.create({
     ...baseTitleBarStyles,
     height: 0,
   },
-  title: {
+  centerContainer: {
     flex: 0.50,
     color: '$secondaryColor',
     backgroundColor: 'transparent',
