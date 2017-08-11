@@ -52,11 +52,6 @@ export default EStyleSheet.create({
     flexDirection: 'row-reverse',
   },
   buttonIcon: {
-    color: '$secondaryColor',
-    marginRight: applyWidthDifference(6),
-  },
-  buttonIconDisabled: {
-    color: color('#FFFFFF').clearer(0.6).rgbString(),
     marginRight: applyWidthDifference(6),
   },
 });
