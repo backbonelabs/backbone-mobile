@@ -123,9 +123,7 @@ export default class VideoPlayer extends Component {
   }
 
   onMutePress() {
-    this.setState({
-      isMuted: !this.state.isMuted,
-    });
+    this.setState((prevState) => ({ isMuted: !prevState.isMuted }));
     this.showControls();
   }
 
