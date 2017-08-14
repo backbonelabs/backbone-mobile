@@ -51,7 +51,11 @@ const TitleBar = (props) => {
         props.navigator.push(routes.settings);
       }}
     >
-      <Image source={settingsIcon} style={styles.settingsIcon} />
+      <Image
+        name="settingsIcon" // primarily used for aiding testing
+        source={settingsIcon}
+        style={styles.settingsIcon}
+      />
     </TouchableOpacity>
   );
 
