@@ -743,11 +743,11 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        if (errorCallBack != null) {
+                        if (currentSessionState == Constants.SESSION_STATES.STOPPED || errorCallBack != null) {
                             boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SLOUCH_CHARACTERISTIC, slouchNotificationStatus);
 
                             // If we failed initiating the descriptor writer, handle the error callback
-                            if (!toggleStatus) {
+                            if (!toggleStatus && errorCallBack != null) {
                                 Log.e(TAG, "Error toggling slouch notification");
                                 errorCallBack.onIntCallBack(1);
                                 errorCallBack = null;
@@ -769,11 +769,11 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SLOUCH_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        if (errorCallBack != null) {
+                        if (currentSessionState == Constants.SESSION_STATES.STOPPED || errorCallBack != null) {
                             boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC, statisticNotificationStatus);
 
                             // If we failed initiating the descriptor writer, handle the error callback
-                            if (!toggleStatus) {
+                            if (!toggleStatus && errorCallBack != null) {
                                 Log.e(TAG, "Error toggling session statistic notification");
                                 errorCallBack.onIntCallBack(1);
                                 errorCallBack = null;
@@ -797,12 +797,15 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        if (errorCallBack != null) {
+                        if (currentSessionState == Constants.SESSION_STATES.STOPPED || errorCallBack != null) {
                             // Toggle accelerometer notification at the end of the 
                             // command flow to prevent concurrency issues on older Android versions
                             bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, accelerometerNotificationStatus);
-                            errorCallBack.onIntCallBack(0);
-                            errorCallBack = null;
+
+                            if (errorCallBack != null) {
+                                errorCallBack.onIntCallBack(0);
+                                errorCallBack = null;
+                            }
                         }
                     }
                     else {
