@@ -14,16 +14,13 @@ import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
-<<<<<<< HEAD
 import freeTraining from './freeTraining';
-=======
 import profileSetupOne from './onBoardingFlow/profileSetupOne';
 import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
 import deviceSetup from './onBoardingFlow/deviceSetup';
 import howToVideo from './onBoardingFlow/howToVideo';
 import deviceScan from './deviceScan';
 import device from './device';
->>>>>>> v2
 import dashboard from './dashboard';
 
 export default {
@@ -43,15 +40,12 @@ export default {
   support,
   howTo,
   changePassword,
-<<<<<<< HEAD
   freeTraining,
-=======
   profileSetupOne,
   profileSetupTwo,
   deviceSetup,
   deviceScan,
   howToVideo,
   device,
->>>>>>> v2
   dashboard,
 };
