@@ -352,6 +352,7 @@ export default class VideoPlayer extends Component {
             style,
             customStyles.video,
           ]}
+          repeat={!!this.props.loop}
           ref={p => { this.player = p; }}
           muted={this.props.muted || this.state.isMuted}
           paused={!this.state.isPlaying}
