@@ -450,7 +450,8 @@ RCT_EXPORT_METHOD(getSessionState) {
   
   NSString *startDateTime = [timestampFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:sessionStartTimestamp]];
   NSString *endDateTime = [timestampFormatter stringFromDate:[NSDate date]];
-  NSString *recordString = [NSString stringWithFormat:@"%@,%@,%d,%@,%@\n", sessionId, userId, sessionDuration, startDateTime, endDateTime];
+  NSString *isProd = [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"DEV_MODE"] boolValue] ? @"false" : @"true";
+  NSString *recordString = [NSString stringWithFormat:@"%@,%@,%d,%@,%@,%@\n", sessionId, userId, sessionDuration, startDateTime, endDateTime, isProd];
   DLog(@"Firehose posture session record: %@", recordString);
   NSData *record = [recordString dataUsingEncoding:NSUTF8StringEncoding];
   [firehoseRecorder saveRecord:record streamName:FIREHOSE_POSTURE_SESSION];
