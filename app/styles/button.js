@@ -1,8 +1,26 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+
+const buttonShadow = {
+  ...Platform.select({
+      // OS-specific drop shadow styling
+    ios: {
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowRadius: 2,
+      shadowOpacity: 0.3,
+    },
+    android: {
+      elevation: 1,
+    },
+  }),
+};
 
 export default EStyleSheet.create({
   button: {
@@ -10,6 +28,10 @@ export default EStyleSheet.create({
     backgroundColor: '$secondaryColor',
     width: applyWidthDifference(150),
     height: applyWidthDifference(50),
+    borderRadius: 3,
+  },
+  primaryBtn: {
+    ...buttonShadow,
   },
   secondaryBtn: {
     backgroundColor: '#FFFFFF',
@@ -18,11 +40,10 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#3b5998',
     width: '100%',
+    ...buttonShadow,
   },
   secondaryActive: {
-    borderColor: '#CCCCCC',
-    borderWidth: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
   },
   secondaryTextStyles: {
     color: '#AAAAAA',
@@ -31,18 +52,26 @@ export default EStyleSheet.create({
     color: '#000000',
   },
   disabledButton: {
-    backgroundColor: () => (
-      color(EStyleSheet.value('$secondaryColor')).clearer(0.0).rgbString() // 40% opacity
-    ),
+    ...Platform.select({
+      // OS-specific drop shadow styling
+      ios: {
+        backgroundColor: () => (
+          color(EStyleSheet.value('$secondaryColor')).clearer(0.4).rgbString() // 60% opacity
+        ),
+      },
+      android: {
+        backgroundColor: '#FFCC80',
+      },
+    }),
   },
   disabledSecondaryText: {
     color: () => (
-      color(EStyleSheet.value('$primaryColor')).clearer(0.6).rgbString() // 40% opacity
+      color(EStyleSheet.value('$primaryColor')).clearer(0.4).rgbString() // 60% opacity
     ),
   },
   disabledSecondaryBorder: {
     borderColor: () => (
-      color(EStyleSheet.value('$primaryColor')).clearer(0.6).rgbString() // 40% opacity
+      color(EStyleSheet.value('$primaryColor')).clearer(0.4).rgbString() // 60% opacity
     ),
   },
   text: {
@@ -53,7 +82,7 @@ export default EStyleSheet.create({
   },
   disabledText: {
     color: () => (
-      color('#FFFFFF').clearer(0.6).rgbString() // 40% opacity
+      color('#FFFFFF').clearer(0.4).rgbString() // 60% opacity
     ),
   },
 });

@@ -4,8 +4,6 @@ import {
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
-  ONBOARDING_NEXT_STEP,
-  REMOVE_ONBOARDING_NEXT_STEP,
 } from './types';
 
 export default {
@@ -32,11 +30,5 @@ export default {
   },
   hidePartialModal() {
     return { type: HIDE_PARTIAL_MODAL };
-  },
-  nextStep() {
-    return { type: ONBOARDING_NEXT_STEP };
-  },
-  removeNextStep() {
-    return { type: REMOVE_ONBOARDING_NEXT_STEP };
   },
 };

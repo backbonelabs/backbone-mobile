@@ -44,7 +44,7 @@ class Input extends Component {
 
   onFocus() {
     this.setState({
-      borderWidth: 0.5,
+      borderWidth: 1,
     });
   }
 
@@ -61,6 +61,7 @@ class Input extends Component {
       iconStyle,
       iconFont,
       iconLeftName,
+      containerStyles,
       ...remainingProps,
     } = this.props;
 
@@ -79,8 +80,9 @@ class Input extends Component {
     const Icon = iconMap[iconFont];
 
     return (
-      <View style={[styles.container, this.props.containerStyles]}>
-        {Icon && iconLeftName
+      <View style={containerStyles}>
+        <View style={styles.innerContainer}>
+          {Icon && iconLeftName
           ? <Icon
             name={iconLeftName}
             color={styles.$iconColor}
@@ -88,15 +90,16 @@ class Input extends Component {
             style={iconStyles}
           />
           : null}
-        <TextInput
-          ref={ref => handleRef(ref)}
-          style={inputStyles}
-          placeholderTextColor={styles.$placeholderTextColor}
-          underlineColorAndroid={'transparent'}
-          onBlur={this.onBlur}
-          onFocus={this.onFocus}
-          {...remainingProps}
-        />
+          <TextInput
+            ref={ref => handleRef(ref)}
+            style={inputStyles}
+            placeholderTextColor={styles.$placeholderTextColor}
+            underlineColorAndroid={'transparent'}
+            onBlur={this.onBlur}
+            onFocus={this.onFocus}
+            {...remainingProps}
+          />
+        </View>
       </View>
     );
   }

@@ -5,14 +5,13 @@ import {
   Platform,
   DatePickerIOS,
   DatePickerAndroid,
-  TouchableOpacity,
   Alert,
 } from 'react-native';
 import autobind from 'class-autobind';
 import constants from '../../../utils/constants';
-import styles from '../../../styles/onBoarding/profile';
-import BodyText from '../../../components/BodyText';
+import styles from '../../../styles/onBoardingFlow/profile';
 
+const isiOS = Platform.OS === 'ios';
 const {
   height: heightConstants,
   weight: weightConstants,
@@ -129,7 +128,12 @@ export default class ProfilePicker extends Component {
   }
 
   _valueChangeHandler(value) {
-    this.setState({ currentValue: value });
+    this.setState(() => ({ currentValue: value }), this._updateProfile);
+  }
+
+  _onDateChange(date) {
+    this.setState({ currentValue: date });
+    this.props.updateProfile(this.props.pickerType, date);
   }
 
   _heightTypeChangeHandler(unit) {
@@ -141,10 +145,10 @@ export default class ProfilePicker extends Component {
       );
       const inchToCentimeter = Math.round(currentValue * heightConstants.conversionValue);
 
-      this.setState({
+      this.setState(() => ({
         currentValue: equalsInch ? centimeterToInch : inchToCentimeter,
         currentUnit: unit,
-      });
+      }), this._updateProfile);
     }
   }
 
@@ -155,10 +159,10 @@ export default class ProfilePicker extends Component {
       const kilogramToPound = Math.round(currentValue / weightConstants.conversionValue);
       const poundToKilogram = Math.ceil(currentValue * weightConstants.conversionValue);
 
-      this.setState({
+      this.setState(() => ({
         currentValue: equalsPound ? kilogramToPound : poundToKilogram,
         currentUnit: unit,
-      });
+      }), this._updateProfile);
     }
   }
 
@@ -171,6 +175,15 @@ export default class ProfilePicker extends Component {
       default:
         return;
     }
+  }
+
+  _updateProfile() {
+    return this.props.updateProfile(this.props.pickerType, {
+      ...this.props[this.props.pickerType],
+      value: this.state.currentValue,
+      unit: this.state.currentUnit,
+      label: this._getLabel(this.props.pickerType, this.state.currentValue),
+    });
   }
 
   _showPickers() {
@@ -227,50 +240,32 @@ export default class ProfilePicker extends Component {
   }
 
   render() {
+    const profilePickerContainer = { flex: 0.5 };
+
+    if (!isiOS) {
+      if (this.props.pickerType === 'birthdate') {
+        profilePickerContainer.flex = 0;
+      } else {
+        profilePickerContainer.flex = 0.2;
+      }
+    }
+
     return (
-      <View style={styles.profilePickerContainer}>
-        { Platform.OS === 'android' && this.props.pickerType === 'birthdate' ? null : (
-          // If the birthdate field is selected, only show the picker header on iOS
-          // because the Android date picker is a modal that automatically closes after
-          // selecting a date, so upon close, it would update the profile and there would
-          // be no point in showing this save header bar
-          <View style={styles.profilePickerHeader}>
-            <TouchableOpacity
-              style={styles.profilePickerHeaderButton}
-              onPress={() => {
-                const { pickerType } = this.props;
-                if (pickerType === 'birthdate') {
-                  this.props.updateProfile(pickerType, this.state.currentValue);
-                } else {
-                  this.props.updateProfile(this.props.pickerType, {
-                    ...this.props[this.props.pickerType],
-                    value: this.state.currentValue,
-                    unit: this.state.currentUnit,
-                    label: this._getLabel(this.props.pickerType, this.state.currentValue),
-                  });
-                }
-                // This will unmount the current ProfilePicker instance
-                this.props.setPickerType();
-              }}
-            >
-              <BodyText style={styles._profilePickerHeaderText}>Save</BodyText>
-            </TouchableOpacity>
-          </View>
-        )}
+      <View style={profilePickerContainer}>
         { (() => {
           const currentDate = new Date();
 
           switch (this.props.pickerType) {
             case 'birthdate':
               // Show the appropriate date component based on OS
-              if (Platform.OS === 'ios') {
+              if (isiOS) {
                 // iOS
                 return (
                   <DatePickerIOS
                     date={this.state.currentValue}
                     maximumDate={currentDate}
                     mode="date"
-                    onDateChange={date => this.setState({ currentValue: date })}
+                    onDateChange={this._onDateChange}
                   />
                 );
               }
@@ -284,8 +279,10 @@ export default class ProfilePicker extends Component {
                   const { action, year, month, day } = selection;
                   if (action !== DatePickerAndroid.dismissedAction) {
                     const date = new Date(year, month, day);
-                    this.props.updateProfile('birthdate', date, true);
+                    return this.props.updateProfile('birthdate', date);
                   }
+                  // presses cancel
+                  return this.props.updateProfile('birthdate', null);
                 })
                 .catch(() => {
                   Alert.alert('Error', 'Unexpected error. Please try again.');
