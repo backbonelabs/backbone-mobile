@@ -235,14 +235,13 @@ export default class VideoPlayer extends Component {
   }
 
   renderThumbnail() {
-    const { thumbnail, style, customStyles, ...props } = this.props;
+    const { thumbnail, customStyles, ...props } = this.props;
     return (
       <Image
         {...props}
         style={[
           styles.thumbnail,
           this.getSizeStyles(),
-          style,
           customStyles.thumbnail,
         ]}
         source={thumbnail}
@@ -337,7 +336,6 @@ export default class VideoPlayer extends Component {
   renderVideo() {
     const {
       video,
-      style,
       resizeMode,
       customStyles,
       ...props,
@@ -349,7 +347,6 @@ export default class VideoPlayer extends Component {
           style={[
             styles.video,
             this.getSizeStyles(),
-            style,
             customStyles.video,
           ]}
           repeat={!!this.props.loop}
@@ -377,14 +374,14 @@ export default class VideoPlayer extends Component {
   }
 
   renderContent() {
-    const { thumbnail, style } = this.props;
+    const { thumbnail } = this.props;
     const { isStarted } = this.state;
 
     if (!isStarted && thumbnail) {
       return this.renderThumbnail();
     } else if (!isStarted) {
       return (
-        <View style={[styles.preloadingPlaceholder, this.getSizeStyles(), style]}>
+        <View style={[styles.preloadingPlaceholder, this.getSizeStyles()]}>
           {this.renderStartButton()}
         </View>
       );
@@ -393,8 +390,9 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
+    const { customStyles, style } = this.props;
     return (
-      <View onLayout={this.onLayout} style={this.props.customStyles.wrapper}>
+      <View onLayout={this.onLayout} style={[style, customStyles.wrapper]}>
         {this.renderContent()}
       </View>
     );
