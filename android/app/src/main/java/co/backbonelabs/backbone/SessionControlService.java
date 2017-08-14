@@ -533,7 +533,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
         String startDateTime = timestampFormatter.format(new Date(sessionStartTimestamp));
         String endDateTime = timestampFormatter.format(new Date());
-        String record = String.format("%s,%s,%d,%s,%s\n", sessionId, userId, sessionDuration, startDateTime, endDateTime);
+        String isProd = BuildConfig.DEV_MODE.equals("true") ? "false" : "true";
+        String record = String.format("%s,%s,%d,%s,%s,%s\n", sessionId, userId, sessionDuration, startDateTime, endDateTime, isProd);
         Timber.d("Firehose posture session record: %s", record);
         firehoseRecorder.saveRecord(record, Constants.FIREHOSE_STREAMS.POSTURE_SESSION);
 
