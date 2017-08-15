@@ -7,7 +7,9 @@ export default (state = {
   pendingUser: null,
   errorMessage: null,
   sessions: [],
+  workouts: [],
   isFetchingSessions: false,
+  isFetchingWorkouts: false,
 }, action) => {
   const { type, payload } = action;
   switch (type) {
@@ -133,6 +135,28 @@ export default (state = {
       return {
         ...state,
         pendingUser: payload,
+      };
+    }
+    case 'FETCH_USER_WORKOUTS': {
+      return {
+        ...state,
+        isFetchingWorkouts: false,
+        errorMessage: null,
+        workouts: action.payload,
+      };
+    }
+    case 'FETCH_USER_WORKOUTS__START': {
+      return {
+        ...state,
+        isFetchingWorkouts: true,
+        errorMessage: null,
+      };
+    }
+    case 'FETCH_USER_WORKOUTS__ERROR': {
+      return {
+        ...state,
+        isFetchingWorkouts: false,
+        errorMessage: action.payload.message,
       };
     }
     default:
