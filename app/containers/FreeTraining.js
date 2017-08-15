@@ -118,7 +118,7 @@ class FreeTraining extends Component {
         if (b.title < a.title) return 1;
         return 0;
       }).forEach((workout) => {
-        const charIndex = (workout.title[0]).toLowerCase();
+        const charIndex = (workout.title[0]).toUpperCase();
         if (!itemMap[charIndex]) {
           itemMap[charIndex] = [];
         }
