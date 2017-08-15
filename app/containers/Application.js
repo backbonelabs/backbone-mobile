@@ -652,6 +652,12 @@ class Application extends Component {
         inactive: sessionInactive,
       },
       {
+        name: 'Free Training',
+        routeName: 'freeTraining',
+        active: sessionActive,
+        inactive: sessionInactive,
+      },
+      {
         name: 'Settings',
         routeName: 'settings',
         active: settingsActive,
