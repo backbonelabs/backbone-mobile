@@ -10,7 +10,20 @@ exports[`TitleBar Component renders as expected 1`] = `
     ]
   }
 >
-  <View />
+  <View>
+    <TouchableOpacity
+      activeOpacity={0.2}
+      focusedOpacity={0.7}
+      onPress={[Function]}
+    >
+      <Icon
+        allowFontScaling={false}
+        color="#FFFFFF"
+        name="person"
+        size={12}
+      />
+    </TouchableOpacity>
+  </View>
   <HeadingText
     size={2}
     style={

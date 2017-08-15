@@ -33,11 +33,24 @@ const TitleBar = (props) => {
               color(levelColorCode).clearer(0.6).rgbString() : levelColorCode,
           },
         ]}
-        size={styles.$leftButtonIconSize}
+        size={styles.$backButtonIconSize}
         color={getColorHexForLevel(level)}
       />
     </TouchableOpacity>
-  ) : undefined;
+  ) : (
+    <TouchableOpacity
+      style={styles.leftComponent}
+      onPress={() => props.navigator.push(routes.profile)}
+    >
+      {/* TODO: REPLACE WITH IMAGE COMPONENT OF USER'S PHOTO */}
+      <Icon
+        name="person"
+        style={styles.profileIcon}
+        color="#FFFFFF"
+        size={styles.$profileIconSize}
+      />
+    </TouchableOpacity>
+  );
 
   // The right component will be the settings icon by default, but can be
   // overridden by defining a rightComponent in the route config. The
@@ -54,7 +67,7 @@ const TitleBar = (props) => {
       <Image
         name="settingsIcon" // primarily used for aiding testing
         source={settingsIcon}
-        style={styles.settingsIcon}
+        style={styles.icon}
       />
     </TouchableOpacity>
   );

@@ -53,17 +53,32 @@ describe('TitleBar Component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  test('shows the profile photo', () => {
+    const store = configuredStore(defaultState);
+    const wrapper = shallow(
+      <TitleBar navigator={navigatorWithOneRoute} />,
+      { context: { store } },
+    ).dive();
+    const touchableWrapper = wrapper.childAt(0).childAt(0);
+    const iconWrapper = touchableWrapper.childAt(0);
+
+    expect(iconWrapper.props()).toHaveProperty('name', 'person');
+  });
+
   test('shows the back button based on the route config', () => {
-    // First test back button does not show if showBackButton is falsy
+    // Test profile icon is shown instead of the back button if showBackButton is falsy
     let store = configuredStore(defaultState);
     let wrapper = shallow(
       <TitleBar navigator={navigatorWithOneRoute} />,
       { context: { store } },
     ).dive();
-    expect(wrapper.childAt(0).children()).toHaveLength(0);
 
-    // Test back button does not show if showBackButton is true but there are
-    // less than 2 routes in route stack
+    let touchableWrapper = wrapper.childAt(0).childAt(0);
+    let iconWrapper = touchableWrapper.childAt(0);
+    expect(iconWrapper.props()).toHaveProperty('name', 'person');
+
+    // Test profile icon is shown instead of the back button if showBackButton is true
+    // but there are less than 2 routes in the route stack
     store = configuredStore({
       ...defaultState,
       app: {
@@ -78,7 +93,10 @@ describe('TitleBar Component', () => {
       <TitleBar navigator={navigatorWithOneRoute} />,
       { context: { store } },
     ).dive();
-    expect(wrapper.childAt(0).children()).toHaveLength(0);
+
+    touchableWrapper = wrapper.childAt(0).childAt(0);
+    iconWrapper = touchableWrapper.childAt(0);
+    expect(iconWrapper.props()).toHaveProperty('name', 'person');
 
     // Test back button shows if showBackButton is true and there 2 or more routes in route stack
     wrapper = shallow(
@@ -86,16 +104,13 @@ describe('TitleBar Component', () => {
       { context: { store } },
     ).dive();
 
-    const touchableWrapper = wrapper.childAt(0).childAt(0);
-    const iconWrapper = wrapper.childAt(0).childAt(0).childAt(0);
+    touchableWrapper = wrapper.childAt(0).childAt(0);
+    iconWrapper = touchableWrapper.childAt(0);
 
-    expect(touchableWrapper).toBeDefined();
-    expect(iconWrapper).toBeDefined();
     expect(iconWrapper.props()).toHaveProperty('name', 'keyboard-arrow-left');
   });
 
-  test('disables the back button based on the route config', () => {
-    // First test back button does not show if showBackButton is falsy
+  test('disables the back button', () => {
     const store = configuredStore({
       ...defaultState,
       app: {
