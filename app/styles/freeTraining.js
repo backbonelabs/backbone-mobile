@@ -17,8 +17,7 @@ export default EStyleSheet.create({
   },
   tabBarUnderlineStyle: {
     backgroundColor: '#2196F3',
-    height: 4,
-    borderRadius: 5,
+    borderRadius: 4,
   },
   tabBarTextStyle: {
     fontSize: fixedResponsiveFontSize(12),
@@ -30,7 +29,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    paddingHorizontal: 15,
+    paddingHorizontal: applyWidthDifference(20),
   },
   listInnerContainer: {
     flexDirection: 'row',
@@ -59,20 +58,20 @@ export default EStyleSheet.create({
   },
   sectionText: {
     color: '#FFF',
-    paddingLeft: 15,
-    padding: 7,
-    fontSize: 12,
+    paddingLeft: applyWidthDifference(20),
+    padding: applyWidthDifference(7),
+    fontSize: fixedResponsiveFontSize(14),
     fontWeight: '900',
 
   },
   barContainer: {
     alignItems: 'flex-end',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFF',
   },
   bar: {
     width: '95%',
-    height: 1,
-    backgroundColor: 'lightgrey',
+    height: applyWidthDifference(1),
+    backgroundColor: '#e0e0e0',
   },
   subView: {
     position: 'absolute',
@@ -85,7 +84,7 @@ export default EStyleSheet.create({
   },
   subViewCancel: {
     fontWeight: '900',
-    fontSize: 11,
+    fontSize: fixedResponsiveFontSize(12),
     color: '#424242',
   },
   subViewButtonContainer: {
@@ -104,16 +103,16 @@ export default EStyleSheet.create({
   },
   subViewSortButtonText: {
     fontWeight: 'bold',
-    fontSize: 11,
+    fontSize: fixedResponsiveFontSize(13),
     color: '#424242',
   },
   subViewHeaderText: {
-    fontSize: 8,
+    fontSize: fixedResponsiveFontSize(8),
     color: '#757575',
     fontWeight: '900',
     backgroundColor: '#EEEEEE',
     width: '93%',
-    paddingVertical: 5,
+    paddingVertical: applyWidthDifference(7),
     justifyContent: 'center',
     textAlign: 'center',
   },
@@ -129,18 +128,19 @@ export default EStyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   },
   searchBarIconContainer: {
     backgroundColor: '#EEEEEE',
     justifyContent: 'center',
     height: applyWidthDifference(30),
-    paddingHorizontal: 10,
+    paddingHorizontal: applyWidthDifference(12),
   },
   searchBarTextInput: {
     backgroundColor: '#EEEEEE',
     justifyContent: 'center',
     height: applyWidthDifference(30),
-    fontSize: 14,
+    fontSize: fixedResponsiveFontSize(12),
     width: '80%',
   },
 });
