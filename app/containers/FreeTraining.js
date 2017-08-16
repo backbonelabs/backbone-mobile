@@ -8,6 +8,7 @@ import {
   TextInput,
   InteractionManager,
   Platform,
+  Dimensions,
 } from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
@@ -35,7 +36,7 @@ class FreeTraining extends Component {
     super();
     autobind(this);
     this.isiOS = Platform.OS === 'ios';
-    this.subViewInitialPosition = this.isiOS ? 600 : 800;
+    this.subViewInitialPosition = Dimensions.get('window').height;
     this.sortCategories = [
       'ALPHABETICAL ORDER (A-Z)',
       'POPULARITY',
