@@ -7,6 +7,7 @@ const {
 } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $arrowIconSize: fixedResponsiveFontSize(20),
   tab: {
     flex: 1,
     flexDirection: 'row',
@@ -33,7 +34,7 @@ export default EStyleSheet.create({
   },
   tabUnderlineStyle: {
     position: 'absolute',
-    height: 4,
+    height: applyWidthDifference(5),
     backgroundColor: 'navy',
     bottom: 0,
   },

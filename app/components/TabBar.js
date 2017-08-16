@@ -39,7 +39,7 @@ const renderTab = (name, page, isTabActive, onPressHandler, props) => {
           {name}
         </Text>
         {isTabActive ?
-          <Icon name="arrow-drop-down" size={25} style={styles.icon} /> : null
+          <Icon name="arrow-drop-down" size={styles.$arrowIconSize} style={styles.icon} /> : null
           }
       </View>
     </TouchableOpacity>
