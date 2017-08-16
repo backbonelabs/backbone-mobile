@@ -158,17 +158,6 @@ class FreeTraining extends Component {
   }
 
   /**
-   * Toggles the appearance of the search bar only for iOS
-   * Android will have a permanently showing search bar
-   */
-  toggleSearchBar() {
-    if (this.isiOS) {
-      this.setState({ searchBarIsHidden: true });
-    }
-    this.setState({ searchText: '' });
-  }
-
-  /**
    * Toggles the subView menu for sorting
    */
   toggleSubview() {
@@ -342,10 +331,13 @@ class FreeTraining extends Component {
         <ScrollableTabView
           style={styles.scrollableTabViewContainer}
           renderTabBar={() =>
-            <TabBar
-              toggleSearchBar={this.toggleSearchBar}
-              toggleSubview={this.toggleSubview}
-            />}
+            <TabBar toggleSubview={this.toggleSubview} />}
+          onChangeTab={() => {
+            if (this.isiOS) {
+              this.setState({ searchBarIsHidden: true });
+            }
+            this.setState({ searchText: '' });
+          }}
           tabBarPosition="top"
           tabBarActiveTextColor="#2196F3"
           tabBarInactiveTextColor="#bdbdbd"

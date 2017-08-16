@@ -4,7 +4,6 @@ import {
   View,
   Animated,
   TouchableOpacity,
-  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/tabBar';
@@ -25,13 +24,8 @@ const renderTab = (name, page, isTabActive, onPressHandler, props) => {
         if (isTabActive) {
           props.toggleSubview();
         }
-        props.toggleSearchBar();
 
-          // Delay needed for Android to work when tapping on a tab
-        if (Platform.OS === 'ios') {
-          return onPressHandler(page);
-        }
-        setTimeout(() => onPressHandler(page), 500);
+        return onPressHandler(page);
       }}
     >
       <View style={[styles.tab, props.tabStyle]}>
