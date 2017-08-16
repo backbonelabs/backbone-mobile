@@ -69,7 +69,7 @@ class FreeTraining extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // catagorizes the workouts by type
+    // categorizes the workouts by type
     if (this.props.workouts !== nextProps.workouts) {
       const workouts = this.workoutCategories.slice();
       nextProps.workouts.forEach((workout) => {
