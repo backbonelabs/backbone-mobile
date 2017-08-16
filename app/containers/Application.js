@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
-import { clone } from 'lodash';
+import clone from 'lodash/clone';
 import { UPDATE_BLUETOOTH_STATE } from '../actions/types';
 import sessionActive from '../images/sessionActive.png';
 import sessionInactive from '../images/sessionInactive.png';
@@ -30,8 +30,8 @@ import FullModal from '../components/FullModal';
 import PartialModal from '../components/PartialModal';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
-import TitleBar from '../components/TitleBar';
 import Banner from '../components/Banner';
+import TitleBar from '../containers/TitleBar';
 import routes from '../routes';
 import styles from '../styles/application';
 import theme from '../styles/theme';
@@ -530,6 +530,9 @@ class Application extends Component {
    * @param {Object} route=routes.login Route object, defaults to the login route
    */
   setInitialRoute(route = routes.login) {
+    // Set the title bar info
+    this.props.dispatch(appActions.setTitleBar(route));
+
     // Intentionally add a delay because sometimes the initialization process
     // can be so quick that the spinner icon only flashes for a blink of an eye,
     // and it might not be obvious it was a spinner icon indicating some type of
@@ -620,10 +623,14 @@ class Application extends Component {
   }
 
   /**
-   * Leaves a Bugsnag breadcrumb for marking when a navigation begins
+   * Handler for when the navigator is about to start a navigator transition
    * @param {Object} route Route to navigate to
    */
-  leaveNavStartBreadcrumb(route) {
+  _onNavigatorWillFocus(route) {
+    // Set title bar details in Redux store using the next route
+    this.props.dispatch(appActions.setTitleBar(route));
+
+    // Leave a Bugsnag breadcrumb for marking when a navigation begins
     Bugsnag.leaveBreadcrumb(`Navigating to ${route.name}`, {
       type: 'navigation',
       routeConfig: JSON.stringify(route),
@@ -631,10 +638,11 @@ class Application extends Component {
   }
 
   /**
-   * Leaves a Bugsnag breadcrumb for marking when a navigation ends
+   * Handler for when the a scene transition is complete
    * @param {Object} route Route navigated to
    */
-  leaveNavEndBreadcrumb(route) {
+  _onNavigatorOnDidFocus(route) {
+    // Leave a Bugsnag breadcrumb for marking when a navigation ends
     Bugsnag.leaveBreadcrumb(`Navigated to ${route.name}`, {
       type: 'navigation',
       routeConfig: JSON.stringify(route),
@@ -642,7 +650,6 @@ class Application extends Component {
   }
 
   renderScene(route, navigator) {
-    const { component: RouteComponent } = route;
     // Tab bar component data
     const tabBarRoutes = [
       {
@@ -730,6 +737,7 @@ class Application extends Component {
     const { modal: modalProps } = this.props.app;
     const routeStack = this.navigator.getCurrentRoutes();
     const currentRoute = routeStack[routeStack.length - 1];
+    const { component: RouteComponent } = route;
 
     return (
       <View style={{ flex: 1 }}>
@@ -770,8 +778,8 @@ class Application extends Component {
             configureScene={this.configureScene}
             initialRoute={this.state.initialRoute}
             renderScene={this.renderScene}
-            onWillFocus={this.leaveNavStartBreadcrumb}
-            onDidFocus={this.leaveNavEndBreadcrumb}
+            onWillFocus={this._onNavigatorWillFocus}
+            onDidFocus={this._onNavigatorOnDidFocus}
           />
         )}
       </View>
@@ -781,7 +789,13 @@ class Application extends Component {
 
 const mapStateToProps = (state) => {
   const { app, user: { user }, device } = state;
-  return { app, user, device };
+  return {
+    app: {
+      modal: app.modal,
+    },
+    user,
+    device,
+  };
 };
 
 export default connect(mapStateToProps)(Application);
