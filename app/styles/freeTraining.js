@@ -124,5 +124,6 @@ export default EStyleSheet.create({
   },
   searchBar: {
     width: '100%',
+    fontSize: fixedResponsiveFontSize(12),
   },
 });
