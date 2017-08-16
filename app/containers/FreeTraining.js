@@ -90,7 +90,7 @@ class FreeTraining extends Component {
 
   /**
    * Creates a new ListView object
-   * @param {Array} dbSource
+   * @param {Object[]} dbSource
    * @return {ListView.DataSource} new ListView object
    */
   getDataSource(dbSource) {
@@ -103,14 +103,14 @@ class FreeTraining extends Component {
 
   /**
    * Filters and sorts workouts for the list view
-   * @param {Array} workouts data
+   * @param {Object[]} workouts data
    * @return {Array} An array of sorted workouts objects
    */
   convertDataToMap(data) {
-    const itemMap = [];
+    const itemMap = {};
     // Filters the workouts that only matches the text from search bar
     const searchedWorkouts = data.workouts.filter((workout) => {
-      const searchRegex = new RegExp(this.state.searchText, 'g');
+      const searchRegex = new RegExp(this.state.searchText, 'i');
       return searchRegex.test(workout.title);
     });
     const newData = Object.assign({}, data, { workouts: searchedWorkouts });
@@ -143,7 +143,7 @@ class FreeTraining extends Component {
             difficultyLabel = 'Intermediate';
             break;
           case 3:
-            difficultyLabel = 'Advance';
+            difficultyLabel = 'Advanced';
             break;
           default:
             difficultyLabel = 'Pro';
@@ -179,20 +179,16 @@ class FreeTraining extends Component {
       toValue = 0;
     }
 
-    // This will animate the transalteY of the subview between 0 & 100
-    // depending on its current state 100 comes from the style below,
-    // which is the height of the subview.
     Animated.spring(
       this.state.bounceValue,
       {
         toValue,
-        velocity: 3,
-        tension: 2,
+        tension: 20,
         friction: 8,
       }
     ).start();
 
-    this.setState({ subViewIsHidden: !subViewIsHidden });
+    this.setState(prevState => ({ subViewIsHidden: !prevState.subViewIsHidden }));
   }
 
   /**
