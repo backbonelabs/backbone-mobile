@@ -228,7 +228,7 @@ class Dashboard extends Component {
    * @param {Object} session
    * @param {Number} idx     The index of the session within the level
    */
-  _getSessionCards(session, idx) {
+  _getSessionCard(session, idx) {
     const sessionWorkouts = session.map(workout => (
       <View key={workout.title} style={styles.sessionWorkoutRow}>
         {/* TODO: Use the "on" and "off" bullets depending if the workout is completed */}
@@ -278,7 +278,7 @@ class Dashboard extends Component {
           {!!sessions.length &&
             <Carousel
               items={sessions}
-              renderItem={this._getSessionCards}
+              renderItem={this._getSessionCard}
               sliderWidth={styles.$carouselSliderWidth}
               itemWidth={styles.$carouselItemWidth}
               showsHorizontalScrollIndicator={false}
