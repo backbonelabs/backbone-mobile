@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Image, Platform, TouchableOpacity, View, NativeModules } from 'react-native';
+import {
+  Image,
+  Platform,
+  TouchableOpacity,
+  View,
+  NativeModules,
+  NativeEventEmitter,
+} from 'react-native';
 import autobind from 'class-autobind';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Video from 'react-native-video';
@@ -37,6 +44,22 @@ export default class VideoPlayer extends Component {
     if (this.controlsTimeout) {
       clearTimeout(this.controlsTimeout);
       this.controlsTimeout = null;
+    }
+
+    if (this.fullScreenVideoLoadedListener) {
+      this.fullScreenVideoLoadedListener.remove();
+    }
+
+    if (this.fullScreenVideoEndedListener) {
+      this.fullScreenVideoEndedListener.remove();
+    }
+
+    if (this.fullScreenVideoErrorListener) {
+      this.fullScreenVideoErrorListener.remove();
+    }
+
+    if (this.fullScreenVideoProgressListener) {
+      this.fullScreenVideoProgressListener.remove();
     }
   }
 
@@ -129,8 +152,56 @@ export default class VideoPlayer extends Component {
 
   onToggleFullScreen() {
     if (Platform.OS === 'android') {
+      const FullScreenBridgeModuleEvents = new NativeEventEmitter(
+        NativeModules.FullScreenBridgeModule);
+
+      this.fullScreenVideoLoadedListener = FullScreenBridgeModuleEvents.addListener(
+        'VideoLoaded',
+        () => {
+          // Do what we need when the video has been loaded in the fullscreen player
+        }
+      );
+
+      this.fullScreenVideoEndedListener = FullScreenBridgeModuleEvents.addListener(
+        'VideoEnded',
+        () => {
+          // Stop the playback to prevent auto-play when returning from the fullscreen video
+          if (!this.props.loop) {
+            this.setState({
+              isPlaying: false,
+              isStarted: false,
+              progress: 1,
+            });
+          }
+        }
+      );
+
+      this.fullScreenVideoErrorListener = FullScreenBridgeModuleEvents.addListener(
+        'VideoError',
+        () => {
+          // Handle fullscreen playback errors here
+        }
+      );
+
+      this.fullScreenVideoProgressListener = FullScreenBridgeModuleEvents.addListener(
+        'VideoProgress',
+        event => {
+          // Use the elapsed time of the fullscreen player to sync with the RN player
+          const { elapsedTime } = event;
+
+          if (this.player && this.state.isStarted) {
+            this.player.seek(elapsedTime);
+          }
+        }
+      );
+
       const uri = this.props.video.uri;
-      NativeModules.FullScreenBridgeModule.showFullscreen(uri);
+      const { progress } = this.state;
+      const elapsedTime = progress * (this.props.duration || this.state.duration);
+      const { loop } = this.props;
+
+      // Set the current elapsed time as well
+      NativeModules.FullScreenBridgeModule.showFullscreen(uri, elapsedTime, loop);
     } else {
       this.player.presentFullscreenPlayer();
     }
