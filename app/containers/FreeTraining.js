@@ -10,6 +10,7 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
+import isEqual from 'lodash/isEqual';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -70,7 +71,8 @@ class FreeTraining extends Component {
 
   componentWillReceiveProps(nextProps) {
     // categorizes the workouts by type
-    if (this.props.workouts !== nextProps.workouts) {
+    if (!isEqual(this.props.workouts, nextProps.workouts)
+      || this.state.workouts.length === 0) {
       const workouts = this.workoutCategories.slice();
       nextProps.workouts.forEach((workout) => {
         if (workout.type === workouts[0].type) {
