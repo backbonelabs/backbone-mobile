@@ -210,30 +210,28 @@ class FreeTraining extends Component {
       iconName = 'heart-o';
     }
     return (
-      <View style={{ flexDirection: 'column' }} >
-        <View style={styles.listContainer}>
-          <View style={styles.listInnerContainer}>
-            <View style={styles.workoutPreviewBox} />
-            <SecondaryText style={styles._listText}>{workoutTitle}</SecondaryText>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              const newFavoriteWorkouts = favoriteWorkouts.slice();
-              if (!favoriteWorkouts.includes(workoutId)) {
-                newFavoriteWorkouts.push(workoutId);
-              } else {
-                const idIndex = newFavoriteWorkouts.indexOf(workoutId);
-                newFavoriteWorkouts.splice(idIndex, 1);
-              }
-              this.props.dispatch(userActions.updateUser({
-                _id: userId,
-                favoriteWorkouts: newFavoriteWorkouts,
-              }));
-            }}
-          >
-            <Icon name={iconName} style={styles._heartIcon} size={styles.$settingsIconSize} />
-          </TouchableOpacity>
+      <View style={styles.rowContainer}>
+        <View style={styles.rowInnerContainer}>
+          <View style={styles.workoutPreviewBox} />
+          <SecondaryText style={styles._rowText}>{workoutTitle}</SecondaryText>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            const newFavoriteWorkouts = favoriteWorkouts.slice();
+            const workoutIdIndex = newFavoriteWorkouts.indexOf(workoutId);
+            if (workoutIdIndex > -1) {
+              newFavoriteWorkouts.splice(workoutIdIndex, 1);
+            } else {
+              newFavoriteWorkouts.push(workoutId);
+            }
+            this.props.dispatch(userActions.updateUser({
+              _id: userId,
+              favoriteWorkouts: newFavoriteWorkouts,
+            }));
+          }}
+        >
+          <Icon name={iconName} style={styles._heartIcon} size={styles.$heartIconSize} />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -256,17 +254,16 @@ class FreeTraining extends Component {
    * @param {Int} sectionID
    * @param {Int} rowID
    */
-  renderSeparator(sectionID, rowID) {
+  renderSeparator(sectionId, rowId) {
     return (
-      <View style={styles.barContainer} key={sectionID + rowID}>
-        <View style={styles.bar} key={rowID} />
-      </View>
+      <View style={styles.bar} key={sectionId + rowId} />
     );
   }
 
   render() {
     const listViews = this.state.workouts.map((workoutList) =>
     (<View
+      style={styles.listContainer}
       tabLabel={workoutList.title}
       key={workoutList.title}
     >
@@ -297,10 +294,6 @@ class FreeTraining extends Component {
         overScrollMode={'always'}
         renderRow={this.renderRow}
         renderSeparator={this.renderSeparator}
-        renderFooter={() =>
-          (this.state.searchBarIsHidden && this.isiOS ?
-          null : <View style={styles.footerSpaceBox} />)
-        }
         onPressRow={() => {}}
         renderSectionHeader={this.renderSectionHeader}
         enableEmptySections

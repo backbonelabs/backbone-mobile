@@ -7,7 +7,7 @@ const {
 } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $settingsIconSize: fixedResponsiveFontSize(25),
+  $heartIconSize: fixedResponsiveFontSize(25),
   container: {
     alignItems: 'center',
     flex: 1,
@@ -24,6 +24,9 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
   },
   listContainer: {
+    flex: 1,
+  },
+  rowContainer: {
     height: applyWidthDifference(80),
     flexDirection: 'row',
     alignItems: 'center',
@@ -31,18 +34,17 @@ export default EStyleSheet.create({
     backgroundColor: 'white',
     paddingHorizontal: applyWidthDifference(20),
   },
-  listInnerContainer: {
+  rowInnerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  listText: {
-    paddingLeft: applyWidthDifference(30),
+  rowText: {
+    paddingHorizontal: applyWidthDifference(16),
     width: '60%',
     color: 'black',
   },
   heartIcon: {
-    color: '#D32F2F',
-    marginRight: applyWidthDifference(5),
+    color: '#F44336',
   },
   footerSpaceBox: {
     height: applyWidthDifference(50),
@@ -64,11 +66,8 @@ export default EStyleSheet.create({
     fontWeight: '900',
 
   },
-  barContainer: {
-    alignItems: 'flex-end',
-    backgroundColor: '#FFFFFF',
-  },
   bar: {
+    alignSelf: 'center', // intentionally made it center instead of flex-end like how it looks in the design mockups
     width: '95%',
     height: applyWidthDifference(1),
     backgroundColor: '#e0e0e0',
@@ -107,7 +106,7 @@ export default EStyleSheet.create({
     color: '#424242',
   },
   subViewHeaderText: {
-    fontSize: fixedResponsiveFontSize(8),
+    fontSize: fixedResponsiveFontSize(12),
     color: '#757575',
     fontWeight: '900',
     backgroundColor: '#EEEEEE',
@@ -137,10 +136,9 @@ export default EStyleSheet.create({
     paddingHorizontal: applyWidthDifference(12),
   },
   searchBarTextInput: {
-    backgroundColor: '#EEEEEE',
     justifyContent: 'center',
     height: applyWidthDifference(30),
-    fontSize: fixedResponsiveFontSize(12),
+    fontSize: fixedResponsiveFontSize(14),
     width: '80%',
   },
 });
