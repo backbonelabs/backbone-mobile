@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component, PropTypes } from 'react';
 import { Image, Platform, TouchableOpacity, View, NativeModules } from 'react-native';
 import autobind from 'class-autobind';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -81,14 +80,14 @@ export default class VideoPlayer extends Component {
       this.setState({ isStarted: false });
     }
 
-    this.setState({ progress: 1 });
-
-    this.player.seek(0);
     if (!this.props.loop) {
-      this.setState({
+      return this.setState({
+        progress: 1,
         isPlaying: false,
-      });
+      }, () => this.player.seek(0));
     }
+
+    this.setState({ progress: 1 });
   }
 
   onLoad(event) {
@@ -347,7 +346,7 @@ export default class VideoPlayer extends Component {
             this.getSizeStyles(),
             customStyles.video,
           ]}
-          repeat={!!this.props.loop}
+          repeat={this.props.loop}
           ref={p => { this.player = p; }}
           muted={this.props.muted || this.state.isMuted}
           paused={!this.state.isPlaying}
@@ -388,9 +387,8 @@ export default class VideoPlayer extends Component {
   }
 
   render() {
-    const { customStyles, style } = this.props;
     return (
-      <View onLayout={this.onLayout} style={[style, customStyles.wrapper]}>
+      <View onLayout={this.onLayout} style={this.props.customStyles.wrapper}>
         {this.renderContent()}
       </View>
     );
