@@ -16,8 +16,14 @@ const baseSideButtonStyles = {
   paddingHorizontal: applyWidthDifference(6),
 };
 
+const baseIconStyles = {
+  width: applyWidthDifference(30),
+  height: applyWidthDifference(30),
+};
+
 export default EStyleSheet.create({
-  $leftButtonIconSize: fixedResponsiveFontSize(40),
+  $backButtonIconSize: applyWidthDifference(40),
+  $profileIconSize: applyWidthDifference(30),
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
@@ -26,7 +32,7 @@ export default EStyleSheet.create({
     ...baseTitleBarStyles,
     height: 0,
   },
-  title: {
+  centerContainer: {
     flex: 0.50,
     color: '$secondaryColor',
     backgroundColor: 'transparent',
@@ -52,11 +58,14 @@ export default EStyleSheet.create({
     flexDirection: 'row-reverse',
   },
   buttonIcon: {
-    color: '$secondaryColor',
     marginRight: applyWidthDifference(6),
   },
-  buttonIconDisabled: {
-    color: color('#FFFFFF').clearer(0.6).rgbString(),
-    marginRight: applyWidthDifference(6),
+  icon: {
+    ...baseIconStyles,
+  },
+  profileIcon: {
+    ...baseIconStyles,
+    borderRadius: applyWidthDifference(15),
+    backgroundColor: '$disabledColor',
   },
 });

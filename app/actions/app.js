@@ -1,5 +1,6 @@
 import {
   SET_CONFIG,
+  SET_TITLE_BAR,
   SHOW_FULL_MODAL,
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
@@ -11,6 +12,12 @@ export default {
     return {
       type: SET_CONFIG,
       payload: config,
+    };
+  },
+  setTitleBar(titleBarConfig) {
+    return {
+      type: SET_TITLE_BAR,
+      payload: titleBarConfig,
     };
   },
   showFullModal(modalConfig) {

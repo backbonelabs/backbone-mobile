@@ -6,4 +6,5 @@ export default {
   component: Dashboard,
   showTabBar: true,
   showBanner: true,
+  showRightComponent: true,
 };
