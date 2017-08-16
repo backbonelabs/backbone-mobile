@@ -36,7 +36,6 @@ class FreeTrainingTabBar extends Component {
 
   // renderTabOption(name, page) {
   // }
-
   renderTab(name, page, isTabActive, onPressHandler) {
     const { activeTextColor, inactiveTextColor, textStyle } = this.props;
     const textColor = isTabActive ? activeTextColor : inactiveTextColor;
@@ -53,11 +52,13 @@ class FreeTrainingTabBar extends Component {
           if (isTabActive) {
             this.props.toggleSubview();
           }
-          if (Platform.OS === 'ios') {
-            this.props.toggleSearchBar();
-          }
+          this.props.toggleSearchBar();
 
-          return onPressHandler(page);
+          // Delay needed for Android to work when tapping on a tab
+          if (Platform.OS === 'ios') {
+            return onPressHandler(page);
+          }
+          setTimeout(() => onPressHandler(page), 500);
         }}
       >
         <View style={[styles.tab, this.props.tabStyle]}>

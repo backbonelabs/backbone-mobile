@@ -158,7 +158,10 @@ class FreeTraining extends Component {
    * Android will have a permanently showing search bar
    */
   toggleSearchBar() {
-    this.setState({ searchBarIsHidden: true, searchText: '' });
+    if (this.isiOS) {
+      this.setState({ searchBarIsHidden: true });
+    }
+    this.setState({ searchText: '' });
   }
 
   /**
