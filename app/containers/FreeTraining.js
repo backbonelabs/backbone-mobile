@@ -199,6 +199,10 @@ class FreeTraining extends Component {
   handleScroll(event) {
     if (event.nativeEvent.contentOffset.y < 0) {
       this.setState({ searchBarIsHidden: false });
+    } else if (event.nativeEvent.contentOffset.y > 100
+      && !this.state.searchBarIsHidden
+      && this.state.searchText === '') {
+      this.setState({ searchBarIsHidden: true });
     }
   }
 
