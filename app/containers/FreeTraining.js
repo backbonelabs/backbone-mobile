@@ -63,7 +63,6 @@ class FreeTraining extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(userActions.fetchUserWorkouts());
-      this.props.dispatch(userActions.fetchUser());
       this.setState({ isLoading: false });
     });
   }
