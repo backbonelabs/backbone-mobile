@@ -67,7 +67,7 @@ export default EStyleSheet.create({
 
   },
   bar: {
-    alignSelf: 'center', // intentionally made it center instead of flex-end like how it looks in the design mockups
+    alignSelf: 'center',
     width: '95%',
     height: applyWidthDifference(1),
     backgroundColor: '#e0e0e0',
@@ -122,23 +122,7 @@ export default EStyleSheet.create({
     height: applyWidthDifference(40),
     justifyContent: 'center',
   },
-  searchBarContainer: {
-    height: applyWidthDifference(50),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  searchBarIconContainer: {
-    backgroundColor: '#EEEEEE',
-    justifyContent: 'center',
-    height: applyWidthDifference(30),
-    paddingHorizontal: applyWidthDifference(12),
-  },
-  searchBarTextInput: {
-    justifyContent: 'center',
-    height: applyWidthDifference(30),
-    fontSize: fixedResponsiveFontSize(14),
-    width: '80%',
+  searchBar: {
+    width: '100%',
   },
 });

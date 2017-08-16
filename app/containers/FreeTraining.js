@@ -5,7 +5,6 @@ import {
   ListView,
   Animated,
   TouchableOpacity,
-  TextInput,
   InteractionManager,
   Platform,
   Dimensions,
@@ -20,7 +19,7 @@ import SecondaryText from '../components/SecondaryText';
 import TabBar from '../components/TabBar';
 import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
-
+import Input from '../components/Input';
 
 class FreeTraining extends Component {
   static propTypes = {
@@ -158,6 +157,14 @@ class FreeTraining extends Component {
   }
 
   /**
+   * Toggles the appearance of the search bar only for iOS
+   * Android will have a permanently showing search bar
+   */
+  toggleSearchBar() {
+    this.setState({ searchBarIsHidden: true, searchText: '' });
+  }
+
+  /**
    * Toggles the subView menu for sorting
    */
   toggleSubview() {
@@ -180,6 +187,9 @@ class FreeTraining extends Component {
     this.setState(prevState => ({ subViewIsHidden: !prevState.subViewIsHidden }));
   }
 
+  tabBar() {
+    return (<TabBar toggleSubview={this.toggleSubview} />);
+  }
   /**
    * Detects when the listView scrolls beyond the top so
    * the search bar will appear
@@ -193,6 +203,14 @@ class FreeTraining extends Component {
       && this.state.searchText === '') {
       this.setState({ searchBarIsHidden: true });
     }
+  }
+
+  /**
+   * Updates state from user search input
+   * @param {String} text
+   */
+  handleSearchInput(text) {
+    this.setState({ searchText: text });
   }
 
   /**
@@ -268,24 +286,17 @@ class FreeTraining extends Component {
       key={workoutList.title}
     >
       { this.state.searchBarIsHidden && this.isiOS ? null :
-        <View style={styles.searchBarContainer}>
-          <View style={styles.searchBarIconContainer}>
-            <Icon name="search" style={styles.searchBarIcon} color="#BDBDBD" size={15} />
-          </View>
-          <View>
-            <TextInput
-              style={[styles.searchBarTextInput]}
-              underlineColorAndroid="#EEEEEE"
-              returnKeyType="search"
-              returnKeyLabel="search"
-              placeholder="Search"
-              autoCorrect={false}
-              autoCapitalize="none"
-              overScrollMode="always"
-              onChangeText={(text) => { this.setState({ searchText: text }); }}
-            />
-          </View>
-        </View>
+        <Input
+          style={{ ...styles._searchBar }}
+          returnKeyType="search"
+          returnKeyLabel="search"
+          placeholder="Search"
+          autoCorrect={false}
+          autoCapitalize="none"
+          onChangeText={this.handleSearchInput}
+          iconFont="FontAwesome"
+          iconLeftName="search"
+        />
     }
       <ListView
         dataSource={this.getDataSource(workoutList)}
@@ -323,14 +334,8 @@ class FreeTraining extends Component {
       <View style={styles.container}>
         <ScrollableTabView
           style={styles.scrollableTabViewContainer}
-          renderTabBar={() =>
-            <TabBar toggleSubview={this.toggleSubview} />}
-          onChangeTab={() => {
-            if (this.isiOS) {
-              this.setState({ searchBarIsHidden: true });
-            }
-            this.setState({ searchText: '' });
-          }}
+          renderTabBar={this.tabBar}
+          onChangeTab={this.toggleSearchBar}
           tabBarPosition="top"
           tabBarActiveTextColor="#2196F3"
           tabBarInactiveTextColor="#bdbdbd"
@@ -344,11 +349,11 @@ class FreeTraining extends Component {
               { transform: [{ translateY: this.state.bounceValue }] }]}
         >
           <View style={styles.subViewButtonContainer}>
-            <Text style={styles.subViewHeaderText}>CATEGORIZED LIST:</Text>
+            <Text style={styles.subViewHeaderText}>SORT BY:</Text>
             {sortViews}
           </View>
           <TouchableOpacity
-            onPress={() => { this.toggleSubview(); }}
+            onPress={this.toggleSubview}
             style={styles.subViewCancelButton}
           >
             <Text style={styles.subViewCancel}>CANCEL</Text>
