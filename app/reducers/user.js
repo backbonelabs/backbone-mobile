@@ -142,7 +142,7 @@ export default (state = {
         ...state,
         isFetchingWorkouts: false,
         errorMessage: null,
-        workouts: action.payload,
+        workouts: payload,
       };
     }
     case 'FETCH_USER_WORKOUTS__START': {
@@ -156,7 +156,7 @@ export default (state = {
       return {
         ...state,
         isFetchingWorkouts: false,
-        errorMessage: action.payload.message,
+        errorMessage: payload.message,
       };
     }
     default:
