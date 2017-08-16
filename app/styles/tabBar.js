@@ -31,4 +31,10 @@ export default EStyleSheet.create({
   icon: {
     color: 'grey',
   },
+  tabUnderlineStyle: {
+    position: 'absolute',
+    height: 4,
+    backgroundColor: 'navy',
+    bottom: 0,
+  },
 });

@@ -49,13 +49,6 @@ const renderTab = (name, page, isTabActive, onPressHandler, props) => {
 const TabBar = (props) => {
   const containerWidth = props.containerWidth;
   const numberOfTabs = props.tabs.length;
-  const tabUnderlineStyle = {
-    position: 'absolute',
-    width: containerWidth / numberOfTabs,
-    height: 4,
-    backgroundColor: 'navy',
-    bottom: 0,
-  };
   const left = props.scrollValue.interpolate({
     inputRange: [0, 1], outputRange: [0, containerWidth / numberOfTabs],
   });
@@ -69,7 +62,16 @@ const TabBar = (props) => {
         const isTabActive = props.activeTab === page;
         return renderTab(name, page, isTabActive, props.goToPage, props);
       })}
-      <Animated.View style={[tabUnderlineStyle, { left }, props.underlineStyle]} />
+      <Animated.View
+        style={[
+          styles.tabUnderlineStyle,
+          {
+            left,
+            width: containerWidth / numberOfTabs,
+          },
+          props.underlineStyle]
+        }
+      />
     </View>
     );
 };
