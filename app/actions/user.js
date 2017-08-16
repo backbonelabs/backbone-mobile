@@ -43,6 +43,11 @@ export default {
         .then(response => response.json())
         .then((body) => {
           if (body.error) {
+            // Error received from API server
+            Mixpanel.trackWithProperties(`${fetchUserEventName}-error`, {
+              errorMessage: body.error,
+            });
+
             throw new Error(body.error);
           }
           // Update user details in Bugsnag
@@ -186,6 +191,11 @@ export default {
         .then(response => response.json())
         .then((body) => {
           if (body.error) {
+            // Error received from API server
+            Mixpanel.trackWithProperties(`${fetchUserSessionsEventName}-error`, {
+              errorMessage: body.error,
+            });
+
             throw new Error(body.error);
           }
           Mixpanel.trackWithProperties('fetchUserSessions', {
@@ -213,22 +223,20 @@ export default {
         .then(response => response.json())
         .then((body) => {
           if (body.error) {
+            // Error received from API server
+            Mixpanel.trackWithProperties(`${fetchUserWorkoutsEventName}-error`, {
+              errorMessage: body.error,
+            });
+
             throw new Error(body.error);
           }
-          // Update user details in Bugsnag
-          // Bugsnag.setUser(body._id, body.nickname, body.email);
 
-          // // Update user profile in Mixpanel
-          // Mixpanel.setUserProperties(body);
-
-          // // Store user in local storage
-          // SensitiveInfo.setItem(storageKeys.USER, body);
+          Mixpanel.track(`${fetchUserWorkoutsEventName}-success`);
 
           return body;
         }),
     };
   },
-
 
   prepareUserUpdate(user) {
     return {
