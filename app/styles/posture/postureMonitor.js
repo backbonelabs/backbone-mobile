@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
@@ -27,17 +28,17 @@ export default EStyleSheet.create({
   },
   timer: {
     textAlign: 'center',
-    marginTop: 40 * heightDifference,
+    marginTop: applyWidthDifference(40),
     '@media (max-height: 480)': { // iphone4's max height
-      marginTop: 10 * heightDifference,
+      marginTop: applyWidthDifference(10),
     },
-    marginBottom: 5 * heightDifference,
+    marginBottom: applyWidthDifference(5),
   },
   heading: {
     textAlign: 'center',
-    marginBottom: 50 * heightDifference,
+    marginBottom: applyWidthDifference(50),
     '@media (max-height: 480)': { // iphone4's max height
-      marginBottom: 15 * heightDifference,
+      marginBottom: applyWidthDifference(15),
     },
   },
   monitorPointerContainer: {
@@ -73,12 +74,12 @@ export default EStyleSheet.create({
   },
   monitorTitle: {
     textAlign: 'center',
-    marginBottom: 34 * heightDifference,
+    marginBottom: applyWidthDifference(34),
   },
   monitorRatingContainer: {
     flexDirection: 'row',
-    marginTop: 5 * heightDifference,
-    marginBottom: 5 * heightDifference,
+    marginTop: applyWidthDifference(5),
+    marginBottom: applyWidthDifference(5),
     alignSelf: 'center',
   },
   monitorPoor: {
@@ -95,7 +96,7 @@ export default EStyleSheet.create({
   },
   sliderContainer: {
     width: applyWidthDifference(296),
-    marginBottom: 50 * heightDifference,
+    marginBottom: applyWidthDifference(50),
     alignSelf: 'center',
     alignItems: 'center',
     flexDirection: 'row',
@@ -108,12 +109,28 @@ export default EStyleSheet.create({
   },
   monitorBtn: {
     width: applyWidthDifference(75),
-    height: 75 * heightDifference,
-    resizeMode: 'contain',
+    height: applyWidthDifference(75),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 100,
+    ...Platform.select({
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 1,
+        },
+        shadowRadius: 2,
+        shadowOpacity: 0.3,
+      },
+      android: {
+        elevation: 1,
+      },
+    }),
   },
   btnText: {
     textAlign: 'center',
-    marginTop: 14 * heightDifference,
+    marginTop: applyWidthDifference(14),
+    fontWeight: 'bold',
   },
   halfCircleOuterContainer: {
     height: responsiveWidthHalfCircle,

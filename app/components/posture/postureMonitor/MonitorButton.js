@@ -1,59 +1,47 @@
 import React, { PropTypes } from 'react';
-import { TouchableOpacity, Image, View } from 'react-native';
-import pauseImg from '../../../images/monitor/pauseButton.png';
-import pauseActiveImg from '../../../images/monitor/pauseButtonActive.png';
-import stopImg from '../../../images/monitor/stopButton.png';
-import stopActiveImg from '../../../images/monitor/stopButtonActive.png';
-import playImg from '../../../images/monitor/playButton.png';
-import alertsImg from '../../../images/monitor/alertsButton.png';
-import alertsDisabledImg from '../../../images/monitor/alertsButtonDisabled.png';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { TouchableOpacity, View } from 'react-native';
 import styles from '../../../styles/posture/postureMonitor';
 import BodyText from '../../BodyText';
+import theme from '../../../styles/theme';
 
-const MonitorButton = (props) => {
-  const {
-    play,
-    pauseActive,
-    pause,
-    stop,
-    stopActive,
-    alerts,
-    alertsDisabled,
-    ...otherProps,
-  } = props;
+const MonitorButton = ({ play, pause, stop, alerts, ...otherProps }) => {
+  const pauseBgColor = pause ? theme.lightBlueColor : 'white';
+  const pauseTextColor = pause ? theme.lightBlueColor : theme.secondaryFontColor;
+  let name = '';
+  let iconColor = theme.lightBlueColor;
+  let text = '';
 
-  let image;
-  let text;
-  if (play) { image = playImg; text = 'Play'; }
-  if (pause) { image = pauseImg; text = 'Pause'; }
-  if (pauseActive) { image = pauseActiveImg; text = 'Pause'; }
-  if (stop) { image = stopImg; text = 'Stop'; }
-  if (stopActive) { image = stopActiveImg; text = 'Stop'; }
-  if (alerts) { image = alertsImg; text = 'Alerts'; }
-  if (alertsDisabled) { image = alertsDisabledImg; text = 'Alerts'; }
+  if (play) { name = 'play-arrow'; text = 'Play'; }
+  if (pause) { name = 'pause'; text = 'Pause'; iconColor = 'white'; }
+  if (stop) { name = 'stop'; text = 'Stop'; }
+  if (alerts) { name = 'notifications'; text = 'Alerts'; }
+  if (otherProps.disabled) { iconColor = theme.disabledColor; }
 
   return (
     <View>
       <TouchableOpacity
-        activeOpacity={0.4}
+        style={[styles.monitorBtn, { backgroundColor: pauseBgColor }]}
+        activeOpacity={0.8}
+        onPress={this.handleOnPress}
         {...otherProps}
       >
-        <Image style={styles.monitorBtn} source={image} />
+        <MaterialIcons
+          name={name}
+          size={40}
+          color={iconColor}
+        />
       </TouchableOpacity>
-      <BodyText style={styles._btnText}>{text}</BodyText>
+      <BodyText style={[styles._btnText, { color: pauseTextColor }]}>{text}</BodyText>
     </View>
-  );
+    );
 };
 
 MonitorButton.propTypes = {
   play: PropTypes.bool,
-  playActive: PropTypes.bool,
   pause: PropTypes.bool,
-  pauseActive: PropTypes.bool,
   stop: PropTypes.bool,
-  stopActive: PropTypes.bool,
   alerts: PropTypes.bool,
-  alertsDisabled: PropTypes.bool,
 };
 
 export default MonitorButton;
