@@ -178,8 +178,11 @@ export default class VideoPlayer extends Component {
 
       this.fullScreenVideoErrorListener = FullScreenBridgeModuleEvents.addListener(
         'VideoError',
-        () => {
+        (event) => {
           // Handle fullscreen playback errors here
+          if (this.props.onAndroidFullScreenError) {
+            this.props.onAndroidFullScreenError(event);
+          }
         }
       );
 
@@ -511,6 +514,7 @@ VideoPlayer.propTypes = {
   onStopPress: PropTypes.func,
   onHideControls: PropTypes.func,
   onShowControls: PropTypes.func,
+  onAndroidFullScreenError: PropTypes.func,
 };
 
 VideoPlayer.defaultProps = {
