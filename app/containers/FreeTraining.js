@@ -43,9 +43,10 @@ class FreeTraining extends Component {
       'DIFFICULTY'];
     // Template for categorizing all workouts into their type
     this.workoutCategories = [
-        { title: 'EXERCISES', type: 1, workouts: [] },
-        { title: 'STRETCHES', type: 2, workouts: [] },
-        { title: 'POSTURE', type: 3, workouts: [] },
+        { title: 'POSTURE', type: 1, workouts: [] },
+        { title: 'EXERCISES', type: 2, workouts: [] },
+        { title: 'STRETCHES', type: 3, workouts: [] },
+        { title: 'MOBILITY', type: 4, workouts: [] },
     ];
     this.state = {
       workouts: [],
