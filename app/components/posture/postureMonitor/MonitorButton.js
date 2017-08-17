@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import autobind from 'class-autobind';
-import { TouchableHighlight, View } from 'react-native';
+import { TouchableHighlight, View, Text } from 'react-native';
 import styles from '../../../styles/monitorButton';
 import SecondaryText from '../../SecondaryText';
 import theme from '../../../styles/theme';
@@ -16,6 +16,12 @@ class MonitorButton extends Component {
     text: PropTypes.string,
     textColor: PropTypes.string,
     underlayIconColor: PropTypes.string,
+    customStyles: PropTypes.shape({
+      icon: MaterialIcons.propTypes.style,
+      container: View.propTypes.style,
+      button: View.propTypes.style,
+      text: Text.propTypes.object,
+    }),
   };
 
   static defaultProps = {
@@ -25,6 +31,8 @@ class MonitorButton extends Component {
     iconSize: relativeDimensions.fixedResponsiveFontSize(40),
     iconColor: theme.lightBlueColor,
     textColor: theme.secondaryFontColor,
+    activeOpacity: 1,
+    customStyles: {},
   };
 
   constructor() {
@@ -53,36 +61,39 @@ class MonitorButton extends Component {
       text,
       textColor,
       underlayIconColor,
+      customStyles,
       ...otherProps,
     } = this.props;
     const currentIconColor = this.state.pressStatus ? underlayIconColor : iconColor;
     const currentTextColor = this.state.pressStatus ? otherProps.underlayColor : textColor;
 
     return (
-      <View>
+      <View style={customStyles.container}>
         <TouchableHighlight
-          style={[styles.monitorBtn, { backgroundColor: color }]}
-          activeOpacity={1}
+          style={[styles.monitorBtn, customStyles.button, { backgroundColor: color }]}
+          activeOpacity={otherProps.activeOpacity}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           {...otherProps}
         >
           {
-          icon ?
-            <MaterialIcons
-              name={icon}
-              size={iconSize}
-              color={otherProps.disabled ? theme.disabledColor : currentIconColor}
-            /> : null
-        }
+            icon ?
+              <MaterialIcons
+                name={icon}
+                size={iconSize}
+                color={otherProps.disabled ? theme.disabledColor : currentIconColor}
+                style={customStyles.icon}
+              /> : null
+          }
         </TouchableHighlight>
-        { text ?
-          <SecondaryText
-            style={[styles._btnText, { color: currentTextColor }]}
-          >
-            {text}
-          </SecondaryText> : null
-      }
+        {
+          text ?
+            <SecondaryText
+              style={[styles._btnText, customStyles.text, { color: currentTextColor }]}
+            >
+              {text}
+            </SecondaryText> : null
+        }
       </View>
     );
   }
