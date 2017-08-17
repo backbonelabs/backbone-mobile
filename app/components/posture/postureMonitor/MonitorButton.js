@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import autobind from 'class-autobind';
 import { TouchableHighlight, View } from 'react-native';
-import styles from '../../../styles/posture/postureMonitor';
+import styles from '../../../styles/monitorButton';
 import SecondaryText from '../../SecondaryText';
 import theme from '../../../styles/theme';
 import relativeDimensions from '../../../utils/relativeDimensions';
