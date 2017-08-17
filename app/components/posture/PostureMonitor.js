@@ -1011,6 +1011,10 @@ class PostureMonitor extends Component {
     this.props.dispatch(userActions.updateUserSettings(updatedUserSettings));
   }
 
+  navigateToAlert() {
+    return this.props.navigator.push(routes.alerts);
+  }
+
   render() {
     const {
       postureThreshold,
@@ -1021,11 +1025,11 @@ class PostureMonitor extends Component {
 
     const getPlayPauseButton = () => {
       if (sessionState === sessionStates.STOPPED) {
-        return <MonitorButton play onPress={this.startSession} />;
+        return <MonitorButton text="PLAY" onPress={this.startSession} />;
       } else if (sessionState === sessionStates.RUNNING) {
-        return <MonitorButton pause onPress={this.pauseSession} />;
+        return <MonitorButton text="PAUSE" icon="pause" onPress={this.pauseSession} />;
       }
-      return <MonitorButton play onPress={this.resumeSession} />;
+      return <MonitorButton text="PLAY" onPress={this.resumeSession} />;
     };
 
     return this.props.device.isConnecting ? (
@@ -1048,9 +1052,6 @@ class PostureMonitor extends Component {
           <BodyText style={styles._monitorGood}>Good</BodyText>
         </View>
         <BodyText style={styles._monitorTitle}>POSTURE MONITOR</BodyText>
-        <SecondaryText style={styles._sliderTitle}>
-          Tune up or down the Backbone's slouch detection
-        </SecondaryText>
         {/*
           The allowed range for the posture distance threshold is MIN_POSTURE_THRESHOLD
           to MAX_POSTURE_THRESHOLD. Ideally, the minimumValue and maximumValue for the
@@ -1071,13 +1072,28 @@ class PostureMonitor extends Component {
           maximumValue={0}
           disabled={sessionState === sessionStates.RUNNING}
         />
+        <SecondaryText style={styles._sliderTitle}>
+          SLOUCH DETECTION
+        </SecondaryText>
         <View style={styles.btnContainer}>
           {getPlayPauseButton()}
           {sessionState !== sessionStates.PAUSED || hasPendingSessionOperation ?
-            <MonitorButton alertsDisabled disabled /> :
-              <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />
+            <MonitorButton
+              disabled
+              icon="notifications"
+              text="ALERTS"
+            /> :
+              <MonitorButton
+                icon="notifications"
+                text="ALERTS"
+                onPress={this.navigateToAlert}
+              />
           }
-          <MonitorButton stop onPress={this.confirmStopSession} />
+          <MonitorButton
+            text="STOP"
+            icon="stop"
+            onPress={this.confirmStopSession}
+          />
         </View>
       </View>
     );
