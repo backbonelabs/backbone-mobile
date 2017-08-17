@@ -26,7 +26,7 @@ export default EStyleSheet.create({
     flex: 1,
   },
   text: {
-    fontSize: fixedResponsiveFontSize(12),
+    fontSize: fixedResponsiveFontSize(14),
   },
   icon: {
     color: 'grey',

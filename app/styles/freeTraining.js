@@ -20,7 +20,7 @@ export default EStyleSheet.create({
     borderRadius: 4,
   },
   tabBarTextStyle: {
-    fontSize: fixedResponsiveFontSize(12),
+    fontSize: fixedResponsiveFontSize(14),
   },
   listContainer: {
     flex: 1,
