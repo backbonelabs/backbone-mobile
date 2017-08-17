@@ -20,6 +20,7 @@ import TabBar from '../components/TabBar';
 import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
+import BodyText from '../components/BodyText';
 
 class FreeTraining extends Component {
   static propTypes = {
@@ -296,7 +297,8 @@ class FreeTraining extends Component {
     >
       { this.state.searchBarIsHidden && this.isiOS ? null :
         <Input
-          style={{ ...styles._searchBar }}
+          style={styles._searchBar}
+          value={this.state.searchText}
           returnKeyType="search"
           returnKeyLabel="search"
           placeholder="Search"
@@ -331,7 +333,7 @@ class FreeTraining extends Component {
           this.toggleSubview();
         }}
       >
-        <Text style={styles.subViewSortButtonText}>{label}</Text>
+        <BodyText style={styles._subViewSortButtonText}>{label}</BodyText>
       </TouchableOpacity>
     ));
 
@@ -358,14 +360,14 @@ class FreeTraining extends Component {
               { transform: [{ translateY: this.state.bounceValue }] }]}
         >
           <View style={styles.subViewButtonContainer}>
-            <Text style={styles.subViewHeaderText}>SORT BY:</Text>
+            <BodyText style={styles._subViewHeaderText}>SORT BY:</BodyText>
             {sortViews}
           </View>
           <TouchableOpacity
             onPress={this.toggleSubview}
             style={styles.subViewCancelButton}
           >
-            <Text style={styles.subViewCancel}>CANCEL</Text>
+            <BodyText style={styles._subViewCancel}>CANCEL</BodyText>
           </TouchableOpacity>
         </Animated.View>
       </View>
