@@ -101,6 +101,10 @@ class FreeTraining extends Component {
     return dataSource.cloneWithRowsAndSections(this.convertDataToMap(dbSource));
   }
 
+  getTabBar() {
+    return (<TabBar toggleSubview={this.toggleSubview} />);
+  }
+
   /**
    * Filters and sorts workouts for the list view
    * @param {Object[]} workouts data
@@ -195,9 +199,6 @@ class FreeTraining extends Component {
     this.setState(prevState => ({ subViewIsHidden: !prevState.subViewIsHidden }));
   }
 
-  tabBar() {
-    return (<TabBar toggleSubview={this.toggleSubview} />);
-  }
   /**
    * Detects when the listView scrolls beyond the top so
    * the search bar will appear
@@ -342,7 +343,7 @@ class FreeTraining extends Component {
       <View style={styles.container}>
         <ScrollableTabView
           style={styles.scrollableTabViewContainer}
-          renderTabBar={this.tabBar}
+          renderTabBar={this.getTabBar}
           onChangeTab={this.toggleSearchBar}
           tabBarPosition="top"
           tabBarActiveTextColor="#2196F3"
