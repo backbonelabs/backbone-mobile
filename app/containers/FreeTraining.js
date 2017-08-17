@@ -39,8 +39,10 @@ class FreeTraining extends Component {
     this.subViewInitialPosition = Dimensions.get('window').height;
     this.sortCategories = [
       'ALPHABETICAL ORDER (A-Z)',
-      'POPULARITY',
-      'DIFFICULTY'];
+      'DIFFICULTY',
+      'FAVORITES',
+      // 'POPULARITY', // removed until backend is implemented
+    ];
     // Template for categorizing all workouts into their type
     this.workoutCategories = [
         { title: 'POSTURE', type: 1, workouts: [] },
@@ -55,7 +57,7 @@ class FreeTraining extends Component {
       subViewIsHidden: true,
       searchBarIsHidden: true,
       searchText: '',
-      sortListBy: 0, // 0 is alpha, 1 is popularity, 2 is difficulty
+      sortListBy: 0, // 0 is alpha, , 1 is difficulty, 2 is favorites, 3 is popularity
       isLoading: true,
     };
   }
@@ -127,9 +129,6 @@ class FreeTraining extends Component {
         itemMap[charIndex].push(workout);
       });
     } else if (this.state.sortListBy === 1) {
-      // Sort by most popular
-      itemMap['Most Popular'] = newData.workouts.sort((a, b) => b.popularity - a.popularity);
-    } else if (this.state.sortListBy === 2) {
       // Sort by difficulty
       newData.workouts.sort((a, b) => a.difficulty - b.difficulty).forEach((workout) => {
         let difficultyLabel = '';
@@ -151,6 +150,16 @@ class FreeTraining extends Component {
         }
         itemMap[difficultyLabel].push(workout);
       });
+    } else if (this.state.sortListBy === 2) {
+      // Filter by favorites
+      const favoriteWorkoutsHash = {};
+      this.props.user.favoriteWorkouts.forEach(workout => {
+        favoriteWorkoutsHash[workout] = workout;
+      });
+      itemMap.Favorites = newData.workouts.filter(workout => favoriteWorkoutsHash[workout._id]);
+    } else if (this.state.sortListBy === 3) {
+      // Sort by most popular
+      itemMap['Most Popular'] = newData.workouts.sort((a, b) => b.popularity - a.popularity);
     }
     return itemMap;
   }
