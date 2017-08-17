@@ -1,19 +1,17 @@
-import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 const responsiveWidthHalfCircle = applyWidthDifference(128.5);
 
 const totalPointerWidth = applyWidthDifference(10);
 const totalPointerLength = applyWidthDifference(88);
 
 export default EStyleSheet.create({
-  $sliderIconSize: fixedResponsiveFontSize(15),
-  $sliderIconPadding: applyWidthDifference(5),
   $pointerBaseHeight: 84,
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
   },
   connectingContainer: {
     flex: 1,
@@ -91,46 +89,14 @@ export default EStyleSheet.create({
   },
   sliderTitle: {
     textAlign: 'center',
-    alignSelf: 'center',
-    width: applyWidthDifference(296),
-  },
-  sliderContainer: {
-    width: applyWidthDifference(296),
     marginBottom: applyWidthDifference(50),
-    alignSelf: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
+    fontSize: fixedResponsiveFontSize(12),
   },
   btnContainer: {
-    width: applyWidthDifference(350),
+    width: '85%',
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent: 'space-around',
-  },
-  monitorBtn: {
-    width: applyWidthDifference(75),
-    height: applyWidthDifference(75),
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 100,
-    ...Platform.select({
-      ios: {
-        shadowOffset: {
-          width: 0,
-          height: 1,
-        },
-        shadowRadius: 2,
-        shadowOpacity: 0.3,
-      },
-      android: {
-        elevation: 1,
-      },
-    }),
-  },
-  btnText: {
-    textAlign: 'center',
-    marginTop: applyWidthDifference(14),
-    fontWeight: 'bold',
   },
   halfCircleOuterContainer: {
     height: responsiveWidthHalfCircle,

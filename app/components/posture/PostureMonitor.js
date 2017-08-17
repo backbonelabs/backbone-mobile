@@ -20,7 +20,7 @@ import SecondaryText from '../../components/SecondaryText';
 import Spinner from '../../components/Spinner';
 import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
-import MonitorSlider from './postureMonitor/MonitorSlider';
+import Slider from '../Slider';
 import appActions from '../../actions/app';
 import deviceActions from '../../actions/device';
 import userActions from '../../actions/user';
@@ -1025,11 +1025,11 @@ class PostureMonitor extends Component {
 
     const getPlayPauseButton = () => {
       if (sessionState === sessionStates.STOPPED) {
-        return <MonitorButton text="PLAY" onPress={this.startSession} />;
+        return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.startSession} />;
       } else if (sessionState === sessionStates.RUNNING) {
         return <MonitorButton text="PAUSE" icon="pause" onPress={this.pauseSession} />;
       }
-      return <MonitorButton text="PLAY" onPress={this.resumeSession} />;
+      return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.resumeSession} />;
     };
 
     return this.props.device.isConnecting ? (
@@ -1061,7 +1061,9 @@ class PostureMonitor extends Component {
           MIN_POSTURE_THRESHOLD to make maximumValue equal to 0 in order for the slider to
           work on both Android and iOS.
         */}
-        <MonitorSlider
+        <Slider
+          leftIcon="remove"
+          rightIcon="add"
           value={-postureThreshold + MIN_POSTURE_THRESHOLD}
           onValueChange={value => {
             const correctedValue = value - MIN_POSTURE_THRESHOLD;
