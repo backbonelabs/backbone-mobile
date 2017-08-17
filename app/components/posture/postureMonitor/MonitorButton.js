@@ -20,7 +20,6 @@ class MonitorButton extends Component {
 
   static defaultProps = {
     color: 'white',
-    icon: 'play-arrow',
     underlayColor: theme.lightBlueColor,
     underlayIconColor: 'white',
     iconSize: relativeDimensions.fixedResponsiveFontSize(40),
@@ -68,11 +67,14 @@ class MonitorButton extends Component {
           onShowUnderlay={this._onShowUnderlay}
           {...otherProps}
         >
-          <MaterialIcons
-            name={icon}
-            size={iconSize}
-            color={otherProps.disabled ? theme.secondaryFontColor : currentIconColor}
-          />
+          {
+          icon ?
+            <MaterialIcons
+              name={icon}
+              size={iconSize}
+              color={otherProps.disabled ? theme.disabledColor : currentIconColor}
+            /> : null
+        }
         </TouchableHighlight>
         { text ?
           <SecondaryText
