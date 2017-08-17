@@ -13,6 +13,7 @@ import com.facebook.react.bridge.WritableMap;
 
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.EventEmitter;
+import co.backbonelabs.backbone.util.JSError;
 import timber.log.Timber;
 
 public class FullScreenBridgeModule extends ReactContextBaseJavaModule{
@@ -63,16 +64,14 @@ public class FullScreenBridgeModule extends ReactContextBaseJavaModule{
                 String errorInfo = intent.getStringExtra(Constants.EXTRA_VIDEO_ERROR_INFO);
                 Timber.d("Video Playback Error %s", errorInfo);
 
-                WritableMap wm = Arguments.createMap();
-                wm.putString("errorInfo", errorInfo);
-                EventEmitter.send(reactContext, "VideoError", wm);
+                EventEmitter.send(reactContext, "VideoError", JSError.make(errorInfo));
             }
             else if (action.equals(Constants.ACTION_VIDEO_PLAYBACK_PROGRESS)) {
-                int elapsedTime = intent.getIntExtra(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, 0);
-                Timber.d("Fullscreen Elapsed Time %d", elapsedTime);
+                int currentTime = intent.getIntExtra(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, 0);
+                Timber.d("Fullscreen Current Time %d", currentTime);
 
                 WritableMap wm = Arguments.createMap();
-                wm.putInt("elapsedTime", elapsedTime);
+                wm.putInt("currentTime", currentTime);
                 EventEmitter.send(reactContext, "VideoProgress", wm);
             }
         }

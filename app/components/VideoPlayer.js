@@ -155,48 +155,57 @@ export default class VideoPlayer extends Component {
       const FullScreenBridgeModuleEvents = new NativeEventEmitter(
         NativeModules.FullScreenBridgeModule);
 
-      this.fullScreenVideoLoadedListener = FullScreenBridgeModuleEvents.addListener(
-        'VideoLoaded',
-        () => {
-          // Do what we need when the video has been loaded in the fullscreen player
-        }
-      );
-
-      this.fullScreenVideoEndedListener = FullScreenBridgeModuleEvents.addListener(
-        'VideoEnded',
-        () => {
-          // Stop the playback to prevent auto-play when returning from the fullscreen video
-          if (!this.props.loop) {
-            this.setState({
-              isPlaying: false,
-              isStarted: false,
-              progress: 1,
-            });
+      if (!this.fullScreenVideoLoadedListener) {
+        this.fullScreenVideoLoadedListener = FullScreenBridgeModuleEvents.addListener(
+          'VideoLoaded',
+          () => {
+            // Do what we need when the video has been loaded in the fullscreen player
           }
-        }
-      );
+        );
+      }
 
-      this.fullScreenVideoErrorListener = FullScreenBridgeModuleEvents.addListener(
-        'VideoError',
-        (event) => {
-          // Handle fullscreen playback errors here
-          if (this.props.onAndroidFullScreenError) {
-            this.props.onAndroidFullScreenError(event);
+      if (!this.fullScreenVideoEndedListener) {
+        this.fullScreenVideoEndedListener = FullScreenBridgeModuleEvents.addListener(
+          'VideoEnded',
+          () => {
+            // Stop the playback to prevent auto-play when returning from the fullscreen video
+            if (!this.props.loop) {
+              this.setState({
+                isPlaying: false,
+                isStarted: false,
+                progress: 1,
+              });
+            }
           }
-        }
-      );
+        );
+      }
 
-      this.fullScreenVideoProgressListener = FullScreenBridgeModuleEvents.addListener(
-        'VideoProgress',
-        event => {
-          // Use the elapsed time of the fullscreen player to sync with the RN player
-          const { elapsedTime } = event;
-
-          if (this.player && this.state.isStarted) {
-            this.player.seek(elapsedTime);
+      if (!this.fullScreenVideoErrorListener) {
+        this.fullScreenVideoErrorListener = FullScreenBridgeModuleEvents.addListener(
+          'VideoError',
+          (event) => {
+            // Handle fullscreen playback errors here
+            if (this.props.onAndroidFullScreenError) {
+              this.props.onAndroidFullScreenError(event);
+            }
           }
-        }
-      );
+        );
+      }
+
+      if (!this.fullScreenVideoProgressListener) {
+        this.fullScreenVideoProgressListener = FullScreenBridgeModuleEvents.addListener(
+          'VideoProgress',
+          event => {
+            // Use the elapsed time of the fullscreen player to sync with the RN player
+            const { currentTime } = event;
+
+            if (this.player && this.state.isStarted) {
+              this.player.seek(currentTime);
+              this.onProgress(event);
+            }
+          }
+        );
+      }
 
       const uri = this.props.video.uri;
       const { progress } = this.state;
@@ -479,7 +488,6 @@ VideoPlayer.propTypes = {
   autoplay: PropTypes.bool,
   defaultMuted: PropTypes.bool,
   muted: PropTypes.bool,
-  style: View.propTypes.style,
   controlsTimeout: PropTypes.number,
   disableControlsAutoHide: PropTypes.bool,
   disableFullscreen: PropTypes.bool,
