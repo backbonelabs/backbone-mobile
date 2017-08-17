@@ -280,4 +280,12 @@ public class Constants {
         String POSTURE_SESSION_STREAM = "PostureSessionAccelerometerDeliveryStream";
         String POSTURE_SESSION = "PostureSessionDeliveryStream";
     }
+
+    public final static String EXTRA_VIDEO_ERROR_INFO = "co.backbonelabs.backbone.extra.VIDEO_ERROR_INFO";
+    public final static String EXTRA_VIDEO_PLAYBACK_PROGRESS = "co.backbonelabs.backbone.extra.VIDEO_PLAYBACK_PROGRESS";
+
+    public final static String ACTION_VIDEO_PLAYER_LOADED = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYER_LOADED";
+    public final static String ACTION_VIDEO_PLAYBACK_ENDED = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_ENDED";
+    public final static String ACTION_VIDEO_PLAYBACK_ERROR = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_ERROR";
+    public final static String ACTION_VIDEO_PLAYBACK_PROGRESS = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_PROGRESS";
 }
