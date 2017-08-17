@@ -33,10 +33,7 @@ export default EStyleSheet.create({
     width: '100%',
   },
   sliderThumb: {
-    width: applyWidthDifference(20),
-    height: applyWidthDifference(20),
     backgroundColor: '#396600',
-    top: applyWidthDifference(25),
   },
   sliderTrack: {
     height: applyWidthDifference(10),
