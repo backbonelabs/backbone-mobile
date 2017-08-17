@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Text,
   View,
   ListView,
   Animated,
@@ -272,7 +271,7 @@ class FreeTraining extends Component {
   renderSectionHeader(sectionData, category) {
     return (
       <View style={styles.section}>
-        <Text style={styles.sectionText}>{category}</Text>
+        <BodyText style={styles._sectionText}>{category}</BodyText>
       </View>
     );
   }

@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import {
-  Text,
   View,
   Animated,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/tabBar';
+import BodyText from '../components/BodyText';
 
 const renderTab = (name, page, isTabActive, onPressHandler, props) => {
   const { activeTextColor, inactiveTextColor, textStyle } = props;
@@ -29,9 +29,9 @@ const renderTab = (name, page, isTabActive, onPressHandler, props) => {
       }}
     >
       <View style={[styles.tab, props.tabStyle]}>
-        <Text style={[{ color: textColor, fontWeight }, textStyle]}>
+        <BodyText style={[{ color: textColor, fontWeight }, textStyle]}>
           {name}
-        </Text>
+        </BodyText>
         {isTabActive ?
           <Icon name="arrow-drop-down" size={styles.$arrowIconSize} style={styles.icon} /> : null
           }
