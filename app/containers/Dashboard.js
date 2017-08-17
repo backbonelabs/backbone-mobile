@@ -11,6 +11,7 @@ import autobind from 'class-autobind';
 import get from 'lodash/get';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import cloneDeep from 'lodash/cloneDeep';
 import appActions from '../actions/app';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
@@ -22,15 +23,15 @@ import orangeBg from '../images/dashboard/dashboard-bg-orange.jpg';
 import redBg from '../images/dashboard/dashboard-bg-red.jpg';
 import hexagon from '../images/dashboard/hexagon.png';
 import bulletPurpleOn from '../images/bullet-purple-on.png';
-// import bulletPurpleOff from '../images/bullet-purple-off.png';
+import bulletPurpleOff from '../images/bullet-purple-off.png';
 import bulletBlueOn from '../images/bullet-blue-on.png';
-// import bulletBlueOff from '../images/bullet-blue-off.png';
+import bulletBlueOff from '../images/bullet-blue-off.png';
 import bulletGreenOn from '../images/bullet-green-on.png';
-// import bulletGreenOff from '../images/bullet-green-off.png';
+import bulletGreenOff from '../images/bullet-green-off.png';
 import bulletOrangeOn from '../images/bullet-orange-on.png';
-// import bulletOrangeOff from '../images/bullet-orange-off.png';
+import bulletOrangeOff from '../images/bullet-orange-off.png';
 import bulletRedOn from '../images/bullet-red-on.png';
-// import bulletRedOff from '../images/bullet-red-off.png';
+import bulletRedOff from '../images/bullet-red-off.png';
 import { getColorNameForLevel } from '../utils/levelColors';
 import styles from '../styles/dashboard';
 
@@ -42,12 +43,20 @@ const colorBackgrounds = {
   red: redBg,
 };
 
-const colorBullets = {
+const colorBulletsOn = {
   purple: bulletPurpleOn,
   blue: bulletBlueOn,
   green: bulletGreenOn,
   orange: bulletOrangeOn,
   red: bulletRedOn,
+};
+
+const colorBulletsOff = {
+  purple: bulletPurpleOff,
+  blue: bulletBlueOff,
+  green: bulletGreenOff,
+  orange: bulletOrangeOff,
+  red: bulletRedOff,
 };
 
 const getScrollOffset = event => get(event, 'nativeEvent.contentOffset.y', 0);
@@ -72,6 +81,9 @@ class Dashboard extends Component {
       selectedPlanIdx: PropTypes.number,
       selectedLevelIdx: PropTypes.number,
       selectedSessionIdx: PropTypes.number,
+    }),
+    user: PropTypes.shape({
+      trainingPlanProgress: PropTypes.Object,
     }),
   };
 
@@ -229,16 +241,18 @@ class Dashboard extends Component {
    * @param {Number} idx     The index of the session within the level
    */
   _getSessionCard(session, idx) {
-    const sessionWorkouts = session.map(workout => (
-      <View key={workout.title} style={styles.sessionWorkoutRow}>
-        {/* TODO: Use the "on" and "off" bullets depending if the workout is completed */}
-        <Image
-          source={colorBullets[getColorNameForLevel(this.props.training.selectedLevelIdx)]}
-          style={styles.workoutBullet}
-        />
-        <BodyText key={workout.title}>{workout.title}</BodyText>
-      </View>
-    ));
+    const sessionWorkouts = session.map(workout => {
+      const color = getColorNameForLevel(this.props.training.selectedLevelIdx);
+      return (
+        <View key={workout.title} style={styles.sessionWorkoutRow}>
+          <Image
+            source={workout.isComplete ? colorBulletsOn[color] : colorBulletsOff[color]}
+            style={styles.workoutBullet}
+          />
+          <BodyText key={workout.title}>{workout.title}</BodyText>
+        </View>
+      );
+    });
 
     return (
       <Card key={idx}>
@@ -255,6 +269,20 @@ class Dashboard extends Component {
       selectedSessionIdx,
     } = this.props.training;
     const sessions = get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx], []);
+    const sessionsWithUserProgress = sessions.map((session, idx) => {
+      const sessionClone = cloneDeep(session);
+      const currentPlanId = plans[selectedPlanIdx]._id;
+      const sessionProgress = get(
+        this.props.user,
+        ['trainingPlanProgress', currentPlanId, selectedLevelIdx, idx],
+        [] // default to empty array
+      );
+      sessionProgress.forEach((workoutResult, workoutIdx) => {
+        // Add isComplete property to workout to indicate if user has completed the workout
+        sessionClone[workoutIdx].isComplete = workoutResult;
+      });
+      return sessionClone;
+    });
 
     return (
       <Image
@@ -277,7 +305,7 @@ class Dashboard extends Component {
         <View style={styles.carouselContainer}>
           {!!sessions.length &&
             <Carousel
-              items={sessions}
+              items={sessionsWithUserProgress}
               renderItem={this._getSessionCard}
               sliderWidth={styles.$carouselSliderWidth}
               itemWidth={styles.$carouselItemWidth}
@@ -295,8 +323,9 @@ class Dashboard extends Component {
   }
 }
 
-const mapStateToProps = ({ training }) => ({
+const mapStateToProps = ({ training, user: { user } }) => ({
   training,
+  user,
 });
 
 export default connect(mapStateToProps, {
