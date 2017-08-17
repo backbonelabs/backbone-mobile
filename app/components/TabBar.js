@@ -29,7 +29,7 @@ const renderTab = (name, page, isTabActive, onPressHandler, props) => {
       }}
     >
       <View style={[styles.tab, props.tabStyle]}>
-        <BodyText style={[{ color: textColor, fontWeight }, textStyle]}>
+        <BodyText style={{ color: textColor, fontWeight, ...styles._text, ...textStyle }}>
           {name}
         </BodyText>
         {isTabActive ?

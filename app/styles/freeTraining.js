@@ -21,7 +21,6 @@ export default EStyleSheet.create({
   },
   tabBarTextStyle: {
     fontSize: fixedResponsiveFontSize(12),
-    fontWeight: 'bold',
   },
   listContainer: {
     flex: 1,

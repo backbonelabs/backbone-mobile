@@ -350,7 +350,7 @@ class FreeTraining extends Component {
           tabBarActiveTextColor="#2196F3"
           tabBarInactiveTextColor="#bdbdbd"
           tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
-          tabBarTextStyle={styles.tabBarTextStyle}
+          tabBarTextStyle={styles._tabBarTextStyle}
         >
           {listViews}
         </ScrollableTabView>

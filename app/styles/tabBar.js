@@ -22,12 +22,11 @@ export default EStyleSheet.create({
     paddingTop: applyWidthDifference(5),
     borderBottomColor: 'rgba(0,0,0,0.05)',
   },
-  text: {
-    fontSize: fixedResponsiveFontSize(12),
-    fontWeight: 'bold',
-  },
   flexOne: {
     flex: 1,
+  },
+  text: {
+    fontSize: fixedResponsiveFontSize(12),
   },
   icon: {
     color: 'grey',
