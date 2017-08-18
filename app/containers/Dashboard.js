@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   View,
+  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
@@ -33,6 +34,7 @@ import bulletOrangeOff from '../images/bullet-orange-off.png';
 import bulletRedOn from '../images/bullet-red-on.png';
 import bulletRedOff from '../images/bullet-red-off.png';
 import { getColorNameForLevel } from '../utils/levelColors';
+import routes from '../routes';
 import styles from '../styles/dashboard';
 
 const colorBackgrounds = {
@@ -72,6 +74,9 @@ const getAnimationsForLevels = (levels = []) => levels.map(() => new Animated.Va
 
 class Dashboard extends Component {
   static propTypes = {
+    navigator: PropTypes.shape({
+      push: PropTypes.func,
+    }).isRequired,
     selectLevel: PropTypes.func.isRequired,
     selectSession: PropTypes.func.isRequired,
     showPartialModal: PropTypes.func.isRequired,
@@ -231,8 +236,20 @@ class Dashboard extends Component {
    * Fires the action creator for changing the session
    * @param {Number} idx Integer index of the session
    */
-  _onSelectSession(idx) {
+  _onSnapToSession(idx) {
     this.props.selectSession(idx);
+  }
+
+  _onSelectSession(navTitle, session) {
+    const { selectedLevelIdx } = this.props.training;
+    this.props.navigator.push({
+      ...routes.guidedTraining,
+      title: navTitle,
+      props: {
+        levelIdx: selectedLevelIdx,
+        workouts: session,
+      },
+    });
   }
 
   /**
@@ -241,6 +258,8 @@ class Dashboard extends Component {
    * @param {Number} idx     The index of the session within the level
    */
   _getSessionCard(session, idx) {
+    const { selectedLevelIdx } = this.props.training;
+    const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
     const sessionWorkouts = session.map(workout => {
       const color = getColorNameForLevel(this.props.training.selectedLevelIdx);
       return (
@@ -249,15 +268,17 @@ class Dashboard extends Component {
             source={workout.isComplete ? colorBulletsOn[color] : colorBulletsOff[color]}
             style={styles.workoutBullet}
           />
-          <BodyText key={workout.title}>{workout.title}</BodyText>
+          <BodyText>{workout.title}</BodyText>
         </View>
       );
     });
 
     return (
-      <Card key={idx}>
-        {sessionWorkouts}
-      </Card>
+      <TouchableOpacity onPress={() => this._onSelectSession(navTitle, session)}>
+        <Card key={idx}>
+          {sessionWorkouts}
+        </Card>
+      </TouchableOpacity>
     );
   }
 
@@ -310,7 +331,7 @@ class Dashboard extends Component {
               sliderWidth={styles.$carouselSliderWidth}
               itemWidth={styles.$carouselItemWidth}
               showsHorizontalScrollIndicator={false}
-              onSnapToItem={this._onSelectSession}
+              onSnapToItem={this._onSnapToSession}
               firstItem={selectedSessionIdx}
               slideStyle={styles.sessionCard}
               enableSnap
