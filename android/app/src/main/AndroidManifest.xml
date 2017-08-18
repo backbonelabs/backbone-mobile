@@ -50,6 +50,9 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
             </intent-filter>
         </receiver>
+        <activity
+            android:name=".FullScreenVideoActivity"
+            android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>
