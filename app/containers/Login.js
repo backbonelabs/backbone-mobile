@@ -95,7 +95,7 @@ class Login extends Component {
     } else if (
       !this.props.auth.errorMessage &&
       nextProps.auth.errorMessage &&
-      currentRoute.name === 'login'
+      currentRoute.name === routes.login.name
     ) {
       // Authentication error returned from API server
       if (nextProps.auth.errorMessage === 'Invalid login credentials. Please try again.') {

@@ -21,6 +21,7 @@ import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
+import routes from '../routes';
 
 class WorkoutList extends Component {
   static propTypes = {
@@ -51,14 +52,14 @@ class WorkoutList extends Component {
     const routeStack = this.props.navigator.getCurrentRoutes();
     this.currentRoute = routeStack[routeStack.length - 1];
 
-    if (this.currentRoute.name === 'freeTraining') {
+    if (this.currentRoute.name === routes.freeTraining.name) {
       this.workoutCategories = [
         { title: 'POSTURE', type: 1, workouts: [] },
         { title: 'EXERCISES', type: 2, workouts: [] },
         { title: 'STRETCHES', type: 3, workouts: [] },
         { title: 'MOBILITY', type: 4, workouts: [] },
       ];
-    } else if (this.currentRoute.name === 'education') {
+    } else if (this.currentRoute.name === routes.education.name) {
       this.workoutCategories = [
         { title: 'EXERCISES', type: 2, workouts: [] },
         { title: 'STRETCHES', type: 3, workouts: [] },
@@ -242,10 +243,10 @@ class WorkoutList extends Component {
    * @param {Object} workout
    */
   handleRowPress(workout) {
-    if (this.currentRoute.name === 'freeTraining') {
+    if (this.currentRoute.name === routes.freeTraining.name) {
       // Place holder for route to free training
       Alert.alert('workout', workout.title);
-    } else {
+    } else if (this.currentRoute.name === routes.education.name) {
       // Place holder for route to education video
       Alert.alert('workout', workout.title);
     }
