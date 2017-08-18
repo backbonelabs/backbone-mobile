@@ -3,6 +3,7 @@ import { View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import color from 'color';
 import BodyText from '../components/BodyText';
+import HeadingText from '../components/HeadingText';
 import bulletWhite from '../images/bullet-white.png';
 import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
@@ -53,9 +54,13 @@ class GuidedTraining extends Component {
     levelIdx: PropTypes.number.isRequired,
     workouts: PropTypes.arrayOf(PropTypes.shape({
       title: PropTypes.string,
-      instructions: PropTypes.string,
-      workout: PropTypes.object,
+      reps: PropTypes.number,
+      sets: PropTypes.number,
+      seconds: PropTypes.number,
+      twoSides: PropTypes.bool,
+      additionalDetails: PropTypes.string,
       isComplete: PropTypes.bool,
+      workout: PropTypes.object,
     })).isRequired,
   };
 
@@ -63,17 +68,26 @@ class GuidedTraining extends Component {
     super(props);
 
     // Find the first incomplete workout index
-    let step = props.workouts.findIndex(workout => !workout.isComplete);
-    if (step === -1) {
-      step = props.workouts.length - 1;
+    let stepIdx = props.workouts.findIndex(workout => !workout.isComplete);
+    if (stepIdx === -1) {
+      stepIdx = props.workouts.length - 1;
     }
 
     this.state = {
-      step: step + 1,
+      step: stepIdx + 1,
     };
   }
 
   render() {
+    const currentWorkout = this.props.workouts[this.state.step - 1];
+    const headingText = [];
+    const reps = currentWorkout.reps;
+
+    if (reps) {
+      headingText.push(`${reps} x`);
+    }
+    headingText.push(currentWorkout.workout.title);
+
     return (
       <View style={styles.container}>
         <ProgressBar
@@ -81,7 +95,7 @@ class GuidedTraining extends Component {
           totalSteps={this.props.workouts.length}
           backgroundColor={getColorHexForLevel(this.props.levelIdx)}
         />
-        <BodyText>Total workouts: {this.props.workouts.length}</BodyText>
+        <HeadingText size={2}>{headingText.join(' ')}</HeadingText>
       </View>
     );
   }
