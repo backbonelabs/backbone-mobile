@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Alert,
   View,
   ListView,
   Animated,
@@ -48,16 +49,16 @@ class ScrollableTab extends Component {
     ];
     // Template for categorizing all workouts into their type
     const routeStack = this.props.navigator.getCurrentRoutes();
-    const currentRoute = routeStack[routeStack.length - 1];
+    this.currentRoute = routeStack[routeStack.length - 1];
 
-    if (currentRoute.name === 'freeTraining') {
+    if (this.currentRoute.name === 'freeTraining') {
       this.workoutCategories = [
         { title: 'POSTURE', type: 1, workouts: [] },
         { title: 'EXERCISES', type: 2, workouts: [] },
         { title: 'STRETCHES', type: 3, workouts: [] },
         { title: 'MOBILITY', type: 4, workouts: [] },
       ];
-    } else if (currentRoute.name === 'education') {
+    } else if (this.currentRoute.name === 'education') {
       this.workoutCategories = [
         { title: 'EXERCISES', type: 2, workouts: [] },
         { title: 'STRETCHES', type: 3, workouts: [] },
@@ -237,11 +238,44 @@ class ScrollableTab extends Component {
   }
 
   /**
+   * Handles row press to go to next screen
+   * @param {Object} workout
+   */
+  handleRowPress(workout) {
+    if (this.currentRoute.name === 'freeTraining') {
+      // Place holder for route to free training
+      Alert.alert('workout', workout.title);
+    } else {
+      // Place holder for route to education video
+      Alert.alert('workout', workout.title);
+    }
+  }
+  /**
+   * Handles user favorite workouts
+   * @param {Object} workout
+   */
+  handleHeartPress(workout) {
+    const { _id: userId, favoriteWorkouts } = this.props.user;
+    const { _id: workoutId } = workout;
+    const newFavoriteWorkouts = favoriteWorkouts.slice();
+    const workoutIdIndex = newFavoriteWorkouts.indexOf(workoutId);
+    if (workoutIdIndex > -1) {
+      newFavoriteWorkouts.splice(workoutIdIndex, 1);
+    } else {
+      newFavoriteWorkouts.push(workoutId);
+    }
+    this.props.dispatch(userActions.updateUser({
+      _id: userId,
+      favoriteWorkouts: newFavoriteWorkouts,
+    }));
+  }
+
+  /**
    * Renders the rows for the list view
    * @param {Object} rowData
    */
   renderRow(rowData) {
-    const { _id: userId, favoriteWorkouts } = this.props.user;
+    const { favoriteWorkouts } = this.props.user;
     const { _id: workoutId, title: workoutTitle } = rowData;
 
     let iconName = '';
@@ -252,25 +286,13 @@ class ScrollableTab extends Component {
     }
     return (
       <View style={styles.rowContainer}>
-        <View style={styles.rowInnerContainer}>
-          <View style={styles.workoutPreviewBox} />
-          <SecondaryText style={styles._rowText}>{workoutTitle}</SecondaryText>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            const newFavoriteWorkouts = favoriteWorkouts.slice();
-            const workoutIdIndex = newFavoriteWorkouts.indexOf(workoutId);
-            if (workoutIdIndex > -1) {
-              newFavoriteWorkouts.splice(workoutIdIndex, 1);
-            } else {
-              newFavoriteWorkouts.push(workoutId);
-            }
-            this.props.dispatch(userActions.updateUser({
-              _id: userId,
-              favoriteWorkouts: newFavoriteWorkouts,
-            }));
-          }}
-        >
+        <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
+          <View style={styles.rowInnerContainer}>
+            <View style={styles.workoutPreviewBox} />
+            <SecondaryText style={styles._rowText}>{workoutTitle}</SecondaryText>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
           <Icon name={iconName} style={styles._heartIcon} size={styles.$heartIconSize} />
         </TouchableOpacity>
       </View>
@@ -329,7 +351,6 @@ class ScrollableTab extends Component {
         overScrollMode={'always'}
         renderRow={this.renderRow}
         renderSeparator={this.renderSeparator}
-        onPressRow={() => {}}
         renderSectionHeader={this.renderSectionHeader}
         enableEmptySections
         onScroll={this.handleScroll}
