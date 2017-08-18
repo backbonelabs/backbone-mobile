@@ -22,6 +22,7 @@ const disabledColor = '#9E9E9E';
 const inputIconColor = disabledColor;
 const bannerColor = '#EEE';
 const warningColor = '#D32F2F';
+const greenColor = '#16d03d';
 
 export default {
   primaryColor,
@@ -43,4 +44,5 @@ export default {
   screenWidth,
   inputIconColor,
   lightBlueColor,
+  greenColor,
 };

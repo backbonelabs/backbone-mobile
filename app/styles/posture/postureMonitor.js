@@ -1,14 +1,11 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
-const responsiveWidthHalfCircle = applyWidthDifference(128.5);
-
-const totalPointerWidth = applyWidthDifference(10);
 const totalPointerLength = applyWidthDifference(88);
 
 export default EStyleSheet.create({
-  $pointerBaseHeight: 84,
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
@@ -19,77 +16,115 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   connectingSpinner: {
-    marginBottom: 10,
+    marginBottom: fixedResponsiveFontSize(10),
   },
   connectingText: {
-    marginTop: 10,
+    marginTop: fixedResponsiveFontSize(10),
   },
   timer: {
     textAlign: 'center',
-    marginTop: applyWidthDifference(40),
-    '@media (max-height: 480)': { // iphone4's max height
-      marginTop: applyWidthDifference(10),
-    },
-    marginBottom: applyWidthDifference(5),
+    fontSize: fixedResponsiveFontSize(54),
+    color: '$lightBlueColor',
+    marginTop: applyWidthDifference(10),
   },
   heading: {
     textAlign: 'center',
-    marginBottom: applyWidthDifference(50),
-    '@media (max-height: 480)': { // iphone4's max height
-      marginBottom: applyWidthDifference(15),
-    },
+    marginBottom: applyWidthDifference(30),
   },
-  monitorPointerContainer: {
-    flexDirection: 'row',
+  monitorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: applyWidthDifference(20),
+  },
+  animatedProgress: {
+    justifyContent: 'center',
+  },
+  innerMonitorContainer: {
+    height: applyWidthDifference(190),
+    width: applyWidthDifference(190),
+    backgroundColor: 'white',
+    borderRadius: 100,
+    position: 'absolute',
     alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    height: totalPointerWidth,
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 1,
+        },
+        shadowColor: '$secondaryFontColor',
+        shadowRadius: 2,
+        shadowOpacity: 0.3,
+      },
+      android: {
+        elevation: 1,
+      },
+    }),
+  },
+  dialContainer: {
     width: (totalPointerLength * 2) - applyWidthDifference(8),
-    marginTop: totalPointerWidth * -0.5,
   },
-  base: {
-    width: applyWidthDifference(8),
-    height: applyWidthDifference(8),
-    borderRadius: applyWidthDifference(4),
-    backgroundColor: '$primaryFontColor',
+  dial: {
+    height: applyWidthDifference(5),
+    width: applyWidthDifference(20),
+    borderRadius: 20,
+    backgroundColor: '$secondaryFontColor',
   },
-  hand: {
-    height: applyWidthDifference(2),
-    width: applyWidthDifference(70),
-    backgroundColor: '$primaryFontColor',
+  leftCircle: {
+    width: applyWidthDifference(15),
+    height: applyWidthDifference(15),
+    borderRadius: 100,
+    position: 'absolute',
+    ...Platform.select({
+      ios: {
+        bottom: applyWidthDifference(50),
+        left: applyWidthDifference(86),
+      },
+      android: {
+        bottom: applyWidthDifference(40),
+        left: applyWidthDifference(75),
+      },
+    }),
   },
-  point: {
+  rightCircle: {
+    width: applyWidthDifference(15),
+    height: applyWidthDifference(15),
+    borderRadius: 100,
+    position: 'absolute',
+    ...Platform.select({
+      ios: {
+        bottom: applyWidthDifference(50),
+        right: applyWidthDifference(86),
+      },
+      android: {
+        bottom: applyWidthDifference(40),
+        right: applyWidthDifference(75),
+      },
+    }),
+  },
+  postureRatingContainer: {
+    position: 'absolute',
+    alignItems: 'center',
     backgroundColor: 'transparent',
-    borderRightWidth: 0,
-    borderTopWidth: applyWidthDifference(5),
-    borderLeftWidth: applyWidthDifference(10),
-    borderBottomWidth: applyWidthDifference(5),
-    borderRightColor: 'transparent',
-    borderTopColor: 'transparent',
-    borderLeftColor: '$primaryFontColor',
-    borderBottomColor: 'transparent',
   },
-  monitorTitle: {
+  postureRating: {
+    color: '$greenColor',
+    fontSize: fixedResponsiveFontSize(42),
+    fontWeight: 'bold',
+    marginTop: applyWidthDifference(40),
+  },
+  refreshIcon: {
     textAlign: 'center',
-    marginBottom: applyWidthDifference(34),
   },
-  monitorRatingContainer: {
-    flexDirection: 'row',
-    marginTop: applyWidthDifference(5),
-    marginBottom: applyWidthDifference(5),
-    alignSelf: 'center',
-  },
-  monitorPoor: {
-    marginLeft: applyWidthDifference(26),
-    marginRight: applyWidthDifference(212),
-  },
-  monitorGood: {
-    marginRight: applyWidthDifference(27),
+  reCalibrate: {
+    fontSize: fixedResponsiveFontSize(12),
+    fontWeight: 'bold',
   },
   sliderTitle: {
     textAlign: 'center',
-    marginBottom: applyWidthDifference(50),
+    marginBottom: applyWidthDifference(40),
     fontSize: fixedResponsiveFontSize(12),
   },
   btnContainer: {
@@ -97,34 +132,6 @@ export default EStyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent: 'space-around',
-  },
-  halfCircleOuterContainer: {
-    height: responsiveWidthHalfCircle,
-    width: (responsiveWidthHalfCircle * 2),
-    position: 'absolute',
-    top: applyWidthDifference(7.5),
-    left: applyWidthDifference(7.5),
-    alignSelf: 'center',
-    alignItems: 'center',
-    borderWidth: 0,
-    overflow: 'hidden',
-  },
-  halfCircleInnerContainer: {
-    height: responsiveWidthHalfCircle * 2,
-    width: responsiveWidthHalfCircle * 2,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    justifyContent: 'flex-end',
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  halfCircle: {
-    height: responsiveWidthHalfCircle,
-    width: responsiveWidthHalfCircle * 2,
-    borderBottomLeftRadius: responsiveWidthHalfCircle * 2,
-    borderBottomRightRadius: responsiveWidthHalfCircle * 2,
-    backgroundColor: '#FFF',
   },
   partialSpinnerContainer: {
     height: applyWidthDifference(25),
