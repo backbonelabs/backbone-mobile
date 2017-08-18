@@ -83,9 +83,11 @@ export default EStyleSheet.create({
         bottom: applyWidthDifference(50),
         left: applyWidthDifference(86),
       },
+      // applyWidthDifference wasn't working as expected on Android,
+      // not sure if the circles are in the right location in a smaller or bigger device
       android: {
-        bottom: applyWidthDifference(40),
-        left: applyWidthDifference(75),
+        bottom: 40,
+        left: 75,
       },
     }),
   },
@@ -100,8 +102,8 @@ export default EStyleSheet.create({
         right: applyWidthDifference(86),
       },
       android: {
-        bottom: applyWidthDifference(40),
-        right: applyWidthDifference(75),
+        bottom: 40,
+        right: 75,
       },
     }),
   },
