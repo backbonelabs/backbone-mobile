@@ -21,7 +21,7 @@ import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 
-class FreeTraining extends Component {
+class ScrollableTab extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     workouts: PropTypes.array,
@@ -30,10 +30,13 @@ class FreeTraining extends Component {
       _id: PropTypes.string,
       favoriteWorkouts: PropTypes.array,
     }),
+    navigator: PropTypes.shape({
+      getCurrentRoutes: PropTypes.func,
+    }),
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     autobind(this);
     this.isiOS = Platform.OS === 'ios';
     this.subViewInitialPosition = Dimensions.get('window').height;
@@ -44,12 +47,23 @@ class FreeTraining extends Component {
       // 'POPULARITY', // removed until backend is implemented
     ];
     // Template for categorizing all workouts into their type
-    this.workoutCategories = [
+    const routeStack = this.props.navigator.getCurrentRoutes();
+    const currentRoute = routeStack[routeStack.length - 1];
+
+    if (currentRoute.name === 'freeTraining') {
+      this.workoutCategories = [
         { title: 'POSTURE', type: 1, workouts: [] },
         { title: 'EXERCISES', type: 2, workouts: [] },
         { title: 'STRETCHES', type: 3, workouts: [] },
         { title: 'MOBILITY', type: 4, workouts: [] },
-    ];
+      ];
+    } else if (currentRoute.name === 'education') {
+      this.workoutCategories = [
+        { title: 'EXERCISES', type: 2, workouts: [] },
+        { title: 'STRETCHES', type: 3, workouts: [] },
+        { title: 'MOBILITY', type: 4, workouts: [] },
+      ];
+    }
     this.state = {
       workouts: [],
       // This is the initial position of the subview
@@ -379,4 +393,4 @@ const mapStateToProps = (state) => {
   return { workouts, isFetchingWorkouts, favoriteWorkouts, user };
 };
 
-export default connect(mapStateToProps)(FreeTraining);
+export default connect(mapStateToProps)(ScrollableTab);

@@ -1,8 +1,8 @@
 import ScrollableTab from '../containers/ScrollableTab';
 
 export default {
-  name: 'freeTraining',
-  title: 'Free Training',
+  name: 'education',
+  title: 'Education',
   component: ScrollableTab,
   showTabBar: true,
 };

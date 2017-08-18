@@ -658,6 +658,12 @@ class Application extends Component {
         inactive: sessionInactive,
       },
       {
+        name: 'Education',
+        routeName: 'education',
+        active: sessionActive,
+        inactive: sessionInactive,
+      },
+      {
         name: 'Settings',
         routeName: 'settings',
         active: settingsActive,
