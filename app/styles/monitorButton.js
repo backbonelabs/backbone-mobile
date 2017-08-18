@@ -23,6 +23,7 @@ export default EStyleSheet.create({
           width: 0,
           height: 1,
         },
+        shadowColor: '$secondaryFontColor',
         shadowRadius: 2,
         shadowOpacity: 0.3,
       },
