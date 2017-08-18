@@ -18,6 +18,7 @@ const Slider = ({ leftIcon, leftIconSize, rightIcon, rightIconSize, customStyles
     }
     <View style={[styles.sliderInnerContainer, customStyles.sliderInnerContainer]}>
       <RNSlider
+        style={customStyles.sliderStyle}
         trackStyle={[styles.trackStyle, customStyles.trackStyle]}
         thumbStyle={[styles.thumbStyle, customStyles.thumbStyle]}
         {...props}
@@ -47,6 +48,7 @@ Slider.propTypes = {
     trackStyle: View.propTypes.style,
     sliderContainer: View.propTypes.style,
     sliderInnerContainer: View.propTypes.style,
+    sliderStyle: View.propTypes.style,
   }),
 };
 
