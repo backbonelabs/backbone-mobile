@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,6 +10,9 @@ import Spinner from '../components/Spinner';
 import bulletWhite from '../images/bullet-white.png';
 import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
+import relativeDimensions from '../utils/relativeDimensions';
+
+const { applyWidthDifference } = relativeDimensions;
 
 const ProgressBar = (props) => {
   const stepIndicators = [];
@@ -80,6 +83,9 @@ class GuidedTraining extends Component {
       step: stepIdx + 1,
       hasTimerStarted: false,
       isFetchingImage: true,
+      leftButtonDepressed: false,
+      centerButtonDepressed: false,
+      rightButtonDepressed: false,
     };
   }
 
@@ -93,6 +99,19 @@ class GuidedTraining extends Component {
         // Suppress errors
         this.setState({ isFetchingImage: false });
       });
+  }
+
+  _onButtonPress(buttonName) {
+    // TODO: Perform appropriate action for button press
+    console.log('onButtonPress', buttonName);
+  }
+
+  _onButtonShowUnderlay(buttonName) {
+    this.setState({ [`${buttonName}Depressed`]: true });
+  }
+
+  _onButtonHideUnderlay(buttonName) {
+    this.setState({ [`${buttonName}Depressed`]: false });
   }
 
   render() {
@@ -127,6 +146,12 @@ class GuidedTraining extends Component {
 
     const levelColor = getColorHexForLevel(this.props.levelIdx);
 
+    const isLeftButtonDisabled = this.state.step === 1;
+    const additionalLeftButtonStyles = {};
+    if (isLeftButtonDisabled) {
+      additionalLeftButtonStyles.opacity = 0.4;
+    }
+
     return (
       <View style={styles.container}>
         <ProgressBar
@@ -139,22 +164,62 @@ class GuidedTraining extends Component {
           <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif} />}
         <View style={styles.footer}>
           <View style={styles.footerButtonContainer}>
-            <View style={styles.footerButton}>
-              <Icon name="arrow-back" size={60} />
-            </View>
-            <SecondaryText style={{ textAlign: 'center' }}>PREVIOUS</SecondaryText>
+            <TouchableHighlight
+              activeOpacity={1}
+              underlayColor={levelColor}
+              onPress={() => this._onButtonPress('leftButton')}
+              onShowUnderlay={() => this._onButtonShowUnderlay('leftButton')}
+              onHideUnderlay={() => this._onButtonHideUnderlay('leftButton')}
+              style={[styles.footerButton, additionalLeftButtonStyles]}
+              disabled={isLeftButtonDisabled}
+            >
+              <View style={styles.footerButtonIconContainer}>
+                <Icon
+                  name="arrow-back"
+                  size={applyWidthDifference(50)}
+                  style={{ color: this.state.leftButtonDepressed ? 'white' : levelColor }}
+                />
+              </View>
+            </TouchableHighlight>
+            <SecondaryText style={styles._footerButtonText}>PREVIOUS</SecondaryText>
           </View>
           <View style={styles.footerButtonContainer}>
-            <View style={styles.footerButton}>
-              <Icon name="check" size={60} />
-            </View>
-            <SecondaryText style={{ textAlign: 'center' }}>DONE</SecondaryText>
+            <TouchableHighlight
+              activeOpacity={1}
+              underlayColor={levelColor}
+              onPress={() => this._onButtonPress('centerButton')}
+              onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
+              onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
+              style={styles.footerButton}
+            >
+              <View style={styles.footerButtonIconContainer}>
+                <Icon
+                  name="check"
+                  size={applyWidthDifference(50)}
+                  style={{ color: this.state.centerButtonDepressed ? 'white' : levelColor }}
+                />
+              </View>
+            </TouchableHighlight>
+            <SecondaryText style={styles._footerButtonText}>DONE</SecondaryText>
           </View>
           <View style={styles.footerButtonContainer}>
-            <View style={styles.footerButton}>
-              <Icon name="arrow-forward" size={60} />
-            </View>
-            <SecondaryText style={{ textAlign: 'center' }}>NEXT</SecondaryText>
+            <TouchableHighlight
+              activeOpacity={1}
+              underlayColor={levelColor}
+              onPress={() => this._onButtonPress('rightButton')}
+              onShowUnderlay={() => this._onButtonShowUnderlay('rightButton')}
+              onHideUnderlay={() => this._onButtonHideUnderlay('rightButton')}
+              style={styles.footerButton}
+            >
+              <View style={styles.footerButtonIconContainer}>
+                <Icon
+                  name="arrow-forward"
+                  size={applyWidthDifference(50)}
+                  style={{ color: this.state.rightButtonDepressed ? 'white' : levelColor }}
+                />
+              </View>
+            </TouchableHighlight>
+            <SecondaryText style={styles._footerButtonText}>NEXT</SecondaryText>
           </View>
         </View>
       </View>

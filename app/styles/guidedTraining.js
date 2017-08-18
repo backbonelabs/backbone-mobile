@@ -65,9 +65,8 @@ export default EStyleSheet.create({
   },
   footerButton: {
     alignItems: 'center',
+    backgroundColor: 'white',
     borderRadius: applyWidthDifference(30),
-    borderWidth: 1,
-    borderColor: 'gray',
     ...Platform.select({
       ios: {
         shadowOffset: {
@@ -77,9 +76,19 @@ export default EStyleSheet.create({
         shadowRadius: 3,
         shadowOpacity: 0.15,
       },
+      android: {
+        elevation: 1,
+      },
     }),
-    justifyContent: 'center',
     height: applyWidthDifference(60),
+    justifyContent: 'center',
     width: applyWidthDifference(60),
+  },
+  footerButtonIconContainer: {
+    borderRadius: applyWidthDifference(30),
+    overflow: 'hidden',
+  },
+  footerButtonText: {
+    textAlign: 'center',
   },
 });
