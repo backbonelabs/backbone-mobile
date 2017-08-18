@@ -49,7 +49,7 @@ class WorkoutList extends Component {
       // 'POPULARITY', // removed until backend is implemented
     ];
     // Template for categorizing all workouts into their type
-    const routeStack = this.props.navigator.getCurrentRoutes();
+    const routeStack = props.navigator.getCurrentRoutes();
     this.currentRoute = routeStack[routeStack.length - 1];
 
     if (this.currentRoute.name === routes.freeTraining.name) {
@@ -67,7 +67,7 @@ class WorkoutList extends Component {
       ];
     }
     this.state = {
-      workouts: [],
+      workouts: this.organizeWorkouts(props.workouts),
       // This is the initial position of the subview
       bounceValue: new Animated.Value(this.subViewInitialPosition),
       subViewIsHidden: true,
@@ -87,20 +87,8 @@ class WorkoutList extends Component {
 
   componentWillReceiveProps(nextProps) {
     // categorizes the workouts by type
-    if (!isEqual(this.props.workouts, nextProps.workouts)
-      || this.state.workouts.length === 0) {
-      const workouts = this.workoutCategories.slice();
-      nextProps.workouts.forEach((workout) => {
-        if (workout.type === workouts[0].type) {
-          workouts[0].workouts.push(workout);
-        } else if (workout.type === workouts[1].type) {
-          workouts[1].workouts.push(workout);
-        } else if (workout.type === workouts[2].type) {
-          workouts[2].workouts.push(workout);
-        }
-      });
-
-      this.setState({ workouts });
+    if (!isEqual(this.props.workouts, nextProps.workouts)) {
+      this.setState({ workouts: this.organizeWorkouts(nextProps.workouts) });
     }
   }
 
@@ -117,8 +105,34 @@ class WorkoutList extends Component {
     return dataSource.cloneWithRowsAndSections(this.convertDataToMap(dbSource));
   }
 
+  /**
+   * Returns TabBar component
+   * @return {<TabBar />}
+   */
   getTabBar() {
     return (<TabBar toggleSubview={this.toggleSubview} />);
+  }
+
+  /**
+   * Organizes the workouts by type:
+   * Posture: 1,
+   * Exercise: 2,
+   * Stretches: 3,
+   * Mobility: 4,
+   * @param {Array} workoutsProps
+   */
+  organizeWorkouts(workoutsProps) {
+    const workouts = this.workoutCategories.slice();
+    workoutsProps.forEach((workout) => {
+      if (workout.type === workouts[0].type) {
+        workouts[0].workouts.push(workout);
+      } else if (workout.type === workouts[1].type) {
+        workouts[1].workouts.push(workout);
+      } else if (workout.type === workouts[2].type) {
+        workouts[2].workouts.push(workout);
+      }
+    });
+    return workouts;
   }
 
   /**
