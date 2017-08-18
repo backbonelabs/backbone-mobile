@@ -11,6 +11,7 @@ import bulletWhite from '../images/bullet-white.png';
 import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
 import relativeDimensions from '../utils/relativeDimensions';
+import { formattedTimeString } from '../utils/timeUtils';
 
 const { applyWidthDifference } = relativeDimensions;
 
@@ -120,7 +121,7 @@ class GuidedTraining extends Component {
     if (currentWorkout.reps) {
       subheading.push(`Reps: ${currentWorkout.reps}`);
     } else if (currentWorkout.seconds) {
-      subheading.push(`Time: ${currentWorkout.seconds}`);
+      subheading.push(`Time: ${formattedTimeString(currentWorkout.seconds)}`);
     }
 
     if (currentWorkout.sets) {
