@@ -71,6 +71,18 @@ const distanceToDegrees = distance => {
 };
 
 /**
+ * Monitor takes a number from 0-100, so we scale the distance
+ * to a range of 0-100
+ * @param  {Number} distance Deviation from the control point
+ * @return {Number}          Distance value scaled in a range of 0-100
+ */
+const scaleDistance = distance => {
+  const currentRange = 0.3 - 0.03;
+  const newRange = 100 - 0;
+  return (((distance - 0.03) * newRange) / currentRange) + 0;
+};
+
+/**
  * Returns a number at a given magnitude
  * @param  {Number} number    The original number
  * @param  {Number} magnitude The order of magnitude
@@ -1039,19 +1051,15 @@ class PostureMonitor extends Component {
       </View>
     ) : (
       <View style={styles.container}>
-        <HeadingText size={1} style={styles._timer}>
+        <BodyText size={1} style={styles._timer}>
           {this.getFormattedTime()}
-        </HeadingText>
-        <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
+        </BodyText>
+        <BodyText size={3} style={styles._heading}>Time Remaining</BodyText>
         <Monitor
           pointerPosition={pointerPosition}
-          slouchPosition={distanceToDegrees(postureThreshold)}
+          slouchPosition={scaleDistance(postureThreshold)}
         />
-        <View style={styles.monitorRatingContainer}>
-          <BodyText style={styles._monitorPoor}>Poor</BodyText>
-          <BodyText style={styles._monitorGood}>Good</BodyText>
-        </View>
-        <BodyText style={styles._monitorTitle}>POSTURE MONITOR</BodyText>
+
         {/*
           The allowed range for the posture distance threshold is MIN_POSTURE_THRESHOLD
           to MAX_POSTURE_THRESHOLD. Ideally, the minimumValue and maximumValue for the
@@ -1064,6 +1072,7 @@ class PostureMonitor extends Component {
         <Slider
           leftIcon="remove"
           rightIcon="add"
+          customStyles={{ sliderStyle: { height: styles.$sliderHeight } }}
           value={-postureThreshold + MIN_POSTURE_THRESHOLD}
           onValueChange={value => {
             const correctedValue = value - MIN_POSTURE_THRESHOLD;

@@ -6,6 +6,7 @@ const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 const totalPointerLength = applyWidthDifference(88);
 
 export default EStyleSheet.create({
+  $sliderHeight: applyWidthDifference(30),
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
