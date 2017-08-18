@@ -1,8 +1,8 @@
-import ScrollableTab from '../containers/ScrollableTab';
+import WorkoutList from '../containers/WorkoutList';
 
 export default {
   name: 'education',
   title: 'Education',
-  component: ScrollableTab,
+  component: WorkoutList,
   showTabBar: true,
 };

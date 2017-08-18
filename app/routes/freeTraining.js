@@ -1,8 +1,8 @@
-import ScrollableTab from '../containers/ScrollableTab';
+import WorkoutList from '../containers/WorkoutList';
 
 export default {
   name: 'freeTraining',
   title: 'Free Training',
-  component: ScrollableTab,
+  component: WorkoutList,
   showTabBar: true,
 };

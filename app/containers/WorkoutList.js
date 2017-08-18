@@ -22,7 +22,7 @@ import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 
-class ScrollableTab extends Component {
+class WorkoutList extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     workouts: PropTypes.array,
@@ -414,4 +414,4 @@ const mapStateToProps = (state) => {
   return { workouts, isFetchingWorkouts, favoriteWorkouts, user };
 };
 
-export default connect(mapStateToProps)(ScrollableTab);
+export default connect(mapStateToProps)(WorkoutList);
