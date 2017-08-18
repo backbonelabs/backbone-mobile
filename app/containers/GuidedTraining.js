@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
+import Spinner from '../components/Spinner';
 import bulletWhite from '../images/bullet-white.png';
 import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
@@ -78,7 +79,20 @@ class GuidedTraining extends Component {
     this.state = {
       step: stepIdx + 1,
       hasTimerStarted: false,
+      isFetchingImage: true,
     };
+  }
+
+  componentDidMount() {
+    // Fetch image in the background. User should see a Spinner until the image is fully fetched.
+    Image.prefetch(this.props.workouts[this.state.step - 1].workout.gifUrl)
+      .then(() => {
+        this.setState({ isFetchingImage: false });
+      })
+      .catch(() => {
+        // Suppress errors
+        this.setState({ isFetchingImage: false });
+      });
   }
 
   render() {
@@ -111,15 +125,18 @@ class GuidedTraining extends Component {
       </View>
     );
 
+    const levelColor = getColorHexForLevel(this.props.levelIdx);
+
     return (
       <View style={styles.container}>
         <ProgressBar
           currentStep={this.state.step}
           totalSteps={this.props.workouts.length}
-          backgroundColor={getColorHexForLevel(this.props.levelIdx)}
+          backgroundColor={levelColor}
         />
         {header}
-        <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif} />
+        {this.state.isFetchingImage ? <Spinner size="large" color={levelColor} /> :
+          <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif} />}
         <View style={styles.footer}>
           <View style={styles.footerButtonContainer}>
             <View style={styles.footerButton}>
