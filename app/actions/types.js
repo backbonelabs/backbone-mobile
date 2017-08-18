@@ -5,6 +5,7 @@ export const HIDE_FULL_MODAL = 'HIDE_FULL_MODAL';
 export const SHOW_PARTIAL_MODAL = 'SHOW_PARTIAL_MODAL';
 export const HIDE_PARTIAL_MODAL = 'HIDE_PARTIAL_MODAL';
 export const UPDATE_BLUETOOTH_STATE = 'UPDATE_BLUETOOTH_STATE';
+export const SET_TITLE_BAR = 'SET_TITLE_BAR';
 
 // auth actions
 export const LOGIN = 'LOGIN';
