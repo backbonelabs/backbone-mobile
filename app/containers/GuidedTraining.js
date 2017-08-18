@@ -2,8 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { View, Image } from 'react-native';
 import { connect } from 'react-redux';
 import color from 'color';
-import BodyText from '../components/BodyText';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import HeadingText from '../components/HeadingText';
+import BodyText from '../components/BodyText';
+import SecondaryText from '../components/SecondaryText';
 import bulletWhite from '../images/bullet-white.png';
 import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
@@ -75,18 +77,39 @@ class GuidedTraining extends Component {
 
     this.state = {
       step: stepIdx + 1,
+      hasTimerStarted: false,
     };
   }
 
   render() {
     const currentWorkout = this.props.workouts[this.state.step - 1];
-    const headingText = [];
-    const reps = currentWorkout.reps;
-
-    if (reps) {
-      headingText.push(`${reps} x`);
+    const subheading = [];
+    if (currentWorkout.reps) {
+      subheading.push(`Reps: ${currentWorkout.reps}`);
+    } else if (currentWorkout.seconds) {
+      subheading.push(`Time: ${currentWorkout.seconds}`);
     }
-    headingText.push(currentWorkout.workout.title);
+
+    if (currentWorkout.sets) {
+      subheading.push(`Sets: ${currentWorkout.sets}`);
+    }
+
+    if (currentWorkout.twoSides) {
+      subheading[0] += '/side';
+    }
+
+    const header = currentWorkout.seconds && this.state.hasTimerStarted ? (
+      <View style={styles.header}>
+        <BodyText style={styles._timer}>0:30</BodyText>
+        <BodyText>Time Remaining</BodyText>
+      </View>
+    ) : (
+      <View style={styles.header}>
+        <HeadingText size={1}>{currentWorkout.workout.title}</HeadingText>
+        <BodyText style={styles._subheading}>{subheading.join('\n')}</BodyText>
+        <BodyText style={styles._instructions}>{currentWorkout.workout.instructions}</BodyText>
+      </View>
+    );
 
     return (
       <View style={styles.container}>
@@ -95,7 +118,28 @@ class GuidedTraining extends Component {
           totalSteps={this.props.workouts.length}
           backgroundColor={getColorHexForLevel(this.props.levelIdx)}
         />
-        <HeadingText size={2}>{headingText.join(' ')}</HeadingText>
+        {header}
+        <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif} />
+        <View style={styles.footer}>
+          <View style={styles.footerButtonContainer}>
+            <View style={styles.footerButton}>
+              <Icon name="arrow-back" size={60} />
+            </View>
+            <SecondaryText style={{ textAlign: 'center' }}>PREVIOUS</SecondaryText>
+          </View>
+          <View style={styles.footerButtonContainer}>
+            <View style={styles.footerButton}>
+              <Icon name="check" size={60} />
+            </View>
+            <SecondaryText style={{ textAlign: 'center' }}>DONE</SecondaryText>
+          </View>
+          <View style={styles.footerButtonContainer}>
+            <View style={styles.footerButton}>
+              <Icon name="arrow-forward" size={60} />
+            </View>
+            <SecondaryText style={{ textAlign: 'center' }}>NEXT</SecondaryText>
+          </View>
+        </View>
       </View>
     );
   }
