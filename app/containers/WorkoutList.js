@@ -121,9 +121,9 @@ class WorkoutList extends Component {
    * Mobility: 4,
    * @param {Array} workoutsProps
    */
-  organizeWorkouts(workoutsProps) {
+  organizeWorkouts(propsWorkouts) {
     const workouts = this.workoutCategories.slice();
-    workoutsProps.forEach((workout) => {
+    propsWorkouts.forEach((workout) => {
       if (workout.type === workouts[0].type) {
         workouts[0].workouts.push(workout);
       } else if (workout.type === workouts[1].type) {
