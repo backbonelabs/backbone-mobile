@@ -77,9 +77,9 @@ const distanceToDegrees = distance => {
  * @return {Number}          Distance value scaled in a range of 0-100
  */
 const scaleDistance = distance => {
-  const currentRange = 0.3 - 0.03;
+  const currentRange = MAX_POSTURE_THRESHOLD - MIN_POSTURE_THRESHOLD;
   const newRange = 100 - 0;
-  return (((distance - 0.03) * newRange) / currentRange) + 0;
+  return (((distance - MIN_POSTURE_THRESHOLD) * newRange) / currentRange) + 0;
 };
 
 /**
