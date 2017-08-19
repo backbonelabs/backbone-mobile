@@ -17,7 +17,8 @@ const primaryFont = 'Lato';
 const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
 const activeBorderColor = '#85181C';
-const inputIconColor = '#9E9E9E';
+const disabledColor = '#9E9E9E';
+const inputIconColor = disabledColor;
 const bannerColor = '#EEE';
 const warningColor = '#D32F2F';
 const infoColor = '#32CD32';
@@ -29,7 +30,7 @@ export default {
   primaryFontColor,
   secondaryFontColor,
   activeBorderColor,
-  disabledColor: '#A9A9A9',
+  disabledColor,
   iconSize,
   iconButtonSize,
   inputIconSize,

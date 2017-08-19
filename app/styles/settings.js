@@ -1,5 +1,6 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
+import theme from '../styles/theme';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
@@ -33,12 +34,14 @@ export default EStyleSheet.create({
     ...absoluteCenter,
   },
   sensorIcon: {
-    width: applyWidthDifference(70),
-    height: applyWidthDifference(59),
+    width: applyWidthDifference(80),
+    height: applyWidthDifference(70),
     resizeMode: 'contain',
   },
   sensorTextTitle: {
     marginBottom: applyWidthDifference(2),
+    fontWeight: 'bold',
+    fontSize: fixedResponsiveFontSize(15),
   },
   sensorText: {
     flex: 0.45,
@@ -49,8 +52,18 @@ export default EStyleSheet.create({
   },
   deviceInfoText: {
     marginVertical: applyWidthDifference(2),
-    fontSize: fixedResponsiveFontSize(13),
-    color: '$primaryFontColor',
+    fontSize: fixedResponsiveFontSize(14),
+    color: 'black',
+  },
+  deviceInfoTextGreen: {
+    marginVertical: applyWidthDifference(2),
+    fontSize: fixedResponsiveFontSize(14),
+    color: '#32CD32',
+  },
+  deviceInfoTextRed: {
+    marginVertical: applyWidthDifference(2),
+    fontSize: fixedResponsiveFontSize(14),
+    color: theme.warningColor,
   },
   batteryIconGreen: {
     color: '$infoColor',
@@ -69,22 +82,25 @@ export default EStyleSheet.create({
     ...centerRowItems,
     ...bottomBorder,
   },
-  settingsLeftIcon: {
-    flex: 0.15,
-    ...absoluteCenter,
+  settingsRowEmpty: {
+    height: applyWidthDifference(24),
+    backgroundColor: '#f1f1f1',
+    ...centerRowItems,
+    ...bottomBorder,
   },
   settingsText: {
-    flex: 0.65,
+    flex: 0.8,
+    paddingLeft: applyWidthDifference(15),
   },
   settingsRightIcon: {
     flex: 0.20,
     alignItems: 'flex-end',
     justifyContent: 'center',
-    paddingRight: applyWidthDifference(10),
+    paddingRight: applyWidthDifference(16),
   },
   arrowIcon: {
-    width: applyWidthDifference(12),
-    height: applyWidthDifference(23),
+    width: applyWidthDifference(8),
+    height: applyWidthDifference(18),
     resizeMode: 'contain',
   },
   buttonContainer: {

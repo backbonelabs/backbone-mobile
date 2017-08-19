@@ -2,8 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Alert,
-  Switch,
-  Slider,
   AppState,
   Linking,
   Platform,
@@ -14,38 +12,15 @@ import {
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
+import Slider from 'react-native-slider';
 import userAction from '../actions/user';
 import styles from '../styles/alerts';
 import BodyText from '../components/BodyText';
 import Button from '../components/Button';
+import Toggle from '../components/Toggle';
 import SecondaryText from '../components/SecondaryText';
-import thumbImage from '../images/settings/thumbImage.png';
-import trackImage from '../images/settings/trackImage.png';
 
 const { NotificationService, UserSettingService } = NativeModules;
-
-const AlertToggle = props => (
-  <View style={styles.vibrationContainer}>
-    <View style={styles.vibrationText}>
-      <BodyText>{props.text}</BodyText>
-    </View>
-    <View style={styles.vibrationSwitch}>
-      <Switch
-        disabled={props.disabled}
-        value={props.value}
-        onValueChange={value => props.onChange(props.settingName, value)}
-      />
-    </View>
-  </View>
-);
-
-AlertToggle.propTypes = {
-  value: PropTypes.bool,
-  onChange: PropTypes.func,
-  disabled: PropTypes.bool,
-  text: PropTypes.string.isRequired,
-  settingName: PropTypes.string.isRequired,
-};
 
 class Alerts extends Component {
   static propTypes = {
@@ -83,6 +58,7 @@ class Alerts extends Component {
     // the user settings in the backend, and that will cause a flicker/lag in
     // the UI when modifying each setting
     this.state = {
+      pushNotificationEnabled: true,
       backboneVibration,
       vibrationStrength,
       vibrationPattern,
@@ -116,10 +92,9 @@ class Alerts extends Component {
     AppState.removeEventListener('change', this.handleAppState);
   }
 
-  handleAppState(state) {
-    if (state === 'active') {
-      this.checkNotificationPermission();
-    }
+  onSlidingComplete(field, value) {
+    // Update value from slider-type settings only after the user has finished sliding
+    this.updateSetting(field, value);
   }
 
   checkNotificationPermission() {
@@ -177,6 +152,12 @@ class Alerts extends Component {
     }
   }
 
+  handleAppState(state) {
+    if (state === 'active') {
+      this.checkNotificationPermission();
+    }
+  }
+
   render() {
     const {
       backboneVibration,
@@ -190,7 +171,7 @@ class Alerts extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.spacerContainer} />
-        <AlertToggle
+        <Toggle
           value={backboneVibration}
           onChange={this.updateSetting}
           text="Backbone Vibration"
@@ -206,18 +187,19 @@ class Alerts extends Component {
                 minimumValue={20}
                 maximumValue={100}
                 step={10}
-                thumbImage={thumbImage}
-                trackImage={trackImage}
+                thumbStyle={styles.sliderThumb}
+                trackStyle={styles.sliderTrack}
+                minimumTrackTintColor={'#6dc300'}
                 value={vibrationStrength}
-                onValueChange={value => this.updateSetting('vibrationStrength', value)}
+                onSlidingComplete={value => this.onSlidingComplete('vibrationStrength', value)}
               />
             </View>
             <View style={styles.sliderDetails}>
               <View style={{ flex: 0.5 }}>
-                <SecondaryText style={styles._sliderDetailsText}>Low</SecondaryText>
+                <SecondaryText style={styles._sliderDetailsText}>LOW</SecondaryText>
               </View>
               <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
-                <SecondaryText style={styles._sliderDetailsText}>High</SecondaryText>
+                <SecondaryText style={styles._sliderDetailsText}>HIGH</SecondaryText>
               </View>
             </View>
           </View>
@@ -230,10 +212,11 @@ class Alerts extends Component {
                 minimumValue={1}
                 maximumValue={3}
                 step={1}
-                thumbImage={thumbImage}
-                trackImage={trackImage}
+                thumbStyle={styles.sliderThumb}
+                trackStyle={styles.sliderTrack}
+                minimumTrackTintColor={'#6dc300'}
                 value={vibrationPattern}
-                onValueChange={value => this.updateSetting('vibrationPattern', value)}
+                onSlidingComplete={value => this.onSlidingComplete('vibrationPattern', value)}
               />
             </View>
             <View style={styles.sliderDetails}>
@@ -249,13 +232,13 @@ class Alerts extends Component {
             </View>
           </View>
         </View>
-        <AlertToggle
+        <Toggle
           value={phoneVibration}
           onChange={this.updateSetting}
           text="Phone Vibration"
           settingName="phoneVibration"
         />
-        <AlertToggle
+        <Toggle
           value={slouchNotification && pushNotificationEnabled}
           onChange={this.updateSetting}
           disabled={!pushNotificationEnabled}
