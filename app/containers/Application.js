@@ -40,12 +40,12 @@ import statsIconInactive from '../images/tabBar/stats-icon-inactive.png';
 import statsIconOrange from '../images/tabBar/stats-icon-orange.png';
 import statsIconPurple from '../images/tabBar/stats-icon-purple.png';
 import statsIconRed from '../images/tabBar/stats-icon-red.png';
-import workoutIconBlue from '../images/tabBar/workout-icon-blue.png';
-import workoutIconGreen from '../images/tabBar/workout-icon-green.png';
-import workoutIconInactive from '../images/tabBar/workout-icon-inactive.png';
-import workoutIconOrange from '../images/tabBar/workout-icon-orange.png';
-import workoutIconPurple from '../images/tabBar/workout-icon-purple.png';
-import workoutIconRed from '../images/tabBar/workout-icon-red.png';
+import freeTrainingIconBlue from '../images/tabBar/freeTraining-icon-blue.png';
+import freeTrainingIconGreen from '../images/tabBar/freeTraining-icon-green.png';
+import freeTrainingIconInactive from '../images/tabBar/freeTraining-icon-inactive.png';
+import freeTrainingIconOrange from '../images/tabBar/freeTraining-icon-orange.png';
+import freeTrainingIconPurple from '../images/tabBar/freeTraining-icon-purple.png';
+import freeTrainingIconRed from '../images/tabBar/freeTraining-icon-red.png';
 import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
 import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
 import appActions from '../actions/app';
@@ -710,12 +710,12 @@ class Application extends Component {
       },
       {
         routeName: '',
-        red: workoutIconRed,
-        green: workoutIconGreen,
-        blue: workoutIconBlue,
-        purple: workoutIconPurple,
-        orange: workoutIconOrange,
-        inactive: workoutIconInactive,
+        red: freeTrainingIconRed,
+        green: freeTrainingIconGreen,
+        blue: freeTrainingIconBlue,
+        purple: freeTrainingIconPurple,
+        orange: freeTrainingIconOrange,
+        inactive: freeTrainingIconInactive,
       },
       {
         routeName: '',
