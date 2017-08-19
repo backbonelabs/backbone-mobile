@@ -80,19 +80,29 @@ class GuidedTraining extends Component {
       stepIdx = props.workouts.length - 1;
     }
 
+    const currentWorkout = props.workouts[stepIdx];
+
     this.state = {
       step: stepIdx + 1,
+      side: 1,
+      currentWorkout,
+      hasWorkoutStarted: false,
       hasTimerStarted: false,
+      timerSeconds: currentWorkout.seconds,
+      isTimerRunning: false,
+      setsRemaining: currentWorkout.sets,
       isFetchingImage: true,
       leftButtonDepressed: false,
       centerButtonDepressed: false,
       rightButtonDepressed: false,
     };
+
+    this.timerInterval = null;
   }
 
   componentDidMount() {
     // Fetch image in the background. User should see a Spinner until the image is fully fetched.
-    Image.prefetch(this.props.workouts[this.state.step - 1].workout.gifUrl)
+    Image.prefetch(this.state.currentWorkout.workout.gifUrl)
       .then(() => {
         this.setState({ isFetchingImage: false });
       })
@@ -102,9 +112,87 @@ class GuidedTraining extends Component {
       });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.timerSeconds !== this.state.timerSeconds && this.state.timerSeconds === 0) {
+      // Timer reached 0 for the rep, stop the timer
+      this._pauseTimer(() => {
+        if (this.state.setsRemaining > 0) {
+          // Perform checks to see if there are more sets to do or if user needs to switch sides
+          const { currentWorkout } = this.state;
+          const newState = {};
+          if (currentWorkout.twoSides && prevState.side === this.state.side) {
+            // This workout needs to be done on two sides
+            if (this.state.side === 1) {
+              // User did it on the first side, now switch to the second side
+              newState.side = 2;
+            } else {
+              // User did it on the second side, now reset to first side and decrement set count
+              newState.side = 1;
+              newState.setsRemaining = this.state.setsRemaining - 1;
+            }
+          } else if (!currentWorkout.twoSides) {
+            // This workout does not need to be done on two sides, decrement set count
+            newState.setsRemaining = this.state.setsRemaining - 1;
+          }
+
+          if (newState.side === 2 || newState.setsRemaining) {
+            // There are no more sets or another side to do, reset timer
+            newState.timerSeconds = currentWorkout.seconds;
+            newState.hasTimerStarted = false;
+          }
+
+          // eslint-disable-next-line react/no-did-update-set-state
+          this.setState(newState);
+        }
+      });
+    }
+  }
+
+  _startTimer() {
+    this.setState({
+      hasWorkoutStarted: true,
+      hasTimerStarted: true,
+      isTimerRunning: true,
+    }, () => {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+      }
+
+      this.timerInterval = setInterval(() => {
+        this.setState(prevState => ({ timerSeconds: prevState.timerSeconds - 1 }));
+      }, 1000);
+    });
+  }
+
+  _pauseTimer(cb) {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+
+    this.setState({ isTimerRunning: false }, cb);
+  }
+
   _onButtonPress(buttonName) {
-    // TODO: Perform appropriate action for button press
-    console.log('onButtonPress', buttonName);
+    // TODO: Perform appropriate actions for button presses
+    switch (buttonName) {
+      case 'centerButton': {
+        const { currentWorkout } = this.state;
+        const isTimed = !!currentWorkout.seconds;
+
+        if (this.state.isTimerRunning) {
+          // Pause timer
+          this._pauseTimer();
+        } else if (isTimed && this.state.setsRemaining > 0) {
+          // Start/resume timer
+          this._startTimer();
+        } else {
+          // Mark as complete
+        }
+        break;
+      }
+      default:
+        // no-op
+    }
   }
 
   _onButtonShowUnderlay(buttonName) {
@@ -116,7 +204,9 @@ class GuidedTraining extends Component {
   }
 
   render() {
-    const currentWorkout = this.props.workouts[this.state.step - 1];
+    const { currentWorkout } = this.state;
+    const isTimed = !!currentWorkout.seconds;
+
     const subheading = [];
     if (currentWorkout.reps) {
       subheading.push(`Reps: ${currentWorkout.reps}`);
@@ -132,10 +222,18 @@ class GuidedTraining extends Component {
       subheading[0] += '/side';
     }
 
-    const header = currentWorkout.seconds && this.state.hasTimerStarted ? (
+    const header = isTimed && this.state.hasWorkoutStarted ? (
       <View style={styles.header}>
-        <BodyText style={styles._timer}>0:30</BodyText>
-        <BodyText>Time Remaining</BodyText>
+        <BodyText style={styles._timer}>{this.state.timerSeconds}</BodyText>
+        <BodyText>Sets Remaining: {this.state.setsRemaining}</BodyText>
+        {currentWorkout.twoSides &&
+          <View style={styles.twoSidedText}>
+            <BodyText>Perform with your</BodyText>
+            <BodyText style={styles._strongText}>
+              {this.state.side === 1 ? ' first ' : ' second '}
+            </BodyText>
+            <BodyText>side.</BodyText>
+          </View>}
       </View>
     ) : (
       <View style={styles.header}>
@@ -151,6 +249,23 @@ class GuidedTraining extends Component {
     const additionalLeftButtonStyles = {};
     if (isLeftButtonDisabled) {
       additionalLeftButtonStyles.opacity = 0.4;
+    }
+
+    let centerButtonIconName;
+    let centerButtonIconLabel;
+    if (this.state.isTimerRunning) {
+      centerButtonIconName = 'pause';
+      centerButtonIconLabel = 'PAUSE';
+    } else if (this.state.timerSeconds !== 0 && isTimed) {
+      centerButtonIconName = 'play-arrow';
+      if (this.state.hasTimerStarted) {
+        centerButtonIconLabel = 'RESUME';
+      } else {
+        centerButtonIconLabel = 'START';
+      }
+    } else {
+      centerButtonIconName = 'check';
+      centerButtonIconLabel = 'DONE';
     }
 
     return (
@@ -195,13 +310,13 @@ class GuidedTraining extends Component {
             >
               <View style={styles.footerButtonIconContainer}>
                 <Icon
-                  name="check"
+                  name={centerButtonIconName}
                   size={applyWidthDifference(50)}
                   style={{ color: this.state.centerButtonDepressed ? 'white' : levelColor }}
                 />
               </View>
             </TouchableHighlight>
-            <SecondaryText style={styles._footerButtonText}>DONE</SecondaryText>
+            <SecondaryText style={styles._footerButtonText}>{centerButtonIconLabel}</SecondaryText>
           </View>
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight

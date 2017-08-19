@@ -35,6 +35,9 @@ export default EStyleSheet.create({
     width: '$progressBarHeight',
     height: '$progressBarHeight',
   },
+  strongText: {
+    fontWeight: 'bold',
+  },
   header: {
     alignItems: 'center',
   },
@@ -45,6 +48,9 @@ export default EStyleSheet.create({
   instructions: {
     fontSize: fixedResponsiveFontSize(16),
     textAlign: 'center',
+  },
+  twoSidedText: {
+    flexDirection: 'row',
   },
   timer: {
     fontSize: fixedResponsiveFontSize(60),
