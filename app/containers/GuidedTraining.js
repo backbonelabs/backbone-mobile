@@ -256,7 +256,7 @@ class GuidedTraining extends Component {
       <View style={styles.header}>
         <BodyText style={styles._timer}>{getFormattedTime(this.state.timerSeconds)}</BodyText>
         <BodyText>Sets Remaining: {this.state.setsRemaining}</BodyText>
-        {currentWorkout.twoSides &&
+        {currentWorkout.twoSides && this.state.setsRemaining > 0 &&
           <View style={styles.twoSidedText}>
             <BodyText>Perform with your</BodyText>
             <BodyText style={styles._strongText}>
