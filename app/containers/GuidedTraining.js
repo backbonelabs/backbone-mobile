@@ -56,6 +56,34 @@ ProgressBar.propTypes = {
   backgroundColor: PropTypes.string,
 };
 
+/**
+ * Converts seconds to a time string in H:MM:SS or M:SS format
+ * @param {Number} totalSeconds
+ */
+const getFormattedTime = (totalSeconds) => {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+  const seconds = totalSeconds % 60;
+
+  const lpad = number => {
+    if (number < 10) {
+      return `0${number}`;
+    }
+    return number;
+  };
+
+  const timeArray = [];
+  if (hours) {
+    timeArray[0] = hours;
+    timeArray[1] = lpad(minutes);
+    timeArray[2] = lpad(seconds);
+  } else {
+    timeArray[0] = minutes;
+    timeArray[1] = lpad(seconds);
+  }
+  return timeArray.join(':');
+};
+
 class GuidedTraining extends Component {
   static propTypes = {
     levelIdx: PropTypes.number.isRequired,
@@ -222,9 +250,11 @@ class GuidedTraining extends Component {
       subheading[0] += '/side';
     }
 
+    // If the workout is timed and has already started, the header will display the timer
+    // along with the number of sets remaining. Otherwise, display the workout instructions.
     const header = isTimed && this.state.hasWorkoutStarted ? (
       <View style={styles.header}>
-        <BodyText style={styles._timer}>{this.state.timerSeconds}</BodyText>
+        <BodyText style={styles._timer}>{getFormattedTime(this.state.timerSeconds)}</BodyText>
         <BodyText>Sets Remaining: {this.state.setsRemaining}</BodyText>
         {currentWorkout.twoSides &&
           <View style={styles.twoSidedText}>
@@ -245,6 +275,7 @@ class GuidedTraining extends Component {
 
     const levelColor = getColorHexForLevel(this.props.levelIdx);
 
+    // The left button would be disabled if this is the first workout in the session
     const isLeftButtonDisabled = this.state.step === 1;
     const additionalLeftButtonStyles = {};
     if (isLeftButtonDisabled) {
