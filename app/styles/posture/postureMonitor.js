@@ -64,10 +64,10 @@ export default EStyleSheet.create({
       },
     }),
   },
-  dialContainer: {
+  pointerContainer: {
     width: (totalPointerLength * 2) - applyWidthDifference(8),
   },
-  dial: {
+  pointer: {
     height: applyWidthDifference(5),
     width: applyWidthDifference(20),
     borderRadius: 20,
@@ -113,7 +113,6 @@ export default EStyleSheet.create({
     backgroundColor: 'transparent',
   },
   postureRating: {
-    color: '$greenColor',
     fontSize: fixedResponsiveFontSize(42),
     fontWeight: 'bold',
     marginTop: applyWidthDifference(40),
