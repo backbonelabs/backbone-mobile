@@ -98,7 +98,7 @@ exports[`Login Component renders as expected 1`] = `
             iconLeftName="email"
             iconStyle={
               Object {
-                "color": "#9E9E9E",
+                "color": "#E0E0E0",
               }
             }
             keyboardType="email-address"
@@ -121,7 +121,7 @@ exports[`Login Component renders as expected 1`] = `
             iconLeftName="lock"
             iconStyle={
               Object {
-                "color": "#9E9E9E",
+                "color": "#E0E0E0",
               }
             }
             keyboardType="default"
