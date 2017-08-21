@@ -33,8 +33,11 @@ export default EStyleSheet.create({
   primaryBtn: {
     ...buttonShadow,
   },
+  defaultBtn: {
+    backgroundColor: 'white',
+  },
   secondaryBtn: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#03A9F4',
   },
   facebookBtn: {
     justifyContent: 'center',
