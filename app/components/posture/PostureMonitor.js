@@ -171,6 +171,7 @@ class PostureMonitor extends Component {
       postureThreshold: this.props.user.settings.postureThreshold,
       shouldNotifySlouch: true,
       pointerPosition: 210,
+      currentDistance: 0,
       totalDuration: 0, // in seconds
       slouchTime: 0, // in seconds
       timeElapsed: 0, // in seconds
@@ -565,6 +566,7 @@ class PostureMonitor extends Component {
     this.setState({
       pointerPosition: normalizeCurrentDistance(currentDistance),
       timeElapsed,
+      currentDistance,
     });
 
     // Mark the shouldNotifySlouch to true when it's on a good posture state
@@ -1072,6 +1074,7 @@ class PostureMonitor extends Component {
       pointerPosition,
       sessionState,
       hasPendingSessionOperation,
+      currentDistance,
     } = this.state;
 
     const isDisabled = sessionState === sessionStates.RUNNING;
@@ -1101,6 +1104,7 @@ class PostureMonitor extends Component {
           pointerPosition={pointerPosition}
           slouchPosition={normalizePostureThreshold(postureThreshold)}
           onPress={this.navigateToRecalibrate}
+          rating={(currentDistance < postureThreshold)}
         />
 
         {/*
