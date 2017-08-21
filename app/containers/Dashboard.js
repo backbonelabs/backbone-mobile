@@ -9,12 +9,12 @@ import {
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import get from 'lodash/get';
-import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import appActions from '../actions/app';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
 import Card from '../components/Card';
+import Carousel from '../components/Carousel';
 import purpleBg from '../images/dashboard/dashboard-bg-purple.jpg';
 import blueBg from '../images/dashboard/dashboard-bg-blue.jpg';
 import greenBg from '../images/dashboard/dashboard-bg-green.jpg';
@@ -286,6 +286,7 @@ class Dashboard extends Component {
               firstItem={selectedSessionIdx}
               slideStyle={styles.sessionCard}
               enableSnap
+              enableMomentum
               snapOnAndroid
             />
           }

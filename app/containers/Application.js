@@ -745,12 +745,12 @@ class Application extends Component {
                 style={styles.tabBarItem}
                 onPress={() => {
                   if (!isSameRoute && value.routeName !== '') {
-                    // Reset the navigator stack if not on the dashboard so
-                    // the nav stack won't continue to expand.
-                    if (route.name === routes.dashboard.name) {
-                      this.navigator.push(routes[value.routeName]);
+                    // Reset the navigator stack if on the dashboard
+                    // and push the route for all others
+                    if (value.routeName === routes.dashboard.name) {
+                      this.navigator.resetTo(routes[routes.dashboard.name]);
                     } else {
-                      this.navigator.resetTo(routes[value.routeName]);
+                      this.navigator.push(routes[value.routeName]);
                     }
                   }
                 }
