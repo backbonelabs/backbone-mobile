@@ -54,32 +54,38 @@ const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService
 
 const MIN_POSTURE_THRESHOLD = 0.03;
 const MAX_POSTURE_THRESHOLD = 0.3;
+const currentRange = MAX_POSTURE_THRESHOLD - MIN_POSTURE_THRESHOLD;
 
 const isiOS = Platform.OS === 'ios';
 
 /**
- * Maps distance values to slouch degrees for determining how much to rotate
- * the monitor pointer. The degree output would range from -180 to 0, where -180
- * would have the pointer pointing horizontally left and 0 would have the pointer
- * pointing horizontally right. The max distance range is MAX_POSTURE_THRESHOLD.
+ * Monitor pointerPosition prop requires a number between -30-210(inclusive) for the pointer,
  * @param  {Number} distance Deviation from the control point
- * @return {Number}          Degree equivalent of the distance value
+ * @return {Number}          Distance value scaled in a range of -30-210
  */
-const distanceToDegrees = distance => {
-  const maxMappedDegree = -180;
-  return Math.max(-180, (distance / MAX_POSTURE_THRESHOLD) * maxMappedDegree);
+const normalizeCurrentDistance = distance => {
+  const newRange = -25 - 210;
+  const normalizedDistance = Math.floor(
+    (((distance - MIN_POSTURE_THRESHOLD) * newRange) / currentRange) + 210
+  );
+  if (normalizedDistance > 210) {
+    return 210;
+  } else if (normalizedDistance < -30) {
+    return -30;
+  }
+  return normalizedDistance;
 };
 
 /**
- * Monitor takes a number from 0-100, so we scale the distance
- * to a range of 0-100
+ * Monitor slouchPosition prop requires a number between 0-100(inclusive) for the arc,
+ * so we scale the distance to a range of 0-100
  * @param  {Number} distance Deviation from the control point
  * @return {Number}          Distance value scaled in a range of 0-100
  */
-const scaleDistance = distance => {
-  const currentRange = MAX_POSTURE_THRESHOLD - MIN_POSTURE_THRESHOLD;
+const normalizePostureThreshold = distance => {
   const newRange = 100 - 0;
-  return (((distance - MIN_POSTURE_THRESHOLD) * newRange) / currentRange) + 0;
+  const normalizedDistance = (((distance - MIN_POSTURE_THRESHOLD) * newRange) / currentRange) + 0;
+  return 100 - Math.floor(normalizedDistance);
 };
 
 /**
@@ -164,7 +170,7 @@ class PostureMonitor extends Component {
       forceStoppedSession: false,
       postureThreshold: this.props.user.settings.postureThreshold,
       shouldNotifySlouch: true,
-      pointerPosition: 0,
+      pointerPosition: 210,
       totalDuration: 0, // in seconds
       slouchTime: 0, // in seconds
       timeElapsed: 0, // in seconds
@@ -557,7 +563,7 @@ class PostureMonitor extends Component {
   sessionDataHandler(event) {
     const { currentDistance, timeElapsed } = event;
     this.setState({
-      pointerPosition: distanceToDegrees(currentDistance),
+      pointerPosition: normalizeCurrentDistance(currentDistance),
       timeElapsed,
     });
 
@@ -1027,6 +1033,39 @@ class PostureMonitor extends Component {
     return this.props.navigator.push(routes.alerts);
   }
 
+  navigateToRecalibrate() {
+    this.props.dispatch(appActions.showPartialModal({
+      topView: (
+        <Image source={deviceWarningIcon} />
+      ),
+      title: {
+        caption: 'Stop Session?',
+      },
+      detail: {
+        caption: 'Are you sure you want to stop your current session?',
+      },
+      buttons: [
+        {
+          caption: 'STOP',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+            this.stopSession();
+            this.props.navigator.resetTo(routes.postureCalibrate);
+          },
+        },
+        {
+          caption: 'RESUME',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        },
+      ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
+    }));
+  }
+
   render() {
     const {
       postureThreshold,
@@ -1035,10 +1074,12 @@ class PostureMonitor extends Component {
       hasPendingSessionOperation,
     } = this.state;
 
+    const isDisabled = sessionState === sessionStates.RUNNING;
+
     const getPlayPauseButton = () => {
       if (sessionState === sessionStates.STOPPED) {
         return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.startSession} />;
-      } else if (sessionState === sessionStates.RUNNING) {
+      } else if (isDisabled) {
         return <MonitorButton text="PAUSE" icon="pause" onPress={this.pauseSession} />;
       }
       return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.resumeSession} />;
@@ -1056,8 +1097,10 @@ class PostureMonitor extends Component {
         </BodyText>
         <BodyText size={3} style={styles._heading}>Time Remaining</BodyText>
         <Monitor
+          disable={isDisabled}
           pointerPosition={pointerPosition}
-          slouchPosition={scaleDistance(postureThreshold)}
+          slouchPosition={normalizePostureThreshold(postureThreshold)}
+          onPress={this.navigateToRecalibrate}
         />
 
         {/*
@@ -1072,7 +1115,12 @@ class PostureMonitor extends Component {
         <Slider
           leftIcon="remove"
           rightIcon="add"
-          customStyles={{ sliderStyle: { height: styles.$sliderHeight } }}
+          customStyles={{
+            sliderStyle: { height: styles.$sliderHeight },
+            thumbStyle: {
+              backgroundColor: isDisabled ? theme.disabledColor : 'white',
+            },
+          }}
           value={-postureThreshold + MIN_POSTURE_THRESHOLD}
           onValueChange={value => {
             const correctedValue = value - MIN_POSTURE_THRESHOLD;
@@ -1081,7 +1129,7 @@ class PostureMonitor extends Component {
           }}
           minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
           maximumValue={0}
-          disabled={sessionState === sessionStates.RUNNING}
+          disabled={isDisabled}
         />
         <SecondaryText style={styles._sliderTitle}>
           SLOUCH DETECTION

@@ -10,8 +10,8 @@ import relativeDimensions from '../../../utils/relativeDimensions';
 
 const { applyWidthDifference } = relativeDimensions;
 
-const Monitor = (props) => {
-  const { pointerPosition, slouchPosition } = props;
+const Monitor = ({ pointerPosition, slouchPosition, onPress, disable }) => {
+  const poorPosture = 210 - slouchPosition;
   return (
     <View style={styles.monitorContainer}>
       <AnimatedCircularProgress
@@ -21,32 +21,44 @@ const Monitor = (props) => {
         fill={slouchPosition}
         tintColor={theme.primaryColor}
         backgroundColor={theme.greenColor}
-        linecap="round"
         style={styles.animatedProgress}
       >
         <View style={styles.innerMonitorContainer}>
           <View
             style={[
             { transform: [{ rotate: `${pointerPosition}deg` }] },
-              styles.dialContainer,
+              styles.pointerContainer,
             ]}
           >
-            <View style={styles.dial} />
+            <View style={styles.pointer} />
           </View>
           <View style={styles.postureRatingContainer}>
-            <BodyText style={styles._postureRating}>Good</BodyText>
-            {/* will route to calibration view */}
+            <BodyText
+              style={[
+                styles._postureRating,
+                { color: (pointerPosition < poorPosture) ? theme.primaryColor : theme.greenColor },
+              ]}
+            >
+              {
+                (pointerPosition < poorPosture) ? 'Poor' : 'Good'
+              }
+            </BodyText>
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={disable ? null : onPress}
               activeOpacity={0.4}
             >
               <MaterialIcons
                 name={'refresh'}
                 size={22}
-                color={theme.secondaryFontColor}
+                color={disable ? theme.disabledColor : theme.lightBlueColor}
                 style={styles.refreshIcon}
               />
-              <SecondaryText style={styles._reCalibrate}>
+              <SecondaryText
+                style={[
+                  styles._reCalibrate,
+                  { color: disable ? theme.disabledColor : theme.lightBlueColor },
+                ]}
+              >
                 RE-CALIBRATE
               </SecondaryText>
             </TouchableOpacity>
@@ -72,6 +84,9 @@ const Monitor = (props) => {
 Monitor.propTypes = {
   pointerPosition: PropTypes.number,
   slouchPosition: PropTypes.number,
+  onPress: PropTypes.func,
+  disable: PropTypes.bool,
+  postureRating: PropTypes.string,
 };
 
 export default Monitor;
