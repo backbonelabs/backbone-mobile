@@ -122,6 +122,8 @@ class WorkoutList extends Component {
         workouts[1].workouts.push(workout);
       } else if (workout.type === workouts[2].type) {
         workouts[2].workouts.push(workout);
+      } else if (workout.type === workouts[3].type) {
+        workouts[3].workouts.push(workout);
       }
     });
     return workouts;
