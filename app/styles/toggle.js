@@ -4,7 +4,6 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $onTintColor: 'rgba(22, 208, 62, 0.4)',
   toggleContainer: {
     flex: 0.08,
     flexDirection: 'row',
