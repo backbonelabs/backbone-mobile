@@ -5,4 +5,6 @@ export default {
   title: 'Education',
   component: WorkoutList,
   showTabBar: true,
+  showBanner: true,
+  showRightComponent: true,
 };

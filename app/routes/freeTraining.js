@@ -5,4 +5,6 @@ export default {
   title: 'Free Training',
   component: WorkoutList,
   showTabBar: true,
+  showBanner: true,
+  showRightComponent: true,
 };
