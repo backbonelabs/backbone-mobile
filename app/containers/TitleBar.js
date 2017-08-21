@@ -101,10 +101,8 @@ TitleBar.propTypes = {
   titleBar: PropTypes.shape({
     name: PropTypes.string,
     title: PropTypes.string,
-    component: PropTypes.oneOfType([null, PropTypes.node]),
     showBackButton: PropTypes.bool,
     showRightComponent: PropTypes.bool,
-    centerComponent: PropTypes.oneOfType([null, PropTypes.node]),
     rightComponent: PropTypes.oneOfType([null, PropTypes.node]),
     styles: PropTypes.object,
   }).isRequired,
