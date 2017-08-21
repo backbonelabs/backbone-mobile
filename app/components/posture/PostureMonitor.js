@@ -20,7 +20,7 @@ import SecondaryText from '../../components/SecondaryText';
 import Spinner from '../../components/Spinner';
 import MonitorButton from './postureMonitor/MonitorButton';
 import Monitor from './postureMonitor/Monitor';
-import Slider from '../Slider';
+import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
 import deviceActions from '../../actions/device';
 import userActions from '../../actions/user';
@@ -1112,15 +1112,8 @@ class PostureMonitor extends Component {
           MIN_POSTURE_THRESHOLD to make maximumValue equal to 0 in order for the slider to
           work on both Android and iOS.
         */}
-        <Slider
-          leftIcon="remove"
-          rightIcon="add"
-          customStyles={{
-            sliderStyle: { height: styles.$sliderHeight },
-            thumbStyle: {
-              backgroundColor: isDisabled ? theme.disabledColor : 'white',
-            },
-          }}
+        <MonitorSlider
+          style={styles.slider}
           value={-postureThreshold + MIN_POSTURE_THRESHOLD}
           onValueChange={value => {
             const correctedValue = value - MIN_POSTURE_THRESHOLD;
