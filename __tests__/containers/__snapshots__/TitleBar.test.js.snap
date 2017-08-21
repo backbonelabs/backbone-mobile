@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TitleBar Component renders as expected 1`] = `
+<View
+  style={
+    Array [
+      undefined,
+      Object {},
+      undefined,
+    ]
+  }
+>
+  <View>
+    <TouchableOpacity
+      activeOpacity={0.2}
+      focusedOpacity={0.7}
+      onPress={[Function]}
+    >
+      <Icon
+        allowFontScaling={false}
+        color="#FFFFFF"
+        name="person"
+        size={12}
+      />
+    </TouchableOpacity>
+  </View>
+  <HeadingText
+    size={2}
+    style={
+      Array [
+        undefined,
+        Object {
+          "color": "#9C27B0",
+        },
+      ]
+    }
+  />
+  <View />
+</View>
+`;

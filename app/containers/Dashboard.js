@@ -31,7 +31,7 @@ import bulletOrangeOn from '../images/bullet-orange-on.png';
 // import bulletOrangeOff from '../images/bullet-orange-off.png';
 import bulletRedOn from '../images/bullet-red-on.png';
 // import bulletRedOff from '../images/bullet-red-off.png';
-import mapLevelToColor from '../utils/mapLevelToColor';
+import { getColorNameForLevel } from '../utils/levelColors';
 import styles from '../styles/dashboard';
 
 const colorBackgrounds = {
@@ -233,7 +233,7 @@ class Dashboard extends Component {
       <View key={workout.title} style={styles.sessionWorkoutRow}>
         {/* TODO: Use the "on" and "off" bullets depending if the workout is completed */}
         <Image
-          source={colorBullets[mapLevelToColor(this.props.training.selectedLevelIdx)]}
+          source={colorBullets[getColorNameForLevel(this.props.training.selectedLevelIdx)]}
           style={styles.workoutBullet}
         />
         <BodyText key={workout.title}>{workout.title}</BodyText>
@@ -258,7 +258,7 @@ class Dashboard extends Component {
 
     return (
       <Image
-        source={colorBackgrounds[mapLevelToColor(selectedLevelIdx)]}
+        source={colorBackgrounds[getColorNameForLevel(selectedLevelIdx)]}
         style={styles.backgroundImage}
       >
         <View style={styles.levelSliderOuterContainer}>

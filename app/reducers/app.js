@@ -2,6 +2,7 @@ import { isString, mapValues } from 'lodash';
 import {
   UPDATE_BLUETOOTH_STATE,
   SET_CONFIG,
+  SET_TITLE_BAR,
   SHOW_FULL_MODAL,
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
@@ -18,17 +19,28 @@ export default (state = {
     config: null,
     onClose: null,
   },
+  titleBar: {
+    name: null,
+    title: null,
+    component: null,
+    showBackButton: false,
+    showNavbar: false,
+    centerComponent: null,
+    rightComponent: null,
+    styles: {},
+  },
 }, action) => {
-  switch (action.type) {
+  const { type, payload } = action;
+  switch (type) {
     case UPDATE_BLUETOOTH_STATE: {
       return {
         ...state,
-        bluetoothState: action.payload,
+        bluetoothState: payload,
       };
     }
     case SET_CONFIG: {
       // Convert string true/false values to primitive boolean
-      const transformedConfig = mapValues(action.payload, value => {
+      const transformedConfig = mapValues(payload, value => {
         if (isString(value)) {
           const _value = value.toLowerCase();
           if (_value === 'true') {
@@ -45,8 +57,13 @@ export default (state = {
         config: transformedConfig,
       };
     }
+    case SET_TITLE_BAR:
+      return {
+        ...state,
+        titleBar: payload,
+      };
     case SHOW_FULL_MODAL: {
-      const { content, onClose } = action.payload;
+      const { content, onClose } = payload;
       return {
         ...state,
         modal: {
@@ -72,7 +89,7 @@ export default (state = {
         ...state,
         modal: {
           showPartial: true,
-          config: { ...action.payload },
+          config: { ...payload },
           onClose: null,
         },
       };
