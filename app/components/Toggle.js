@@ -4,6 +4,7 @@ import {
   Switch,
 } from 'react-native';
 import styles from '../styles/toggle';
+import theme from '../styles/theme';
 import BodyText from '../components/BodyText';
 
 const Toggle = props => (
@@ -16,6 +17,8 @@ const Toggle = props => (
         disabled={props.disabled}
         value={props.value}
         onValueChange={value => props.onChange(props.settingName, value)}
+        thumbTintColor={props.value ? theme.greenColor : theme.disabledColor}
+        onTintColor={styles.$onTintColor}
       />
     </View>
   </View>
