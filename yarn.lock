@@ -4625,7 +4625,7 @@ react-addons-pure-render-mixin@^15.4.0:
     fbjs "^0.8.4"
     object-assign "^4.1.0"
 
-react-addons-shallow-compare@latest:
+react-addons-shallow-compare@^15.0.2:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.0.tgz#b7a4e5ff9f2704c20cf686dd8a05dd08b26de252"
   dependencies:
@@ -4720,12 +4720,6 @@ react-native-slider@0.10.0:
   resolved "https://registry.yarnpkg.com/react-native-slider/-/react-native-slider-0.10.0.tgz#43de21a0442a8f8163f431886f52bcf4ada04fd9"
   dependencies:
     prop-types "^15.5.6"
-
-react-native-snap-carousel@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-1.5.0.tgz#099d8eee49d7a37baaeff6782d565b8b1426c64b"
-  dependencies:
-    react-addons-shallow-compare latest
 
 react-native-svg@5.1.5:
   version "5.1.5"
