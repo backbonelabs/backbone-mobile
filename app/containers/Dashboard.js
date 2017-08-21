@@ -37,6 +37,7 @@ import bulletOrangeOn from '../images/bullet-orange-on.png';
 // import bulletOrangeOff from '../images/bullet-orange-off.png';
 import bulletRedOn from '../images/bullet-red-on.png';
 // import bulletRedOff from '../images/bullet-red-off.png';
+import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import Mixpanel from '../utils/Mixpanel';
 import { getColorNameForLevel } from '../utils/levelColors';
@@ -60,7 +61,7 @@ const colorBullets = {
 
 const getScrollOffset = event => get(event, 'nativeEvent.contentOffset.y', 0);
 
-const { surveyUrls, appUrls } = constants;
+const { storageKeys, surveyThresholds, surveyUrls, appUrls } = constants;
 const isiOS = Platform.OS === 'ios';
 
 /**
@@ -281,44 +282,56 @@ class Dashboard extends Component {
         const today = new Date();
         const hasPassedTimeThreshold = today.getTime() - createdDate.getTime() >= timeThreshold;
 
-        const appRatingSessionThreshold = 5;
-        const feedbackSurveySessionThreshold = 3;
-        const maxThreshold = Math.max(appRatingSessionThreshold, feedbackSurveySessionThreshold);
-        let totalFullSessions = 0;
+        // Get the current threshold, as it would increase dynamically if the user choose
+        // to skip it for now
+        let appRatingSessionThreshold; // in sessions
+        SensitiveInfo.getItem(storageKeys.APP_RATING_THRESHOLD)
+          .then(threshold => {
+            if (threshold) {
+              appRatingSessionThreshold = threshold;
+            } else {
+              appRatingSessionThreshold = surveyThresholds.initialAppRating;
+            }
 
-        // A full session is either completing the entire duration of a timed session,
-        // or at least one minute of an untimed session.
-        // Using forEach to allow for early iteration exit once we reach the required count
-        forEach(nextProps.user.sessions, session => {
-          const { sessionTime, totalDuration } = session;
-          if ((sessionTime > 0 && totalDuration === sessionTime) ||
-            (sessionTime === 0 && totalDuration >= 60)) {
-            // This is a full session, increment counter by 1
-            totalFullSessions++;
-          }
-          if (totalFullSessions === maxThreshold) {
-            // We met the maximum possible threshold, exit iteration early
-            return false;
-          }
-        });
+            const feedbackSurveySessionThreshold = surveyThresholds.feedbackSurvey; // in sessions
+            const maxThreshold = Math.max(appRatingSessionThreshold,
+              feedbackSurveySessionThreshold);
+            let totalFullSessions = 0;
 
-        if (!this.props.user.user.seenAppRating &&
-          totalFullSessions === appRatingSessionThreshold) {
-          this.showAppRatingModal();
-        } else if (!this.props.user.user.seenFeedbackSurvey && hasPassedTimeThreshold) {
-          // Users should only see this popup at most once,
-          // so we mark it as done when the 7-days period has passed
-          // if he has completed the required number of sessions,
-          // otherwise we display the modal popup
-          if (totalFullSessions < feedbackSurveySessionThreshold) {
-            this.showFeedbackSurveyModal();
-          } else {
-            this.props.updateUser({
-              _id: this.props.user.user._id,
-              seenFeedbackSurvey: true,
+            // A full session is either completing the entire duration of a timed session,
+            // or at least one minute of an untimed session.
+            // Using forEach to allow for early iteration exit once we reach the required count
+            forEach(nextProps.user.sessions, session => {
+              const { sessionTime, totalDuration } = session;
+              if ((sessionTime > 0 && totalDuration === sessionTime) ||
+                (sessionTime === 0 && totalDuration >= 60)) {
+                // This is a full session, increment counter by 1
+                totalFullSessions++;
+              }
+              if (totalFullSessions === maxThreshold) {
+                // We met the maximum possible threshold, exit iteration early
+                return false;
+              }
             });
-          }
-        }
+
+            if (!this.props.user.user.seenAppRating &&
+              totalFullSessions === appRatingSessionThreshold) {
+              this.showAppRatingModal();
+            } else if (!this.props.user.user.seenFeedbackSurvey && hasPassedTimeThreshold) {
+              // Users should only see this popup at most once,
+              // so we mark it as done when the 7-days period has passed
+              // if he has completed the required number of sessions,
+              // otherwise we display the modal popup
+              if (totalFullSessions < feedbackSurveySessionThreshold) {
+                this.showFeedbackSurveyModal();
+              } else {
+                this.props.updateUser({
+                  _id: this.props.user.user._id,
+                  seenFeedbackSurvey: true,
+                });
+              }
+            }
+          });
       }
     }
   }
@@ -459,6 +472,23 @@ class Dashboard extends Component {
       this.props.hidePartialModal();
     };
 
+    const postponeAppRatingAndHideModal = () => {
+      let nextThreshold;
+      SensitiveInfo.getItem(storageKeys.APP_RATING_THRESHOLD)
+        .then(threshold => {
+          const { initialAppRating, additionalAppRating } = surveyThresholds;
+          if (threshold) {
+            nextThreshold = threshold + additionalAppRating;
+          } else {
+            nextThreshold = initialAppRating + additionalAppRating;
+          }
+
+          SensitiveInfo.setItem(storageKeys.APP_RATING_THRESHOLD, nextThreshold);
+        });
+
+      this.props.hidePartialModal();
+    };
+
     this.props.showPartialModal({
       topView: (
         <Icon name="rate-review" size={styles.$modalIconSize} style={styles.infoIcon} />
@@ -468,6 +498,13 @@ class Dashboard extends Component {
         `us about your experience in the ${isiOS ? 'App' : 'Play'} Store?`,
       },
       buttons: [
+        {
+          caption: 'Maybe later',
+          onPress: () => {
+            Mixpanel.track(`${appRatingEventName}-postpone`);
+            postponeAppRatingAndHideModal();
+          },
+        },
         {
           caption: 'No, thanks',
           onPress: () => {
