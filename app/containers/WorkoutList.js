@@ -14,7 +14,7 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from '../styles/freeTraining';
+import styles from '../styles/workoutList';
 import SecondaryText from '../components/SecondaryText';
 import TabBar from '../components/TabBar';
 import userActions from '../actions/user';
@@ -51,7 +51,6 @@ class WorkoutList extends Component {
     // Template for categorizing all workouts into their type
     const routeStack = props.navigator.getCurrentRoutes();
     this.currentRoute = routeStack[routeStack.length - 1];
-
     this.workoutCategories = [
       { title: 'POSTURE', type: 1, workouts: [] },
       { title: 'EXERCISES', type: 2, workouts: [] },
