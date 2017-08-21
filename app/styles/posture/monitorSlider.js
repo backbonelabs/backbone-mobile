@@ -41,7 +41,8 @@ export default EStyleSheet.create({
     }),
   },
   trackStyle: {
-    height: applyWidthDifference(6),
+    height: applyWidthDifference(8),
     backgroundColor: '$disabledColor',
+    borderRadius: 8,
   },
 });
