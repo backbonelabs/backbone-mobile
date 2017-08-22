@@ -1,5 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Image, TouchableHighlight } from 'react-native';
+import {
+  Image,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { connect } from 'react-redux';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -8,7 +13,12 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import bulletWhite from '../images/bullet-white.png';
-import { getColorHexForLevel } from '../utils/levelColors';
+import videoIconBlue from '../images/video-icon-blue.png';
+import videoIconGreen from '../images/video-icon-green.png';
+import videoIconOrange from '../images/video-icon-orange.png';
+import videoIconPurple from '../images/video-icon-purple.png';
+import videoIconRed from '../images/video-icon-red.png';
+import { getColorHexForLevel, getColorNameForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
 import relativeDimensions from '../utils/relativeDimensions';
 import { formattedTimeString } from '../utils/timeUtils';
@@ -54,6 +64,14 @@ ProgressBar.propTypes = {
   currentStep: PropTypes.number,
   totalSteps: PropTypes.number,
   backgroundColor: PropTypes.string,
+};
+
+const videoIcon = {
+  purple: videoIconPurple,
+  blue: videoIconBlue,
+  green: videoIconGreen,
+  orange: videoIconOrange,
+  red: videoIconRed,
 };
 
 /**
@@ -273,7 +291,8 @@ class GuidedTraining extends Component {
       </View>
     );
 
-    const levelColor = getColorHexForLevel(this.props.levelIdx);
+    const levelColorHex = getColorHexForLevel(this.props.levelIdx);
+    const levelColorName = getColorNameForLevel(this.props.levelIdx);
 
     // The left button would be disabled if this is the first workout in the session
     const isLeftButtonDisabled = this.state.step === 1;
@@ -304,16 +323,24 @@ class GuidedTraining extends Component {
         <ProgressBar
           currentStep={this.state.step}
           totalSteps={this.props.workouts.length}
-          backgroundColor={levelColor}
+          backgroundColor={levelColorHex}
         />
         {header}
-        {this.state.isFetchingImage ? <Spinner size="large" color={levelColor} /> :
-          <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif} />}
+        {this.state.isFetchingImage ? <Spinner size="large" color={levelColorHex} /> : (
+          <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif}>
+            <TouchableOpacity
+              style={styles.videoLink}
+              onPress={() => { /* TODO: NAVIGATE TO WORKOUT VIDEO */ }}
+            >
+              <Image source={videoIcon[levelColorName]} style={styles.videoIcon} />
+            </TouchableOpacity>
+          </Image>
+        )}
         <View style={styles.footer}>
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
               activeOpacity={1}
-              underlayColor={levelColor}
+              underlayColor={levelColorHex}
               onPress={() => this._onButtonPress('leftButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('leftButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('leftButton')}
@@ -324,7 +351,7 @@ class GuidedTraining extends Component {
                 <Icon
                   name="arrow-back"
                   size={applyWidthDifference(50)}
-                  style={{ color: this.state.leftButtonDepressed ? 'white' : levelColor }}
+                  style={{ color: this.state.leftButtonDepressed ? 'white' : levelColorHex }}
                 />
               </View>
             </TouchableHighlight>
@@ -333,7 +360,7 @@ class GuidedTraining extends Component {
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
               activeOpacity={1}
-              underlayColor={levelColor}
+              underlayColor={levelColorHex}
               onPress={() => this._onButtonPress('centerButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
@@ -343,7 +370,7 @@ class GuidedTraining extends Component {
                 <Icon
                   name={centerButtonIconName}
                   size={applyWidthDifference(50)}
-                  style={{ color: this.state.centerButtonDepressed ? 'white' : levelColor }}
+                  style={{ color: this.state.centerButtonDepressed ? 'white' : levelColorHex }}
                 />
               </View>
             </TouchableHighlight>
@@ -352,7 +379,7 @@ class GuidedTraining extends Component {
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
               activeOpacity={1}
-              underlayColor={levelColor}
+              underlayColor={levelColorHex}
               onPress={() => this._onButtonPress('rightButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('rightButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('rightButton')}
@@ -362,7 +389,7 @@ class GuidedTraining extends Component {
                 <Icon
                   name="arrow-forward"
                   size={applyWidthDifference(50)}
-                  style={{ color: this.state.rightButtonDepressed ? 'white' : levelColor }}
+                  style={{ color: this.state.rightButtonDepressed ? 'white' : levelColorHex }}
                 />
               </View>
             </TouchableHighlight>
