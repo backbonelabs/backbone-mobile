@@ -425,6 +425,20 @@ public class NotificationService extends ReactContextBaseJavaModule {
     }
 
     /**
+     * Check if the specified notification type has been scheduled
+     * @param type Type of the notification to be checked.
+     */
+    @ReactMethod
+    public void hasScheduledNotification(int type, Callback callback) {
+        SharedPreferences preference = context.getSharedPreferences(Constants.NOTIFICATION_PREFERENCES, MODE_PRIVATE);
+        boolean found = preference.getBoolean(String.format("%s%d", Constants.NOTIFICATION_PREFERENCE_FORMAT_IS_SCHEDULED, type), false);
+
+        WritableMap response = Arguments.createMap();
+        response.putBoolean("onSchedule", found);
+        callback.invoke(null, response);
+    }
+
+    /**
      * Creates builder class for Notification objects that launches the MainActivity.
      * A Notification can be created from the builder class to be passed to a NotificationManager.
      * @return A NotificationCompat.Builder object
