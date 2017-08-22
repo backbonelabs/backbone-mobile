@@ -530,7 +530,7 @@ class Settings extends Component {
       let hour;
       let minute;
 
-      if (dailyReminderTime === undefined) {
+      if (dailyReminderTime === undefined || dailyReminderTime === -1) {
         // If it hasn't been set before, use the current time as the default
         hour = now.hour();
         minute = now.minute();
