@@ -8,6 +8,7 @@ import {
 import { connect } from 'react-redux';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import isEqual from 'lodash/isEqual';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
@@ -130,17 +131,7 @@ class GuidedTraining extends Component {
 
     this.state = {
       step: stepIdx + 1,
-      side: 1,
-      currentWorkout,
-      hasWorkoutStarted: false,
-      hasTimerStarted: false,
-      timerSeconds: currentWorkout.seconds,
-      isTimerRunning: false,
-      setsRemaining: currentWorkout.sets,
-      isFetchingImage: true,
-      leftButtonDepressed: false,
-      centerButtonDepressed: false,
-      rightButtonDepressed: false,
+      ...this._getNewStateForWorkout(currentWorkout),
     };
 
     this.timerInterval = null;
@@ -159,6 +150,19 @@ class GuidedTraining extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (!isEqual(prevState.currentWorkout, this.state.currentWorkout)) {
+      // Workout changed
+      // Prefetch workout gif
+      Image.prefetch(this.state.currentWorkout.workout.gifUrl)
+        .then(() => {
+          this.setState({ isFetchingImage: false });
+        })
+        .catch(() => {
+          // Suppress errors
+          this.setState({ isFetchingImage: false });
+        });
+    }
+
     if (prevState.timerSeconds !== this.state.timerSeconds && this.state.timerSeconds === 0) {
       // Timer reached 0 for the rep, stop the timer
       this._pauseTimer(() => {
@@ -194,6 +198,22 @@ class GuidedTraining extends Component {
     }
   }
 
+  _getNewStateForWorkout(workout) {
+    return {
+      side: 1,
+      currentWorkout: workout,
+      hasWorkoutStarted: false,
+      hasTimerStarted: false,
+      timerSeconds: workout.seconds,
+      isTimerRunning: false,
+      setsRemaining: workout.sets,
+      isFetchingImage: true,
+      leftButtonDepressed: false,
+      centerButtonDepressed: false,
+      rightButtonDepressed: false,
+    };
+  }
+
   _startTimer() {
     this.setState({
       hasWorkoutStarted: true,
@@ -221,6 +241,20 @@ class GuidedTraining extends Component {
   _onButtonPress(buttonName) {
     // TODO: Perform appropriate actions for button presses
     switch (buttonName) {
+      case 'leftButton': {
+        const isFirstWorkout = this.state.step === 1;
+        if (!isFirstWorkout) {
+          // There is a previous workout in the session that can be navigated to
+          this.setState(prevState => {
+            const step = prevState.step - 1;
+            return {
+              step,
+              ...this._getNewStateForWorkout(this.props.workouts[step - 1]),
+            };
+          });
+        }
+        break;
+      }
       case 'centerButton': {
         const { currentWorkout } = this.state;
         const isTimed = !!currentWorkout.seconds;
@@ -233,6 +267,20 @@ class GuidedTraining extends Component {
           this._startTimer();
         } else {
           // Mark as complete
+        }
+        break;
+      }
+      case 'rightButton': {
+        const isLastWorkout = this.state.step === this.props.workouts.length;
+        if (!isLastWorkout) {
+          // There is a next workout in the session that can be navigated to
+          this.setState(prevState => {
+            const step = prevState.step + 1;
+            return {
+              step,
+              ...this._getNewStateForWorkout(this.props.workouts[step - 1]),
+            };
+          });
         }
         break;
       }
@@ -299,6 +347,13 @@ class GuidedTraining extends Component {
     const additionalLeftButtonStyles = {};
     if (isLeftButtonDisabled) {
       additionalLeftButtonStyles.opacity = 0.4;
+    }
+
+    // The right button would be disabled if this is the last workout in the session
+    const isRightButtonDisabled = this.state.step === this.props.workouts.length;
+    const additionalRightButtonStyles = {};
+    if (isRightButtonDisabled) {
+      additionalRightButtonStyles.opacity = 0.4;
     }
 
     let centerButtonIconName;
@@ -383,7 +438,8 @@ class GuidedTraining extends Component {
               onPress={() => this._onButtonPress('rightButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('rightButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('rightButton')}
-              style={styles.footerButton}
+              style={[styles.footerButton, additionalRightButtonStyles]}
+              disabled={isRightButtonDisabled}
             >
               <View style={styles.footerButtonIconContainer}>
                 <Icon
