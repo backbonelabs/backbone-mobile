@@ -664,6 +664,9 @@ class Settings extends Component {
                 isVisible={timePickerActive}
                 onConfirm={this.onTimeChange}
                 onCancel={() => { this.setState({ timePickerActive: false }); }}
+                is24Hour={use24HourFormat}
+                titleIOS={'Reminder Time'}
+                confirmTextIOS={'Set'}
               />
             </View>
           }
