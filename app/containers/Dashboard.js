@@ -8,6 +8,7 @@ import {
   ScrollView,
   Platform,
   View,
+  InteractionManager,
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
@@ -139,105 +140,107 @@ class Dashboard extends Component {
         }],
       });
     } else {
-      const { hasSavedSession } = this.props.device;
+      InteractionManager.runAfterInteractions(() => {
+        const { hasSavedSession } = this.props.device;
 
-      const {
-        _id: userId, seenBaselineSurvey, seenAppRating, seenFeedbackSurvey, lastSession,
-      } = this.props.user.user;
+        const {
+          _id: userId, seenBaselineSurvey, seenAppRating, seenFeedbackSurvey, lastSession,
+        } = this.props.user.user;
 
-      // Prioritize loading previous session if exists
-      if (!hasSavedSession && !seenBaselineSurvey) {
-        // User has not seen the baseline survey modal yet. Display survey modal
-        // and mark as seen in the user profile to prevent it from being shown again.
-        const markSurveySeenAndHideModal = () => {
+        // Prioritize loading previous session if exists
+        if (!hasSavedSession && !seenBaselineSurvey) {
+          // User has not seen the baseline survey modal yet. Display survey modal
+          // and mark as seen in the user profile to prevent it from being shown again.
+          const markSurveySeenAndHideModal = () => {
+            this.props.updateUser({
+              _id: userId,
+              seenBaselineSurvey: true,
+            });
+
+            this.props.hidePartialModal();
+          };
+
+          const baselineSurveyEventName = 'baselineUserSurvey';
+
+          this.props.showPartialModal({
+            topView: (
+              <Icon name="rate-review" size={styles.$modalIconSize} style={styles.infoIcon} />
+            ),
+            detail: {
+              caption: 'Have a minute? Help us improve Backbone by taking this 60-second survey!',
+            },
+            buttons: [
+              {
+                caption: 'No, thanks',
+                onPress: () => {
+                  Mixpanel.track(`${baselineSurveyEventName}-decline`);
+                  markSurveySeenAndHideModal();
+                },
+              },
+              {
+                caption: 'OK, sure',
+                onPress: () => {
+                  const url = `${surveyUrls.baseline}?user_id=${userId}`;
+                  Linking.canOpenURL(url)
+                    .then(supported => {
+                      if (supported) {
+                        return Linking.openURL(url);
+                      }
+                      throw new Error();
+                    })
+                    .catch(() => {
+                      // This catch handler will handle rejections from Linking.openURL
+                      // as well as when the user's phone doesn't have any apps
+                      // to open the URL
+                      Alert.alert(
+                        'Error',
+                        'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
+                        'Please contact us to fill out the survey.',
+                      );
+                    });
+
+                  Mixpanel.track(`${baselineSurveyEventName}-accept`);
+
+                  markSurveySeenAndHideModal();
+                },
+              },
+            ],
+            backButtonHandler: () => {
+              Mixpanel.track(`${baselineSurveyEventName}-decline`);
+              markSurveySeenAndHideModal();
+            },
+          });
+        }
+
+        // Calculate and check if 7 days have passed since registration.
+        const createdDate = new Date(this.props.user.user.createdAt);
+        const timeThreshold = 7 * 24 * 60 * 60 * 1000; // 7 days converted to milliseconds
+        const today = new Date();
+        if (!seenFeedbackSurvey && (today.getTime() - createdDate.getTime() >= timeThreshold)) {
+          // Feedback Survey hasn't been displayed yet, and 7 days have passed.
+          // Fetch the user session data to check if the user has
+          // completed at least 3 full sessions in the first 7 days after signing up.
+          const limitDate = new Date(createdDate.getTime() + timeThreshold);
+          this.getUserSessions(userId, createdDate, limitDate);
+        } else if (!seenAppRating) {
+          // User has not seen the app rating modal yet.
+          // Retrieve user session data to later check if the user has
+          // completed 5 full sessions throughout their lifetime.
+          this.getUserSessions(userId, createdDate, today);
+        }
+
+        // Reset daily streak if lastSession was 2 days ago
+        const todayDate = moment().format('YYYY-MM-DD');
+        const twoDaysLaterDate = moment(lastSession).add(2, 'days').format('YYYY-MM-DD');
+
+        // if the current date is the same as the date 2 days after the last session, reset it
+        if (todayDate >= twoDaysLaterDate) {
           this.props.updateUser({
             _id: userId,
-            seenBaselineSurvey: true,
+            dailyStreak: 0,
           });
-
-          this.props.hidePartialModal();
-        };
-
-        const baselineSurveyEventName = 'baselineUserSurvey';
-
-        this.props.showPartialModal({
-          topView: (
-            <Icon name="rate-review" size={styles.$modalIconSize} style={styles.infoIcon} />
-          ),
-          detail: {
-            caption: 'Have a minute? Help us improve Backbone by taking this 60-second survey!',
-          },
-          buttons: [
-            {
-              caption: 'No, thanks',
-              onPress: () => {
-                Mixpanel.track(`${baselineSurveyEventName}-decline`);
-                markSurveySeenAndHideModal();
-              },
-            },
-            {
-              caption: 'OK, sure',
-              onPress: () => {
-                const url = `${surveyUrls.baseline}?user_id=${userId}`;
-                Linking.canOpenURL(url)
-                  .then(supported => {
-                    if (supported) {
-                      return Linking.openURL(url);
-                    }
-                    throw new Error();
-                  })
-                  .catch(() => {
-                    // This catch handler will handle rejections from Linking.openURL
-                    // as well as when the user's phone doesn't have any apps
-                    // to open the URL
-                    Alert.alert(
-                      'Error',
-                      'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
-                      'Please contact us to fill out the survey.',
-                    );
-                  });
-
-                Mixpanel.track(`${baselineSurveyEventName}-accept`);
-
-                markSurveySeenAndHideModal();
-              },
-            },
-          ],
-          backButtonHandler: () => {
-            Mixpanel.track(`${baselineSurveyEventName}-decline`);
-            markSurveySeenAndHideModal();
-          },
-        });
-      }
-
-      // Calculate and check if 7 days have passed since registration.
-      const createdDate = new Date(this.props.user.user.createdAt);
-      const timeThreshold = 7 * 24 * 60 * 60 * 1000; // 7 days converted to milliseconds
-      const today = new Date();
-      if (!seenFeedbackSurvey && (today.getTime() - createdDate.getTime() >= timeThreshold)) {
-        // Feedback Survey hasn't been displayed yet, and 7 days have passed.
-        // Fetch the user session data to check if the user has
-        // completed at least 3 full sessions in the first 7 days after signing up.
-        const limitDate = new Date(createdDate.getTime() + timeThreshold);
-        this.getUserSessions(userId, createdDate, limitDate);
-      } else if (!seenAppRating) {
-        // User has not seen the app rating modal yet.
-        // Retrieve user session data to later check if the user has
-        // completed 5 full sessions throughout their lifetime.
-        this.getUserSessions(userId, createdDate, today);
-      }
-
-      // Reset daily streak if lastSession was 2 days ago
-      const todayDate = moment().format('YYYY-MM-DD');
-      const twoDaysLaterDate = moment(lastSession).add(2, 'days').format('YYYY-MM-DD');
-
-      // if the current date is the same as the date 2 days after the last session, reset it
-      if (todayDate >= twoDaysLaterDate) {
-        this.props.updateUser({
-          _id: userId,
-          dailyStreak: 0,
-        });
-      }
+        }
+      });
     }
 
     setTimeout(() => {
