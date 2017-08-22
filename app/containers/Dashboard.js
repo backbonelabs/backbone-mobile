@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import get from 'lodash/get';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import cloneDeep from 'lodash/cloneDeep';
 import appActions from '../actions/app';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
@@ -290,20 +289,6 @@ class Dashboard extends Component {
       selectedSessionIdx,
     } = this.props.training;
     const sessions = get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx], []);
-    const sessionsWithUserProgress = sessions.map((session, idx) => {
-      const sessionClone = cloneDeep(session);
-      const currentPlanId = plans[selectedPlanIdx]._id;
-      const sessionProgress = get(
-        this.props.user,
-        ['trainingPlanProgress', currentPlanId, selectedLevelIdx, idx],
-        [] // default to empty array
-      );
-      sessionProgress.forEach((workoutResult, workoutIdx) => {
-        // Add isComplete property to workout to indicate if user has completed the workout
-        sessionClone[workoutIdx].isComplete = workoutResult;
-      });
-      return sessionClone;
-    });
 
     return (
       <Image
@@ -326,7 +311,7 @@ class Dashboard extends Component {
         <View style={styles.carouselContainer}>
           {!!sessions.length &&
             <Carousel
-              items={sessionsWithUserProgress}
+              items={sessions}
               renderItem={this._getSessionCard}
               sliderWidth={styles.$carouselSliderWidth}
               itemWidth={styles.$carouselItemWidth}
