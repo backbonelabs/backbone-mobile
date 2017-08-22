@@ -1,5 +1,6 @@
 import { Dimensions, Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import theme from './theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
@@ -8,6 +9,7 @@ export default EStyleSheet.create({
   $progressBarHeight: applyWidthDifference(20),
   container: {
     alignItems: 'center',
+    backgroundColor: theme.grey100,
     flex: 1,
     justifyContent: 'space-between',
   },
@@ -69,9 +71,10 @@ export default EStyleSheet.create({
     width: applyWidthDifference(23),
   },
   footer: {
+    backgroundColor: theme.grey50,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginVertical: applyWidthDifference(12),
+    paddingVertical: applyWidthDifference(12),
     width: '100%',
   },
   footerButtonContainer: {
