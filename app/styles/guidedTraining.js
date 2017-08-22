@@ -107,6 +107,7 @@ export default EStyleSheet.create({
     overflow: 'hidden',
   },
   footerButtonText: {
+    marginTop: applyWidthDifference(8),
     textAlign: 'center',
   },
 });
