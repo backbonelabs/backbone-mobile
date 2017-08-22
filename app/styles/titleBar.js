@@ -9,6 +9,7 @@ const baseTitleBarStyles = {
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
+  backgroundColor: 'white',
 };
 
 const baseSideButtonStyles = {

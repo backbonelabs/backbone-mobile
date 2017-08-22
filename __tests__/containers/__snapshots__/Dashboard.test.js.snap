@@ -75,6 +75,7 @@ exports[`Dashboard Component renders as expected 1`] = `
       autoplayInterval={3000}
       containerCustomStyle={null}
       contentContainerCustomStyle={null}
+      enableMomentum={true}
       enableSnap={true}
       firstItem={0}
       inactiveSlideOpacity={1}
