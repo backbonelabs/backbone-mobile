@@ -273,8 +273,11 @@ class Dashboard extends Component {
     });
 
     return (
-      <TouchableOpacity onPress={() => this._onSelectSession(navTitle, session)}>
-        <Card key={idx}>
+      <TouchableOpacity
+        key={idx}
+        onPress={() => this._onSelectSession(navTitle, session)}
+      >
+        <Card>
           {sessionWorkouts}
         </Card>
       </TouchableOpacity>
