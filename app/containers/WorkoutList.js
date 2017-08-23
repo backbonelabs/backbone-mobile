@@ -399,7 +399,7 @@ class WorkoutList extends Component {
         </ScrollableTabView>
         <Animated.View
           style={[styles.subView,
-              { transform: [{ translateY: this.state.bounceValue }] }]}
+              { transform: [{ translateY: this.state.bounceValue }], height: '100%' }]}
         >
           <View style={styles.subViewButtonContainer}>
             <BodyText style={styles._subViewHeaderText}>SORT BY:</BodyText>

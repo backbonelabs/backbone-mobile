@@ -74,8 +74,7 @@ export default EStyleSheet.create({
   subView: {
     position: 'absolute',
     backgroundColor: 'rgba(52, 52, 52, 0.8)',
-    height: '80%',
-    paddingBottom: applyWidthDifference(40),
+    paddingBottom: applyWidthDifference(20),
     width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-end',
