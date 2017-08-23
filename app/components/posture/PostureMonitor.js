@@ -64,7 +64,7 @@ const isiOS = Platform.OS === 'ios';
  * @return {Number}          Distance value scaled in a range of -30-210
  */
 const normalizeCurrentDistance = distance => {
-  const newRange = -25 - 210;
+  const newRange = -30 - 210;
   const normalizedDistance = Math.floor(
     (((distance - MIN_POSTURE_THRESHOLD) * newRange) / currentRange) + 210
   );
