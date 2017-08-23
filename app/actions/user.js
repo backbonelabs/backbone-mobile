@@ -6,6 +6,7 @@ import {
   UPDATE_USER_TRAINING_PLAN_PROGRESS,
   FETCH_USER_SESSIONS,
   PREPARE_USER_UPDATE,
+  FETCH_USER_WORKOUTS,
 } from './types';
 import store from '../store';
 import constants from '../utils/constants';
@@ -19,6 +20,7 @@ const { storageKeys, errorMessages } = constants;
 const baseUrl = `${Environment.API_SERVER_URL}/users`;
 const settingsUrl = `${baseUrl}/settings`;
 const sessionsUrl = `${baseUrl}/sessions`;
+const workoutsUrl = `${baseUrl}/workouts`;
 
 const handleNetworkError = mixpanelEvent => {
   Mixpanel.track(`${mixpanelEvent}-serverError`);
@@ -42,6 +44,11 @@ export default {
         .then(response => response.json())
         .then((body) => {
           if (body.error) {
+            // Error received from API server
+            Mixpanel.trackWithProperties(`${fetchUserEventName}-error`, {
+              errorMessage: body.error,
+            });
+
             throw new Error(body.error);
           }
           // Update user details in Bugsnag
@@ -220,12 +227,48 @@ export default {
         .then(response => response.json())
         .then((body) => {
           if (body.error) {
+            // Error received from API server
+            Mixpanel.trackWithProperties(`${fetchUserSessionsEventName}-error`, {
+              errorMessage: body.error,
+            });
+
             throw new Error(body.error);
           }
           Mixpanel.trackWithProperties('fetchUserSessions', {
             from: dates.fromDate,
             to: dates.toDate,
           });
+          return body;
+        }),
+    };
+  },
+
+  fetchUserWorkouts() {
+    const state = store.getState();
+    const { accessToken } = state.auth;
+    const { user: { _id } } = state.user;
+    const fetchUserWorkoutsEventName = 'fetchUserWorkouts';
+
+    return {
+      type: FETCH_USER_WORKOUTS,
+      payload: () => Fetcher.get({
+        url: `${workoutsUrl}/${_id}`,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+        .catch(() => handleNetworkError(fetchUserWorkoutsEventName))
+        .then(response => response.json())
+        .then((body) => {
+          if (body.error) {
+            // Error received from API server
+            Mixpanel.trackWithProperties(`${fetchUserWorkoutsEventName}-error`, {
+              errorMessage: body.error,
+            });
+
+            throw new Error(body.error);
+          }
+
+          Mixpanel.track(`${fetchUserWorkoutsEventName}-success`);
+
           return body;
         }),
     };
