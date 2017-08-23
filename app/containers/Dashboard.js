@@ -239,22 +239,10 @@ class Dashboard extends Component {
     this.props.selectSession(idx);
   }
 
-  _onSelectSession(navTitle, session) {
-    const {
-      plans,
-      selectedPlanIdx,
-      selectedLevelIdx,
-      selectedSessionIdx,
-    } = this.props.training;
+  _onSelectSession(navTitle) {
     this.props.navigator.push({
       ...routes.guidedTraining,
       title: navTitle,
-      props: {
-        planId: plans[selectedPlanIdx]._id,
-        levelIdx: selectedLevelIdx,
-        sessionIdx: selectedSessionIdx,
-        workouts: session,
-      },
     });
   }
 
@@ -282,7 +270,7 @@ class Dashboard extends Component {
     return (
       <TouchableOpacity
         key={idx}
-        onPress={() => this._onSelectSession(navTitle, session)}
+        onPress={() => this._onSelectSession(navTitle)}
       >
         <Card>
           {sessionWorkouts}

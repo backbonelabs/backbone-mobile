@@ -110,13 +110,34 @@ const getFormattedTime = (totalSeconds) => {
 class GuidedTraining extends Component {
   static propTypes = {
     hidePartialModal: PropTypes.func.isRequired,
-    levelIdx: PropTypes.number.isRequired,
-    planId: PropTypes.string.isRequired,
-    sessionIdx: PropTypes.number.isRequired,
     showPartialModal: PropTypes.func.isRequired,
     training: PropTypes.shape({
       errorMessage: PropTypes.string,
       isUpdating: PropTypes.bool,
+      plans: PropTypes.arrayOf(
+        PropTypes.shape({
+          _id: PropTypes.string,
+          levels: PropTypes.arrayOf(
+            PropTypes.arrayOf(
+              PropTypes.arrayOf(
+                PropTypes.shape({
+                  title: PropTypes.string,
+                  reps: PropTypes.number,
+                  sets: PropTypes.number,
+                  seconds: PropTypes.number,
+                  twoSides: PropTypes.bool,
+                  additionalDetails: PropTypes.string,
+                  isComplete: PropTypes.bool,
+                  workout: PropTypes.object,
+                })
+              )
+            )
+          ),
+        })
+      ),
+      selectedPlanIdx: PropTypes.number,
+      selectedLevelIdx: PropTypes.number,
+      selectedSessionIdx: PropTypes.number,
     }).isRequired,
     updateUserTrainingPlanProgress: PropTypes.func.isRequired,
     user: PropTypes.shape({
@@ -128,28 +149,20 @@ class GuidedTraining extends Component {
         )
       ),
     }),
-    workouts: PropTypes.arrayOf(PropTypes.shape({
-      title: PropTypes.string,
-      reps: PropTypes.number,
-      sets: PropTypes.number,
-      seconds: PropTypes.number,
-      twoSides: PropTypes.bool,
-      additionalDetails: PropTypes.string,
-      isComplete: PropTypes.bool,
-      workout: PropTypes.object,
-    })).isRequired,
   };
 
   constructor(props) {
     super(props);
+    const sessionWorkouts = this._getSessionWorkouts(props.training);
 
     // Find the first incomplete workout index
-    let stepIdx = props.workouts.findIndex(workout => !workout.isComplete);
+    let stepIdx = sessionWorkouts.findIndex(workout => !workout.isComplete);
+
     if (stepIdx === -1) {
-      stepIdx = props.workouts.length - 1;
+      stepIdx = sessionWorkouts.length - 1;
     }
 
-    const currentWorkout = props.workouts[stepIdx];
+    const currentWorkout = this._getWorkoutFromCurrentSession(stepIdx, props.training);
 
     this.state = {
       step: stepIdx + 1,
@@ -188,7 +201,8 @@ class GuidedTraining extends Component {
         });
       } else {
         this.setState({
-          currentWorkout: nextProps.workouts[this.state.step - 1],
+          currentWorkout:
+            this._getWorkoutFromCurrentSession(this.state.step - 1, nextProps.training),
         });
       }
     }
@@ -243,6 +257,20 @@ class GuidedTraining extends Component {
     }
   }
 
+  _getSessionWorkouts(trainingProps) {
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = trainingProps;
+    return plans[selectedPlanIdx].levels[selectedLevelIdx][selectedSessionIdx];
+  }
+
+  _getWorkoutFromCurrentSession(workoutIdx, trainingProps) {
+    return this._getSessionWorkouts(trainingProps)[workoutIdx];
+  }
+
   _getNewStateForWorkout(workout) {
     return {
       side: 1,
@@ -284,6 +312,12 @@ class GuidedTraining extends Component {
   }
 
   _onButtonPress(buttonName) {
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = this.props.training;
     switch (buttonName) {
       case 'leftButton': {
         const isFirstWorkout = this.state.step === 1;
@@ -293,7 +327,8 @@ class GuidedTraining extends Component {
             const step = prevState.step - 1;
             return {
               step,
-              ...this._getNewStateForWorkout(this.props.workouts[step - 1]),
+              ...this._getNewStateForWorkout(
+                this._getWorkoutFromCurrentSession(step - 1, this.props.training)),
             };
           });
         }
@@ -316,48 +351,43 @@ class GuidedTraining extends Component {
           this._startTimer();
         } else if (!currentWorkout.isComplete) {
           // Mark workout as complete
-          const {
-            levelIdx,
-            sessionIdx,
-            planId,
-            user,
-          } = this.props;
-          const progress = cloneDeep(user.trainingPlanProgress);
-          const planProgress = progress[planId];
+          const progress = cloneDeep(this.props.user.trainingPlanProgress);
+          const planProgress = progress[plans[selectedPlanIdx]._id];
 
           // The plan progress array may not always contain the exact number of elements as
           // workouts in the training plan, so we need to fill missing elements up to the
           // current level and session indices with empty arrays.
 
           // Fill in missing levels
-          for (let i = 0; i <= levelIdx; i++) {
+          for (let i = 0; i <= selectedLevelIdx; i++) {
             if (!planProgress[i]) {
               planProgress[i] = [];
             }
           }
 
           // Fill in missing sessions in the current level up to the current session
-          for (let i = 0; i <= sessionIdx; i++) {
-            if (!planProgress[levelIdx][i]) {
-              planProgress[levelIdx][i] = [];
+          for (let i = 0; i <= selectedSessionIdx; i++) {
+            if (!planProgress[selectedLevelIdx][i]) {
+              planProgress[selectedLevelIdx][i] = [];
             }
           }
 
           // Mark the current workout as complete
-          planProgress[levelIdx][sessionIdx][step - 1] = true;
+          planProgress[selectedLevelIdx][selectedSessionIdx][step - 1] = true;
           this.props.updateUserTrainingPlanProgress(progress);
         }
         break;
       }
       case 'rightButton': {
-        const isLastWorkout = this.state.step === this.props.workouts.length;
+        const sessionWorkouts = this._getSessionWorkouts(this.props.training);
+        const isLastWorkout = this.state.step === sessionWorkouts.length;
         if (!isLastWorkout) {
           // There is a next workout in the session that can be navigated to
           this.setState(prevState => {
             const step = prevState.step + 1;
             return {
               step,
-              ...this._getNewStateForWorkout(this.props.workouts[step - 1]),
+              ...this._getNewStateForWorkout(sessionWorkouts[step - 1]),
             };
           });
         }
@@ -418,8 +448,9 @@ class GuidedTraining extends Component {
       </View>
     );
 
-    const levelColorHex = getColorHexForLevel(this.props.levelIdx);
-    const levelColorName = getColorNameForLevel(this.props.levelIdx);
+    const selectedLevelIdx = this.props.training.selectedLevelIdx;
+    const levelColorHex = getColorHexForLevel(selectedLevelIdx);
+    const levelColorName = getColorNameForLevel(selectedLevelIdx);
 
     // The left button would be disabled if this is the first workout in the session
     const isLeftButtonDisabled = this.state.step === 1;
@@ -429,7 +460,8 @@ class GuidedTraining extends Component {
     }
 
     // The right button would be disabled if this is the last workout in the session
-    const isRightButtonDisabled = this.state.step === this.props.workouts.length;
+    const sessionWorkouts = this._getSessionWorkouts(this.props.training);
+    const isRightButtonDisabled = this.state.step === sessionWorkouts.length;
     const additionalRightButtonStyles = {};
     if (isRightButtonDisabled) {
       additionalRightButtonStyles.opacity = 0.4;
@@ -456,7 +488,7 @@ class GuidedTraining extends Component {
       <View style={styles.container}>
         <ProgressBar
           currentStep={this.state.step}
-          totalSteps={this.props.workouts.length}
+          totalSteps={sessionWorkouts.length}
           backgroundColor={levelColorHex}
         />
         {header}
