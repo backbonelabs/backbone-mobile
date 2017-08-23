@@ -51,9 +51,9 @@ class Button extends Component {
     const secondaryStyles = [buttonStyles, styles.secondaryBtn];
     const fbBtnStyles = [buttonStyles, styles.facebookBtn];
     const defaultStyles = [buttonStyles, styles.defaultBtn];
-    const defaultActive = [buttonStyles, styles.secondaryActive];
-    const defaultTextActive = [styles._text, styles._secondaryTextStyles];
-    const defaultTextStyles = [styles._text, styles._secondaryTextActive];
+    const defaultActive = [buttonStyles, styles.defaultActive];
+    const defaultTextActive = [styles._text, styles._defaultTextActive];
+    const defaultTextStyles = [styles._text, styles._defaultTextStyles];
 
     if (this.props.primary) {
       buttonType = (

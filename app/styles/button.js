@@ -45,13 +45,13 @@ export default EStyleSheet.create({
     width: '100%',
     ...buttonShadow,
   },
-  secondaryActive: {
+  defaultActive: {
     backgroundColor: '#F5F5F5',
   },
-  secondaryTextStyles: {
+  defaultTextStyles: {
     color: '#AAAAAA',
   },
-  secondaryTextActive: {
+  defaultTextActive: {
     color: '#000000',
   },
   disabledButton: {
