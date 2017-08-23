@@ -10,6 +10,7 @@ import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
+import appActions from '../actions/app';
 import userActions from '../actions/user';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
@@ -23,6 +24,7 @@ import videoIconPurple from '../images/video-icon-purple.png';
 import videoIconRed from '../images/video-icon-red.png';
 import { getColorHexForLevel, getColorNameForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
+import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 import { formattedTimeString } from '../utils/timeUtils';
 
@@ -107,9 +109,15 @@ const getFormattedTime = (totalSeconds) => {
 
 class GuidedTraining extends Component {
   static propTypes = {
+    hidePartialModal: PropTypes.func.isRequired,
     levelIdx: PropTypes.number.isRequired,
     planId: PropTypes.string.isRequired,
     sessionIdx: PropTypes.number.isRequired,
+    showPartialModal: PropTypes.func.isRequired,
+    training: PropTypes.shape({
+      errorMessage: PropTypes.string,
+      isUpdating: PropTypes.bool,
+    }).isRequired,
     updateUserTrainingPlanProgress: PropTypes.func.isRequired,
     user: PropTypes.shape({
       trainingPlanProgress: PropTypes.objectOf(
@@ -161,6 +169,29 @@ class GuidedTraining extends Component {
         // Suppress errors
         this.setState({ isFetchingImage: false });
       });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.training.isUpdating && !nextProps.training.isUpdating) {
+      if (nextProps.training.errorMessage) {
+        this.props.showPartialModal({
+          topView: (<Icon name="error-outline" size={40} color={theme.warningColor} />),
+          title: { caption: 'Error' },
+          detail: {
+            caption: 'An unexpected error occurred while saving your progress. ' +
+              'Please try again later.',
+          },
+          buttons: [{ caption: 'CLOSE' }],
+          backButtonHandler: () => {
+            this.props.hidePartialModal();
+          },
+        });
+      } else {
+        this.setState({
+          currentWorkout: nextProps.workouts[this.state.step - 1],
+        });
+      }
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -253,7 +284,6 @@ class GuidedTraining extends Component {
   }
 
   _onButtonPress(buttonName) {
-    // TODO: Perform appropriate actions for button presses
     switch (buttonName) {
       case 'leftButton': {
         const isFirstWorkout = this.state.step === 1;
@@ -466,13 +496,18 @@ class GuidedTraining extends Component {
               onPress={() => this._onButtonPress('centerButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
-              style={styles.footerButton}
+              style={[styles.footerButton, {
+                backgroundColor: currentWorkout.isComplete ? levelColorHex : 'white',
+              }]}
             >
               <View style={styles.footerButtonIconContainer}>
                 <Icon
                   name={centerButtonIconName}
                   size={applyWidthDifference(50)}
-                  style={{ color: this.state.centerButtonDepressed ? 'white' : levelColorHex }}
+                  style={{
+                    color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
+                      'white' : levelColorHex,
+                  }}
                 />
               </View>
             </TouchableHighlight>
@@ -504,8 +539,12 @@ class GuidedTraining extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user.user,
+const mapStateToProps = ({ training, user }) => ({
+  training,
+  user: user.user,
 });
 
-export default connect(mapStateToProps, userActions)(GuidedTraining);
+export default connect(mapStateToProps, {
+  ...appActions,
+  ...userActions,
+})(GuidedTraining);

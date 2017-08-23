@@ -1,14 +1,18 @@
-import cloneDeep from 'lodash/cloneDeep';
-import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import {
   FETCH_USER,
+  FETCH_USER__START,
+  FETCH_USER__ERROR,
   LOGIN,
+  LOGIN__START,
+  LOGIN__ERROR,
   SIGNUP,
   SELECT_LEVEL,
   SELECT_SESSION,
   SIGN_OUT,
   UPDATE_USER_TRAINING_PLAN_PROGRESS,
+  UPDATE_USER_TRAINING_PLAN_PROGRESS__START,
+  UPDATE_USER_TRAINING_PLAN_PROGRESS__ERROR,
 } from '../actions/types';
 import {
   getNextIncompleteLevel,
@@ -16,6 +20,8 @@ import {
 } from '../utils/trainingUtils';
 
 const defaultState = {
+  isUpdating: false,
+  errorMessage: null,
   plans: [{
     name: '',
     levels: [
@@ -35,6 +41,15 @@ const defaultState = {
 export default (state = defaultState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case FETCH_USER__START:
+    case LOGIN__START:
+    case UPDATE_USER_TRAINING_PLAN_PROGRESS__START: {
+      return {
+        ...state,
+        isUpdating: true,
+        errorMessage: null,
+      };
+    }
     case FETCH_USER:
     case LOGIN:
     case UPDATE_USER_TRAINING_PLAN_PROGRESS: {
@@ -54,10 +69,20 @@ export default (state = defaultState, action) => {
 
       return {
         ...state,
+        isUpdating: false,
         plans,
         selectedPlanIdx,
         selectedLevelIdx,
         selectedSessionIdx,
+      };
+    }
+    case FETCH_USER__ERROR:
+    case LOGIN__ERROR:
+    case UPDATE_USER_TRAINING_PLAN_PROGRESS__ERROR: {
+      return {
+        ...state,
+        isUpdating: false,
+        errorMessage: payload.message,
       };
     }
     case SIGNUP:
