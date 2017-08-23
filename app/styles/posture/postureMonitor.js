@@ -3,12 +3,13 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
-const totalPointerLength = applyWidthDifference(88);
+const innerMonitorSize = applyWidthDifference(190);
 
 export default EStyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+    justifyContent: 'space-around',
   },
   connectingContainer: {
     flex: 1,
@@ -29,21 +30,20 @@ export default EStyleSheet.create({
   },
   heading: {
     textAlign: 'center',
-    marginBottom: applyWidthDifference(30),
+    marginTop: applyWidthDifference(-30),
   },
   monitorContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: applyWidthDifference(20),
   },
   animatedProgress: {
     justifyContent: 'center',
   },
   innerMonitorContainer: {
-    height: applyWidthDifference(190),
-    width: applyWidthDifference(190),
+    height: innerMonitorSize,
+    width: innerMonitorSize,
     backgroundColor: 'white',
-    borderRadius: 100,
+    borderRadius: innerMonitorSize / 2,
     position: 'absolute',
     alignSelf: 'center',
     alignItems: 'center',
@@ -64,47 +64,29 @@ export default EStyleSheet.create({
     }),
   },
   pointerContainer: {
-    width: (totalPointerLength * 2) - applyWidthDifference(8),
+    width: innerMonitorSize - applyWidthDifference(20),
   },
   pointer: {
     height: applyWidthDifference(5),
     width: applyWidthDifference(20),
-    borderRadius: 20,
+    borderRadius: applyWidthDifference(20),
     backgroundColor: '$secondaryFontColor',
   },
   leftCircle: {
     width: applyWidthDifference(15),
     height: applyWidthDifference(15),
-    borderRadius: 100,
+    borderRadius: applyWidthDifference(15 / 2),
     position: 'absolute',
-    ...Platform.select({
-      ios: {
-        bottom: applyWidthDifference(50),
-        left: applyWidthDifference(86),
-      },
-      // applyWidthDifference wasn't working as expected on Android,
-      // not sure if the circles are in the right location in a smaller or bigger device
-      android: {
-        bottom: 40,
-        left: 75,
-      },
-    }),
+    bottom: applyWidthDifference(44),
+    left: '24%',
   },
   rightCircle: {
     width: applyWidthDifference(15),
     height: applyWidthDifference(15),
-    borderRadius: 100,
+    borderRadius: applyWidthDifference(15 / 2),
     position: 'absolute',
-    ...Platform.select({
-      ios: {
-        bottom: applyWidthDifference(50),
-        right: applyWidthDifference(86),
-      },
-      android: {
-        bottom: 40,
-        right: 75,
-      },
-    }),
+    bottom: applyWidthDifference(44),
+    right: '24%',
   },
   postureRatingContainer: {
     position: 'absolute',
@@ -129,7 +111,8 @@ export default EStyleSheet.create({
   },
   sliderTitle: {
     textAlign: 'center',
-    marginBottom: applyWidthDifference(40),
+    marginBottom: applyWidthDifference(10),
+    marginTop: applyWidthDifference(-30),
     fontSize: fixedResponsiveFontSize(12),
   },
   btnContainer: {
