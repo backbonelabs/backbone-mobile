@@ -73,7 +73,7 @@ const normalizeValue = (value, min, max) => (((value - MIN_POSTURE_THRESHOLD) / 
  * @param  {Number} distance Deviation from the control point
  * @return {Number}          Distance value scaled in a range of -30-210
  */
-const normalizeCurrentDistance = distance => {
+const getPointerPosition = distance => {
   const normalizedDistance = Math.floor(normalizeValue(distance, 210, -30));
   if (normalizedDistance > 210) {
     return 210;
@@ -89,10 +89,7 @@ const normalizeCurrentDistance = distance => {
  * @param  {Number} distance Deviation from the control point
  * @return {Number}          Distance value scaled in a range of 0-100
  */
-const normalizePostureThreshold = distance => {
-  const normalizedDistance = Math.floor(normalizeValue(distance, 0, 100));
-  return 100 - normalizedDistance;
-};
+const getSlouchPosition = distance => Math.floor(normalizeValue(distance, 100, 0));
 
 /**
  * Returns a number at a given magnitude
@@ -570,7 +567,7 @@ class PostureMonitor extends Component {
   sessionDataHandler(event) {
     const { currentDistance, timeElapsed } = event;
     this.setState({
-      pointerPosition: normalizeCurrentDistance(currentDistance),
+      pointerPosition: getPointerPosition(currentDistance),
       timeElapsed,
       currentDistance,
     });
@@ -1101,14 +1098,14 @@ class PostureMonitor extends Component {
       </View>
     ) : (
       <View style={styles.container}>
-        <BodyText size={1} style={styles._timer}>
+        <BodyText style={styles._timer}>
           {this.getFormattedTime()}
         </BodyText>
         <BodyText size={3} style={styles._heading}>Time Remaining</BodyText>
         <Monitor
           disable={isDisabled}
           pointerPosition={pointerPosition}
-          slouchPosition={normalizePostureThreshold(postureThreshold)}
+          slouchPosition={getSlouchPosition(postureThreshold)}
           onPress={this.navigateToRecalibrate}
           rating={(currentDistance < postureThreshold)}
         />
