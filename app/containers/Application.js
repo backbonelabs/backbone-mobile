@@ -16,10 +16,36 @@ import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import clone from 'lodash/clone';
 import { UPDATE_BLUETOOTH_STATE } from '../actions/types';
-import sessionActive from '../images/sessionActive.png';
-import sessionInactive from '../images/sessionInactive.png';
-import settingsActive from '../images/settingsActive.png';
-import settingsInactive from '../images/settingsInactive.png';
+import educationIconBlue from '../images/tabBar/education-icon-blue.png';
+import educationIconGreen from '../images/tabBar/education-icon-green.png';
+import educationIconInactive from '../images/tabBar/education-icon-inactive.png';
+import educationIconOrange from '../images/tabBar/education-icon-orange.png';
+import educationIconPurple from '../images/tabBar/education-icon-purple.png';
+import educationIconRed from '../images/tabBar/education-icon-red.png';
+import homeIconBlue from '../images/tabBar/home-icon-blue.png';
+import homeIconGreen from '../images/tabBar/home-icon-green.png';
+import homeIconInactive from '../images/tabBar/home-icon-inactive.png';
+import homeIconOrange from '../images/tabBar/home-icon-orange.png';
+import homeIconPurple from '../images/tabBar/home-icon-purple.png';
+import homeIconRed from '../images/tabBar/home-icon-red.png';
+import postureIconBlue from '../images/tabBar/posture-icon-blue.png';
+import postureIconGreen from '../images/tabBar/posture-icon-green.png';
+import postureIconInactive from '../images/tabBar/posture-icon-inactive.png';
+import postureIconOrange from '../images/tabBar/posture-icon-orange.png';
+import postureIconPurple from '../images/tabBar/posture-icon-purple.png';
+import postureIconRed from '../images/tabBar/posture-icon-red.png';
+import statsIconBlue from '../images/tabBar/stats-icon-blue.png';
+import statsIconGreen from '../images/tabBar/stats-icon-green.png';
+import statsIconInactive from '../images/tabBar/stats-icon-inactive.png';
+import statsIconOrange from '../images/tabBar/stats-icon-orange.png';
+import statsIconPurple from '../images/tabBar/stats-icon-purple.png';
+import statsIconRed from '../images/tabBar/stats-icon-red.png';
+import freeTrainingIconBlue from '../images/tabBar/freeTraining-icon-blue.png';
+import freeTrainingIconGreen from '../images/tabBar/freeTraining-icon-green.png';
+import freeTrainingIconInactive from '../images/tabBar/freeTraining-icon-inactive.png';
+import freeTrainingIconOrange from '../images/tabBar/freeTraining-icon-orange.png';
+import freeTrainingIconPurple from '../images/tabBar/freeTraining-icon-purple.png';
+import freeTrainingIconRed from '../images/tabBar/freeTraining-icon-red.png';
 import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
 import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
 import appActions from '../actions/app';
@@ -28,7 +54,6 @@ import deviceActions from '../actions/device';
 import postureActions from '../actions/posture';
 import FullModal from '../components/FullModal';
 import PartialModal from '../components/PartialModal';
-import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import Banner from '../components/Banner';
 import TitleBar from '../containers/TitleBar';
@@ -39,6 +64,7 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
+import { getColorNameForLevel } from '../utils/levelColors';
 
 const { bluetoothStates, deviceModes, deviceStatuses, storageKeys } = constants;
 
@@ -106,6 +132,9 @@ class Application extends Component {
       device: PropTypes.shape({
         batteryLevel: PropTypes.number,
       }),
+    }),
+    training: PropTypes.shape({
+      selectedLevelIdx: PropTypes.number,
     }),
   };
 
@@ -653,16 +682,49 @@ class Application extends Component {
     // Tab bar component data
     const tabBarRoutes = [
       {
-        name: 'Session',
         routeName: 'dashboard',
-        active: sessionActive,
-        inactive: sessionInactive,
+        red: homeIconRed,
+        green: homeIconGreen,
+        blue: homeIconBlue,
+        purple: homeIconPurple,
+        orange: homeIconOrange,
+        inactive: homeIconInactive,
       },
       {
-        name: 'Settings',
-        routeName: 'settings',
-        active: settingsActive,
-        inactive: settingsInactive,
+        routeName: '',
+        red: statsIconRed,
+        green: statsIconGreen,
+        blue: statsIconBlue,
+        purple: statsIconPurple,
+        orange: statsIconOrange,
+        inactive: statsIconInactive,
+      },
+      {
+        routeName: '',
+        red: postureIconRed,
+        green: postureIconGreen,
+        blue: postureIconBlue,
+        purple: postureIconPurple,
+        orange: postureIconOrange,
+        inactive: postureIconInactive,
+      },
+      {
+        routeName: 'freeTraining',
+        red: freeTrainingIconRed,
+        green: freeTrainingIconGreen,
+        blue: freeTrainingIconBlue,
+        purple: freeTrainingIconPurple,
+        orange: freeTrainingIconOrange,
+        inactive: freeTrainingIconInactive,
+      },
+      {
+        routeName: 'education',
+        red: educationIconRed,
+        green: educationIconGreen,
+        blue: educationIconBlue,
+        purple: educationIconPurple,
+        orange: educationIconOrange,
+        inactive: educationIconInactive,
       },
     ];
 
@@ -674,29 +736,27 @@ class Application extends Component {
             // Check if current route matches tab bar route
             const isSameRoute = route.name === value.routeName;
             // Set icon to active color if current route matches tab bar route
-            const tabBarTextColor = isSameRoute ?
-            styles._activeTabBarImage.color : styles._inactiveTabBarImage.color;
-            const imageSource = isSameRoute ? value.active : value.inactive;
+            const levelColor = getColorNameForLevel(this.props.training.selectedLevelIdx);
+            const imageSource = isSameRoute ? value[levelColor] : value.inactive;
 
             return (
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
                 onPress={() => {
-                  if (!isSameRoute) {
-                    // Reset the navigator stack if not on the dashboard so
-                    // the nav stack won't continue to expand.
-                    if (route.name === routes.dashboard.name) {
-                      this.navigator.push(routes[value.routeName]);
+                  if (!isSameRoute && value.routeName !== '') {
+                    // Reset the navigator stack if on the dashboard
+                    // and push the route for all others
+                    if (value.routeName === routes.dashboard.name) {
+                      this.navigator.resetTo(routes[routes.dashboard.name]);
                     } else {
-                      this.navigator.resetTo(routes[value.routeName]);
+                      this.navigator.push(routes[value.routeName]);
                     }
                   }
                 }
               }
               >
                 <Image source={imageSource} style={styles.tabBarImage} />
-                <SecondaryText style={{ color: tabBarTextColor }}>{ value.name }</SecondaryText>
               </TouchableOpacity>
             );
           })
@@ -788,13 +848,14 @@ class Application extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, user: { user }, device } = state;
+  const { app, user: { user }, device, training } = state;
   return {
     app: {
       modal: app.modal,
     },
     user,
     device,
+    training,
   };
 };
 

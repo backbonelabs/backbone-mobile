@@ -14,6 +14,8 @@ import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
+import freeTraining from './freeTraining';
+import education from './education';
 import profileSetupOne from './onBoardingFlow/profileSetupOne';
 import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
 import deviceSetup from './onBoardingFlow/deviceSetup';
@@ -39,6 +41,8 @@ export default {
   support,
   howTo,
   changePassword,
+  freeTraining,
+  education,
   profileSetupOne,
   profileSetupTwo,
   deviceSetup,

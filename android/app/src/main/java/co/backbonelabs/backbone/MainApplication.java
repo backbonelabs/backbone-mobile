@@ -7,6 +7,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
+import com.brentvatne.react.ReactVideoPackage;
 import com.bugsnag.BugsnagReactNative;
 import com.rnfs.RNFSPackage;
 import com.github.xinthink.rnmk.ReactMaterialKitPackage;
@@ -39,6 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new FBSDKPackage(mCallbackManager),
+                new FullScreenBridgePackage(),
+                new ReactVideoPackage(),
                 BugsnagReactNative.getPackage(),
                 new RNFSPackage(),
                 new ReactMaterialKitPackage(),

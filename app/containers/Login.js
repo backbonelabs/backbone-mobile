@@ -97,7 +97,7 @@ class Login extends Component {
     } else if (
       !this.props.auth.errorMessage &&
       nextProps.auth.errorMessage &&
-      currentRoute.name === 'login'
+      currentRoute.name === routes.login.name
     ) {
       // Logs out the user of Facebook and returns to welcome screen
       // LoginManager.logOut();
