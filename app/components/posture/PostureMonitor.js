@@ -59,15 +59,22 @@ const currentRange = MAX_POSTURE_THRESHOLD - MIN_POSTURE_THRESHOLD;
 const isiOS = Platform.OS === 'ios';
 
 /**
+ * Scales a value to the given range.
+ * @param  {Number} value value to normalize
+ * @param  {Number} min   min of range
+ * @param  {Number} max   max of range
+ * @return {Number}       Value scaled in new range
+ */
+const normalizeValue = (value, min, max) => (((value - MIN_POSTURE_THRESHOLD) / currentRange)
+* (max - min)) + min;
+
+/**
  * Monitor pointerPosition prop requires a number between -30-210(inclusive) for the pointer,
  * @param  {Number} distance Deviation from the control point
  * @return {Number}          Distance value scaled in a range of -30-210
  */
 const normalizeCurrentDistance = distance => {
-  const newRange = -30 - 210;
-  const normalizedDistance = Math.floor(
-    (((distance - MIN_POSTURE_THRESHOLD) * newRange) / currentRange) + 210
-  );
+  const normalizedDistance = Math.floor(normalizeValue(distance, 210, -30));
   if (normalizedDistance > 210) {
     return 210;
   } else if (normalizedDistance < -30) {
@@ -83,9 +90,8 @@ const normalizeCurrentDistance = distance => {
  * @return {Number}          Distance value scaled in a range of 0-100
  */
 const normalizePostureThreshold = distance => {
-  const newRange = 100 - 0;
-  const normalizedDistance = (((distance - MIN_POSTURE_THRESHOLD) * newRange) / currentRange) + 0;
-  return 100 - Math.floor(normalizedDistance);
+  const normalizedDistance = Math.floor(normalizeValue(distance, 0, 100));
+  return 100 - normalizedDistance;
 };
 
 /**
