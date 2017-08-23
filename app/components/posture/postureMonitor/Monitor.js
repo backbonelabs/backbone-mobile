@@ -10,7 +10,7 @@ import relativeDimensions from '../../../utils/relativeDimensions';
 
 const { applyWidthDifference } = relativeDimensions;
 
-const Monitor = ({ pointerPosition, slouchPosition, onPress, disable, rating }) => (
+const Monitor = ({ pointerPosition, slouchPosition, rating }) => (
   <View style={styles.monitorContainer}>
     <AnimatedCircularProgress
       arcSweepAngle={240}
@@ -20,12 +20,13 @@ const Monitor = ({ pointerPosition, slouchPosition, onPress, disable, rating }) 
       tintColor={theme.primaryColor}
       backgroundColor={theme.greenColor}
       style={styles.animatedProgress}
+      tension={100}
     >
       <View style={styles.innerMonitorContainer}>
         <View
           style={[
-            { transform: [{ rotate: `${pointerPosition}deg` }] },
             styles.pointerContainer,
+            { transform: [{ rotate: `${pointerPosition}deg` }] },
           ]}
         >
           <View style={styles.pointer} />
@@ -41,7 +42,8 @@ const Monitor = ({ pointerPosition, slouchPosition, onPress, disable, rating }) 
                 rating ? 'Good' : 'Poor'
               }
           </BodyText>
-          <TouchableOpacity
+          {/* Recalibration button, to be added later on */}
+          {/* <TouchableOpacity
             onPress={disable ? null : onPress}
             activeOpacity={0.4}
           >
@@ -59,7 +61,7 @@ const Monitor = ({ pointerPosition, slouchPosition, onPress, disable, rating }) 
             >
                 RE-CALIBRATE
             </SecondaryText>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </AnimatedCircularProgress>

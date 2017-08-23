@@ -114,15 +114,16 @@ export default EStyleSheet.create({
   postureRating: {
     fontSize: fixedResponsiveFontSize(42),
     fontWeight: 'bold',
-    marginTop: applyWidthDifference(40),
+    // ************ styles for recalibration button ************
+    // marginTop: applyWidthDifference(40),
   },
-  refreshIcon: {
-    textAlign: 'center',
-  },
-  reCalibrate: {
-    fontSize: fixedResponsiveFontSize(12),
-    fontWeight: 'bold',
-  },
+  // refreshIcon: {
+  //   textAlign: 'center',
+  // },
+  // reCalibrate: {
+  //   fontSize: fixedResponsiveFontSize(12),
+  //   fontWeight: 'bold',
+  // },
   slider: {
     height: applyWidthDifference(30),
   },
