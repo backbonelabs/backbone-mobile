@@ -530,18 +530,20 @@ class Settings extends Component {
       let hour;
       let minute;
 
+      // Check for new users or existing users with dailyReminderTime not yet set
       if (dailyReminderTime === undefined || dailyReminderTime === -1) {
         // If it hasn't been set before, use the current time as the default
         hour = now.hour();
         minute = now.minute();
         newSettings = {
           dailyReminderTime: (hour * 60) + minute,
-          [field]: value,
+          dailyReminderNotification: value,
         };
       } else {
+        // Else, use the currently set time
         hour = Math.floor(dailyReminderTime / 60);
         minute = dailyReminderTime % 60;
-        newSettings = { [field]: value };
+        newSettings = { dailyReminderNotification: value };
       }
 
       NotificationService.scheduleNotification({
@@ -550,7 +552,7 @@ class Settings extends Component {
         scheduledMinute: minute,
       });
     } else {
-      newSettings = { [field]: value };
+      newSettings = { dailyReminderNotification: value };
 
       NotificationService.unscheduleNotification(notificationTypes.DAILY_REMINDER);
     }
@@ -610,6 +612,7 @@ class Settings extends Component {
     let reminderTime = '';
 
     if (dailyReminderNotification) {
+      // Build the time text based on local device clock setting
       const inHour = Math.floor(dailyReminderTime / 60);
       let reminderHour = inHour;
       const reminderMinute = dailyReminderTime % 60;
