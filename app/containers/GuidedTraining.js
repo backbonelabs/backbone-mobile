@@ -336,17 +336,14 @@ class GuidedTraining extends Component {
             }
           }
 
-          // Fill in missing sessions in the current level
+          // Fill in missing sessions in the current level up to the current session
           for (let i = 0; i <= sessionIdx; i++) {
-            planProgress[levelIdx][i] = [];
+            if (!planProgress[levelIdx][i]) {
+              planProgress[levelIdx][i] = [];
+            }
           }
 
-          if (!planProgress[levelIdx][sessionIdx]) {
-            // The current session index in the plan progress doesn't have a defined array
-            // of results yet, so we start with an empty array
-            planProgress[levelIdx][sessionIdx] = [];
-          }
-          // Mark the workout index as complete
+          // Mark the current workout as complete
           planProgress[levelIdx][sessionIdx][step - 1] = true;
           this.props.updateUserTrainingPlanProgress(progress);
         }
