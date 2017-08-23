@@ -16,7 +16,7 @@ export default EStyleSheet.create({
     height: applyWidthDifference(75),
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 100,
+    borderRadius: applyWidthDifference(75 / 2),
     ...Platform.select({
       ios: {
         shadowOffset: {
