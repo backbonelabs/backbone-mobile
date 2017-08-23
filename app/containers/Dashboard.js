@@ -240,12 +240,19 @@ class Dashboard extends Component {
   }
 
   _onSelectSession(navTitle, session) {
-    const { selectedLevelIdx } = this.props.training;
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = this.props.training;
     this.props.navigator.push({
       ...routes.guidedTraining,
       title: navTitle,
       props: {
+        planId: plans[selectedPlanIdx]._id,
         levelIdx: selectedLevelIdx,
+        sessionIdx: selectedSessionIdx,
         workouts: session,
       },
     });

@@ -8,7 +8,9 @@ import {
 import { connect } from 'react-redux';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
+import userActions from '../actions/user';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
@@ -106,6 +108,18 @@ const getFormattedTime = (totalSeconds) => {
 class GuidedTraining extends Component {
   static propTypes = {
     levelIdx: PropTypes.number.isRequired,
+    planId: PropTypes.string.isRequired,
+    sessionIdx: PropTypes.number.isRequired,
+    updateUserTrainingPlanProgress: PropTypes.func.isRequired,
+    user: PropTypes.shape({
+      trainingPlanProgress: PropTypes.objectOf(
+        PropTypes.arrayOf(
+          PropTypes.arrayOf(
+            PropTypes.arrayOf(PropTypes.bool)
+          )
+        )
+      ),
+    }),
     workouts: PropTypes.arrayOf(PropTypes.shape({
       title: PropTypes.string,
       reps: PropTypes.number,
@@ -265,8 +279,41 @@ class GuidedTraining extends Component {
         } else if (isTimed && this.state.setsRemaining > 0) {
           // Start/resume timer
           this._startTimer();
-        } else {
-          // Mark as complete
+        } else if (!currentWorkout.isComplete) {
+          // Mark workout as complete
+          const {
+            levelIdx,
+            sessionIdx,
+            planId,
+            user,
+          } = this.props;
+          const progress = cloneDeep(user.trainingPlanProgress);
+          const planProgress = progress[planId];
+
+          // The plan progress array may not always contain the exact number of elements as
+          // workouts in the training plan, so we need to fill missing elements up to the
+          // current level and session indices with empty arrays.
+
+          // Fill in missing levels
+          for (let i = 0; i <= levelIdx; i++) {
+            if (!planProgress[i]) {
+              planProgress[i] = [];
+            }
+          }
+
+          // Fill in missing sessions in the current level
+          for (let i = 0; i <= sessionIdx; i++) {
+            planProgress[levelIdx][i] = [];
+          }
+
+          if (!planProgress[levelIdx][sessionIdx]) {
+            // The current session index in the plan progress doesn't have a defined array
+            // of results yet, so we start with an empty array
+            planProgress[levelIdx][sessionIdx] = [];
+          }
+          // Mark the workout index as complete
+          planProgress[levelIdx][sessionIdx][this.state.step - 1] = true;
+          this.props.updateUserTrainingPlanProgress(progress);
         }
         break;
       }
@@ -457,4 +504,8 @@ class GuidedTraining extends Component {
   }
 }
 
-export default connect()(GuidedTraining);
+const mapStateToProps = state => ({
+  user: state.user.user,
+});
+
+export default connect(mapStateToProps, userActions)(GuidedTraining);
