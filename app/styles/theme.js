@@ -22,7 +22,7 @@ const disabledColor = '#E0E0E0';
 const inputIconColor = disabledColor;
 const bannerColor = '#EEE';
 const warningColor = '#D32F2F';
-const greenColor = '#16d03d';
+const greenColor = '#4CAF50';
 
 export default {
   primaryColor,
