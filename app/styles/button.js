@@ -29,8 +29,6 @@ export default EStyleSheet.create({
     width: applyWidthDifference(150),
     height: applyWidthDifference(50),
     borderRadius: 3,
-  },
-  primaryBtn: {
     ...buttonShadow,
   },
   defaultBtn: {
@@ -43,7 +41,6 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#3b5998',
     width: '100%',
-    ...buttonShadow,
   },
   defaultActive: {
     backgroundColor: '#F5F5F5',

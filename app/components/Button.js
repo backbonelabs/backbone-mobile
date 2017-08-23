@@ -47,7 +47,6 @@ class Button extends Component {
     let buttonType;
     const textStyles = [styles._text];
     const buttonStyles = [styles.button];
-    const primaryStyles = [buttonStyles, styles.primaryBtn];
     const secondaryStyles = [buttonStyles, styles.secondaryBtn];
     const fbBtnStyles = [buttonStyles, styles.facebookBtn];
     const defaultStyles = [buttonStyles, styles.defaultBtn];
@@ -58,7 +57,7 @@ class Button extends Component {
     if (this.props.primary) {
       buttonType = (
         <TouchableHighlight
-          style={primaryStyles}
+          style={buttonStyles}
           underlayColor={'#FB8C00'}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
