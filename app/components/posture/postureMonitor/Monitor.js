@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { View } from 'react-native';
+// import { View, TouchableOpacity } from 'react-native';
+// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AnimatedCircularProgress from './AnimatedCircularProgress';
 import BodyText from '../../BodyText';
-import SecondaryText from '../../SecondaryText';
+// import SecondaryText from '../../SecondaryText';
 import styles from '../../../styles/posture/postureMonitor';
 import theme from '../../../styles/theme';
 import relativeDimensions from '../../../utils/relativeDimensions';
