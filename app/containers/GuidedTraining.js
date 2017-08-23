@@ -300,13 +300,18 @@ class GuidedTraining extends Component {
         break;
       }
       case 'centerButton': {
-        const { currentWorkout } = this.state;
+        const {
+          currentWorkout,
+          isTimerRunning,
+          setsRemaining,
+          step,
+        } = this.state;
         const isTimed = !!currentWorkout.seconds;
 
-        if (this.state.isTimerRunning) {
+        if (isTimerRunning) {
           // Pause timer
           this._pauseTimer();
-        } else if (isTimed && this.state.setsRemaining > 0) {
+        } else if (isTimed && setsRemaining > 0) {
           // Start/resume timer
           this._startTimer();
         } else if (!currentWorkout.isComplete) {
@@ -342,7 +347,7 @@ class GuidedTraining extends Component {
             planProgress[levelIdx][sessionIdx] = [];
           }
           // Mark the workout index as complete
-          planProgress[levelIdx][sessionIdx][this.state.step - 1] = true;
+          planProgress[levelIdx][sessionIdx][step - 1] = true;
           this.props.updateUserTrainingPlanProgress(progress);
         }
         break;
