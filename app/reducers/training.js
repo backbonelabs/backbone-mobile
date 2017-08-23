@@ -58,11 +58,14 @@ export default (state = defaultState, action) => {
       // For now, default to the first training plan
       // TODO: When we introduce more training plans, we'll need to decide which training
       // plan to default to
-      const selectedPlanIdx = 0;
+      const selectedPlanIdx = state.selectedPlanIdx;
       const plan = plans[selectedPlanIdx];
-      let selectedLevelIdx = 0;
-      let selectedSessionIdx = 0;
-      if (plan) {
+      let selectedLevelIdx = state.selectedLevelIdx;
+      let selectedSessionIdx = state.selectedSessionIdx;
+      if (type !== UPDATE_USER_TRAINING_PLAN_PROGRESS && plan) {
+        // Automatically set current level and session based on the next incomplete workout for the
+        // user, but only on FETCH_USER or LOGIN actions. For UPDATE_USER_TRAINING_PLAN_PROGRESS,
+        // we keep the currently selected level and session.
         selectedLevelIdx = Math.max(0, getNextIncompleteLevel(plan.levels));
         selectedSessionIdx = Math.max(0, getNextIncompleteSession(plan.levels[selectedLevelIdx]));
       }
