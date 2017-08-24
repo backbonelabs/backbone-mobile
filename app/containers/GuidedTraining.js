@@ -200,6 +200,10 @@ class GuidedTraining extends Component {
           },
         });
       } else {
+        // Update state with the latest data blob of the current workout, e.g., when
+        // the workout is marked complete, we'll want the component state to see
+        // that the current workout's isComplete flag is true so the appropriate
+        // UI can be shown.
         this.setState({
           currentWorkout:
             this._getWorkoutFromCurrentSession(this.state.step - 1, nextProps.training),
@@ -250,6 +254,9 @@ class GuidedTraining extends Component {
             newState.hasTimerStarted = false;
           }
 
+          // It should be okay to call setState here since we would only get here only
+          // after the timer reaches 0 once, so there shouldn't be an infinite loop of
+          // setting state.
           // eslint-disable-next-line react/no-did-update-set-state
           this.setState(newState);
         }
@@ -257,6 +264,12 @@ class GuidedTraining extends Component {
     }
   }
 
+  /**
+   * Returns all the workouts in the currently selected training plan at the currently
+   * selected level and session
+   * @param {Object} trainingProps Props from the training reducer slice
+   * @return {Object[]} Workouts for the currently selected level and session of the training plan
+   */
   _getSessionWorkouts(trainingProps) {
     const {
       plans,
@@ -267,10 +280,22 @@ class GuidedTraining extends Component {
     return plans[selectedPlanIdx].levels[selectedLevelIdx][selectedSessionIdx];
   }
 
+  /**
+   * Returns the workout object at a specified index of the current session
+   * @param {Number} workoutIdx Index of the workout to retrieve from the current session
+   * @param {Object} trainingProps Props from the training reducer slice
+   * @return {Object} The workout at the specified workoutIdx for the current session
+   */
   _getWorkoutFromCurrentSession(workoutIdx, trainingProps) {
     return this._getSessionWorkouts(trainingProps)[workoutIdx];
   }
 
+  /**
+   * Resets state properties related to the workout. This is used when a new workout
+   * needs to be loaded.
+   * @param {Object} workout
+   * @return {Object} Fresh state properties for a workout
+   */
   _getNewStateForWorkout(workout) {
     return {
       side: 1,
@@ -287,6 +312,9 @@ class GuidedTraining extends Component {
     };
   }
 
+  /**
+   * Starts or resumes the timer
+   */
   _startTimer() {
     this.setState({
       hasWorkoutStarted: true,
@@ -303,6 +331,10 @@ class GuidedTraining extends Component {
     });
   }
 
+  /**
+   * Pauses the timer
+   * @param {Function} [cb] Optional callback to invoke after the timer is paused
+   */
   _pauseTimer(cb) {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
@@ -326,6 +358,10 @@ class GuidedTraining extends Component {
     });
   }
 
+  /**
+   * Handles the logic for all the footer button icons
+   * @param {String} buttonName Button name
+   */
   _onButtonPress(buttonName) {
     const {
       plans,
@@ -400,10 +436,18 @@ class GuidedTraining extends Component {
     }
   }
 
+  /**
+   * Sets the component state to indicate a button is being pressed
+   * @param {String} buttonName Button name
+   */
   _onButtonShowUnderlay(buttonName) {
     this.setState({ [`${buttonName}Depressed`]: true });
   }
 
+  /**
+   * Sets the component state to indicate a button is not being pressed
+   * @param {String} buttonName Button name
+   */
   _onButtonHideUnderlay(buttonName) {
     this.setState({ [`${buttonName}Depressed`]: false });
   }
