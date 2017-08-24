@@ -2,7 +2,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
 
-const { applyWidthDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const hexagonConnectorDefaults = {
   position: 'absolute',
@@ -49,11 +49,40 @@ export default EStyleSheet.create({
     ...hexagonConnectorDefaults,
     height: '$hexagonContainerHeight',
   },
+  hexagonCircleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  hexagonCircle: {
+    fontSize: fixedResponsiveFontSize(9),
+    paddingHorizontal: applyWidthDifference(3),
+    color: theme.grey300,
+  },
+  hexagonCircleCompleted: {
+    fontSize: fixedResponsiveFontSize(9),
+    paddingHorizontal: applyWidthDifference(3),
+    color: 'black',
+  },
+  hexagonCheckmark: {
+    fontSize: fixedResponsiveFontSize(22),
+    color: 'black',
+  },
   hexagon: {
     width: applyWidthDifference(92),
     height: applyWidthDifference(largeHexagonHeight),
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  lockedCard: {
+    alignItems: 'center',
+  },
+  levelLock: {
+    fontSize: fixedResponsiveFontSize(30),
+    color: theme.grey300,
+  },
+  sessionLock: {
+    fontSize: fixedResponsiveFontSize(40),
+    color: theme.grey300,
   },
   carouselContainer: {
     position: 'absolute',

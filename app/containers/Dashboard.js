@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import get from 'lodash/get';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import appActions from '../actions/app';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
@@ -33,6 +34,10 @@ import bulletOrangeOff from '../images/bullet-orange-off.png';
 import bulletRedOn from '../images/bullet-red-on.png';
 import bulletRedOff from '../images/bullet-red-off.png';
 import { getColorNameForLevel } from '../utils/levelColors';
+import {
+  getNextIncompleteSession,
+  getNextIncompleteLevel,
+} from '../utils/trainingUtils';
 import routes from '../routes';
 import styles from '../styles/dashboard';
 
@@ -69,7 +74,28 @@ const getScrollOffset = event => get(event, 'nativeEvent.contentOffset.y', 0);
  * @param  {Object[]} levels
  * @return {Animated.Value[]}
  */
-const getAnimationsForLevels = (levels = []) => levels.map(() => new Animated.Value(0.7));
+const getAnimationsForLevels = (levels = []) => levels.map(() => new Animated.Value(0.6));
+
+const getLevelCircles = (level) => {
+  const nextSessionIndex = getNextIncompleteSession(level);
+
+  // Check if this level has been completed
+  if (nextSessionIndex === -1) {
+    return (<FontAwesomeIcon name={'check'} style={styles.hexagonCheckmark} />);
+  }
+
+  // Else display the session progress circles
+  return level.map((session, sessionIdx) => {
+    if (sessionIdx < nextSessionIndex) {
+      return (
+        <FontAwesomeIcon key={sessionIdx} name={'circle'} style={styles.hexagonCircleCompleted} />
+      );
+    }
+    return (
+      <FontAwesomeIcon key={sessionIdx} name={'circle'} style={styles.hexagonCircle} />
+    );
+  });
+};
 
 class Dashboard extends Component {
   static propTypes = {
@@ -192,7 +218,7 @@ class Dashboard extends Component {
         useNativeDriver: true,
         duration: 300,
         easing: Easing.linear,
-        toValue: 0.7,
+        toValue: 0.6,
       }));
 
       Animated.parallel(animations, {
@@ -208,8 +234,12 @@ class Dashboard extends Component {
    * @return {Component[]}
    */
   _getLevelIcons(levels = []) {
+    const nextLevelIndex = getNextIncompleteLevel(levels);
+
     return levels.map((level, idx) => {
       const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
+      const isLevelUnlocked = idx <= nextLevelIndex;
+
       return (
         <View key={idx} style={styles.hexagonContainer}>
           <View style={styles[connectorStyle]} />
@@ -225,6 +255,12 @@ class Dashboard extends Component {
             ]}
           >
             <BodyText>{idx + 1}</BodyText>
+            {
+              isLevelUnlocked ?
+                <View style={styles.hexagonCircleContainer}>
+                  {getLevelCircles(level)}
+                </View> : <Icon name="lock" style={styles.levelLock} />
+            }
           </Animated.Image>
         </View>
       );
@@ -252,28 +288,47 @@ class Dashboard extends Component {
    * @param {Number} idx     The index of the session within the level
    */
   _getSessionCard(session, idx) {
-    const { selectedLevelIdx } = this.props.training;
+    const {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      plans,
+    } = this.props.training;
+    const levels = get(plans, [selectedPlanIdx, 'levels'], []);
+    const level = get(levels, selectedLevelIdx, []);
+    const nextLevelIndex = getNextIncompleteLevel(levels);
+    const isLevelUnlocked = selectedLevelIdx <= nextLevelIndex;
+    const isSessionUnlocked = isLevelUnlocked && getNextIncompleteSession(level);
     const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
-    const sessionWorkouts = session.map(workout => {
-      const color = getColorNameForLevel(this.props.training.selectedLevelIdx);
-      return (
-        <View key={workout.title} style={styles.sessionWorkoutRow}>
-          <Image
-            source={workout.isComplete ? colorBulletsOn[color] : colorBulletsOff[color]}
-            style={styles.workoutBullet}
-          />
-          <BodyText>{workout.title}</BodyText>
+    let cardContents;
+
+    if (isSessionUnlocked) {
+      cardContents = session.map(workout => {
+        const color = getColorNameForLevel(selectedLevelIdx);
+        return (
+          <View key={workout.title} style={styles.sessionWorkoutRow}>
+            <Image
+              source={workout.isComplete ? colorBulletsOn[color] : colorBulletsOff[color]}
+              style={styles.workoutBullet}
+            />
+            <BodyText>{workout.title}</BodyText>
+          </View>
+        );
+      });
+    } else {
+      cardContents = (
+        <View style={styles.lockedCard}>
+          <Icon name="lock" style={styles.sessionLock} />
         </View>
       );
-    });
+    }
 
     return (
       <TouchableOpacity
         key={idx}
-        onPress={() => this._onSelectSession(navTitle)}
+        onPress={() => isSessionUnlocked && this._onSelectSession(navTitle)}
       >
         <Card>
-          {sessionWorkouts}
+          {cardContents}
         </Card>
       </TouchableOpacity>
     );

@@ -16,6 +16,7 @@ const orange500 = '#FF9800';
 const grey50 = '#FAFAFA';
 const grey100 = '#F5F5F5';
 const grey200 = '#EEEEEE';
+const grey300 = '#CCCCCC';
 const grey500 = '#9E9E9E';
 const primaryColor = '#ED1C24';
 const secondaryColor = orange500;
@@ -32,6 +33,7 @@ export default {
   orange500,
   grey50,
   grey100,
+  grey300,
   grey500,
   primaryColor,
   secondaryColor,
