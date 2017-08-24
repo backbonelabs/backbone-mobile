@@ -80,8 +80,17 @@ class Signup extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.accessToken && nextProps.accessToken) {
-      this.props.navigator.resetTo(routes.profileSetupOne);
+    const newAccessToken = nextProps.accessToken;
+    if (newAccessToken && this.props.accessToken !== newAccessToken) {
+      // When a user uses the 'Sign up with Facebook' button but already has a Backbone
+      // account then we have to check if they have already onboarded since they're
+      // not a new user.
+      if (nextProps.user.hasOnboarded) {
+        this.props.navigator.resetTo(routes.dashboard);
+      } else {
+        // User hasn't completed onboarding process
+        this.props.navigator.resetTo(routes.profileSetupOne);
+      }
     } else if (!this.props.errorMessage && nextProps.errorMessage) {
       // Handles error messages returned from API server
       if (nextProps.errorMessage === 'Email is not available') {
@@ -355,8 +364,8 @@ class Signup extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth } = state;
-  return auth;
+  const { auth, user: { user } } = state;
+  return { auth, user };
 };
 
 export default connect(mapStateToProps)(Signup);
