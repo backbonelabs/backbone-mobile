@@ -283,7 +283,7 @@ class WorkoutList extends Component {
    * @param {Object} rowData
    */
   renderRow(rowData) {
-    const { favoriteWorkouts } = this.props.user;
+    const { favoriteWorkouts = [] } = this.props.user;
     const { _id: workoutId, title: workoutTitle } = rowData;
 
     let iconName = '';
