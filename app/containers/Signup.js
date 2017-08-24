@@ -81,6 +81,7 @@ class Signup extends Component {
 
   componentWillReceiveProps(nextProps) {
     const newAccessToken = nextProps.accessToken;
+    const errorMessage = nextProps.auth.errorMessage;
     if (newAccessToken && this.props.accessToken !== newAccessToken) {
       // When a user uses the 'Sign up with Facebook' button but already has a Backbone
       // account then we have to check if they have already onboarded since they're
@@ -91,16 +92,16 @@ class Signup extends Component {
         // User hasn't completed onboarding process
         this.props.navigator.resetTo(routes.profileSetupOne);
       }
-    } else if (!this.props.errorMessage && nextProps.errorMessage) {
+    } else if (!this.props.errorMessage && errorMessage) {
       // Handles error messages returned from API server
-      if (nextProps.errorMessage === 'Email is not available') {
-        this.setState({ emailWarning: true, errorMessage: nextProps.errorMessage.toUpperCase() });
+      if (errorMessage === 'Email is not available') {
+        this.setState({ emailWarning: true, errorMessage: errorMessage.toUpperCase() });
       // Handles error relating to network issues
-      } else if (nextProps.errorMessage === constants.errorMessages.NETWORK_ERROR) {
-        this.setState({ errorMessage: nextProps.errorMessage.toUpperCase() });
+      } else if (errorMessage === constants.errorMessages.NETWORK_ERROR) {
+        this.setState({ errorMessage: errorMessage.toUpperCase() });
       } else {
       // For facebook signup error messages
-        Alert.alert('Signup Error', nextProps.errorMessage);
+        Alert.alert('Signup Error', errorMessage);
       }
     }
   }
