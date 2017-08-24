@@ -200,6 +200,10 @@ class GuidedTraining extends Component {
           },
         });
       } else {
+        // Update state with the latest data blob of the current workout, e.g., when
+        // the workout is marked complete, we'll want the component state to see
+        // that the current workout's isComplete flag is true so the appropriate
+        // UI can be shown.
         this.setState({
           currentWorkout:
             this._getWorkoutFromCurrentSession(this.state.step - 1, nextProps.training),
@@ -250,13 +254,70 @@ class GuidedTraining extends Component {
             newState.hasTimerStarted = false;
           }
 
+          // It should be okay to call setState here since we would only get here only
+          // after the timer reaches 0 once, so there shouldn't be an infinite loop of
+          // setting state.
           // eslint-disable-next-line react/no-did-update-set-state
           this.setState(newState);
         }
       });
     }
+
+    if (prevState.setsRemaining !== this.state.setsRemaining && this.state.setsRemaining === 0) {
+      // Sets remaining got decremented and there are no more sets remaining.
+      // This means the workout should be marked complete.
+      this._markComplete();
+    }
   }
 
+  componentWillUnmount() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  }
+
+  /**
+   * Marks the current workout as complete
+   */
+  _markComplete() {
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = this.props.training;
+    const progress = cloneDeep(this.props.user.trainingPlanProgress);
+    const planProgress = progress[plans[selectedPlanIdx]._id];
+
+    // The plan progress array may not always contain the exact number of elements as
+    // workouts in the training plan, so we need to fill missing elements up to the
+    // current level and session indices with empty arrays.
+
+    // Fill in missing levels
+    for (let i = 0; i <= selectedLevelIdx; i++) {
+      if (!planProgress[i]) {
+        planProgress[i] = [];
+      }
+    }
+
+    // Fill in missing sessions in the current level up to the current session
+    for (let i = 0; i <= selectedSessionIdx; i++) {
+      if (!planProgress[selectedLevelIdx][i]) {
+        planProgress[selectedLevelIdx][i] = [];
+      }
+    }
+
+    // Mark the current workout as complete
+    planProgress[selectedLevelIdx][selectedSessionIdx][this.state.step - 1] = true;
+    this.props.updateUserTrainingPlanProgress(progress);
+  }
+
+  /**
+   * Returns all the workouts in the currently selected training plan at the currently
+   * selected level and session
+   * @param {Object} trainingProps Props from the training reducer slice
+   * @return {Object[]} Workouts for the currently selected level and session of the training plan
+   */
   _getSessionWorkouts(trainingProps) {
     const {
       plans,
@@ -267,10 +328,22 @@ class GuidedTraining extends Component {
     return plans[selectedPlanIdx].levels[selectedLevelIdx][selectedSessionIdx];
   }
 
+  /**
+   * Returns the workout object at a specified index of the current session
+   * @param {Number} workoutIdx Index of the workout to retrieve from the current session
+   * @param {Object} trainingProps Props from the training reducer slice
+   * @return {Object} The workout at the specified workoutIdx for the current session
+   */
   _getWorkoutFromCurrentSession(workoutIdx, trainingProps) {
     return this._getSessionWorkouts(trainingProps)[workoutIdx];
   }
 
+  /**
+   * Resets state properties related to the workout. This is used when a new workout
+   * needs to be loaded.
+   * @param {Object} workout
+   * @return {Object} Fresh state properties for a workout
+   */
   _getNewStateForWorkout(workout) {
     return {
       side: 1,
@@ -287,6 +360,9 @@ class GuidedTraining extends Component {
     };
   }
 
+  /**
+   * Starts or resumes the timer
+   */
   _startTimer() {
     this.setState({
       hasWorkoutStarted: true,
@@ -303,6 +379,10 @@ class GuidedTraining extends Component {
     });
   }
 
+  /**
+   * Pauses the timer
+   * @param {Function} [cb] Optional callback to invoke after the timer is paused
+   */
   _pauseTimer(cb) {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
@@ -311,26 +391,32 @@ class GuidedTraining extends Component {
     this.setState({ isTimerRunning: false }, cb);
   }
 
+  /**
+   * Changes which workout/step of the session to show
+   * @param {Number} step Which step to switch to. The first step starts at 1.
+   */
+  _changeStep(step) {
+    this._pauseTimer(() => {
+      this.setState({
+        step,
+        ...this._getNewStateForWorkout(
+          this._getWorkoutFromCurrentSession(step - 1, this.props.training)
+        ),
+      });
+    });
+  }
+
+  /**
+   * Handles the logic for all the footer button icons
+   * @param {String} buttonName Button name
+   */
   _onButtonPress(buttonName) {
-    const {
-      plans,
-      selectedPlanIdx,
-      selectedLevelIdx,
-      selectedSessionIdx,
-    } = this.props.training;
     switch (buttonName) {
       case 'leftButton': {
         const isFirstWorkout = this.state.step === 1;
         if (!isFirstWorkout) {
           // There is a previous workout in the session that can be navigated to
-          this.setState(prevState => {
-            const step = prevState.step - 1;
-            return {
-              step,
-              ...this._getNewStateForWorkout(
-                this._getWorkoutFromCurrentSession(step - 1, this.props.training)),
-            };
-          });
+          this._changeStep(this.state.step - 1);
         }
         break;
       }
@@ -339,7 +425,6 @@ class GuidedTraining extends Component {
           currentWorkout,
           isTimerRunning,
           setsRemaining,
-          step,
         } = this.state;
         const isTimed = !!currentWorkout.seconds;
 
@@ -351,30 +436,7 @@ class GuidedTraining extends Component {
           this._startTimer();
         } else if (!currentWorkout.isComplete) {
           // Mark workout as complete
-          const progress = cloneDeep(this.props.user.trainingPlanProgress);
-          const planProgress = progress[plans[selectedPlanIdx]._id];
-
-          // The plan progress array may not always contain the exact number of elements as
-          // workouts in the training plan, so we need to fill missing elements up to the
-          // current level and session indices with empty arrays.
-
-          // Fill in missing levels
-          for (let i = 0; i <= selectedLevelIdx; i++) {
-            if (!planProgress[i]) {
-              planProgress[i] = [];
-            }
-          }
-
-          // Fill in missing sessions in the current level up to the current session
-          for (let i = 0; i <= selectedSessionIdx; i++) {
-            if (!planProgress[selectedLevelIdx][i]) {
-              planProgress[selectedLevelIdx][i] = [];
-            }
-          }
-
-          // Mark the current workout as complete
-          planProgress[selectedLevelIdx][selectedSessionIdx][step - 1] = true;
-          this.props.updateUserTrainingPlanProgress(progress);
+          this._markComplete();
         }
         break;
       }
@@ -383,13 +445,7 @@ class GuidedTraining extends Component {
         const isLastWorkout = this.state.step === sessionWorkouts.length;
         if (!isLastWorkout) {
           // There is a next workout in the session that can be navigated to
-          this.setState(prevState => {
-            const step = prevState.step + 1;
-            return {
-              step,
-              ...this._getNewStateForWorkout(sessionWorkouts[step - 1]),
-            };
-          });
+          this._changeStep(this.state.step + 1);
         }
         break;
       }
@@ -398,10 +454,18 @@ class GuidedTraining extends Component {
     }
   }
 
+  /**
+   * Sets the component state to indicate a button is being pressed
+   * @param {String} buttonName Button name
+   */
   _onButtonShowUnderlay(buttonName) {
     this.setState({ [`${buttonName}Depressed`]: true });
   }
 
+  /**
+   * Sets the component state to indicate a button is not being pressed
+   * @param {String} buttonName Button name
+   */
   _onButtonHideUnderlay(buttonName) {
     this.setState({ [`${buttonName}Depressed`]: false });
   }
@@ -457,6 +521,16 @@ class GuidedTraining extends Component {
     const additionalLeftButtonStyles = {};
     if (isLeftButtonDisabled) {
       additionalLeftButtonStyles.opacity = 0.4;
+    }
+
+    // The center button would be disabled if there is an update happening in
+    // the training reducer slice, e.g., when the workout is being marked as complete
+    const isCenterButtonDisabled = this.props.training.isUpdating;
+    const additionalCenterButtonStyles = {
+      backgroundColor: currentWorkout.isComplete ? levelColorHex : 'white',
+    };
+    if (isCenterButtonDisabled) {
+      additionalCenterButtonStyles.opacity = 0.4;
     }
 
     // The right button would be disabled if this is the last workout in the session
@@ -530,19 +604,20 @@ class GuidedTraining extends Component {
               onPress={() => this._onButtonPress('centerButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
-              style={[styles.footerButton, {
-                backgroundColor: currentWorkout.isComplete ? levelColorHex : 'white',
-              }]}
+              style={[styles.footerButton, additionalCenterButtonStyles]}
+              disabled={isCenterButtonDisabled}
             >
               <View style={styles.footerButtonIconContainer}>
-                <Icon
-                  name={centerButtonIconName}
-                  size={applyWidthDifference(50)}
-                  style={{
-                    color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
-                      'white' : levelColorHex,
-                  }}
-                />
+                {isCenterButtonDisabled ? <Spinner size="large" color={levelColorHex} /> : (
+                  <Icon
+                    name={centerButtonIconName}
+                    size={applyWidthDifference(50)}
+                    style={{
+                      color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
+                        'white' : levelColorHex,
+                    }}
+                  />
+                )}
               </View>
             </TouchableHighlight>
             <SecondaryText style={styles._footerButtonText}>{centerButtonIconLabel}</SecondaryText>
