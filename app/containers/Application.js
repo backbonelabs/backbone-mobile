@@ -709,7 +709,7 @@ class Application extends Component {
         inactive: postureIconInactive,
       },
       {
-        routeName: '',
+        routeName: 'freeTraining',
         red: freeTrainingIconRed,
         green: freeTrainingIconGreen,
         blue: freeTrainingIconBlue,
@@ -718,7 +718,7 @@ class Application extends Component {
         inactive: freeTrainingIconInactive,
       },
       {
-        routeName: '',
+        routeName: 'education',
         red: educationIconRed,
         green: educationIconGreen,
         blue: educationIconBlue,

@@ -4740,6 +4740,13 @@ react-native-mock@0.3.1:
     react-timer-mixin "^0.13.3"
     warning "^2.1.0"
 
+react-native-scrollable-tab-view@0.7.4:
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.7.4.tgz#623a047cbfab35a27b8689095af524e9aac74b62"
+  dependencies:
+    react-static-container "^1.0.1"
+    react-timer-mixin "^0.13.3"
+
 react-native-sensitive-info@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-3.0.2.tgz#b2919b9081cdba640b0fa752ef608565babfad1e"
@@ -4879,6 +4886,10 @@ react-redux@4.4.5:
     invariant "^2.0.0"
     lodash "^4.2.0"
     loose-envify "^1.1.0"
+
+react-static-container@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-static-container/-/react-static-container-1.0.1.tgz#694c0dd68a896b879519afb548399cc1989c9ab0"
 
 react-test-renderer@15.4.2:
   version "15.4.2"

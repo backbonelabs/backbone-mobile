@@ -41,6 +41,7 @@
     "react-native-fs": "2.1.0-rc.1",
     "react-native-keyboard-aware-scroll-view": "0.2.3",
     "react-native-material-kit": "0.4.1",
+    "react-native-scrollable-tab-view": "0.7.4",
     "react-native-sensitive-info": "3.0.2",
     "react-native-slider": "0.9.1",
     "react-native-svg": "5.1.5",

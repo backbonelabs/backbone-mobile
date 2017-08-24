@@ -9,6 +9,7 @@ import {
   Platform,
   View,
   InteractionManager,
+  TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
@@ -29,19 +30,20 @@ import orangeBg from '../images/dashboard/dashboard-bg-orange.jpg';
 import redBg from '../images/dashboard/dashboard-bg-red.jpg';
 import hexagon from '../images/dashboard/hexagon.png';
 import bulletPurpleOn from '../images/bullet-purple-on.png';
-// import bulletPurpleOff from '../images/bullet-purple-off.png';
+import bulletPurpleOff from '../images/bullet-purple-off.png';
 import bulletBlueOn from '../images/bullet-blue-on.png';
-// import bulletBlueOff from '../images/bullet-blue-off.png';
+import bulletBlueOff from '../images/bullet-blue-off.png';
 import bulletGreenOn from '../images/bullet-green-on.png';
-// import bulletGreenOff from '../images/bullet-green-off.png';
+import bulletGreenOff from '../images/bullet-green-off.png';
 import bulletOrangeOn from '../images/bullet-orange-on.png';
-// import bulletOrangeOff from '../images/bullet-orange-off.png';
+import bulletOrangeOff from '../images/bullet-orange-off.png';
 import bulletRedOn from '../images/bullet-red-on.png';
-// import bulletRedOff from '../images/bullet-red-off.png';
+import bulletRedOff from '../images/bullet-red-off.png';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import Mixpanel from '../utils/Mixpanel';
 import { getColorNameForLevel } from '../utils/levelColors';
+import routes from '../routes';
 import styles from '../styles/dashboard';
 
 const colorBackgrounds = {
@@ -52,12 +54,20 @@ const colorBackgrounds = {
   red: redBg,
 };
 
-const colorBullets = {
+const colorBulletsOn = {
   purple: bulletPurpleOn,
   blue: bulletBlueOn,
   green: bulletGreenOn,
   orange: bulletOrangeOn,
   red: bulletRedOn,
+};
+
+const colorBulletsOff = {
+  purple: bulletPurpleOff,
+  blue: bulletBlueOff,
+  green: bulletGreenOff,
+  orange: bulletOrangeOff,
+  red: bulletRedOff,
 };
 
 const getScrollOffset = event => get(event, 'nativeEvent.contentOffset.y', 0);
@@ -76,6 +86,9 @@ const getAnimationsForLevels = (levels = []) => levels.map(() => new Animated.Va
 
 class Dashboard extends Component {
   static propTypes = {
+    navigator: PropTypes.shape({
+      push: PropTypes.func,
+    }).isRequired,
     selectLevel: PropTypes.func.isRequired,
     selectSession: PropTypes.func.isRequired,
     showPartialModal: PropTypes.func.isRequired,
@@ -106,6 +119,7 @@ class Dashboard extends Component {
         seenFeedbackSurvey: PropTypes.bool,
         createdAt: PropTypes.string,
         lastSession: PropTypes.string,
+        trainingPlanProgress: PropTypes.Object,
       }),
     }),
   };
@@ -434,8 +448,15 @@ class Dashboard extends Component {
    * Fires the action creator for changing the session
    * @param {Number} idx Integer index of the session
    */
-  _onSelectSession(idx) {
+  _onSnapToSession(idx) {
     this.props.selectSession(idx);
+  }
+
+  _onSelectSession(navTitle) {
+    this.props.navigator.push({
+      ...routes.guidedTraining,
+      title: navTitle,
+    });
   }
 
   /**
@@ -443,22 +464,31 @@ class Dashboard extends Component {
    * @param {Object} session
    * @param {Number} idx     The index of the session within the level
    */
-  _getSessionCards(session, idx) {
-    const sessionWorkouts = session.map(workout => (
-      <View key={workout.title} style={styles.sessionWorkoutRow}>
-        {/* TODO: Use the "on" and "off" bullets depending if the workout is completed */}
-        <Image
-          source={colorBullets[getColorNameForLevel(this.props.training.selectedLevelIdx)]}
-          style={styles.workoutBullet}
-        />
-        <BodyText key={workout.title}>{workout.title}</BodyText>
-      </View>
-    ));
+  _getSessionCard(session, idx) {
+    const { selectedLevelIdx } = this.props.training;
+    const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
+    const sessionWorkouts = session.map(workout => {
+      const color = getColorNameForLevel(this.props.training.selectedLevelIdx);
+      return (
+        <View key={workout.title} style={styles.sessionWorkoutRow}>
+          <Image
+            source={workout.isComplete ? colorBulletsOn[color] : colorBulletsOff[color]}
+            style={styles.workoutBullet}
+          />
+          <BodyText>{workout.title}</BodyText>
+        </View>
+      );
+    });
 
     return (
-      <Card key={idx}>
-        {sessionWorkouts}
-      </Card>
+      <TouchableOpacity
+        key={idx}
+        onPress={() => this._onSelectSession(navTitle)}
+      >
+        <Card>
+          {sessionWorkouts}
+        </Card>
+      </TouchableOpacity>
     );
   }
 
@@ -646,11 +676,11 @@ class Dashboard extends Component {
           {!!sessions.length &&
             <Carousel
               items={sessions}
-              renderItem={this._getSessionCards}
+              renderItem={this._getSessionCard}
               sliderWidth={styles.$carouselSliderWidth}
               itemWidth={styles.$carouselItemWidth}
               showsHorizontalScrollIndicator={false}
-              onSnapToItem={this._onSelectSession}
+              onSnapToItem={this._onSnapToSession}
               firstItem={selectedSessionIdx}
               slideStyle={styles.sessionCard}
               enableSnap
