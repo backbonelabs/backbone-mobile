@@ -84,6 +84,7 @@ exports[`Dashboard Component renders as expected 1`] = `
         Array [
           Array [
             Object {
+              "isComplete": true,
               "title": "Beginner Chest Stretch",
               "workout": Object {
                 "_id": "cheststretch",
@@ -91,6 +92,7 @@ exports[`Dashboard Component renders as expected 1`] = `
               },
             },
             Object {
+              "isComplete": false,
               "title": "Intermediate Upper Back Stretch",
               "workout": Object {
                 "_id": "nomoney",
@@ -98,6 +100,7 @@ exports[`Dashboard Component renders as expected 1`] = `
               },
             },
             Object {
+              "isComplete": false,
               "title": "Beginner Posture Session",
               "workout": Object {
                 "_id": "5minposture",
