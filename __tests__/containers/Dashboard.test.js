@@ -7,6 +7,9 @@ import Dashboard from '../../app/containers/Dashboard';
 import { SHOW_PARTIAL_MODAL } from '../../app/actions/types';
 
 describe('Dashboard Component', () => {
+  const navigator = {
+    push: () => {},
+  };
   const workouts = {
     '5minPosture': {
       _id: '5minposture',
@@ -29,7 +32,6 @@ describe('Dashboard Component', () => {
       title: 'Band Pull-Apart',
     },
   };
-
   const initialState = {
     training: {
       plans: [{
@@ -40,34 +42,43 @@ describe('Dashboard Component', () => {
             [{
               title: 'Beginner Chest Stretch',
               workout: workouts.chestStretch,
+              isComplete: true,
             }, {
               title: 'Intermediate Upper Back Stretch',
               workout: workouts.noMoney,
+              isComplete: false,
             }, {
               title: 'Beginner Posture Session',
               workout: workouts['5minPosture'],
+              isComplete: false,
             }],
           ],
           [
             [{
               title: 'Beginner Upper Back Exercise',
               workout: workouts.catCamel,
+              isComplete: false,
             }, {
               title: 'Intermediate Upper Back Stretch',
               workout: workouts.bandPullApart,
+              isComplete: false,
             }, {
               title: 'Beginner Posture Session',
               workout: workouts['5minPosture'],
+              isComplete: false,
             }],
             [{
               title: 'Intermediate Upper Back Stretch',
               workout: workouts.noMoney,
+              isComplete: false,
             }, {
               title: 'Beginner Chest Stretch',
               workout: workouts.chestStretch,
+              isComplete: false,
             }, {
               title: 'Beginner Posture Session',
               workout: workouts['5minPosture'],
+              isComplete: false,
             }],
           ],
         ],
@@ -79,47 +90,59 @@ describe('Dashboard Component', () => {
             [{
               title: 'Beginner Chest Stretch',
               workout: workouts.chestStretch,
+              isComplete: false,
             }, {
               title: 'Beginner Posture Session',
               workout: workouts['5minPosture'],
+              isComplete: false,
             }],
           ],
           [
             [{
               title: 'Beginner Upper Back Exercise',
               workout: workouts.catCamel,
+              isComplete: false,
             }, {
               title: 'Beginner Posture Session',
               workout: workouts['5minPosture'],
+              isComplete: false,
             }],
             [{
               title: 'Intermediate Upper Back Stretch',
               workout: workouts.noMoney,
+              isComplete: false,
             }, {
               title: 'Beginner Chest Stretch',
               workout: workouts.chestStretch,
+              isComplete: false,
             }, {
               title: 'Beginner Posture Session',
               workout: workouts['5minPosture'],
+              isComplete: false,
             }],
           ],
           [
             [{
               title: 'Intermediate Upper Back Stretch',
               workout: workouts.bandPullApart,
+              isComplete: false,
             }, {
               title: 'Beginner Posture Session',
               workout: workouts['5minPosture'],
+              isComplete: false,
             }],
             [{
               title: 'Intermediate Upper Back Stretch',
               workout: workouts.noMoney,
+              isComplete: false,
             }, {
               title: 'Intermediate Upper Back Stretch',
               workout: workouts.bandPullApart,
+              isComplete: false,
             }, {
               title: 'Beginner Posture Session',
               workout: workouts['5minPosture'],
+              isComplete: false,
             }],
           ],
         ],
@@ -128,6 +151,17 @@ describe('Dashboard Component', () => {
       selectedLevelIdx: 0,
       selectedSessionIdx: 0,
     },
+    user: {
+      user: {
+        trainingPlanProgress: {
+          plan1: [
+            [
+              [true],
+            ],
+          ],
+        },
+      },
+    },
   };
   const store = configureStore([asyncActionMiddleware, thunk])(initialState);
   let wrapper;
@@ -135,7 +169,7 @@ describe('Dashboard Component', () => {
   beforeEach(() => {
     store.clearActions();
     wrapper = shallow(
-      <Dashboard />,
+      <Dashboard navigator={navigator} />,
       { context: { store } },
     ).dive();
   });
@@ -149,10 +183,15 @@ describe('Dashboard Component', () => {
       training: {
         plans: [],
       },
+      user: {
+        user: {
+          trainingPlanProgress: {},
+        },
+      },
     });
 
     wrapper = shallow(
-      <Dashboard />,
+      <Dashboard navigator={navigator} />,
       { context: { store: newStore } },
     ).dive({
       lifecycleExperimental: true,
