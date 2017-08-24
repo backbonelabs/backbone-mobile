@@ -270,6 +270,12 @@ class GuidedTraining extends Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  }
+
   /**
    * Marks the current workout as complete
    */
