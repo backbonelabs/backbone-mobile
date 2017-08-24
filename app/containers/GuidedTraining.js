@@ -311,6 +311,21 @@ class GuidedTraining extends Component {
     this.setState({ isTimerRunning: false }, cb);
   }
 
+  /**
+   * Changes which workout/step of the session to show
+   * @param {Number} step Which step to switch to. The first step starts at 1.
+   */
+  _changeStep(step) {
+    this._pauseTimer(() => {
+      this.setState({
+        step,
+        ...this._getNewStateForWorkout(
+          this._getWorkoutFromCurrentSession(step - 1, this.props.training)
+        ),
+      });
+    });
+  }
+
   _onButtonPress(buttonName) {
     const {
       plans,
@@ -323,14 +338,7 @@ class GuidedTraining extends Component {
         const isFirstWorkout = this.state.step === 1;
         if (!isFirstWorkout) {
           // There is a previous workout in the session that can be navigated to
-          this.setState(prevState => {
-            const step = prevState.step - 1;
-            return {
-              step,
-              ...this._getNewStateForWorkout(
-                this._getWorkoutFromCurrentSession(step - 1, this.props.training)),
-            };
-          });
+          this._changeStep(this.state.step - 1);
         }
         break;
       }
@@ -383,13 +391,7 @@ class GuidedTraining extends Component {
         const isLastWorkout = this.state.step === sessionWorkouts.length;
         if (!isLastWorkout) {
           // There is a next workout in the session that can be navigated to
-          this.setState(prevState => {
-            const step = prevState.step + 1;
-            return {
-              step,
-              ...this._getNewStateForWorkout(sessionWorkouts[step - 1]),
-            };
-          });
+          this._changeStep(this.state.step + 1);
         }
         break;
       }
