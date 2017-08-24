@@ -297,7 +297,9 @@ class Dashboard extends Component {
     const level = get(levels, selectedLevelIdx, []);
     const nextLevelIndex = getNextIncompleteLevel(levels);
     const isLevelUnlocked = selectedLevelIdx <= nextLevelIndex;
-    const isSessionUnlocked = isLevelUnlocked && getNextIncompleteSession(level);
+    const nextSessionIndex = getNextIncompleteSession(level);
+    const isSessionUnlocked = isLevelUnlocked &&
+    (nextSessionIndex === -1 || idx <= nextSessionIndex);
     const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
     let cardContents;
 
