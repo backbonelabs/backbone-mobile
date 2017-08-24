@@ -517,6 +517,16 @@ class GuidedTraining extends Component {
       additionalLeftButtonStyles.opacity = 0.4;
     }
 
+    // The center button would be disabled if there is an update happening in
+    // the training reducer slice, e.g., when the workout is being marked as complete
+    const isCenterButtonDisabled = this.props.training.isUpdating;
+    const additionalCenterButtonStyles = {
+      backgroundColor: currentWorkout.isComplete ? levelColorHex : 'white',
+    };
+    if (isCenterButtonDisabled) {
+      additionalCenterButtonStyles.opacity = 0.4;
+    }
+
     // The right button would be disabled if this is the last workout in the session
     const sessionWorkouts = this._getSessionWorkouts(this.props.training);
     const isRightButtonDisabled = this.state.step === sessionWorkouts.length;
@@ -588,19 +598,20 @@ class GuidedTraining extends Component {
               onPress={() => this._onButtonPress('centerButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
-              style={[styles.footerButton, {
-                backgroundColor: currentWorkout.isComplete ? levelColorHex : 'white',
-              }]}
+              style={[styles.footerButton, additionalCenterButtonStyles]}
+              disabled={isCenterButtonDisabled}
             >
               <View style={styles.footerButtonIconContainer}>
-                <Icon
-                  name={centerButtonIconName}
-                  size={applyWidthDifference(50)}
-                  style={{
-                    color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
-                      'white' : levelColorHex,
-                  }}
-                />
+                {isCenterButtonDisabled ? <Spinner size="large" color={levelColorHex} /> : (
+                  <Icon
+                    name={centerButtonIconName}
+                    size={applyWidthDifference(50)}
+                    style={{
+                      color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
+                        'white' : levelColorHex,
+                    }}
+                  />
+                )}
               </View>
             </TouchableHighlight>
             <SecondaryText style={styles._footerButtonText}>{centerButtonIconLabel}</SecondaryText>
