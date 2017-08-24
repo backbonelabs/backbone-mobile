@@ -8,6 +8,9 @@ target 'Backbone' do
 
   # Pods for Backbone
   pod 'Mixpanel'
+  pod 'FBSDKCoreKit'
+  pod 'FBSDKLoginKit'
+  pod 'FBSDKShareKit'
   pod 'AWSCognito'
   pod 'AWSKinesis'
 

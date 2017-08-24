@@ -137,4 +137,8 @@ export default {
     ios: 'https://appsto.re/us/1vAOgb.i',
     android: 'https://play.google.com/store/apps/details?id=co.backbonelabs.backbone',
   },
+  authMethods: {
+    EMAIL: 1,
+    FACEBOOK: 2,
+  },
 };

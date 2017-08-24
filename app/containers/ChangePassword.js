@@ -14,12 +14,14 @@ import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
 import Mixpanel from '../utils/Mixpanel';
+import constants from '../utils/constants';
 
 class ChangePassword extends Component {
   static propTypes = {
     isUpdating: PropTypes.bool,
     user: PropTypes.shape({
       _id: PropTypes.string,
+      authMethod: PropTypes.number,
     }),
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
@@ -127,6 +129,18 @@ class ChangePassword extends Component {
       confirmPasswordIconProps.iconRightName = validConfirmPassword ? 'check' : 'close';
     }
 
+    // Don't allow users that signed up with Facebook accounts to change the password
+    if (this.props.user.authMethod === constants.authMethods.FACEBOOK) {
+      return (
+        <View style={styles.container}>
+          <BodyText style={styles._passwordText}>
+            Your account is connected with your Facebook account.
+            There is no need to set a password.
+            If you need assistance, please contact Support from the Settings screen.
+          </BodyText>
+        </View>
+      );
+    }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
