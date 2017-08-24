@@ -235,15 +235,19 @@ export default class Carousel extends Component {
     }
 
     if (activeItem !== newActiveItem) {
-      Animated[animationFunc](
-        this.state.interpolators[activeItem],
-        { ...animationOptions, toValue: 0 }
-      ).start();
+      if (this.state.interpolators[activeItem]) {
+        Animated[animationFunc](
+          this.state.interpolators[activeItem],
+          { ...animationOptions, toValue: 0 }
+        ).start();
+      }
       this.setState({ activeItem: newActiveItem });
-      Animated[animationFunc](
-        this.state.interpolators[newActiveItem],
-        { ...animationOptions, toValue: 1 }
-      ).start();
+      if (this.state.interpolators[newActiveItem]) {
+        Animated[animationFunc](
+          this.state.interpolators[newActiveItem],
+          { ...animationOptions, toValue: 1 }
+        ).start();
+      }
     }
   }
 
