@@ -8,6 +8,7 @@ import Signup from '../../app/containers/Signup';
 describe('Signup Component', () => {
   const initialState = {
     auth: {},
+    user: {},
   };
   const store = configureStore([asyncActionMiddleware, thunk])(initialState);
   const wrapper = shallow(
