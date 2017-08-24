@@ -262,6 +262,48 @@ class GuidedTraining extends Component {
         }
       });
     }
+
+    if (prevState.setsRemaining !== this.state.setsRemaining && this.state.setsRemaining === 0) {
+      // Sets remaining got decremented and there are no more sets remaining.
+      // This means the workout should be marked complete.
+      this._markComplete();
+    }
+  }
+
+  /**
+   * Marks the current workout as complete
+   */
+  _markComplete() {
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = this.props.training;
+    const progress = cloneDeep(this.props.user.trainingPlanProgress);
+    const planProgress = progress[plans[selectedPlanIdx]._id];
+
+    // The plan progress array may not always contain the exact number of elements as
+    // workouts in the training plan, so we need to fill missing elements up to the
+    // current level and session indices with empty arrays.
+
+    // Fill in missing levels
+    for (let i = 0; i <= selectedLevelIdx; i++) {
+      if (!planProgress[i]) {
+        planProgress[i] = [];
+      }
+    }
+
+    // Fill in missing sessions in the current level up to the current session
+    for (let i = 0; i <= selectedSessionIdx; i++) {
+      if (!planProgress[selectedLevelIdx][i]) {
+        planProgress[selectedLevelIdx][i] = [];
+      }
+    }
+
+    // Mark the current workout as complete
+    planProgress[selectedLevelIdx][selectedSessionIdx][this.state.step - 1] = true;
+    this.props.updateUserTrainingPlanProgress(progress);
   }
 
   /**
@@ -363,12 +405,6 @@ class GuidedTraining extends Component {
    * @param {String} buttonName Button name
    */
   _onButtonPress(buttonName) {
-    const {
-      plans,
-      selectedPlanIdx,
-      selectedLevelIdx,
-      selectedSessionIdx,
-    } = this.props.training;
     switch (buttonName) {
       case 'leftButton': {
         const isFirstWorkout = this.state.step === 1;
@@ -383,7 +419,6 @@ class GuidedTraining extends Component {
           currentWorkout,
           isTimerRunning,
           setsRemaining,
-          step,
         } = this.state;
         const isTimed = !!currentWorkout.seconds;
 
@@ -395,30 +430,7 @@ class GuidedTraining extends Component {
           this._startTimer();
         } else if (!currentWorkout.isComplete) {
           // Mark workout as complete
-          const progress = cloneDeep(this.props.user.trainingPlanProgress);
-          const planProgress = progress[plans[selectedPlanIdx]._id];
-
-          // The plan progress array may not always contain the exact number of elements as
-          // workouts in the training plan, so we need to fill missing elements up to the
-          // current level and session indices with empty arrays.
-
-          // Fill in missing levels
-          for (let i = 0; i <= selectedLevelIdx; i++) {
-            if (!planProgress[i]) {
-              planProgress[i] = [];
-            }
-          }
-
-          // Fill in missing sessions in the current level up to the current session
-          for (let i = 0; i <= selectedSessionIdx; i++) {
-            if (!planProgress[selectedLevelIdx][i]) {
-              planProgress[selectedLevelIdx][i] = [];
-            }
-          }
-
-          // Mark the current workout as complete
-          planProgress[selectedLevelIdx][selectedSessionIdx][step - 1] = true;
-          this.props.updateUserTrainingPlanProgress(progress);
+          this._markComplete();
         }
         break;
       }
