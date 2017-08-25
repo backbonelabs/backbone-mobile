@@ -47,7 +47,7 @@ exports[`Reset Component renders as expected 1`] = `
             iconLeftName="email"
             iconStyle={
               Object {
-                "color": "#E0E0E0",
+                "color": "#9E9E9E",
               }
             }
             keyboardType="email-address"
