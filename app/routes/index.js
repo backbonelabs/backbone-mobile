@@ -24,6 +24,7 @@ import deviceScan from './deviceScan';
 import device from './device';
 import dashboard from './dashboard';
 import guidedTraining from './guidedTraining';
+import educationVideo from './educationVideo';
 
 export default {
   activity,
@@ -52,4 +53,5 @@ export default {
   device,
   dashboard,
   guidedTraining,
+  educationVideo,
 };
