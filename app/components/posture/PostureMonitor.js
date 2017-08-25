@@ -1119,21 +1119,20 @@ class PostureMonitor extends Component {
           MIN_POSTURE_THRESHOLD to make maximumValue equal to 0 in order for the slider to
           work on both Android and iOS.
         */}
-        <MonitorSlider
-          style={styles.slider}
-          value={-postureThreshold + MIN_POSTURE_THRESHOLD}
-          onValueChange={value => {
-            const correctedValue = value - MIN_POSTURE_THRESHOLD;
+        <View>
+          <MonitorSlider
+            value={-postureThreshold + MIN_POSTURE_THRESHOLD}
+            onValueChange={value => {
+              const correctedValue = value - MIN_POSTURE_THRESHOLD;
             // The value is rounded to 3 decimals places to prevent unexpected rounding issues
-            this.updatePostureThreshold(-correctedValue.toFixed(3));
-          }}
-          minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
-          maximumValue={0}
-          disabled={isDisabled}
-        />
-        <SecondaryText style={styles._sliderTitle}>
-          SLOUCH DETECTION
-        </SecondaryText>
+              this.updatePostureThreshold(-correctedValue.toFixed(3));
+            }}
+            minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
+            maximumValue={0}
+            disabled={isDisabled}
+          />
+          <SecondaryText style={styles._sliderTitle}>SLOUCH DETECTION</SecondaryText>
+        </View>
         <View style={styles.btnContainer}>
           {getPlayPauseButton()}
           {sessionState !== sessionStates.PAUSED || hasPendingSessionOperation ?

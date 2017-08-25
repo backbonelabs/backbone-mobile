@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize, width } = relativeDimensions;
 const innerMonitorSize = applyWidthDifference(190);
 
 export default EStyleSheet.create({
@@ -78,7 +78,8 @@ export default EStyleSheet.create({
     borderRadius: applyWidthDifference(15 / 2),
     position: 'absolute',
     bottom: applyWidthDifference(44),
-    left: '24%',
+    left: (width * 0.5) - (applyWidthDifference(220 / 2) *
+    Math.sin((60 * Math.PI) / 180)) - applyWidthDifference(15 / 8),
   },
   rightCircle: {
     width: applyWidthDifference(15),
@@ -86,7 +87,8 @@ export default EStyleSheet.create({
     borderRadius: applyWidthDifference(15 / 2),
     position: 'absolute',
     bottom: applyWidthDifference(44),
-    right: '24%',
+    right: (width * 0.5) - (applyWidthDifference(220 / 2) *
+    Math.sin((60 * Math.PI) / 180)) - applyWidthDifference(15 / 8),
   },
   postureRatingContainer: {
     position: 'absolute',
@@ -106,13 +108,8 @@ export default EStyleSheet.create({
   //   fontSize: fixedResponsiveFontSize(12),
   //   fontWeight: 'bold',
   // },
-  slider: {
-    height: applyWidthDifference(30),
-  },
   sliderTitle: {
     textAlign: 'center',
-    marginBottom: applyWidthDifference(10),
-    marginTop: applyWidthDifference(-30),
     fontSize: fixedResponsiveFontSize(12),
   },
   btnContainer: {

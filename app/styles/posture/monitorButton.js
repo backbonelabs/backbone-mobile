@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   monitorBtn: {
@@ -28,8 +28,7 @@ export default EStyleSheet.create({
   },
   btnText: {
     textAlign: 'center',
-    marginTop: applyWidthDifference(14),
-    fontSize: fixedResponsiveFontSize(14),
+    marginTop: applyWidthDifference(8),
     fontWeight: 'bold',
   },
 });
