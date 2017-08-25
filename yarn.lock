@@ -4090,7 +4090,7 @@ moment@2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
-moment@2.x.x, moment@>=2.10.3:
+moment@2.x.x, moment@>=2.10.3, moment@^2.18.1:
   version "2.18.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
@@ -4550,7 +4550,7 @@ promise@^7, promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4:
+prop-types@15.5.10, prop-types@^15.5.10, prop-types@^15.5.4:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -4691,6 +4691,12 @@ react-dom@^15.4.0:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
+react-native-animatable@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.2.3.tgz#d0f0bd694833b934f3aaa1275739228b786ecb4b"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-calendar@0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/react-native-calendar/-/react-native-calendar-0.10.0.tgz#05a1d2fcefbdcd29b20cfc7f2536070aaa743724"
@@ -4743,6 +4749,21 @@ react-native-mock@0.3.1:
     react-dom "^15.4.0"
     react-timer-mixin "^0.13.3"
     warning "^2.1.0"
+
+react-native-modal-datetime-picker@4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-modal-datetime-picker/-/react-native-modal-datetime-picker-4.9.0.tgz#0f744aa459f0c71067be8f3722737fe9ade136cf"
+  dependencies:
+    moment "^2.18.1"
+    prop-types "15.5.10"
+    react-native-modal "^2.5.0"
+
+react-native-modal@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-modal/-/react-native-modal-2.5.0.tgz#a24018ac028e84e6eb8294278fa02720d9f7f320"
+  dependencies:
+    prop-types "15.5.10"
+    react-native-animatable "^1.2.3"
 
 react-native-scrollable-tab-view@0.7.4:
   version "0.7.4"
