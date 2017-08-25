@@ -34,6 +34,7 @@ class WorkoutList extends Component {
     }),
     navigator: PropTypes.shape({
       getCurrentRoutes: PropTypes.func,
+      push: PropTypes.func,
     }),
   }
 
@@ -254,8 +255,16 @@ class WorkoutList extends Component {
       // Place holder for route to free training
       Alert.alert('workout', workout.title);
     } else if (this.currentRoute.name === routes.education.name) {
-      // Place holder for route to education video
-      Alert.alert('workout', workout.title);
+      const videoUrl = workout.videoUrl;
+      if (videoUrl && videoUrl.length > 0) {
+        this.props.dispatch(userActions.selectWorkout(workout._id));
+        this.props.navigator.push({
+          ...routes.educationVideo,
+          title: workout.title,
+        });
+      } else {
+        Alert.alert('Error', 'Video not found!');
+      }
     }
   }
   /**
