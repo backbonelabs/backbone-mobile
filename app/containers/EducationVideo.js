@@ -35,7 +35,7 @@ class EducationVideo extends Component {
     });
   }
 
-  toggleFavourite() {
+  toggleFavorite() {
     const { selectedWorkoutId } = this.props;
     const { _id: userId, favoriteWorkouts } = this.props.user;
     const newFavoriteWorkouts = favoriteWorkouts.slice();
@@ -77,8 +77,8 @@ class EducationVideo extends Component {
           />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={this.toggleFavourite} >
-            <Icon name={iconName} style={styles.favouriteButton} size={styles.$heartIconSize} />
+          <TouchableOpacity onPress={this.toggleFavorite} >
+            <Icon name={iconName} style={styles.favoriteButton} size={styles.$heartIconSize} />
           </TouchableOpacity>
         </View>
       </View>

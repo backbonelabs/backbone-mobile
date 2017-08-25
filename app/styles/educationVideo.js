@@ -19,7 +19,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  favouriteButton: {
+  favoriteButton: {
     color: '#F44336',
     fontSize: fixedResponsiveFontSize(40),
   },
