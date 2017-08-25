@@ -1,16 +1,10 @@
 import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import relativeDimensions from '../utils/relativeDimensions';
+import relativeDimensions from '../../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
-  btnContainer: {
-    width: '85%',
-    flexDirection: 'row',
-    alignSelf: 'center',
-    justifyContent: 'space-around',
-  },
   monitorBtn: {
     width: applyWidthDifference(75),
     height: applyWidthDifference(75),
