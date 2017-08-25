@@ -92,6 +92,16 @@ export default EStyleSheet.create({
     flex: 0.8,
     paddingLeft: applyWidthDifference(15),
   },
+  settingsLeftText: {
+    flex: 0.6,
+    paddingLeft: applyWidthDifference(15),
+  },
+  settingsRightText: {
+    flex: 0.4,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingRight: applyWidthDifference(16),
+  },
   settingsRightIcon: {
     flex: 0.20,
     alignItems: 'flex-end',

@@ -15,7 +15,9 @@ import {
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
+import moment from 'moment';
 import Slider from 'react-native-slider';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
@@ -38,7 +40,7 @@ import SensitiveInfo from '../utils/SensitiveInfo';
 import Spinner from '../components/Spinner';
 import Mixpanel from '../utils/Mixpanel';
 
-const { storageKeys, bluetoothStates } = constants;
+const { storageKeys, bluetoothStates, notificationTypes } = constants;
 const { BluetoothService, Environment, NotificationService, UserSettingService } = NativeModules;
 
 const isiOS = Platform.OS === 'ios';
@@ -253,6 +255,8 @@ class Settings extends Component {
           postureThreshold: PropTypes.number,
           backboneVibration: PropTypes.bool,
           slouchNotification: PropTypes.bool,
+          dailyReminderNotification: PropTypes.bool,
+          dailyReminderTime: PropTypes.number,
           phoneVibration: PropTypes.bool,
           vibrationStrength: PropTypes.number,
           vibrationPattern: PropTypes.number,
@@ -272,6 +276,8 @@ class Settings extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      dailyReminderNotification,
+      dailyReminderTime,
     } = this.props.user.user.settings;
 
     // Maintain settings in component state because the user settings object
@@ -281,6 +287,8 @@ class Settings extends Component {
     this.state = {
       notificationsEnabled: false,
       pushNotificationEnabled: true,
+      timePickerActive: false,
+      use24HourFormat: false,
       loading: true,
       sliderActive: false,
       backboneVibration,
@@ -288,7 +296,28 @@ class Settings extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      dailyReminderNotification,
+      dailyReminderTime,
     };
+
+    // Schedule a daily reminder if it's enabled but not yet scheduled in the system
+    if (dailyReminderNotification) {
+      NotificationService.hasScheduledNotification(notificationTypes.DAILY_REMINDER,
+        (error, { onSchedule }) => {
+          if (!error && !onSchedule) {
+            const hour = Math.floor(dailyReminderTime / 60);
+            const minute = dailyReminderTime % 60;
+
+            NotificationService.scheduleNotification({
+              notificationType: notificationTypes.DAILY_REMINDER,
+              scheduledHour: hour,
+              scheduledMinute: minute,
+            });
+          } else if (error) {
+            Alert.alert('Error', error);
+          }
+        });
+    }
 
     // Debounce state update to smoothen quick slider value changes
     this.updateSetting = debounce(this.updateSetting, 150);
@@ -300,6 +329,7 @@ class Settings extends Component {
     // Run expensive operations after the scene is loaded
     InteractionManager.runAfterInteractions(() => {
       this.checkNotificationPermission();
+      this.checkDeviceClockFormat();
       AppState.addEventListener('change', this.handleAppState);
 
       this.props.dispatch(deviceActions.getInfo());
@@ -339,6 +369,27 @@ class Settings extends Component {
 
     // Update value from slider-type settings only after the user has finished sliding
     this.updateSetting(field, value);
+  }
+
+  onTimeChange(date) {
+    const time = moment(date);
+    const hour = time.hour();
+    const minute = time.minute();
+    const scheduleInMinutes = (hour * 60) + minute;
+
+    this.setState({
+      dailyReminderTime: scheduleInMinutes,
+      dailyReminderNotification: true,
+      timePickerActive: false,
+    });
+
+    NotificationService.scheduleNotification({
+      notificationType: notificationTypes.DAILY_REMINDER,
+      scheduledHour: hour,
+      scheduledMinute: minute,
+    });
+
+    this.updateUserSettingsFromState();
   }
 
   getDevMenu() {
@@ -397,6 +448,7 @@ class Settings extends Component {
   handleAppState(state) {
     if (state === 'active') {
       this.checkNotificationPermission();
+      this.checkDeviceClockFormat();
     }
   }
 
@@ -411,6 +463,16 @@ class Settings extends Component {
         this.setState({ pushNotificationEnabled: notificationEnabled });
       });
     }
+  }
+
+  checkDeviceClockFormat() {
+    UserSettingService.getDeviceClockFormat((error, { is24Hour }) => {
+      if (!error) {
+        this.setState({ use24HourFormat: is24Hour });
+      } else {
+        this.setState({ use24HourFormat: false });
+      }
+    });
   }
 
   updateSetting(field, value) {
@@ -431,6 +493,8 @@ class Settings extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      dailyReminderNotification,
+      dailyReminderTime,
     } = this.state;
 
     const newSettings = {
@@ -439,6 +503,8 @@ class Settings extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      dailyReminderNotification,
+      dailyReminderTime,
     };
 
     this.props.dispatch(userAction.updateUserSettings({
@@ -453,6 +519,46 @@ class Settings extends Component {
     } else {
       UserSettingService.launchAppSettings();
     }
+  }
+
+  toggleReminder(field, value) {
+    let newSettings;
+
+    if (value) {
+      const { dailyReminderTime } = this.state;
+      const now = moment();
+      let hour;
+      let minute;
+
+      // Check for new users or existing users with dailyReminderTime not yet set
+      if (dailyReminderTime === undefined || dailyReminderTime === -1) {
+        // If it hasn't been set before, use the current time as the default
+        hour = now.hour();
+        minute = now.minute();
+        newSettings = {
+          dailyReminderTime: (hour * 60) + minute,
+          dailyReminderNotification: value,
+        };
+      } else {
+        // Else, use the currently set time
+        hour = Math.floor(dailyReminderTime / 60);
+        minute = dailyReminderTime % 60;
+        newSettings = { dailyReminderNotification: value };
+      }
+
+      NotificationService.scheduleNotification({
+        notificationType: notificationTypes.DAILY_REMINDER,
+        scheduledHour: hour,
+        scheduledMinute: minute,
+      });
+    } else {
+      newSettings = { dailyReminderNotification: value };
+
+      NotificationService.unscheduleNotification(notificationTypes.DAILY_REMINDER);
+    }
+
+    this.setState({ ...newSettings });
+    this.updateUserSettingsFromState();
   }
 
   signOut() {
@@ -490,12 +596,37 @@ class Settings extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      dailyReminderNotification,
+      dailyReminderTime,
       pushNotificationEnabled,
       sliderActive,
+      timePickerActive,
+      use24HourFormat,
     } = this.state;
 
     if (this.state.loading) {
       return <Spinner />;
+    }
+
+    const currentTime = new Date();
+    let reminderTime = '';
+
+    if (dailyReminderNotification) {
+      // Build the time text based on local device clock setting
+      const inHour = Math.floor(dailyReminderTime / 60);
+      let reminderHour = inHour;
+      const reminderMinute = dailyReminderTime % 60;
+      let amOrPm = '';
+
+      currentTime.setHours(reminderHour, reminderMinute);
+
+      if (!use24HourFormat) {
+        amOrPm = (inHour < 12 ? 'AM' : 'PM');
+        reminderHour = (inHour % 12 === 0 ? 12 : inHour % 12); // Convert to 12-hour format
+      }
+
+      reminderTime = `${reminderHour < 10 ? '0' : ''}${reminderHour}:` +
+      `${reminderMinute < 10 ? '0' : ''}${reminderMinute}${amOrPm}`;
     }
 
     return (
@@ -509,7 +640,41 @@ class Settings extends Component {
             text="Slouch Notification"
             settingName="slouchNotification"
           />
-          {!pushNotificationEnabled &&
+          <Toggle
+            value={dailyReminderNotification && pushNotificationEnabled}
+            disabled={!pushNotificationEnabled}
+            text="Daily Reminder"
+            settingName="dailyReminderNotification"
+            onChange={this.toggleReminder}
+          />
+          {
+            pushNotificationEnabled && dailyReminderNotification &&
+            <View>
+              <TouchableOpacity
+                style={styles.settingsRow}
+                onPress={() => { this.setState({ timePickerActive: true }); }}
+              >
+                <View style={styles.settingsLeftText}>
+                  <BodyText>Reminder Time</BodyText>
+                </View>
+                <View style={styles.settingsRightText}>
+                  <BodyText>{reminderTime}</BodyText>
+                </View>
+              </TouchableOpacity>
+              <DateTimePicker
+                mode={'time'}
+                date={currentTime}
+                isVisible={timePickerActive}
+                onConfirm={this.onTimeChange}
+                onCancel={() => { this.setState({ timePickerActive: false }); }}
+                is24Hour={use24HourFormat}
+                titleIOS={'Reminder Time'}
+                confirmTextIOS={'Set'}
+              />
+            </View>
+          }
+          {
+            !pushNotificationEnabled &&
             <View style={alertsStyles.notificationDisabledWarningContainer}>
               <SecondaryText style={alertsStyles._notificationDisabledWarningText}>
                 Notifications are disabled in your phone's settings.
@@ -521,12 +686,6 @@ class Settings extends Component {
               />
             </View>
           }
-          <Toggle
-            value={false}
-            text="Scheduling"
-            settingName="scheduledReminder"
-            disabled
-          />
           <View style={styles.settingsRowEmpty}>
             <BodyText />
           </View>
