@@ -56,7 +56,7 @@ export default EStyleSheet.create({
   },
   firmwareUpdateProgressTextGreen: {
     fontSize: fixedResponsiveFontSize(16),
-    color: '#32CD32',
+    color: '$infoColor',
   },
   firmwareUpdateProgressTextRed: {
     fontSize: fixedResponsiveFontSize(16),

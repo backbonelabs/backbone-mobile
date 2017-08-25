@@ -6,6 +6,7 @@ export default {
     DEVICE: 'device',
     CALIBRATION_AUTO_START: 'calibrationAutoStart',
     SESSION_STATE: 'sessionParameters',
+    APP_RATING_THRESHOLD: 'appRatingThreshold',
   },
   bluetoothStates: {
     UNKNOWN: -1,
@@ -132,6 +133,11 @@ export default {
   surveyUrls: {
     baseline: 'https://backbonelabsinc.typeform.com/to/lVs1Sh',
     feedback: 'https://backbonelabsinc.typeform.com/to/rmq85N',
+  },
+  surveyThresholds: {
+    feedbackSurvey: 3,
+    initialAppRating: 5,
+    additionalAppRating: 4,
   },
   appUrls: {
     ios: 'https://appsto.re/us/1vAOgb.i',

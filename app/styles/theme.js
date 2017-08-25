@@ -13,6 +13,7 @@ const inputIconSize = fixedResponsiveFontSize(22);
 
 const red700 = '#D32F2F';
 const orange500 = '#FF9800';
+const green400 = '#32CD32';
 const grey50 = '#FAFAFA';
 const grey100 = '#F5F5F5';
 const grey200 = '#EEEEEE';
@@ -27,6 +28,7 @@ const disabledColor = grey500;
 const inputIconColor = disabledColor;
 const bannerColor = grey200;
 const warningColor = red700;
+const infoColor = green400;
 
 export default {
   orange500,
@@ -45,6 +47,7 @@ export default {
   inputIconSize,
   bannerColor,
   warningColor,
+  infoColor,
   buttonBorderRadius: 4,
   titleBarHeight,
   statusBarHeight,

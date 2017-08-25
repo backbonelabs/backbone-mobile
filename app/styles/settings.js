@@ -66,10 +66,10 @@ export default EStyleSheet.create({
     color: theme.warningColor,
   },
   batteryIconGreen: {
-    color: '#32CD32',
+    color: '$infoColor',
   },
   batteryIconRed: {
-    color: theme.warningColor,
+    color: '$warningColor',
   },
   settingsHeader: {
     ...bottomBorder,
