@@ -1101,7 +1101,7 @@ class PostureMonitor extends Component {
         <BodyText style={styles._timer}>
           {this.getFormattedTime()}
         </BodyText>
-        <BodyText size={3} style={styles._heading}>Time Remaining</BodyText>
+        <BodyText style={styles._heading}>Time Remaining</BodyText>
         <Monitor
           disable={isDisabled}
           pointerPosition={pointerPosition}
