@@ -14,6 +14,8 @@ import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
+import freeTraining from './freeTraining';
+import education from './education';
 import profileSetupOne from './onBoardingFlow/profileSetupOne';
 import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
 import deviceSetup from './onBoardingFlow/deviceSetup';
@@ -21,6 +23,7 @@ import howToVideo from './onBoardingFlow/howToVideo';
 import deviceScan from './deviceScan';
 import device from './device';
 import dashboard from './dashboard';
+import guidedTraining from './guidedTraining';
 
 export default {
   activity,
@@ -39,6 +42,8 @@ export default {
   support,
   howTo,
   changePassword,
+  freeTraining,
+  education,
   profileSetupOne,
   profileSetupTwo,
   deviceSetup,
@@ -46,4 +51,5 @@ export default {
   howToVideo,
   device,
   dashboard,
+  guidedTraining,
 };

@@ -19,7 +19,7 @@ const Monitor = ({ pointerPosition, slouchPosition, rating }) => (
       width={applyWidthDifference(6)}
       fill={slouchPosition}
       tintColor={theme.primaryColor}
-      backgroundColor={theme.greenColor}
+      backgroundColor={theme.infoColor}
       style={styles.animatedProgress}
       tension={100}
     >
@@ -36,7 +36,7 @@ const Monitor = ({ pointerPosition, slouchPosition, rating }) => (
           <BodyText
             style={[
               styles._postureRating,
-                { color: rating ? theme.greenColor : theme.primaryColor },
+                { color: rating ? theme.infoColor : theme.primaryColor },
             ]}
           >
             {
@@ -69,13 +69,13 @@ const Monitor = ({ pointerPosition, slouchPosition, rating }) => (
     <View
       style={[
         styles.leftCircle,
-          { backgroundColor: slouchPosition === 0 ? theme.greenColor : theme.primaryColor },
+          { backgroundColor: slouchPosition === 0 ? theme.infoColor : theme.primaryColor },
       ]}
     />
     <View
       style={[
         styles.rightCircle,
-          { backgroundColor: slouchPosition === 100 ? theme.primaryColor : theme.greenColor },
+          { backgroundColor: slouchPosition === 100 ? theme.primaryColor : theme.infoColor },
       ]}
     />
   </View>

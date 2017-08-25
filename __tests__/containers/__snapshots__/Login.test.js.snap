@@ -71,12 +71,8 @@ exports[`Login Component renders as expected 1`] = `
       <View>
         <View>
           <View>
-            <Button
-              fbBtn={true}
-              onPress={[Function]}
-              style={Object {}}
-              text="LOG IN WITH FACEBOOK"
-              textStyle={Object {}}
+            <Connect(Facebook)
+              buttonText="LOG IN WITH FACEBOOK"
             />
             <View>
               <View />

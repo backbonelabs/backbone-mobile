@@ -475,7 +475,7 @@ class Application extends Component {
                 UserService.setUserId(id);
 
                 // Identify user for Bugsnag
-                Bugsnag.setUser(id, user.nickname, user.email);
+                Bugsnag.setUser(id, user.nickname, user.email || '');
 
                 // Identify user for Mixpanel
                 Mixpanel.identify(id);
@@ -709,7 +709,7 @@ class Application extends Component {
         inactive: postureIconInactive,
       },
       {
-        routeName: '',
+        routeName: 'freeTraining',
         red: freeTrainingIconRed,
         green: freeTrainingIconGreen,
         blue: freeTrainingIconBlue,
@@ -718,7 +718,7 @@ class Application extends Component {
         inactive: freeTrainingIconInactive,
       },
       {
-        routeName: '',
+        routeName: 'education',
         red: educationIconRed,
         green: educationIconGreen,
         blue: educationIconBlue,
