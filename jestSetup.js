@@ -68,3 +68,16 @@ jest.mock('bugsnag-react-native', () => ({
 jest.mock('react-native-fs', () => ({
   downloadFile: jest.fn(),
 }));
+jest.mock('react-native-fbsdk', () => ({
+  LoginManager: {
+    logOut: jest.fn(),
+    logInWithReadPermissions:
+      jest.fn(() => new Promise((resolve) => resolve(true))),
+  },
+  AccessToken: {
+    getCurrentAccessToken:
+      jest.fn(() => new Promise((resolve) => resolve(true))),
+  },
+  GraphRequestManager: jest.fn(),
+}
+));

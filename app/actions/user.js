@@ -3,6 +3,7 @@ import {
   FETCH_USER,
   UPDATE_USER,
   UPDATE_USER_SETTINGS,
+  UPDATE_USER_TRAINING_PLAN_PROGRESS,
   FETCH_USER_SESSIONS,
   PREPARE_USER_UPDATE,
   FETCH_USER_WORKOUTS,
@@ -51,7 +52,7 @@ export default {
             throw new Error(body.error);
           }
           // Update user details in Bugsnag
-          Bugsnag.setUser(body._id, body.nickname, body.email);
+          Bugsnag.setUser(body._id, body.nickname, body.email || '');
 
           // Update user profile in Mixpanel
           Mixpanel.setUserProperties(body);
@@ -97,7 +98,7 @@ export default {
           SensitiveInfo.setItem(storageKeys.USER, body);
 
           // Update user details in Bugsnag
-          Bugsnag.setUser(body._id, body.nickname, body.email);
+          Bugsnag.setUser(body._id, body.nickname, body.email || '');
 
           // Update user profile in Mixpanel
           Mixpanel.setUserProperties(body);
@@ -162,6 +163,41 @@ export default {
           // Update user profile in Mixpanel
           Mixpanel.setUserProperties(userObj);
           Mixpanel.track(`${updateUserSettingsEventName}-success`);
+
+          return body;
+        }),
+    };
+  },
+
+  updateUserTrainingPlanProgress(progress) {
+    const { auth: { accessToken }, user: { user } } = store.getState();
+    const eventName = 'updateUserTrainingPlanProgress';
+
+    return {
+      type: UPDATE_USER_TRAINING_PLAN_PROGRESS,
+      payload: () => Fetcher.post({
+        url: `${baseUrl}/${user._id}`,
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ trainingPlanProgress: progress }),
+      })
+        .catch(() => handleNetworkError(eventName))
+        .then(response => response.json())
+        .then((body) => {
+          if (body.error) {
+            // Error received from API server
+            Mixpanel.trackWithProperties(`${eventName}-error`, {
+              errorMessage: body.error,
+            });
+
+            throw new Error(body.error);
+          }
+
+          // Store updated user in local storage
+          SensitiveInfo.setItem(storageKeys.USER, body);
+
+          // Update user profile in Mixpanel
+          Mixpanel.setUserProperties(body);
+          Mixpanel.track(`${eventName}-success`);
 
           return body;
         }),

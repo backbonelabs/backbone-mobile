@@ -24,6 +24,7 @@ import deviceScan from './deviceScan';
 import device from './device';
 import dashboard from './dashboard';
 import stats from './stats';
+import guidedTraining from './guidedTraining';
 
 export default {
   activity,
@@ -52,4 +53,5 @@ export default {
   device,
   dashboard,
   stats,
+  guidedTraining,
 };
