@@ -70,7 +70,7 @@ class EducationVideo extends Component {
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={this.toggleFavorite} >
-            <Icon name={iconName} style={styles.favoriteButton} size={styles.$heartIconSize} />
+            <Icon name={iconName} style={styles.favoriteButton} />
           </TouchableOpacity>
         </View>
       </View>
