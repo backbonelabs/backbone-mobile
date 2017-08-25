@@ -70,6 +70,12 @@ export default EStyleSheet.create({
     height: applyWidthDifference(23),
     width: applyWidthDifference(23),
   },
+  videoPlayerContainer: {
+    flex: 2,
+  },
+  videoPlayer: {
+    width: '100%',
+  },
   footer: {
     backgroundColor: theme.grey50,
     flexDirection: 'row',
