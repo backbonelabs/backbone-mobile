@@ -23,6 +23,7 @@ Array [
     "payload": Object {
       "_id": "testId",
       "accessToken": "testToken",
+      "authMethod": 1,
       "email": "test@mail.com",
       "nickname": "testNick",
       "password": "password",
@@ -43,6 +44,7 @@ Array [
       "accessToken": "testToken",
       "user": Object {
         "_id": "testId",
+        "authMethod": 1,
         "email": "test@mail.com",
         "nickname": "testNick",
         "password": "password",

@@ -28,10 +28,16 @@ export default {
   setUserProperties(user) {
     const { gender, height, weight } = constants;
 
+    let userGender = 'male';
+    if (user.gender === gender.female) {
+      userGender = 'female';
+    } else if (user.gender === gender.other) {
+      userGender = 'other';
+    }
     // Specify Mixpanel profile properties to set
     const userProperties = {
       $email: user.email,
-      gender: user.gender && (user.gender === gender.male ? 'male' : 'female'),
+      gender: userGender,
       $created: user.createdAt,
       height: user.height,
       heightUnitPreference: user.heightUnitPreference === height.units.IN ? 'IN' : 'CM',
