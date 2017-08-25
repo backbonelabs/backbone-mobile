@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   TouchableOpacity,
-  InteractionManager,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -26,13 +25,6 @@ class EducationVideo extends Component {
   constructor(props) {
     super(props);
     autobind(this);
-  }
-
-  componentDidMount() {
-    // Run expensive operations after the scene is loaded
-    InteractionManager.runAfterInteractions(() => {
-      // Start the video
-    });
   }
 
   toggleFavorite() {
