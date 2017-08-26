@@ -14,8 +14,6 @@ import Graph from '../components/Graph';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 
-const today = moment();
-const sixDaysAgo = moment().subtract(6, 'day');
 const week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const totalSessionStats = (sessions) => (
@@ -73,73 +71,75 @@ class Stats extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.isFetchingSessions !== nextProps.isFetchingSessions) {
-      const sessionsByMonth = nextProps.sessions
-      .sort((a, b) => a.timestamp - b.timestamp) // sort from oldest to latest
-      .reduce((acc, val) => {
-        const month = moment(val.timestamp).format('MMM');
-        /* eslint-disable no-param-reassign */
+      const today = moment();
+      const sixDaysAgo = moment().subtract(6, 'day');
+      const sessions = nextProps.sessions
+        .sort((a, b) => a.timestamp - b.timestamp); // sort from oldest to latest
 
-        if (acc[month]) {
-          acc[month].slouchTime += val.slouchTime;
-          acc[month].totalDuration += val.totalDuration;
+      const sessionsByMonth = sessions
+        .reduce((acc, val) => {
+          const month = moment(val.timestamp).format('MMM');
+          /* eslint-disable no-param-reassign */
 
-          return acc;
-        }
-
-        acc[month] = Object.assign({}, val);
-
-        return acc;
-        /* eslint-disable no-param-reassign */
-      }, {});
-      const sessionsByHour = nextProps.sessions
-      .sort((a, b) => a.timestamp - b.timestamp) // sort from oldest to latest
-      .reduce((acc, val) => {
-        const date = moment(val.timestamp);
-        const time = moment(val.timestamp).format('ha'); // eg: 5pm
-        /* eslint-disable no-param-reassign */
-
-        if (today.isSame(date, 'day')) {
-          if (acc[time]) {
-            acc[time].slouchTime += val.slouchTime;
-            acc[time].totalDuration += val.totalDuration;
+          if (acc[month]) {
+            acc[month].slouchTime += val.slouchTime;
+            acc[month].totalDuration += val.totalDuration;
 
             return acc;
           }
 
-          acc[time] = Object.assign({}, val);
+          acc[month] = Object.assign({}, val);
 
           return acc;
-        }
+          /* eslint-disable no-param-reassign */
+        }, {});
+      const sessionsByHour = sessions
+        .reduce((acc, val) => {
+          const date = moment(val.timestamp);
+          const time = moment(val.timestamp).format('ha'); // eg: 5pm
+          /* eslint-disable no-param-reassign */
 
-        return acc;
-        /* eslint-disable no-param-reassign */
-      }, {});
-      const sessionsByDays = nextProps.sessions
-      .sort((a, b) => a.timestamp - b.timestamp) // sort from oldest to latest
-      .reduce((acc, val) => {
-        const date = moment(val.timestamp);
-        const dayOfWeek = week[date.format('e')];
-        /* eslint-disable no-param-reassign */
+          if (today.isSame(date, 'day')) {
+            if (acc[time]) {
+              acc[time].slouchTime += val.slouchTime;
+              acc[time].totalDuration += val.totalDuration;
 
-        if (
-          (today.isSame(date, 'd') || date < today) &&
-          (sixDaysAgo.isSame(date, 'd') || date > sixDaysAgo)
-        ) {
-          if (acc[dayOfWeek]) {
-            acc[dayOfWeek].slouchTime += val.slouchTime;
-            acc[dayOfWeek].totalDuration += val.totalDuration;
+              return acc;
+            }
+
+            acc[time] = Object.assign({}, val);
 
             return acc;
           }
 
-          acc[dayOfWeek] = Object.assign({}, val);
+          return acc;
+          /* eslint-disable no-param-reassign */
+        }, {});
+      const sessionsByDays = sessions
+        .reduce((acc, val) => {
+          const date = moment(val.timestamp);
+          const dayOfWeek = week[date.format('e')];
+          /* eslint-disable no-param-reassign */
+
+          if (
+            (today.isSame(date, 'd') || date < today) &&
+            (sixDaysAgo.isSame(date, 'd') || date > sixDaysAgo)
+          ) {
+            if (acc[dayOfWeek]) {
+              acc[dayOfWeek].slouchTime += val.slouchTime;
+              acc[dayOfWeek].totalDuration += val.totalDuration;
+
+              return acc;
+            }
+
+            acc[dayOfWeek] = Object.assign({}, val);
+
+            return acc;
+          }
 
           return acc;
-        }
-
-        return acc;
-        /* eslint-disable no-param-reassign */
-      }, {});
+          /* eslint-disable no-param-reassign */
+        }, {});
       this.setState({
         sessionsByMonth,
         sessionsByHour,
