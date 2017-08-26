@@ -20,19 +20,19 @@ const week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const totalSessionStats = (sessions) => (
   Object.keys(sessions).reduce((acc, val) => {
-    /* eslint-disable */
+    /* eslint-disable no-param-reassign */
     const good = sessions[val].totalDuration - sessions[val].slouchTime;
     const poor = sessions[val].slouchTime;
 
-    if (acc["good"]) {
-      acc["good"] += good;
-      acc["poor"] += poor;
+    if (acc.good) {
+      acc.good += good;
+      acc.poor += poor;
       return acc;
     }
-    acc["good"] = good;
-    acc["poor"] = poor;
+    acc.good = good;
+    acc.poor = poor;
     return acc;
-    /* eslint-enable */
+    /* eslint-disable no-param-reassign */
   }, {})
 );
 
@@ -55,33 +55,31 @@ class Stats extends Component {
       sessionsByDays: {},
       selectedTab: 'Today',
       selectedTabTotalSessions: [],
-      startDate: moment().format('YYYY-MM-DD'),
-      fromDate: moment().subtract(12, 'months').startOf('month'),
-      toDate: moment().add(1, 'months').endOf('month'),
       loading: true,
     };
   }
 
   componentDidMount() {
+    const fromDate = moment().subtract(12, 'months').startOf('month').toISOString();
+    const toDate = moment().endOf('month').toISOString();
     InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(userActions.fetchUserSessions({
-        fromDate: this.state.fromDate.toISOString(),
-        toDate: this.state.toDate.toISOString(),
+        fromDate,
+        toDate,
       }));
       this.setState({ loading: false });
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.sessions !== nextProps.sessions) {
+    if (this.props.isFetchingSessions !== nextProps.isFetchingSessions) {
       const sessionsByMonth = nextProps.sessions
       .sort((a, b) => a.timestamp - b.timestamp) // sort from oldest to latest
       .reduce((acc, val) => {
         const month = moment(val.timestamp).format('MMM');
-        /* eslint-disable */
+        /* eslint-disable no-param-reassign */
 
         if (acc[month]) {
-          acc[month].sessionTime += val.sessionTime;
           acc[month].slouchTime += val.slouchTime;
           acc[month].totalDuration += val.totalDuration;
 
@@ -91,18 +89,17 @@ class Stats extends Component {
         acc[month] = Object.assign({}, val);
 
         return acc;
-        /* eslint-enable */
+        /* eslint-disable no-param-reassign */
       }, {});
       const sessionsByHour = nextProps.sessions
       .sort((a, b) => a.timestamp - b.timestamp) // sort from oldest to latest
       .reduce((acc, val) => {
         const date = moment(val.timestamp);
         const time = moment(val.timestamp).format('ha'); // eg: 5pm
-        /* eslint-disable */
+        /* eslint-disable no-param-reassign */
 
         if (today.isSame(date, 'day')) {
           if (acc[time]) {
-            acc[time].sessionTime += val.sessionTime;
             acc[time].slouchTime += val.slouchTime;
             acc[time].totalDuration += val.totalDuration;
 
@@ -115,22 +112,20 @@ class Stats extends Component {
         }
 
         return acc;
-        /* eslint-enable */
+        /* eslint-disable no-param-reassign */
       }, {});
       const sessionsByDays = nextProps.sessions
       .sort((a, b) => a.timestamp - b.timestamp) // sort from oldest to latest
       .reduce((acc, val) => {
         const date = moment(val.timestamp);
         const dayOfWeek = week[date.format('e')];
-        /* eslint-disable */
+        /* eslint-disable no-param-reassign */
 
         if (
           (today.isSame(date, 'd') || date < today) &&
           (sixDaysAgo.isSame(date, 'd') || date > sixDaysAgo)
         ) {
-
           if (acc[dayOfWeek]) {
-            acc[dayOfWeek].sessionTime += val.sessionTime;
             acc[dayOfWeek].slouchTime += val.slouchTime;
             acc[dayOfWeek].totalDuration += val.totalDuration;
 
@@ -143,7 +138,7 @@ class Stats extends Component {
         }
 
         return acc;
-        /* eslint-enable */
+        /* eslint-disable no-param-reassign */
       }, {});
       this.setState({
         sessionsByMonth,
