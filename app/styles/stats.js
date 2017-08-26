@@ -12,22 +12,26 @@ export default EStyleSheet.create({
   },
   graphContainer: {
     flex: 3.5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     backgroundColor: '#FAFAFA',
   },
-  graph: {
+  graphInnerContainer: {
     justifyContent: 'space-around',
   },
-  heading: {
-    width: '80%',
-    marginTop: applyWidthDifference(10),
+  graph: {
     alignSelf: 'center',
+  },
+  noData: {
+    alignSelf: 'center',
+  },
+  heading: {
+    alignItems: 'center',
+    paddingTop: applyWidthDifference(10),
   },
   goodRating: {
     fontWeight: 'bold',
     fontSize: fixedResponsiveFontSize(12),
-    paddingRight: 15,
+    paddingRight: applyWidthDifference(15),
     color: '#8BC34A',
   },
   poorRating: {

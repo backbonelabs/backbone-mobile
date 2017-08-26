@@ -11,6 +11,8 @@ import styles from '../styles/stats';
 import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
 import Graph from '../components/Graph';
+import HeadingText from '../components/HeadingText';
+import BodyText from '../components/BodyText';
 
 const today = moment();
 const sixDaysAgo = moment().subtract(6, 'day');
@@ -54,7 +56,7 @@ class Stats extends Component {
       selectedTab: 'Today',
       selectedTabTotalSessions: [],
       startDate: moment().format('YYYY-MM-DD'),
-      fromDate: moment().subtract(1, 'months').startOf('month'),
+      fromDate: moment().subtract(12, 'months').startOf('month'),
       toDate: moment().add(1, 'months').endOf('month'),
       loading: true,
     };
@@ -126,7 +128,7 @@ class Stats extends Component {
           (today.isSame(date, 'd') || date < today) &&
           (sixDaysAgo.isSame(date, 'd') || date > sixDaysAgo)
         ) {
-          console.log(date, dayOfWeek)
+
           if (acc[dayOfWeek]) {
             acc[dayOfWeek].sessionTime += val.sessionTime;
             acc[dayOfWeek].slouchTime += val.slouchTime;
@@ -185,6 +187,7 @@ class Stats extends Component {
       sessionsByMonth,
     } = this.state;
     let data;
+
     switch (selectedTab) {
       case 'Today':
         data = sessionsByHour;
@@ -202,7 +205,6 @@ class Stats extends Component {
     return (
       <Graph
         data={data}
-        selectedTab={selectedTab}
         goodTime={Math.round(selectedTabTotalSessions.good / 60)}
         poorTime={Math.round(selectedTabTotalSessions.poor / 60)}
       />
@@ -210,14 +212,33 @@ class Stats extends Component {
   }
 
   render() {
-    if (this.props.isFetchingSessions || this.state.loading) {
+    const { loading, selectedTabTotalSessions } = this.state;
+    const good = Math.round(selectedTabTotalSessions.good / 60);
+    const poor = Math.round(selectedTabTotalSessions.poor / 60);
+    const justifyContent = (good || poor) ? 'flex-end' : 'center';
+
+    if (this.props.isFetchingSessions || loading) {
       return <Spinner />;
     }
 
     return (
       <View style={styles.container}>
-        <View style={styles.graphContainer}>
-          {this.renderGraph()}
+        <View style={[styles.graphContainer, { justifyContent }]}>
+          <View style={styles.graphInnerContainer}>
+            { (good || poor) ? <View style={styles.heading}>
+              <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
+              <View style={styles.sessionRatingContainer}>
+                <BodyText style={styles._goodRating}>
+                  Good: {good} MIN
+                </BodyText>
+                <BodyText style={styles._poorRating}>
+                  Poor: {poor} MIN
+                </BodyText>
+              </View>
+            </View> : null
+            }
+            {this.renderGraph()}
+          </View>
         </View>
         <ScrollableTabView
           style={styles.tabs}

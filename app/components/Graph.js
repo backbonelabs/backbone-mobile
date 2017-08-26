@@ -1,12 +1,18 @@
 import React, { PropTypes } from 'react';
-import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme, VictoryStack } from 'victory-native';
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryAxis,
+  VictoryTheme,
+  VictoryStack,
+  VictoryLabel,
+} from 'victory-native';
 import { View } from 'react-native';
-import BodyText from '../components/BodyText';
 import HeadingText from '../components/HeadingText';
 import styles from '../styles/stats';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const renderBars = (data) => (
   Object.keys(data).map((val, idx) => {
@@ -32,25 +38,29 @@ const renderBars = (data) => (
 
 const tickValues = (data) => Object.keys(data).map((val) => val);
 
-const Graph = ({ data, selectedTab, goodTime, poorTime }) => {
+const Graph = ({ data, goodTime, poorTime }) => {
   if (!goodTime || !poorTime) {
-    return <HeadingText size={1}>No Sessions</HeadingText>;
+    return <HeadingText size={1} style={styles._noData}>No Data Available</HeadingText>;
   }
   return (
     <View style={styles.graph}>
-      <View style={styles.heading}>
-        <HeadingText size={1}>{ selectedTab }</HeadingText>
-        <View style={styles.sessionRatingContainer}>
-          <BodyText style={styles._goodRating}>{goodTime} MIN</BodyText>
-          <BodyText style={styles._poorRating}>{poorTime} MIN</BodyText>
-        </View>
-      </View>
       <VictoryChart
         domainPadding={applyWidthDifference(10)}
-        width={applyWidthDifference(400)}
+        width={applyWidthDifference(410)}
         theme={VictoryTheme.material}
       >
+        <VictoryLabel
+          x={applyWidthDifference(30)}
+          y={applyWidthDifference(40)}
+          text="Minutes"
+        />
+
         <VictoryAxis
+          style={{
+            tickLabels: {
+              fontSize: fixedResponsiveFontSize(12),
+            },
+          }}
           tickValues={tickValues(data)}
         />
         <VictoryAxis
@@ -65,7 +75,6 @@ const Graph = ({ data, selectedTab, goodTime, poorTime }) => {
 
 Graph.propTypes = {
   data: PropTypes.object,
-  selectedTab: PropTypes.string,
   goodTime: PropTypes.number,
   poorTime: PropTypes.number,
 };
