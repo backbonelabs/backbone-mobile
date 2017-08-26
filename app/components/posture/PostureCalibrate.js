@@ -3,23 +3,16 @@ import {
   View,
   Image,
   Animated,
-  Switch,
 } from 'react-native';
 import autobind from 'class-autobind';
-import styles from '../../styles/posture/postureCalibrate';
 import routes from '../../routes';
 import HeadingText from '../HeadingText';
 import BodyText from '../BodyText';
-import SecondaryText from '../SecondaryText';
 import Button from '../Button';
-import sittingExample from '../../images/calibration/sittingExample.png';
-import constants from '../../utils/constants';
-import SensitiveInfo from '../../utils/SensitiveInfo';
-import Mixpanel from '../../utils/Mixpanel';
+import progressCircle from '../../images/posture/calibration-progress-circle.png';
+import styles from '../../styles/posture/postureCalibrate';
 
 const { PropTypes } = React;
-
-const { storageKeys } = constants;
 
 export default class PostureCalibrate extends Component {
   static propTypes = {
@@ -37,14 +30,7 @@ export default class PostureCalibrate extends Component {
   }
 
   componentDidMount() {
-    SensitiveInfo.getItem(storageKeys.CALIBRATION_AUTO_START)
-      .then(autoStart => {
-        const newState = { autoStart };
-        if (autoStart) {
-          newState.isCountingDown = true;
-        }
-        this.setState(newState);
-      });
+    // this.startAnimation();
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -103,17 +89,6 @@ export default class PostureCalibrate extends Component {
     }
   }
 
-  /**
-   * Toggles the auto-start preference for the calibration countdown and the
-   * new preference will be stored on the device for subsequent sessions
-   * @param {Boolean} autoStart
-   */
-  toggleAutoStart(autoStart) {
-    Mixpanel.track(`toggleAutoStart-${autoStart ? 'enabled' : 'diabled'}`);
-    SensitiveInfo.setItem(storageKeys.CALIBRATION_AUTO_START, autoStart);
-    this.setState({ autoStart });
-  }
-
   render() {
     const buttonProps = {};
     if (!this.state.isCountingDown) {
@@ -124,48 +99,19 @@ export default class PostureCalibrate extends Component {
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <HeadingText style={styles._title} size={2}>
-            Get Ready
+            Calibrating
           </HeadingText>
           <BodyText style={styles._subtitle}>
-            Sit or stand up straight while Backbone calibrates
+            Continue to sit or stand up straight while Backbone calibrates
           </BodyText>
         </View>
-        <View style={styles.imageContainer}>
-          <Image style={styles.image} source={sittingExample} />
-          <View style={styles.calibrationCircleContainer}>
-            {
-              // Create 5 circles to represent calibration countdown
-              [0, 1, 2, 3, 4].map((value, key) =>
-                <Animated.View
-                  key={key}
-                  style={[
-                    styles.calibrationCircle,
-                    this.state.count >= key && { opacity: this.state.fadeAnim[key] },
-                  ]}
-                />
-              )
-            }
-          </View>
-        </View>
+        <Image source={progressCircle} style={styles.image} />
         <View style={styles.actionsContainer}>
           <Button
             {...buttonProps}
             onPress={() => this.setState({ isCountingDown: !this.state.isCountingDown })}
-            text={this.state.isCountingDown ? 'PAUSE' : 'GO'}
+            text={this.state.isCountingDown ? 'PAUSE' : 'RESUME'}
           />
-          <View style={styles.autoStartPreferenceContainer}>
-            <View style={styles.autoStartPreferenceLabel}>
-              <SecondaryText>
-                Automatically start calibration next time
-              </SecondaryText>
-            </View>
-            <View style={styles.autoStartPreferenceSwitch}>
-              <Switch
-                onValueChange={this.toggleAutoStart}
-                value={this.state.autoStart}
-              />
-            </View>
-          </View>
         </View>
       </View>
     );
