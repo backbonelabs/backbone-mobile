@@ -29,26 +29,26 @@ export default EStyleSheet.create({
     width: applyWidthDifference(150),
     height: applyWidthDifference(50),
     borderRadius: 3,
-  },
-  primaryBtn: {
     ...buttonShadow,
   },
+  defaultBtn: {
+    backgroundColor: 'white',
+  },
   secondaryBtn: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#03A9F4',
   },
   facebookBtn: {
     justifyContent: 'center',
     backgroundColor: '#3b5998',
     width: '100%',
-    ...buttonShadow,
   },
-  secondaryActive: {
+  defaultActive: {
     backgroundColor: '#F5F5F5',
   },
-  secondaryTextStyles: {
+  defaultTextStyles: {
     color: '#AAAAAA',
   },
-  secondaryTextActive: {
+  defaultTextActive: {
     color: '#000000',
   },
   disabledButton: {

@@ -170,7 +170,6 @@ class Alerts extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.spacerContainer} />
         <Toggle
           value={backboneVibration}
           onChange={this.updateSetting}
