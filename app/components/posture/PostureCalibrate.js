@@ -21,7 +21,9 @@ const originalHeight = applyWidthDifference(200);
 
 class PostureCalibrate extends Component {
   static propTypes = {
-    navigator: PropTypes.object,
+    navigator: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
     training: PropTypes.shape({
       selectedLevelIdx: PropTypes.number.isRequired,
     }).isRequired,
@@ -63,7 +65,10 @@ class PostureCalibrate extends Component {
    */
   _animationCallback({ finished }) {
     if (finished) {
-      // Navigate to posture monitor
+      // Navigate to posture monitor after a slight pause
+      setTimeout(() => {
+        this.props.navigator.push(routes.postureMonitor);
+      }, 200);
     }
   }
 
