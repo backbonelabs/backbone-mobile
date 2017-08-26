@@ -5,5 +5,4 @@ export default {
   title: 'Stats',
   component: Stats,
   showTabBar: true,
-  showBackButton: true,
 };
