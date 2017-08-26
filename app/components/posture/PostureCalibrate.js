@@ -122,6 +122,7 @@ class PostureCalibrate extends Component {
           style={styles._button}
           onPress={this._toggleAnimation}
           text={this.state.isAnimating ? 'PAUSE' : 'RESUME'}
+          disabled={percentage === 100}
         />
       </View>
     );
