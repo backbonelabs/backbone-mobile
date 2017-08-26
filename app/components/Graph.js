@@ -37,7 +37,7 @@ const Graph = ({ data, selectedTab, goodTime, poorTime }) => {
     return <HeadingText size={1}>No Sessions</HeadingText>;
   }
   return (
-    <View>
+    <View style={styles.graph}>
       <View style={styles.heading}>
         <HeadingText size={1}>{ selectedTab }</HeadingText>
         <View style={styles.sessionRatingContainer}>

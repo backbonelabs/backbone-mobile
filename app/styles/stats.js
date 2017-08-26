@@ -16,9 +16,12 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#FAFAFA',
   },
+  graph: {
+    justifyContent: 'space-around',
+  },
   heading: {
     width: '80%',
-    marginBottom: applyWidthDifference(-40),
+    marginTop: applyWidthDifference(10),
     alignSelf: 'center',
   },
   goodRating: {
