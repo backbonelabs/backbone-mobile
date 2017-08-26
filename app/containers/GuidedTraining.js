@@ -478,7 +478,11 @@ class GuidedTraining extends Component {
   }
 
   _navigateToPostureCalibrate() {
-    this.props.navigator.push(routes.postureCalibrate);
+    const { selectedLevelIdx, selectedSessionIdx } = this.props.training;
+    this.props.navigator.push({
+      ...routes.postureCalibrate,
+      title: `Level ${selectedLevelIdx + 1} Session ${selectedSessionIdx + 1}`,
+    });
   }
 
   render() {
