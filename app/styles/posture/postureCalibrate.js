@@ -4,6 +4,7 @@ import relativeDimensions from '../../utils/relativeDimensions';
 const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $size: applyWidthDifference(200),
   container: {
     flex: 1,
     alignItems: 'center',
@@ -16,8 +17,20 @@ export default EStyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    height: applyWidthDifference(200),
-    width: applyWidthDifference(200),
+    alignItems: 'center',
+    height: '$size',
+    justifyContent: 'center',
+    width: '$size',
+  },
+  blinder: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    top: 0,
+    width: '$size',
+  },
+  progressText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   actionsContainer: {
     alignItems: 'center',
