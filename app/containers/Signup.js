@@ -28,6 +28,7 @@ import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
 import SecondaryText from '../components/SecondaryText';
 import theme from '../styles/theme';
+import Facebook from '../containers/Facebook';
 
 const { applyWidthDifference, height } = relativeDimensions;
 // Android statusbar height
@@ -79,18 +80,29 @@ class Signup extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.accessToken && nextProps.accessToken) {
-      this.props.navigator.resetTo(routes.profileSetupOne);
-    } else if (!this.props.errorMessage && nextProps.errorMessage) {
-      // Handles error messages returned from API server
-      if (nextProps.errorMessage === 'Email is not available') {
-        this.setState({ emailWarning: true, errorMessage: nextProps.errorMessage.toUpperCase() });
-      // Handles error relating to network issues
-      } else if (nextProps.errorMessage === constants.errorMessages.NETWORK_ERROR) {
-        this.setState({ errorMessage: nextProps.errorMessage });
+    const newAccessToken = nextProps.accessToken;
+    const errorMessage = nextProps.auth.errorMessage;
+    if (newAccessToken && this.props.accessToken !== newAccessToken) {
+      // When a user uses the 'Sign up with Facebook' button but already has a Backbone
+      // account then we have to check if they have already onboarded since they're
+      // not a new user.
+      if (nextProps.user.hasOnboarded) {
+        this.props.navigator.resetTo(routes.dashboard);
+      } else {
+        // User hasn't completed onboarding process
+        this.props.navigator.resetTo(routes.profileSetupOne);
       }
-      // For Facebook signup error messages
-      // Alert.alert('Error', nextProps.auth.errorMessage);
+    } else if (!this.props.errorMessage && errorMessage) {
+      // Handles error messages returned from API server
+      if (errorMessage === 'Email is not available') {
+        this.setState({ emailWarning: true, errorMessage: errorMessage.toUpperCase() });
+      // Handles error relating to network issues
+      } else if (errorMessage === constants.errorMessages.NETWORK_ERROR) {
+        this.setState({ errorMessage: errorMessage.toUpperCase() });
+      } else {
+      // For facebook signup error messages
+        Alert.alert('Signup Error', errorMessage);
+      }
     }
   }
 
@@ -251,12 +263,9 @@ class Signup extends Component {
                   {
                     hideContent ? null :
                       <View>
-                        <Button
-                          style={styles._fbBtn}
-                          textStyle={styles._fbBtnText}
-                          text="SIGN UP WITH FACEBOOK"
-                          fbBtn
-                          onPress={() => null}
+                        <Facebook
+                          buttonText="SIGN UP WITH FACEBOOK"
+                          style={styles._inputField}
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />
@@ -356,8 +365,8 @@ class Signup extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth } = state;
-  return auth;
+  const { auth, user: { user } } = state;
+  return { auth, user };
 };
 
 export default connect(mapStateToProps)(Signup);

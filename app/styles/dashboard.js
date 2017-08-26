@@ -13,12 +13,15 @@ const hexagonConnectorDefaults = {
 const largeHexagonHeight = 100;
 
 export default EStyleSheet.create({
-  $errorIconSize: applyWidthDifference(100),
+  $modalIconSize: applyWidthDifference(100),
   $hexagonContainerHeight: applyWidthDifference(largeHexagonHeight),
   $carouselSliderWidth: '100%',
   $carouselItemWidth: '85%',
   errorIcon: {
     color: theme.warningColor,
+  },
+  infoIcon: {
+    color: theme.infoColor,
   },
   backgroundImage: {
     flex: 1,

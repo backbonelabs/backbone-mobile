@@ -9,6 +9,7 @@ import {
   Text,
   Platform,
   StatusBar,
+  Alert,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -24,6 +25,7 @@ import BackBoneLogo from '../images/logo.png';
 import BodyText from '../components/BodyText';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
+import Facebook from '../containers/Facebook';
 import constants from '../utils/constants';
 
 const { applyWidthDifference, height } = relativeDimensions;
@@ -97,15 +99,18 @@ class Login extends Component {
       nextProps.auth.errorMessage &&
       currentRoute.name === routes.login.name
     ) {
+      // Logs out the user of Facebook and returns to welcome screen
+      // LoginManager.logOut();
       // Authentication error returned from API server
-      if (nextProps.auth.errorMessage === 'Invalid login credentials. Please try again.') {
+      if (nextProps.auth.errorMessage === 'Incorrect email or password') {
         this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
       // Handles error relating to network issues
       } else if (nextProps.auth.errorMessage === constants.errorMessages.NETWORK_ERROR) {
         this.setState({ authError: true, authErrorMessage: nextProps.auth.errorMessage });
+      } else {
+        // For Facebook login error messages
+        Alert.alert('Authentication Error', nextProps.auth.errorMessage);
       }
-      // For Facebook login error messages
-      // Alert.alert('Authentication Error', nextProps.auth.errorMessage);
     }
   }
 
@@ -235,12 +240,9 @@ class Login extends Component {
                   {
                     hideContent ? null :
                       <View>
-                        <Button
-                          style={styles._fbBtn}
-                          textStyle={styles._fbBtnText}
-                          text="LOG IN WITH FACEBOOK"
-                          fbBtn
-                          onPress={() => null}
+                        <Facebook
+                          buttonText="LOG IN WITH FACEBOOK"
+                          style={styles._inputField}
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />

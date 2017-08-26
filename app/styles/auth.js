@@ -83,13 +83,8 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  fbBtn: {
+  inputField: {
     width: '85%',
-    height: applyWidthDifference(50),
-  },
-  fbBtnText: {
-    fontSize: fixedResponsiveFontSize(16),
-    fontWeight: 'bold',
   },
   breakContainer: {
     flexDirection: 'row',

@@ -185,6 +185,26 @@ RCT_EXPORT_METHOD(scheduleNotification:(NSDictionary*)notificationParam) {
 }
 
 /**
+ Check if the specified notification type has been scheduled
+ @param callback The callback contains the
+ */
+RCT_EXPORT_METHOD(hasScheduledNotification:(int)type callback:(RCTResponseSenderBlock)callback) {
+  NSArray *eventArray = [[UIApplication sharedApplication] scheduledLocalNotifications];
+  BOOL found = false;
+  
+  for (UILocalNotification *localNotif in eventArray) {
+    NSDictionary *userInfo = localNotif.userInfo;
+    
+    if ([[userInfo objectForKey:@"type"] intValue] == type) {
+      found = YES;
+      break;
+    }
+  }
+  
+  callback(@[[NSNull null], @{@"onSchedule": [NSNumber numberWithBool:found]}]);
+}
+
+/**
  Unschedule a scheduled notification based on the specified type
  @param type The notification type
  */

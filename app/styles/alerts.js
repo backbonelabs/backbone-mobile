@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
@@ -12,10 +13,6 @@ export default EStyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-  },
-  spacerContainer: {
-    flex: 0.09,
-    ...border,
   },
   vibrationSettingsContainer: {
     flex: 0.39,
@@ -33,10 +30,21 @@ export default EStyleSheet.create({
     width: '100%',
   },
   sliderThumb: {
-    width: applyWidthDifference(20),
-    height: applyWidthDifference(20),
-    backgroundColor: '#396600',
-    top: applyWidthDifference(25),
+    backgroundColor: 'white',
+    ...Platform.select({
+      // OS-specific drop shadow styling
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   sliderTrack: {
     height: applyWidthDifference(10),
