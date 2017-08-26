@@ -5,76 +5,87 @@ import {
   Keyboard,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  TextInput,
+  Image,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import userActions from '../actions/user';
 import styles from '../styles/profile';
 import constants from '../utils/constants';
 import ProfilePicker from './onBoardingFlow/profile/ProfilePicker';
-import Input from '../components/Input';
-import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
+import backboneLogo from '../images/logo.png';
 
 const {
   height: heightConstants,
   weight: weightConstants,
 } = constants;
 
-const ProfileFieldTitle = props => (
-  <View style={styles.profileFieldTitle}>
-    <BodyText>{props.title}</BodyText>
-    { // Display text which signifies profile field has been edited
-      props.edited && <SecondaryText> {props.editedText}</SecondaryText> }
-  </View>
-);
-
-ProfileFieldTitle.propTypes = {
-  title: PropTypes.string,
-  edited: PropTypes.bool,
-  editedText: PropTypes.string,
+const iconMap = {
+  FontAwesome: FontAwesomeIcon,
+  MaterialIcon: MaterialIcons,
 };
 
-const ProfileField = props => (
+const ProfileField = props => {
+  const {
+    iconFont,
+    iconLeftName,
+    } = props;
+  const Icon = iconMap[iconFont];
   // Pressing on a profile field initiates editing
-  <TouchableOpacity style={styles.profileField} onPress={props.onPress}>
-    <ProfileFieldTitle title={props.title} edited={props.edited} editedText="(edited)" />
+  return (<TouchableOpacity
+    style={styles.profileField}
+    onPress={props.onPress}
+  >
+    {Icon && iconLeftName
+          ? <Icon
+            name={iconLeftName}
+            size={styles.$iconSize}
+            style={styles.profileFieldIcon}
+          />
+          : null}
     <View style={styles.profileFieldData}>
       <SecondaryText style={styles._profileText}>{props.profileData}</SecondaryText>
     </View>
-  </TouchableOpacity>
-);
+  </TouchableOpacity>);
+};
 
 ProfileField.propTypes = {
   title: PropTypes.any,
   edited: PropTypes.bool,
   onPress: PropTypes.func,
   profileData: PropTypes.string,
+  iconFont: PropTypes.oneOf(['FontAwesome', 'MaterialIcon']),
+  iconLeftName: PropTypes.string, // maps to a font name in react-native-icons
 };
 
-const ProfileFieldInput = props => (
-  <View style={styles.profileField}>
-    <ProfileFieldTitle
-      title={props.title}
-      edited={props.edited}
-      // Show optional edited text if needed (e.g. "unconfirmed" for email)
-      editedText={props.editedText || '(edited)'}
-    />
-    <View style={styles.profileFieldData}>
-      <Input
+const ProfileFieldInput = props => {
+  const {
+    iconFont,
+    iconLeftName,
+    } = props;
+
+  const Icon = iconMap[iconFont];
+  return (
+    <View style={styles.profileField}>
+      <Icon name={iconLeftName} size={styles.$iconSize} style={styles._profileFieldIcon} />
+      <TextInput
         style={styles._profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}
-        value={props.value}
+        defaultValue={props.value}
         autoCorrect={false}
         keyboardType={props.keyboardType}
         autoCapitalize="none"
         onChangeText={value => props.fieldInputChangeHandler(props.field, value)}
+        editable
       />
-    </View>
-  </View>
-);
+    </View>);
+};
 
 ProfileFieldInput.propTypes = {
   field: PropTypes.string,
@@ -85,6 +96,8 @@ ProfileFieldInput.propTypes = {
   editedText: PropTypes.string,
   title: PropTypes.string,
   keyboardType: PropTypes.string,
+  iconFont: PropTypes.oneOf(['FontAwesome', 'MaterialIcon']),
+  iconLeftName: PropTypes.string, // maps to a font name in react-native-icons
 };
 
 class Profile extends Component {
@@ -395,15 +408,25 @@ class Profile extends Component {
               <Spinner style={{ flex: 1 }} />
               :
                 <View style={styles.profileFieldContainer}>
+                  <TouchableWithoutFeedback>
+                    <View style={styles.profileHeader}>
+                      <Image
+                        source={backboneLogo}
+                        style={styles.profileHeaderUserImage}
+                        resizeMode="contain"
+                      />
+                      <SecondaryText style={styles.profileHeaderNickname}>{nickname}</SecondaryText>
+                    </View>
+                  </TouchableWithoutFeedback>
                   <ProfileFieldInput
-                    title="Nickname"
-                    // Check if field has been edited
                     edited={nickname !== user.nickname}
                     field="nickname"
                     keyboardType="default"
                     value={nickname}
                     fieldInputChangeHandler={this.fieldInputChangeHandler}
                     blurHandler={this.fieldInputBlurHandler}
+                    iconFont="FontAwesome"
+                    iconLeftName="user"
                   />
                   <ProfileField
                     onPress={() => this.updateProfile('gender',
@@ -411,28 +434,32 @@ class Profile extends Component {
                         constants.gender.female
                         :
                           constants.gender.male)}
-                    title="Gender"
                     edited={gender !== user.gender}
                     profileData={constants.gender.male === gender ? 'Male' : 'Female'}
+                    iconFont="FontAwesome"
+                    iconLeftName="transgender"
                   />
                   <ProfileField
                     onPress={() => this.setPickerType('birthdate')}
-                    title="Birthdate"
                     edited={birthdate.getTime() !== new Date(user.birthdate).getTime()}
                     profileData={`${constants.months[birthdate.getMonth()]} ${
                         birthdate.getDate()}, ${birthdate.getFullYear()}`}
+                    iconFont="MaterialIcon"
+                    iconLeftName="cake"
                   />
                   <ProfileField
                     onPress={() => this.setPickerType('height')}
-                    title="Height"
                     edited={height.initialValue !== height.value}
                     profileData={this._setHeightLabel(height.value)}
+                    iconFont="MaterialIcon"
+                    iconLeftName="assignment"
                   />
                   <ProfileField
                     onPress={() => this.setPickerType('weight')}
-                    title="Weight"
                     edited={weight.initialValue !== weight.value}
                     profileData={this._setWeightLabel(weight.value)}
+                    iconFont="FontAwesome"
+                    iconLeftName="balance-scale"
                   />
                   <ProfileFieldInput
                     title="Email"
@@ -450,6 +477,31 @@ class Profile extends Component {
                     value={email}
                     fieldInputChangeHandler={this.fieldInputChangeHandler}
                     blurHandler={this.fieldInputBlurHandler}
+                    iconFont="MaterialIcon"
+                    iconLeftName="email"
+                  />
+                  <ProfileField
+                    onPress={() => this.setPickerType('weight')}
+                    edited={weight.initialValue !== weight.value}
+                    profileData="Change password"
+                    iconFont="MaterialIcon"
+                    iconLeftName="lock"
+                  />
+                  <ProfileField
+                    onPress={() => this.setPickerType('weight')}
+                    edited={weight.initialValue !== weight.value}
+                    profileData="Connect with Facebook"
+                    iconFont="FontAwesome"
+                    iconLeftName="facebook-official"
+                  />
+                  <View style={styles.logoutSpacerContainer} />
+                  <ProfileField
+                    onPress={() => this.setPickerType('weight')}
+                    edited={weight.initialValue !== weight.value}
+                    profileData="Logout"
+                    iconFont="FontAwesome"
+                    iconLeftName="power-off"
+                    style={styles.logout}
                   />
                 </View>
               }
