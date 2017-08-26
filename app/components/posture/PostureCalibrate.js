@@ -26,8 +26,7 @@ export default class PostureCalibrate extends Component {
     super();
     autobind(this);
     this.state = {
-      count: 0,
-      isCountingDown: false,
+      isAnimating: false,
       animatedHeightValue: new Animated.Value(originalHeight),
       blinderHeight: originalHeight,
     };
@@ -41,12 +40,16 @@ export default class PostureCalibrate extends Component {
    * Starts the animation for shrinking the blinder's height
    */
   _startAnimation() {
-    this.animatedTiming = Animated.timing(this.state.animatedHeightValue, {
-      duration: 3000,
-      toValue: 0,
-      easing: Easing.inOut(Easing.ease),
+    this.setState({
+      isAnimating: true,
+    }, () => {
+      this.animatedTiming = Animated.timing(this.state.animatedHeightValue, {
+        duration: 3000,
+        toValue: 0,
+        easing: Easing.inOut(Easing.ease),
+      });
+      this.animatedTiming.start(this._animationCallback);
     });
-    this.animatedTiming.start(this._animationCallback);
   }
 
   /**
@@ -69,39 +72,46 @@ export default class PostureCalibrate extends Component {
     });
   }
 
-  render() {
-    const buttonProps = {};
-    if (!this.state.isCountingDown) {
-      buttonProps.primary = true;
-    }
+  _toggleAnimation() {
+    this.setState(prevState => ({
+      isAnimating: !prevState.isAnimating,
+    }), () => {
+      const { isAnimating } = this.state;
+      if (!isAnimating) {
+        this.animatedTiming.stop();
+      } else {
+        this.animatedTiming.start(this._animationCallback);
+      }
+    });
+  }
 
+  render() {
     const percentage = Math.floor((1 - (this.state.blinderHeight / originalHeight)) * 100);
 
     return (
       <View style={styles.container}>
-        <View style={styles.textContainer}>
-          <HeadingText style={styles._title} size={2}>
-            Calibrating
+        <View style={styles.contentContainer}>
+          <HeadingText style={styles._title} size={1}>
+            Calibrating...
           </HeadingText>
           <BodyText style={styles._subtitle}>
             Continue to sit or stand up straight while Backbone calibrates
           </BodyText>
+          <Image source={progressCircle} style={styles.progressCircle}>
+            <HeadingText size={1} style={styles._progressText}>{percentage}%</HeadingText>
+            <BodyText style={styles._progressText}>CALIBRATED</BodyText>
+            <Animated.View
+              onLayout={this._updateBlinderHeight}
+              style={[styles.blinder, { height: this.state.animatedHeightValue }]}
+            />
+          </Image>
         </View>
-        <Image source={progressCircle} style={styles.image}>
-          <HeadingText size={1} style={styles._progressText}>{percentage}%</HeadingText>
-          <BodyText style={styles._progressText}>CALIBRATED</BodyText>
-          <Animated.View
-            onLayout={this._updateBlinderHeight}
-            style={[styles.blinder, { height: this.state.animatedHeightValue }]}
-          />
-        </Image>
-        <View style={styles.actionsContainer}>
-          <Button
-            {...buttonProps}
-            onPress={() => this.setState({ isCountingDown: !this.state.isCountingDown })}
-            text={this.state.isCountingDown ? 'PAUSE' : 'RESUME'}
-          />
-        </View>
+        <Button
+          primary
+          style={styles._button}
+          onPress={this._toggleAnimation}
+          text={this.state.isAnimating ? 'PAUSE' : 'RESUME'}
+        />
       </View>
     );
   }

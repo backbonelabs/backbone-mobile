@@ -6,8 +6,14 @@ const { applyWidthDifference } = relativeDimensions;
 export default EStyleSheet.create({
   $size: applyWidthDifference(200),
   container: {
+    backgroundColor: '$grey50',
     flex: 1,
+    justifyContent: 'space-between',
+  },
+  contentContainer: {
     alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
   title: {
     textAlign: 'center',
@@ -16,23 +22,29 @@ export default EStyleSheet.create({
     marginTop: applyWidthDifference(10),
     textAlign: 'center',
   },
-  image: {
+  progressCircle: {
     alignItems: 'center',
     height: '$size',
     justifyContent: 'center',
+    marginVertical: applyWidthDifference(14),
     width: '$size',
   },
   blinder: {
-    backgroundColor: 'white',
+    backgroundColor: '$grey50',
     position: 'absolute',
     top: 0,
     width: '$size',
   },
   progressText: {
+    backgroundColor: 'transparent',
     color: 'white',
     fontWeight: 'bold',
   },
-  actionsContainer: {
-    alignItems: 'center',
+  buttonContainer: {
+    width: '100%',
+  },
+  button: {
+    borderRadius: 0,
+    width: '100%',
   },
 });
