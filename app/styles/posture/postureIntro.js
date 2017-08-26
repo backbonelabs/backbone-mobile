@@ -13,7 +13,4 @@ export default StyleSheet.create({
     height: applyWidthDifference(240),
     width: applyWidthDifference(240),
   },
-  button: {
-    width: '100%',
-  },
 });
