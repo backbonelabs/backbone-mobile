@@ -13,7 +13,7 @@ export default EStyleSheet.create({
   graphContainer: {
     flex: 3.5,
     justifyContent: 'flex-end',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '$grey50',
   },
   graphInnerContainer: {
     justifyContent: 'space-around',
@@ -32,12 +32,12 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
     fontSize: fixedResponsiveFontSize(12),
     paddingRight: applyWidthDifference(15),
-    color: '#8BC34A',
+    color: '$green400',
   },
   poorRating: {
     fontWeight: 'bold',
     fontSize: fixedResponsiveFontSize(12),
-    color: '#F44336',
+    color: '$primaryColor',
   },
   sessionRatingContainer: {
     flexDirection: 'row',
@@ -47,7 +47,6 @@ export default EStyleSheet.create({
     backgroundColor: 'white',
   },
   tabBarUnderlineStyle: {
-    backgroundColor: '#2196F3',
     borderRadius: 4,
   },
   tabBarTextStyle: {

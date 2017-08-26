@@ -8,11 +8,13 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import styles from '../styles/stats';
+import theme from '../styles/theme';
 import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
 import Graph from '../components/Graph';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
+import { getColorHexForLevel } from '../utils/levelColors';
 
 const week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -42,6 +44,7 @@ class Stats extends Component {
     navigator: PropTypes.shape({
       push: PropTypes.func,
     }),
+    training: PropTypes.object,
   }
 
   constructor(props) {
@@ -212,6 +215,9 @@ class Stats extends Component {
     const poor = Math.round(selectedTabTotalSessions.poor / 60);
     const justifyContent = (good || poor) ? 'flex-end' : 'center';
 
+    const level = this.props.training.selectedLevelIdx;
+    const levelColorCode = getColorHexForLevel(level);
+
     if (this.props.isFetchingSessions || loading) {
       return <Spinner />;
     }
@@ -239,9 +245,12 @@ class Stats extends Component {
           style={styles.tabs}
           onChangeTab={this.selectTab}
           tabBarPosition="top"
-          tabBarActiveTextColor="#2196F3"
-          tabBarInactiveTextColor="#bdbdbd"
-          tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
+          tabBarActiveTextColor={levelColorCode}
+          tabBarInactiveTextColor={theme.grey400}
+          tabBarUnderlineStyle={[
+            styles.tabBarUnderlineStyle,
+            { backgroundColor: levelColorCode },
+          ]}
           tabBarTextStyle={styles.tabBarTextStyle}
         >
           <View tabLabel="Today" />
@@ -256,6 +265,7 @@ class Stats extends Component {
 const mapStateToProps = (state) => ({
   sessions: state.user.sessions,
   isFetchingSessions: state.user.isFetchingSessions,
+  training: state.training,
 });
 
 export default connect(mapStateToProps)(Stats);
