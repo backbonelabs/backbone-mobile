@@ -30,8 +30,10 @@ import { getColorHexForLevel, getColorNameForLevel } from '../utils/levelColors'
 import styles from '../styles/guidedTraining';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
+import constants from '../utils/constants';
 import { formattedTimeString } from '../utils/timeUtils';
 
+const { workoutTypes } = constants;
 const { applyWidthDifference } = relativeDimensions;
 
 const ProgressBar = (props) => {
@@ -183,7 +185,7 @@ class GuidedTraining extends Component {
 
   componentDidMount() {
     const { currentWorkout: { workout } } = this.state;
-    if (workout.type === 1) {
+    if (workout.type === workoutTypes.POSTURE) {
       // If current workout is a posture session, set appropriate configuration
       this.props.setSessionTime(workout.duration || 0);
     }
@@ -231,7 +233,7 @@ class GuidedTraining extends Component {
     if (!isEqual(prevState.currentWorkout, this.state.currentWorkout)) {
       // Workout changed
       const { currentWorkout: { workout } } = this.state;
-      if (workout.type === 1) {
+      if (workout.type === workoutTypes.POSTURE) {
         // If current workout is a posture session, set appropriate configuration
         this.props.setSessionTime(workout.duration || 0);
       }
@@ -546,7 +548,7 @@ class GuidedTraining extends Component {
     const levelColorName = getColorNameForLevel(selectedLevelIdx);
 
     // If the workout is a posture session, display PostureIntro. Otherwise, display GIF
-    const isPostureSession = currentWorkout.workout.type === 1;
+    const isPostureSession = currentWorkout.workout.type === workoutTypes.POSTURE;
     const content = isPostureSession ?
       <PostureIntro onProceed={this._navigateToPostureCalibrate} /> : (
         <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif}>
