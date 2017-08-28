@@ -61,7 +61,7 @@ class Stats extends Component {
   }
 
   componentDidMount() {
-    const fromDate = moment().subtract(12, 'months').startOf('month').toISOString();
+    const fromDate = moment().subtract(11, 'months').startOf('month').toISOString();
     const toDate = moment().endOf('month').toISOString();
     InteractionManager.runAfterInteractions(() => {
       this.props.dispatch(userActions.fetchUserSessions({
@@ -230,10 +230,10 @@ class Stats extends Component {
               <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
               <View style={styles.sessionRatingContainer}>
                 <BodyText style={styles._goodRating}>
-                  Good: {good} MIN
+                  GOOD: {good} MIN
                 </BodyText>
                 <BodyText style={styles._poorRating}>
-                  Poor: {poor} MIN
+                  POOR: {poor} MIN
                 </BodyText>
               </View>
             </View> : null
