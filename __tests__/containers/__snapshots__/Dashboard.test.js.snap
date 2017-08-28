@@ -29,7 +29,12 @@ exports[`Dashboard Component renders as expected 1`] = `
           }
         >
           <BodyText
-            style={Object {}}
+            style={
+              Object {
+                "color": "black",
+                "fontWeight": "bold",
+              }
+            }
           >
             2
           </BodyText>
@@ -58,9 +63,14 @@ exports[`Dashboard Component renders as expected 1`] = `
           }
         >
           <BodyText
-            style={Object {}}
+            style={
+              Object {
+                "color": "purple",
+                "fontWeight": "bold",
+              }
+            }
           >
-            1
+            Level 1
           </BodyText>
           <View>
             <Icon

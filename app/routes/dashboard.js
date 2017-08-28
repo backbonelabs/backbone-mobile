@@ -2,7 +2,7 @@ import Dashboard from '../containers/Dashboard';
 
 export default {
   name: 'dashboard',
-  title: 'DASH',
+  title: 'Home',
   component: Dashboard,
   showTabBar: true,
   showBanner: true,

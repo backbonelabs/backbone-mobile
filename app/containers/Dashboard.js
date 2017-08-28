@@ -22,6 +22,7 @@ import appActions from '../actions/app';
 import userActions from '../actions/user';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
+import SecondaryText from '../components/SecondaryText';
 import Card from '../components/Card';
 import Carousel from '../components/Carousel';
 import purpleBg from '../images/dashboard/dashboard-bg-purple.jpg';
@@ -447,11 +448,15 @@ class Dashboard extends Component {
    * @return {Component[]}
    */
   _getLevelIcons(levels = []) {
+    const { selectedLevelIdx } = this.props.training;
     const nextLevelIndex = getNextIncompleteLevel(levels);
 
     return levels.map((level, idx) => {
       const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
       const isLevelUnlocked = idx <= nextLevelIndex;
+      const isCurrentLevel = (idx === selectedLevelIdx);
+      const levelTitle = (isCurrentLevel ? 'Level ' : '') + (idx + 1);
+      const color = (isCurrentLevel ? getColorNameForLevel(selectedLevelIdx) : 'black');
 
       return (
         <View key={idx} style={styles.hexagonContainer}>
@@ -467,7 +472,7 @@ class Dashboard extends Component {
               },
             ]}
           >
-            <BodyText>{idx + 1}</BodyText>
+            <BodyText style={{ color, fontWeight: 'bold' }}>{levelTitle}</BodyText>
             {
               isLevelUnlocked ?
                 <View style={styles.hexagonCircleContainer}>
@@ -514,11 +519,19 @@ class Dashboard extends Component {
     const isSessionUnlocked = isLevelUnlocked &&
     (nextSessionIndex === -1 || idx <= nextSessionIndex);
     const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
+    const color = getColorNameForLevel(selectedLevelIdx);
     let cardContents;
 
     if (isSessionUnlocked) {
-      cardContents = session.map(workout => {
-        const color = getColorNameForLevel(selectedLevelIdx);
+      let durationInSeconds = 0;
+      const workoutList = session.map(workout => {
+        const seconds = get(workout, 'seconds', 0);
+        const sets = get(workout, 'sets', 0);
+        const twice = get(workout, 'twoSides', false);
+        if (seconds) {
+          durationInSeconds += seconds * (twice ? 2 : 1) * sets;
+        }
+
         return (
           <View key={workout.title} style={styles.sessionWorkoutRow}>
             <Image
@@ -529,6 +542,34 @@ class Dashboard extends Component {
           </View>
         );
       });
+
+      const durationText = (durationInSeconds < 60 ? `${durationInSeconds} sec`
+        : `${Math.ceil(durationInSeconds / 60)} min`);
+
+      cardContents = (
+        <View>
+          <View style={styles.sessionCardTopContainer}>
+            <View style={styles.sessionCardTopLeftContainer}>
+              <SecondaryText style={{ color, ...styles._sessionTitle }}>
+                {`Session ${idx + 1} - Exercise List`}
+              </SecondaryText>
+            </View>
+            <View style={styles.sessionCardTopRightContainer}>
+              { durationInSeconds > 0 &&
+                <View style={styles.sessionDurationContainer}>
+                  <FontAwesomeIcon name={'clock-o'} style={{ color }} />
+                  <SecondaryText style={{ color, ...styles._durationText }}>
+                    {durationText}
+                  </SecondaryText>
+                </View>
+              }
+            </View>
+          </View>
+          <View>
+            {workoutList}
+          </View>
+        </View>
+      );
     } else {
       cardContents = (
         <View style={styles.lockedCard}>

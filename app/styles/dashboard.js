@@ -59,7 +59,7 @@ export default EStyleSheet.create({
   hexagonCircle: {
     fontSize: fixedResponsiveFontSize(9),
     paddingHorizontal: applyWidthDifference(3),
-    color: theme.grey300,
+    color: theme.disabledColor,
   },
   hexagonCircleCompleted: {
     fontSize: fixedResponsiveFontSize(9),
@@ -81,11 +81,11 @@ export default EStyleSheet.create({
   },
   levelLock: {
     fontSize: fixedResponsiveFontSize(30),
-    color: theme.grey300,
+    color: theme.disabledColor,
   },
   sessionLock: {
     fontSize: fixedResponsiveFontSize(40),
-    color: theme.grey300,
+    color: theme.disabledColor,
   },
   carouselContainer: {
     position: 'absolute',
@@ -102,6 +102,31 @@ export default EStyleSheet.create({
   },
   sessionWorkoutRow: {
     flexDirection: 'row',
+  },
+  sessionCardTopContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: applyWidthDifference(10),
+  },
+  sessionCardTopLeftContainer: {
+    flex: 0.7,
+  },
+  sessionCardTopRightContainer: {
+    flex: 0.3,
+    alignItems: 'flex-end',
+  },
+  sessionDurationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sessionTitle: {
+    fontWeight: 'bold',
+    fontSize: fixedResponsiveFontSize(15),
+  },
+  durationText: {
+    fontWeight: 'bold',
+    fontSize: fixedResponsiveFontSize(14),
+    marginLeft: applyWidthDifference(4),
   },
   workoutBullet: {
     alignSelf: 'center',
