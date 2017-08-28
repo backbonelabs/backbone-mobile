@@ -7,12 +7,12 @@ import {
   VictoryStack,
   VictoryLabel,
 } from 'victory-native';
-import { View } from 'react-native';
+import { ScrollView } from 'react-native';
 import HeadingText from '../components/HeadingText';
 import styles from '../styles/stats';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize, width } = relativeDimensions;
 
 const renderBars = (data) => (
   Object.keys(data).map((val, idx) => {
@@ -39,19 +39,38 @@ const renderBars = (data) => (
 const tickValues = (data) => Object.keys(data).map((val) => val);
 
 const Graph = ({ data, goodTime, poorTime }) => {
+  const tickLength = Object.keys(data).length;
+  let chartWidth = 410;
+  let chartHeight = 350;
+  let scrollEnabled = false;
+
+  if (tickLength > 9) {
+    chartWidth = 500;
+    scrollEnabled = true;
+  }
+  // eg: iphone4/iphone5
+  if (width === 320) {
+    chartHeight = 320;
+  }
+
   if (!goodTime || !poorTime) {
     return <HeadingText size={1} style={styles._noData}>No Data Available</HeadingText>;
   }
+
   return (
-    <View style={styles.graph}>
+    <ScrollView
+      horizontal
+      scrollEnabled={scrollEnabled}
+    >
       <VictoryChart
         domainPadding={applyWidthDifference(10)}
-        width={applyWidthDifference(410)}
+        width={applyWidthDifference(chartWidth)}
+        height={applyWidthDifference(chartHeight)}
         theme={VictoryTheme.material}
       >
         <VictoryLabel
           x={applyWidthDifference(30)}
-          y={applyWidthDifference(40)}
+          y={applyWidthDifference(30)}
           text="Minutes"
         />
 
@@ -69,7 +88,7 @@ const Graph = ({ data, goodTime, poorTime }) => {
         />
         { data ? renderBars(data) : null}
       </VictoryChart>
-    </View>
+    </ScrollView>
   );
 };
 

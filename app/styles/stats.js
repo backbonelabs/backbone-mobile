@@ -18,9 +18,6 @@ export default EStyleSheet.create({
   graphInnerContainer: {
     justifyContent: 'space-around',
   },
-  graph: {
-    alignSelf: 'center',
-  },
   noData: {
     alignSelf: 'center',
   },
