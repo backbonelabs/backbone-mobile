@@ -700,7 +700,7 @@ class Application extends Component {
         inactive: statsIconInactive,
       },
       {
-        routeName: '',
+        routeName: 'postureIntro',
         red: postureIconRed,
         green: postureIconGreen,
         blue: postureIconBlue,
@@ -749,6 +749,14 @@ class Application extends Component {
                     // and push the route for all others
                     if (value.routeName === routes.dashboard.name) {
                       this.navigator.resetTo(routes[routes.dashboard.name]);
+                    } else if (value.routeName === routes.postureIntro.name) {
+                      // Configure an untimed posture session
+                      this.navigator.push({
+                        ...routes[value.routeName],
+                        props: {
+                          duration: 0,
+                        },
+                      });
                     } else {
                       this.navigator.push(routes[value.routeName]);
                     }
