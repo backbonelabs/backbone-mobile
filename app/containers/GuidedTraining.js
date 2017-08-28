@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import cloneDeep from 'lodash/cloneDeep';
+import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import appActions from '../actions/app';
 import userActions from '../actions/user';
@@ -16,6 +17,7 @@ import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
+import VideoPlayer from '../components/VideoPlayer';
 import bulletWhite from '../images/bullet-white.png';
 import videoIconBlue from '../images/video-icon-blue.png';
 import videoIconGreen from '../images/video-icon-green.png';
@@ -174,14 +176,7 @@ class GuidedTraining extends Component {
 
   componentDidMount() {
     // Fetch image in the background. User should see a Spinner until the image is fully fetched.
-    Image.prefetch(this.state.currentWorkout.workout.gifUrl)
-      .then(() => {
-        this.setState({ isFetchingImage: false });
-      })
-      .catch(() => {
-        // Suppress errors
-        this.setState({ isFetchingImage: false });
-      });
+    this._attemptGifFetch(this.state.currentWorkout);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -215,15 +210,8 @@ class GuidedTraining extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (!isEqual(prevState.currentWorkout, this.state.currentWorkout)) {
       // Workout changed
-      // Prefetch workout gif
-      Image.prefetch(this.state.currentWorkout.workout.gifUrl)
-        .then(() => {
-          this.setState({ isFetchingImage: false });
-        })
-        .catch(() => {
-          // Suppress errors
-          this.setState({ isFetchingImage: false });
-        });
+      // Prefetch workout GIF, if available
+      this._attemptGifFetch(this.state.currentWorkout);
     }
 
     if (prevState.timerSeconds !== this.state.timerSeconds && this.state.timerSeconds === 0) {
@@ -273,6 +261,25 @@ class GuidedTraining extends Component {
   componentWillUnmount() {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
+    }
+  }
+
+  _attemptGifFetch(sessionWorkout) {
+    const gifUrl = get(sessionWorkout, 'workout.gifUrl');
+    if (gifUrl) {
+      // GIF URL exists, prefetch GIF
+      Image.prefetch(gifUrl)
+        .then(() => {
+          this.setState({ isFetchingImage: false });
+        })
+        .catch(() => {
+          // Suppress errors
+          this.setState({ isFetchingImage: false });
+        });
+    } else {
+      // There is no GIF to prefetch
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ isFetchingImage: false });
     }
   }
 
@@ -516,6 +523,31 @@ class GuidedTraining extends Component {
     const levelColorHex = getColorHexForLevel(selectedLevelIdx);
     const levelColorName = getColorNameForLevel(selectedLevelIdx);
 
+    let media;
+    if (currentWorkout.workout.gifUrl) {
+      media = (
+        <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif}>
+          <TouchableOpacity
+            style={styles.videoLink}
+            onPress={() => { /* TODO: NAVIGATE TO WORKOUT VIDEO */ }}
+          >
+            <Image source={videoIcon[levelColorName]} style={styles.videoIcon} />
+          </TouchableOpacity>
+        </Image>
+      );
+    } else if (currentWorkout.workout.videoUrl) {
+      media = (
+        <View style={styles.videoPlayerContainer}>
+          <VideoPlayer
+            video={{ uri: currentWorkout.workout.videoUrl }}
+            customStyles={{
+              wrapper: styles._videoPlayer,
+            }}
+          />
+        </View>
+      );
+    }
+
     // The left button would be disabled if this is the first workout in the session
     const isLeftButtonDisabled = this.state.step === 1;
     const additionalLeftButtonStyles = {};
@@ -566,16 +598,7 @@ class GuidedTraining extends Component {
           backgroundColor={levelColorHex}
         />
         {header}
-        {this.state.isFetchingImage ? <Spinner size="large" color={levelColorHex} /> : (
-          <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif}>
-            <TouchableOpacity
-              style={styles.videoLink}
-              onPress={() => { /* TODO: NAVIGATE TO WORKOUT VIDEO */ }}
-            >
-              <Image source={videoIcon[levelColorName]} style={styles.videoIcon} />
-            </TouchableOpacity>
-          </Image>
-        )}
+        {this.state.isFetchingImage ? <Spinner size="large" color={levelColorHex} /> : media}
         <View style={styles.footer}>
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight

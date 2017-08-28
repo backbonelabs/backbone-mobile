@@ -1,59 +1,103 @@
-import React, { PropTypes } from 'react';
-import { TouchableOpacity, Image, View } from 'react-native';
-import pauseImg from '../../../images/monitor/pauseButton.png';
-import pauseActiveImg from '../../../images/monitor/pauseButtonActive.png';
-import stopImg from '../../../images/monitor/stopButton.png';
-import stopActiveImg from '../../../images/monitor/stopButtonActive.png';
-import playImg from '../../../images/monitor/playButton.png';
-import alertsImg from '../../../images/monitor/alertsButton.png';
-import alertsDisabledImg from '../../../images/monitor/alertsButtonDisabled.png';
-import styles from '../../../styles/posture/postureMonitor';
-import BodyText from '../../BodyText';
+import React, { Component, PropTypes } from 'react';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import autobind from 'class-autobind';
+import { TouchableHighlight, View, Text } from 'react-native';
+import styles from '../../../styles/posture/monitorButton';
+import SecondaryText from '../../SecondaryText';
+import theme from '../../../styles/theme';
+import relativeDimensions from '../../../utils/relativeDimensions';
 
-const MonitorButton = (props) => {
-  const {
-    play,
-    pauseActive,
-    pause,
-    stop,
-    stopActive,
-    alerts,
-    alertsDisabled,
-    ...otherProps,
-  } = props;
+class MonitorButton extends Component {
+  static propTypes = {
+    color: PropTypes.string,
+    icon: PropTypes.string,
+    iconColor: PropTypes.string,
+    iconSize: PropTypes.number,
+    text: PropTypes.string,
+    textColor: PropTypes.string,
+    underlayIconColor: PropTypes.string,
+    customStyles: PropTypes.shape({
+      icon: MaterialIcons.propTypes.style,
+      container: View.propTypes.style,
+      button: View.propTypes.style,
+      text: Text.propTypes.object,
+    }),
+  };
 
-  let image;
-  let text;
-  if (play) { image = playImg; text = 'Play'; }
-  if (pause) { image = pauseImg; text = 'Pause'; }
-  if (pauseActive) { image = pauseActiveImg; text = 'Pause'; }
-  if (stop) { image = stopImg; text = 'Stop'; }
-  if (stopActive) { image = stopActiveImg; text = 'Stop'; }
-  if (alerts) { image = alertsImg; text = 'Alerts'; }
-  if (alertsDisabled) { image = alertsDisabledImg; text = 'Alerts'; }
+  static defaultProps = {
+    color: 'white',
+    underlayColor: theme.lightBlueColor,
+    underlayIconColor: 'white',
+    iconSize: relativeDimensions.fixedResponsiveFontSize(40),
+    iconColor: theme.lightBlueColor,
+    textColor: theme.secondaryFontColor,
+    activeOpacity: 1,
+    customStyles: {},
+  };
 
-  return (
-    <View>
-      <TouchableOpacity
-        activeOpacity={0.4}
-        {...otherProps}
-      >
-        <Image style={styles.monitorBtn} source={image} />
-      </TouchableOpacity>
-      <BodyText style={styles._btnText}>{text}</BodyText>
-    </View>
-  );
-};
+  constructor() {
+    super();
+    autobind(this);
 
-MonitorButton.propTypes = {
-  play: PropTypes.bool,
-  playActive: PropTypes.bool,
-  pause: PropTypes.bool,
-  pauseActive: PropTypes.bool,
-  stop: PropTypes.bool,
-  stopActive: PropTypes.bool,
-  alerts: PropTypes.bool,
-  alertsDisabled: PropTypes.bool,
-};
+    this.state = {
+      pressStatus: false,
+    };
+  }
+
+  _onHideUnderlay() {
+    this.setState({ pressStatus: false });
+  }
+
+  _onShowUnderlay() {
+    this.setState({ pressStatus: true });
+  }
+
+  render() {
+    const {
+      color,
+      icon,
+      iconColor,
+      iconSize,
+      text,
+      textColor,
+      underlayIconColor,
+      customStyles,
+      ...otherProps,
+    } = this.props;
+    const currentIconColor = this.state.pressStatus ? underlayIconColor : iconColor;
+    const currentTextColor = this.state.pressStatus ? otherProps.underlayColor : textColor;
+
+    return (
+      <View style={customStyles.container}>
+        <TouchableHighlight
+          style={[styles.monitorBtn, customStyles.button, { backgroundColor: color }]}
+          activeOpacity={otherProps.activeOpacity}
+          onHideUnderlay={this._onHideUnderlay}
+          onShowUnderlay={this._onShowUnderlay}
+          {...otherProps}
+        >
+          {
+            icon ?
+              <MaterialIcons
+                name={icon}
+                size={iconSize}
+                color={otherProps.disabled ? theme.disabledColor : currentIconColor}
+                style={customStyles.icon}
+              /> : null
+          }
+        </TouchableHighlight>
+        {
+          text ?
+            <SecondaryText
+              style={[styles._btnText, customStyles.text, { color: currentTextColor }]}
+            >
+              {text}
+            </SecondaryText> : null
+        }
+      </View>
+    );
+  }
+
+}
 
 export default MonitorButton;

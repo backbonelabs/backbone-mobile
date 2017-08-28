@@ -21,6 +21,7 @@ const grey500 = '#9E9E9E';
 const primaryColor = '#ED1C24';
 const secondaryColor = orange500;
 const primaryFont = 'Lato';
+const lightBlueColor = '#03A9F4';
 const primaryFontColor = '#231F20';
 const secondaryFontColor = '#A9A9A9';
 const activeBorderColor = '#85181C';
@@ -54,4 +55,5 @@ export default {
   totalNavHeight,
   screenWidth,
   inputIconColor,
+  lightBlueColor,
 };
