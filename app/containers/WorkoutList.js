@@ -54,12 +54,21 @@ class WorkoutList extends Component {
     // Template for categorizing all workouts into their type
     const routeStack = props.navigator.getCurrentRoutes();
     this.currentRoute = routeStack[routeStack.length - 1];
-    this.workoutCategories = [
-      { title: 'POSTURE', type: workoutTypes.POSTURE, workouts: [] },
-      { title: 'EXERCISES', type: workoutTypes.EXERCISE, workouts: [] },
-      { title: 'STRETCHES', type: workoutTypes.STRETCH, workouts: [] },
-      { title: 'MOBILITY', type: workoutTypes.MOBILITY, workouts: [] },
-    ];
+    if (this.currentRoute.name === routes.freeTraining.name) {
+      this.workoutCategories = [
+        { title: 'POSTURE', type: workoutTypes.POSTURE, workouts: [] },
+        { title: 'EXERCISES', type: workoutTypes.EXERCISE, workouts: [] },
+        { title: 'STRETCHES', type: workoutTypes.STRETCH, workouts: [] },
+        { title: 'MOBILITY', type: workoutTypes.MOBILITY, workouts: [] },
+      ];
+    } else if (this.currentRoute.name === routes.education.name) {
+      this.workoutCategories = [
+        { title: 'PRIMERS', type: workoutTypes.PRIMER, workouts: [] },
+        { title: 'EXERCISES', type: workoutTypes.EXERCISE, workouts: [] },
+        { title: 'STRETCHES', type: workoutTypes.STRETCH, workouts: [] },
+        { title: 'MOBILITY', type: workoutTypes.MOBILITY, workouts: [] },
+      ];
+    }
     this.state = {
       workouts: this.organizeWorkouts(props.workouts),
       // This is the initial position of the subview
