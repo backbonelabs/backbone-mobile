@@ -12,7 +12,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
 import appActions from '../actions/app';
-import postureActions from '../actions/posture';
 import userActions from '../actions/user';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
@@ -120,7 +119,6 @@ class GuidedTraining extends Component {
     navigator: PropTypes.shape({
       push: PropTypes.func.isRequired,
     }).isRequired,
-    setSessionTime: PropTypes.func.isRequired,
     training: PropTypes.shape({
       errorMessage: PropTypes.string,
       isUpdating: PropTypes.bool,
@@ -184,14 +182,8 @@ class GuidedTraining extends Component {
   }
 
   componentDidMount() {
-    const { currentWorkout: { workout } } = this.state;
-    if (workout.type === workoutTypes.POSTURE) {
-      // If current workout is a posture session, set appropriate configuration
-      this.props.setSessionTime(workout.duration || 0);
-    }
-
     // Fetch image in the background. User should see a Spinner until the image is fully fetched.
-    Image.prefetch(workout.gifUrl)
+    Image.prefetch(this.state.currentWorkout.workout.gifUrl)
       .then(() => {
         this.setState({ isFetchingImage: false });
       })
@@ -232,14 +224,8 @@ class GuidedTraining extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (!isEqual(prevState.currentWorkout, this.state.currentWorkout)) {
       // Workout changed
-      const { currentWorkout: { workout } } = this.state;
-      if (workout.type === workoutTypes.POSTURE) {
-        // If current workout is a posture session, set appropriate configuration
-        this.props.setSessionTime(workout.duration || 0);
-      }
-
       // Prefetch workout gif
-      Image.prefetch(workout.gifUrl)
+      Image.prefetch(this.state.currentWorkout.workout.gifUrl)
         .then(() => {
           this.setState({ isFetchingImage: false });
         })
@@ -549,8 +535,13 @@ class GuidedTraining extends Component {
 
     // If the workout is a posture session, display PostureIntro. Otherwise, display GIF
     const isPostureSession = currentWorkout.workout.type === workoutTypes.POSTURE;
-    const content = isPostureSession ?
-      <PostureIntro onProceed={this._navigateToPostureCalibrate} /> : (
+    const content = isPostureSession ? (
+      <PostureIntro
+        duration={currentWorkout.workout.duration}
+        navigator={this.props.navigator}
+        onProceed={this._navigateToPostureCalibrate}
+      />
+      ) : (
         <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif}>
           <TouchableOpacity
             style={styles.videoLink}
@@ -697,6 +688,5 @@ const mapStateToProps = ({ training, user }) => ({
 
 export default connect(mapStateToProps, {
   ...appActions,
-  ...postureActions,
   ...userActions,
 })(GuidedTraining);
