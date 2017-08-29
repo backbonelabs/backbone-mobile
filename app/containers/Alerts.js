@@ -171,6 +171,13 @@ class Alerts extends Component {
     return (
       <View style={styles.container}>
         <Toggle
+          value={slouchNotification && pushNotificationEnabled}
+          onChange={this.updateSetting}
+          disabled={!pushNotificationEnabled}
+          text="Slouch Notification"
+          settingName="slouchNotification"
+        />
+        <Toggle
           value={backboneVibration}
           onChange={this.updateSetting}
           text="Backbone Vibration"
@@ -236,13 +243,6 @@ class Alerts extends Component {
           onChange={this.updateSetting}
           text="Phone Vibration"
           settingName="phoneVibration"
-        />
-        <Toggle
-          value={slouchNotification && pushNotificationEnabled}
-          onChange={this.updateSetting}
-          disabled={!pushNotificationEnabled}
-          text="Slouch Notification"
-          settingName="slouchNotification"
         />
         {!pushNotificationEnabled ?
           <View style={styles.notificationDisabledWarningContainer}>
