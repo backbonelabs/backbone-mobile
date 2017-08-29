@@ -120,6 +120,7 @@ class GuidedTraining extends Component {
     showPartialModal: PropTypes.func.isRequired,
     navigator: PropTypes.shape({
       push: PropTypes.func.isRequired,
+      replace: PropTypes.func.isRequired,
     }).isRequired,
     training: PropTypes.shape({
       errorMessage: PropTypes.string,
@@ -488,9 +489,18 @@ class GuidedTraining extends Component {
 
   _navigateToPostureCalibrate() {
     const { selectedLevelIdx, selectedSessionIdx } = this.props.training;
+    const title = `Level ${selectedLevelIdx + 1} Session ${selectedSessionIdx + 1}`;
     this.props.navigator.push({
       ...routes.postureCalibrate,
-      title: `Level ${selectedLevelIdx + 1} Session ${selectedSessionIdx + 1}`,
+      title,
+      props: {
+        onFinish: () => {
+          this.props.navigator.replace({
+            ...routes.postureMonitor,
+            title,
+          });
+        },
+      },
     });
   }
 

@@ -24,6 +24,7 @@ class PostureCalibrate extends Component {
     navigator: PropTypes.shape({
       replace: PropTypes.func.isRequired,
     }).isRequired,
+    onFinish: PropTypes.func,
     training: PropTypes.shape({
       selectedLevelIdx: PropTypes.number.isRequired,
     }).isRequired,
@@ -67,7 +68,11 @@ class PostureCalibrate extends Component {
     if (finished) {
       // Navigate to posture monitor after a slight pause
       setTimeout(() => {
-        this.props.navigator.replace(routes.postureMonitor);
+        if (this.props.onFinish) {
+          this.props.onFinish();
+        } else {
+          this.props.navigator.replace(routes.postureMonitor);
+        }
       }, 200);
     }
   }
