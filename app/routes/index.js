@@ -2,6 +2,7 @@ import activity from './activity';
 import login from './login';
 import signup from './signup';
 import profile from './profile';
+import postureIntro from './posture/postureIntro';
 import postureCalibrate from './posture/postureCalibrate';
 import postureMonitor from './posture/postureMonitor';
 import postureReport from './posture/postureReport';
@@ -30,6 +31,7 @@ export default {
   activity,
   login,
   signup,
+  postureIntro,
   postureCalibrate,
   postureMonitor,
   postureReport,

@@ -147,4 +147,11 @@ export default {
     EMAIL: 1,
     FACEBOOK: 2,
   },
+  workoutTypes: {
+    POSTURE: 1,
+    EXERCISE: 2,
+    STRETCH: 3,
+    MOBILITY: 4,
+    PRIMER: 5,
+  },
 };
