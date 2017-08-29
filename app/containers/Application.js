@@ -691,7 +691,7 @@ class Application extends Component {
         inactive: homeIconInactive,
       },
       {
-        routeName: 'stats',
+        routeName: routes.stats.name,
         red: statsIconRed,
         green: statsIconGreen,
         blue: statsIconBlue,
