@@ -4,4 +4,5 @@ export default {
   name: 'postureIntro',
   title: 'Posture Session',
   component: PostureIntro,
+  showBackButton: true,
 };
