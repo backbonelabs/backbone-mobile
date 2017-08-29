@@ -7,17 +7,17 @@ import {
   VictoryStack,
   VictoryLabel,
 } from 'victory-native';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 import HeadingText from '../components/HeadingText';
 import styles from '../styles/stats';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize, width } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize, width, height } = relativeDimensions;
 
 const renderBars = (data) => (
-  Object.keys(data).map((val, idx) => {
-    const good = data[val].totalDuration - data[val].slouchTime;
-    const poor = data[val].slouchTime;
+  data.map((val, idx) => {
+    const good = val.totalDuration - val.slouchTime;
+    const poor = val.slouchTime;
     const session = idx + 1;
     return (
       <VictoryStack colorScale={['#F44336', '#8BC34A']} key={idx}>
@@ -36,36 +36,21 @@ const renderBars = (data) => (
   })
 );
 
-const tickValues = (data) => Object.keys(data).map((val) => val);
+const tickValues = (data) => data.map((val) => val.label);
 
 const Graph = ({ data, goodTime, poorTime }) => {
-  const tickLength = Object.keys(data).length;
-  let chartWidth = 410;
-  let chartHeight = 350;
-  let scrollEnabled = false;
-
-  if (tickLength > 9) {
-    chartWidth = 500;
-    scrollEnabled = true;
-  }
-  // eg: iphone4/iphone5
-  if (width === 320) {
-    chartHeight = 320;
-  }
-
-  if (!goodTime || !poorTime) {
+  if (!goodTime && !poorTime) {
     return <HeadingText size={1} style={styles._noData}>No Data Available</HeadingText>;
   }
 
+  const chartWidth = width + 20;
+
   return (
-    <ScrollView
-      horizontal
-      scrollEnabled={scrollEnabled}
-    >
+    <View>
       <VictoryChart
         domainPadding={applyWidthDifference(10)}
-        width={applyWidthDifference(chartWidth)}
-        height={applyWidthDifference(chartHeight)}
+        width={(width <= 320) ? 350 : chartWidth}
+        height={height > 480 ? 350 : 280}
         theme={VictoryTheme.material}
       >
         <VictoryLabel
@@ -88,12 +73,12 @@ const Graph = ({ data, goodTime, poorTime }) => {
         />
         { data ? renderBars(data) : null}
       </VictoryChart>
-    </ScrollView>
+    </View>
   );
 };
 
 Graph.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
   goodTime: PropTypes.number,
   poorTime: PropTypes.number,
 };

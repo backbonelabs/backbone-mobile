@@ -24,16 +24,12 @@ const totalSessionStats = (sessions) => (
     const good = sessions[val].totalDuration - sessions[val].slouchTime;
     const poor = sessions[val].slouchTime;
 
-    if (acc.good) {
-      acc.good += good;
-      acc.poor += poor;
-      return acc;
-    }
-    acc.good = good;
-    acc.poor = poor;
+    acc.good += good;
+    acc.poor += poor;
+
     return acc;
     /* eslint-disable no-param-reassign */
-  }, {})
+  }, { good: 0, poor: 0 })
 );
 
 class Stats extends Component {
@@ -80,7 +76,7 @@ class Stats extends Component {
         .sort((a, b) => a.timestamp - b.timestamp); // sort from oldest to latest
 
       const sessionsByMonth = sessions
-        .reduce((acc, val) => {
+        .reduce((acc, val, index) => {
           const month = moment(val.timestamp).format('MMM');
           /* eslint-disable no-param-reassign */
 
@@ -91,13 +87,13 @@ class Stats extends Component {
             return acc;
           }
 
-          acc[month] = Object.assign({}, val);
+          acc[month] = Object.assign({}, val, { index, label: month });
 
           return acc;
           /* eslint-disable no-param-reassign */
         }, {});
       const sessionsByHour = sessions
-        .reduce((acc, val) => {
+        .reduce((acc, val, index) => {
           const date = moment(val.timestamp);
           const time = moment(val.timestamp).format('ha'); // eg: 5pm
           /* eslint-disable no-param-reassign */
@@ -110,7 +106,7 @@ class Stats extends Component {
               return acc;
             }
 
-            acc[time] = Object.assign({}, val);
+            acc[time] = Object.assign({}, val, { index, label: time });
 
             return acc;
           }
@@ -119,7 +115,7 @@ class Stats extends Component {
           /* eslint-disable no-param-reassign */
         }, {});
       const sessionsByDays = sessions
-        .reduce((acc, val) => {
+        .reduce((acc, val, index) => {
           const date = moment(val.timestamp);
           const dayOfWeek = week[date.format('e')];
           /* eslint-disable no-param-reassign */
@@ -135,7 +131,7 @@ class Stats extends Component {
               return acc;
             }
 
-            acc[dayOfWeek] = Object.assign({}, val);
+            acc[dayOfWeek] = Object.assign({}, val, { index, label: dayOfWeek });
 
             return acc;
           }
@@ -200,9 +196,13 @@ class Stats extends Component {
         data = sessionsByHour;
     }
 
+    const convertToArray = Object.keys(data)
+      .map((val) => data[val])
+      .sort((a, b) => a.index > b.index);
+
     return (
       <Graph
-        data={data}
+        data={convertToArray}
         goodTime={Math.round(selectedTabTotalSessions.good / 60)}
         poorTime={Math.round(selectedTabTotalSessions.poor / 60)}
       />
@@ -213,7 +213,9 @@ class Stats extends Component {
     const { loading, selectedTabTotalSessions } = this.state;
     const good = Math.round(selectedTabTotalSessions.good / 60);
     const poor = Math.round(selectedTabTotalSessions.poor / 60);
-    const justifyContent = (good || poor) ? 'flex-end' : 'center';
+    const noDataStyles = {
+      flex: 0,
+    };
 
     const level = this.props.training.selectedLevelIdx;
     const levelColorCode = getColorHexForLevel(level);
@@ -222,29 +224,32 @@ class Stats extends Component {
       return <Spinner />;
     }
 
+    if (!good && !poor) {
+      noDataStyles.justifyContent = 'center';
+      noDataStyles.flex = 3;
+    }
+
     return (
       <View style={styles.container}>
-        <View style={[styles.graphContainer, { justifyContent }]}>
-          <View style={styles.graphInnerContainer}>
-            { (good || poor) ? <View style={styles.heading}>
-              <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
-              <View style={styles.sessionRatingContainer}>
-                <BodyText style={styles._goodRating}>
-                  GOOD: {good} MIN
-                </BodyText>
-                <BodyText style={styles._poorRating}>
-                  POOR: {poor} MIN
-                </BodyText>
-              </View>
-            </View> : null
+        <View style={[styles.graphContainer, noDataStyles]}>
+          { (good || poor) ? <View style={styles.heading}>
+            <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
+            <View style={styles.sessionRatingContainer}>
+              <BodyText style={styles._goodRating}>
+                GOOD: {good} MIN
+              </BodyText>
+              <BodyText style={styles._poorRating}>
+                POOR: {poor} MIN
+              </BodyText>
+            </View>
+          </View> : null
             }
-            {this.renderGraph()}
-          </View>
+          {this.renderGraph()}
         </View>
         <ScrollableTabView
           style={styles.tabs}
           onChangeTab={this.selectTab}
-          tabBarPosition="top"
+          tabBarPosition="bottom"
           tabBarActiveTextColor={levelColorCode}
           tabBarInactiveTextColor={theme.grey400}
           tabBarUnderlineStyle={[
