@@ -11,12 +11,7 @@ export default EStyleSheet.create({
     flex: 1,
   },
   graphContainer: {
-    flex: 3.5,
-    justifyContent: 'flex-end',
     backgroundColor: '$grey50',
-  },
-  graphInnerContainer: {
-    justifyContent: 'space-around',
   },
   noData: {
     alignSelf: 'center',
