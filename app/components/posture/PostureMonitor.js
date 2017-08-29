@@ -33,6 +33,7 @@ import theme from '../../styles/theme';
 import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import deviceWarningIcon from '../../images/settings/device-warning-icon.png';
 import deviceSuccessIcon from '../../images/settings/device-success-icon.png';
+import { getColorHexForLevel } from '../../utils/levelColors';
 
 const {
   BluetoothService,
@@ -121,6 +122,9 @@ class PostureMonitor extends Component {
       modal: PropTypes.shape({
         showPartial: PropTypes.bool,
       }),
+    }),
+    training: PropTypes.shape({
+      selectedLevelIdx: PropTypes.number,
     }),
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
@@ -1081,14 +1085,40 @@ class PostureMonitor extends Component {
     } = this.state;
 
     const isDisabled = sessionState === sessionStates.RUNNING;
+    const level = this.props.training.selectedLevelIdx;
+    const levelColorCode = getColorHexForLevel(level);
 
     const getPlayPauseButton = () => {
       if (sessionState === sessionStates.STOPPED) {
-        return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.startSession} />;
+        return (
+          <MonitorButton
+            text="PLAY"
+            icon="play-arrow"
+            onPress={this.startSession}
+            underlayColor={levelColorCode}
+            iconColor={levelColorCode}
+          />
+        );
       } else if (isDisabled) {
-        return <MonitorButton text="PAUSE" icon="pause" onPress={this.pauseSession} />;
+        return (
+          <MonitorButton
+            text="PAUSE"
+            icon="pause"
+            onPress={this.pauseSession}
+            underlayColor={levelColorCode}
+            iconColor={levelColorCode}
+          />
+        );
       }
-      return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.resumeSession} />;
+      return (
+        <MonitorButton
+          text="PLAY"
+          icon="play-arrow"
+          onPress={this.resumeSession}
+          underlayColor={levelColorCode}
+          iconColor={levelColorCode}
+        />
+      );
     };
 
     return this.props.device.isConnecting ? (
@@ -1098,7 +1128,7 @@ class PostureMonitor extends Component {
       </View>
     ) : (
       <View style={styles.container}>
-        <BodyText style={styles._timer}>
+        <BodyText style={[styles._timer, { color: levelColorCode }]}>
           {this.getFormattedTime()}
         </BodyText>
         <BodyText style={styles._heading}>Time Remaining</BodyText>
@@ -1129,6 +1159,7 @@ class PostureMonitor extends Component {
             }}
             minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
             maximumValue={0}
+            minimumTrackTintColor={levelColorCode}
             disabled={isDisabled}
           />
           <SecondaryText style={styles._sliderTitle}>SLOUCH DETECTION</SecondaryText>
@@ -1140,17 +1171,23 @@ class PostureMonitor extends Component {
               disabled
               icon="notifications"
               text="ALERTS"
+              underlayColor={levelColorCode}
+              iconColor={levelColorCode}
             /> :
               <MonitorButton
                 icon="notifications"
                 text="ALERTS"
                 onPress={this.navigateToAlert}
+                underlayColor={levelColorCode}
+                iconColor={levelColorCode}
               />
           }
           <MonitorButton
             text="STOP"
             icon="stop"
             onPress={this.confirmStopSession}
+            underlayColor={levelColorCode}
+            iconColor={levelColorCode}
           />
         </View>
       </View>
@@ -1159,8 +1196,8 @@ class PostureMonitor extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, device, posture, user: { user } } = state;
-  return { app, device, posture, user };
+  const { app, device, posture, user: { user }, training } = state;
+  return { app, device, posture, user, training };
 };
 
 export default connect(mapStateToProps)(PostureMonitor);

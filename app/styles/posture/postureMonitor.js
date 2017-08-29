@@ -25,7 +25,6 @@ export default EStyleSheet.create({
   timer: {
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(54),
-    color: '$lightBlueColor',
     marginTop: applyWidthDifference(10),
   },
   heading: {
