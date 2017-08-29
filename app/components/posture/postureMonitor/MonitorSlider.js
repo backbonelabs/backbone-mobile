@@ -1,32 +1,50 @@
 import React, { PropTypes } from 'react';
-import { Slider, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from '../.././../styles/posture/postureMonitor';
+import { View } from 'react-native';
+import RNSlider from 'react-native-slider';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import styles from '../../../styles/posture/monitorSlider';
+import theme from '../../../styles/theme';
+import relativeDimensions from '../../../utils/relativeDimensions';
 
-const MonitorSlider = (props) => (
+const MonitorSlider = ({ leftIcon, leftIconSize, rightIcon, rightIconSize, ...props }) => (
   <View style={styles.sliderContainer}>
-    <Icon
-      name="minus"
-      size={styles.$sliderIconSize}
-      style={{ paddingRight: styles.$sliderIconPadding }}
+    <MaterialIcons
+      name={leftIcon}
+      size={leftIconSize}
+      style={styles.leftIconStyles}
     />
-    <View style={{ flex: 1 }}>
-      <Slider
-        minimumTrackTintColor={'#ED1C24'}
+    <View style={styles.sliderInnerContainer}>
+      <RNSlider
+        trackStyle={styles.trackStyle}
+        thumbStyle={[
+          styles.thumbStyle,
+          { backgroundColor: props.disabled ? theme.disabledColor : 'white' },
+        ]}
         {...props}
       />
     </View>
-    <Icon
-      name="plus"
-      size={styles.$sliderIconSize}
-      style={{ paddingLeft: styles.$sliderIconPadding }}
+    <MaterialIcons
+      name={rightIcon}
+      size={rightIconSize}
+      style={styles.rightIconStyles}
     />
   </View>
 );
 
 MonitorSlider.propTypes = {
-  onValueChange: PropTypes.func,
+  rightIcon: PropTypes.string,
+  leftIcon: PropTypes.string,
+  rightIconSize: PropTypes.number,
+  leftIconSize: PropTypes.number,
   disabled: PropTypes.bool,
+};
+
+MonitorSlider.defaultProps = {
+  leftIconSize: relativeDimensions.fixedResponsiveFontSize(30),
+  rightIconSize: relativeDimensions.fixedResponsiveFontSize(30),
+  minimumTrackTintColor: theme.lightBlueColor,
+  leftIcon: 'remove',
+  rightIcon: 'add',
 };
 
 export default MonitorSlider;

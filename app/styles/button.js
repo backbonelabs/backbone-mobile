@@ -5,23 +5,6 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
-const buttonShadow = {
-  ...Platform.select({
-      // OS-specific drop shadow styling
-    ios: {
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowRadius: 2,
-      shadowOpacity: 0.3,
-    },
-    android: {
-      elevation: 1,
-    },
-  }),
-};
-
 export default EStyleSheet.create({
   button: {
     justifyContent: 'center',
@@ -30,25 +13,24 @@ export default EStyleSheet.create({
     height: applyWidthDifference(50),
     borderRadius: 3,
   },
-  primaryBtn: {
-    ...buttonShadow,
+  defaultBtn: {
+    backgroundColor: 'white',
   },
   secondaryBtn: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#03A9F4',
   },
   facebookBtn: {
     justifyContent: 'center',
     backgroundColor: '#3b5998',
     width: '100%',
-    ...buttonShadow,
   },
-  secondaryActive: {
+  defaultActive: {
     backgroundColor: '#F5F5F5',
   },
-  secondaryTextStyles: {
+  defaultTextStyles: {
     color: '#AAAAAA',
   },
-  secondaryTextActive: {
+  defaultTextActive: {
     color: '#000000',
   },
   disabledButton: {

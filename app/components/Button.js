@@ -2,10 +2,28 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   TouchableHighlight,
+  Platform,
 } from 'react-native';
 import autobind from 'class-autobind';
 import BodyText from './BodyText';
 import styles from '../styles/button';
+
+const buttonShadow = {
+  ...Platform.select({
+      // OS-specific drop shadow styling
+    ios: {
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowRadius: 2,
+      shadowOpacity: 0.3,
+    },
+    android: {
+      elevation: 1,
+    },
+  }),
+};
 
 class Button extends Component {
   static propTypes = {
@@ -15,8 +33,10 @@ class Button extends Component {
     text: PropTypes.string.isRequired,
     textStyle: PropTypes.object,
     primary: PropTypes.bool,
+    secondary: PropTypes.bool,
     fbBtn: PropTypes.bool,
     pressStatus: PropTypes.bool,
+    shadow: PropTypes.bool,
     onHideUnderlay: PropTypes.func,
     onShowUnderlay: PropTypes.func,
   };
@@ -24,6 +44,7 @@ class Button extends Component {
   static defaultProps = {
     style: {},
     textStyle: {},
+    shadow: true,
   };
 
   constructor(props) {
@@ -46,17 +67,17 @@ class Button extends Component {
     let buttonType;
     const textStyles = [styles._text];
     const buttonStyles = [styles.button];
-    const primaryStyles = [buttonStyles, styles.primaryBtn];
-    const fbBtnStyles = [buttonStyles, styles.facebookBtn];
     const secondaryStyles = [buttonStyles, styles.secondaryBtn];
-    const secondaryActive = [buttonStyles, styles.secondaryActive];
-    const secondaryTextStyles = [styles._text, styles._secondaryTextStyles];
-    const secondaryTextActive = [styles._text, styles._secondaryTextActive];
+    const fbBtnStyles = [buttonStyles, styles.facebookBtn];
+    const defaultStyles = [buttonStyles, styles.defaultBtn];
+    const defaultActive = [buttonStyles, styles.defaultActive];
+    const defaultTextActive = [styles._text, styles._defaultTextActive];
+    const defaultTextStyles = [styles._text, styles._defaultTextStyles];
 
     if (this.props.primary) {
       buttonType = (
         <TouchableHighlight
-          style={primaryStyles}
+          style={buttonStyles}
           underlayColor={'#FB8C00'}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
@@ -82,18 +103,32 @@ class Button extends Component {
           </View>
         </TouchableHighlight>
       );
-    } else {
+    } else if (this.props.secondary) {
       buttonType = (
         <TouchableHighlight
-          activeOpacity={0.4}
-          style={this.state.pressStatus ? secondaryActive : secondaryStyles}
-          underlayColor="transparent"
+          style={secondaryStyles}
+          underlayColor={'#0091EA'}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
         >
           <View>
-            <BodyText style={this.state.pressStatus ? secondaryTextActive : secondaryTextStyles}>
+            <BodyText style={textStyles}>{this.props.text}</BodyText>
+          </View>
+        </TouchableHighlight>
+      );
+    } else {
+      buttonType = (
+        <TouchableHighlight
+          activeOpacity={0.4}
+          style={this.state.pressStatus ? defaultActive : defaultStyles}
+          underlayColor={'transparent'}
+          onHideUnderlay={this._onHideUnderlay}
+          onShowUnderlay={this._onShowUnderlay}
+          onPress={this.props.disabled ? undefined : this.props.onPress}
+        >
+          <View>
+            <BodyText style={this.state.pressStatus ? defaultTextActive : defaultTextStyles}>
               {this.props.text}
             </BodyText>
           </View>
@@ -101,15 +136,20 @@ class Button extends Component {
       );
     }
 
+    if (this.props.shadow) {
+      buttonStyles.push(buttonShadow);
+    }
+
     if (this.props.disabled) {
       buttonStyles.push(styles.disabledButton);
       textStyles.push(styles._disabledText);
-      secondaryStyles.push(styles.disabledSecondaryBorder);
-      secondaryTextStyles.push(styles._disabledSecondaryText);
+      defaultStyles.push(styles.disabledSecondaryBorder);
+      defaultTextStyles.push(styles._disabledSecondaryText);
     }
     buttonStyles.push(this.props.style);
     textStyles.push(this.props.textStyle);
     fbBtnStyles.push(this.props.style);
+    secondaryStyles.push(this.props.style);
 
     return buttonType;
   }

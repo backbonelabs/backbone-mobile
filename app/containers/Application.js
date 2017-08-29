@@ -475,7 +475,7 @@ class Application extends Component {
                 UserService.setUserId(id);
 
                 // Identify user for Bugsnag
-                Bugsnag.setUser(id, user.nickname, user.email);
+                Bugsnag.setUser(id, user.nickname, user.email || '');
 
                 // Identify user for Mixpanel
                 Mixpanel.identify(id);
@@ -682,7 +682,7 @@ class Application extends Component {
     // Tab bar component data
     const tabBarRoutes = [
       {
-        routeName: 'dashboard',
+        routeName: routes.dashboard.name,
         red: homeIconRed,
         green: homeIconGreen,
         blue: homeIconBlue,
@@ -700,7 +700,7 @@ class Application extends Component {
         inactive: statsIconInactive,
       },
       {
-        routeName: '',
+        routeName: routes.postureIntro.name,
         red: postureIconRed,
         green: postureIconGreen,
         blue: postureIconBlue,
@@ -709,7 +709,7 @@ class Application extends Component {
         inactive: postureIconInactive,
       },
       {
-        routeName: 'freeTraining',
+        routeName: routes.freeTraining.name,
         red: freeTrainingIconRed,
         green: freeTrainingIconGreen,
         blue: freeTrainingIconBlue,
@@ -718,7 +718,7 @@ class Application extends Component {
         inactive: freeTrainingIconInactive,
       },
       {
-        routeName: 'education',
+        routeName: routes.education.name,
         red: educationIconRed,
         green: educationIconGreen,
         blue: educationIconBlue,
@@ -732,25 +732,34 @@ class Application extends Component {
       <View style={styles.tabBar}>
         {
           // Iterate through tabBarRoutes and set tab bar item info
-          tabBarRoutes.map((value, key) => {
+          tabBarRoutes.map((tabBarRoute, key) => {
+            const routeName = tabBarRoute.routeName;
             // Check if current route matches tab bar route
-            const isSameRoute = route.name === value.routeName;
+            const isSameRoute = route.name === routeName;
             // Set icon to active color if current route matches tab bar route
             const levelColor = getColorNameForLevel(this.props.training.selectedLevelIdx);
-            const imageSource = isSameRoute ? value[levelColor] : value.inactive;
+            const imageSource = isSameRoute ? tabBarRoute[levelColor] : tabBarRoute.inactive;
 
             return (
               <TouchableOpacity
                 key={key}
                 style={styles.tabBarItem}
                 onPress={() => {
-                  if (!isSameRoute && value.routeName !== '') {
+                  if (!isSameRoute && routeName !== '') {
                     // Reset the navigator stack if on the dashboard
                     // and push the route for all others
-                    if (value.routeName === routes.dashboard.name) {
+                    if (routeName === routes.dashboard.name) {
                       this.navigator.resetTo(routes[routes.dashboard.name]);
+                    } else if (routeName === routes.postureIntro.name) {
+                      // Configure an untimed posture session
+                      this.navigator.push({
+                        ...routes[routeName],
+                        props: {
+                          duration: 0,
+                        },
+                      });
                     } else {
-                      this.navigator.push(routes[value.routeName]);
+                      this.navigator.push(routes[routeName]);
                     }
                   }
                 }

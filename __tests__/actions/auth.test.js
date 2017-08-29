@@ -8,7 +8,7 @@ import Mixpanel from '../../app/utils/Mixpanel';
 import SensitiveInfo from '../../app/utils/SensitiveInfo';
 import constants from '../../app/utils/constants';
 
-const { storageKeys } = constants;
+const { storageKeys, authMethods } = constants;
 const { UserService } = NativeModules;
 
 describe('Auth Actions', () => {
@@ -20,8 +20,9 @@ describe('Auth Actions', () => {
     password: 'password',
     _id: 'testId',
     accessToken: 'testToken',
+    authMethod: authMethods.EMAIL,
   };
-  const { email, password } = user;
+  const { email, password, authMethod } = user;
 
   beforeEach(() => {
     store.clearActions();
@@ -37,7 +38,7 @@ describe('Auth Actions', () => {
   test('creates an action to Login', async () => {
     const { accessToken, ...userObj } = user;
     fetch.mockResponseSuccess(user);
-    await store.dispatch(authActions.login({ email, password }));
+    await store.dispatch(authActions.login({ email, password, authMethod }));
 
     expect(UserService.setUserId).toBeCalledWith(user._id);
     expect(Bugsnag.setUser).toBeCalledWith(user._id, user.nickname, user.email);
@@ -46,13 +47,17 @@ describe('Auth Actions', () => {
     expect(Mixpanel.track).toHaveBeenCalledWith('login-success');
     expect(SensitiveInfo.setItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN, accessToken]);
     expect(SensitiveInfo.setItem.mock.calls[1]).toEqual([storageKeys.USER, userObj]);
-    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password }));
+    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({
+      email,
+      password,
+      authMethod: authMethods.EMAIL,
+    }));
     expect(store.getActions()).toMatchSnapshot();
   });
 
   test('creates an action when Login is unsuccessful', async () => {
     fetch.mockResponseSuccess({ error: 'api server error' });
-    await store.dispatch(authActions.login());
+    await store.dispatch(authActions.login({ authMethod: constants.authMethods.EMAIL }));
     expect(Mixpanel.trackWithProperties)
     .toBeCalledWith('login-error', { errorMessage: 'api server error' });
     expect(store.getActions()).toMatchSnapshot();
@@ -60,7 +65,7 @@ describe('Auth Actions', () => {
 
   test('creates an action when Login returns a server error', async () => {
     fetch.mockResponseFailure();
-    await store.dispatch(authActions.login());
+    await store.dispatch(authActions.login({ authMethod: authMethod.EMAIL }));
     expect(Mixpanel.track).toHaveBeenCalledWith('login-serverError');
     expect(store.getActions()).toMatchSnapshot();
   });
@@ -69,7 +74,7 @@ describe('Auth Actions', () => {
     const { accessToken, ...userObj } = user;
     const body = { user: { ...userObj } };
     fetch.mockResponseSuccess({ ...body, accessToken });
-    await store.dispatch(authActions.signup({ email, password }));
+    await store.dispatch(authActions.signup({ email, password, authMethod: authMethods.EMAIL }));
     expect(UserService.setUserId).toBeCalledWith(body.user._id);
     expect(Bugsnag.setUser).toBeCalledWith(body.user._id, body.user.nickname, body.user.email);
     expect(Mixpanel.identify).toBeCalledWith(body.user._id);
@@ -77,7 +82,11 @@ describe('Auth Actions', () => {
     expect(Mixpanel.track).toHaveBeenCalledWith('signup-success');
     expect(SensitiveInfo.setItem.mock.calls[0]).toEqual([storageKeys.ACCESS_TOKEN, accessToken]);
     expect(SensitiveInfo.setItem.mock.calls[1]).toEqual([storageKeys.USER, body.user]);
-    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({ email, password }));
+    expect(fetch.mock.calls[0][1].body).toEqual(JSON.stringify({
+      email,
+      password,
+      authMethod: authMethods.EMAIL,
+    }));
     expect(store.getActions()).toMatchSnapshot();
   });
 

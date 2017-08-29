@@ -5,29 +5,36 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import cloneDeep from 'lodash/cloneDeep';
+import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import appActions from '../actions/app';
 import userActions from '../actions/user';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
+import PostureIntro from '../components/posture/PostureIntro';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
+import VideoPlayer from '../components/VideoPlayer';
 import bulletWhite from '../images/bullet-white.png';
 import videoIconBlue from '../images/video-icon-blue.png';
 import videoIconGreen from '../images/video-icon-green.png';
 import videoIconOrange from '../images/video-icon-orange.png';
 import videoIconPurple from '../images/video-icon-purple.png';
 import videoIconRed from '../images/video-icon-red.png';
+import routes from '../routes';
 import { getColorHexForLevel, getColorNameForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
+import constants from '../utils/constants';
 import { formattedTimeString } from '../utils/timeUtils';
 
+const { workoutTypes } = constants;
 const { applyWidthDifference } = relativeDimensions;
 
 const ProgressBar = (props) => {
@@ -111,6 +118,10 @@ class GuidedTraining extends Component {
   static propTypes = {
     hidePartialModal: PropTypes.func.isRequired,
     showPartialModal: PropTypes.func.isRequired,
+    navigator: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+      replace: PropTypes.func.isRequired,
+    }).isRequired,
     training: PropTypes.shape({
       errorMessage: PropTypes.string,
       isUpdating: PropTypes.bool,
@@ -153,6 +164,7 @@ class GuidedTraining extends Component {
 
   constructor(props) {
     super(props);
+    autobind(this);
     const sessionWorkouts = this._getSessionWorkouts(props.training);
 
     // Find the first incomplete workout index
@@ -174,14 +186,7 @@ class GuidedTraining extends Component {
 
   componentDidMount() {
     // Fetch image in the background. User should see a Spinner until the image is fully fetched.
-    Image.prefetch(this.state.currentWorkout.workout.gifUrl)
-      .then(() => {
-        this.setState({ isFetchingImage: false });
-      })
-      .catch(() => {
-        // Suppress errors
-        this.setState({ isFetchingImage: false });
-      });
+    this._attemptGifFetch(this.state.currentWorkout);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -215,15 +220,8 @@ class GuidedTraining extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (!isEqual(prevState.currentWorkout, this.state.currentWorkout)) {
       // Workout changed
-      // Prefetch workout gif
-      Image.prefetch(this.state.currentWorkout.workout.gifUrl)
-        .then(() => {
-          this.setState({ isFetchingImage: false });
-        })
-        .catch(() => {
-          // Suppress errors
-          this.setState({ isFetchingImage: false });
-        });
+      // Prefetch workout GIF, if available
+      this._attemptGifFetch(this.state.currentWorkout);
     }
 
     if (prevState.timerSeconds !== this.state.timerSeconds && this.state.timerSeconds === 0) {
@@ -273,6 +271,25 @@ class GuidedTraining extends Component {
   componentWillUnmount() {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
+    }
+  }
+
+  _attemptGifFetch(sessionWorkout) {
+    const gifUrl = get(sessionWorkout, 'workout.gifUrl');
+    if (gifUrl) {
+      // GIF URL exists, prefetch GIF
+      Image.prefetch(gifUrl)
+        .then(() => {
+          this.setState({ isFetchingImage: false });
+        })
+        .catch(() => {
+          // Suppress errors
+          this.setState({ isFetchingImage: false });
+        });
+    } else {
+      // There is no GIF to prefetch
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ isFetchingImage: false });
     }
   }
 
@@ -470,6 +487,23 @@ class GuidedTraining extends Component {
     this.setState({ [`${buttonName}Depressed`]: false });
   }
 
+  _navigateToPostureCalibrate() {
+    const { selectedLevelIdx, selectedSessionIdx } = this.props.training;
+    const title = `Level ${selectedLevelIdx + 1} Session ${selectedSessionIdx + 1}`;
+    this.props.navigator.push({
+      ...routes.postureCalibrate,
+      title,
+      props: {
+        onFinish: () => {
+          this.props.navigator.replace({
+            ...routes.postureMonitor,
+            title,
+          });
+        },
+      },
+    });
+  }
+
   render() {
     const { currentWorkout } = this.state;
     const isTimed = !!currentWorkout.seconds;
@@ -515,6 +549,41 @@ class GuidedTraining extends Component {
     const selectedLevelIdx = this.props.training.selectedLevelIdx;
     const levelColorHex = getColorHexForLevel(selectedLevelIdx);
     const levelColorName = getColorNameForLevel(selectedLevelIdx);
+
+    // If the workout is a posture session, display PostureIntro. Otherwise, display workout media
+    const isPostureSession = currentWorkout.workout.type === workoutTypes.POSTURE;
+    let content;
+    if (isPostureSession) {
+      content = (
+        <PostureIntro
+          duration={currentWorkout.workout.duration}
+          navigator={this.props.navigator}
+          onProceed={this._navigateToPostureCalibrate}
+        />
+      );
+    } else if (currentWorkout.workout.gifUrl) {
+      content = (
+        <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif}>
+          <TouchableOpacity
+            style={styles.videoLink}
+            onPress={() => { /* TODO: NAVIGATE TO WORKOUT VIDEO */ }}
+          >
+            <Image source={videoIcon[levelColorName]} style={styles.videoIcon} />
+          </TouchableOpacity>
+        </Image>
+      );
+    } else if (currentWorkout.workout.videoUrl) {
+      content = (
+        <View style={styles.videoPlayerContainer}>
+          <VideoPlayer
+            video={{ uri: currentWorkout.workout.videoUrl }}
+            customStyles={{
+              wrapper: styles._videoPlayer,
+            }}
+          />
+        </View>
+      );
+    }
 
     // The left button would be disabled if this is the first workout in the session
     const isLeftButtonDisabled = this.state.step === 1;
@@ -566,16 +635,7 @@ class GuidedTraining extends Component {
           backgroundColor={levelColorHex}
         />
         {header}
-        {this.state.isFetchingImage ? <Spinner size="large" color={levelColorHex} /> : (
-          <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif}>
-            <TouchableOpacity
-              style={styles.videoLink}
-              onPress={() => { /* TODO: NAVIGATE TO WORKOUT VIDEO */ }}
-            >
-              <Image source={videoIcon[levelColorName]} style={styles.videoIcon} />
-            </TouchableOpacity>
-          </Image>
-        )}
+        {this.state.isFetchingImage ? <Spinner size="large" color={levelColorHex} /> : content}
         <View style={styles.footer}>
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
@@ -598,29 +658,35 @@ class GuidedTraining extends Component {
             <SecondaryText style={styles._footerButtonText}>PREVIOUS</SecondaryText>
           </View>
           <View style={styles.footerButtonContainer}>
-            <TouchableHighlight
-              activeOpacity={1}
-              underlayColor={levelColorHex}
-              onPress={() => this._onButtonPress('centerButton')}
-              onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
-              onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
-              style={[styles.footerButton, additionalCenterButtonStyles]}
-              disabled={isCenterButtonDisabled}
-            >
-              <View style={styles.footerButtonIconContainer}>
-                {isCenterButtonDisabled ? <Spinner size="large" color={levelColorHex} /> : (
-                  <Icon
-                    name={centerButtonIconName}
-                    size={applyWidthDifference(50)}
-                    style={{
-                      color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
-                        'white' : levelColorHex,
-                    }}
-                  />
-                )}
-              </View>
-            </TouchableHighlight>
-            <SecondaryText style={styles._footerButtonText}>{centerButtonIconLabel}</SecondaryText>
+            {!isPostureSession && (
+              <TouchableHighlight
+                activeOpacity={1}
+                underlayColor={levelColorHex}
+                onPress={() => this._onButtonPress('centerButton')}
+                onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
+                onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
+                style={[styles.footerButton, additionalCenterButtonStyles]}
+                disabled={isCenterButtonDisabled}
+              >
+                <View style={styles.footerButtonIconContainer}>
+                  {isCenterButtonDisabled ? <Spinner size="large" color={levelColorHex} /> : (
+                    <Icon
+                      name={centerButtonIconName}
+                      size={applyWidthDifference(50)}
+                      style={{
+                        color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
+                          'white' : levelColorHex,
+                      }}
+                    />
+                  )}
+                </View>
+              </TouchableHighlight>
+            )}
+            {!isPostureSession && (
+              <SecondaryText style={styles._footerButtonText}>
+                {centerButtonIconLabel}
+              </SecondaryText>
+            )}
           </View>
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
