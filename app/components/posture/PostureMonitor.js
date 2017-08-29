@@ -54,21 +54,42 @@ const SessionControlServiceEvents = new NativeEventEmitter(SessionControlService
 
 const MIN_POSTURE_THRESHOLD = 0.03;
 const MAX_POSTURE_THRESHOLD = 0.3;
+const currentRange = MAX_POSTURE_THRESHOLD - MIN_POSTURE_THRESHOLD;
 
 const isiOS = Platform.OS === 'ios';
 
 /**
- * Maps distance values to slouch degrees for determining how much to rotate
- * the monitor pointer. The degree output would range from -180 to 0, where -180
- * would have the pointer pointing horizontally left and 0 would have the pointer
- * pointing horizontally right. The max distance range is MAX_POSTURE_THRESHOLD.
- * @param  {Number} distance Deviation from the control point
- * @return {Number}          Degree equivalent of the distance value
+ * Scales a value to the given range.
+ * @param  {Number} value value to normalize
+ * @param  {Number} min   min of range
+ * @param  {Number} max   max of range
+ * @return {Number}       Value scaled in new range
  */
-const distanceToDegrees = distance => {
-  const maxMappedDegree = -180;
-  return Math.max(-180, (distance / MAX_POSTURE_THRESHOLD) * maxMappedDegree);
+const normalizeValue = (value, min, max) => (((value - MIN_POSTURE_THRESHOLD) / currentRange)
+* (max - min)) + min;
+
+/**
+ * Monitor pointerPosition prop requires a number between -30-210(inclusive) for the pointer,
+ * @param  {Number} distance Deviation from the control point
+ * @return {Number}          Distance value scaled in a range of -30-210
+ */
+const getPointerPosition = distance => {
+  const normalizedDistance = Math.floor(normalizeValue(distance, 210, -30));
+  if (normalizedDistance > 210) {
+    return 210;
+  } else if (normalizedDistance < -30) {
+    return -30;
+  }
+  return normalizedDistance;
 };
+
+/**
+ * Monitor slouchPosition prop requires a number between 0-100(inclusive) for the arc,
+ * so we scale the distance to a range of 0-100
+ * @param  {Number} distance Deviation from the control point
+ * @return {Number}          Distance value scaled in a range of 0-100
+ */
+const getSlouchPosition = distance => Math.floor(normalizeValue(distance, 100, 0));
 
 /**
  * Returns a number at a given magnitude
@@ -152,7 +173,8 @@ class PostureMonitor extends Component {
       forceStoppedSession: false,
       postureThreshold: this.props.user.settings.postureThreshold,
       shouldNotifySlouch: true,
-      pointerPosition: 0,
+      pointerPosition: 210,
+      currentDistance: 0,
       totalDuration: 0, // in seconds
       slouchTime: 0, // in seconds
       timeElapsed: 0, // in seconds
@@ -545,8 +567,9 @@ class PostureMonitor extends Component {
   sessionDataHandler(event) {
     const { currentDistance, timeElapsed } = event;
     this.setState({
-      pointerPosition: distanceToDegrees(currentDistance),
+      pointerPosition: getPointerPosition(currentDistance),
       timeElapsed,
+      currentDistance,
     });
 
     // Mark the shouldNotifySlouch to true when it's on a good posture state
@@ -1011,21 +1034,61 @@ class PostureMonitor extends Component {
     this.props.dispatch(userActions.updateUserSettings(updatedUserSettings));
   }
 
+  navigateToAlert() {
+    return this.props.navigator.push(routes.alerts);
+  }
+
+  navigateToRecalibrate() {
+    this.props.dispatch(appActions.showPartialModal({
+      topView: (
+        <Image source={deviceWarningIcon} />
+      ),
+      title: {
+        caption: 'Stop Session?',
+      },
+      detail: {
+        caption: 'Are you sure you want to stop your current session?',
+      },
+      buttons: [
+        {
+          caption: 'STOP',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+            this.stopSession();
+            this.props.navigator.resetTo(routes.postureCalibrate);
+          },
+        },
+        {
+          caption: 'RESUME',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        },
+      ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
+    }));
+  }
+
   render() {
     const {
       postureThreshold,
       pointerPosition,
       sessionState,
       hasPendingSessionOperation,
+      currentDistance,
     } = this.state;
+
+    const isDisabled = sessionState === sessionStates.RUNNING;
 
     const getPlayPauseButton = () => {
       if (sessionState === sessionStates.STOPPED) {
-        return <MonitorButton play onPress={this.startSession} />;
-      } else if (sessionState === sessionStates.RUNNING) {
-        return <MonitorButton pause onPress={this.pauseSession} />;
+        return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.startSession} />;
+      } else if (isDisabled) {
+        return <MonitorButton text="PAUSE" icon="pause" onPress={this.pauseSession} />;
       }
-      return <MonitorButton play onPress={this.resumeSession} />;
+      return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.resumeSession} />;
     };
 
     return this.props.device.isConnecting ? (
@@ -1035,22 +1098,18 @@ class PostureMonitor extends Component {
       </View>
     ) : (
       <View style={styles.container}>
-        <HeadingText size={1} style={styles._timer}>
+        <BodyText style={styles._timer}>
           {this.getFormattedTime()}
-        </HeadingText>
-        <HeadingText size={3} style={styles._heading}>SESSION TIME</HeadingText>
+        </BodyText>
+        <BodyText style={styles._heading}>Time Remaining</BodyText>
         <Monitor
+          disable={isDisabled}
           pointerPosition={pointerPosition}
-          slouchPosition={distanceToDegrees(postureThreshold)}
+          slouchPosition={getSlouchPosition(postureThreshold)}
+          onPress={this.navigateToRecalibrate}
+          rating={(currentDistance < postureThreshold)}
         />
-        <View style={styles.monitorRatingContainer}>
-          <BodyText style={styles._monitorPoor}>Poor</BodyText>
-          <BodyText style={styles._monitorGood}>Good</BodyText>
-        </View>
-        <BodyText style={styles._monitorTitle}>POSTURE MONITOR</BodyText>
-        <SecondaryText style={styles._sliderTitle}>
-          Tune up or down the Backbone's slouch detection
-        </SecondaryText>
+
         {/*
           The allowed range for the posture distance threshold is MIN_POSTURE_THRESHOLD
           to MAX_POSTURE_THRESHOLD. Ideally, the minimumValue and maximumValue for the
@@ -1060,24 +1119,39 @@ class PostureMonitor extends Component {
           MIN_POSTURE_THRESHOLD to make maximumValue equal to 0 in order for the slider to
           work on both Android and iOS.
         */}
-        <MonitorSlider
-          value={-postureThreshold + MIN_POSTURE_THRESHOLD}
-          onValueChange={value => {
-            const correctedValue = value - MIN_POSTURE_THRESHOLD;
+        <View>
+          <MonitorSlider
+            value={-postureThreshold + MIN_POSTURE_THRESHOLD}
+            onValueChange={value => {
+              const correctedValue = value - MIN_POSTURE_THRESHOLD;
             // The value is rounded to 3 decimals places to prevent unexpected rounding issues
-            this.updatePostureThreshold(-correctedValue.toFixed(3));
-          }}
-          minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
-          maximumValue={0}
-          disabled={sessionState === sessionStates.RUNNING}
-        />
+              this.updatePostureThreshold(-correctedValue.toFixed(3));
+            }}
+            minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
+            maximumValue={0}
+            disabled={isDisabled}
+          />
+          <SecondaryText style={styles._sliderTitle}>SLOUCH DETECTION</SecondaryText>
+        </View>
         <View style={styles.btnContainer}>
           {getPlayPauseButton()}
           {sessionState !== sessionStates.PAUSED || hasPendingSessionOperation ?
-            <MonitorButton alertsDisabled disabled /> :
-              <MonitorButton alerts onPress={() => this.props.navigator.push(routes.alerts)} />
+            <MonitorButton
+              disabled
+              icon="notifications"
+              text="ALERTS"
+            /> :
+              <MonitorButton
+                icon="notifications"
+                text="ALERTS"
+                onPress={this.navigateToAlert}
+              />
           }
-          <MonitorButton stop onPress={this.confirmStopSession} />
+          <MonitorButton
+            text="STOP"
+            icon="stop"
+            onPress={this.confirmStopSession}
+          />
         </View>
       </View>
     );

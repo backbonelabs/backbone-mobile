@@ -1,18 +1,15 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
-const responsiveWidthHalfCircle = applyWidthDifference(128.5);
-
-const totalPointerWidth = applyWidthDifference(10);
-const totalPointerLength = applyWidthDifference(88);
+const { applyWidthDifference, fixedResponsiveFontSize, width } = relativeDimensions;
+const innerMonitorSize = applyWidthDifference(190);
 
 export default EStyleSheet.create({
-  $sliderIconSize: fixedResponsiveFontSize(15),
-  $sliderIconPadding: applyWidthDifference(5),
-  $pointerBaseHeight: 84,
   container: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
+    justifyContent: 'space-around',
   },
   connectingContainer: {
     flex: 1,
@@ -20,128 +17,106 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   connectingSpinner: {
-    marginBottom: 10,
+    marginBottom: fixedResponsiveFontSize(10),
   },
   connectingText: {
-    marginTop: 10,
+    marginTop: fixedResponsiveFontSize(10),
   },
   timer: {
     textAlign: 'center',
-    marginTop: 40 * heightDifference,
-    '@media (max-height: 480)': { // iphone4's max height
-      marginTop: 10 * heightDifference,
-    },
-    marginBottom: 5 * heightDifference,
+    fontSize: fixedResponsiveFontSize(54),
+    color: '$lightBlueColor',
+    marginTop: applyWidthDifference(10),
   },
   heading: {
     textAlign: 'center',
-    marginBottom: 50 * heightDifference,
-    '@media (max-height: 480)': { // iphone4's max height
-      marginBottom: 15 * heightDifference,
-    },
+    marginTop: applyWidthDifference(-30),
   },
-  monitorPointerContainer: {
-    flexDirection: 'row',
+  monitorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  animatedProgress: {
+    justifyContent: 'center',
+  },
+  innerMonitorContainer: {
+    height: innerMonitorSize,
+    width: innerMonitorSize,
+    backgroundColor: 'white',
+    borderRadius: innerMonitorSize / 2,
+    position: 'absolute',
     alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    height: totalPointerWidth,
-    width: (totalPointerLength * 2) - applyWidthDifference(8),
-    marginTop: totalPointerWidth * -0.5,
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 1,
+        },
+        shadowColor: '$secondaryFontColor',
+        shadowRadius: 2,
+        shadowOpacity: 0.3,
+      },
+      android: {
+        elevation: 1,
+      },
+    }),
   },
-  base: {
-    width: applyWidthDifference(8),
-    height: applyWidthDifference(8),
-    borderRadius: applyWidthDifference(4),
-    backgroundColor: '$primaryFontColor',
+  pointerContainer: {
+    width: innerMonitorSize - applyWidthDifference(20),
   },
-  hand: {
-    height: applyWidthDifference(2),
-    width: applyWidthDifference(70),
-    backgroundColor: '$primaryFontColor',
+  pointer: {
+    height: applyWidthDifference(5),
+    width: applyWidthDifference(20),
+    borderRadius: applyWidthDifference(20),
+    backgroundColor: '$secondaryFontColor',
   },
-  point: {
+  leftCircle: {
+    width: applyWidthDifference(15),
+    height: applyWidthDifference(15),
+    borderRadius: applyWidthDifference(15 / 2),
+    position: 'absolute',
+    bottom: applyWidthDifference(44),
+    left: (width * 0.5) - (applyWidthDifference(220 / 2) *
+    Math.sin((60 * Math.PI) / 180)) - applyWidthDifference(15 / 8),
+  },
+  rightCircle: {
+    width: applyWidthDifference(15),
+    height: applyWidthDifference(15),
+    borderRadius: applyWidthDifference(15 / 2),
+    position: 'absolute',
+    bottom: applyWidthDifference(44),
+    right: (width * 0.5) - (applyWidthDifference(220 / 2) *
+    Math.sin((60 * Math.PI) / 180)) - applyWidthDifference(15 / 8),
+  },
+  postureRatingContainer: {
+    position: 'absolute',
+    alignItems: 'center',
     backgroundColor: 'transparent',
-    borderRightWidth: 0,
-    borderTopWidth: applyWidthDifference(5),
-    borderLeftWidth: applyWidthDifference(10),
-    borderBottomWidth: applyWidthDifference(5),
-    borderRightColor: 'transparent',
-    borderTopColor: 'transparent',
-    borderLeftColor: '$primaryFontColor',
-    borderBottomColor: 'transparent',
   },
-  monitorTitle: {
-    textAlign: 'center',
-    marginBottom: 34 * heightDifference,
+  postureRating: {
+    fontSize: fixedResponsiveFontSize(42),
+    fontWeight: 'bold',
+    // ************ styles for recalibration button ************
+    // marginTop: applyWidthDifference(40),
   },
-  monitorRatingContainer: {
-    flexDirection: 'row',
-    marginTop: 5 * heightDifference,
-    marginBottom: 5 * heightDifference,
-    alignSelf: 'center',
-  },
-  monitorPoor: {
-    marginLeft: applyWidthDifference(26),
-    marginRight: applyWidthDifference(212),
-  },
-  monitorGood: {
-    marginRight: applyWidthDifference(27),
-  },
+  // refreshIcon: {
+  //   textAlign: 'center',
+  // },
+  // reCalibrate: {
+  //   fontSize: fixedResponsiveFontSize(12),
+  //   fontWeight: 'bold',
+  // },
   sliderTitle: {
     textAlign: 'center',
-    alignSelf: 'center',
-    width: applyWidthDifference(296),
-  },
-  sliderContainer: {
-    width: applyWidthDifference(296),
-    marginBottom: 50 * heightDifference,
-    alignSelf: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
+    fontSize: fixedResponsiveFontSize(12),
   },
   btnContainer: {
-    width: applyWidthDifference(350),
+    width: '85%',
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent: 'space-around',
-  },
-  monitorBtn: {
-    width: applyWidthDifference(75),
-    height: 75 * heightDifference,
-    resizeMode: 'contain',
-  },
-  btnText: {
-    textAlign: 'center',
-    marginTop: 14 * heightDifference,
-  },
-  halfCircleOuterContainer: {
-    height: responsiveWidthHalfCircle,
-    width: (responsiveWidthHalfCircle * 2),
-    position: 'absolute',
-    top: applyWidthDifference(7.5),
-    left: applyWidthDifference(7.5),
-    alignSelf: 'center',
-    alignItems: 'center',
-    borderWidth: 0,
-    overflow: 'hidden',
-  },
-  halfCircleInnerContainer: {
-    height: responsiveWidthHalfCircle * 2,
-    width: responsiveWidthHalfCircle * 2,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    justifyContent: 'flex-end',
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  halfCircle: {
-    height: responsiveWidthHalfCircle,
-    width: responsiveWidthHalfCircle * 2,
-    borderBottomLeftRadius: responsiveWidthHalfCircle * 2,
-    borderBottomRightRadius: responsiveWidthHalfCircle * 2,
-    backgroundColor: '#FFF',
   },
   partialSpinnerContainer: {
     height: applyWidthDifference(25),

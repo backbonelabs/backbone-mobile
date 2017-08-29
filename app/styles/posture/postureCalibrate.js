@@ -1,65 +1,50 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
+  $size: applyWidthDifference(200),
   container: {
+    backgroundColor: '$grey50',
     flex: 1,
-    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  textContainer: {
-    flex: 0.18,
-    width: '75%',
-    justifyContent: 'flex-end',
+  contentContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   },
   title: {
     textAlign: 'center',
   },
   subtitle: {
-    marginTop: 10 * heightDifference,
+    marginTop: applyWidthDifference(10),
     textAlign: 'center',
   },
-  imageContainer: {
-    flex: 0.60,
+  progressCircle: {
     alignItems: 'center',
+    height: '$size',
     justifyContent: 'center',
+    marginVertical: applyWidthDifference(14),
+    width: '$size',
   },
-  image: {
-    width: applyWidthDifference(131),
-    height: 237 * heightDifference,
-    resizeMode: 'contain',
+  blinder: {
+    backgroundColor: '$grey50',
+    position: 'absolute',
+    top: 0,
+    width: '$size',
   },
-  calibrationCircleContainer: {
-    marginTop: 20 * heightDifference,
-    width: '44%',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  progressText: {
+    backgroundColor: 'transparent',
+    color: 'white',
+    fontWeight: 'bold',
   },
-  calibrationCircle: {
-    width: applyWidthDifference(25),
-    height: applyWidthDifference(25),
-    borderRadius: 12.5,
-    backgroundColor: '$primaryColor',
-    opacity: 0.4,
+  buttonContainer: {
+    width: '100%',
   },
-  actionsContainer: {
-    flex: 0.22,
-    alignItems: 'center',
-  },
-  autoStartPreferenceContainer: {
-    flexDirection: 'row',
-    width: '75%',
-    marginTop: 20 * heightDifference,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  autoStartPreferenceLabel: {
-    flex: 0.75,
-    alignItems: 'center',
-  },
-  autoStartPreferenceSwitch: {
-    flex: 0.25,
-    alignItems: 'center',
+  button: {
+    borderRadius: 0,
+    width: '100%',
   },
 });

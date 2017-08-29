@@ -22,6 +22,9 @@ import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 import routes from '../routes';
+import constants from '../utils/constants';
+
+const { workoutTypes } = constants;
 
 class WorkoutList extends Component {
   static propTypes = {
@@ -51,12 +54,21 @@ class WorkoutList extends Component {
     // Template for categorizing all workouts into their type
     const routeStack = props.navigator.getCurrentRoutes();
     this.currentRoute = routeStack[routeStack.length - 1];
-    this.workoutCategories = [
-      { title: 'POSTURE', type: 1, workouts: [] },
-      { title: 'EXERCISES', type: 2, workouts: [] },
-      { title: 'STRETCHES', type: 3, workouts: [] },
-      { title: 'MOBILITY', type: 4, workouts: [] },
-    ];
+    if (this.currentRoute.name === routes.freeTraining.name) {
+      this.workoutCategories = [
+        { title: 'POSTURE', type: workoutTypes.POSTURE, workouts: [] },
+        { title: 'EXERCISES', type: workoutTypes.EXERCISE, workouts: [] },
+        { title: 'STRETCHES', type: workoutTypes.STRETCH, workouts: [] },
+        { title: 'MOBILITY', type: workoutTypes.MOBILITY, workouts: [] },
+      ];
+    } else if (this.currentRoute.name === routes.education.name) {
+      this.workoutCategories = [
+        { title: 'PRIMERS', type: workoutTypes.PRIMER, workouts: [] },
+        { title: 'EXERCISES', type: workoutTypes.EXERCISE, workouts: [] },
+        { title: 'STRETCHES', type: workoutTypes.STRETCH, workouts: [] },
+        { title: 'MOBILITY', type: workoutTypes.MOBILITY, workouts: [] },
+      ];
+    }
     this.state = {
       workouts: this.organizeWorkouts(props.workouts),
       // This is the initial position of the subview
