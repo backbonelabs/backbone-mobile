@@ -1,9 +1,9 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
+import theme from '../styles/theme';
 
 const {
   applyWidthDifference,
-  heightDifference,
   fixedResponsiveFontSize,
 } = relativeDimensions;
 
@@ -13,14 +13,15 @@ const positioning = {
 };
 
 export default EStyleSheet.create({
+  $iconSize: fixedResponsiveFontSize(20),
   container: {
     width: '100%',
     height: '100%',
   },
-  $iconSize: fixedResponsiveFontSize(20),
   profileFieldContainer: {
     flex: 1,
     width: '100%',
+    height: '10%',
   },
   profileHeader: {
     flexDirection: 'row',
@@ -42,16 +43,15 @@ export default EStyleSheet.create({
     paddingLeft: applyWidthDifference(20),
   },
   profileField: Object.assign({
-    flex: 1,
+    height: applyWidthDifference(60),
     justifyContent: 'flex-start',
     paddingHorizontal: applyWidthDifference(10),
-    paddingVertical: applyWidthDifference(20),
     borderBottomWidth: 1,
     borderColor: '#EEEEEE',
   }, positioning),
-
   profileText: {
-    color: '$primaryFontColor',
+    color: theme.primaryFontColor,
+    fontSize: fixedResponsiveFontSize(16),
   },
   profileFieldIcon: {
     color: 'grey',
@@ -65,7 +65,6 @@ export default EStyleSheet.create({
   },
   profileFieldInput: {
     fontSize: fixedResponsiveFontSize(16),
-    height: applyWidthDifference(20),
     width: '90%',
     paddingHorizontal: applyWidthDifference(15),
     paddingBottom: applyWidthDifference(5),
@@ -76,9 +75,5 @@ export default EStyleSheet.create({
     borderBottomWidth: 1,
     borderTopWidth: 1,
     borderColor: '#EEEEEE',
-  },
-  bottomSpacerContainer: {
-    flex: 0.15,
-    paddingTop: 20 * heightDifference,
   },
 });

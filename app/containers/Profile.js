@@ -16,10 +16,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import userActions from '../actions/user';
 import styles from '../styles/profile';
 import constants from '../utils/constants';
-import ProfilePicker from './onBoardingFlow/profile/ProfilePicker';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import backboneLogo from '../images/logo.png';
+import ModalPicker from '../components/ModalPicker/ModalPicker';
 
 const {
   height: heightConstants,
@@ -125,6 +125,7 @@ class Profile extends Component {
     autobind(this);
     const { user } = this.props;
     this.state = {
+      isModalVisible: false,
       nickname: user.nickname,
       gender: user.gender,
       birthdate: new Date(user.birthdate),
@@ -175,6 +176,10 @@ class Profile extends Component {
     this.props.dispatch(userActions.prepareUserUpdate(null));
   }
 
+  setModalVisible(visible) {
+    this.setState({ isModalVisible: visible });
+  }
+
   /**
    * Opens and closes the selected data picker component
    * @param {String} pickerType Data picker to open. If undefined, the
@@ -183,17 +188,8 @@ class Profile extends Component {
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was editing nickname or email
     Keyboard.dismiss();
-
-    if (this.state.pickerType && pickerType && this.state.pickerType !== pickerType) {
-      // Switching between two different data pickers (height and weight) should
-      // first unmount the currently mounted picker components and then mount a new
-      // instance of the new pickers to ensure components start with a fresh state.
-      this.setState({ pickerType: null }, () => {
-        this.setState({ pickerType: pickerType || null });
-      });
-    } else {
-      this.setState({ pickerType: pickerType || null });
-    }
+    this.setModalVisible(true);
+    this.setState({ pickerType });
   }
 
   /**
@@ -267,10 +263,15 @@ class Profile extends Component {
    */
   updateProfile(field, value, clearPickerType) {
     const newState = { [field]: value };
+    this.setModalVisible(false);
     if (clearPickerType) {
       newState.pickerType = null;
     }
     this.setState(newState, this.prepareUserUpdate);
+  }
+
+  handleCancel() {
+    this.setModalVisible(false);
   }
 
   /**
@@ -399,13 +400,27 @@ class Profile extends Component {
       pickerType,
     } = this.state;
     const { user, isFetching, isUpdating } = this.props;
-
+    let genderText = 'Other';
+    let genderIcon = 'transgender';
+    let genderType = constants.gender.other;
+    if (gender === constants.gender.male) {
+      genderText = 'Male';
+      genderIcon = 'mars';
+      genderType = constants.gender.female;
+    } else if (gender === constants.gender.female) {
+      genderText = 'Female';
+      genderIcon = 'venus';
+      genderType = constants.gender.other;
+    } else {
+      genderType = constants.gender.male;
+    }
     return (
-      <KeyboardAwareScrollView>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
-            { isFetching || isUpdating ?
-              <Spinner style={{ flex: 1 }} />
+      <View>
+        <KeyboardAwareScrollView>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+              { isFetching || isUpdating ?
+                <Spinner style={{ flex: 1 }} />
               :
                 <View style={styles.profileFieldContainer}>
                   <TouchableWithoutFeedback>
@@ -415,7 +430,11 @@ class Profile extends Component {
                         style={styles.profileHeaderUserImage}
                         resizeMode="contain"
                       />
-                      <SecondaryText style={styles.profileHeaderNickname}>{nickname}</SecondaryText>
+                      <SecondaryText
+                        style={styles._profileHeaderNickname}
+                      >
+                        {nickname}
+                      </SecondaryText>
                     </View>
                   </TouchableWithoutFeedback>
                   <ProfileFieldInput
@@ -429,15 +448,11 @@ class Profile extends Component {
                     iconLeftName="user"
                   />
                   <ProfileField
-                    onPress={() => this.updateProfile('gender',
-                      constants.gender.male === gender ?
-                        constants.gender.female
-                        :
-                          constants.gender.male)}
+                    onPress={() => this.updateProfile('gender', genderType)}
                     edited={gender !== user.gender}
-                    profileData={constants.gender.male === gender ? 'Male' : 'Female'}
+                    profileData={genderText}
                     iconFont="FontAwesome"
-                    iconLeftName="transgender"
+                    iconLeftName={genderIcon}
                   />
                   <ProfileField
                     onPress={() => this.setPickerType('birthdate')}
@@ -505,21 +520,19 @@ class Profile extends Component {
                   />
                 </View>
               }
-            <View style={styles.bottomSpacerContainer}>
-              { pickerType &&
-                <ProfilePicker
-                  birthdate={birthdate}
-                  height={height}
-                  weight={weight}
-                  setPickerType={this.setPickerType}
-                  pickerType={pickerType}
-                  updateProfile={this.updateProfile}
-                />
-              }
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAwareScrollView>
+          </TouchableWithoutFeedback>
+        </KeyboardAwareScrollView>
+        <ModalPicker
+          isVisible={this.state.isModalVisible}
+          birthdate={birthdate}
+          height={height}
+          weight={weight}
+          pickerType={pickerType}
+          onConfirm={this.updateProfile}
+          onCancel={this.handleCancel}
+        />
+      </View>
     );
   }
 }

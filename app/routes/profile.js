@@ -11,12 +11,13 @@ import { getColorHexForLevel } from '../utils/levelColors';
 
 const ProfileSave = props => {
   const level = props.training.selectedLevelIdx;
-  const levelColorCode = getColorHexForLevel(level);
+  const profileLevelColorCode = getColorHexForLevel(level);
+
   const { user } = props;
 
   const isPendingSave = user.pendingUser && !user.pendingUser.invalidData;
-  const textColor = isPendingSave ? levelColorCode : theme.disabledColor;
-  const text = <BodyText style={{ color: textColor }}>Save</BodyText>;
+  const profileTextColor = isPendingSave ? profileLevelColorCode : theme.disabledColor;
+  const text = <BodyText style={{ color: profileTextColor }}>Save</BodyText>;
 
   return isPendingSave ? (
     <TouchableOpacity
