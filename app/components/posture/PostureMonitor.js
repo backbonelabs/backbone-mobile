@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
-import { debounce, isEqual, isFunction } from 'lodash';
+import { debounce, isEqual, isFunction, compact } from 'lodash';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -24,15 +25,20 @@ import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
 import deviceActions from '../../actions/device';
 import userActions from '../../actions/user';
-import PostureSummary from './PostureSummary';
 import routes from '../../routes';
 import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
 import SensitiveInfo from '../../utils/SensitiveInfo';
 import theme from '../../styles/theme';
+import vertebraeIcon from '../../images/vertebrae-icon.png';
 import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import deviceWarningIcon from '../../images/settings/device-warning-icon.png';
 import deviceSuccessIcon from '../../images/settings/device-success-icon.png';
+import {
+  getColorHexForLevel,
+  getColorHexForLevelUnderlay,
+} from '../../utils/levelColors';
+import { zeroPadding } from '../../utils/timeUtils';
 
 const {
   BluetoothService,
@@ -147,6 +153,9 @@ class PostureMonitor extends Component {
         totalDuration: PropTypes.number,
         slouchTime: PropTypes.number,
       }),
+    }),
+    training: PropTypes.shape({
+      selectedLevelIdx: PropTypes.number,
     }),
     user: PropTypes.shape({
       settings: PropTypes.shape({
@@ -968,10 +977,109 @@ class PostureMonitor extends Component {
     const { backboneVibration } = this.props.user.settings;
 
     this.trackUserSession();
-    this.props.dispatch(appActions.showFullModal({
-      onClose: () => this.props.navigator.resetTo(routes.dashboard),
-      content:
-        <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
+
+    const { selectedLevelIdx: level } = this.props.training;
+    const levelColorCode = getColorHexForLevel(level);
+    const levelColorCodeUnderlay = getColorHexForLevelUnderlay(level);
+    const levelColorStyle = { color: levelColorCode };
+    const levelBackgroundColorStyle = { backgroundColor: levelColorCodeUnderlay };
+
+    const goodPostureTime = totalDuration - slouchTime;
+    const goal = sessionDuration;
+    const goodPostureHours = Math.floor(goodPostureTime / 3600);
+    const goodPostureMinutes = Math.floor((goodPostureTime - (goodPostureHours * 3600)) / 60);
+    const goodPostureSeconds = goodPostureTime % 60;
+    const grade = 'A';
+
+    const goodPostureTimeStringArray = ['', '', `${zeroPadding(goodPostureSeconds)}`];
+    if (goodPostureHours) {
+      goodPostureTimeStringArray[0] = `${goodPostureHours}:`;
+    }
+    if (goodPostureMinutes) {
+      goodPostureTimeStringArray[1] = `${goodPostureMinutes}:`;
+    }
+    const goodPostureTimeString = compact(goodPostureTimeStringArray).join('');
+
+    this.props.dispatch(appActions.showPartialModal({
+      overlay: (
+        <View style={styles.topCircleOverlay}>
+          <FontAwesomeIcon name={'circle'} style={[styles.summaryTopStarCircle, levelColorStyle]} />
+          <FontAwesomeIcon name={'star'} style={styles.summaryTopStar} />
+        </View>
+      ),
+      topView: (
+        <View style={styles.summaryContainer}>
+          <BodyText style={[styles._summaryTitle, levelColorStyle]}>
+            Awesome!
+          </BodyText>
+          <View style={[styles.summaryDetailContainer, levelBackgroundColorStyle]}>
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <FontAwesomeIcon name={'bullseye'} style={styles.summaryDetailIcon} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Goal:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>
+                  {goal ? `${goal}:00` : '~'}
+                </BodyText>
+              </View>
+            </View>
+            <View style={styles.summaryDetailLine} />
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <Image source={vertebraeIcon} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Perfect Posture:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>{goodPostureTimeString}</BodyText>
+              </View>
+            </View>
+            <View style={styles.summaryDetailLine} />
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <FontAwesomeIcon name={'star'} style={styles.summaryDetailIcon} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Grade:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>{grade}</BodyText>
+              </View>
+            </View>
+          </View>
+        </View>
+      ),
+      detail: {
+        caption: '',
+      },
+      buttons: [
+        {
+          caption: 'TRY AGAIN',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        },
+        {
+          caption: 'DONE',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+            this.props.navigator.resetTo(routes.dashboard);
+          },
+          color: levelColorCode,
+          underlayColor: levelColorCodeUnderlay,
+        },
+      ],
+      backButtonHandler: () => {
+
+      },
+      customStyles: {
+        containerStyle: styles.dash,
+        topViewStyle: styles.topDash,
+      },
     }));
 
     // Clear the slouch notification when the current session has ended
@@ -1159,8 +1267,8 @@ class PostureMonitor extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, device, posture, user: { user } } = state;
-  return { app, device, posture, user };
+  const { app, device, posture, training, user: { user } } = state;
+  return { app, device, posture, training, user };
 };
 
 export default connect(mapStateToProps)(PostureMonitor);

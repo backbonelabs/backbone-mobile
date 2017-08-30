@@ -121,4 +121,78 @@ export default EStyleSheet.create({
   partialSpinnerContainer: {
     height: applyWidthDifference(25),
   },
+  summaryTopView: {
+    marginBottom: 0,
+  },
+  summaryMainContainer: {
+    marginTop: applyWidthDifference(40),
+  },
+  summaryTopStarCircle: {
+    fontSize: fixedResponsiveFontSize(96),
+    color: 'blue',
+  },
+  summaryTopStar: {
+    fontSize: fixedResponsiveFontSize(60),
+    color: 'white',
+    position: 'absolute',
+    top: applyWidthDifference(18),
+    left: applyWidthDifference(13),
+  },
+  topCircleOverlay: {
+    position: 'absolute',
+    top: '50% - 250',
+    left: '50% - 40',
+  },
+  summaryContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  summaryTitle: {
+    color: 'blue',
+    fontSize: fixedResponsiveFontSize(24),
+    fontWeight: 'bold',
+    paddingTop: applyWidthDifference(20),
+    paddingBottom: applyWidthDifference(35),
+  },
+  summaryDetailContainer: {
+    alignItems: 'center',
+    backgroundColor: 'blue',
+    width: applyWidthDifference(270),
+    borderRadius: applyWidthDifference(10),
+  },
+  summaryDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: applyWidthDifference(15),
+  },
+  summaryDetailIconContainer: {
+    flex: 0.15,
+  },
+  summaryDetailIcon: {
+    fontSize: fixedResponsiveFontSize(22),
+    color: 'white',
+    paddingLeft: applyWidthDifference(2),
+  },
+  summaryDetailCaptionContainer: {
+    flex: 0.65,
+    alignItems: 'flex-start',
+  },
+  summaryDetailCaption: {
+    fontSize: fixedResponsiveFontSize(15),
+  },
+  summaryDetailValueContainer: {
+    flex: 0.2,
+    alignItems: 'flex-end',
+  },
+  summaryDetailValue: {
+    fontWeight: 'bold',
+    fontSize: fixedResponsiveFontSize(15),
+  },
+  summaryDetailLine: {
+    borderBottomWidth: 1,
+    width: applyWidthDifference(260),
+    borderBottomColor: 'white',
+    marginLeft: applyWidthDifference(15),
+  },
 });
