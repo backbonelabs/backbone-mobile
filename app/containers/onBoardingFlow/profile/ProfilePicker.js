@@ -39,7 +39,6 @@ export default class ProfilePicker extends Component {
     updateProfile: PropTypes.func,
     pickerType: PropTypes.string,
     setPickerType: PropTypes.func,
-    style: PropTypes.object,
   };
 
   constructor() {
@@ -267,7 +266,6 @@ export default class ProfilePicker extends Component {
                     maximumDate={currentDate}
                     mode="date"
                     onDateChange={this._onDateChange}
-                    style={this.props.style}
                   />
                 );
               }

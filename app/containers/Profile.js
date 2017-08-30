@@ -217,7 +217,6 @@ class Profile extends Component {
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was editing nickname or email
     Keyboard.dismiss();
-    // this.setModalVisible(true);
     if (this.state.pickerType) {
       this.setState({ pickerType: null });
     } else {
@@ -315,6 +314,7 @@ class Profile extends Component {
    */
   updateProfile(field, value, clearPickerType) {
     const newState = { [field]: value };
+
     if (clearPickerType) {
       newState.pickerType = null;
     }
@@ -405,7 +405,7 @@ class Profile extends Component {
       email,
       invalidData,
     } = this.state;
-    const { user } = this.props;
+    const { user } = this.props.user;
 
     const profileData = {
       nickname,
