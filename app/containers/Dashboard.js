@@ -44,7 +44,10 @@ import bulletRedOff from '../images/bullet-red-off.png';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import Mixpanel from '../utils/Mixpanel';
-import { getColorNameForLevel } from '../utils/levelColors';
+import {
+  getColorNameForLevel,
+  getColorHexForLevel,
+} from '../utils/levelColors';
 import {
   getNextIncompleteSession,
   getNextIncompleteLevel,
@@ -456,7 +459,7 @@ class Dashboard extends Component {
       const isLevelUnlocked = idx <= nextLevelIndex;
       const isCurrentLevel = (idx === selectedLevelIdx);
       const levelTitle = (isCurrentLevel ? 'Level ' : '') + (idx + 1);
-      const color = (isCurrentLevel ? getColorNameForLevel(selectedLevelIdx) : 'black');
+      const color = (isCurrentLevel ? { color: getColorHexForLevel(selectedLevelIdx) } : {});
 
       return (
         <View key={idx} style={styles.hexagonContainer}>
@@ -472,7 +475,7 @@ class Dashboard extends Component {
               },
             ]}
           >
-            <BodyText style={{ color, fontWeight: 'bold' }}>{levelTitle}</BodyText>
+            <BodyText style={[styles._levelTitle, color]}>{levelTitle}</BodyText>
             {
               isLevelUnlocked ?
                 <View style={styles.hexagonCircleContainer}>
@@ -519,17 +522,20 @@ class Dashboard extends Component {
     const isSessionUnlocked = isLevelUnlocked &&
     (nextSessionIndex === -1 || idx <= nextSessionIndex);
     const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
-    const color = getColorNameForLevel(selectedLevelIdx);
+    const color = getColorHexForLevel(selectedLevelIdx);
     let cardContents;
 
     if (isSessionUnlocked) {
       let durationInSeconds = 0;
       const workoutList = session.map(workout => {
+        const isTimed = get(workout, 'isTimed', false);
         const seconds = get(workout, 'seconds', 0);
         const sets = get(workout, 'sets', 0);
         const twice = get(workout, 'twoSides', false);
-        if (seconds) {
+        if (isTimed) {
           durationInSeconds += seconds * (twice ? 2 : 1) * sets;
+        } else {
+          durationInSeconds += seconds;
         }
 
         return (
@@ -543,8 +549,8 @@ class Dashboard extends Component {
         );
       });
 
-      const durationText = (durationInSeconds < 60 ? `${durationInSeconds} sec`
-        : `${Math.ceil(durationInSeconds / 60)} min`);
+      durationInSeconds = Math.max(60, durationInSeconds);
+      const durationText = `${Math.ceil(durationInSeconds / 60)} min`;
 
       cardContents = (
         <View>

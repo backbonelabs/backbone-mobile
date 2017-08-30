@@ -30,6 +30,9 @@ export default EStyleSheet.create({
     alignItems: 'center',
     resizeMode: 'cover',
   },
+  levelTitle: {
+    fontWeight: 'bold',
+  },
   levelSliderOuterContainer: {
     height: '50%',
     width: '100%',
