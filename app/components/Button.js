@@ -2,10 +2,28 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   TouchableHighlight,
+  Platform,
 } from 'react-native';
 import autobind from 'class-autobind';
 import BodyText from './BodyText';
 import styles from '../styles/button';
+
+const buttonShadow = {
+  ...Platform.select({
+      // OS-specific drop shadow styling
+    ios: {
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowRadius: 2,
+      shadowOpacity: 0.3,
+    },
+    android: {
+      elevation: 1,
+    },
+  }),
+};
 
 class Button extends Component {
   static propTypes = {
@@ -18,6 +36,7 @@ class Button extends Component {
     secondary: PropTypes.bool,
     fbBtn: PropTypes.bool,
     pressStatus: PropTypes.bool,
+    shadow: PropTypes.bool,
     onHideUnderlay: PropTypes.func,
     onShowUnderlay: PropTypes.func,
   };
@@ -25,6 +44,7 @@ class Button extends Component {
   static defaultProps = {
     style: {},
     textStyle: {},
+    shadow: true,
   };
 
   constructor(props) {
@@ -114,6 +134,10 @@ class Button extends Component {
           </View>
         </TouchableHighlight>
       );
+    }
+
+    if (this.props.shadow) {
+      buttonStyles.push(buttonShadow);
     }
 
     if (this.props.disabled) {
