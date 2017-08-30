@@ -198,7 +198,7 @@ class Stats extends Component {
 
     const convertToArray = Object.keys(data)
       .map((val) => data[val])
-      .sort((a, b) => a.index > b.index);
+      .sort((a, b) => a.index - b.index);
 
     return (
       <Graph
