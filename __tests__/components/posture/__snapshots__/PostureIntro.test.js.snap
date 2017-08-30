@@ -14,6 +14,7 @@ exports[`PostureIntro Component renders as expected 1`] = `
   <Button
     onPress={[Function]}
     primary={true}
+    shadow={true}
     style={Object {}}
     text="START"
     textStyle={Object {}}

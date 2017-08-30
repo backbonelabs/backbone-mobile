@@ -173,6 +173,7 @@ exports[`Signup Component renders as expected 1`] = `
             disabled={true}
             onPress={[Function]}
             primary={true}
+            shadow={true}
             style={Object {}}
             text="SIGN UP"
             textStyle={Object {}}
