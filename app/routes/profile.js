@@ -10,6 +10,8 @@ import Mixpanel from '../utils/Mixpanel';
 import { getColorHexForLevel } from '../utils/levelColors';
 
 const ProfileSave = props => {
+  console.log('selectedLevelIdx', props.training.selectedLevelIdx);
+
   const level = props.training.selectedLevelIdx;
   const profileLevelColorCode = getColorHexForLevel(level);
 

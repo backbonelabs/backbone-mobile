@@ -19,12 +19,15 @@ export default EStyleSheet.create({
   },
   inputField: {
     width: '90%',
+    borderColor: '#2196F3',
   },
   newPassword: {
     marginTop: applyWidthDifference(15),
   },
   saveButton: {
     marginTop: applyWidthDifference(40),
+    backgroundColor: '#2196F3',
+    width: '90%',
   },
   warning: {
     color: '$primaryColor',

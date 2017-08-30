@@ -57,6 +57,25 @@ class Facebook extends Component {
     new GraphRequestManager().addRequest(infoRequest).start();
   }
 
+  login() {
+    LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(result => {
+      if (result && !result.isCancelled) {
+        // After a Facebook user successfully authenticates, we use the returned Facebook
+        // access token to get their profile.
+        FBAccessToken.getCurrentAccessToken()
+          .then((data) => {
+            if (data) {
+              this.getFBUserInfo(data);
+            }
+          }
+        )
+        .catch(() => {
+          Alert.alert('Unable to authenticate with Facebook. Try again later.');
+        });
+      }
+    });
+  }
+
   render() {
     return (
       <Button
@@ -64,23 +83,7 @@ class Facebook extends Component {
         textStyle={styles._fbBtnText}
         text={this.props.buttonText}
         fbBtn
-        onPress={() =>
-          LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(result => {
-            if (result && !result.isCancelled) {
-              // After a Facebook user successfully authenticates, we use the returned Facebook
-              // access token to get their profile.
-              FBAccessToken.getCurrentAccessToken()
-                .then((data) => {
-                  if (data) {
-                    this.getFBUserInfo(data);
-                  }
-                }
-              )
-              .catch(() => {
-                Alert.alert('Unable to authenticate with Facebook. Try again later.');
-              });
-            }
-          })}
+        onPress={this.login}
       />
     );
   }

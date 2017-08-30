@@ -205,7 +205,7 @@ class ChangePassword extends Component {
                   </View>
                   <Button
                     style={styles._saveButton}
-                    text="Save"
+                    text="SAVE PASSWORD"
                     disabled={
                       (
                         !this.state.currentPassword ||

@@ -69,7 +69,7 @@ export default EStyleSheet.create({
     paddingHorizontal: applyWidthDifference(15),
     paddingBottom: applyWidthDifference(5),
   },
-  logoutSpacerContainer: {
+  signOutSpacerContainer: {
     height: applyWidthDifference(20),
     backgroundColor: '#FAFAFA',
     borderBottomWidth: 1,

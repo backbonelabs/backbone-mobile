@@ -22,6 +22,8 @@ import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import backboneLogo from '../images/logo.png';
 import ModalPicker from '../components/ModalPicker/ModalPicker';
+import routes from '../routes';
+import Facebook from '../containers/Facebook';
 
 const {
   height: heightConstants,
@@ -115,6 +117,7 @@ class Profile extends Component {
       weight: PropTypes.number,
       weightUnitPreference: PropTypes.number,
       heightUnitPreference: PropTypes.number,
+      authMethod: PropTypes.number,
       isConfirmed: PropTypes.bool,
     }),
     isFetching: PropTypes.bool,
@@ -122,6 +125,8 @@ class Profile extends Component {
     pendingUser: PropTypes.object,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
+      push: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
     }),
   };
 
@@ -162,9 +167,11 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const routeStack = this.props.navigator.getCurrentRoutes();
+    const currentRoute = routeStack[routeStack.length - 1];
     // isUpdating is truthy during profile save operation
     // If it goes from true to false, operation is complete
-    if (this.props.isUpdating && !nextProps.isUpdating) {
+    if (this.props.isUpdating && !nextProps.isUpdating && currentRoute.name === routes.profile.name) {
       if (nextProps.errorMessage) {
         // Display an alert when failing to save changed user data
         Alert.alert('Error', 'Failed to save changes, please try again');
@@ -498,7 +505,7 @@ class Profile extends Component {
                     edited={weight.initialValue !== weight.value}
                     profileData={this._setWeightLabel(weight.value)}
                     iconFont="FontAwesome"
-                    iconLeftName="balance-scale"
+                    iconLeftName="heartbeat"
                   />
                   <ProfileFieldInput
                     title="Email"
@@ -519,28 +526,35 @@ class Profile extends Component {
                     iconFont="MaterialIcon"
                     iconLeftName="email"
                   />
+                  { user.authMethod === constants.authMethods.EMAIL ?
+                    <View>
+                      <ProfileField
+                        onPress={() => this.props.navigator.push(routes.changePassword)}
+                        profileData="Change password"
+                        iconFont="MaterialIcon"
+                        iconLeftName="lock"
+                      />
+                      <ProfileField
+                        onPress={}
+                        profileData="Connect with Facebook"
+                        iconFont="FontAwesome"
+                        iconLeftName="facebook-official"
+                      />
+                    </View>
+                  :
+                    <ProfileField
+                      profileData="Facebook Connected"
+                      iconFont="FontAwesome"
+                      iconLeftName="facebook-official"
+                    />
+                  }
+                  <View style={styles.signOutSpacerContainer} />
                   <ProfileField
-                    onPress={() => this.setPickerType('weight')}
-                    edited={weight.initialValue !== weight.value}
-                    profileData="Change password"
-                    iconFont="MaterialIcon"
-                    iconLeftName="lock"
-                  />
-                  <ProfileField
-                    onPress={() => this.setPickerType('weight')}
-                    edited={weight.initialValue !== weight.value}
-                    profileData="Connect with Facebook"
-                    iconFont="FontAwesome"
-                    iconLeftName="facebook-official"
-                  />
-                  <View style={styles.logoutSpacerContainer} />
-                  <ProfileField
-                    onPress={() => this.setPickerType('weight')}
-                    edited={weight.initialValue !== weight.value}
-                    profileData="Logout"
+                    onPress={this.signOut}
+                    profileData="Sign out"
                     iconFont="FontAwesome"
                     iconLeftName="power-off"
-                    style={styles.logout}
+                    style={styles.signOut}
                   />
                 </View>
               }
