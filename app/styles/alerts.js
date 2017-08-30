@@ -70,15 +70,13 @@ export default EStyleSheet.create({
   },
   notificationDisabledWarningContainer: {
     alignItems: 'center',
-    paddingTop: applyWidthDifference(12),
-    paddingBottom: applyWidthDifference(15),
-    paddingHorizontal: applyWidthDifference(5),
+    paddingVertical: applyWidthDifference(15),
     ...border,
   },
   notificationDisabledWarningText: {
     color: '$primaryFontColor',
     fontSize: fixedResponsiveFontSize(14),
-    paddingBottom: applyWidthDifference(10),
+    marginBottom: applyWidthDifference(10),
   },
   batteryLifeWarningContainer: {
     flex: 0.36,

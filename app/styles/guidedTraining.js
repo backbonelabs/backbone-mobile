@@ -95,13 +95,13 @@ export default EStyleSheet.create({
       ios: {
         shadowOffset: {
           width: 0,
-          height: 0,
+          height: 3,
         },
         shadowRadius: 3,
         shadowOpacity: 0.15,
       },
       android: {
-        elevation: 1,
+        elevation: 2,
       },
     }),
     height: applyWidthDifference(60),

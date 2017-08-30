@@ -18,15 +18,15 @@ export default EStyleSheet.create({
     padding: applyWidthDifference(10),
     width: applyWidthDifference(340),
     borderRadius: applyWidthDifference(10),
-    ...Platform.select({ // OS-specific drop shadow styling
+    ...Platform.select({
+      // OS-specific drop shadow styling
       ios: {
-        shadowColor: 'rgba(0, 0, 0, 0.2)',
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
         shadowOffset: {
-          height: 0,
           width: 0,
+          height: 0,
         },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
       },
       android: {
         elevation: 2,
