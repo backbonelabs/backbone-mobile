@@ -20,10 +20,10 @@ import constants from '../utils/constants';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import backboneLogo from '../images/logo.png';
-import ModalPicker from '../components/ModalPicker/ModalPicker';
 import routes from '../routes';
 import Facebook from '../containers/Facebook';
 import Input from '../components/Input';
+import ProfilePicker from '../containers/onBoardingFlow/profile/ProfilePicker';
 
 const {
   height: heightConstants,
@@ -81,6 +81,7 @@ const ProfileFieldInput = props => {
       <Input
         style={styles._profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}
+        onFocus={props.focusHandler}
         defaultValue={props.value}
         autoCorrect={false}
         keyboardType={props.keyboardType}
@@ -98,6 +99,7 @@ ProfileFieldInput.propTypes = {
   value: PropTypes.string,
   fieldInputChangeHandler: PropTypes.func,
   blurHandler: PropTypes.func,
+  focusHandler: PropTypes.func,
   edited: PropTypes.bool,
   editedText: PropTypes.string,
   title: PropTypes.string,
@@ -183,11 +185,10 @@ class Profile extends Component {
     const currentRoute = routeStack[routeStack.length - 1];
     // isUpdating is truthy during profile save operation
     // If it goes from true to false, operation is complete
-    console.log('this.props.isUpdating', this.props.user);
-
     if (this.props.user.isUpdating &&
       !nextProps.isUpdating &&
       currentRoute.name === routes.profile.name) {
+      this.setState({ pickerType: null });
       if (nextProps.errorMessage) {
         // Display an alert when failing to save changed user data
         Alert.alert('Error', 'Failed to save changes, please try again');
@@ -216,8 +217,12 @@ class Profile extends Component {
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was editing nickname or email
     Keyboard.dismiss();
-    this.setModalVisible(true);
-    this.setState({ pickerType });
+    // this.setModalVisible(true);
+    if (this.state.pickerType) {
+      this.setState({ pickerType: null });
+    } else {
+      this.setState({ pickerType });
+    }
   }
 
   signOut() {
@@ -310,15 +315,10 @@ class Profile extends Component {
    */
   updateProfile(field, value, clearPickerType) {
     const newState = { [field]: value };
-    this.setModalVisible(false);
     if (clearPickerType) {
       newState.pickerType = null;
     }
     this.setState(newState, this.prepareUserUpdate);
-  }
-
-  handleCancel() {
-    this.setModalVisible(false);
   }
 
   /**
@@ -367,6 +367,9 @@ class Profile extends Component {
     }
   }
 
+  fieldInputFocusHandler() {
+    this.setState({ pickerType: null });
+  }
   // Verify that state is different from previously saved user data
   dataHasChanged() {
     const {
@@ -490,12 +493,13 @@ class Profile extends Component {
                     keyboardType="default"
                     value={nickname}
                     fieldInputChangeHandler={this.fieldInputChangeHandler}
+                    focusHandler={this.fieldInputFocusHandler}
                     blurHandler={this.fieldInputBlurHandler}
                     iconFont="FontAwesome"
                     iconLeftName="user"
                   />
                   <ProfileField
-                    onPress={() => this.updateProfile('gender', genderType)}
+                    onPress={() => this.updateProfile('gender', genderType, true)}
                     edited={gender !== user.gender}
                     profileData={genderText}
                     iconFont="FontAwesome"
@@ -509,6 +513,16 @@ class Profile extends Component {
                     iconFont="MaterialIcon"
                     iconLeftName="cake"
                   />
+                  { pickerType === 'birthdate' ?
+                    <View style={styles.pickerContainer}>
+                      <ProfilePicker
+                        birthdate={birthdate}
+                        pickerType={pickerType}
+                        updateProfile={this.updateProfile}
+                        setPickerType={this.setPickerType}
+                      />
+                    </View>
+                  : null}
                   <ProfileField
                     onPress={() => this.setPickerType('height')}
                     edited={height.initialValue !== height.value}
@@ -516,6 +530,16 @@ class Profile extends Component {
                     iconFont="MaterialIcon"
                     iconLeftName="assignment"
                   />
+                  { pickerType === 'height' ?
+                    <View style={styles.pickerContainer}>
+                      <ProfilePicker
+                        height={height}
+                        pickerType={pickerType}
+                        updateProfile={this.updateProfile}
+                        setPickerType={this.setPickerType}
+                      />
+                    </View>
+                  : null}
                   <ProfileField
                     onPress={() => this.setPickerType('weight')}
                     edited={weight.initialValue !== weight.value}
@@ -523,6 +547,16 @@ class Profile extends Component {
                     iconFont="FontAwesome"
                     iconLeftName="heartbeat"
                   />
+                  { pickerType === 'weight' ?
+                    <View style={styles.pickerContainer}>
+                      <ProfilePicker
+                        weight={weight}
+                        pickerType={pickerType}
+                        updateProfile={this.updateProfile}
+                        setPickerType={this.setPickerType}
+                      />
+                    </View>
+                  : null}
                   <ProfileFieldInput
                     title="Email"
                     edited={email !== user.email || !user.isConfirmed}
@@ -577,15 +611,6 @@ class Profile extends Component {
             </View>
           </TouchableWithoutFeedback>
         </KeyboardAwareScrollView>
-        <ModalPicker
-          isVisible={this.state.isModalVisible}
-          birthdate={birthdate}
-          height={height}
-          weight={weight}
-          pickerType={pickerType}
-          onConfirm={this.updateProfile}
-          onCancel={this.handleCancel}
-        />
       </View>
     );
   }

@@ -94,4 +94,15 @@ export default EStyleSheet.create({
       },
     }),
   },
+  pickerContainer: {
+    ...Platform.select({
+      ios: {
+        height: applyWidthDifference(220),
+        marginTop: applyWidthDifference(-20),
+      },
+      android: {
+        height: applyWidthDifference(40),
+      },
+    }),
+  },
 });
