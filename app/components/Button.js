@@ -11,9 +11,10 @@ class Button extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
     onPress: PropTypes.func,
-    style: PropTypes.object,
+    style: View.propTypes.style,
+    underlayColor: PropTypes.string,
     text: PropTypes.string.isRequired,
-    textStyle: PropTypes.object,
+    textStyle: View.propTypes.style,
     primary: PropTypes.bool,
     secondary: PropTypes.bool,
     fbBtn: PropTypes.bool,
@@ -58,7 +59,7 @@ class Button extends Component {
       buttonType = (
         <TouchableHighlight
           style={buttonStyles}
-          underlayColor={'#FB8C00'}
+          underlayColor={this.props.underlayColor ? this.props.underlayColor : '#FB8C00'}
           onHideUnderlay={this._onHideUnderlay}
           onShowUnderlay={this._onShowUnderlay}
           onPress={this.props.disabled ? undefined : this.props.onPress}
