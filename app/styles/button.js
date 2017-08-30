@@ -5,23 +5,6 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
-const buttonShadow = {
-  ...Platform.select({
-      // OS-specific drop shadow styling
-    ios: {
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowRadius: 2,
-      shadowOpacity: 0.3,
-    },
-    android: {
-      elevation: 1,
-    },
-  }),
-};
-
 export default EStyleSheet.create({
   button: {
     justifyContent: 'center',
@@ -29,7 +12,6 @@ export default EStyleSheet.create({
     width: applyWidthDifference(150),
     height: applyWidthDifference(50),
     borderRadius: 3,
-    ...buttonShadow,
   },
   defaultBtn: {
     backgroundColor: 'white',
