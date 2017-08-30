@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import autobind from 'class-autobind';
 import { Modal, View } from 'react-native';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 import appActions from '../actions/app';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
@@ -16,15 +17,20 @@ class PartialModal extends Component {
 
   getButtons() {
     const buttonConfigs = this.props.config.buttons;
-    return buttonConfigs.map((val, index) => (
-      <Button
-        style={styles._button}
-        text={val.caption}
-        key={index}
-        onPress={val.onPress ? val.onPress : this.defaultHandler}
-        primary={index === buttonConfigs.length - 1}
-      />
-    ));
+    return buttonConfigs.map((val, index) => {
+      const colorStyle = (val.color ? { backgroundColor: val.color } : {});
+
+      return (
+        <Button
+          style={[styles._button, colorStyle]}
+          text={val.caption}
+          key={index}
+          underlayColor={val.underlayColor}
+          onPress={val.onPress ? val.onPress : this.defaultHandler}
+          primary={index === buttonConfigs.length - 1}
+        />
+      );
+    });
   }
 
   defaultHandler() {
@@ -35,44 +41,59 @@ class PartialModal extends Component {
     if (!this.props.showPartial) {
       return null;
     }
+
+    const { config } = this.props;
+    const {
+      overlay,
+      topView,
+      title,
+      detail,
+      buttons,
+    } = config;
+
+    const customStyles = get(config, 'customStyles', {});
+
     return (
       <Modal
         animationType="none"
         transparent
         visible
-        onRequestClose={this.props.config.backButtonHandler ? this.props.config.backButtonHandler :
+        onRequestClose={config.backButtonHandler ? config.backButtonHandler :
           () => {
             // Empty default handler
           }
         }
       >
         <View style={styles.outerContainer}>
-          <View style={styles.innerContainer}>
-            { this.props.config.topView &&
-              <View style={styles.topView}>
-                {this.props.config.topView}
+          <View style={[styles.innerContainer, customStyles.containerStyle]}>
+            { topView &&
+              <View style={[styles.topView, customStyles.topViewStyle]}>
+                {topView}
               </View>
             }
-            { this.props.config.title &&
+            { title &&
               <BodyText
                 style={[
                   styles._titleText,
-                  this.props.config.title.color && { color: this.props.config.title.color },
+                  title.color && { color: title.color },
                 ]}
               >
-                {this.props.config.title.caption}
+                {title.caption}
               </BodyText>
             }
-            <SecondaryText style={styles._detailText}>
-              {this.props.config.detail.caption}
-            </SecondaryText>
-            { this.props.config.buttons && this.props.config.buttons.length > 0 &&
+            { detail &&
+              <SecondaryText style={styles._detailText}>
+                {detail.caption}
+              </SecondaryText>
+            }
+            { buttons && buttons.length > 0 &&
               <View style={styles.buttonContainer}>
                 {this.getButtons()}
               </View>
             }
           </View>
         </View>
+        {overlay}
       </Modal>
     );
   }
@@ -81,6 +102,7 @@ class PartialModal extends Component {
 PartialModal.propTypes = {
   dispatch: PropTypes.func,
   config: PropTypes.shape({
+    overlay: PropTypes.node,
     topView: PropTypes.node,
     title: PropTypes.shape({
       caption: PropTypes.string,
@@ -92,6 +114,10 @@ PartialModal.propTypes = {
     }),
     buttons: PropTypes.array,
     backButtonHandler: PropTypes.func,  // Only used in Android
+    customStyles: PropTypes.shape({
+      containerStyle: View.propTypes.style,
+      topViewStyle: View.propTypes.style,
+    }),
   }),
   showPartial: PropTypes.bool,
 };
