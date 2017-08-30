@@ -304,6 +304,11 @@ class GuidedTraining extends Component {
       selectedSessionIdx,
     } = this.props.training;
     const progress = cloneDeep(this.props.user.trainingPlanProgress);
+    if (!progress[plans[selectedPlanIdx]._id]) {
+      // Progress for the current training plan hasn't been defined in the user profile yet.
+      // Set up a new key for the current training plan in the user's trainingPlanProgress
+      progress[plans[selectedPlanIdx]._id] = [];
+    }
     const planProgress = progress[plans[selectedPlanIdx]._id];
 
     // The plan progress array may not always contain the exact number of elements as
