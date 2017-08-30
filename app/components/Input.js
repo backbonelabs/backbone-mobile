@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { TextInput, View } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import autobind from 'class-autobind';
 import styles from '../styles/input';
 
 // This is a map of font names to modules.
@@ -21,6 +22,7 @@ class Input extends Component {
     style: PropTypes.object,
     iconStyle: PropTypes.object,
     containerStyles: PropTypes.object,
+    innerContainerStyles: PropTypes.object,
     iconFont: PropTypes.oneOf(['FontAwesome', 'MaterialIcon']),
     iconLeftName: PropTypes.string, // maps to a font name in react-native-icons
   };
@@ -33,13 +35,10 @@ class Input extends Component {
 
   constructor(props) {
     super(props);
-
+    autobind(this);
     this.state = {
       borderWidth: 0,
     };
-
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
   }
 
   onFocus() {
@@ -62,6 +61,7 @@ class Input extends Component {
       iconFont,
       iconLeftName,
       containerStyles,
+      innerContainerStyles,
       ...remainingProps,
     } = this.props;
 
@@ -81,7 +81,7 @@ class Input extends Component {
 
     return (
       <View style={containerStyles}>
-        <View style={styles.innerContainer}>
+        <View style={[styles.innerContainer, innerContainerStyles]}>
           {Icon && iconLeftName
           ? <Icon
             name={iconLeftName}
