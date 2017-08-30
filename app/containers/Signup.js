@@ -263,7 +263,7 @@ class Signup extends Component {
                   {
                     hideContent ? null :
                       <View>
-                        <Facebook
+                        <Facebook.button
                           buttonText="SIGN UP WITH FACEBOOK"
                           style={styles._inputField}
                         />

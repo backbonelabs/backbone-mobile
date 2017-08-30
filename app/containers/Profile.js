@@ -119,6 +119,7 @@ class Profile extends Component {
       heightUnitPreference: PropTypes.number,
       authMethod: PropTypes.number,
       isConfirmed: PropTypes.bool,
+      facebookId: PropTypes.string,
     }),
     isFetching: PropTypes.bool,
     isUpdating: PropTypes.bool,
@@ -429,6 +430,7 @@ class Profile extends Component {
       height,
       weight,
       pickerType,
+      facebookId,
     } = this.state;
     const { user, isFetching, isUpdating } = this.props;
     let genderText = 'Other';
@@ -526,7 +528,7 @@ class Profile extends Component {
                     iconFont="MaterialIcon"
                     iconLeftName="email"
                   />
-                  { user.authMethod === constants.authMethods.EMAIL ?
+                  { user.authMethod === constants.authMethods.EMAIL && !user.facebookId ?
                     <View>
                       <ProfileField
                         onPress={() => this.props.navigator.push(routes.changePassword)}
@@ -535,7 +537,7 @@ class Profile extends Component {
                         iconLeftName="lock"
                       />
                       <ProfileField
-                        onPress={}
+                        onPress={() => { Facebook.login(this.props.dispatch); }}
                         profileData="Connect with Facebook"
                         iconFont="FontAwesome"
                         iconLeftName="facebook-official"

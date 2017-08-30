@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { Alert } from 'react-native';
 import {
   AccessToken as FBAccessToken,
@@ -7,86 +7,75 @@ import {
   GraphRequestManager,
 } from 'react-native-fbsdk';
 import { connect } from 'react-redux';
-import autobind from 'class-autobind';
 import constants from '../utils/constants';
 import authActions from '../actions/auth';
 import styles from '../styles/facebook';
 import Button from '../components/Button';
 
-class Facebook extends Component {
-  static propTypes = {
-    dispatch: PropTypes.func,
-    buttonText: PropTypes.string,
-    style: PropTypes.object,
+/**
+ * Collects Facebook user profile data and logs into Backbone API
+ * @param {object} fbAccessToken Facebook access token
+ */
+const getFBUserInfo = (fbAccessToken, dispatch) => {
+  const _responseInfoCallback = (error, result) => {
+    if (error) {
+      Alert.alert('Please try again.');
+    } else {
+        // Dispatches login with Facebook user profile
+      const user = Object.assign({}, result, fbAccessToken, {
+        authMethod: constants.authMethods.FACEBOOK,
+      });
+      dispatch(authActions.login(user));
+    }
   };
 
-  constructor() {
-    super();
-    autobind(this);
-  }
-
-  /**
-   * Collects Facebook user profile data and logs into Backbone API
-   * @param {object} fbAccessToken Facebook access token
-   */
-  getFBUserInfo(fbAccessToken) {
-    const _responseInfoCallback = (error, result) => {
-      if (error) {
-        Alert.alert('Please try again.');
-      } else {
-        // Dispatches login with Facebook user profile
-        const user = Object.assign({}, result, fbAccessToken, {
-          authMethod: constants.authMethods.FACEBOOK,
-        });
-        this.props.dispatch(authActions.login(user));
-      }
-    };
-
-    const infoRequest = new GraphRequest(
+  const infoRequest = new GraphRequest(
       '/me',
-      {
-        parameters: {
-          fields: {
-            string: 'email,first_name,last_name,gender,verified',
-          },
+    {
+      parameters: {
+        fields: {
+          string: 'email,first_name,last_name,gender,verified',
         },
       },
+    },
       _responseInfoCallback
     );
 
-    new GraphRequestManager().addRequest(infoRequest).start();
-  }
+  new GraphRequestManager().addRequest(infoRequest).start();
+};
 
-  login() {
-    LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(result => {
-      if (result && !result.isCancelled) {
+const login = (dispatch) => {
+  LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(result => {
+    if (result && !result.isCancelled) {
         // After a Facebook user successfully authenticates, we use the returned Facebook
         // access token to get their profile.
-        FBAccessToken.getCurrentAccessToken()
+      FBAccessToken.getCurrentAccessToken()
           .then((data) => {
             if (data) {
-              this.getFBUserInfo(data);
+              getFBUserInfo(data, dispatch);
             }
           }
         )
         .catch(() => {
           Alert.alert('Unable to authenticate with Facebook. Try again later.');
         });
-      }
-    });
-  }
-
-  render() {
-    return (
-      <Button
-        style={Object.assign({}, styles._fbBtn, this.props.style)}
-        textStyle={styles._fbBtnText}
-        text={this.props.buttonText}
-        fbBtn
-        onPress={this.login}
-      />
+    }
+  });
+};
+const Facebook = (props) => (
+  <Button
+    style={Object.assign({}, styles._fbBtn, props.style)}
+    textStyle={styles._fbBtnText}
+    text={props.buttonText}
+    fbBtn
+    onPress={() => { login(props.dispatch); }}
+  />
     );
-  }
-}
 
-export default connect()(Facebook);
+Facebook.propTypes = {
+  dispatch: PropTypes.func,
+  buttonText: PropTypes.string,
+  style: PropTypes.object,
+};
+
+export default { button: connect()(Facebook), login };

@@ -240,7 +240,7 @@ class Login extends Component {
                   {
                     hideContent ? null :
                       <View>
-                        <Facebook
+                        <Facebook.button
                           buttonText="LOG IN WITH FACEBOOK"
                           style={styles._inputField}
                         />
