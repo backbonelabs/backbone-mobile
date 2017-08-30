@@ -1,173 +1,146 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
   Animated,
-  Switch,
+  Easing,
 } from 'react-native';
 import autobind from 'class-autobind';
-import styles from '../../styles/posture/postureCalibrate';
+import { connect } from 'react-redux';
 import routes from '../../routes';
 import HeadingText from '../HeadingText';
 import BodyText from '../BodyText';
-import SecondaryText from '../SecondaryText';
 import Button from '../Button';
-import sittingExample from '../../images/calibration/sittingExample.png';
-import constants from '../../utils/constants';
-import SensitiveInfo from '../../utils/SensitiveInfo';
-import Mixpanel from '../../utils/Mixpanel';
+import progressCircle from '../../images/posture/calibration-progress-circle.png';
+import styles from '../../styles/posture/postureCalibrate';
+import { getColorHexForLevel } from '../../utils/levelColors';
+import relativeDimensions from '../../utils/relativeDimensions';
 
-const { PropTypes } = React;
+const { applyWidthDifference } = relativeDimensions;
+const originalHeight = applyWidthDifference(200);
 
-const { storageKeys } = constants;
-
-export default class PostureCalibrate extends Component {
+class PostureCalibrate extends Component {
   static propTypes = {
-    navigator: PropTypes.object,
+    navigator: PropTypes.shape({
+      replace: PropTypes.func.isRequired,
+    }).isRequired,
+    onFinish: PropTypes.func,
+    training: PropTypes.shape({
+      selectedLevelIdx: PropTypes.number.isRequired,
+    }).isRequired,
   }
 
   constructor() {
     super();
     autobind(this);
     this.state = {
-      count: 0,
-      fadeAnim: [new Animated.Value(0.4)],
-      isCountingDown: false,
+      isAnimating: false,
+      animatedHeightValue: new Animated.Value(originalHeight),
+      blinderHeight: originalHeight,
     };
   }
 
   componentDidMount() {
-    SensitiveInfo.getItem(storageKeys.CALIBRATION_AUTO_START)
-      .then(autoStart => {
-        const newState = { autoStart };
-        if (autoStart) {
-          newState.isCountingDown = true;
-        }
-        this.setState(newState);
-      });
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (!this.state.isCountingDown && nextState.isCountingDown) {
-      // Start countdown
-      this.startAnimation(this.state.count);
-    }
-    if (this.state.isCountingDown && !nextState.isCountingDown) {
-      // Stop countdown
-      const currentAnimation = this.state.fadeAnim[this.state.count];
-      currentAnimation.stopAnimation();
-    }
+    this._startAnimation();
   }
 
   /**
-   * Animates and reduces the opacity of a calibration circle. Uses the Animated.timing API
-   * to animate the opacity, and the Animated.Values are stored in the state's fadeAnim array
-   * @param {Number} index=0 Index of the calibration circle to animate
+   * Starts the animation for shrinking the blinder's height
    */
-  startAnimation(index = 0) {
-    // Use Animated timing function in order to perform opacity
-    // fade animation over the span of 1 second.
-    this.animatedTiming = Animated.timing(
-      this.state.fadeAnim[index],
-      {
-        duration: 1000,
-        toValue: 1,
-      }
-    );
-    this.animatedTiming.start(this.animationCallback);
+  _startAnimation() {
+    this.setState({
+      isAnimating: true,
+    }, () => {
+      this.animatedTiming = Animated.timing(this.state.animatedHeightValue, {
+        duration: 3000,
+        toValue: 0,
+        easing: Easing.inOut(Easing.ease),
+      });
+      this.animatedTiming.start(this._animationCallback);
+    });
   }
 
   /**
-   * Handles post-animation calibration logic
+   * Handles post-animation logic
    * @param {Object} result Includes a `finished` property indicating whether the animation finished
    */
-  animationCallback({ finished }) {
+  _animationCallback({ finished }) {
     if (finished) {
-      // Add new Animated.Value in order to properly animate
-      // fading opacity for next calibration circle
-      const fadeAnimClone = [...this.state.fadeAnim];
-      fadeAnimClone.push(new Animated.Value(1));
-
-      this.setState({
-        count: this.state.count + 1,
-        fadeAnim: fadeAnimClone,
-      }, () => {
-        if (this.state.count >= 5) {
-          // Calibration is over, send to session monitoring
-          this.props.navigator.replace(routes.postureMonitor);
+      // Navigate to posture monitor after a slight pause
+      setTimeout(() => {
+        if (this.props.onFinish) {
+          this.props.onFinish();
         } else {
-          // Calibration not complete yet, animate next calibrate circle
-          this.startAnimation(this.state.count);
+          this.props.navigator.replace(routes.postureMonitor);
         }
-      });
+      }, 200);
     }
   }
 
   /**
-   * Toggles the auto-start preference for the calibration countdown and the
-   * new preference will be stored on the device for subsequent sessions
-   * @param {Boolean} autoStart
+   * Updates the blinder height in state
+   * @param {Object} event React Native synthetic touch event
    */
-  toggleAutoStart(autoStart) {
-    Mixpanel.track(`toggleAutoStart-${autoStart ? 'enabled' : 'diabled'}`);
-    SensitiveInfo.setItem(storageKeys.CALIBRATION_AUTO_START, autoStart);
-    this.setState({ autoStart });
+  _updateBlinderHeight(event) {
+    this.setState({
+      blinderHeight: event.nativeEvent.layout.height,
+    });
+  }
+
+  _toggleAnimation() {
+    this.setState(prevState => ({
+      isAnimating: !prevState.isAnimating,
+    }), () => {
+      const { isAnimating } = this.state;
+      if (!isAnimating) {
+        this.animatedTiming.stop();
+      } else {
+        this.animatedTiming.start(this._animationCallback);
+      }
+    });
   }
 
   render() {
-    const buttonProps = {};
-    if (!this.state.isCountingDown) {
-      buttonProps.primary = true;
-    }
+    const percentage = Math.floor((1 - (this.state.blinderHeight / originalHeight)) * 100);
 
     return (
       <View style={styles.container}>
-        <View style={styles.textContainer}>
-          <HeadingText style={styles._title} size={2}>
-            Get Ready
+        <View style={styles.contentContainer}>
+          <HeadingText
+            style={[
+              styles._title,
+              { color: getColorHexForLevel(this.props.training.selectedLevelIdx) },
+            ]}
+            size={1}
+          >
+            Calibrating...
           </HeadingText>
           <BodyText style={styles._subtitle}>
-            Sit or stand up straight while Backbone calibrates
+            Continue to sit or stand up straight while Backbone calibrates
           </BodyText>
+          <Image source={progressCircle} style={styles.progressCircle}>
+            <HeadingText size={1} style={styles._progressText}>{percentage}%</HeadingText>
+            <BodyText style={styles._progressText}>CALIBRATED</BodyText>
+            <Animated.View
+              onLayout={this._updateBlinderHeight}
+              style={[styles.blinder, { height: this.state.animatedHeightValue }]}
+            />
+          </Image>
         </View>
-        <View style={styles.imageContainer}>
-          <Image style={styles.image} source={sittingExample} />
-          <View style={styles.calibrationCircleContainer}>
-            {
-              // Create 5 circles to represent calibration countdown
-              [0, 1, 2, 3, 4].map((value, key) =>
-                <Animated.View
-                  key={key}
-                  style={[
-                    styles.calibrationCircle,
-                    this.state.count >= key && { opacity: this.state.fadeAnim[key] },
-                  ]}
-                />
-              )
-            }
-          </View>
-        </View>
-        <View style={styles.actionsContainer}>
-          <Button
-            {...buttonProps}
-            onPress={() => this.setState({ isCountingDown: !this.state.isCountingDown })}
-            text={this.state.isCountingDown ? 'PAUSE' : 'GO'}
-          />
-          <View style={styles.autoStartPreferenceContainer}>
-            <View style={styles.autoStartPreferenceLabel}>
-              <SecondaryText>
-                Automatically start calibration next time
-              </SecondaryText>
-            </View>
-            <View style={styles.autoStartPreferenceSwitch}>
-              <Switch
-                onValueChange={this.toggleAutoStart}
-                value={this.state.autoStart}
-              />
-            </View>
-          </View>
-        </View>
+        <Button
+          primary
+          style={styles._button}
+          onPress={this._toggleAnimation}
+          text={this.state.isAnimating ? 'PAUSE' : 'RESUME'}
+          disabled={percentage === 100}
+        />
       </View>
     );
   }
 }
+
+const mapStateToProps = ({ training }) => ({
+  training,
+});
+
+export default connect(mapStateToProps)(PostureCalibrate);
