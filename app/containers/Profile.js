@@ -14,6 +14,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import userActions from '../actions/user';
+import authActions from '../actions/auth';
+import deviceActions from '../actions/device';
 import styles from '../styles/profile';
 import constants from '../utils/constants';
 import SecondaryText from '../components/SecondaryText';
@@ -118,6 +120,9 @@ class Profile extends Component {
     isFetching: PropTypes.bool,
     isUpdating: PropTypes.bool,
     pendingUser: PropTypes.object,
+    navigator: PropTypes.shape({
+      resetTo: PropTypes.func,
+    }),
   };
 
   constructor(props) {
@@ -190,6 +195,25 @@ class Profile extends Component {
     Keyboard.dismiss();
     this.setModalVisible(true);
     this.setState({ pickerType });
+  }
+
+  signOut() {
+    Alert.alert(
+      'Sign Out',
+      '\nAre you sure you want to sign out of your account?',
+      [
+        { text: 'Cancel' },
+        { text: 'OK',
+          onPress: () => {
+            // Remove locally stored user data and reset Redux auth/user store
+            this.props.dispatch(authActions.signOut());
+            // Disconnect from device
+            this.props.dispatch(deviceActions.disconnect());
+            this.props.navigator.resetTo(routes.login);
+          },
+        },
+      ]
+    );
   }
 
   /**
