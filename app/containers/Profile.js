@@ -129,6 +129,9 @@ class Profile extends Component {
       push: PropTypes.func,
       getCurrentRoutes: PropTypes.func,
     }),
+    auth: PropTypes.shape({
+      errorMessage: PropTypes.string,
+    }),
   };
 
   constructor(props) {
@@ -168,11 +171,17 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (!this.props.auth.errorMessage &&
+      nextProps.auth.errorMessage) {
+      Alert.alert('Authentication Error', nextProps.auth.errorMessage);
+    }
     const routeStack = this.props.navigator.getCurrentRoutes();
     const currentRoute = routeStack[routeStack.length - 1];
     // isUpdating is truthy during profile save operation
     // If it goes from true to false, operation is complete
-    if (this.props.isUpdating && !nextProps.isUpdating && currentRoute.name === routes.profile.name) {
+    if (this.props.isUpdating &&
+      !nextProps.isUpdating &&
+      currentRoute.name === routes.profile.name) {
       if (nextProps.errorMessage) {
         // Display an alert when failing to save changed user data
         Alert.alert('Error', 'Failed to save changes, please try again');
@@ -430,7 +439,6 @@ class Profile extends Component {
       height,
       weight,
       pickerType,
-      facebookId,
     } = this.state;
     const { user, isFetching, isUpdating } = this.props;
     let genderText = 'Other';
@@ -578,8 +586,8 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user } = state;
-  return user;
+  const { auth, user: { user } } = state;
+  return { auth, user };
 };
 
 export default connect(mapStateToProps)(Profile);
