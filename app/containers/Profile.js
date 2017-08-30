@@ -5,7 +5,6 @@ import {
   Keyboard,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  TextInput,
   Image,
 } from 'react-native';
 import autobind from 'class-autobind';
@@ -24,6 +23,7 @@ import backboneLogo from '../images/logo.png';
 import ModalPicker from '../components/ModalPicker/ModalPicker';
 import routes from '../routes';
 import Facebook from '../containers/Facebook';
+import Input from '../components/Input';
 
 const {
   height: heightConstants,
@@ -78,7 +78,7 @@ const ProfileFieldInput = props => {
   return (
     <View style={styles.profileField}>
       <Icon name={iconLeftName} size={styles.$iconSize} style={styles._profileFieldIcon} />
-      <TextInput
+      <Input
         style={styles._profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}
         defaultValue={props.value}
@@ -86,6 +86,8 @@ const ProfileFieldInput = props => {
         keyboardType={props.keyboardType}
         autoCapitalize="none"
         onChangeText={value => props.fieldInputChangeHandler(props.field, value)}
+        underlineColorAndroid="white"
+        innerContainerStyles={styles._innerContainerStyles}
         editable
       />
     </View>);
@@ -108,21 +110,23 @@ class Profile extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     user: PropTypes.shape({
-      _id: PropTypes.string,
-      nickname: PropTypes.string,
-      gender: PropTypes.number,
-      email: PropTypes.string,
-      birthdate: PropTypes.date,
-      height: PropTypes.number,
-      weight: PropTypes.number,
-      weightUnitPreference: PropTypes.number,
-      heightUnitPreference: PropTypes.number,
-      authMethod: PropTypes.number,
-      isConfirmed: PropTypes.bool,
-      facebookId: PropTypes.string,
+      user: PropTypes.shape({
+        _id: PropTypes.string,
+        nickname: PropTypes.string,
+        gender: PropTypes.number,
+        email: PropTypes.string,
+        birthdate: PropTypes.date,
+        height: PropTypes.number,
+        weight: PropTypes.number,
+        weightUnitPreference: PropTypes.number,
+        heightUnitPreference: PropTypes.number,
+        authMethod: PropTypes.number,
+        isConfirmed: PropTypes.bool,
+        facebookId: PropTypes.string,
+      }),
+      isFetching: PropTypes.bool,
+      isUpdating: PropTypes.bool,
     }),
-    isFetching: PropTypes.bool,
-    isUpdating: PropTypes.bool,
     pendingUser: PropTypes.object,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
@@ -137,7 +141,7 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     autobind(this);
-    const { user } = this.props;
+    const { user } = this.props.user;
     this.state = {
       isModalVisible: false,
       nickname: user.nickname,
@@ -166,8 +170,8 @@ class Profile extends Component {
     this.props.dispatch(userActions.fetchUser());
     // Set height and weight values manually
     // Since we need to format data for certain properties
-    this._setHeightValue(this.props.user);
-    this._setWeightValue(this.props.user);
+    this._setHeightValue(this.props.user.user);
+    this._setWeightValue(this.props.user.user);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -179,15 +183,17 @@ class Profile extends Component {
     const currentRoute = routeStack[routeStack.length - 1];
     // isUpdating is truthy during profile save operation
     // If it goes from true to false, operation is complete
-    if (this.props.isUpdating &&
+    console.log('this.props.isUpdating', this.props.user);
+
+    if (this.props.user.isUpdating &&
       !nextProps.isUpdating &&
       currentRoute.name === routes.profile.name) {
       if (nextProps.errorMessage) {
         // Display an alert when failing to save changed user data
         Alert.alert('Error', 'Failed to save changes, please try again');
       } else {
-        this._setHeightValue(nextProps.user);
-        this._setWeightValue(nextProps.user);
+        this._setHeightValue(nextProps.user.user);
+        this._setWeightValue(nextProps.user.user);
         Alert.alert('Success', 'Profile updated');
       }
     }
@@ -440,7 +446,7 @@ class Profile extends Component {
       weight,
       pickerType,
     } = this.state;
-    const { user, isFetching, isUpdating } = this.props;
+    const { user, isFetching, isUpdating } = this.props.user;
     let genderText = 'Other';
     let genderIcon = 'transgender';
     let genderType = constants.gender.other;
@@ -586,7 +592,7 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth, user: { user } } = state;
+  const { auth, user } = state;
   return { auth, user };
 };
 

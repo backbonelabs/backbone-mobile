@@ -1,4 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Platform } from 'react-native';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
 
@@ -17,6 +18,7 @@ export default EStyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
+    backgroundColor: 'white',
   },
   profileFieldContainer: {
     flex: 1,
@@ -65,9 +67,10 @@ export default EStyleSheet.create({
   },
   profileFieldInput: {
     fontSize: fixedResponsiveFontSize(16),
-    width: '90%',
+    width: '80%',
     paddingHorizontal: applyWidthDifference(15),
     paddingBottom: applyWidthDifference(5),
+    borderWidth: 0,
   },
   signOutSpacerContainer: {
     height: applyWidthDifference(20),
@@ -75,5 +78,20 @@ export default EStyleSheet.create({
     borderBottomWidth: 1,
     borderTopWidth: 1,
     borderColor: '#EEEEEE',
+  },
+  innerContainerStyles: {
+    ...Platform.select({
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        shadowRadius: 0,
+        shadowOpacity: 0,
+      },
+      android: {
+        elevation: 0,
+      },
+    }),
   },
 });
