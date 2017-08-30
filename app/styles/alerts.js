@@ -80,6 +80,7 @@ export default EStyleSheet.create({
   },
   batteryLifeWarningContainer: {
     flex: 0.36,
+    paddingBottom: applyWidthDifference(15),
     paddingHorizontal: applyWidthDifference(15),
   },
   batteryLifeWarningText: {
