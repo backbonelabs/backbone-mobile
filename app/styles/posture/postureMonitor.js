@@ -141,13 +141,13 @@ export default EStyleSheet.create({
     position: 'absolute',
     ...Platform.select({ // iOS has a different Y-origin point to Android
       ios: {
-        top: height / 2 - applyWidthDifference(254),
+        top: (height / 2) - applyWidthDifference(254),
       },
       android: {
-        top: height / 2 - applyWidthDifference(270),
+        top: (height / 2) - applyWidthDifference(270),
       },
     }),
-    left: width / 2 - applyWidthDifference(40),
+    left: (width / 2) - applyWidthDifference(40),
   },
   summaryContainer: {
     alignItems: 'center',
