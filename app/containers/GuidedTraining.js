@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   Image,
   TouchableHighlight,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import autobind from 'class-autobind';
@@ -12,22 +11,16 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
+import WorkoutView from './WorkoutView';
 import appActions from '../actions/app';
 import userActions from '../actions/user';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
-import PostureIntro from '../components/posture/PostureIntro';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
-import VideoPlayer from '../components/VideoPlayer';
 import bulletWhite from '../images/bullet-white.png';
-import videoIconBlue from '../images/video-icon-blue.png';
-import videoIconGreen from '../images/video-icon-green.png';
-import videoIconOrange from '../images/video-icon-orange.png';
-import videoIconPurple from '../images/video-icon-purple.png';
-import videoIconRed from '../images/video-icon-red.png';
 import routes from '../routes';
-import { getColorHexForLevel, getColorNameForLevel } from '../utils/levelColors';
+import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
@@ -76,14 +69,6 @@ ProgressBar.propTypes = {
   currentStep: PropTypes.number,
   totalSteps: PropTypes.number,
   backgroundColor: PropTypes.string,
-};
-
-const videoIcon = {
-  purple: videoIconPurple,
-  blue: videoIconBlue,
-  green: videoIconGreen,
-  orange: videoIconOrange,
-  red: videoIconRed,
 };
 
 /**
@@ -548,42 +533,6 @@ class GuidedTraining extends Component {
 
     const selectedLevelIdx = this.props.training.selectedLevelIdx;
     const levelColorHex = getColorHexForLevel(selectedLevelIdx);
-    const levelColorName = getColorNameForLevel(selectedLevelIdx);
-
-    // If the workout is a posture session, display PostureIntro. Otherwise, display workout media
-    const isPostureSession = currentWorkout.workout.type === workoutTypes.POSTURE;
-    let content;
-    if (isPostureSession) {
-      content = (
-        <PostureIntro
-          duration={currentWorkout.workout.duration}
-          navigator={this.props.navigator}
-          onProceed={this._navigateToPostureCalibrate}
-        />
-      );
-    } else if (currentWorkout.workout.gifUrl) {
-      content = (
-        <Image source={{ uri: currentWorkout.workout.gifUrl }} style={styles.gif}>
-          <TouchableOpacity
-            style={styles.videoLink}
-            onPress={() => { /* TODO: NAVIGATE TO WORKOUT VIDEO */ }}
-          >
-            <Image source={videoIcon[levelColorName]} style={styles.videoIcon} />
-          </TouchableOpacity>
-        </Image>
-      );
-    } else if (currentWorkout.workout.videoUrl) {
-      content = (
-        <View style={styles.videoPlayerContainer}>
-          <VideoPlayer
-            video={{ uri: currentWorkout.workout.videoUrl }}
-            customStyles={{
-              wrapper: styles._videoPlayer,
-            }}
-          />
-        </View>
-      );
-    }
 
     // The left button would be disabled if this is the first workout in the session
     const isLeftButtonDisabled = this.state.step === 1;
@@ -627,6 +576,8 @@ class GuidedTraining extends Component {
       centerButtonIconLabel = 'DONE';
     }
 
+    const isPostureSession = currentWorkout.workout.type === workoutTypes.POSTURE;
+
     return (
       <View style={styles.container}>
         <ProgressBar
@@ -635,7 +586,14 @@ class GuidedTraining extends Component {
           backgroundColor={levelColorHex}
         />
         {header}
-        {this.state.isFetchingImage ? <Spinner size="large" color={levelColorHex} /> : content}
+        {this.state.isFetchingImage ?
+          <Spinner size="large" color={levelColorHex} /> : (
+            <WorkoutView
+              navigator={this.props.navigator}
+              onPostureProceed={this._navigateToPostureCalibrate}
+              workout={currentWorkout.workout}
+            />
+          )}
         <View style={styles.footer}>
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
