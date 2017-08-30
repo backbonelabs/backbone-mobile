@@ -989,9 +989,29 @@ class PostureMonitor extends Component {
     const goodPostureHours = Math.floor(goodPostureTime / 3600);
     const goodPostureMinutes = Math.floor((goodPostureTime - (goodPostureHours * 3600)) / 60);
     const goodPostureSeconds = goodPostureTime % 60;
-    const grade = 'A';
 
-    const goodPostureTimeStringArray = ['', '', `${zeroPadding(goodPostureSeconds)}`];
+    const gradePercentage = goodPostureTime / totalDuration;
+    let grade;
+
+    if (gradePercentage >= 0.95) {
+      grade = 'A+';
+    } else if (gradePercentage >= 0.9) {
+      grade = 'A';
+    } else if (gradePercentage >= 0.85) {
+      grade = 'B+';
+    } else if (gradePercentage >= 0.8) {
+      grade = 'B';
+    } else if (gradePercentage >= 0.75) {
+      grade = 'C+';
+    } else if (gradePercentage >= 0.7) {
+      grade = 'C';
+    } else if (gradePercentage >= 0.5) {
+      grade = 'D';
+    } else {
+      grade = 'E';
+    }
+
+    const goodPostureTimeStringArray = ['', '00:', `${zeroPadding(goodPostureSeconds)}`];
     if (goodPostureHours) {
       goodPostureTimeStringArray[0] = `${goodPostureHours}:`;
     }
@@ -1022,7 +1042,7 @@ class PostureMonitor extends Component {
               </View>
               <View style={styles.summaryDetailValueContainer}>
                 <BodyText style={styles._summaryDetailValue}>
-                  {goal ? `${goal}:00` : '~'}
+                  {goal > 0 ? `${goal}:00` : '-'}
                 </BodyText>
               </View>
             </View>
@@ -1061,6 +1081,7 @@ class PostureMonitor extends Component {
           caption: 'TRY AGAIN',
           onPress: () => {
             this.props.dispatch(appActions.hidePartialModal());
+            this.props.navigator.resetTo(routes.postureCalibrate);
           },
         },
         {
@@ -1077,8 +1098,8 @@ class PostureMonitor extends Component {
 
       },
       customStyles: {
-        containerStyle: styles.dash,
-        topViewStyle: styles.topDash,
+        containerStyle: styles.summaryMainContainer,
+        topViewStyle: styles.summaryTopView,
       },
     }));
 

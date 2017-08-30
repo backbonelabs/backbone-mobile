@@ -17,7 +17,7 @@ export const secondsToMinutes = seconds => seconds / 60;
  * @param {Number} value
  * @return {Number} paddedValue
  */
-export const zeroPadding = value => `${value > 10 ? '' : '0'}${value}`;
+export const zeroPadding = value => `${value > 9 ? '' : '0'}${value}`;
 
 /**
  * Converts number of seconds to a string containing hours (if applicable),

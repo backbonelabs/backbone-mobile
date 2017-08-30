@@ -167,7 +167,8 @@ export default EStyleSheet.create({
     padding: applyWidthDifference(15),
   },
   summaryDetailIconContainer: {
-    flex: 0.15,
+    flex: 0.1,
+    paddingRight: applyWidthDifference(8),
   },
   summaryDetailIcon: {
     fontSize: fixedResponsiveFontSize(22),
@@ -175,14 +176,14 @@ export default EStyleSheet.create({
     paddingLeft: applyWidthDifference(2),
   },
   summaryDetailCaptionContainer: {
-    flex: 0.65,
+    flex: 0.6,
     alignItems: 'flex-start',
   },
   summaryDetailCaption: {
     fontSize: fixedResponsiveFontSize(15),
   },
   summaryDetailValueContainer: {
-    flex: 0.2,
+    flex: 0.3,
     alignItems: 'flex-end',
   },
   summaryDetailValue: {
