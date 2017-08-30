@@ -48,8 +48,6 @@ export default (state = {
       };
     }
     case FETCH_USER: {
-      console.log('state', state);
-
       return {
         ...state,
         isFetching: false,
