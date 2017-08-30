@@ -433,7 +433,7 @@ class GuidedTraining extends Component {
           isTimerRunning,
           setsRemaining,
         } = this.state;
-        const isTimed = !!currentWorkout.seconds;
+        const isTimed = currentWorkout.isTimed;
 
         if (isTimerRunning) {
           // Pause timer
@@ -479,12 +479,12 @@ class GuidedTraining extends Component {
 
   render() {
     const { currentWorkout } = this.state;
-    const isTimed = !!currentWorkout.seconds;
+    const isTimed = currentWorkout.isTimed;
 
     const subheading = [];
     if (currentWorkout.reps) {
       subheading.push(`Reps: ${currentWorkout.reps}`);
-    } else if (currentWorkout.seconds) {
+    } else if (currentWorkout.seconds && isTimed) {
       subheading.push(`Time: ${formattedTimeString(currentWorkout.seconds)}`);
     }
 
