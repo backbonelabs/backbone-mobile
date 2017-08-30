@@ -101,7 +101,7 @@ export default EStyleSheet.create({
         shadowOpacity: 0.15,
       },
       android: {
-        elevation: 1,
+        elevation: 2,
       },
     }),
     height: applyWidthDifference(60),

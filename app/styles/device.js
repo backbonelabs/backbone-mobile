@@ -24,16 +24,15 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
     ...Platform.select({ // OS-specific drop shadow styling
       ios: {
-        shadowColor: 'rgba(0, 0, 0, 0.12)',
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
         shadowOffset: {
-          height: 1 * heightDifference,
-          width: applyWidthDifference(2),
+          height: 0,
+          width: 3,
         },
       },
       android: {
-        elevation: 1,
+        elevation: 2,
       },
     }),
   },

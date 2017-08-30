@@ -37,7 +37,6 @@ export default EStyleSheet.create({
           height: 3,
         },
         shadowRadius: 4,
-        shadowColor: '$secondaryFontColor',
         shadowOpacity: 0.15,
       },
       android: {

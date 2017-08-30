@@ -7,17 +7,17 @@ const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const buttonShadow = {
   ...Platform.select({
-      // OS-specific drop shadow styling
+    // OS-specific drop shadow styling
     ios: {
       shadowOffset: {
         width: 0,
-        height: 1,
+        height: 3,
       },
-      shadowRadius: 2,
-      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      shadowOpacity: 0.15,
     },
     android: {
-      elevation: 1,
+      elevation: 2,
     },
   }),
 };

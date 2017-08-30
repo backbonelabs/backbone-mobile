@@ -51,14 +51,13 @@ export default EStyleSheet.create({
       ios: {
         shadowOffset: {
           width: 0,
-          height: 1,
+          height: 0,
         },
-        shadowColor: '$secondaryFontColor',
-        shadowRadius: 2,
-        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
       },
       android: {
-        elevation: 1,
+        elevation: 2,
       },
     }),
   },
