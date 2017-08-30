@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize, width } = relativeDimensions;
+const { height, width, applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 const innerMonitorSize = applyWidthDifference(190);
 
 export default EStyleSheet.create({
@@ -129,7 +129,6 @@ export default EStyleSheet.create({
   },
   summaryTopStarCircle: {
     fontSize: fixedResponsiveFontSize(96),
-    color: 'blue',
   },
   summaryTopStar: {
     fontSize: fixedResponsiveFontSize(60),
@@ -140,15 +139,21 @@ export default EStyleSheet.create({
   },
   topCircleOverlay: {
     position: 'absolute',
-    top: '50% - 250',
-    left: '50% - 40',
+    ...Platform.select({ // iOS has a different Y-origin point to Android
+      ios: {
+        top: height / 2 - applyWidthDifference(254),
+      },
+      android: {
+        top: height / 2 - applyWidthDifference(270),
+      },
+    }),
+    left: width / 2 - applyWidthDifference(40),
   },
   summaryContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   summaryTitle: {
-    color: 'blue',
     fontSize: fixedResponsiveFontSize(24),
     fontWeight: 'bold',
     paddingTop: applyWidthDifference(20),
@@ -156,7 +161,6 @@ export default EStyleSheet.create({
   },
   summaryDetailContainer: {
     alignItems: 'center',
-    backgroundColor: 'blue',
     width: applyWidthDifference(270),
     borderRadius: applyWidthDifference(10),
   },
