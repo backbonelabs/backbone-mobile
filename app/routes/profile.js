@@ -44,8 +44,8 @@ ProfileSave.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { training, user, dispatch } = state;
-  return { training, user, dispatch };
+  const { training, user } = state;
+  return { training, user };
 };
 
 export default {

@@ -59,7 +59,6 @@ export default {
 
           // Store user in local storage
           SensitiveInfo.setItem(storageKeys.USER, body);
-
           return body;
         }),
     };

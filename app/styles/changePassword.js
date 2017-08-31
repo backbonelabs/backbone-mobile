@@ -1,5 +1,6 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
+import theme from '../styles/theme';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
@@ -19,14 +20,14 @@ export default EStyleSheet.create({
   },
   inputField: {
     width: '90%',
-    borderColor: '#2196F3',
+    borderColor: theme.lightBlueColor,
   },
   newPassword: {
     marginTop: applyWidthDifference(15),
   },
   saveButton: {
     marginTop: applyWidthDifference(40),
-    backgroundColor: '#2196F3',
+    backgroundColor: theme.lightBlueColor,
     width: '90%',
   },
   warning: {
