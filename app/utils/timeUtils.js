@@ -15,7 +15,7 @@ export const secondsToMinutes = seconds => seconds / 60;
 /**
  * Add extra zero digits for single digit values
  * @param {Number} value
- * @return {Number} paddedValue
+ * @return {String} paddedValue
  */
 export const zeroPadding = value => `${value > 9 ? '' : '0'}${value}`;
 

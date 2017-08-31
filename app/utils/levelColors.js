@@ -1,4 +1,3 @@
-import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 
 export const hexCodes = {
@@ -37,7 +36,7 @@ export const getColorHexForLevel = level => hexCodes[colors[level % colors.lengt
  * @return {String} The color hex code
  */
 export const getColorHexForLevelUnderlay = level =>
-color(EStyleSheet.value(getColorHexForLevel(level))).clearer(0.5).rgbString();
+color(getColorHexForLevel(level)).clearer(0.5).rgbString();
 
 /**
  * Maps a level (0-index based) to a color name
