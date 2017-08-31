@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
-import { debounce, isEqual, isFunction, compact } from 'lodash';
+import { debounce, isEqual, isFunction } from 'lodash';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
@@ -990,25 +990,36 @@ class PostureMonitor extends Component {
     const goodPostureMinutes = Math.floor((goodPostureTime - (goodPostureHours * 3600)) / 60);
     const goodPostureSeconds = goodPostureTime % 60;
 
-    const gradePercentage = goodPostureTime / totalDuration;
+    const gradePercentage = goodPostureTime / (goal > 0 ? goal : totalDuration);
+    const awesomeGrade = gradePercentage >= 0.9;
     let grade;
 
-    if (gradePercentage >= 0.95) {
+    if (gradePercentage >= 1.0) {
       grade = 'A+';
-    } else if (gradePercentage >= 0.9) {
+    } else if (gradePercentage >= 0.93) {
       grade = 'A';
-    } else if (gradePercentage >= 0.85) {
+    } else if (gradePercentage >= 0.9) {
+      grade = 'A-';
+    } else if (gradePercentage >= 0.87) {
       grade = 'B+';
-    } else if (gradePercentage >= 0.8) {
+    } else if (gradePercentage >= 0.83) {
       grade = 'B';
-    } else if (gradePercentage >= 0.75) {
+    } else if (gradePercentage >= 0.8) {
+      grade = 'B-';
+    } else if (gradePercentage >= 0.77) {
       grade = 'C+';
-    } else if (gradePercentage >= 0.7) {
+    } else if (gradePercentage >= 0.73) {
       grade = 'C';
-    } else if (gradePercentage >= 0.5) {
+    } else if (gradePercentage >= 0.7) {
+      grade = 'C-';
+    } else if (gradePercentage >= 0.67) {
+      grade = 'D+';
+    } else if (gradePercentage >= 0.63) {
       grade = 'D';
+    } else if (gradePercentage >= 0.6) {
+      grade = 'D-';
     } else {
-      grade = 'E';
+      grade = 'F';
     }
 
     const goodPostureTimeStringArray = ['', '00:', `${zeroPadding(goodPostureSeconds)}`];
@@ -1018,20 +1029,28 @@ class PostureMonitor extends Component {
     if (goodPostureMinutes) {
       goodPostureTimeStringArray[1] = `${goodPostureMinutes}:`;
     }
-    const goodPostureTimeString = compact(goodPostureTimeStringArray).join('');
+    const goodPostureTimeString = goodPostureTimeStringArray.join('');
+
+    const closeSummaryAndPop = () => {
+      this.props.dispatch(appActions.hidePartialModal());
+      this.props.navigator.pop();
+    };
 
     this.props.dispatch(appActions.showPartialModal({
       overlay: (
-        <View style={styles.topCircleOverlay}>
+        <View style={awesomeGrade ? styles.topCircleOverlay : styles.topCircleOverlayShort}>
           <FontAwesomeIcon name={'circle'} style={[styles.summaryTopStarCircle, levelColorStyle]} />
           <FontAwesomeIcon name={'star'} style={styles.summaryTopStar} />
         </View>
       ),
       topView: (
         <View style={styles.summaryContainer}>
-          <BodyText style={[styles._summaryTitle, levelColorStyle]}>
-            Awesome!
-          </BodyText>
+          { awesomeGrade ?
+            <BodyText style={[styles._summaryTitle, levelColorStyle]}>
+              Awesome!
+            </BodyText>
+              : <View style={styles.emptyTitle} />
+          }
           <View style={[styles.summaryDetailContainer, levelBackgroundColorStyle]}>
             <View style={styles.summaryDetailRow}>
               <View style={styles.summaryDetailIconContainer}>
@@ -1078,24 +1097,16 @@ class PostureMonitor extends Component {
       },
       buttons: [
         {
-          caption: 'TRY AGAIN',
-          onPress: () => {
-            this.props.dispatch(appActions.hidePartialModal());
-            this.props.navigator.resetTo(routes.postureCalibrate);
-          },
-        },
-        {
           caption: 'DONE',
           onPress: () => {
-            this.props.dispatch(appActions.hidePartialModal());
-            this.props.navigator.resetTo(routes.dashboard);
+            closeSummaryAndPop();
           },
           color: levelColorCode,
           underlayColor: levelColorCodeUnderlay,
         },
       ],
       backButtonHandler: () => {
-
+        closeSummaryAndPop();
       },
       customStyles: {
         containerStyle: styles.summaryMainContainer,
