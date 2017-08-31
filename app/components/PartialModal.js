@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import autobind from 'class-autobind';
 import { Modal, View } from 'react-native';
 import { connect } from 'react-redux';
-import { get } from 'lodash';
 import appActions from '../actions/app';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
@@ -51,7 +50,9 @@ class PartialModal extends Component {
       buttons,
     } = config;
 
-    const customStyles = get(config, 'customStyles', {});
+    const {
+      customStyles = {},
+    } = config;
 
     return (
       <Modal
