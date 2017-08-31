@@ -145,7 +145,6 @@ class Profile extends Component {
     const { user } = this.props.user;
     this.isAndroid = Platform.OS === 'android';
     this.state = {
-      isModalVisible: false,
       nickname: user.nickname,
       gender: user.gender,
       birthdate: new Date(user.birthdate),
