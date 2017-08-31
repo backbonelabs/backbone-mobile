@@ -522,21 +522,18 @@ class Dashboard extends Component {
     const isSessionUnlocked = isLevelUnlocked &&
     (nextSessionIndex === -1 || idx <= nextSessionIndex);
     const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
-    const color = getColorHexForLevel(selectedLevelIdx);
+    const color = getColorNameForLevel(selectedLevelIdx);
+    const hexColor = getColorHexForLevel(selectedLevelIdx);
     let cardContents;
 
     if (isSessionUnlocked) {
       let durationInSeconds = 0;
       const workoutList = session.map(workout => {
-        const isTimed = get(workout, 'isTimed', false);
         const seconds = get(workout, 'seconds', 0);
-        const sets = get(workout, 'sets', 0);
+        const sets = get(workout, 'sets', 1);
         const twice = get(workout, 'twoSides', false);
-        if (isTimed) {
-          durationInSeconds += seconds * (twice ? 2 : 1) * sets;
-        } else {
-          durationInSeconds += seconds;
-        }
+        durationInSeconds += seconds * (twice ? 2 : 1) * sets;
+        durationInSeconds += (sets - 1) * 60; // rest-time between sets
 
         return (
           <View key={workout.title} style={styles.sessionWorkoutRow}>
@@ -556,15 +553,15 @@ class Dashboard extends Component {
         <View>
           <View style={styles.sessionCardTopContainer}>
             <View style={styles.sessionCardTopLeftContainer}>
-              <SecondaryText style={{ color, ...styles._sessionTitle }}>
+              <SecondaryText style={{ color: hexColor, ...styles._sessionTitle }}>
                 {`Session ${idx + 1} - Exercise List`}
               </SecondaryText>
             </View>
             <View style={styles.sessionCardTopRightContainer}>
               { durationInSeconds > 0 &&
                 <View style={styles.sessionDurationContainer}>
-                  <FontAwesomeIcon name={'clock-o'} style={{ color }} />
-                  <SecondaryText style={{ color, ...styles._durationText }}>
+                  <FontAwesomeIcon name={'clock-o'} style={{ color: hexColor }} />
+                  <SecondaryText style={{ color: hexColor, ...styles._durationText }}>
                     {durationText}
                   </SecondaryText>
                 </View>
