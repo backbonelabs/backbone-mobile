@@ -5,7 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
 import color from 'color';
-import TitleBar, { LeftProfileComponent } from '../../app/containers/TitleBar';
+import TitleBar from '../../app/containers/TitleBar';
 import { getColorHexForLevel } from '../../app/utils/levelColors';
 
 describe('TitleBar Component', () => {
@@ -26,6 +26,10 @@ describe('TitleBar Component', () => {
       selectedLevelIdx: 0,
     },
   };
+  const currentRoute = {
+    name: 'testing',
+  };
+
   const navigatorWithOneRoute = {
     getCurrentRoutes() {
       return [{}];
@@ -46,7 +50,7 @@ describe('TitleBar Component', () => {
   test('renders as expected', () => {
     const store = configuredStore(defaultState);
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
 
@@ -67,7 +71,7 @@ describe('TitleBar Component', () => {
       },
     });
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
 
@@ -88,7 +92,7 @@ describe('TitleBar Component', () => {
       },
     });
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithTwoRoutes} disableBackButton />,
+      <TitleBar navigator={navigatorWithTwoRoutes} disableBackButton currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
     const touchableWrapper = wrapper.childAt(0).childAt(0);
@@ -114,7 +118,7 @@ describe('TitleBar Component', () => {
       },
     });
     let wrapper = shallow(
-      <TitleBar navigator={navigatorWithTwoRoutes} />,
+      <TitleBar navigator={navigatorWithTwoRoutes} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
     let expectedStyles = [{ color: getColorHexForLevel(0) }];
@@ -140,7 +144,7 @@ describe('TitleBar Component', () => {
       },
     });
     wrapper = shallow(
-      <TitleBar navigator={navigatorWithTwoRoutes} />,
+      <TitleBar navigator={navigatorWithTwoRoutes} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
     expectedStyles = [{ color: getColorHexForLevel(newLevelIdx) }];
@@ -153,7 +157,7 @@ describe('TitleBar Component', () => {
   test('can properly hide the right component', () => {
     const store = configuredStore(defaultState);
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
     expect(wrapper.childAt(2).children()).toHaveLength(0);
@@ -171,7 +175,7 @@ describe('TitleBar Component', () => {
       },
     });
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
     const touchableWrapper = wrapper.childAt(2).childAt(0).childAt(0);
@@ -195,7 +199,7 @@ describe('TitleBar Component', () => {
       },
     });
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
 
