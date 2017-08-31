@@ -12,6 +12,7 @@ import settingsIcon from '../images/settings-icon.png';
 import routes from '../routes';
 import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/titleBar';
+import theme from '../styles/theme';
 
 export const LeftProfileComponent = (props) => (
   <TouchableOpacity
@@ -35,6 +36,22 @@ LeftProfileComponent.propTypes = {
 const TitleBar = (props) => {
   const level = props.training.selectedLevelIdx;
   const levelColorCode = getColorHexForLevel(level);
+  const routeStack = props.navigator.getCurrentRoutes();
+  const currentRoute = routeStack[routeStack.length - 1].name;
+
+  let currentColor;
+
+  if (currentRoute === 'profileSetupOne' ||
+    currentRoute === 'profileSetupTwo' ||
+    currentRoute === 'deviceSetup' ||
+    currentRoute === 'deviceScan' ||
+    currentRoute === 'howToVideo'
+  ) {
+    currentColor = theme.orange500;
+  } else {
+    currentColor = levelColorCode;
+  }
+
 
   // The right component will be the settings icon by default, but can be
   // overridden by defining a rightComponent in the route config. The
@@ -75,11 +92,11 @@ const TitleBar = (props) => {
           styles.buttonIcon,
           {
             color: props.disableBackButton ?
-              color(levelColorCode).clearer(0.6).rgbString() : levelColorCode,
+              color(currentColor).clearer(0.6).rgbString() : currentColor,
           },
         ]}
         size={styles.$backButtonIconSize}
-        color={getColorHexForLevel(level)}
+        color={currentColor}
       />
     </TouchableOpacity>
   );
@@ -94,7 +111,7 @@ const TitleBar = (props) => {
   const titleBarStyles = props.titleBar.title ? styles.visibleTitleBar : styles.hiddenTitleBar;
   const titleTextStyles = [
     styles._centerContainer,
-    { color: getColorHexForLevel(level) },
+    { color: currentColor },
   ];
 
   return (
