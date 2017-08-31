@@ -38,8 +38,7 @@ LeftProfileComponent.propTypes = {
 const TitleBar = (props) => {
   const level = props.training.selectedLevelIdx;
   const levelColorCode = getColorHexForLevel(level);
-  const routeStack = props.navigator.getCurrentRoutes();
-  const currentRoute = routeStack[routeStack.length - 1].name;
+  const currentRoute = props.currentRoute.name;
 
   let currentColor;
 
@@ -129,6 +128,7 @@ TitleBar.propTypes = {
   navigator: PropTypes.object,
   disableBackButton: PropTypes.bool,
   style: PropTypes.object,
+  currentRoute: PropTypes.object,
   titleBar: PropTypes.shape({
     name: PropTypes.string,
     title: PropTypes.string,
