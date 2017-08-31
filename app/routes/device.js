@@ -4,6 +4,6 @@ export default {
   name: 'device',
   title: 'My Backbone',
   component: Device,
-  showBackButton: true,
+  showLeftComponent: true,
   showBanner: false,
 };

@@ -23,7 +23,7 @@ export default (state = {
     name: null,
     title: null,
     component: null,
-    showBackButton: false,
+    showLeftComponent: false,
     showNavbar: false,
     centerComponent: null,
     rightComponent: null,

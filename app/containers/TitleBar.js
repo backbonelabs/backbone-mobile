@@ -13,44 +13,28 @@ import routes from '../routes';
 import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/titleBar';
 
+export const LeftProfileComponent = (props) => (
+  <TouchableOpacity
+    style={styles.leftComponent}
+    onPress={() => props.navigator.push(routes.profile)}
+  >
+    {/* TODO: REPLACE WITH IMAGE COMPONENT OF USER'S PHOTO */}
+    <Icon
+      name="person"
+      style={styles.profileIcon}
+      color="#FFFFFF"
+      size={styles.$profileIconSize}
+    />
+  </TouchableOpacity>
+);
+
+LeftProfileComponent.propTypes = {
+  navigator: PropTypes.object,
+};
+
 const TitleBar = (props) => {
   const level = props.training.selectedLevelIdx;
   const levelColorCode = getColorHexForLevel(level);
-
-  const routeStack = props.navigator.getCurrentRoutes();
-  const previousRoute = routeStack.length >= 2 ? routeStack[routeStack.length - 2] : null;
-  const leftButton = previousRoute && props.titleBar.showBackButton ? (
-    <TouchableOpacity
-      style={styles.leftComponent}
-      onPress={props.disableBackButton ? null : props.navigator.pop}
-    >
-      <Icon
-        name="keyboard-arrow-left"
-        style={[
-          styles.buttonIcon,
-          {
-            color: props.disableBackButton ?
-              color(levelColorCode).clearer(0.6).rgbString() : levelColorCode,
-          },
-        ]}
-        size={styles.$backButtonIconSize}
-        color={getColorHexForLevel(level)}
-      />
-    </TouchableOpacity>
-  ) : (
-    <TouchableOpacity
-      style={styles.leftComponent}
-      onPress={() => props.navigator.push(routes.profile)}
-    >
-      {/* TODO: REPLACE WITH IMAGE COMPONENT OF USER'S PHOTO */}
-      <Icon
-        name="person"
-        style={styles.profileIcon}
-        color="#FFFFFF"
-        size={styles.$profileIconSize}
-      />
-    </TouchableOpacity>
-  );
 
   // The right component will be the settings icon by default, but can be
   // overridden by defining a rightComponent in the route config. The
@@ -78,6 +62,34 @@ const TitleBar = (props) => {
     </View>
   );
 
+  // Same as rightComponent but with a default back button
+  const leftComponent = props.titleBar.leftComponent ? (
+    <props.titleBar.leftComponent navigator={props.navigator} />
+  ) : (
+    <TouchableOpacity
+      onPress={props.disableBackButton ? null : props.navigator.pop}
+    >
+      <Icon
+        name="keyboard-arrow-left"
+        style={[
+          styles.buttonIcon,
+          {
+            color: props.disableBackButton ?
+              color(levelColorCode).clearer(0.6).rgbString() : levelColorCode,
+          },
+        ]}
+        size={styles.$backButtonIconSize}
+        color={getColorHexForLevel(level)}
+      />
+    </TouchableOpacity>
+  );
+
+  const leftButton = props.titleBar.showLeftComponent && (
+    <View style={styles.leftComponent}>
+      {leftComponent}
+    </View>
+  );
+
   // TitleBar will be visible, i.e., extend pass the status bar, only if the route has a title
   const titleBarStyles = props.titleBar.title ? styles.visibleTitleBar : styles.hiddenTitleBar;
   const titleTextStyles = [
@@ -101,9 +113,10 @@ TitleBar.propTypes = {
   titleBar: PropTypes.shape({
     name: PropTypes.string,
     title: PropTypes.string,
-    showBackButton: PropTypes.bool,
     showRightComponent: PropTypes.bool,
-    rightComponent: PropTypes.oneOfType([null, PropTypes.node]),
+    showLeftComponent: PropTypes.bool,
+    rightComponent: PropTypes.func([undefined, PropTypes.node]),
+    leftComponent: PropTypes.func([undefined, PropTypes.node]),
     styles: PropTypes.object,
   }).isRequired,
   training: PropTypes.shape({

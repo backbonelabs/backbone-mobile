@@ -39,6 +39,6 @@ export default {
   name: 'support',
   title: 'Talk to us',
   component: Support,
-  showBackButton: true,
+  showLeftComponent: true,
   rightComponent: connect(mapStateToProps)(SupportSubmit),
 };

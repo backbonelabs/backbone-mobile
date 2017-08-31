@@ -4,7 +4,7 @@ export default {
   name: 'profileSetupTwo',
   title: 'Profile Setup',
   component: ProfileSetupTwo,
-  showBackButton: true,
+  showLeftComponent: true,
   styles: {
     backgroundColor: '#F5F5F5',
   },
