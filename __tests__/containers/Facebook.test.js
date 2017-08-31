@@ -12,7 +12,7 @@ import Facebook from '../../app/containers/Facebook';
 describe('Facebook Component', () => {
   const store = configureStore([asyncActionMiddleware, thunk])();
   const wrapper = shallow(
-    <Facebook buttonText="test" />,
+    <Facebook.button buttonText="test" />,
     { context: { store } },
   );
   let render;

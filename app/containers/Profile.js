@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
+  Platform,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -128,8 +129,8 @@ class Profile extends Component {
       }),
       isFetching: PropTypes.bool,
       isUpdating: PropTypes.bool,
+      pendingUser: PropTypes.object,
     }),
-    pendingUser: PropTypes.object,
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
       push: PropTypes.func,
@@ -144,6 +145,7 @@ class Profile extends Component {
     super(props);
     autobind(this);
     const { user } = this.props.user;
+    this.isAndroid = Platform.OS === 'android';
     this.state = {
       isModalVisible: false,
       nickname: user.nickname,
@@ -205,10 +207,6 @@ class Profile extends Component {
     this.props.dispatch(userActions.prepareUserUpdate(null));
   }
 
-  setModalVisible(visible) {
-    this.setState({ isModalVisible: visible });
-  }
-
   /**
    * Opens and closes the selected data picker component
    * @param {String} pickerType Data picker to open. If undefined, the
@@ -222,25 +220,6 @@ class Profile extends Component {
     } else {
       this.setState({ pickerType });
     }
-  }
-
-  signOut() {
-    Alert.alert(
-      'Sign Out',
-      '\nAre you sure you want to sign out of your account?',
-      [
-        { text: 'Cancel' },
-        { text: 'OK',
-          onPress: () => {
-            // Remove locally stored user data and reset Redux auth/user store
-            this.props.dispatch(authActions.signOut());
-            // Disconnect from device
-            this.props.dispatch(deviceActions.disconnect());
-            this.props.navigator.resetTo(routes.login);
-          },
-        },
-      ]
-    );
   }
 
   /**
@@ -306,6 +285,25 @@ class Profile extends Component {
     return `${value}${constants.weightUnitIdToLabel[this.state.weight.unit].toLowerCase()}`;
   }
 
+  signOut() {
+    Alert.alert(
+      'Sign Out',
+      '\nAre you sure you want to sign out of your account?',
+      [
+        { text: 'Cancel' },
+        { text: 'OK',
+          onPress: () => {
+            // Remove locally stored user data and reset Redux auth/user store
+            this.props.dispatch(authActions.signOut());
+            // Disconnect from device
+            this.props.dispatch(deviceActions.disconnect());
+            this.props.navigator.resetTo(routes.login);
+          },
+        },
+      ]
+    );
+  }
+
   /**
    * Updates state (field) with value
    * @param {String}  field
@@ -314,11 +312,18 @@ class Profile extends Component {
    */
   updateProfile(field, value, clearPickerType) {
     const newState = { [field]: value };
-
     if (clearPickerType) {
       newState.pickerType = null;
     }
-    this.setState(newState, this.prepareUserUpdate);
+    if (value !== null) {
+      this.setState(Object.assign(
+        {},
+        newState,
+        { pickerType: this.isAndroid ? null : this.state.pickerType }
+      ), this.prepareUserUpdate);
+    } else if (this.isAndroid) {
+      this.setState({ pickerType: null });
+    }
   }
 
   /**
@@ -342,7 +347,7 @@ class Profile extends Component {
       // Case: User editing field other than email (didn't fix invalid email error')
       // Email state fails validation, prevent saving to profile
       invalidData = true;
-    } else if (this.props.pendingUser && this.props.pendingUser.invalidData) {
+    } else if (this.props.user.pendingUser && this.props.user.pendingUser.invalidData) {
       // Input value/state passes email validation and input isn't empty, allow save
       invalidData = false;
     }
