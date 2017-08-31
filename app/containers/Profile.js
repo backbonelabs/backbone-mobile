@@ -479,12 +479,11 @@ class Profile extends Component {
     }
 
     return (
-      <View>
-        <KeyboardAwareScrollView>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
-              { isFetching || isUpdating ?
-                <Spinner style={{ flex: 1 }} />
+      <KeyboardAwareScrollView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            { isFetching || isUpdating ?
+              <Spinner style={{ flex: 1 }} />
               :
                 <View style={styles.profileFieldContainer}>
                   <TouchableWithoutFeedback>
@@ -624,10 +623,9 @@ class Profile extends Component {
                   />
                 </View>
               }
-            </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAwareScrollView>
-      </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAwareScrollView>
     );
   }
 }
