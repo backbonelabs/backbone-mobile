@@ -36,11 +36,8 @@ export default {
   orange500,
   grey50,
   grey100,
-<<<<<<< HEAD
   grey200,
-=======
   grey400,
->>>>>>> v2
   grey500,
   green400,
   primaryColor,
