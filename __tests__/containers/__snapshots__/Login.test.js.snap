@@ -150,6 +150,7 @@ exports[`Login Component renders as expected 1`] = `
             disabled={true}
             onPress={[Function]}
             primary={true}
+            shadow={true}
             style={Object {}}
             text="LOG IN"
             textStyle={Object {}}
