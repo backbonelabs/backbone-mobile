@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import theme from '../styles/theme';
@@ -28,6 +29,20 @@ export default EStyleSheet.create({
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
+    ...Platform.select({
+      // OS-specific drop shadow styling
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   hiddenTitleBar: {
     ...baseTitleBarStyles,

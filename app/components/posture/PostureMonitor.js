@@ -128,6 +128,9 @@ class PostureMonitor extends Component {
         showPartial: PropTypes.bool,
       }),
     }),
+    training: PropTypes.shape({
+      selectedLevelIdx: PropTypes.number,
+    }),
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
     }),
@@ -153,9 +156,6 @@ class PostureMonitor extends Component {
         totalDuration: PropTypes.number,
         slouchTime: PropTypes.number,
       }),
-    }),
-    training: PropTypes.shape({
-      selectedLevelIdx: PropTypes.number,
     }),
     user: PropTypes.shape({
       settings: PropTypes.shape({
@@ -1221,14 +1221,40 @@ class PostureMonitor extends Component {
     } = this.state;
 
     const isDisabled = sessionState === sessionStates.RUNNING;
+    const level = this.props.training.selectedLevelIdx;
+    const levelColorCode = getColorHexForLevel(level);
 
     const getPlayPauseButton = () => {
       if (sessionState === sessionStates.STOPPED) {
-        return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.startSession} />;
+        return (
+          <MonitorButton
+            text="PLAY"
+            icon="play-arrow"
+            onPress={this.startSession}
+            underlayColor={levelColorCode}
+            iconColor={levelColorCode}
+          />
+        );
       } else if (isDisabled) {
-        return <MonitorButton text="PAUSE" icon="pause" onPress={this.pauseSession} />;
+        return (
+          <MonitorButton
+            text="PAUSE"
+            icon="pause"
+            onPress={this.pauseSession}
+            underlayColor={levelColorCode}
+            iconColor={levelColorCode}
+          />
+        );
       }
-      return <MonitorButton text="PLAY" icon="play-arrow" onPress={this.resumeSession} />;
+      return (
+        <MonitorButton
+          text="PLAY"
+          icon="play-arrow"
+          onPress={this.resumeSession}
+          underlayColor={levelColorCode}
+          iconColor={levelColorCode}
+        />
+      );
     };
 
     return this.props.device.isConnecting ? (
@@ -1238,7 +1264,7 @@ class PostureMonitor extends Component {
       </View>
     ) : (
       <View style={styles.container}>
-        <BodyText style={styles._timer}>
+        <BodyText style={[styles._timer, { color: levelColorCode }]}>
           {this.getFormattedTime()}
         </BodyText>
         <BodyText style={styles._heading}>Time Remaining</BodyText>
@@ -1269,6 +1295,7 @@ class PostureMonitor extends Component {
             }}
             minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
             maximumValue={0}
+            minimumTrackTintColor={levelColorCode}
             disabled={isDisabled}
           />
           <SecondaryText style={styles._sliderTitle}>SLOUCH DETECTION</SecondaryText>
@@ -1280,17 +1307,23 @@ class PostureMonitor extends Component {
               disabled
               icon="notifications"
               text="ALERTS"
+              underlayColor={levelColorCode}
+              iconColor={levelColorCode}
             /> :
               <MonitorButton
                 icon="notifications"
                 text="ALERTS"
                 onPress={this.navigateToAlert}
+                underlayColor={levelColorCode}
+                iconColor={levelColorCode}
               />
           }
           <MonitorButton
             text="STOP"
             icon="stop"
             onPress={this.confirmStopSession}
+            underlayColor={levelColorCode}
+            iconColor={levelColorCode}
           />
         </View>
       </View>
