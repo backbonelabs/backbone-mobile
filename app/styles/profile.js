@@ -15,6 +15,7 @@ const positioning = {
 
 export default EStyleSheet.create({
   $iconSize: fixedResponsiveFontSize(20),
+  $photoIconSize: fixedResponsiveFontSize(40),
   container: {
     height: '100%',
     backgroundColor: 'white',
@@ -30,9 +31,16 @@ export default EStyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#EEEEEE',
   },
-  profileHeaderUserImage: {
-    height: applyWidthDifference(60),
-    width: applyWidthDifference(60),
+  profileHeaderIconContainer: {
+    backgroundColor: theme.grey200,
+    height: applyWidthDifference(70),
+    width: applyWidthDifference(70),
+    borderRadius: applyWidthDifference(70) / 2,
+  },
+  profileHeaderIcon: {
+    color: theme.grey500,
+    backgroundColor: 'transparent',
+    padding: applyWidthDifference(15),
   },
   profileHeaderNickname: {
     fontSize: fixedResponsiveFontSize(28),

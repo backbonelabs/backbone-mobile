@@ -5,7 +5,6 @@ import {
   Keyboard,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Image,
   Platform,
 } from 'react-native';
 import autobind from 'class-autobind';
@@ -20,7 +19,6 @@ import styles from '../styles/profile';
 import constants from '../utils/constants';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
-import backboneLogo from '../images/logo.png';
 import routes from '../routes';
 import Facebook from '../containers/Facebook';
 import Input from '../components/Input';
@@ -179,6 +177,7 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // Authentication errors from api for Facebook logins
     if (!this.props.auth.errorMessage &&
       nextProps.auth.errorMessage) {
       Alert.alert('Authentication Error', nextProps.auth.errorMessage);
@@ -189,6 +188,7 @@ class Profile extends Component {
     // If it goes from true to false, operation is complete
     if (this.props.user.isUpdating &&
       !nextProps.isUpdating &&
+      // Prevents results in 'Change password' from causing an alert
       currentRoute.name === routes.profile.name) {
       this.setState({ pickerType: null });
       if (nextProps.errorMessage) {
@@ -215,6 +215,7 @@ class Profile extends Component {
   setPickerType(pickerType) {
     // Dismiss keyboard, in case user was editing nickname or email
     Keyboard.dismiss();
+    // Dismiss picker when selecting another field
     if (this.state.pickerType) {
       this.setState({ pickerType: null });
     } else {
@@ -285,6 +286,9 @@ class Profile extends Component {
     return `${value}${constants.weightUnitIdToLabel[this.state.weight.unit].toLowerCase()}`;
   }
 
+  /**
+   * Signs out the user and disconnects the device
+   */
   signOut() {
     Alert.alert(
       'Sign Out',
@@ -312,16 +316,19 @@ class Profile extends Component {
    */
   updateProfile(field, value, clearPickerType) {
     const newState = { [field]: value };
+    const isAndroidCalendar = (this.isAndroid && this.state.pickerType === 'birthdate');
     if (clearPickerType) {
       newState.pickerType = null;
     }
+    // Prevents the picker from closing after the picker has moved
+    // and closes the picker on Android calendar once the user selects okay
     if (value !== null) {
       this.setState(Object.assign(
         {},
         newState,
-        { pickerType: this.isAndroid ? null : this.state.pickerType }
+        { pickerType: isAndroidCalendar ? null : this.state.pickerType }
       ), this.prepareUserUpdate);
-    } else if (this.isAndroid) {
+    } else if (isAndroidCalendar) {
       this.setState({ pickerType: null });
     }
   }
@@ -455,20 +462,23 @@ class Profile extends Component {
       pickerType,
     } = this.state;
     const { user, isFetching, isUpdating } = this.props.user;
+
+    // Used to determine gender
     let genderText = 'Other';
     let genderIcon = 'transgender';
-    let genderType = constants.gender.other;
+    let nextGenderType = constants.gender.other;
     if (gender === constants.gender.male) {
       genderText = 'Male';
       genderIcon = 'mars';
-      genderType = constants.gender.female;
+      nextGenderType = constants.gender.female;
     } else if (gender === constants.gender.female) {
       genderText = 'Female';
       genderIcon = 'venus';
-      genderType = constants.gender.other;
+      nextGenderType = constants.gender.other;
     } else {
-      genderType = constants.gender.male;
+      nextGenderType = constants.gender.male;
     }
+
     return (
       <View>
         <KeyboardAwareScrollView>
@@ -480,11 +490,13 @@ class Profile extends Component {
                 <View style={styles.profileFieldContainer}>
                   <TouchableWithoutFeedback>
                     <View style={styles.profileHeader}>
-                      <Image
-                        source={backboneLogo}
-                        style={styles.profileHeaderUserImage}
-                        resizeMode="contain"
-                      />
+                      <View style={styles.profileHeaderIconContainer} >
+                        <MaterialIcons
+                          name="add-a-photo"
+                          size={styles.$photoIconSize}
+                          style={styles.profileHeaderIcon}
+                        />
+                      </View>
                       <SecondaryText
                         style={styles._profileHeaderNickname}
                       >
@@ -504,7 +516,7 @@ class Profile extends Component {
                     iconLeftName="user"
                   />
                   <ProfileField
-                    onPress={() => this.updateProfile('gender', genderType, true)}
+                    onPress={() => this.updateProfile('gender', nextGenderType, true)}
                     edited={gender !== user.gender}
                     profileData={genderText}
                     iconFont="FontAwesome"
