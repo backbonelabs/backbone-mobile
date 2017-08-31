@@ -141,10 +141,22 @@ export default EStyleSheet.create({
     position: 'absolute',
     ...Platform.select({ // iOS has a different Y-origin point to Android
       ios: {
-        top: (height / 2) - applyWidthDifference(254),
+        top: (height / 2) - applyWidthDifference(225),
       },
       android: {
-        top: (height / 2) - applyWidthDifference(270),
+        top: (height / 2) - applyWidthDifference(240),
+      },
+    }),
+    left: (width / 2) - applyWidthDifference(40),
+  },
+  topCircleOverlayShort: {
+    position: 'absolute',
+    ...Platform.select({ // iOS has a different Y-origin point to Android
+      ios: {
+        top: (height / 2) - applyWidthDifference(200),
+      },
+      android: {
+        top: (height / 2) - applyWidthDifference(215),
       },
     }),
     left: (width / 2) - applyWidthDifference(40),
@@ -157,6 +169,9 @@ export default EStyleSheet.create({
     fontSize: fixedResponsiveFontSize(24),
     fontWeight: 'bold',
     paddingTop: applyWidthDifference(20),
+    paddingBottom: applyWidthDifference(35),
+  },
+  emptyTitle: {
     paddingBottom: applyWidthDifference(35),
   },
   summaryDetailContainer: {
@@ -177,7 +192,7 @@ export default EStyleSheet.create({
   summaryDetailIcon: {
     fontSize: fixedResponsiveFontSize(22),
     color: 'white',
-    paddingLeft: applyWidthDifference(2),
+    paddingLeft: applyWidthDifference(3),
   },
   summaryDetailCaptionContainer: {
     flex: 0.6,
