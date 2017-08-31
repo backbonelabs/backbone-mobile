@@ -23,6 +23,7 @@ import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 import routes from '../routes';
 import constants from '../utils/constants';
+import { getColorHexForLevel } from '../utils/levelColors';
 
 const { workoutTypes } = constants;
 
@@ -38,6 +39,9 @@ class WorkoutList extends Component {
     navigator: PropTypes.shape({
       getCurrentRoutes: PropTypes.func,
     }),
+    training: PropTypes.shape({
+      selectedLevelIdx: PropTypes.number,
+    }),
   }
 
   constructor(props) {
@@ -51,6 +55,8 @@ class WorkoutList extends Component {
       'FAVORITES',
       // 'POPULARITY', // removed until backend is implemented
     ];
+    this.levelColorCode = getColorHexForLevel(props.training.selectedLevelIdx);
+
     // Template for categorizing all workouts into their type
     const routeStack = props.navigator.getCurrentRoutes();
     this.currentRoute = routeStack[routeStack.length - 1];
@@ -402,9 +408,13 @@ class WorkoutList extends Component {
           renderTabBar={this.getTabBar}
           onChangeTab={this.toggleSearchBar}
           tabBarPosition="top"
-          tabBarActiveTextColor="#2196F3"
-          tabBarInactiveTextColor="#bdbdbd"
-          tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
+          tabBarActiveTextColor={this.levelColorCode}
+          tabBarInactiveTextColor={styles.$grey500}
+          tabBarUnderlineStyle={Object.assign(
+            {},
+            styles._tabBarUnderlineStyle,
+            { backgroundColor: this.levelColorCode },
+          )}
           tabBarTextStyle={styles._tabBarTextStyle}
         >
           {listViews}
@@ -430,8 +440,9 @@ class WorkoutList extends Component {
 }
 
 const mapStateToProps = (state) => {
+  const { training } = state;
   const { workouts, isFetchingWorkouts, favoriteWorkouts, user } = state.user;
-  return { workouts, isFetchingWorkouts, favoriteWorkouts, user };
+  return { workouts, isFetchingWorkouts, favoriteWorkouts, user, training };
 };
 
 export default connect(mapStateToProps)(WorkoutList);

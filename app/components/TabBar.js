@@ -86,7 +86,7 @@ TabBar.propTypes = {
   scrollValue: PropTypes.object,
   backgroundColor: PropTypes.string,
   renderTab: PropTypes.func,
-  underlineStyle: PropTypes.number,
+  underlineStyle: PropTypes.object,
   containerWidth: PropTypes.number,
   style: PropTypes.object,
 };
