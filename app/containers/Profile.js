@@ -123,7 +123,6 @@ class Profile extends Component {
         heightUnitPreference: PropTypes.number,
         authMethod: PropTypes.number,
         isConfirmed: PropTypes.bool,
-        facebookId: PropTypes.string,
       }),
       isFetching: PropTypes.bool,
       isUpdating: PropTypes.bool,
@@ -591,7 +590,7 @@ class Profile extends Component {
                     iconFont="MaterialIcon"
                     iconLeftName="email"
                   />
-                  { user.authMethod === constants.authMethods.EMAIL && !user.facebookId ?
+                  { user.authMethod === constants.authMethods.EMAIL ?
                     <View>
                       <ProfileField
                         onPress={() => this.props.navigator.push(routes.changePassword)}
