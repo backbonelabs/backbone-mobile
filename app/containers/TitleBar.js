@@ -20,12 +20,14 @@ export const LeftProfileComponent = (props) => (
     onPress={() => props.navigator.push(routes.profile)}
   >
     {/* TODO: REPLACE WITH IMAGE COMPONENT OF USER'S PHOTO */}
-    <Icon
-      name="person"
-      style={styles.profileIcon}
-      color="#FFFFFF"
-      size={styles.$profileIconSize}
-    />
+    <View style={styles.profileIconContainer}>
+      <Icon
+        style={styles.profileIcon}
+        name="person"
+        color="#FFFFFF"
+        size={styles.$profileIconSize}
+      />
+    </View>
   </TouchableOpacity>
 );
 
