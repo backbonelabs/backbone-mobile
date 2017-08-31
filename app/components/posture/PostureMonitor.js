@@ -1332,8 +1332,8 @@ class PostureMonitor extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { app, device, posture, training, user: { user } } = state;
-  return { app, device, posture, training, user };
+  const { app, device, posture, user: { user }, training } = state;
+  return { app, device, posture, user, training };
 };
 
 export default connect(mapStateToProps)(PostureMonitor);
