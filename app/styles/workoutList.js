@@ -1,5 +1,6 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
+import theme from '../styles/theme';
 
 const {
   applyWidthDifference,
@@ -8,6 +9,7 @@ const {
 
 export default EStyleSheet.create({
   $heartIconSize: fixedResponsiveFontSize(25),
+  $grey500: theme.grey400,
   container: {
     alignItems: 'center',
     flex: 1,
@@ -16,7 +18,6 @@ export default EStyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   tabBarUnderlineStyle: {
-    backgroundColor: '#2196F3',
     borderRadius: 4,
   },
   tabBarTextStyle: {
