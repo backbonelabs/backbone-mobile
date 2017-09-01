@@ -44,11 +44,9 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   subheading: {
-    fontSize: fixedResponsiveFontSize(16),
     textAlign: 'center',
   },
   instructions: {
-    fontSize: fixedResponsiveFontSize(16),
     textAlign: 'center',
   },
   twoSidedText: {
