@@ -7,26 +7,20 @@ import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
 import theme from '../styles/theme';
 import Mixpanel from '../utils/Mixpanel';
-import { getColorHexForLevel } from '../utils/levelColors';
 
 const ProfileSave = props => {
-  const level = props.training.selectedLevelIdx;
-  const profileLevelColorCode = getColorHexForLevel(level);
-
-  const { user } = props;
-
-  const isPendingSave = user.pendingUser && !user.pendingUser.invalidData;
-  const profileTextColor = isPendingSave ? profileLevelColorCode : theme.disabledColor;
+  const isPendingSave = props.pendingUser && !props.pendingUser.invalidData;
+  const profileTextColor = isPendingSave ? theme.primaryFontColor : theme.disabledColor;
   const text = <BodyText style={{ color: profileTextColor }}>Save</BodyText>;
 
   return isPendingSave ? (
     <TouchableOpacity
       onPress={() => {
         Mixpanel.track('updateUserProfile');
-        props.dispatch(userActions.updateUser(user.pendingUser));
+        props.dispatch(userActions.updateUser(props.pendingUser));
       }}
     >
-      {user.isUpdating ?
+      {props.isUpdating ?
         <Spinner color="#FFFFFF" /> : text}
     </TouchableOpacity>
   ) : text;
@@ -34,18 +28,13 @@ const ProfileSave = props => {
 
 ProfileSave.propTypes = {
   dispatch: PropTypes.func,
-  user: PropTypes.shape({
-    isUpdating: PropTypes.bool,
-    pendingUser: PropTypes.object,
-  }).isRequired,
-  training: PropTypes.shape({
-    selectedLevelIdx: PropTypes.number,
-  }).isRequired,
+  isUpdating: PropTypes.bool,
+  pendingUser: PropTypes.object,
 };
 
 const mapStateToProps = (state) => {
-  const { training, user } = state;
-  return { training, user };
+  const { user } = state;
+  return user;
 };
 
 export default {
