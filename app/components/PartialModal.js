@@ -18,6 +18,7 @@ class PartialModal extends Component {
     const buttonConfigs = this.props.config.buttons;
     return buttonConfigs.map((val, index) => (
       <Button
+        shadow={index !== 0}
         style={styles._button}
         text={val.caption}
         key={index}
