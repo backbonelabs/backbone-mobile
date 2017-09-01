@@ -26,10 +26,10 @@ class MonitorButton extends Component {
 
   static defaultProps = {
     color: 'white',
-    underlayColor: theme.lightBlueColor,
+    underlayColor: theme.blue500,
     underlayIconColor: 'white',
     iconSize: relativeDimensions.fixedResponsiveFontSize(40),
-    iconColor: theme.lightBlueColor,
+    iconColor: theme.blue500,
     textColor: theme.secondaryFontColor,
     activeOpacity: 1,
     customStyles: {},
