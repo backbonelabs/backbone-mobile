@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   AppState,
   View,
   Image,
@@ -636,47 +635,6 @@ class PostureMonitor extends Component {
     });
   }
 
-  /**
-   * Displays an alert with at least two buttons
-   * @param  {Object}   options
-   * @param  {String}   options.title              Title for the alert, defaults to 'Error'
-   * @param  {String}   options.message            Main body message for the alert
-   * @param  {String}   options.leftButtonLabel    Label for left button, defaults to 'Cancel'
-   * @param  {Function} options.leftButtonAction   Action for left button
-   * @param  {String}   options.centerButtonLabel  Label for center button. If undefined, the center
-   *                                               button will not be displayed.
-   * @param  {Function} options.centerButtonAction Action for center button
-   * @param  {String}   options.rightButtonLabel   Label for right button, defaults to 'OK'
-   * @param  {Function} options.rightButtonAction  Action for right button
-   */
-  sessionCommandAlert({
-    title = 'Error',
-    message,
-    leftButtonLabel = 'Cancel',
-    leftButtonAction,
-    centerButtonLabel,
-    centerButtonAction,
-    rightButtonLabel = 'OK',
-    rightButtonAction,
-  }) {
-    const buttons = [{
-      text: leftButtonLabel,
-      onPress: leftButtonAction,
-    }, {
-      text: rightButtonLabel,
-      onPress: rightButtonAction,
-    }];
-
-    if (centerButtonLabel) {
-      buttons.splice(1, 0, {
-        text: centerButtonLabel,
-        onPress: centerButtonAction,
-      });
-    }
-
-    Alert.alert(title, message, buttons);
-  }
-
   startSession() {
     if (!this.state.hasPendingSessionOperation) {
       const {
@@ -712,15 +670,38 @@ class PostureMonitor extends Component {
           if (this.state.sessionState === sessionStates.STOPPED) {
             // No session has been started, which means the initial autostart failed, so we should
             // just navigate back since there is nothing else the user can do in this scene
-            Alert.alert('Error', message);
-            this.props.navigator.pop();
+            this.props.dispatch(appActions.showPartialModal({
+              detail: { caption: message },
+              buttons: [
+                {
+                  caption: 'OK',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.props.navigator.pop();
+                  },
+                },
+              ],
+              backButtonHandler: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            }));
           } else {
             // A session was already started, so an error here would be for resuming the session
-            this.sessionCommandAlert({
-              message,
-              rightButtonLabel: 'Retry',
-              rightButtonAction: this.startSession,
-            });
+            this.props.dispatch(appActions.showPartialModal({
+              detail: { caption: message },
+              buttons: [
+                {
+                  caption: 'Retry',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.startSession();
+                  },
+                },
+              ],
+              backButtonHandler: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            }));
           }
 
           Mixpanel.trackError({
@@ -748,11 +729,21 @@ class PostureMonitor extends Component {
         this.setState({ hasPendingSessionOperation: false });
 
         if (err) {
-          this.sessionCommandAlert({
-            message: 'An error occurred while attempting to pause the session.',
-            rightButtonLabel: 'Retry',
-            rightButtonAction: this.pauseSession,
-          });
+          this.props.dispatch(appActions.showPartialModal({
+            detail: { caption: 'An error occurred while attempting to pause the session.' },
+            buttons: [
+              {
+                caption: 'Retry',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                  this.pauseSession();
+                },
+              },
+            ],
+            backButtonHandler: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          }));
 
           Mixpanel.trackError({
             errorContent: err,
@@ -801,11 +792,21 @@ class PostureMonitor extends Component {
         this.setState({ hasPendingSessionOperation: false });
 
         if (err) {
-          this.sessionCommandAlert({
-            message: 'An error occurred while attempting to resume the session.',
-            rightLabel: 'Retry',
-            rightAction: this.resumeSession,
-          });
+          this.props.dispatch(appActions.showPartialModal({
+            detail: { caption: 'An error occurred while attempting to resume the session.' },
+            buttons: [
+              {
+                caption: 'Retry',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                  this.resumeSession();
+                },
+              },
+            ],
+            backButtonHandler: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          }));
 
           Mixpanel.trackError({
             errorContent: err,
@@ -829,11 +830,28 @@ class PostureMonitor extends Component {
     if (!this.state.hasPendingSessionOperation) {
       if (this.state.sessionState === sessionStates.STOPPED) {
         // There is no active session
-        this.sessionCommandAlert({
-          title: 'Exit',
-          message: 'Are you sure you want to leave?',
-          rightButtonAction: this.props.navigator.pop,
-        });
+        this.props.dispatch(appActions.showPartialModal({
+          title: { caption: 'Exit' },
+          detail: { caption: 'Are you sure you want to leave?' },
+          buttons: [
+            {
+              caption: 'Cancel',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+            {
+              caption: 'Exit',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+                this.props.navigator.pop();
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       } else {
         this.setState({
           hasPendingSessionOperation: true,
@@ -849,13 +867,28 @@ class PostureMonitor extends Component {
             // the scene could already be unmounted at this phase
             this.setState({ hasPendingSessionOperation: false });
 
-            this.sessionCommandAlert({
-              message: 'An error occurred while attempting to stop the session.',
-              centerButtonLabel: 'Leave',
-              centerButtonAction: this.props.navigator.pop,
-              rightButtonLabel: 'Retry',
-              rightButtonAction: this.stopSession,
-            });
+            this.props.dispatch(appActions.showPartialModal({
+              detail: { caption: 'An error occurred while attempting to stop the session.' },
+              buttons: [
+                {
+                  caption: 'Leave',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.props.navigator.pop();
+                  },
+                },
+                {
+                  caption: 'Retry',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.stopSession();
+                  },
+                },
+              ],
+              backButtonHandler: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            }));
 
             Mixpanel.trackError({
               errorContent: err,
