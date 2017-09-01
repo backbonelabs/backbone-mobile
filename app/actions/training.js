@@ -2,6 +2,8 @@ import Mixpanel from '../utils/Mixpanel';
 import {
   SELECT_LEVEL,
   SELECT_SESSION,
+  SELECT_SESSION_STEP,
+  RESTORE_POSTURE_WORKOUT,
 } from './types';
 import store from '../store';
 
@@ -41,6 +43,27 @@ export default {
     return {
       type: SELECT_SESSION,
       payload: session,
+    };
+  },
+
+  selectSessionStep(step) {
+    Mixpanel.trackWithProperties('selectSessionStep', {
+      ...getCurrentTrainingData(),
+      selectedSessionStep: step,
+    });
+
+    return {
+      type: SELECT_SESSION_STEP,
+      payload: step,
+    };
+  },
+
+  restorePostureWorkout(workoutState) {
+    Mixpanel.trackWithProperties('restorePostureWorkout', workoutState);
+
+    return {
+      type: RESTORE_POSTURE_WORKOUT,
+      payload: workoutState,
     };
   },
 };

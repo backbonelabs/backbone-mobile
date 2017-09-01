@@ -27,6 +27,8 @@ export const SET_ACCESS_TOKEN__ERROR = 'SET_ACCESS_TOKEN__ERROR';
 // dashboard actions
 export const SELECT_LEVEL = 'SELECT_LEVEL';
 export const SELECT_SESSION = 'SELECT_SESSION';
+export const SELECT_SESSION_STEP = 'SELECT_SESSION_STEP';
+export const RESTORE_POSTURE_WORKOUT = 'RESTORE_POSTURE_WORKOUT';
 
 // device actions
 export const DEVICE_CONNECT = 'DEVICE_CONNECT';

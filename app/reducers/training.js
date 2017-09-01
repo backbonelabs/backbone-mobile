@@ -9,6 +9,8 @@ import {
   SIGNUP,
   SELECT_LEVEL,
   SELECT_SESSION,
+  SELECT_SESSION_STEP,
+  RESTORE_POSTURE_WORKOUT,
   SIGN_OUT,
   UPDATE_USER_TRAINING_PLAN_PROGRESS,
   UPDATE_USER_TRAINING_PLAN_PROGRESS__START,
@@ -36,6 +38,7 @@ const defaultState = {
   selectedPlanIdx: 0,
   selectedLevelIdx: 0,
   selectedSessionIdx: 0,
+  selectedSessionStep: 0,
 };
 
 export default (state = defaultState, action) => {
@@ -102,6 +105,16 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         selectedSessionIdx: payload,
+      };
+    case SELECT_SESSION_STEP:
+      return {
+        ...state,
+        selectedSessionStep: payload,
+      };
+    case RESTORE_POSTURE_WORKOUT:
+      return {
+        ...state,
+        ...payload,
       };
     case SIGN_OUT:
       return defaultState;
