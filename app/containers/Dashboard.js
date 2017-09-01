@@ -559,7 +559,10 @@ class Dashboard extends Component {
             <View style={styles.sessionCardTopRightContainer}>
               { durationInSeconds > 0 &&
                 <View style={styles.sessionDurationContainer}>
-                  <FontAwesomeIcon name={'clock-o'} style={[styles.durationIcon, { color: hexColor }]} />
+                  <FontAwesomeIcon
+                    name={'clock-o'}
+                    style={[styles.durationIcon, { color: hexColor }]}
+                  />
                   <BodyText style={[styles.durationText, { color: hexColor }]}>
                     {durationText}
                   </BodyText>

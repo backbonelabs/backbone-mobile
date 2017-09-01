@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   View,
-  Text,
   LayoutAnimation,
   TouchableWithoutFeedback,
   Keyboard,

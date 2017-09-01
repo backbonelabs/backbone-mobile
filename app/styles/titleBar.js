@@ -4,7 +4,7 @@ import color from 'color';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize, getResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 const baseTitleBarStyles = {
   flexDirection: 'row',

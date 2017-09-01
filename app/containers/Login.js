@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
-  Text,
   Platform,
   StatusBar,
   Alert,
