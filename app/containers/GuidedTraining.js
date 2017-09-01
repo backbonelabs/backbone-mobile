@@ -14,6 +14,7 @@ import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import appActions from '../actions/app';
 import userActions from '../actions/user';
+import trainingActions from '../actions/training';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import PostureIntro from '../components/posture/PostureIntro';
@@ -151,6 +152,7 @@ class GuidedTraining extends Component {
       selectedSessionIdx: PropTypes.number,
     }).isRequired,
     updateUserTrainingPlanProgress: PropTypes.func.isRequired,
+    selectSessionStep: PropTypes.func.isRequired,
     user: PropTypes.shape({
       trainingPlanProgress: PropTypes.objectOf(
         PropTypes.arrayOf(
@@ -495,6 +497,7 @@ class GuidedTraining extends Component {
   _navigateToPostureCalibrate() {
     const { selectedLevelIdx, selectedSessionIdx } = this.props.training;
     const title = `Level ${selectedLevelIdx + 1} Session ${selectedSessionIdx + 1}`;
+    this.props.selectSessionStep(this.state.step);
     this.props.navigator.push({
       ...routes.postureCalibrate,
       title,
@@ -663,7 +666,7 @@ class GuidedTraining extends Component {
             <SecondaryText style={styles._footerButtonText}>PREVIOUS</SecondaryText>
           </View>
           <View style={styles.footerButtonContainer}>
-            {!isPostureSession && (
+            {(!isPostureSession || currentWorkout.isComplete) && (
               <TouchableHighlight
                 activeOpacity={1}
                 underlayColor={levelColorHex}
@@ -727,4 +730,5 @@ const mapStateToProps = ({ training, user }) => ({
 export default connect(mapStateToProps, {
   ...appActions,
   ...userActions,
+  ...trainingActions,
 })(GuidedTraining);
