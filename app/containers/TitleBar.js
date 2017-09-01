@@ -10,7 +10,6 @@ import color from 'color';
 import HeadingText from '../components/HeadingText';
 import settingsIcon from '../images/settings-icon.png';
 import routes from '../routes';
-import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/titleBar';
 import theme from '../styles/theme';
 
@@ -36,11 +35,8 @@ LeftProfileComponent.propTypes = {
 };
 
 const TitleBar = (props) => {
-  const level = props.training.selectedLevelIdx;
-  const levelColorCode = getColorHexForLevel(level);
   const currentRoute = props.currentRoute.name;
-
-  let currentColor;
+  let currentColor = 'rgba(0, 0, 0, 0.54)';
 
   if (currentRoute === 'profileSetupOne' ||
     currentRoute === 'profileSetupTwo' ||
@@ -49,8 +45,6 @@ const TitleBar = (props) => {
     currentRoute === 'howToVideo'
   ) {
     currentColor = theme.orange500;
-  } else {
-    currentColor = levelColorCode;
   }
 
 
