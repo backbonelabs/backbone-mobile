@@ -35,7 +35,7 @@ const Monitor = ({ pointerPosition, slouchPosition, rating }) => (
         <View style={styles.postureRatingContainer}>
           <BodyText
             style={[
-              styles._postureRating,
+              styles.postureRating,
                 { color: rating ? theme.infoColor : theme.primaryColor },
             ]}
           >
@@ -56,7 +56,7 @@ const Monitor = ({ pointerPosition, slouchPosition, rating }) => (
             />
             <SecondaryText
               style={[
-                styles._reCalibrate,
+                styles.reCalibrate,
                   { color: disable ? theme.disabledColor : theme.lightBlue500 },
               ]}
             >

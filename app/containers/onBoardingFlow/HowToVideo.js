@@ -8,7 +8,7 @@ import VideoPlayer from '../../components/VideoPlayer';
 
 const HowToVideo = (props) => (
   <View style={styles.howToContainer}>
-    <StepBar step={4} style={styles._stepBar} />
+    <StepBar step={4} style={styles.stepBar} />
     <View style={styles.howToInnerContainer}>
       <VideoPlayer
         video={{ uri: 'https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4' }} // video example
@@ -17,7 +17,7 @@ const HowToVideo = (props) => (
     <View style={styles.btnContainer}>
       <View style={styles.CTAContainer}>
         <Button
-          style={styles._CTAButton}
+          style={styles.CTAButton}
           text="Done"
           primary
           onPress={() => props.navigator.resetTo(routes.dashboard)}

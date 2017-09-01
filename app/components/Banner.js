@@ -39,7 +39,7 @@ const Banner = props => {
               color={theme.primaryColor}
             />
         }
-        <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText>
+        <SecondaryText style={styles.bannerText}>{bannerText}</SecondaryText>
       </TouchableOpacity>
     );
   }

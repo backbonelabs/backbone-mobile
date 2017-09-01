@@ -108,19 +108,19 @@ class PostureCalibrate extends Component {
         <View style={styles.contentContainer}>
           <HeadingText
             style={[
-              styles._title,
+              styles.title,
               { color: getColorHexForLevel(this.props.training.selectedLevelIdx) },
             ]}
             size={1}
           >
             Calibrating...
           </HeadingText>
-          <BodyText style={styles._subtitle}>
+          <BodyText style={styles.subtitle}>
             Continue to sit or stand up straight while Backbone calibrates
           </BodyText>
           <Image source={progressCircle} style={styles.progressCircle}>
-            <HeadingText size={1} style={styles._progressText}>{percentage}%</HeadingText>
-            <BodyText style={styles._progressText}>CALIBRATED</BodyText>
+            <HeadingText size={1} style={styles.progressText}>{percentage}%</HeadingText>
+            <BodyText style={styles.progressText}>CALIBRATED</BodyText>
             <Animated.View
               onLayout={this._updateBlinderHeight}
               style={[styles.blinder, { height: this.state.animatedHeightValue }]}
@@ -129,7 +129,7 @@ class PostureCalibrate extends Component {
         </View>
         <Button
           primary
-          style={styles._button}
+          style={styles.button}
           onPress={this._toggleAnimation}
           text={this.state.isAnimating ? 'PAUSE' : 'RESUME'}
           disabled={percentage === 100}

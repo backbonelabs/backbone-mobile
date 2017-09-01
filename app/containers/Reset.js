@@ -142,19 +142,18 @@ class Reset extends Component {
                   source={BackBoneLogo}
                   style={[styles.backboneLogo, { height: logoHeight }]}
                 />
-                <HeadingText size={2} style={styles._headingText}>
+                <HeadingText size={2} style={styles.headingText}>
                   Password Recovery
                 </HeadingText>
-                <BodyText style={styles._subHeadingText}>
+                <BodyText style={styles.subHeadingText}>
                   Please enter your email address below and we'll send you a link
                   to reset your password.
                 </BodyText>
                 <View style={styles.inputFieldContainer}>
                   <Input
-                    style={{
-                      ...styles._inputField,
+                    style={[styles.inputField, {
                       color: emailWarning ? warningColor : primaryFontColor,
-                    }}
+                    }]}
                     iconStyle={{ color: emailWarning ? warningColor : inputIconColor }}
                     autoCapitalize="none"
                     placeholder="Email"
@@ -176,7 +175,7 @@ class Reset extends Component {
                         color={warningColor}
                         size={20}
                       />
-                      <BodyText style={styles._warning}>
+                      <BodyText style={styles.warning}>
                         {emailWarning}
                       </BodyText>
                     </View>
@@ -184,7 +183,7 @@ class Reset extends Component {
                   }
                 <Button
                   disabled={!email}
-                  style={styles._CTAResetBtn}
+                  style={styles.CTAResetBtn}
                   primary
                   text="RESET"
                   onPress={this.sendPasswordResetRequest}
@@ -193,7 +192,7 @@ class Reset extends Component {
                   onPress={() => this.props.navigator.pop()}
                   activeOpacity={0.4}
                 >
-                  <SecondaryText style={styles._cancel}>
+                  <SecondaryText style={styles.cancel}>
                     Cancel
                   </SecondaryText>
                 </TouchableOpacity>

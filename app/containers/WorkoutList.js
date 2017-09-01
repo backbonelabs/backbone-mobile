@@ -317,7 +317,7 @@ class WorkoutList extends Component {
         <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
           <View style={styles.rowInnerContainer}>
             <View style={styles.workoutPreviewBox} />
-            <BodyText style={styles._rowText}>{workoutTitle}</BodyText>
+            <BodyText style={styles.rowText}>{workoutTitle}</BodyText>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
@@ -335,7 +335,7 @@ class WorkoutList extends Component {
   renderSectionHeader(sectionData, category) {
     return (
       <View style={styles.section}>
-        <BodyText style={styles._sectionText}>{category}</BodyText>
+        <BodyText style={styles.sectionText}>{category}</BodyText>
       </View>
     );
   }
@@ -360,7 +360,7 @@ class WorkoutList extends Component {
     >
       { this.state.searchBarIsHidden && this.isiOS ? null :
         <Input
-          style={styles._searchBar}
+          style={styles.searchBar}
           value={this.state.searchText}
           returnKeyType="search"
           returnKeyLabel="search"
@@ -419,10 +419,10 @@ class WorkoutList extends Component {
         </ScrollableTabView>
         <Animated.View
           style={[styles.subView,
-              { transform: [{ translateY: this.state.bounceValue }], height: '100%' }]}
+            { transform: [{ translateY: this.state.bounceValue }], height: '100%' }]}
         >
           <View style={styles.subViewButtonContainer}>
-            <BodyText style={styles._subViewHeaderText}>SORT BY:</BodyText>
+            <BodyText style={styles.subViewHeaderText}>SORT BY:</BodyText>
             {sortViews}
           </View>
           <TouchableOpacity

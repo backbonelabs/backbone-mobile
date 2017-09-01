@@ -36,7 +36,7 @@ class PartialModal extends Component {
     const buttonConfigs = this.props.config.buttons;
     return buttonConfigs.map((val, index) => (
       <Button
-        style={styles._button}
+        style={styles.button}
         text={val.caption}
         key={index}
         onPress={val.onPress ? val.onPress : this.defaultHandler}
@@ -75,14 +75,14 @@ class PartialModal extends Component {
               <HeadingText
                 size={1}
                 style={[
-                  styles._titleText,
+                  styles.titleText,
                   this.props.config.title.color && { color: this.props.config.title.color },
                 ]}
               >
                 {this.props.config.title.caption}
               </HeadingText>
             }
-            <BodyText style={styles._detailText}>
+            <BodyText style={styles.detailText}>
               {this.props.config.detail.caption}
             </BodyText>
             { this.props.config.buttons && this.props.config.buttons.length > 0 &&

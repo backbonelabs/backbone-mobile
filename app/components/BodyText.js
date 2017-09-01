@@ -22,7 +22,7 @@ class BodyText extends React.Component {
     return (
       <View ref={component => { this._root = component; }}>
         <Text
-          style={[styles._body, style]}
+          style={[styles.body, style]}
           {...{ remainingProps, allowFontScaling }}
         >
           {this.props.children}

@@ -89,7 +89,7 @@ class MonitorButton extends Component {
         {
           text ?
             <SecondaryText
-              style={[styles._btnText, customStyles.text, { color: currentTextColor }]}
+              style={[styles.btnText, customStyles.text, { color: currentTextColor }]}
             >
               {text}
             </SecondaryText> : null

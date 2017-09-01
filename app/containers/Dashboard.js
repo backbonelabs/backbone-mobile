@@ -474,7 +474,7 @@ class Dashboard extends Component {
               },
             ]}
           >
-            <BodyText style={[styles._levelTitle, color]}>{levelTitle}</BodyText>
+            <BodyText style={[styles.levelTitle, color]}>{levelTitle}</BodyText>
             {
               isLevelUnlocked ?
                 <View style={styles.hexagonCircleContainer}>
@@ -552,7 +552,7 @@ class Dashboard extends Component {
         <View>
           <View style={styles.sessionCardTopContainer}>
             <View style={styles.sessionCardTopLeftContainer}>
-              <BodyText style={{ color: hexColor, ...styles._sessionTitle }}>
+              <BodyText style={[styles.sessionTitle, { color: hexColor }]}>
                 {`Session ${idx + 1} - Exercise List`}
               </BodyText>
             </View>
@@ -560,7 +560,7 @@ class Dashboard extends Component {
               { durationInSeconds > 0 &&
                 <View style={styles.sessionDurationContainer}>
                   <FontAwesomeIcon name={'clock-o'} style={[styles.durationIcon, { color: hexColor }]} />
-                  <BodyText style={{ color: hexColor, ...styles._durationText }}>
+                  <BodyText style={[styles.durationText, { color: hexColor }]}>
                     {durationText}
                   </BodyText>
                 </View>

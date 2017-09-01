@@ -532,12 +532,12 @@ class GuidedTraining extends Component {
     // along with the number of sets remaining. Otherwise, display the workout instructions.
     const header = isTimed && this.state.hasWorkoutStarted ? (
       <View style={styles.header}>
-        <BodyText style={styles._timer}>{getFormattedTime(this.state.timerSeconds)}</BodyText>
+        <BodyText style={styles.timer}>{getFormattedTime(this.state.timerSeconds)}</BodyText>
         <BodyText>Sets Remaining: {this.state.setsRemaining}</BodyText>
         {currentWorkout.twoSides && this.state.setsRemaining > 0 &&
           <View style={styles.twoSidedText}>
             <BodyText>Perform with your</BodyText>
-            <BodyText style={styles._strongText}>
+            <BodyText style={styles.strongText}>
               {this.state.side === 1 ? ' first ' : ' second '}
             </BodyText>
             <BodyText>side.</BodyText>
@@ -546,8 +546,8 @@ class GuidedTraining extends Component {
     ) : (
       <View style={styles.header}>
         <HeadingText size={3}>{currentWorkout.workout.title}</HeadingText>
-        <BodyText style={styles._centerText}>{subheading.join('\n')}</BodyText>
-        <BodyText style={styles._centerText}>{currentWorkout.workout.instructions}</BodyText>
+        <BodyText style={styles.centerText}>{subheading.join('\n')}</BodyText>
+        <BodyText style={styles.centerText}>{currentWorkout.workout.instructions}</BodyText>
       </View>
     );
 
@@ -660,7 +660,7 @@ class GuidedTraining extends Component {
                 />
               </View>
             </TouchableHighlight>
-            <SecondaryText style={styles._footerButtonText}>PREVIOUS</SecondaryText>
+            <SecondaryText style={styles.footerButtonText}>PREVIOUS</SecondaryText>
           </View>
           <View style={styles.footerButtonContainer}>
             {!isPostureSession && (
@@ -688,7 +688,7 @@ class GuidedTraining extends Component {
               </TouchableHighlight>
             )}
             {!isPostureSession && (
-              <SecondaryText style={styles._footerButtonText}>
+              <SecondaryText style={styles.footerButtonText}>
                 {centerButtonIconLabel}
               </SecondaryText>
             )}
@@ -711,7 +711,7 @@ class GuidedTraining extends Component {
                 />
               </View>
             </TouchableHighlight>
-            <SecondaryText style={styles._footerButtonText}>NEXT</SecondaryText>
+            <SecondaryText style={styles.footerButtonText}>NEXT</SecondaryText>
           </View>
         </View>
       </View>

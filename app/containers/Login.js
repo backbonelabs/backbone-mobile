@@ -203,7 +203,7 @@ class Login extends Component {
     // the keyboard to be closed when tapping outside of an input field
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles._container, { height: newHeight }]}>
+        <View style={[styles.container, { height: newHeight }]}>
           {inProgress
             ? <Spinner />
             : <View>
@@ -223,7 +223,7 @@ class Login extends Component {
                 </View>
                 <View style={styles.tabsContainer}>
                   <TouchableOpacity style={[styles.currentTab, styles.tab]}>
-                    <BodyText style={styles._currentTabText}>
+                    <BodyText style={styles.currentTabText}>
                       Log In
                     </BodyText>
                   </TouchableOpacity>
@@ -242,7 +242,7 @@ class Login extends Component {
                       <View>
                         <Facebook
                           buttonText="LOG IN WITH FACEBOOK"
-                          style={styles._inputField}
+                          style={styles.inputField}
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />
@@ -252,7 +252,7 @@ class Login extends Component {
                       </View>
                   }
                   <Input
-                    containerStyles={styles._inputFieldContainer}
+                    containerStyles={styles.inputFieldContainer}
                     style={{ color: authError ? warningColor : primaryFontColor }}
                     iconStyle={{ color: authError ? warningColor : inputIconColor }}
                     handleRef={ref => (this.emailField = ref)}
@@ -268,7 +268,7 @@ class Login extends Component {
                     iconLeftName="email"
                   />
                   <Input
-                    containerStyles={styles._inputFieldContainer}
+                    containerStyles={styles.inputFieldContainer}
                     style={{ color: authError ? warningColor : primaryFontColor }}
                     iconStyle={{ color: authError ? warningColor : inputIconColor }}
                     handleRef={ref => (this.passwordField = ref)}
@@ -292,7 +292,7 @@ class Login extends Component {
                           color={warningColor}
                           size={20}
                         />
-                        <BodyText style={styles._warning}>
+                        <BodyText style={styles.warning}>
                           {authErrorMessage}
                         </BodyText>
                       </View>
@@ -302,14 +302,14 @@ class Login extends Component {
                     onPress={this.goToReset}
                     activeOpacity={0.4}
                   >
-                    <SecondaryText style={styles._forgotPassword}>
+                    <SecondaryText style={styles.forgotPassword}>
                       Forgot your password?
                     </SecondaryText>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.CTAContainer}>
                   <Button
-                    style={styles._CTAButton}
+                    style={styles.CTAButton}
                     text="LOG IN"
                     primary
                     disabled={!email || !password}
