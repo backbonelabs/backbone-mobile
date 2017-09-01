@@ -51,13 +51,13 @@ const Monitor = ({ pointerPosition, slouchPosition, rating }) => (
             <MaterialIcons
               name={'refresh'}
               size={22}
-              color={disable ? theme.disabledColor : theme.lightBlueColor}
+              color={disable ? theme.disabledColor : theme.lightBlue500}
               style={styles.refreshIcon}
             />
             <SecondaryText
               style={[
                 styles._reCalibrate,
-                  { color: disable ? theme.disabledColor : theme.lightBlueColor },
+                  { color: disable ? theme.disabledColor : theme.lightBlue500 },
               ]}
             >
                 RE-CALIBRATE

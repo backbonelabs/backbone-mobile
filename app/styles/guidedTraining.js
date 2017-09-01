@@ -43,10 +43,7 @@ export default EStyleSheet.create({
   header: {
     alignItems: 'center',
   },
-  subheading: {
-    textAlign: 'center',
-  },
-  instructions: {
+  centerText: {
     textAlign: 'center',
   },
   twoSidedText: {

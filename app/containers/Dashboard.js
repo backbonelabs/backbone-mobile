@@ -22,7 +22,6 @@ import appActions from '../actions/app';
 import userActions from '../actions/user';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
-import SecondaryText from '../components/SecondaryText';
 import Card from '../components/Card';
 import Carousel from '../components/Carousel';
 import purpleBg from '../images/dashboard/dashboard-bg-purple.jpg';
@@ -553,17 +552,17 @@ class Dashboard extends Component {
         <View>
           <View style={styles.sessionCardTopContainer}>
             <View style={styles.sessionCardTopLeftContainer}>
-              <SecondaryText style={{ color: hexColor, ...styles._sessionTitle }}>
+              <BodyText style={{ color: hexColor, ...styles._sessionTitle }}>
                 {`Session ${idx + 1} - Exercise List`}
-              </SecondaryText>
+              </BodyText>
             </View>
             <View style={styles.sessionCardTopRightContainer}>
               { durationInSeconds > 0 &&
                 <View style={styles.sessionDurationContainer}>
-                  <FontAwesomeIcon name={'clock-o'} style={{ color: hexColor }} />
-                  <SecondaryText style={{ color: hexColor, ...styles._durationText }}>
+                  <FontAwesomeIcon name={'clock-o'} style={[styles.durationIcon, { color: hexColor }]} />
+                  <BodyText style={{ color: hexColor, ...styles._durationText }}>
                     {durationText}
-                  </SecondaryText>
+                  </BodyText>
                 </View>
               }
             </View>

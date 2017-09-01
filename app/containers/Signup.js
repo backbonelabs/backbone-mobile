@@ -253,7 +253,7 @@ class Signup extends Component {
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.currentTab, styles.tab]}>
                     <BodyText style={styles._currentTabText}>
-                        Sign Up
+                      Sign Up
                     </BodyText>
                   </TouchableOpacity>
                 </View>
@@ -269,7 +269,7 @@ class Signup extends Component {
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />
-                          <Text style={styles.textBreak}>OR</Text>
+                          <SecondaryText style={styles.textBreak}>OR</SecondaryText>
                           <View style={styles.breakLine} />
                         </View>
                       </View>
@@ -332,7 +332,7 @@ class Signup extends Component {
                       activeOpacity={0.4}
                     >
                       <SecondaryText style={styles._legalLink}>
-                          Terms of Service
+                        Terms of Service
                       </SecondaryText>
                     </TouchableOpacity>
                     <SecondaryText> and </SecondaryText>
@@ -342,7 +342,7 @@ class Signup extends Component {
                       style={styles.priv}
                     >
                       <SecondaryText style={styles._legalLink}>
-                          Privacy Policy
+                        Privacy Policy
                       </SecondaryText>
                     </TouchableOpacity>
                   </View>

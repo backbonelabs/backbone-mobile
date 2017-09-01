@@ -545,9 +545,9 @@ class GuidedTraining extends Component {
       </View>
     ) : (
       <View style={styles.header}>
-        <HeadingText size={1}>{currentWorkout.workout.title}</HeadingText>
-        <BodyText style={styles._subheading}>{subheading.join('\n')}</BodyText>
-        <BodyText style={styles._instructions}>{currentWorkout.workout.instructions}</BodyText>
+        <HeadingText size={3}>{currentWorkout.workout.title}</HeadingText>
+        <BodyText style={styles._centerText}>{subheading.join('\n')}</BodyText>
+        <BodyText style={styles._centerText}>{currentWorkout.workout.instructions}</BodyText>
       </View>
     );
 

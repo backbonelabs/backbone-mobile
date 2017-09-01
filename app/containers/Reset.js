@@ -138,12 +138,10 @@ class Reset extends Component {
             ? <Spinner />
             : <View>
               <View style={styles.innerContainer}>
-
                 <Image
                   source={BackBoneLogo}
                   style={[styles.backboneLogo, { height: logoHeight }]}
                 />
-
                 <HeadingText size={2} style={styles._headingText}>
                   Password Recovery
                 </HeadingText>
@@ -163,10 +161,7 @@ class Reset extends Component {
                     keyboardType="email-address"
                     onChangeText={this.onEmailChange}
                     value={this.state.email}
-                    onSubmitEditing={
-                      !email ? null
-                        : this.sendPasswordResetRequest
-                    }
+                    onSubmitEditing={!email ? null : this.sendPasswordResetRequest}
                     autoCorrect={false}
                     returnKeyType="go"
                     iconFont="MaterialIcon"
@@ -199,7 +194,7 @@ class Reset extends Component {
                   activeOpacity={0.4}
                 >
                   <SecondaryText style={styles._cancel}>
-                  Cancel
+                    Cancel
                   </SecondaryText>
                 </TouchableOpacity>
               </View>

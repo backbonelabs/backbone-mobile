@@ -15,7 +15,6 @@ import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/workoutList';
-import SecondaryText from '../components/SecondaryText';
 import TabBar from '../components/TabBar';
 import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
@@ -318,7 +317,7 @@ class WorkoutList extends Component {
         <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
           <View style={styles.rowInnerContainer}>
             <View style={styles.workoutPreviewBox} />
-            <SecondaryText style={styles._rowText}>{workoutTitle}</SecondaryText>
+            <BodyText style={styles._rowText}>{workoutTitle}</BodyText>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
@@ -390,13 +389,13 @@ class WorkoutList extends Component {
     const sortViews = this.sortCategories.map((label, index) => (
       <TouchableOpacity
         key={label}
-        style={styles.subViewSortButton}
+        style={styles.subViewButton}
         onPress={() => {
           this.setState({ sortListBy: index });
           this.toggleSubview();
         }}
       >
-        <BodyText style={styles._subViewSortButtonText}>{label}</BodyText>
+        <BodyText style={styles.subViewButtonText}>{label}</BodyText>
       </TouchableOpacity>
     ));
 
@@ -428,9 +427,9 @@ class WorkoutList extends Component {
           </View>
           <TouchableOpacity
             onPress={this.toggleSubview}
-            style={styles.subViewCancelButton}
+            style={styles.subViewButton}
           >
-            <BodyText style={styles._subViewCancel}>CANCEL</BodyText>
+            <BodyText style={styles.subViewButtonText}>CANCEL</BodyText>
           </TouchableOpacity>
         </Animated.View>
       </View>

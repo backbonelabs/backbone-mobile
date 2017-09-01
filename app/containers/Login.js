@@ -224,7 +224,7 @@ class Login extends Component {
                 <View style={styles.tabsContainer}>
                   <TouchableOpacity style={[styles.currentTab, styles.tab]}>
                     <BodyText style={styles._currentTabText}>
-                        Log In
+                      Log In
                     </BodyText>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -246,7 +246,7 @@ class Login extends Component {
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />
-                          <Text style={styles.textBreak}>OR</Text>
+                          <SecondaryText style={styles.textBreak}>OR</SecondaryText>
                           <View style={styles.breakLine} />
                         </View>
                       </View>
@@ -277,11 +277,7 @@ class Login extends Component {
                     placeholder="Password"
                     keyboardType="default"
                     onChangeText={this.onPasswordChange}
-                    onSubmitEditing={
-                          !email || !password
-                            ? null
-                            : this.login
-                        }
+                    onSubmitEditing={!email || !password ? null : this.login}
                     autoCorrect={false}
                     secureTextEntry
                     iconFont="MaterialIcon"
@@ -307,7 +303,7 @@ class Login extends Component {
                     activeOpacity={0.4}
                   >
                     <SecondaryText style={styles._forgotPassword}>
-                        Forgot your password?
+                      Forgot your password?
                     </SecondaryText>
                   </TouchableOpacity>
                 </View>

@@ -25,9 +25,6 @@ export default EStyleSheet.create({
   flexOne: {
     flex: 1,
   },
-  text: {
-    fontSize: fixedResponsiveFontSize(14),
-  },
   icon: {
     color: 'grey',
   },

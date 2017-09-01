@@ -1,6 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
-import theme from '../styles/theme';
 
 const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
@@ -41,7 +40,6 @@ export default EStyleSheet.create({
   sensorTextTitle: {
     marginBottom: applyWidthDifference(2),
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(15),
   },
   sensorText: {
     flex: 0.45,
@@ -49,26 +47,16 @@ export default EStyleSheet.create({
   },
   batteryInfo: {
     ...centerRowItems,
-  },
-  deviceInfoText: {
     marginVertical: applyWidthDifference(2),
-    fontSize: fixedResponsiveFontSize(14),
-    color: 'black',
   },
-  deviceInfoTextGreen: {
+  deviceConnectionStatus: {
+    flexDirection: 'row',
     marginVertical: applyWidthDifference(2),
-    fontSize: fixedResponsiveFontSize(14),
-    color: '#32CD32',
   },
-  deviceInfoTextRed: {
-    marginVertical: applyWidthDifference(2),
-    fontSize: fixedResponsiveFontSize(14),
-    color: theme.warningColor,
-  },
-  batteryIconGreen: {
+  green: {
     color: '$infoColor',
   },
-  batteryIconRed: {
+  red: {
     color: '$warningColor',
   },
   settingsHeader: {

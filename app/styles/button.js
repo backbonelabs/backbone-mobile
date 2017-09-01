@@ -3,7 +3,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   button: {
@@ -59,7 +59,6 @@ export default EStyleSheet.create({
   text: {
     color: '#FFFFFF',
     textAlign: 'center',
-    fontSize: fixedResponsiveFontSize(15),
     fontWeight: 'bold',
   },
   disabledText: {
