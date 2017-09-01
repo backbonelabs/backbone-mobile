@@ -990,7 +990,7 @@ class PostureMonitor extends Component {
     const goodPostureMinutes = Math.floor((goodPostureTime - (goodPostureHours * 3600)) / 60);
     const goodPostureSeconds = goodPostureTime % 60;
 
-    const gradePercentage = goodPostureTime / (goal > 0 ? goal : totalDuration);
+    const gradePercentage = goodPostureTime / (goal > 0 ? goal * 60 : totalDuration);
     const awesomeGrade = gradePercentage >= 0.9;
     let grade;
 
@@ -1098,16 +1098,12 @@ class PostureMonitor extends Component {
       buttons: [
         {
           caption: 'DONE',
-          onPress: () => {
-            closeSummaryAndPop();
-          },
+          onPress: () => closeSummaryAndPop(),
           color: levelColorCode,
           underlayColor: levelColorCodeUnderlay,
         },
       ],
-      backButtonHandler: () => {
-        closeSummaryAndPop();
-      },
+      backButtonHandler: () => closeSummaryAndPop(),
       customStyles: {
         containerStyle: styles.summaryMainContainer,
         topViewStyle: styles.summaryTopView,

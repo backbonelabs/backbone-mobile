@@ -48,9 +48,6 @@ class PartialModal extends Component {
       title,
       detail,
       buttons,
-    } = config;
-
-    const {
       customStyles = {},
     } = config;
 
