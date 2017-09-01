@@ -23,8 +23,9 @@ const primaryColor = '#ED1C24';
 const secondaryColor = orange500;
 const primaryFont = 'Lato';
 const lightBlueColor = '#03A9F4';
-const primaryFontColor = '#231F20';
-const secondaryFontColor = '#A9A9A9';
+const primaryFontColor = 'rgba(0, 0, 0, 0.87)';
+const secondaryFontColor = 'rgba(0, 0, 0, 0.54)';
+const disabledFontColor = 'rgba(0, 0, 0, 0.38)';
 const activeBorderColor = '#85181C';
 const disabledColor = grey500;
 const inputIconColor = disabledColor;
@@ -44,6 +45,7 @@ export default {
   primaryFont,
   primaryFontColor,
   secondaryFontColor,
+  disabledFontColor,
   activeBorderColor,
   disabledColor,
   iconSize,
