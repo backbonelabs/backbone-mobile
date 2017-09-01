@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
-import { debounce, isEqual, isFunction } from 'lodash';
+import { debounce, isEqual, isFunction, cloneDeep } from 'lodash';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -124,7 +124,15 @@ class PostureMonitor extends Component {
       }),
     }),
     training: PropTypes.shape({
+      plans: PropTypes.arrayOf(
+        PropTypes.shape({
+          _id: PropTypes.string,
+        })
+      ),
+      selectedPlanIdx: PropTypes.number,
       selectedLevelIdx: PropTypes.number,
+      selectedSessionIdx: PropTypes.number,
+      selectedSessionStep: PropTypes.number,
     }),
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
@@ -153,6 +161,13 @@ class PostureMonitor extends Component {
       }),
     }),
     user: PropTypes.shape({
+      trainingPlanProgress: PropTypes.objectOf(
+        PropTypes.arrayOf(
+          PropTypes.arrayOf(
+            PropTypes.arrayOf(PropTypes.bool)
+          )
+        )
+      ),
       settings: PropTypes.shape({
         phoneVibration: PropTypes.bool.isRequired,
         postureThreshold: PropTypes.number.isRequired,
@@ -453,6 +468,7 @@ class PostureMonitor extends Component {
       SensitiveInfo.setItem(storageKeys.SESSION_STATE, {
         state,
         parameters,
+        workoutState: this.props.training,
       });
     } else if (state === sessionStates.STOPPED) {
       // Remove session state from local storage
@@ -965,11 +981,58 @@ class PostureMonitor extends Component {
   }
 
   /**
+   * Marks the current posture sesson as completed
+   */
+  markPostureSessionCompleted() {
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+      selectedSessionStep,
+    } = this.props.training;
+    const progress = cloneDeep(this.props.user.trainingPlanProgress);
+    if (!progress[plans[selectedPlanIdx]._id]) {
+      // Progress for the current training plan hasn't been defined in the user profile yet.
+      // Set up a new key for the current training plan in the user's trainingPlanProgress
+      progress[plans[selectedPlanIdx]._id] = [];
+    }
+    const planProgress = progress[plans[selectedPlanIdx]._id];
+
+    // The plan progress array may not always contain the exact number of elements as
+    // workouts in the training plan, so we need to fill missing elements up to the
+    // current level and session indices with empty arrays.
+
+    // Fill in missing levels
+    for (let i = 0; i <= selectedLevelIdx; i++) {
+      if (!planProgress[i]) {
+        planProgress[i] = [];
+      }
+    }
+
+    // Fill in missing sessions in the current level up to the current session
+    for (let i = 0; i <= selectedSessionIdx; i++) {
+      if (!planProgress[selectedLevelIdx][i]) {
+        planProgress[selectedLevelIdx][i] = [];
+      }
+    }
+
+    // Mark the current workout as complete
+    planProgress[selectedLevelIdx][selectedSessionIdx][selectedSessionStep - 1] = true;
+    this.props.dispatch(userActions.updateUserTrainingPlanProgress(progress));
+  }
+
+  /**
    * Displays a modal containing the session summary
    */
   showSummary() {
     const { sessionDuration, slouchTime, totalDuration } = this.state;
     const { backboneVibration } = this.props.user.settings;
+
+    // For timed session, mark the workout as 'completed' only if the entire duration is completed
+    if (sessionDuration > 0 && sessionDuration * 60 === totalDuration) {
+      this.markPostureSessionCompleted();
+    }
 
     this.trackUserSession();
     this.props.dispatch(appActions.showFullModal({
