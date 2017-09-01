@@ -3,7 +3,7 @@ import { LeftProfileComponent } from '../containers/TitleBar';
 
 export default {
   name: 'dashboard',
-  title: 'DASH',
+  title: 'Home',
   component: Dashboard,
   showTabBar: true,
   showBanner: true,

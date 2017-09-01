@@ -272,6 +272,12 @@ export default class VideoPlayer extends Component {
     this.player.seek(progress * this.state.duration);
   }
 
+  onFullscreenPlayerWillDismiss() {
+    if (Platform.OS === 'ios') {
+      NativeModules.ViewControllerService.resetStatusBar();
+    }
+  }
+
   getSizeStyles() {
     const { videoWidth, videoHeight } = this.props;
     const { width } = this.state;
@@ -437,6 +443,7 @@ export default class VideoPlayer extends Component {
           onProgress={this.onProgress}
           onEnd={this.onEnd}
           onLoad={this.onLoad}
+          onFullscreenPlayerWillDismiss={this.onFullscreenPlayerWillDismiss}
           source={video}
           resizeMode={resizeMode}
         />
