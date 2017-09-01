@@ -101,7 +101,7 @@ describe('TitleBar Component', () => {
     expect(iconWrapper).toBeDefined();
     expect(iconWrapper.props()).toHaveProperty('name', 'keyboard-arrow-left');
     expect(iconWrapper.props().style).toEqual(expect.arrayContaining([{
-      color: color(getColorHexForLevel(0)).clearer(0.6).rgbString(),
+      color: color('rgba(0, 0, 0, 0.54)').clearer(0.6).rgbString(),
     }]));
   });
 
@@ -121,7 +121,7 @@ describe('TitleBar Component', () => {
       <TitleBar navigator={navigatorWithTwoRoutes} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
-    let expectedStyles = [{ color: getColorHexForLevel(0) }];
+    let expectedStyles = [{ color: 'rgba(0, 0, 0, 0.54)' }];
     let leftProps = wrapper.find('Icon').at(0).props();
     let centerProps = wrapper.childAt(1).props();
     expect(leftProps.style).toEqual(expect.arrayContaining(expectedStyles));
@@ -147,7 +147,7 @@ describe('TitleBar Component', () => {
       <TitleBar navigator={navigatorWithTwoRoutes} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
-    expectedStyles = [{ color: getColorHexForLevel(newLevelIdx) }];
+    expectedStyles = [{ color: 'rgba(0, 0, 0, 0.54)' }];
     leftProps = wrapper.find('Icon').at(0).props();
     centerProps = wrapper.childAt(1).props();
     expect(leftProps.style).toEqual(expect.arrayContaining(expectedStyles));

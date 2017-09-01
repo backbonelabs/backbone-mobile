@@ -17,7 +17,7 @@ exports[`TitleBar Component renders as expected 1`] = `
       Array [
         undefined,
         Object {
-          "color": "#9C27B0",
+          "color": "rgba(0, 0, 0, 0.54)",
         },
       ]
     }
