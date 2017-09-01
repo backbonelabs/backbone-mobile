@@ -18,7 +18,7 @@ export default EStyleSheet.create({
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: getResponsiveFontSize(20),
-    lineHeight: Math.floor(getResponsiveFontSize(26)),
+    lineHeight: Math.floor(getResponsiveFontSize(24)),
   },
   heading2: {
     color: '$primaryFontColor',
@@ -30,6 +30,6 @@ export default EStyleSheet.create({
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
     fontSize: getResponsiveFontSize(16),
-    lineHeight: Math.floor(getResponsiveFontSize(18)),
+    lineHeight: Math.floor(getResponsiveFontSize(20)),
   },
 });
