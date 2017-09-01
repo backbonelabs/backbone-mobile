@@ -15,6 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import userActions from '../actions/user';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
+import appActions from '../actions/app';
 import styles from '../styles/profile';
 import constants from '../utils/constants';
 import SecondaryText from '../components/SecondaryText';
@@ -23,6 +24,7 @@ import routes from '../routes';
 import Facebook from '../containers/Facebook';
 import Input from '../components/Input';
 import ProfilePicker from '../containers/onBoardingFlow/profile/ProfilePicker';
+import theme from '../styles/theme';
 
 const {
   height: heightConstants,
@@ -288,22 +290,33 @@ class Profile extends Component {
    * Signs out the user and disconnects the device
    */
   signOut() {
-    Alert.alert(
-      'Sign Out',
-      '\nAre you sure you want to sign out of your account?',
-      [
-        { text: 'Cancel' },
-        { text: 'OK',
+    this.props.dispatch(appActions.showPartialModal({
+      title: {
+        caption: 'Sign Out',
+        color: theme.warningColor,
+      },
+      detail: {
+        caption: 'Are you sure you want to sign out of your account?',
+      },
+      buttons: [
+        {
+          caption: 'OK',
           onPress: () => {
             // Remove locally stored user data and reset Redux auth/user store
             this.props.dispatch(authActions.signOut());
             // Disconnect from device
             this.props.dispatch(deviceActions.disconnect());
+            this.props.dispatch(appActions.hidePartialModal());
             this.props.navigator.resetTo(routes.login);
           },
+        }, {
+          caption: 'Cancel',
         },
-      ]
-    );
+      ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
+    }));
   }
 
   /**
