@@ -590,28 +590,29 @@ class Profile extends Component {
                     iconFont="MaterialIcon"
                     iconLeftName="email"
                   />
-                  { user.authMethod === constants.authMethods.EMAIL ?
-                    <View>
+                  <View>
+                    { user.authMethod === constants.authMethods.EMAIL ?
                       <ProfileField
                         onPress={() => this.props.navigator.push(routes.changePassword)}
                         profileData="Change password"
                         iconFont="MaterialIcon"
                         iconLeftName="lock"
-                      />
+                      /> : null }
+                    { user.facebookId ?
                       <ProfileField
-                        onPress={() => { Facebook.login(this.props.dispatch); }}
-                        profileData="Connect with Facebook"
+                        profileData="Facebook Connected"
                         iconFont="FontAwesome"
                         iconLeftName="facebook-official"
                       />
-                    </View>
                   :
                     <ProfileField
-                      profileData="Facebook Connected"
+                      onPress={() => { Facebook.login(this.props); }}
+                      profileData="Connect with Facebook"
                       iconFont="FontAwesome"
                       iconLeftName="facebook-official"
                     />
                   }
+                  </View>
                   <View style={styles.signOutSpacerContainer} />
                   <ProfileField
                     onPress={this.signOut}
