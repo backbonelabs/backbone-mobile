@@ -7,6 +7,7 @@ import {
   FETCH_USER_SESSIONS,
   PREPARE_USER_UPDATE,
   FETCH_USER_WORKOUTS,
+  SELECT_WORKOUT,
 } from './types';
 import store from '../store';
 import constants from '../utils/constants';
@@ -278,6 +279,13 @@ export default {
     return {
       type: PREPARE_USER_UPDATE,
       payload: user,
+    };
+  },
+
+  selectWorkout(workout) {
+    return {
+      type: SELECT_WORKOUT,
+      payload: workout,
     };
   },
 };

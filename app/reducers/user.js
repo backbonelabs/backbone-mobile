@@ -19,6 +19,10 @@ import {
   UPDATE_USER_TRAINING_PLAN_PROGRESS,
   UPDATE_USER_TRAINING_PLAN_PROGRESS__START,
   UPDATE_USER_TRAINING_PLAN_PROGRESS__ERROR,
+  FETCH_USER_WORKOUTS,
+  FETCH_USER_WORKOUTS__START,
+  FETCH_USER_WORKOUTS__ERROR,
+  SELECT_WORKOUT,
 } from '../actions/types';
 
 export default (state = {
@@ -31,6 +35,7 @@ export default (state = {
   workouts: [],
   isFetchingSessions: false,
   isFetchingWorkouts: false,
+  selectedWorkoutId: null,
 }, action) => {
   const { type, payload } = action;
   switch (type) {
@@ -161,7 +166,7 @@ export default (state = {
         pendingUser: payload,
       };
     }
-    case 'FETCH_USER_WORKOUTS': {
+    case FETCH_USER_WORKOUTS: {
       return {
         ...state,
         isFetchingWorkouts: false,
@@ -169,18 +174,24 @@ export default (state = {
         workouts: payload,
       };
     }
-    case 'FETCH_USER_WORKOUTS__START': {
+    case FETCH_USER_WORKOUTS__START: {
       return {
         ...state,
         isFetchingWorkouts: true,
         errorMessage: null,
       };
     }
-    case 'FETCH_USER_WORKOUTS__ERROR': {
+    case FETCH_USER_WORKOUTS__ERROR: {
       return {
         ...state,
         isFetchingWorkouts: false,
         errorMessage: payload.message,
+      };
+    }
+    case SELECT_WORKOUT: {
+      return {
+        ...state,
+        selectedWorkoutId: payload,
       };
     }
     default:
