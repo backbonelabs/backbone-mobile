@@ -1098,12 +1098,12 @@ class PostureMonitor extends Component {
       buttons: [
         {
           caption: 'DONE',
-          onPress: closeSummaryAndPop(),
+          onPress: closeSummaryAndPop,
           color: levelColorCode,
           underlayColor: levelColorCodeUnderlay,
         },
       ],
-      backButtonHandler: closeSummaryAndPop(),
+      backButtonHandler: closeSummaryAndPop,
       customStyles: {
         containerStyle: styles.summaryMainContainer,
         topViewStyle: styles.summaryTopView,
