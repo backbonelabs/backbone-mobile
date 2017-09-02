@@ -1054,7 +1054,7 @@ class PostureMonitor extends Component {
           <View style={[styles.summaryDetailContainer, levelBackgroundColorStyle]}>
             <View style={styles.summaryDetailRow}>
               <View style={styles.summaryDetailIconContainer}>
-                <FontAwesomeIcon name={'bullseye'} style={styles.summaryDetailIcon} />
+                <FontAwesomeIcon name={'bullseye'} style={styles.summaryDetailIconGoal} />
               </View>
               <View style={styles.summaryDetailCaptionContainer}>
                 <BodyText style={styles._summaryDetailCaption}>Goal:</BodyText>
@@ -1068,7 +1068,7 @@ class PostureMonitor extends Component {
             <View style={styles.summaryDetailLine} />
             <View style={styles.summaryDetailRow}>
               <View style={styles.summaryDetailIconContainer}>
-                <Image source={vertebraeIcon} />
+                <Image source={vertebraeIcon} style={styles.summaryDetailIconVertebrae} />
               </View>
               <View style={styles.summaryDetailCaptionContainer}>
                 <BodyText style={styles._summaryDetailCaption}>Perfect Posture:</BodyText>
@@ -1080,7 +1080,7 @@ class PostureMonitor extends Component {
             <View style={styles.summaryDetailLine} />
             <View style={styles.summaryDetailRow}>
               <View style={styles.summaryDetailIconContainer}>
-                <FontAwesomeIcon name={'star'} style={styles.summaryDetailIcon} />
+                <FontAwesomeIcon name={'star'} style={styles.summaryDetailIconStar} />
               </View>
               <View style={styles.summaryDetailCaptionContainer}>
                 <BodyText style={styles._summaryDetailCaption}>Grade:</BodyText>
@@ -1098,12 +1098,12 @@ class PostureMonitor extends Component {
       buttons: [
         {
           caption: 'DONE',
-          onPress: () => closeSummaryAndPop(),
+          onPress: closeSummaryAndPop(),
           color: levelColorCode,
           underlayColor: levelColorCodeUnderlay,
         },
       ],
-      backButtonHandler: () => closeSummaryAndPop(),
+      backButtonHandler: closeSummaryAndPop(),
       customStyles: {
         containerStyle: styles.summaryMainContainer,
         topViewStyle: styles.summaryTopView,

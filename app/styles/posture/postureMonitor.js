@@ -1,9 +1,13 @@
 import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
+import theme from '../../styles/theme';
 
 const { height, width, applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 const innerMonitorSize = applyWidthDifference(190);
+const topStarSize = 96;
+const halfModalHeight = 130;
+const summaryTitleFontSize = 24;
 
 export default EStyleSheet.create({
   container: {
@@ -123,10 +127,10 @@ export default EStyleSheet.create({
     marginBottom: 0,
   },
   summaryMainContainer: {
-    marginTop: applyWidthDifference(40),
+    marginTop: fixedResponsiveFontSize(topStarSize / 2),
   },
   summaryTopStarCircle: {
-    fontSize: fixedResponsiveFontSize(96),
+    fontSize: fixedResponsiveFontSize(topStarSize),
   },
   summaryTopStar: {
     fontSize: fixedResponsiveFontSize(60),
@@ -139,10 +143,16 @@ export default EStyleSheet.create({
     position: 'absolute',
     ...Platform.select({ // iOS has a different Y-origin point to Android
       ios: {
-        top: (height / 2) - applyWidthDifference(225),
+        top: (height / 2) - applyWidthDifference(halfModalHeight)
+        - fixedResponsiveFontSize(summaryTitleFontSize)
+        - fixedResponsiveFontSize(topStarSize / 2)
+        - theme.statusBarHeight,
       },
       android: {
-        top: (height / 2) - applyWidthDifference(240),
+        top: (height / 2) - applyWidthDifference(halfModalHeight)
+        - fixedResponsiveFontSize(summaryTitleFontSize)
+        - fixedResponsiveFontSize(topStarSize / 2)
+        - applyWidthDifference(30),
       },
     }),
     left: (width / 2) - applyWidthDifference(40),
@@ -151,10 +161,14 @@ export default EStyleSheet.create({
     position: 'absolute',
     ...Platform.select({ // iOS has a different Y-origin point to Android
       ios: {
-        top: (height / 2) - applyWidthDifference(200),
+        top: (height / 2) - applyWidthDifference(halfModalHeight)
+        - fixedResponsiveFontSize(topStarSize / 2)
+        - theme.statusBarHeight,
       },
       android: {
-        top: (height / 2) - applyWidthDifference(215),
+        top: (height / 2) - applyWidthDifference(halfModalHeight)
+        - fixedResponsiveFontSize(topStarSize / 2)
+        - applyWidthDifference(30),
       },
     }),
     left: (width / 2) - applyWidthDifference(40),
@@ -164,7 +178,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   summaryTitle: {
-    fontSize: fixedResponsiveFontSize(24),
+    fontSize: fixedResponsiveFontSize(summaryTitleFontSize),
     fontWeight: 'bold',
     paddingTop: applyWidthDifference(20),
     paddingBottom: applyWidthDifference(35),
@@ -187,10 +201,20 @@ export default EStyleSheet.create({
     flex: 0.1,
     paddingRight: applyWidthDifference(8),
   },
-  summaryDetailIcon: {
+  summaryDetailIconGoal: {
     fontSize: fixedResponsiveFontSize(22),
     color: 'white',
     paddingLeft: applyWidthDifference(3),
+  },
+  summaryDetailIconStar: {
+    fontSize: fixedResponsiveFontSize(22),
+    color: 'white',
+    paddingLeft: applyWidthDifference(2),
+  },
+  summaryDetailIconVertebrae: {
+    width: applyWidthDifference(24),
+    height: applyWidthDifference(24),
+    resizeMode: 'contain',
   },
   summaryDetailCaptionContainer: {
     flex: 0.6,
