@@ -5,7 +5,6 @@ import {
   Easing,
   Linking,
   Image,
-  ScrollView,
   Platform,
   View,
   InteractionManager,
@@ -164,8 +163,9 @@ class Dashboard extends Component {
 
     this.state = {
       animations: getAnimationsForLevels(get(plans, [selectedPlanIdx, 'levels'], [])),
+      activeLevelIndex: -1,
     };
-    this._scrollView = null;
+    this._levelCarousel = null;
   }
 
   componentDidMount() {
@@ -286,27 +286,6 @@ class Dashboard extends Component {
         }
       });
     }
-
-    setTimeout(() => {
-      // Automatically scroll to the next incomplete level when the component mounts
-      if (this._scrollView) {
-        const {
-          plans,
-          selectedPlanIdx,
-          selectedLevelIdx,
-        } = this.props.training;
-        const levels = get(plans[selectedPlanIdx], 'levels', []);
-        let y = 0;
-        if (levels.length) {
-          y = (levels.length - 1 - selectedLevelIdx) * styles.$hexagonContainerHeight;
-        }
-
-        this._scrollView.scrollTo({
-          y,
-          animated: true,
-        });
-      }
-    }, 0);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -397,18 +376,26 @@ class Dashboard extends Component {
   }
 
   /**
-   * Handler for the scroll event triggered by the level SrollView. When a new level gets
+   * Fires the action creator for changing the session
+   * @param {Number} idx Integer index of the session
+   */
+  _onSnapToSession(idx) {
+    this.props.selectSession(idx);
+  }
+
+  /**
+   * Handler for the scroll event triggered by the level Carousel. When a new level gets
    * scrolled to, trigger animations to enlarge the hexagon icon of the new level and to
    * shrink the icon of the previous level.
    *
    * @param {Object} event
    */
-  _onScroll(event) {
+  _onCarouselScroll(event) {
     const {
       plans,
       selectedPlanIdx,
-      selectedLevelIdx,
     } = this.props.training;
+    const { activeLevelIndex } = this.state;
     const levels = get(plans[selectedPlanIdx], 'levels', []);
     const hexagonContainerHeight = styles.$hexagonContainerHeight;
     const hexagonOffsets = getScrollOffset(event) / hexagonContainerHeight;
@@ -418,12 +405,50 @@ class Dashboard extends Component {
     const levelOffset = Math.round(hexagonOffsets);
     const newLevel = levels.length - 1 - levelOffset;
 
-    if (newLevel !== selectedLevelIdx) {
-      this.props.selectLevel(newLevel);
+    if (newLevel !== activeLevelIndex) {
+      this.setState({ activeLevelIndex: newLevel });
       const animations = [];
 
       // Animation for scaling the new selected level's hexagon up
       animations.push(Animated.timing(this.state.animations[newLevel], {
+        useNativeDriver: true,
+        duration: 300,
+        easing: Easing.linear,
+        toValue: 1,
+      }));
+
+      // Animation for scaling the previously selected level's hexagon down if exists
+      if (activeLevelIndex >= 0) {
+        animations.push(Animated.timing(this.state.animations[activeLevelIndex], {
+          useNativeDriver: true,
+          duration: 300,
+          easing: Easing.linear,
+          toValue: 0.6,
+        }));
+      }
+
+      Animated.parallel(animations, {
+        stopTogether: false,
+      }).start();
+    }
+  }
+
+  /**
+   * Fires the action creator for changing the level
+   * @param {Number} idx Integer index of the level
+   */
+  _onSnapToLevel(idx) {
+    const {
+      selectedLevelIdx,
+    } = this.props.training;
+
+    if (selectedLevelIdx !== idx) {
+      this.props.selectLevel(idx);
+
+      const animations = [];
+
+      // Animation for scaling the new selected level's hexagon up
+      animations.push(Animated.timing(this.state.animations[idx], {
         useNativeDriver: true,
         duration: 300,
         easing: Easing.linear,
@@ -444,63 +469,56 @@ class Dashboard extends Component {
     }
   }
 
-  /**
-   * Returns the hexagon icons for each level, as well as the line separator between each icon
-   *
-   * @param  {Object[]} levels
-   * @return {Component[]}
-   */
-  _getLevelIcons(levels = []) {
-    const { selectedLevelIdx } = this.props.training;
-    const nextLevelIndex = getNextIncompleteLevel(levels);
-
-    return levels.map((level, idx) => {
-      const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
-      const isLevelUnlocked = idx <= nextLevelIndex;
-      const isCurrentLevel = (idx === selectedLevelIdx);
-      const levelTitle = (isCurrentLevel ? 'Level ' : '') + (idx + 1);
-      const color = (isCurrentLevel ? { color: getColorHexForLevel(selectedLevelIdx) } : {});
-
-      return (
-        <View key={idx} style={styles.hexagonContainer}>
-          <View style={styles[connectorStyle]} />
-          <Animated.Image
-            source={hexagon}
-            style={[
-              styles.hexagon,
-              {
-                transform: [{
-                  scale: this.state.animations[idx],
-                }],
-              },
-            ]}
-          >
-            <BodyText style={[styles._levelTitle, color]}>{levelTitle}</BodyText>
-            {
-              isLevelUnlocked ?
-                <View style={styles.hexagonCircleContainer}>
-                  {getLevelCircles(level)}
-                </View> : <Icon name="lock" style={styles.levelLock} />
-            }
-          </Animated.Image>
-        </View>
-      );
-    }).reverse();
-  }
-
-  /**
-   * Fires the action creator for changing the session
-   * @param {Number} idx Integer index of the session
-   */
-  _onSnapToSession(idx) {
-    this.props.selectSession(idx);
-  }
-
   _onSelectSession(navTitle) {
     this.props.navigator.push({
       ...routes.guidedTraining,
       title: navTitle,
     });
+  }
+
+  /**
+   * Returns the level hexagon for the Carousel
+   * @param {Object} level
+   * @param {Number} idx     The index of the level
+   */
+  _getLevelHexagon(level, idx) {
+    const {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      plans,
+    } = this.props.training;
+    const levels = get(plans, [selectedPlanIdx, 'levels'], []);
+    const nextLevelIndex = getNextIncompleteLevel(levels);
+    const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
+    const isLevelUnlocked = idx <= nextLevelIndex;
+    const isCurrentLevel = (idx === selectedLevelIdx);
+    const levelTitle = (isCurrentLevel ? 'Level ' : '') + (idx + 1);
+    const color = (isCurrentLevel ? { color: getColorHexForLevel(selectedLevelIdx) } : {});
+
+    return (
+      <View key={idx} style={styles.hexagonContainer}>
+        <View style={styles[connectorStyle]} />
+        <Animated.Image
+          source={hexagon}
+          style={[
+            styles.hexagon,
+            {
+              transform: [{
+                scale: this.state.animations[idx],
+              }],
+            },
+          ]}
+        >
+          <BodyText style={[styles._levelTitle, color]}>{levelTitle}</BodyText>
+          {
+            isLevelUnlocked ?
+              <View style={styles.hexagonCircleContainer}>
+                {getLevelCircles(level)}
+              </View> : <Icon name="lock" style={styles.levelLock} />
+          }
+        </Animated.Image>
+      </View>
+    );
   }
 
   /**
@@ -753,6 +771,7 @@ class Dashboard extends Component {
       selectedLevelIdx,
       selectedSessionIdx,
     } = this.props.training;
+    const levels = get(plans[selectedPlanIdx], 'levels', []);
     const sessions = get(plans, [selectedPlanIdx, 'levels', selectedLevelIdx], []);
 
     return (
@@ -761,16 +780,26 @@ class Dashboard extends Component {
         style={styles.backgroundImage}
       >
         <View style={styles.levelSliderOuterContainer}>
-          <ScrollView
-            ref={(scrollView) => { this._scrollView = scrollView; }}
-            onScroll={this._onScroll}
-            scrollEventThrottle={16}
-            contentContainerStyle={styles.levelSliderInnerContainer}
-            showsVerticalScrollIndicator={false}
-            bounces={false}
-          >
-            {this._getLevelIcons(get(plans, [selectedPlanIdx, 'levels'], []))}
-          </ScrollView>
+          {!!sessions.length &&
+            <Carousel
+              ref={(levelCarousel) => { this._levelCarousel = levelCarousel; }}
+              items={levels}
+              renderItem={this._getLevelHexagon}
+              sliderHeight={styles.$carouselSliderHeight}
+              itemHeight={styles.$hexagonContainerHeight}
+              showsVerticalScrollIndicator={false}
+              contentContainerCustomStyle={styles.levelSliderInnerContainer}
+              firstItem={selectedLevelIdx}
+              onSnapToItem={this._onSnapToLevel}
+              onCarouselScroll={this._onCarouselScroll}
+              inactiveSlideScale={1.0}
+              enableSnap
+              enableMomentum
+              snapOnAndroid
+              vertical
+              reverse
+            />
+          }
         </View>
         <View style={styles.verticalDivider} />
         <View style={styles.carouselContainer}>
