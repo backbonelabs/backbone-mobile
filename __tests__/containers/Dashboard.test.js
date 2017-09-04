@@ -203,15 +203,16 @@ describe('Dashboard Component', () => {
     });
   });
 
-  test('renders a ScrollView with the correct number of levels', () => {
-    const scrollViewWrapper = wrapper.find('ScrollViewMock');
-    expect(scrollViewWrapper.exists());
+  test('renders a Carousel with the correct number of levels', () => {
+    const carouselWrapper = wrapper.find('Carousel');
+    expect(carouselWrapper.exists());
 
     const {
       plans,
       selectedPlanIdx,
     } = initialState.training;
-    expect(scrollViewWrapper.children()).toHaveLength(plans[selectedPlanIdx].levels.length);
+    expect(carouselWrapper.at(0).props().items)
+      .toHaveLength(plans[selectedPlanIdx].levels.length);
   });
 
   // This test fails due to an error potentially caused by the react-native-mock on the Animated
@@ -240,13 +241,13 @@ describe('Dashboard Component', () => {
       selectedPlanIdx,
       selectedLevelIdx,
     } = initialState.training;
-    expect(carouselWrapper.props().items)
+    expect(carouselWrapper.at(1).props().items)
       .toHaveLength(plans[selectedPlanIdx].levels[selectedLevelIdx].length);
   });
 
   test('passes the correct initial session item to the session Carousel on render', () => {
     const carouselWrapper = wrapper.find('Carousel');
-    expect(carouselWrapper.props().firstItem).toBe(initialState.training.selectedSessionIdx);
+    expect(carouselWrapper.at(1).props().firstItem).toBe(initialState.training.selectedSessionIdx);
   });
 });
 
