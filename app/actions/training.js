@@ -3,7 +3,7 @@ import {
   SELECT_LEVEL,
   SELECT_SESSION,
   SELECT_SESSION_STEP,
-  RESTORE_POSTURE_WORKOUT,
+  RESTORE_TRAINING_STATE,
 } from './types';
 import store from '../store';
 
@@ -49,7 +49,7 @@ export default {
   selectSessionStep(step) {
     Mixpanel.trackWithProperties('selectSessionStep', {
       ...getCurrentTrainingData(),
-      selectedSessionStep: step,
+      newStepIdx: step,
     });
 
     return {
@@ -58,12 +58,12 @@ export default {
     };
   },
 
-  restorePostureWorkout(workoutState) {
-    Mixpanel.trackWithProperties('restorePostureWorkout', workoutState);
+  restoreTrainingState(trainingState) {
+    Mixpanel.trackWithProperties('restoreTrainingState', trainingState);
 
     return {
-      type: RESTORE_POSTURE_WORKOUT,
-      payload: workoutState,
+      type: RESTORE_TRAINING_STATE,
+      payload: trainingState,
     };
   },
 };

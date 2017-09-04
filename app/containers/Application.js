@@ -318,7 +318,7 @@ class Application extends Component {
                     // Restore the last selected training data to be used
                     // to mark the session as completed
                     this.props.dispatch(
-                      trainingActions.restorePostureWorkout(prevSessionState.workoutState)
+                      trainingActions.restoreTrainingState(prevSessionState.trainingState)
                     );
 
                     // Hacky workaround:
@@ -355,7 +355,7 @@ class Application extends Component {
                   // Restore the last selected training data to be used
                   // to mark the session as completed
                   this.props.dispatch(
-                    trainingActions.restorePostureWorkout(prevSessionState.workoutState)
+                    trainingActions.restoreTrainingState(prevSessionState.trainingState)
                   );
 
                   setTimeout(() => {
