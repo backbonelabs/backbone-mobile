@@ -605,20 +605,19 @@ class Profile extends Component {
                     iconFont="MaterialIcon"
                     iconLeftName="email"
                   />
-                  <View>
-                    { user.authMethod === constants.authMethods.EMAIL ?
-                      <ProfileField
-                        onPress={() => this.props.navigator.push(routes.changePassword)}
-                        profileData="Change password"
-                        iconFont="MaterialIcon"
-                        iconLeftName="lock"
-                      /> : null }
-                    { user.facebookId ?
-                      <ProfileField
-                        profileData="Facebook Connected"
-                        iconFont="FontAwesome"
-                        iconLeftName="facebook-official"
-                      />
+                  { user.authMethod === constants.authMethods.EMAIL ?
+                    <ProfileField
+                      onPress={() => this.props.navigator.push(routes.changePassword)}
+                      profileData="Change password"
+                      iconFont="MaterialIcon"
+                      iconLeftName="lock"
+                    /> : null }
+                  { user.facebookId ?
+                    <ProfileField
+                      profileData="Facebook Connected"
+                      iconFont="FontAwesome"
+                      iconLeftName="facebook-official"
+                    />
                   :
                     <ProfileField
                       onPress={() => { Facebook.login(this.props); }}
@@ -627,7 +626,6 @@ class Profile extends Component {
                       iconLeftName="facebook-official"
                     />
                   }
-                  </View>
                   <View style={styles.signOutSpacerContainer} />
                   <ProfileField
                     onPress={this.signOut}
