@@ -21,6 +21,7 @@ import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 import routes from '../routes';
+import theme from '../styles/theme';
 import constants from '../utils/constants';
 
 const { workoutTypes } = constants;
@@ -410,8 +411,8 @@ class WorkoutList extends Component {
           renderTabBar={this.getTabBar}
           onChangeTab={this.toggleSearchBar}
           tabBarPosition="top"
-          tabBarActiveTextColor="#2196F3"
-          tabBarInactiveTextColor="#bdbdbd"
+          tabBarActiveTextColor={theme.lightBlue500}
+          tabBarInactiveTextColor={theme.grey400}
           tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
           tabBarTextStyle={styles._tabBarTextStyle}
         >
