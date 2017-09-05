@@ -41,19 +41,21 @@ Facebook.login = (props) => {
                   Alert.alert('Please try again.');
                 } else {
                   let emailSwap = {};
+
                   if (Object.keys(props.user).length !== 0) {
-                  // Handles Facebook logins from the Profile route.  If a confirmed
-                  // email/password users wants Facebook integration, we replace their
-                  // Facebook email with the current exiting one so a new local account
-                  // won't be created. A facebookId field will be added to the account.
+                    // Handles Facebook logins from the Profile route.  If a confirmed
+                    // email/password users wants Facebook integration, we replace their
+                    // Facebook email with the current exiting one so a new local account
+                    // won't be created. A facebookId field will be added to the account.
                     emailSwap = { email: props.user.user.email };
                   }
                   const user = Object.assign({
                     accessToken: data.accessToken,
                     applicationID: data.applicationID,
-                  }, emailSwap, graphResults, {
+                  }, graphResults, emailSwap, {
                     authMethod: constants.authMethods.FACEBOOK,
                   });
+
                   props.dispatch(authActions.login(user));
                 }
               };
