@@ -25,7 +25,6 @@ export default (state = {
     component: null,
     showLeftComponent: false,
     showNavbar: false,
-    centerComponent: null,
     rightComponent: null,
     styles: {},
   },
