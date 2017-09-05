@@ -497,8 +497,9 @@ class Profile extends Component {
               <Spinner style={{ flex: 1 }} />
               :
                 <View style={styles.profileFieldContainer}>
-                  <TouchableWithoutFeedback>
-                    <View style={styles.profileHeader}>
+                  <View style={styles.profileHeader}>
+                    {/* Placeholder for updating user photo functionality */}
+                    <TouchableOpacity>
                       <View style={styles.profileHeaderIconContainer} >
                         <MaterialIcons
                           name="add-a-photo"
@@ -506,13 +507,13 @@ class Profile extends Component {
                           style={styles.profileHeaderIcon}
                         />
                       </View>
-                      <SecondaryText
-                        style={styles._profileHeaderNickname}
-                      >
-                        {nickname}
-                      </SecondaryText>
-                    </View>
-                  </TouchableWithoutFeedback>
+                    </TouchableOpacity>
+                    <SecondaryText
+                      style={styles._profileHeaderNickname}
+                    >
+                      {nickname}
+                    </SecondaryText>
+                  </View>
                   <ProfileFieldInput
                     edited={nickname !== user.nickname}
                     field="nickname"
