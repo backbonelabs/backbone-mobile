@@ -24,6 +24,7 @@ const grey600 = '#757575';
 const red500 = '#F44336';
 const lightBlue200 = '#90CAF9';
 const lightBlue500 = '#03A9F4';
+const blue500 = '#2196F3';
 const primaryColor = '#ED1C24';
 const secondaryColor = orange500;
 const primaryFont = 'Lato';
@@ -50,6 +51,7 @@ export default {
   red500,
   lightBlue200,
   lightBlue500,
+  blue500,
   primaryColor,
   secondaryColor,
   primaryFont,

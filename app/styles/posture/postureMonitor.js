@@ -26,10 +26,10 @@ export default EStyleSheet.create({
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(54),
     marginTop: applyWidthDifference(10),
+    color: '$blue500',
   },
   heading: {
     textAlign: 'center',
-    marginTop: applyWidthDifference(-30),
   },
   monitorContainer: {
     alignItems: 'center',
@@ -109,6 +109,7 @@ export default EStyleSheet.create({
   sliderTitle: {
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(12),
+    marginBottom: applyWidthDifference(10),
   },
   btnContainer: {
     width: '85%',
