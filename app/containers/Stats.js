@@ -235,10 +235,10 @@ class Stats extends Component {
           { (good || poor) ? <View style={styles.heading}>
             <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
             <View style={styles.sessionRatingContainer}>
-              <BodyText style={styles._goodRating}>
+              <BodyText style={styles.goodRating}>
                 GOOD: {good} MIN
               </BodyText>
-              <BodyText style={styles._poorRating}>
+              <BodyText style={styles.poorRating}>
                 POOR: {poor} MIN
               </BodyText>
             </View>

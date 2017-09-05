@@ -2,12 +2,12 @@
 
 exports[`PostureIntro Component renders as expected 1`] = `
 <View>
-  <HeadingText
+  <BodyText
     size={3}
     style={Object {}}
   >
     Sit or stand up straight before you begin
-  </HeadingText>
+  </BodyText>
   <Image
     source={1}
   />

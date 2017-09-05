@@ -42,7 +42,7 @@ const ProfileField = props => (
   <TouchableOpacity style={styles.profileField} onPress={props.onPress}>
     <ProfileFieldTitle title={props.title} edited={props.edited} editedText="(edited)" />
     <View style={styles.profileFieldData}>
-      <SecondaryText style={styles._profileText}>{props.profileData}</SecondaryText>
+      <SecondaryText style={styles.profileText}>{props.profileData}</SecondaryText>
     </View>
   </TouchableOpacity>
 );
@@ -64,7 +64,7 @@ const ProfileFieldInput = props => (
     />
     <View style={styles.profileFieldData}>
       <Input
-        style={styles._profileFieldInput}
+        style={styles.profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}
         value={props.value}
         autoCorrect={false}

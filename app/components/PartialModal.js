@@ -5,10 +5,28 @@ import { connect } from 'react-redux';
 import appActions from '../actions/app';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
-import SecondaryText from '../components/SecondaryText';
+import HeadingText from '../components/HeadingText';
 import styles from '../styles/partialModal';
 
 class PartialModal extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func,
+    config: PropTypes.shape({
+      topView: PropTypes.node,
+      title: PropTypes.shape({
+        caption: PropTypes.string,
+        color: PropTypes.string,
+      }),
+      detail: PropTypes.shape({
+        caption: PropTypes.string,
+        color: PropTypes.string,
+      }),
+      buttons: PropTypes.array,
+      backButtonHandler: PropTypes.func,  // Only used in Android
+    }),
+    showPartial: PropTypes.bool,
+  };
+
   constructor(props) {
     super(props);
     autobind(this);
@@ -18,7 +36,8 @@ class PartialModal extends Component {
     const buttonConfigs = this.props.config.buttons;
     return buttonConfigs.map((val, index) => (
       <Button
-        style={styles._button}
+        shadow={index !== 0}
+        style={styles.button}
         text={val.caption}
         key={index}
         onPress={val.onPress ? val.onPress : this.defaultHandler}
@@ -54,18 +73,19 @@ class PartialModal extends Component {
               </View>
             }
             { this.props.config.title &&
-              <BodyText
+              <HeadingText
+                size={1}
                 style={[
-                  styles._titleText,
+                  styles.titleText,
                   this.props.config.title.color && { color: this.props.config.title.color },
                 ]}
               >
                 {this.props.config.title.caption}
-              </BodyText>
+              </HeadingText>
             }
-            <SecondaryText style={styles._detailText}>
+            <BodyText style={styles.detailText}>
               {this.props.config.detail.caption}
-            </SecondaryText>
+            </BodyText>
             { this.props.config.buttons && this.props.config.buttons.length > 0 &&
               <View style={styles.buttonContainer}>
                 {this.getButtons()}
@@ -77,24 +97,6 @@ class PartialModal extends Component {
     );
   }
 }
-
-PartialModal.propTypes = {
-  dispatch: PropTypes.func,
-  config: PropTypes.shape({
-    topView: PropTypes.node,
-    title: PropTypes.shape({
-      caption: PropTypes.string,
-      color: PropTypes.string,
-    }),
-    detail: PropTypes.shape({
-      caption: PropTypes.string,
-      color: PropTypes.string,
-    }),
-    buttons: PropTypes.array,
-    backButtonHandler: PropTypes.func,  // Only used in Android
-  }),
-  showPartial: PropTypes.bool,
-};
 
 const mapStateToProps = (state) => {
   const { app: { modal } } = state;

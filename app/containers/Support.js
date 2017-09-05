@@ -18,10 +18,10 @@ import styles from '../styles/support';
 const ConfirmationMessage = props => (
   <View style={styles.confirmationMessageContainer}>
     <Image source={sendout} style={styles.confirmationMessageImage} />
-    <HeadingText size={3} style={styles._confirmationMessageText}>
+    <HeadingText size={3} style={styles.confirmationMessageText}>
       {props.nickname}, help is on the way!
     </HeadingText>
-    <HeadingText size={3} style={[{ marginTop: 16 }, styles._confirmationMessageText]}>
+    <HeadingText size={3} style={[{ marginTop: 16 }, styles.confirmationMessageText]}>
       We'll be in touch
     </HeadingText>
   </View>

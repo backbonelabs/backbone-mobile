@@ -56,9 +56,12 @@ exports[`Reset Component renders as expected 1`] = `
             placeholder="Email"
             returnKeyType="go"
             style={
-              Object {
-                "color": "#231F20",
-              }
+              Array [
+                undefined,
+                Object {
+                  "color": "rgba(0, 0, 0, 0.87)",
+                },
+              ]
             }
             value={null}
           />

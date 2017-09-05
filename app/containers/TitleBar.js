@@ -105,7 +105,7 @@ const TitleBar = (props) => {
   // TitleBar will be visible, i.e., extend pass the status bar, only if the route has a title
   const titleBarStyles = props.titleBar.title ? styles.visibleTitleBar : styles.hiddenTitleBar;
   const titleTextStyles = [
-    styles._centerContainer,
+    styles.centerContainer,
     { color: currentColor },
   ];
 

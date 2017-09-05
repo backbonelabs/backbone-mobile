@@ -1,10 +1,10 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $bannerIconSize: fixedResponsiveFontSize(16),
+  $bannerIconSize: getResponsiveFontSize(12),
   banner: {
     flexDirection: 'row',
     backgroundColor: '$bannerColor',
