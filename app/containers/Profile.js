@@ -25,6 +25,7 @@ import Facebook from '../containers/Facebook';
 import Input from '../components/Input';
 import ProfilePicker from '../containers/onBoardingFlow/profile/ProfilePicker';
 import theme from '../styles/theme';
+import HeadingText from '../components/HeadingText';
 
 const {
   height: heightConstants,
@@ -508,11 +509,12 @@ class Profile extends Component {
                         />
                       </View>
                     </TouchableOpacity>
-                    <SecondaryText
+                    <HeadingText
+                      size={1}
                       style={styles._profileHeaderNickname}
                     >
                       {nickname}
-                    </SecondaryText>
+                    </HeadingText>
                   </View>
                   <ProfileFieldInput
                     edited={nickname !== user.nickname}
