@@ -295,7 +295,7 @@ class Profile extends Component {
         color: theme.warningColor,
       },
       detail: {
-        caption: 'Are you sure you want to sign out of your account?',
+        caption: 'Are you sure you want to sign out?',
       },
       buttons: [
         {
