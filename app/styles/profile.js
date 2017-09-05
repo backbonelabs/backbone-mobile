@@ -25,11 +25,11 @@ export default EStyleSheet.create({
   },
   profileHeader: {
     flexDirection: 'row',
+    paddingVertical: applyWidthDifference(12),
     paddingHorizontal: applyWidthDifference(20),
     alignItems: 'center',
-    paddingBottom: applyWidthDifference(15),
     borderBottomWidth: 1,
-    borderColor: '#EEEEEE',
+    borderColor: '$grey200',
   },
   profileHeaderIconContainer: {
     backgroundColor: theme.grey200,
@@ -43,8 +43,6 @@ export default EStyleSheet.create({
     padding: applyWidthDifference(15),
   },
   profileHeaderNickname: {
-    fontSize: fixedResponsiveFontSize(28),
-    color: theme.primaryFontColor,
     fontWeight: '900',
     paddingHorizontal: applyWidthDifference(20),
   },
@@ -53,7 +51,7 @@ export default EStyleSheet.create({
     justifyContent: 'flex-start',
     paddingHorizontal: applyWidthDifference(10),
     borderBottomWidth: 1,
-    borderColor: '#EEEEEE',
+    borderColor: '$grey200',
   }, positioning),
   profileText: {
     color: theme.primaryFontColor,
@@ -74,7 +72,7 @@ export default EStyleSheet.create({
     backgroundColor: theme.grey100,
     borderBottomWidth: 1,
     borderTopWidth: 1,
-    borderColor: '#EEEEEE',
+    borderColor: '$grey200',
   },
   // Used to overwrite Input module's default styling
   innerContainerStyles: {
