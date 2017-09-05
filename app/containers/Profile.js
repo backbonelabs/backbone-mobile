@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Alert,
   Keyboard,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -180,24 +179,63 @@ class Profile extends Component {
     // Authentication errors from api
     if (!this.props.auth.errorMessage &&
       nextProps.auth.errorMessage) {
-      Alert.alert('Authentication Error', nextProps.auth.errorMessage);
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Authentication Error',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: nextProps.auth.errorMessage,
+        },
+        buttons: [
+            { caption: 'OK' },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     }
-    const routeStack = this.props.navigator.getCurrentRoutes();
-    const currentRoute = routeStack[routeStack.length - 1];
     // isUpdating is truthy during profile save operation
     // If it goes from true to false, operation is complete
     if (this.props.user.isUpdating &&
       !nextProps.isUpdating &&
       // Prevents results in 'Change password' from causing an alert
-      currentRoute.name === routes.profile.name) {
+      nextProps.currentRoute.name === routes.profile.name) {
       this.setState({ pickerType: null });
       if (nextProps.errorMessage) {
         // Display an alert when failing to save changed user data
-        Alert.alert('Error', 'Failed to save changes, please try again');
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: 'Failed to save changes, please try again',
+          },
+          buttons: [
+            { caption: 'OK' },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       } else {
         this._setHeightValue(nextProps.user.user);
         this._setWeightValue(nextProps.user.user);
-        Alert.alert('Success', 'Profile updated');
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Success',
+          },
+          detail: {
+            caption: 'Profile updated',
+          },
+          buttons: [
+            { caption: 'OK' },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }
@@ -381,12 +419,40 @@ class Profile extends Component {
   fieldInputBlurHandler(field) {
     // Check if state property value is falsy
     if (!this.state[field]) {
-      Alert.alert('Error', 'Field cannot be empty, please try again');
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Error',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'Field cannot be empty, please try again',
+        },
+        buttons: [
+            { caption: 'OK' },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
       // Use input change handler to reset field and validate fields/state
       this.fieldInputChangeHandler(field, this.props.user[field]);
     } else if (field === 'email' && !constants.emailRegex.test(this.state[field])) {
       // Check if field is an email, if truthy, validate with regex
-      Alert.alert('Error', 'Not a valid email, please try again');
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Error',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'Not a valid email, please try again',
+        },
+        buttons: [
+            { caption: 'OK' },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     }
   }
 
