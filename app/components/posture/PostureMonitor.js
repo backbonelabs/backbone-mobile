@@ -203,8 +203,10 @@ class PostureMonitor extends Component {
           this.resumeSession();
         }
       } else {
-        // There is no active session running on the device, invoke statsHandler to show summary
+        // There is no active session running on the device
         this.setState({ forceStoppedSession: true });
+
+        // Show summary
         this.statsHandler(event);
       }
     });
@@ -855,7 +857,14 @@ class PostureMonitor extends Component {
     const { sessionDuration, slouchTime, totalDuration } = this.state;
     const { backboneVibration } = this.props.user.settings;
 
+    // Track session in Mixpanel
     this.trackUserSession();
+
+    // Save session summary in data warehouse
+    SessionControlService.saveSessionToFirehose(() => {
+      SessionControlService.submitFirehoseRecords();
+    });
+
     this.props.dispatch(appActions.showFullModal({
       onClose: () => this.props.navigator.resetTo(routes.postureDashboard),
       content:

@@ -66,6 +66,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
     private long sessionStartTimestamp;
     private String sessionId = "";
+    private float currentDistance;
+    private int statsTotalDuration;
+    private int statsSlouchTime;
 
     private Constants.IntCallBack errorCallBack;
 
@@ -471,12 +474,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     statisticNotificationStatus = false;
                     accelerometerNotificationStatus = false;
 
-                    // Save session record for Firehose
-                    saveSessionToFirehose();
-
-                    // Submit all pending Firehose records
-                    submitFirehoseRecords();
-
                     break;
             }
 
@@ -524,7 +521,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     /**
      * Saves a posture session record to Firehose and clears the session details from SharedPreferences
      */
-    private void saveSessionToFirehose() {
+    @ReactMethod
+    private void saveSessionToFirehose(Callback callback) {
         Timber.d("saveSessionToFirehose");
         String userId = UserService.getInstance().getUserId();
         if (userId == null) {
@@ -534,7 +532,16 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         String startDateTime = timestampFormatter.format(new Date(sessionStartTimestamp));
         String endDateTime = timestampFormatter.format(new Date());
         String isProd = BuildConfig.DEV_MODE.equals("true") ? "false" : "true";
-        String record = String.format("%s,%s,%d,%s,%s,%s\n", sessionId, userId, sessionDuration, startDateTime, endDateTime, isProd);
+        String record = String.format(
+                "%s,%s,%d,%s,%s,%s,%d,%d\n",
+                sessionId,
+                userId,
+                sessionDuration * 60, // convert to seconds
+                startDateTime,
+                endDateTime,
+                isProd,
+                statsTotalDuration,
+                statsSlouchTime);
         Timber.d("Firehose posture session record: %s", record);
         firehoseRecorder.saveRecord(record, Constants.FIREHOSE_STREAMS.POSTURE_SESSION);
 
@@ -543,11 +550,14 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.commit();
+
+        callback.invoke();
     }
 
     /**
      * Submit all pending Firehose records
      */
+    @ReactMethod
     private void submitFirehoseRecords() {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -589,7 +599,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     else {
                         flags = Utilities.getIntFromByteArray(responseArray, 0);
                         totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
+                        statsTotalDuration = totalDuration;
                         slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
+                        statsSlouchTime = slouchTime;
                     }
 
                     WritableMap wm = Arguments.createMap();
@@ -607,7 +619,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC.toString())) {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
 
-                    float currentDistance = Utilities.getFloatFromByteArray(responseArray, 0);
+                    currentDistance = Utilities.getFloatFromByteArray(responseArray, 0);
                     int timeElapsed = Utilities.getIntFromByteArray(responseArray, 4);
 
                     WritableMap wm = Arguments.createMap();
@@ -634,6 +646,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     int totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
                     int slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
 
+                    statsTotalDuration = totalDuration;
+                    statsSlouchTime = slouchTime;
+
                     boolean hasActiveSession = (flags % 2 == 1);
 
                     WritableMap wm = Arguments.createMap();
@@ -659,12 +674,6 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         accelerometerNotificationStatus = false;
 
                         bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, statisticNotificationStatus);
-
-                        // Save session record for Firehose
-                        saveSessionToFirehose();
-
-                        // Submit pending Firehose records
-                        submitFirehoseRecords();
                     }
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC.toString())) {
@@ -681,7 +690,20 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                         // Queue accelerometer record for Firehose
                         String now = timestampFormatter.format(new Date());
-                        firehoseRecorder.saveRecord(String.format("%s,%s,%f,%f,%f,,,,%f,%d\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold / 10000.0, slouchTimeThreshold), Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
+                        String row = String.format(
+                                "%s,%s,%.14f,%.14f,%.14f,,,,%.14f,%d,%.14f,%b\n",
+                                sessionId,
+                                now,
+                                accX,
+                                accY,
+                                accZ,
+                                slouchDistanceThreshold / 10000.0,
+                                slouchTimeThreshold,
+                                currentDistance,
+                                currentDistance >= slouchDistanceThreshold / 10000.0 // is_slouching
+                        );
+                        Timber.d("Firehose posture session stream record: %s", row);
+                        firehoseRecorder.saveRecord(row, Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
 
                         // Periodically submit records to Firehose to make
                         // sure the storage limit isn't reached. This will be
