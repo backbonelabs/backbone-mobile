@@ -176,7 +176,7 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // Authentication errors from api for Facebook logins
+    // Authentication errors from api
     if (!this.props.auth.errorMessage &&
       nextProps.auth.errorMessage) {
       Alert.alert('Authentication Error', nextProps.auth.errorMessage);
