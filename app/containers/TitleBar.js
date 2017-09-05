@@ -36,7 +36,7 @@ LeftProfileComponent.propTypes = {
 
 const TitleBar = (props) => {
   const currentRoute = props.currentRoute.name;
-  let currentColor = 'rgba(0, 0, 0, 0.54)';
+  let currentColor = theme.secondaryFontColor;
 
   if (currentRoute === 'profileSetupOne' ||
     currentRoute === 'profileSetupTwo' ||
