@@ -6,7 +6,6 @@ import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
 import color from 'color';
 import TitleBar from '../../app/containers/TitleBar';
-import { getColorHexForLevel } from '../../app/utils/levelColors';
 
 describe('TitleBar Component', () => {
   const defaultState = {
@@ -16,8 +15,8 @@ describe('TitleBar Component', () => {
         title: null,
         component: null,
         showLeftComponent: false,
+        showRigthComponent: false,
         showNavbar: false,
-        centerComponent: null,
         rightComponent: null,
         styles: {},
       },
@@ -41,11 +40,6 @@ describe('TitleBar Component', () => {
     },
   };
   const configuredStore = configureStore([asyncActionMiddleware, thunk]);
-  // let wrapper;
-
-  beforeEach(() => {
-    // store.clearActions();
-  });
 
   test('renders as expected', () => {
     const store = configuredStore(defaultState);
