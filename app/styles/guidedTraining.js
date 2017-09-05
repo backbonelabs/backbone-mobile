@@ -43,12 +43,7 @@ export default EStyleSheet.create({
   header: {
     alignItems: 'center',
   },
-  subheading: {
-    fontSize: fixedResponsiveFontSize(16),
-    textAlign: 'center',
-  },
-  instructions: {
-    fontSize: fixedResponsiveFontSize(16),
+  centerText: {
     textAlign: 'center',
   },
   twoSidedText: {

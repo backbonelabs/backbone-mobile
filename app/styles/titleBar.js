@@ -4,7 +4,7 @@ import color from 'color';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 const baseTitleBarStyles = {
   flexDirection: 'row',
@@ -53,7 +53,7 @@ export default EStyleSheet.create({
     color: '$secondaryColor',
     backgroundColor: 'transparent',
     textAlign: 'center',
-    fontSize: fixedResponsiveFontSize(18),
+    fontSize: getResponsiveFontSize(16),
     fontWeight: 'bold',
   },
   sideContainers: {

@@ -7,6 +7,6 @@ export default EStyleSheet.create({
     alignSelf: 'center',
   },
   spinner: {
-    color: '$primaryColor',
+    color: '$secondaryColor',
   },
 });

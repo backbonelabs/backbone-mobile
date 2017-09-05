@@ -24,7 +24,6 @@ import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
-import SecondaryText from '../components/SecondaryText';
 import routes from '../routes';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
@@ -336,99 +335,98 @@ class Device extends Component {
     if (!isConnected) {
       mainDeviceStatusText = (
         <View style={styles.deviceStatus}>
-          <SecondaryText style={styles._firmwareUpdateProgressTextBlack}>
+          <BodyText>
             Make sure your device is close by and charged.
-          </SecondaryText>
+          </BodyText>
         </View>
       );
 
       subDeviceStatusText = (
         <View style={styles.deviceInfo}>
-          <SecondaryText style={styles._deviceInfoText}>
+          <BodyText>
             Device: { device.identifier || 'n/a' }
-          </SecondaryText>
-          <SecondaryText style={styles._deviceInfoText}>
+          </BodyText>
+          <BodyText>
             Version: { device.firmwareVersion || 'n/a' }
-          </SecondaryText>
+          </BodyText>
         </View>
       );
     } else if (isUpdateMode) {
       if (isUpdating) {
         mainDeviceStatusText = (
           <View style={styles.deviceStatus}>
-            <SecondaryText style={styles._firmwareUpdateProgressTextBlack}>
+            <BodyText>
               {updateProgress === 100 ? 'Firmware updated. Rebooting device...' :
               `${updateProgress}% COMPLETED`}
-            </SecondaryText>
+            </BodyText>
           </View>
         );
 
         subDeviceStatusText = (
           <View>
-            <SecondaryText style={styles._firmwareUpdateInfoText}>
+            <BodyText style={styles.firmwareUpdateInfoText}>
               Please do not disconnect your Backbone during
               the firmware update.
-            </SecondaryText>
+            </BodyText>
           </View>
         );
       } else if (updateSuccess) {
         mainDeviceStatusText = (
           <View style={styles.deviceStatus}>
-            <SecondaryText style={styles._firmwareUpdateProgressTextGreen}>
+            <BodyText style={styles.green}>
               FIRMWARE UPDATE COMPLETED
-            </SecondaryText>
+            </BodyText>
           </View>
         );
 
         subDeviceStatusText = (
           <View style={styles.deviceInfo}>
-            <SecondaryText style={styles._deviceInfoText}>
+            <BodyText>
               Device: { device.identifier || 'n/a' }
-            </SecondaryText>
-            <SecondaryText style={styles._deviceInfoText}>
+            </BodyText>
+            <BodyText>
               Version: { device.firmwareVersion || 'n/a' }
-            </SecondaryText>
+            </BodyText>
           </View>
         );
       } else {
         mainDeviceStatusText = (
           <View style={styles.deviceStatus}>
-            <SecondaryText style={styles._firmwareUpdateProgressTextRed}>
+            <BodyText style={styles.red}>
               FIRMWARE UPDATE FAILED
-            </SecondaryText>
+            </BodyText>
           </View>
         );
 
         subDeviceStatusText = (
           <View>
-            <SecondaryText style={styles._firmwareUpdateInfoText}>
+            <BodyText style={styles.firmwareUpdateInfoText}>
               Make sure your device is close by, at least 15% charged and that
               you have an internet connection.
-            </SecondaryText>
+            </BodyText>
           </View>
         );
       }
     } else {
       mainDeviceStatusText = (
         <View style={styles.batteryInfo}>
-          <SecondaryText
-            style={batteryLevel < 25 ? styles._batteryInfoTextRed
-              : styles._batteryInfoTextBlack}
+          <BodyText
+            style={batteryLevel < 25 ? styles.red : null}
           >
             { batteryLevel || '--' }%{'  '}
-          </SecondaryText>
+          </BodyText>
           {getBatteryIcon(batteryLevel)}
         </View>
       );
 
       subDeviceStatusText = (
         <View style={styles.deviceInfo}>
-          <SecondaryText style={styles._deviceInfoText}>
+          <BodyText>
             Device: { device.identifier || 'n/a' }
-          </SecondaryText>
-          <SecondaryText style={styles._deviceInfoText}>
+          </BodyText>
+          <BodyText>
             Version: { device.firmwareVersion || 'n/a' }
-          </SecondaryText>
+          </BodyText>
         </View>
       );
     }
@@ -458,7 +456,7 @@ class Device extends Component {
       :
         <View style={styles.container}>
           <View style={styles.deviceInfoContainer}>
-            <BodyText style={styles._deviceConnectionText}>
+            <BodyText style={styles.deviceConnectionText}>
               {!isConnected ? 'Disconnected from ' : 'Connected to '}Backbone
             </BodyText>
             <Image source={deviceStatusImage} style={styles.deviceStatusImage} />
@@ -469,7 +467,7 @@ class Device extends Component {
             { isConnected ?
               <Button
                 primary
-                style={styles._button}
+                style={styles.button}
                 text="DISCONNECT"
                 onPress={this.unpairDevice}
                 disabled={isUpdating}
@@ -484,7 +482,7 @@ class Device extends Component {
             { isConnected ?
               <Button
                 primary
-                style={styles._button}
+                style={styles.button}
                 text="UPDATE"
                 onPress={this.updateFirmware}
                 disabled={!device.updateAvailable || isUpdating}
@@ -492,7 +490,7 @@ class Device extends Component {
               :
                 <Button
                   primary
-                  style={styles._button}
+                  style={styles.button}
                   text="CONNECT"
                   onPress={this.connectDevice}
                 />

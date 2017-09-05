@@ -474,7 +474,7 @@ class PostureMonitor extends Component {
 
   showReconnectStartedIndicator() {
     this.props.dispatch(appActions.showPartialModal({
-      topView: (<Spinner style={styles._partialSpinnerContainer} />),
+      topView: (<Spinner style={styles.partialSpinnerContainer} />),
       title: {
         caption: 'Reconnecting',
       },
@@ -1147,16 +1147,16 @@ class PostureMonitor extends Component {
 
     return this.props.device.isConnecting ? (
       <View style={styles.connectingContainer}>
-        <Spinner style={styles._connectingSpinner} />
-        <HeadingText size={2} style={styles._connectingText}>Connecting...</HeadingText>
+        <Spinner style={styles.connectingSpinner} />
+        <HeadingText size={2} style={styles.connectingText}>Connecting...</HeadingText>
       </View>
     ) : (
       <View style={styles.container}>
         <View>
-          <BodyText style={styles._timer}>
+          <BodyText style={styles.timer}>
             {this.getFormattedTime()}
           </BodyText>
-          <BodyText style={styles._heading}>Time Remaining</BodyText>
+          <BodyText style={styles.heading}>Time Remaining</BodyText>
         </View>
         <Monitor
           disable={isDisabled}
@@ -1187,7 +1187,7 @@ class PostureMonitor extends Component {
             maximumValue={0}
             disabled={isDisabled}
           />
-          <SecondaryText style={styles._sliderTitle}>SLOUCH DETECTION</SecondaryText>
+          <SecondaryText style={styles.sliderTitle}>SLOUCH DETECTION</SecondaryText>
         </View>
         <View style={styles.btnContainer}>
           {getPlayPauseButton()}

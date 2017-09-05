@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Alert } from 'react-native';
+import { Alert, View } from 'react-native';
 import {
   AccessToken as FBAccessToken,
   LoginManager,
@@ -17,7 +17,7 @@ class Facebook extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     buttonText: PropTypes.string,
-    style: PropTypes.object,
+    style: View.propTypes.style,
   };
 
   constructor() {
@@ -60,8 +60,8 @@ class Facebook extends Component {
   render() {
     return (
       <Button
-        style={Object.assign({}, styles._fbBtn, this.props.style)}
-        textStyle={styles._fbBtnText}
+        style={[styles.fbBtn, this.props.style]}
+        textStyle={styles.fbBtnText}
         text={this.props.buttonText}
         fbBtn
         onPress={() =>

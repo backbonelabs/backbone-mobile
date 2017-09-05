@@ -12,7 +12,6 @@ const heightDifference = height / 667;
  * @param  {Number} input Measurement (density-independent pixels)
  * @return {Number}       Input with widthDifference applied
  */
-
 const applyWidthDifference = input => input * widthDifference;
 
 /**
@@ -28,6 +27,23 @@ const applyWidthDifference = input => input * widthDifference;
 const fixedResponsiveFontSize = size =>
   applyWidthDifference(size) * (PixelRatio.get() / PixelRatio.getFontScale());
 
+/**
+ * Scales a font size based on the screen height. This is useful for setting font sizes where a
+ * smaller font size is used for smaller screens and a bigger font size is used for bigger screens.
+ *
+ * The following scale is used:
+ * Screen heights less than or equal to 480 (e.g., iPhone 4s): 1x
+ * Screen heights between 481 and 568, inclusive (e.g., iPhone 5): 1.166x
+ * Screen heights greater than or equal to 569: 1.333x
+ *
+ * @param {Number} baseSize The default, smallest, size to scale from
+ */
+const getResponsiveFontSize = (baseSize) => {
+  if (height > 568) return baseSize * 1.333;
+  if (height > 480) return baseSize * 1.166;
+  return baseSize;
+};
+
 export default {
   widthDifference,
   heightDifference,
@@ -35,4 +51,5 @@ export default {
   fixedResponsiveFontSize,
   height,
   width,
+  getResponsiveFontSize,
 };

@@ -141,8 +141,8 @@ class ProfileSetupOne extends Component {
               {
                 containerHeight ? null :
                   <View>
-                    <StepBar step={1} style={styles._stepBar} />
-                    <BodyText style={styles._header}>
+                    <StepBar step={1} style={styles.stepBar} />
+                    <BodyText style={styles.header}>
                     Welcome to Backbone! Please help us get to know you a little bit.
                     </BodyText>
                   </View>
@@ -202,7 +202,7 @@ class ProfileSetupOne extends Component {
               </View>
             </View>
             <Button
-              style={styles._CTAButton}
+              style={styles.CTAButton}
               text="CONTINUE"
               primary
               disabled={!nickname || !gender}

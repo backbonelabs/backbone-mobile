@@ -8,7 +8,7 @@ const innerMonitorSize = applyWidthDifference(190);
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '$grey100',
     justifyContent: 'space-around',
   },
   connectingContainer: {
@@ -26,7 +26,7 @@ export default EStyleSheet.create({
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(54),
     marginTop: applyWidthDifference(10),
-    color: '$blue500',
+    color: '$lightBlue500',
   },
   heading: {
     textAlign: 'center',

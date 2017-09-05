@@ -29,9 +29,9 @@ class Button extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
     onPress: PropTypes.func,
-    style: PropTypes.object,
+    style: View.propTypes.style,
     text: PropTypes.string.isRequired,
-    textStyle: PropTypes.object,
+    textStyle: BodyText.propTypes.style,
     primary: PropTypes.bool,
     secondary: PropTypes.bool,
     fbBtn: PropTypes.bool,
@@ -65,14 +65,14 @@ class Button extends Component {
 
   render() {
     let buttonType;
-    const textStyles = [styles._text];
+    const textStyles = [styles.text];
     const buttonStyles = [styles.button];
     const secondaryStyles = [buttonStyles, styles.secondaryBtn];
     const fbBtnStyles = [buttonStyles, styles.facebookBtn];
     const defaultStyles = [buttonStyles, styles.defaultBtn];
     const defaultActive = [buttonStyles, styles.defaultActive];
-    const defaultTextActive = [styles._text, styles._defaultTextActive];
-    const defaultTextStyles = [styles._text, styles._defaultTextStyles];
+    const defaultTextActive = [styles.text, styles.defaultTextActive];
+    const defaultTextStyles = [styles.text, styles.defaultTextStyles];
 
     if (this.props.primary) {
       buttonType = (
@@ -142,9 +142,9 @@ class Button extends Component {
 
     if (this.props.disabled) {
       buttonStyles.push(styles.disabledButton);
-      textStyles.push(styles._disabledText);
+      textStyles.push(styles.disabledText);
       defaultStyles.push(styles.disabledSecondaryBorder);
-      defaultTextStyles.push(styles._disabledSecondaryText);
+      defaultTextStyles.push(styles.disabledSecondaryText);
     }
     buttonStyles.push(this.props.style);
     textStyles.push(this.props.textStyle);
