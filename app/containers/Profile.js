@@ -83,12 +83,11 @@ const ProfileFieldInput = props => {
         style={styles._profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}
         onFocus={props.focusHandler}
-        defaultValue={props.value}
+        value={props.value}
         autoCorrect={false}
         keyboardType={props.keyboardType}
         autoCapitalize="none"
         onChangeText={value => props.fieldInputChangeHandler(props.field, value)}
-        underlineColorAndroid="white"
         innerContainerStyles={styles._innerContainerStyles}
         editable
       />
@@ -143,7 +142,7 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     autobind(this);
-    const { user } = this.props.user;
+    const { user } = props.user;
     this.isAndroid = Platform.OS === 'android';
     this.state = {
       nickname: user.nickname,
