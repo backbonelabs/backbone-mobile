@@ -128,6 +128,7 @@ class Profile extends Component {
       isFetching: PropTypes.bool,
       isUpdating: PropTypes.bool,
       pendingUser: PropTypes.object,
+      errorMessage: PropTypes.string,
     }),
     navigator: PropTypes.shape({
       resetTo: PropTypes.func,
@@ -176,25 +177,6 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // Authentication errors from api
-    if (!this.props.auth.errorMessage &&
-      nextProps.auth.errorMessage) {
-      this.props.dispatch(appActions.showPartialModal({
-        title: {
-          caption: 'Authentication Error',
-          color: theme.warningColor,
-        },
-        detail: {
-          caption: nextProps.auth.errorMessage,
-        },
-        buttons: [
-            { caption: 'OK' },
-        ],
-        backButtonHandler: () => {
-          this.props.dispatch(appActions.hidePartialModal());
-        },
-      }));
-    }
     // isUpdating is truthy during profile save operation
     // If it goes from true to false, operation is complete
     if (this.props.user.isUpdating &&
@@ -202,7 +184,7 @@ class Profile extends Component {
       // Prevents results in 'Change password' from causing an alert
       nextProps.currentRoute.name === routes.profile.name) {
       this.setState({ pickerType: null });
-      if (nextProps.errorMessage) {
+      if (nextProps.errorMessage || nextProps.user.errorMessage) {
         // Display an alert when failing to save changed user data
         this.props.dispatch(appActions.showPartialModal({
           title: {
@@ -210,7 +192,9 @@ class Profile extends Component {
             color: theme.warningColor,
           },
           detail: {
-            caption: 'Failed to save changes, please try again',
+            caption: nextProps.errorMessage ? 'Failed to save changes, please try again'
+            // Display errors from API server when failed to update user
+            : nextProps.user.errorMessage,
           },
           buttons: [
             { caption: 'OK' },

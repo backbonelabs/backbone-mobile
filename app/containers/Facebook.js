@@ -12,6 +12,7 @@ import {
 import { connect } from 'react-redux';
 import constants from '../utils/constants';
 import authActions from '../actions/auth';
+import userActions from '../actions/user';
 import styles from '../styles/facebook';
 import Button from '../components/Button';
 
@@ -42,23 +43,20 @@ Facebook.login = (props) => {
               const callback = (error, graphResults) => {
                 if (error) {
                   Alert.alert('Please try again.');
+                } else if (Object.keys(props.user).length !== 0) {
+                  // Handles Facebook logins from the Profile route. The user's
+                  // email must be confirmed before Facebook integration is allowed.
+                  props.dispatch(userActions.updateUser({
+                    _id: props.user.user._id,
+                    facebookId: data.userID,
+                  }));
                 } else {
-                  let emailSwap = {};
-
-                  if (Object.keys(props.user).length !== 0) {
-                    // Handles Facebook logins from the Profile route.  If a confirmed
-                    // email/password users wants Facebook integration, we replace their
-                    // Facebook email with the current exiting one so a new local account
-                    // won't be created. A facebookId field will be added to the account.
-                    emailSwap = { email: props.user.user.email };
-                  }
                   const user = Object.assign({
                     accessToken: data.accessToken,
                     applicationID: data.applicationID,
-                  }, graphResults, emailSwap, {
+                  }, graphResults, {
                     authMethod: constants.authMethods.FACEBOOK,
                   });
-
                   props.dispatch(authActions.login(user));
                 }
               };
