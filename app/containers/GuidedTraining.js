@@ -516,6 +516,7 @@ class GuidedTraining extends Component {
 
     const selectedLevelIdx = this.props.training.selectedLevelIdx;
     const levelColorHex = getColorHexForLevel(selectedLevelIdx);
+    const isPostureSession = currentWorkout.workout.type === workoutTypes.POSTURE;
 
     // The left button would be disabled if this is the first workout in the session
     const isLeftButtonDisabled = this.state.stepIdx === 0;
@@ -560,8 +561,6 @@ class GuidedTraining extends Component {
       centerButtonIconName = 'check';
       centerButtonIconLabel = 'DONE';
     }
-
-    const isPostureSession = currentWorkout.workout.type === workoutTypes.POSTURE;
 
     return (
       <View style={styles.container}>

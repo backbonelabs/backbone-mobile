@@ -1,4 +1,4 @@
-import { Dimensions, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from './theme';
 import relativeDimensions from '../utils/relativeDimensions';
