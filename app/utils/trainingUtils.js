@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep';
+
 /**
  * Given an array of workouts for a session, returns the index of the first incomplete
  * workout. If all workouts in the session have been completed, then -1 is returned.
@@ -24,3 +26,46 @@ export const getNextIncompleteSession = (sessions = []) =>
  */
 export const getNextIncompleteLevel = (levels = []) =>
   levels.findIndex(level => getNextIncompleteSession(level) > -1);
+
+/**
+ * Given an array of training plans, progress, currently selected plan, level, session, and step,
+ * mark the current workout as complete and return the updated progress array.
+ * @param {Array[]} plans Plans list
+ * @param {Number} plan Current plan index
+ * @param {Number} level Current level index
+ * @param {Number} session Current session index
+ * @param {Number} step Current step index
+ * @param {Object[]} currentProgress Current plan progress
+ * @return {Object[]} Updated plan progress
+ */
+export const markSessionStepComplete = (plans, plan, level, session, step, currentProgress) => {
+  const progress = cloneDeep(currentProgress);
+  if (!progress[plans[plan]._id]) {
+    // Progress for the current training plan hasn't been defined in the user profile yet.
+    // Set up a new key for the current training plan in the user's trainingPlanProgress
+    progress[plans[plan]._id] = [];
+  }
+  const planProgress = progress[plans[plan]._id];
+
+  // The plan progress array may not always contain the exact number of elements as
+  // workouts in the training plan, so we need to fill missing elements up to the
+  // current level and session indices with empty arrays.
+
+  // Fill in missing levels
+  for (let i = 0; i <= level; i++) {
+    if (!planProgress[i]) {
+      planProgress[i] = [];
+    }
+  }
+
+  // Fill in missing sessions in the current level up to the current session
+  for (let i = 0; i <= session; i++) {
+    if (!planProgress[level][i]) {
+      planProgress[level][i] = [];
+    }
+  }
+
+  // Mark the current workout as complete
+  planProgress[level][session][step] = true;
+  return progress;
+};
