@@ -10,6 +10,7 @@ import PostureIntro from '../components/posture/PostureIntro';
 import Spinner from '../components/Spinner';
 import VideoPlayer from '../components/VideoPlayer';
 import videoIcon from '../images/video-icon-blue.png';
+import routes from '../routes';
 import styles from '../styles/workoutView';
 import constants from '../utils/constants';
 
@@ -25,6 +26,7 @@ class WorkoutView extends Component {
     }).isRequired,
     workout: PropTypes.shape({
       gifUrl: PropTypes.string,
+      title: PropTypes.string,
       type: PropTypes.number,
     }),
   }
@@ -74,6 +76,16 @@ class WorkoutView extends Component {
     });
   }
 
+  _navigateToVideo() {
+    this.props.navigator.push({
+      ...routes.libraryContent,
+      title: this.props.workout.title,
+      props: {
+        media: 'video',
+      },
+    });
+  }
+
   render() {
     const workout = this.props.workout;
 
@@ -99,7 +111,7 @@ class WorkoutView extends Component {
         <Image source={{ uri: workout.gifUrl }} style={styles.gif}>
           <TouchableOpacity
             style={styles.videoLink}
-            onPress={() => { /* TODO: NAVIGATE TO WORKOUT VIDEO */ }}
+            onPress={this._navigateToVideo}
           >
             <Image source={videoIcon} style={styles.videoIcon} />
           </TouchableOpacity>
