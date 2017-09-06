@@ -9,24 +9,11 @@ import { connect } from 'react-redux';
 import PostureIntro from '../components/posture/PostureIntro';
 import Spinner from '../components/Spinner';
 import VideoPlayer from '../components/VideoPlayer';
-import videoIconBlue from '../images/video-icon-blue.png';
-import videoIconGreen from '../images/video-icon-green.png';
-import videoIconOrange from '../images/video-icon-orange.png';
-import videoIconPurple from '../images/video-icon-purple.png';
-import videoIconRed from '../images/video-icon-red.png';
-import { getColorHexForLevel, getColorNameForLevel } from '../utils/levelColors';
+import videoIcon from '../images/video-icon-blue.png';
 import styles from '../styles/workoutView';
 import constants from '../utils/constants';
 
 const { workoutTypes } = constants;
-
-const videoIcon = {
-  purple: videoIconPurple,
-  blue: videoIconBlue,
-  green: videoIconGreen,
-  orange: videoIconOrange,
-  red: videoIconRed,
-};
 
 class WorkoutView extends Component {
   static propTypes = {
@@ -89,9 +76,6 @@ class WorkoutView extends Component {
 
   render() {
     const workout = this.props.workout;
-    const selectedLevelIdx = this.props.training.selectedLevelIdx;
-    const levelColorHex = getColorHexForLevel(selectedLevelIdx);
-    const levelColorName = getColorNameForLevel(selectedLevelIdx);
 
     // If the workout is a posture session, display PostureIntro. Otherwise, display workout media
     const isPostureSession = workout.type === workoutTypes.POSTURE;
@@ -117,7 +101,7 @@ class WorkoutView extends Component {
             style={styles.videoLink}
             onPress={() => { /* TODO: NAVIGATE TO WORKOUT VIDEO */ }}
           >
-            <Image source={videoIcon[levelColorName]} style={styles.videoIcon} />
+            <Image source={videoIcon} style={styles.videoIcon} />
           </TouchableOpacity>
         </Image>
       );
@@ -131,7 +115,7 @@ class WorkoutView extends Component {
 
     return (
       <View style={styles.container}>
-        {this.state.isFetchingImage ? <Spinner size="large" color={levelColorHex} /> : content}
+        {this.state.isFetchingImage ? <Spinner size="large" /> : content}
       </View>
     );
   }
