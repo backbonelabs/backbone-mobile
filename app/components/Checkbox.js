@@ -10,7 +10,7 @@ class Checkbox extends Component {
   static propTypes = {
     checked: PropTypes.bool,
     onCheckedChange: PropTypes.func,
-    style: PropTypes.object,
+    style: View.propTypes.style,
     iconSize: PropTypes.number,
     iconColor: PropTypes.string,
   };

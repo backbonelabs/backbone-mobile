@@ -152,7 +152,7 @@ class PostureReport extends Component {
 
     return (
       <View style={styles.container}>
-        <HeadingText size={1} style={styles._heading}>Calendar</HeadingText>
+        <HeadingText size={1} style={styles.heading}>Calendar</HeadingText>
         <Calendar
           showEventIndicators
           showControls

@@ -630,7 +630,7 @@ class Application extends Component {
           // Only display if no other pop-ups are visible
           if (shouldShowLoading && !showPartial && !showFull) {
             this.props.dispatch(appActions.showPartialModal({
-              topView: (<Spinner style={styles._partialSpinnerContainer} />),
+              topView: (<Spinner style={styles.partialSpinnerContainer} />),
               title: { caption: 'Loading' },
               detail: { caption: 'Checking for previous session' },
             }));

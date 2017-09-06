@@ -49,19 +49,19 @@ const PostureChart = (props) => {
             colorScale={['#4CAF50', color.primaryColor]}
           />
         </View>
-        <View style={styles._total}>
+        <View style={styles.total}>
           <HeadingText size={1}>Total</HeadingText>
           <HeadingText size={1}>{data.total}</HeadingText>
         </View>
       </View>
       <View style={styles.statsContainer}>
         <View style={styles.innerContainer}>
-          <BodyText style={styles._statsGoodHeader}>Good</BodyText>
-          <BodyText style={styles._statsText}>{data.good}</BodyText>
+          <BodyText style={styles.statsGoodHeader}>Good</BodyText>
+          <BodyText style={styles.statsText}>{data.good}</BodyText>
         </View>
         <View style={styles.innerContainer}>
-          <BodyText style={styles._statsPoorHeader}>Poor</BodyText>
-          <BodyText style={styles._statsText}>{data.poor}</BodyText>
+          <BodyText style={styles.statsPoorHeader}>Poor</BodyText>
+          <BodyText style={styles.statsText}>{data.poor}</BodyText>
         </View>
       </View>
     </View>

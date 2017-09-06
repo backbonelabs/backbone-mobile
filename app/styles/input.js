@@ -4,11 +4,11 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const {
   applyWidthDifference,
-  fixedResponsiveFontSize,
+  getResponsiveFontSize,
 } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $placeholderTextColor: '#9E9E9E',
+  $placeholderTextColor: '$grey500',
   $iconColor: '$primaryFontColor',
   $iconSize: '$inputIconSize',
   innerContainer: {
@@ -33,7 +33,7 @@ export default EStyleSheet.create({
   inputField: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: fixedResponsiveFontSize(16),
+    fontSize: getResponsiveFontSize(14),
     width: '85%',
     height: applyWidthDifference(50),
     paddingHorizontal: applyWidthDifference(45),
@@ -45,7 +45,7 @@ export default EStyleSheet.create({
     position: 'absolute',
     fontSize: '$inputIconSize',
     left: applyWidthDifference(15),
-    color: '#9E9E9E',
+    color: '$grey500',
   },
   disabled: {
     color: '$disabledColor',
