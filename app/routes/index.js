@@ -27,6 +27,7 @@ import dashboard from './dashboard';
 import stats from './stats';
 import guidedTraining from './guidedTraining';
 import educationVideo from './educationVideo';
+import libraryContent from './libraryContent';
 
 export default {
   activity,
@@ -58,4 +59,5 @@ export default {
   stats,
   guidedTraining,
   educationVideo,
+  libraryContent,
 };
