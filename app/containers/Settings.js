@@ -27,6 +27,7 @@ import routes from '../routes';
 import Button from '../components/Button';
 import Toggle from '../components/Toggle';
 import BodyText from '../components/BodyText';
+import HeadingText from '../components/HeadingText';
 import SecondaryText from '../components/SecondaryText';
 import arrow from '../images/settings/arrow.png';
 import deviceOrangeIcon from '../images/settings/device-orange-icon.png';
@@ -65,8 +66,8 @@ const getBatteryIcon = (batteryLevel) => {
     batteryIcon = 'battery-empty';
   }
   return batteryLevel < 25 ?
-    <FontAwesomeIcon name={batteryIcon} style={styles.batteryIconRed} /> :
-      <FontAwesomeIcon name={batteryIcon} style={styles.batteryIconGreen} />;
+    <FontAwesomeIcon name={batteryIcon} style={styles.red} /> :
+      <FontAwesomeIcon name={batteryIcon} style={styles.green} />;
 };
 
 const getDeviceIcon = (props) => {
@@ -109,18 +110,18 @@ const SensorSettings = props => (
       <Image source={getDeviceIcon(props)} style={styles.sensorIcon} />
     </View>
     <View style={styles.sensorText}>
-      <BodyText style={styles._sensorTextTitle}>BACKBONE</BodyText>
-      <SecondaryText style={styles._deviceInfoText}>
-        Status:
-        <SecondaryText
-          style={props.isConnected ? styles._deviceInfoTextGreen : styles._deviceInfoTextRed}
+      <HeadingText size={3} style={styles.sensorTextTitle}>BACKBONE</HeadingText>
+      <View style={styles.deviceConnectionStatus}>
+        <BodyText>Status:</BodyText>
+        <BodyText
+          style={props.isConnected ? styles.green : styles.red}
         >
           { props.isConnected ? ' Connected' : ' Disconnected' }
-        </SecondaryText>
-      </SecondaryText>
+        </BodyText>
+      </View>
       {props.isConnected &&
         <View style={styles.batteryInfo}>
-          <SecondaryText style={styles._deviceInfoText}>
+          <SecondaryText>
             Battery Life: { props.device.batteryLevel || '--' }%{' '}
           </SecondaryText>
           {getBatteryIcon(props.device.batteryLevel)}
@@ -676,11 +677,11 @@ class Settings extends Component {
           {
             !pushNotificationEnabled &&
             <View style={alertsStyles.notificationDisabledWarningContainer}>
-              <SecondaryText style={alertsStyles._notificationDisabledWarningText}>
+              <BodyText style={alertsStyles.notificationDisabledWarningText}>
                 Notifications are disabled in your phone's settings.
-              </SecondaryText>
+              </BodyText>
               <Button
-                style={alertsStyles._systemSettingButton}
+                style={alertsStyles.systemSettingButton}
                 primary text="Open Phone Settings"
                 onPress={this.openSystemSetting}
               />
@@ -715,10 +716,10 @@ class Settings extends Component {
               </View>
               <View style={alertsStyles.sliderDetails}>
                 <View style={{ flex: 0.5 }}>
-                  <SecondaryText style={alertsStyles._sliderDetailsText}>LOW</SecondaryText>
+                  <SecondaryText style={alertsStyles.sliderDetailsText}>LOW</SecondaryText>
                 </View>
                 <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
-                  <SecondaryText style={alertsStyles._sliderDetailsText}>HIGH</SecondaryText>
+                  <SecondaryText style={alertsStyles.sliderDetailsText}>HIGH</SecondaryText>
                 </View>
               </View>
             </View>
@@ -743,18 +744,18 @@ class Settings extends Component {
               </View>
               <View style={alertsStyles.sliderDetails}>
                 <View style={{ flex: 0.33 }}>
-                  <SecondaryText style={alertsStyles._sliderDetailsText}>1</SecondaryText>
+                  <SecondaryText style={alertsStyles.sliderDetailsText}>1</SecondaryText>
                 </View>
                 <View style={{ flex: 0.33, alignItems: 'center' }}>
-                  <SecondaryText style={alertsStyles._sliderDetailsText}>2</SecondaryText>
+                  <SecondaryText style={alertsStyles.sliderDetailsText}>2</SecondaryText>
                 </View>
                 <View style={{ flex: 0.33, alignItems: 'flex-end' }}>
-                  <SecondaryText style={alertsStyles._sliderDetailsText}>3</SecondaryText>
+                  <SecondaryText style={alertsStyles.sliderDetailsText}>3</SecondaryText>
                 </View>
               </View>
             </View>
             <View style={alertsStyles.batteryLifeWarningContainer}>
-              <SecondaryText style={alertsStyles._batteryLifeWarningText}>
+              <SecondaryText>
                 Increasing the vibration strength and pattern of
                 your Backbone will decrease its battery life.
               </SecondaryText>

@@ -41,7 +41,7 @@ export default {
   name: 'profile',
   title: 'Profile',
   component: Profile,
-  showBackButton: true,
   showRightComponent: true,
+  showLeftComponent: true,
   rightComponent: connect(mapStateToProps)(ProfileSave),
 };

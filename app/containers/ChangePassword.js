@@ -133,7 +133,7 @@ class ChangePassword extends Component {
     if (this.props.user.authMethod === constants.authMethods.FACEBOOK) {
       return (
         <View style={styles.container}>
-          <BodyText style={styles._passwordText}>
+          <BodyText style={styles.passwordText}>
             Your account is connected with your Facebook account.
             There is no need to set a password.
             If you need assistance, please contact Support from the Settings screen.
@@ -150,7 +150,7 @@ class ChangePassword extends Component {
                 <View style={styles.innerContainer}>
                   <View style={styles.inputContainer}>
                     <Input
-                      style={styles._inputField}
+                      style={styles.inputField}
                       autoCapitalize="none"
                       handleRef={ref => (
                         this.currentPassword = ref
@@ -165,12 +165,12 @@ class ChangePassword extends Component {
                       returnKeyType="next"
                     />
                   </View>
-                  <BodyText style={styles._warning}>
+                  <BodyText style={styles.warning}>
                     {passwordWarning}
                   </BodyText>
                   <View style={[styles.inputContainer, styles.newPassword]}>
                     <Input
-                      style={styles._inputField}
+                      style={styles.inputField}
                       autoCapitalize="none"
                       handleRef={ref => (
                         this.newPassword = ref
@@ -188,7 +188,7 @@ class ChangePassword extends Component {
                   </View>
                   <View style={styles.inputContainer}>
                     <Input
-                      style={styles._inputField}
+                      style={styles.inputField}
                       autoCapitalize="none"
                       handleRef={ref => (
                         this.confirmPassword = ref
@@ -204,7 +204,7 @@ class ChangePassword extends Component {
                     />
                   </View>
                   <Button
-                    style={styles._saveButton}
+                    style={styles.saveButton}
                     text="SAVE PASSWORD"
                     disabled={
                       (

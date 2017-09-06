@@ -42,7 +42,7 @@ MonitorSlider.propTypes = {
 MonitorSlider.defaultProps = {
   leftIconSize: relativeDimensions.fixedResponsiveFontSize(30),
   rightIconSize: relativeDimensions.fixedResponsiveFontSize(30),
-  minimumTrackTintColor: theme.lightBlueColor,
+  minimumTrackTintColor: theme.lightBlue500,
   leftIcon: 'remove',
   rightIcon: 'add',
 };

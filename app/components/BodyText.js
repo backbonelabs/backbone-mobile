@@ -4,9 +4,9 @@ import {
   View,
 } from 'react-native';
 import styles from '../styles/text';
-import reusableDefaults from './utils/reusableDefaults';
+import reusableTextDefaults from './utils/reusableTextDefaults';
 
-const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableDefaults;
+const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableTextDefaults;
 
 class BodyText extends React.Component {
   setNativeProps(nativeProps) {
@@ -22,7 +22,7 @@ class BodyText extends React.Component {
     return (
       <View ref={component => { this._root = component; }}>
         <Text
-          style={[styles._body, style]}
+          style={[styles.body, style]}
           {...{ remainingProps, allowFontScaling }}
         >
           {this.props.children}

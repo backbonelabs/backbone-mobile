@@ -20,7 +20,7 @@ const Facebook = (props) => (
     fbBtn
     onPress={() => { Facebook.login(props); }}
   />
-    );
+);
 
 Facebook.propTypes = {
   dispatch: PropTypes.func,
@@ -82,6 +82,7 @@ Facebook.login = (props) => {
     }
   });
 };
+
 const mapStateToProps = (state) => {
   const { user } = state;
   return user;

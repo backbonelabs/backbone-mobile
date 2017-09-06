@@ -13,10 +13,10 @@ export default EStyleSheet.create({
     flex: 1,
   },
   scrollableTabViewContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '$grey100',
   },
   tabBarUnderlineStyle: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '$lightBlue500',
     borderRadius: 4,
   },
   tabBarTextStyle: {
@@ -43,7 +43,7 @@ export default EStyleSheet.create({
     color: 'black',
   },
   heartIcon: {
-    color: '#F44336',
+    color: '$red500',
   },
   footerSpaceBox: {
     height: applyWidthDifference(50),
@@ -52,24 +52,22 @@ export default EStyleSheet.create({
     height: applyWidthDifference(65),
     width: applyWidthDifference(65),
     borderRadius: 5,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '$grey300',
   },
   section: {
-    backgroundColor: '#90caf9',
+    backgroundColor: '$lightBlue200',
   },
   sectionText: {
     color: '#FFF',
     paddingLeft: applyWidthDifference(20),
     padding: applyWidthDifference(7),
-    fontSize: fixedResponsiveFontSize(14),
-    fontWeight: '900',
-
+    fontWeight: 'bold',
   },
   bar: {
     alignSelf: 'center',
     width: '95%',
     height: applyWidthDifference(1),
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '$grey300',
   },
   subView: {
     position: 'absolute',
@@ -79,49 +77,32 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  subViewCancel: {
-    fontWeight: '900',
-    fontSize: fixedResponsiveFontSize(12),
-    color: '#424242',
-  },
   subViewButtonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: applyWidthDifference(10),
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '$grey300',
   },
-  subViewSortButton: {
-    backgroundColor: '#FFFF',
+  subViewButton: {
+    backgroundColor: '$grey50',
     width: '93%',
     alignItems: 'center',
     height: applyWidthDifference(40),
     justifyContent: 'center',
-    marginTop: 0.5,
   },
-  subViewSortButtonText: {
+  subViewButtonText: {
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(13),
-    color: '#424242',
   },
   subViewHeaderText: {
-    fontSize: fixedResponsiveFontSize(12),
-    color: '#757575',
-    fontWeight: '900',
-    backgroundColor: '#EEEEEE',
+    color: '$grey600',
+    fontWeight: 'bold',
+    backgroundColor: '$grey200',
     width: '93%',
     paddingVertical: applyWidthDifference(7),
     justifyContent: 'center',
     textAlign: 'center',
   },
-  subViewCancelButton: {
-    backgroundColor: '#FFFF',
-    width: '93%',
-    alignItems: 'center',
-    height: applyWidthDifference(40),
-    justifyContent: 'center',
-  },
   searchBar: {
     width: '100%',
-    fontSize: fixedResponsiveFontSize(14),
   },
 });

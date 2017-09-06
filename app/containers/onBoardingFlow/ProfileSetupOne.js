@@ -116,14 +116,20 @@ class ProfileSetupOne extends Component {
   render() {
     const { containerHeight, gender, nickname } = this.state;
     let newHeight = height - containerHeight - theme.statusBarHeight - theme.titleBarHeight;
+    const innerContainerStyle = { justifyContent: null };
     const androidGenderContainer = { marginTop: applyWidthDifference(45) };
+
+    // if keyboard is displayed
+    if (containerHeight) {
+      innerContainerStyle.justifyContent = 'center';
+    }
 
     // Android styles
     if (!isiOS) {
       newHeight -= statusBarHeightDroid;
       // if keyboard is displayed
       if (containerHeight) {
-        androidGenderContainer.marginTop = applyWidthDifference(5);
+        androidGenderContainer.marginTop = applyWidthDifference(15);
       }
     }
 
@@ -131,13 +137,15 @@ class ProfileSetupOne extends Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={{ height: newHeight }}>
-            <View style={styles.innerContainer}>
-              <StepBar step={1} style={styles._stepBar} />
+            <View style={[styles.innerContainer, innerContainerStyle]}>
               {
                 containerHeight ? null :
-                  <BodyText style={styles._header}>
+                  <View>
+                    <StepBar step={1} style={styles.stepBar} />
+                    <BodyText style={styles.header}>
                     Welcome to Backbone! Please help us get to know you a little bit.
-                  </BodyText>
+                    </BodyText>
+                  </View>
               }
               <Input
                 iconStyle={{ color: 'black' }}
@@ -194,7 +202,7 @@ class ProfileSetupOne extends Component {
               </View>
             </View>
             <Button
-              style={styles._CTAButton}
+              style={styles.CTAButton}
               text="CONTINUE"
               primary
               disabled={!nickname || !gender}

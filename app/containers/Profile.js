@@ -55,7 +55,7 @@ const ProfileField = props => {
           />
           : null}
     <View style={styles.profileFieldData}>
-      <SecondaryText style={styles._profileText}>{props.profileData}</SecondaryText>
+      <SecondaryText style={styles.profileText}>{props.profileData}</SecondaryText>
     </View>
   </TouchableOpacity>);
 };
@@ -80,7 +80,7 @@ const ProfileFieldInput = props => {
     <View style={styles.profileField}>
       <Icon name={iconLeftName} size={styles.$iconSize} style={styles._profileFieldIcon} />
       <Input
-        style={styles._profileFieldInput}
+        style={styles.profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}
         onFocus={props.focusHandler}
         value={props.value}

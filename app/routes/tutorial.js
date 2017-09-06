@@ -4,5 +4,5 @@ export default {
   name: 'Tutorial',
   title: 'Tutorial',
   component: Tutorial,
-  showBackButton: true,
+  showLeftComponent: true,
 };

@@ -2,7 +2,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
 
-const { applyWidthDifference } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 const hexagonConnectorDefaults = {
   position: 'absolute',
@@ -30,6 +30,9 @@ export default EStyleSheet.create({
     alignItems: 'center',
     resizeMode: 'cover',
   },
+  levelTitle: {
+    fontWeight: 'bold',
+  },
   levelSliderOuterContainer: {
     height: '50%',
     width: '100%',
@@ -52,11 +55,40 @@ export default EStyleSheet.create({
     ...hexagonConnectorDefaults,
     height: '$hexagonContainerHeight',
   },
+  hexagonCircleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  hexagonCircle: {
+    fontSize: getResponsiveFontSize(9),
+    paddingHorizontal: applyWidthDifference(3),
+    color: theme.disabledColor,
+  },
+  hexagonCircleCompleted: {
+    fontSize: getResponsiveFontSize(9),
+    paddingHorizontal: applyWidthDifference(3),
+    color: 'black',
+  },
+  hexagonCheckmark: {
+    fontSize: getResponsiveFontSize(22),
+    color: 'black',
+  },
   hexagon: {
     width: applyWidthDifference(92),
     height: applyWidthDifference(largeHexagonHeight),
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  lockedCard: {
+    alignItems: 'center',
+  },
+  levelLock: {
+    fontSize: getResponsiveFontSize(30),
+    color: theme.disabledColor,
+  },
+  sessionLock: {
+    fontSize: getResponsiveFontSize(40),
+    color: theme.disabledColor,
   },
   carouselContainer: {
     position: 'absolute',
@@ -73,6 +105,32 @@ export default EStyleSheet.create({
   },
   sessionWorkoutRow: {
     flexDirection: 'row',
+  },
+  sessionCardTopContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: applyWidthDifference(10),
+  },
+  sessionCardTopLeftContainer: {
+    flex: 0.7,
+  },
+  sessionCardTopRightContainer: {
+    flex: 0.3,
+    alignItems: 'flex-end',
+  },
+  sessionDurationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sessionTitle: {
+    fontWeight: 'bold',
+  },
+  durationIcon: {
+    fontSize: getResponsiveFontSize(12),
+  },
+  durationText: {
+    fontWeight: 'bold',
+    marginLeft: applyWidthDifference(4),
   },
   workoutBullet: {
     alignSelf: 'center',
