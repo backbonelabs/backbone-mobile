@@ -4,5 +4,5 @@ export default {
   name: 'postureCalibrate',
   title: 'Calibrate',
   component: PostureCalibrate,
-  showBackButton: true,
+  showLeftComponent: true,
 };

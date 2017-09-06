@@ -25,7 +25,7 @@ const baseIconStyles = {
 
 export default EStyleSheet.create({
   $backButtonIconSize: applyWidthDifference(40),
-  $profileIconSize: applyWidthDifference(30),
+  $profileIconSize: applyWidthDifference(20),
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
@@ -79,9 +79,14 @@ export default EStyleSheet.create({
   icon: {
     ...baseIconStyles,
   },
-  profileIcon: {
+  profileIconContainer: {
     ...baseIconStyles,
-    borderRadius: applyWidthDifference(15),
+    borderRadius: applyWidthDifference(30) / 2,
     backgroundColor: '$disabledColor',
+    justifyContent: 'center',
+  },
+  profileIcon: {
+    backgroundColor: '$disabledColor',
+    alignSelf: 'center',
   },
 });

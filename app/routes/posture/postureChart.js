@@ -4,5 +4,5 @@ export default {
   name: 'postureChart',
   component: PostureChart,
   title: 'Posture Summary',
-  showBackButton: true,
+  showLeftComponent: true,
 };
