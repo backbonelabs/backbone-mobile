@@ -4,5 +4,5 @@ export default {
   name: 'educationVideo',
   title: 'Education Video',
   component: EducationVideo,
-  showBackButton: true,
+  showLeftComponent: true,
 };
