@@ -129,8 +129,8 @@ class ProfileSetupTwo extends Component {
         <View style={styles.container}>
           <View>
             <View style={styles.innerContainer}>
-              <StepBar step={2} style={styles._stepBar} />
-              <BodyText style={styles._header}>
+              <StepBar step={2} style={styles.stepBar} />
+              <BodyText style={styles.header}>
                 Great! Now just some basic information
                 to help us better customize your experience.
               </BodyText>
@@ -143,7 +143,7 @@ class ProfileSetupTwo extends Component {
               />
             </View>
             <Button
-              style={styles._CTAButton}
+              style={styles.CTAButton}
               text="CONTINUE"
               primary
               disabled={!height.value || !weight.value || !birthdate}

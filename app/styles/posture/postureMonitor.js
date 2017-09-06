@@ -12,7 +12,7 @@ const summaryTitleFontSize = 24;
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '$grey100',
     justifyContent: 'space-around',
   },
   connectingContainer: {
@@ -30,10 +30,10 @@ export default EStyleSheet.create({
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(54),
     marginTop: applyWidthDifference(10),
+    color: '$lightBlue500',
   },
   heading: {
     textAlign: 'center',
-    marginTop: applyWidthDifference(-30),
   },
   monitorContainer: {
     alignItems: 'center',
@@ -113,6 +113,7 @@ export default EStyleSheet.create({
   sliderTitle: {
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(12),
+    marginBottom: applyWidthDifference(10),
   },
   btnContainer: {
     width: '85%',
@@ -152,7 +153,7 @@ export default EStyleSheet.create({
         top: (height / 2) - applyWidthDifference(halfModalHeight)
         - fixedResponsiveFontSize(summaryTitleFontSize)
         - fixedResponsiveFontSize(topStarSize / 2)
-        - applyWidthDifference(30),
+        - applyWidthDifference(28),
       },
     }),
     left: (width / 2) - applyWidthDifference(40),
@@ -168,7 +169,7 @@ export default EStyleSheet.create({
       android: {
         top: (height / 2) - applyWidthDifference(halfModalHeight)
         - fixedResponsiveFontSize(topStarSize / 2)
-        - applyWidthDifference(30),
+        - applyWidthDifference(28),
       },
     }),
     left: (width / 2) - applyWidthDifference(40),

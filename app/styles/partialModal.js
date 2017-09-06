@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   outerContainer: {
@@ -40,15 +40,12 @@ export default EStyleSheet.create({
   titleText: {
     textAlign: 'center',
     color: '#000000',
-    fontSize: fixedResponsiveFontSize(22),
-    fontWeight: '500',
+    fontWeight: 'bold',
     marginTop: applyWidthDifference(10),
     marginHorizontal: applyWidthDifference(12),
   },
   detailText: {
     textAlign: 'center',
-    color: '#000000',
-    fontSize: fixedResponsiveFontSize(15),
     marginTop: applyWidthDifference(10),
     marginBottom: applyWidthDifference(10),
     marginHorizontal: applyWidthDifference(12),

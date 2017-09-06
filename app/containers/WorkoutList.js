@@ -15,13 +15,13 @@ import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../styles/workoutList';
-import SecondaryText from '../components/SecondaryText';
 import TabBar from '../components/TabBar';
 import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
 import routes from '../routes';
+import theme from '../styles/theme';
 import constants from '../utils/constants';
 
 const { workoutTypes } = constants;
@@ -37,6 +37,7 @@ class WorkoutList extends Component {
     }),
     navigator: PropTypes.shape({
       getCurrentRoutes: PropTypes.func,
+      push: PropTypes.func,
     }),
   }
 
@@ -266,8 +267,16 @@ class WorkoutList extends Component {
       // Place holder for route to free training
       Alert.alert('workout', workout.title);
     } else if (this.currentRoute.name === routes.education.name) {
-      // Place holder for route to education video
-      Alert.alert('workout', workout.title);
+      const videoUrl = workout.videoUrl;
+      if (videoUrl && videoUrl.length > 0) {
+        this.props.dispatch(userActions.selectWorkout(workout._id));
+        this.props.navigator.push({
+          ...routes.educationVideo,
+          title: workout.title,
+        });
+      } else {
+        Alert.alert('Error', 'Video not found!');
+      }
     }
   }
   /**
@@ -309,7 +318,7 @@ class WorkoutList extends Component {
         <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
           <View style={styles.rowInnerContainer}>
             <View style={styles.workoutPreviewBox} />
-            <SecondaryText style={styles._rowText}>{workoutTitle}</SecondaryText>
+            <BodyText style={styles.rowText}>{workoutTitle}</BodyText>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
@@ -327,7 +336,7 @@ class WorkoutList extends Component {
   renderSectionHeader(sectionData, category) {
     return (
       <View style={styles.section}>
-        <BodyText style={styles._sectionText}>{category}</BodyText>
+        <BodyText style={styles.sectionText}>{category}</BodyText>
       </View>
     );
   }
@@ -352,7 +361,7 @@ class WorkoutList extends Component {
     >
       { this.state.searchBarIsHidden && this.isiOS ? null :
         <Input
-          style={styles._searchBar}
+          style={styles.searchBar}
           value={this.state.searchText}
           returnKeyType="search"
           returnKeyLabel="search"
@@ -381,13 +390,13 @@ class WorkoutList extends Component {
     const sortViews = this.sortCategories.map((label, index) => (
       <TouchableOpacity
         key={label}
-        style={styles.subViewSortButton}
+        style={styles.subViewButton}
         onPress={() => {
           this.setState({ sortListBy: index });
           this.toggleSubview();
         }}
       >
-        <BodyText style={styles._subViewSortButtonText}>{label}</BodyText>
+        <BodyText style={styles.subViewButtonText}>{label}</BodyText>
       </TouchableOpacity>
     ));
 
@@ -402,8 +411,8 @@ class WorkoutList extends Component {
           renderTabBar={this.getTabBar}
           onChangeTab={this.toggleSearchBar}
           tabBarPosition="top"
-          tabBarActiveTextColor="#2196F3"
-          tabBarInactiveTextColor="#bdbdbd"
+          tabBarActiveTextColor={theme.lightBlue500}
+          tabBarInactiveTextColor={theme.grey400}
           tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
           tabBarTextStyle={styles._tabBarTextStyle}
         >
@@ -411,17 +420,17 @@ class WorkoutList extends Component {
         </ScrollableTabView>
         <Animated.View
           style={[styles.subView,
-              { transform: [{ translateY: this.state.bounceValue }], height: '100%' }]}
+            { transform: [{ translateY: this.state.bounceValue }], height: '100%' }]}
         >
           <View style={styles.subViewButtonContainer}>
-            <BodyText style={styles._subViewHeaderText}>SORT BY:</BodyText>
+            <BodyText style={styles.subViewHeaderText}>SORT BY:</BodyText>
             {sortViews}
           </View>
           <TouchableOpacity
             onPress={this.toggleSubview}
-            style={styles.subViewCancelButton}
+            style={styles.subViewButton}
           >
-            <BodyText style={styles._subViewCancel}>CANCEL</BodyText>
+            <BodyText style={styles.subViewButtonText}>CANCEL</BodyText>
           </TouchableOpacity>
         </Animated.View>
       </View>

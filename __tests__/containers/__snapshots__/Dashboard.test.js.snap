@@ -21,7 +21,7 @@ exports[`Dashboard Component renders as expected 1`] = `
               Object {
                 "transform": Array [
                   Object {
-                    "scale": 0.7,
+                    "scale": 0.6,
                   },
                 ],
               },
@@ -29,10 +29,20 @@ exports[`Dashboard Component renders as expected 1`] = `
           }
         >
           <BodyText
-            style={Object {}}
+            style={
+              Array [
+                undefined,
+                Object {},
+              ]
+            }
           >
             2
           </BodyText>
+          <Icon
+            allowFontScaling={false}
+            name="lock"
+            size={12}
+          />
         </AnimatedComponent>
       </View>
       <View>
@@ -45,7 +55,7 @@ exports[`Dashboard Component renders as expected 1`] = `
               Object {
                 "transform": Array [
                   Object {
-                    "scale": 0.7,
+                    "scale": 0.6,
                   },
                 ],
               },
@@ -53,10 +63,24 @@ exports[`Dashboard Component renders as expected 1`] = `
           }
         >
           <BodyText
-            style={Object {}}
+            style={
+              Array [
+                undefined,
+                Object {
+                  "color": "#9C27B0",
+                },
+              ]
+            }
           >
-            1
+            Level 1
           </BodyText>
+          <View>
+            <Icon
+              allowFontScaling={false}
+              name="circle"
+              size={12}
+            />
+          </View>
         </AnimatedComponent>
       </View>
     </ScrollViewMock>
