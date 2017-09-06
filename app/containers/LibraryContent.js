@@ -44,7 +44,8 @@ const LibraryContent = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <BodyText style={styles.centerText}>{workout.instructions}</BodyText>
+        {props.media === 'image' &&
+          <BodyText style={styles.centerText}>{workout.instructions}</BodyText>}
       </View>
       <WorkoutView
         media={props.media}
