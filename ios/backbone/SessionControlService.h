@@ -40,6 +40,9 @@
   
   NSString *sessionId;
   double sessionStartTimestamp;
+  float currentDistance;
+  int statsTotalDuration;
+  int statsSlouchTime;
   
   BOOL shouldFlushFirehoseRecords;
 }

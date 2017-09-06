@@ -55,6 +55,7 @@
   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
   sessionId = [userDefaults stringForKey:USER_DEFAULT__SESSION_ID_KEY];
   sessionStartTimestamp = [userDefaults doubleForKey:USER_DEFAULT__START_TIMESTAMP_KEY];
+  currentDistance = 0;
   
   sessionDuration = SESSION_DEFAULT_DURATION;
   slouchDistanceThreshold = SLOUCH_DEFAULT_DISTANCE_THRESHOLD;
@@ -256,6 +257,19 @@ RCT_EXPORT_METHOD(stop:(BOOL)waitForResponse callback:(RCTResponseSenderBlock)ca
 }
 
 /**
+ Retrieves session details stored in UserDefaults
+ */
+RCT_EXPORT_METHOD(getSessionDetails:(RCTResponseSenderBlock)callback) {
+  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+  // Get session start timestamp in milliseconds
+  double timestamp = floor([userDefaults doubleForKey:USER_DEFAULT__START_TIMESTAMP_KEY] * 1000);
+  callback(@[@{
+               @"id": [userDefaults stringForKey:USER_DEFAULT__SESSION_ID_KEY],
+               @"startTimestamp": [NSNumber numberWithDouble:timestamp]
+               }]);
+}
+
+/**
  Reads from the session statistic characteristic. This is an asynchronous operation.
  The results will be emitted through a SessionState event to JS.
  */
@@ -391,12 +405,6 @@ RCT_EXPORT_METHOD(getSessionState) {
         distanceNotificationStatus = NO;
         slouchNotificationStatus = NO;
         
-        // Save session record for Firehose
-        [self saveSessionToFirehose];
-        
-        // Submit all pending Firehose records
-        [self submitFirehoseRecords];
-        
         break;
     }
     
@@ -441,7 +449,7 @@ RCT_EXPORT_METHOD(getSessionState) {
 /**
  * Saves a posture session record to Firehose and clears the session details from UserPreferences
  */
-- (void)saveSessionToFirehose {
+RCT_EXPORT_METHOD(saveSessionToFirehose:(RCTResponseSenderBlock)callback) {
   DLog(@"saveSessionToFirehose");
   NSString *userId = [[UserService getUserService] getUserId];
   if (userId == nil) {
@@ -451,7 +459,17 @@ RCT_EXPORT_METHOD(getSessionState) {
   NSString *startDateTime = [timestampFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:sessionStartTimestamp]];
   NSString *endDateTime = [timestampFormatter stringFromDate:[NSDate date]];
   NSString *isProd = [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"DEV_MODE"] boolValue] ? @"false" : @"true";
-  NSString *recordString = [NSString stringWithFormat:@"%@,%@,%d,%@,%@,%@\n", sessionId, userId, sessionDuration, startDateTime, endDateTime, isProd];
+  NSString *recordString = [
+                            NSString stringWithFormat:@"%@,%@,%d,%@,%@,%@,%d,%d\n",
+                            sessionId,
+                            userId,
+                            sessionDuration * 60, // convert to seconds
+                            startDateTime,
+                            endDateTime,
+                            isProd,
+                            statsTotalDuration,
+                            statsSlouchTime
+                            ];
   DLog(@"Firehose posture session record: %@", recordString);
   NSData *record = [recordString dataUsingEncoding:NSUTF8StringEncoding];
   [firehoseRecorder saveRecord:record streamName:FIREHOSE_POSTURE_SESSION];
@@ -460,12 +478,14 @@ RCT_EXPORT_METHOD(getSessionState) {
   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
   [userDefaults removeObjectForKey:USER_DEFAULT__SESSION_ID_KEY];
   [userDefaults removeObjectForKey:USER_DEFAULT__START_TIMESTAMP_KEY];
+  
+  callback(@[[NSNull null]]);
 }
 
 /**
  * Submits all pending Firehose records
  */
-- (void)submitFirehoseRecords {
+RCT_EXPORT_METHOD(submitFirehoseRecords) {
   DLog(@"Submitting pending Firehose records");
   [[firehoseRecorder submitAllRecords] continueWithBlock:^id _Nullable(AWSTask * _Nonnull task) {
     if (task.error) {
@@ -505,7 +525,7 @@ RCT_EXPORT_METHOD(getSessionState) {
       uint8_t *dataPointer = (uint8_t*) [characteristic.value bytes];
       DLog(@"DistanceRawValue %x %x %x %x", dataPointer[0], dataPointer[1], dataPointer[2], dataPointer[3]);
       
-      float currentDistance = [Utilities convertToFloatFromBytes:dataPointer offset:0];
+      currentDistance = [Utilities convertToFloatFromBytes:dataPointer offset:0];
       int timeElapsed = [Utilities convertToIntFromBytes:dataPointer offset:4];
       
       NSDictionary *sessionData = @{
@@ -534,6 +554,9 @@ RCT_EXPORT_METHOD(getSessionState) {
         // Check the Least-Significant Bit of the flags to retrieve the current session state
         hasActiveSession = (flags % 2 == 1);
       }
+      
+      statsTotalDuration = totalDuration;
+      statsSlouchTime = slouchTime;
       
       if (requestedReadSessionStatistics) {
         // Session statistics were retrieved from a read request, emit SessionState event
@@ -566,12 +589,6 @@ RCT_EXPORT_METHOD(getSessionState) {
           
           [BluetoothServiceInstance toggleCharacteristicNotification:ACCELEROMETER_CHARACTERISTIC_UUID state:NO];
           [BluetoothServiceInstance toggleCharacteristicNotification:SESSION_DATA_CHARACTERISTIC_UUID state:distanceNotificationStatus];
-          
-          // Save session record for Firehose
-          [self saveSessionToFirehose];
-          
-          // Submit pending Firehose records
-          [self submitFirehoseRecords];
         }
       }
     }
@@ -598,8 +615,19 @@ RCT_EXPORT_METHOD(getSessionState) {
         
         // Queue accelerometer record for Firehose
         NSString *now = [timestampFormatter stringFromDate:[NSDate date]];
-        NSString *recordString = [NSString stringWithFormat:@"%@,%@,%f,%f,%f,,,,%f,%d\n", sessionId, now, accX, accY, accZ, slouchDistanceThreshold / 10000.0, slouchTimeThreshold];
-        DLog(@"Record %@", recordString);
+        NSString *recordString = [
+                                  NSString stringWithFormat:@"%@,%@,%.14f,%.14f,%.14f,,,,%.14f,%d,%.14f,%d\n",
+                                  sessionId,
+                                  now,
+                                  accX,
+                                  accY,
+                                  accZ,
+                                  slouchDistanceThreshold / 10000.0,
+                                  slouchTimeThreshold,
+                                  currentDistance,
+                                  currentDistance >= slouchDistanceThreshold / 10000.0
+                                  ];
+        DLog(@"Firehose posture session stream record: %@", recordString);
         NSData *record = [recordString dataUsingEncoding:NSUTF8StringEncoding];
         [firehoseRecorder saveRecord:record streamName:FIREHOSE_POSTURE_SESSION_STREAM];
         
