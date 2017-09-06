@@ -263,16 +263,34 @@ class WorkoutList extends Component {
    * @param {Object} workout
    */
   handleRowPress(workout) {
+    this.props.dispatch(userActions.selectWorkout(workout._id));
     if (this.currentRoute.name === routes.freeTraining.name) {
-      // Place holder for route to free training
-      Alert.alert('workout', workout.title);
+      if (workout.type === constants.workoutTypes.POSTURE) {
+        // The selected workout is a posture session
+        this.props.navigator.push({
+          ...routes.postureIntro,
+          props: {
+            duration: workout.duration,
+          },
+        });
+      } else {
+        this.props.navigator.push({
+          ...routes.libraryContent,
+          title: workout.title,
+          props: {
+            media: 'image',
+          },
+        });
+      }
     } else if (this.currentRoute.name === routes.education.name) {
       const videoUrl = workout.videoUrl;
       if (videoUrl && videoUrl.length > 0) {
-        this.props.dispatch(userActions.selectWorkout(workout._id));
         this.props.navigator.push({
-          ...routes.educationVideo,
+          ...routes.libraryContent,
           title: workout.title,
+          props: {
+            media: 'video',
+          },
         });
       } else {
         Alert.alert('Error', 'Video not found!');
