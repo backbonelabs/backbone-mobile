@@ -15,7 +15,7 @@ describe('TitleBar Component', () => {
         title: null,
         component: null,
         showLeftComponent: false,
-        showRigthComponent: false,
+        showRightComponent: false,
         showNavbar: false,
         rightComponent: null,
         styles: {},
