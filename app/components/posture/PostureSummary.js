@@ -79,20 +79,20 @@ class PostureSummary extends Component {
           <View style={styles.summary}>
             <View style={styles.summaryOuter} />
             <View style={styles.summaryInner}>
-              <HeadingText size={2} style={styles._goodPostureTime}>
+              <HeadingText size={2} style={styles.goodPostureTime}>
                 {goodPostureTimeString}
               </HeadingText>
-              <BodyText style={styles._goodPostureTimeBodyText}>of excellent posture</BodyText>
+              <BodyText style={styles.goodPostureTimeBodyText}>of excellent posture</BodyText>
             </View>
             <View style={styles.summaryOuter}>
               {
                 this.props.goal > 0 ?
-                  <BodyText style={styles._goal}>Goal: {this.props.goal} mins</BodyText> : null
+                  <BodyText style={styles.goal}>Goal: {this.props.goal} mins</BodyText> : null
               }
             </View>
           </View>
         </Image>
-        <BodyText style={styles._quote}>
+        <BodyText style={styles.quote}>
             Nice work! Keep it up and you'll be on your way to better posture.
         </BodyText>
         { Object.values(this.state.stars) }

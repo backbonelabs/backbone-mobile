@@ -3,15 +3,15 @@ import {
   Text,
 } from 'react-native';
 import styles from '../styles/text';
-import reusableDefaults from './utils/reusableDefaults';
+import reusableTextDefaults from './utils/reusableTextDefaults';
 
 const SecondaryText = props => (
-  <Text style={[styles._secondary, props.style]} {...reusableDefaults.fontScalingProps}>
+  <Text style={[styles.secondary, props.style]} {...reusableTextDefaults.fontScalingProps}>
     {props.children}
   </Text>
 );
 
-SecondaryText.propTypes = reusableDefaults.propTypes;
-SecondaryText.defaultProps = reusableDefaults.defaultProps;
+SecondaryText.propTypes = reusableTextDefaults.propTypes;
+SecondaryText.defaultProps = reusableTextDefaults.defaultProps;
 
 export default SecondaryText;

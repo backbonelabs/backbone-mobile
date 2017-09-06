@@ -3,10 +3,10 @@ import {
   Text,
 } from 'react-native';
 import styles from '../styles/text';
-import reusableDefaults from './utils/reusableDefaults';
+import reusableTextDefaults from './utils/reusableTextDefaults';
 
 const { PropTypes } = React;
-const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableDefaults;
+const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableTextDefaults;
 
 const HeadingText = props => {
   const {

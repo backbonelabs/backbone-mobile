@@ -8,7 +8,7 @@ const innerMonitorSize = applyWidthDifference(190);
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '$grey100',
     justifyContent: 'space-around',
   },
   connectingContainer: {
@@ -25,12 +25,11 @@ export default EStyleSheet.create({
   timer: {
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(54),
-    color: '$lightBlueColor',
     marginTop: applyWidthDifference(10),
+    color: '$lightBlue500',
   },
   heading: {
     textAlign: 'center',
-    marginTop: applyWidthDifference(-30),
   },
   monitorContainer: {
     alignItems: 'center',
@@ -52,14 +51,13 @@ export default EStyleSheet.create({
       ios: {
         shadowOffset: {
           width: 0,
-          height: 1,
+          height: 0,
         },
-        shadowColor: '$secondaryFontColor',
-        shadowRadius: 2,
-        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
       },
       android: {
-        elevation: 1,
+        elevation: 2,
       },
     }),
   },
@@ -111,6 +109,7 @@ export default EStyleSheet.create({
   sliderTitle: {
     textAlign: 'center',
     fontSize: fixedResponsiveFontSize(12),
+    marginBottom: applyWidthDifference(10),
   },
   btnContainer: {
     width: '85%',

@@ -46,7 +46,7 @@ const StepBar = ({ step, style }) => {
 
 StepBar.propTypes = {
   step: PropTypes.number,
-  style: PropTypes.object,
+  style: View.propTypes.style,
 };
 
 export default StepBar;

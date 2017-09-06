@@ -43,12 +43,7 @@ export default EStyleSheet.create({
   header: {
     alignItems: 'center',
   },
-  subheading: {
-    fontSize: fixedResponsiveFontSize(16),
-    textAlign: 'center',
-  },
-  instructions: {
-    fontSize: fixedResponsiveFontSize(16),
+  centerText: {
     textAlign: 'center',
   },
   twoSidedText: {
@@ -76,13 +71,13 @@ export default EStyleSheet.create({
       ios: {
         shadowOffset: {
           width: 0,
-          height: 0,
+          height: 3,
         },
         shadowRadius: 3,
         shadowOpacity: 0.15,
       },
       android: {
-        elevation: 1,
+        elevation: 2,
       },
     }),
     height: applyWidthDifference(60),

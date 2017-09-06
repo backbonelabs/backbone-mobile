@@ -17,6 +17,7 @@ import moment from 'moment';
 import get from 'lodash/get';
 import forEach from 'lodash/forEach';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import appActions from '../actions/app';
 import userActions from '../actions/user';
 import trainingActions from '../actions/training';
@@ -42,7 +43,14 @@ import bulletRedOff from '../images/bullet-red-off.png';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import constants from '../utils/constants';
 import Mixpanel from '../utils/Mixpanel';
-import { getColorNameForLevel } from '../utils/levelColors';
+import {
+  getColorNameForLevel,
+  getColorHexForLevel,
+} from '../utils/levelColors';
+import {
+  getNextIncompleteSession,
+  getNextIncompleteLevel,
+} from '../utils/trainingUtils';
 import routes from '../routes';
 import styles from '../styles/dashboard';
 
@@ -82,7 +90,28 @@ const isiOS = Platform.OS === 'ios';
  * @param  {Object[]} levels
  * @return {Animated.Value[]}
  */
-const getAnimationsForLevels = (levels = []) => levels.map(() => new Animated.Value(0.7));
+const getAnimationsForLevels = (levels = []) => levels.map(() => new Animated.Value(0.6));
+
+const getLevelCircles = (level) => {
+  const nextSessionIndex = getNextIncompleteSession(level);
+
+  // Check if this level has been completed
+  if (nextSessionIndex === -1) {
+    return (<FontAwesomeIcon name={'check'} style={styles.hexagonCheckmark} />);
+  }
+
+  // Else display the session progress circles
+  return level.map((session, sessionIdx) => {
+    if (sessionIdx < nextSessionIndex) {
+      return (
+        <FontAwesomeIcon key={sessionIdx} name={'circle'} style={styles.hexagonCircleCompleted} />
+      );
+    }
+    return (
+      <FontAwesomeIcon key={sessionIdx} name={'circle'} style={styles.hexagonCircle} />
+    );
+  });
+};
 
 class Dashboard extends Component {
   static propTypes = {
@@ -405,7 +434,7 @@ class Dashboard extends Component {
         useNativeDriver: true,
         duration: 300,
         easing: Easing.linear,
-        toValue: 0.7,
+        toValue: 0.6,
       }));
 
       Animated.parallel(animations, {
@@ -421,8 +450,16 @@ class Dashboard extends Component {
    * @return {Component[]}
    */
   _getLevelIcons(levels = []) {
+    const { selectedLevelIdx } = this.props.training;
+    const nextLevelIndex = getNextIncompleteLevel(levels);
+
     return levels.map((level, idx) => {
       const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
+      const isLevelUnlocked = idx <= nextLevelIndex;
+      const isCurrentLevel = (idx === selectedLevelIdx);
+      const levelTitle = (isCurrentLevel ? 'Level ' : '') + (idx + 1);
+      const color = (isCurrentLevel ? { color: getColorHexForLevel(selectedLevelIdx) } : {});
+
       return (
         <View key={idx} style={styles.hexagonContainer}>
           <View style={styles[connectorStyle]} />
@@ -437,7 +474,13 @@ class Dashboard extends Component {
               },
             ]}
           >
-            <BodyText>{idx + 1}</BodyText>
+            <BodyText style={[styles.levelTitle, color]}>{levelTitle}</BodyText>
+            {
+              isLevelUnlocked ?
+                <View style={styles.hexagonCircleContainer}>
+                  {getLevelCircles(level)}
+                </View> : <Icon name="lock" style={styles.levelLock} />
+            }
           </Animated.Image>
         </View>
       );
@@ -465,28 +508,88 @@ class Dashboard extends Component {
    * @param {Number} idx     The index of the session within the level
    */
   _getSessionCard(session, idx) {
-    const { selectedLevelIdx } = this.props.training;
+    const {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      plans,
+    } = this.props.training;
+    const levels = get(plans, [selectedPlanIdx, 'levels'], []);
+    const level = get(levels, selectedLevelIdx, []);
+    const nextLevelIndex = getNextIncompleteLevel(levels);
+    const isLevelUnlocked = selectedLevelIdx <= nextLevelIndex;
+    const nextSessionIndex = getNextIncompleteSession(level);
+    const isSessionUnlocked = isLevelUnlocked &&
+    (nextSessionIndex === -1 || idx <= nextSessionIndex);
     const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
-    const sessionWorkouts = session.map(workout => {
-      const color = getColorNameForLevel(this.props.training.selectedLevelIdx);
-      return (
-        <View key={workout.title} style={styles.sessionWorkoutRow}>
-          <Image
-            source={workout.isComplete ? colorBulletsOn[color] : colorBulletsOff[color]}
-            style={styles.workoutBullet}
-          />
-          <BodyText>{workout.title}</BodyText>
+    const color = getColorNameForLevel(selectedLevelIdx);
+    const hexColor = getColorHexForLevel(selectedLevelIdx);
+    let cardContents;
+
+    if (isSessionUnlocked) {
+      let durationInSeconds = 0;
+      const workoutList = session.map(workout => {
+        const seconds = get(workout, 'seconds', 0);
+        const sets = get(workout, 'sets', 1);
+        const twice = get(workout, 'twoSides', false);
+        durationInSeconds += seconds * (twice ? 2 : 1) * sets;
+        durationInSeconds += (sets - 1) * 60; // rest-time between sets
+
+        return (
+          <View key={workout.title} style={styles.sessionWorkoutRow}>
+            <Image
+              source={workout.isComplete ? colorBulletsOn[color] : colorBulletsOff[color]}
+              style={styles.workoutBullet}
+            />
+            <BodyText>{workout.title}</BodyText>
+          </View>
+        );
+      });
+
+      durationInSeconds = Math.max(60, durationInSeconds);
+      const durationText = `${Math.ceil(durationInSeconds / 60)} min`;
+
+      cardContents = (
+        <View>
+          <View style={styles.sessionCardTopContainer}>
+            <View style={styles.sessionCardTopLeftContainer}>
+              <BodyText style={[styles.sessionTitle, { color: hexColor }]}>
+                {`Session ${idx + 1} - Exercise List`}
+              </BodyText>
+            </View>
+            <View style={styles.sessionCardTopRightContainer}>
+              { durationInSeconds > 0 &&
+                <View style={styles.sessionDurationContainer}>
+                  <FontAwesomeIcon
+                    name={'clock-o'}
+                    style={[styles.durationIcon, { color: hexColor }]}
+                  />
+                  <BodyText style={[styles.durationText, { color: hexColor }]}>
+                    {durationText}
+                  </BodyText>
+                </View>
+              }
+            </View>
+          </View>
+          <View>
+            {workoutList}
+          </View>
         </View>
       );
-    });
+    } else {
+      cardContents = (
+        <View style={styles.lockedCard}>
+          <Icon name="lock" style={styles.sessionLock} />
+        </View>
+      );
+    }
 
     return (
       <TouchableOpacity
         key={idx}
-        onPress={() => this._onSelectSession(navTitle)}
+        onPress={() => isSessionUnlocked && this._onSelectSession(navTitle)}
       >
         <Card>
-          {sessionWorkouts}
+          {cardContents}
         </Card>
       </TouchableOpacity>
     );

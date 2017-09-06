@@ -3,24 +3,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
-
-const buttonShadow = {
-  ...Platform.select({
-      // OS-specific drop shadow styling
-    ios: {
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowRadius: 2,
-      shadowOpacity: 0.3,
-    },
-    android: {
-      elevation: 1,
-    },
-  }),
-};
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   button: {
@@ -29,7 +12,6 @@ export default EStyleSheet.create({
     width: applyWidthDifference(150),
     height: applyWidthDifference(50),
     borderRadius: 3,
-    ...buttonShadow,
   },
   defaultBtn: {
     backgroundColor: 'white',
@@ -77,7 +59,6 @@ export default EStyleSheet.create({
   text: {
     color: '#FFFFFF',
     textAlign: 'center',
-    fontSize: fixedResponsiveFontSize(15),
     fontWeight: 'bold',
   },
   disabledText: {

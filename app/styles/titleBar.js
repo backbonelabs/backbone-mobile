@@ -1,9 +1,10 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 const baseTitleBarStyles = {
   flexDirection: 'row',
@@ -24,10 +25,24 @@ const baseIconStyles = {
 
 export default EStyleSheet.create({
   $backButtonIconSize: applyWidthDifference(40),
-  $profileIconSize: applyWidthDifference(30),
+  $profileIconSize: applyWidthDifference(20),
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
+    ...Platform.select({
+      // OS-specific drop shadow styling
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   hiddenTitleBar: {
     ...baseTitleBarStyles,
@@ -38,7 +53,7 @@ export default EStyleSheet.create({
     color: '$secondaryColor',
     backgroundColor: 'transparent',
     textAlign: 'center',
-    fontSize: fixedResponsiveFontSize(18),
+    fontSize: getResponsiveFontSize(16),
     fontWeight: 'bold',
   },
   sideContainers: {
@@ -64,9 +79,14 @@ export default EStyleSheet.create({
   icon: {
     ...baseIconStyles,
   },
-  profileIcon: {
+  profileIconContainer: {
     ...baseIconStyles,
-    borderRadius: applyWidthDifference(15),
+    borderRadius: applyWidthDifference(30) / 2,
     backgroundColor: '$disabledColor',
+    justifyContent: 'center',
+  },
+  profileIcon: {
+    backgroundColor: '$disabledColor',
+    alignSelf: 'center',
   },
 });

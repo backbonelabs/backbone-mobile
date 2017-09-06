@@ -2,22 +2,41 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   TouchableHighlight,
+  Platform,
 } from 'react-native';
 import autobind from 'class-autobind';
 import BodyText from './BodyText';
 import styles from '../styles/button';
 
+const buttonShadow = {
+  ...Platform.select({
+      // OS-specific drop shadow styling
+    ios: {
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowRadius: 2,
+      shadowOpacity: 0.3,
+    },
+    android: {
+      elevation: 1,
+    },
+  }),
+};
+
 class Button extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
     onPress: PropTypes.func,
-    style: PropTypes.object,
+    style: View.propTypes.style,
     text: PropTypes.string.isRequired,
-    textStyle: PropTypes.object,
+    textStyle: BodyText.propTypes.style,
     primary: PropTypes.bool,
     secondary: PropTypes.bool,
     fbBtn: PropTypes.bool,
     pressStatus: PropTypes.bool,
+    shadow: PropTypes.bool,
     onHideUnderlay: PropTypes.func,
     onShowUnderlay: PropTypes.func,
   };
@@ -25,6 +44,7 @@ class Button extends Component {
   static defaultProps = {
     style: {},
     textStyle: {},
+    shadow: true,
   };
 
   constructor(props) {
@@ -45,14 +65,14 @@ class Button extends Component {
 
   render() {
     let buttonType;
-    const textStyles = [styles._text];
+    const textStyles = [styles.text];
     const buttonStyles = [styles.button];
     const secondaryStyles = [buttonStyles, styles.secondaryBtn];
     const fbBtnStyles = [buttonStyles, styles.facebookBtn];
     const defaultStyles = [buttonStyles, styles.defaultBtn];
     const defaultActive = [buttonStyles, styles.defaultActive];
-    const defaultTextActive = [styles._text, styles._defaultTextActive];
-    const defaultTextStyles = [styles._text, styles._defaultTextStyles];
+    const defaultTextActive = [styles.text, styles.defaultTextActive];
+    const defaultTextStyles = [styles.text, styles.defaultTextStyles];
 
     if (this.props.primary) {
       buttonType = (
@@ -116,11 +136,15 @@ class Button extends Component {
       );
     }
 
+    if (this.props.shadow) {
+      buttonStyles.push(buttonShadow);
+    }
+
     if (this.props.disabled) {
       buttonStyles.push(styles.disabledButton);
-      textStyles.push(styles._disabledText);
+      textStyles.push(styles.disabledText);
       defaultStyles.push(styles.disabledSecondaryBorder);
-      defaultTextStyles.push(styles._disabledSecondaryText);
+      defaultTextStyles.push(styles.disabledSecondaryText);
     }
     buttonStyles.push(this.props.style);
     textStyles.push(this.props.textStyle);

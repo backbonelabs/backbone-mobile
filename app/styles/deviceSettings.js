@@ -40,38 +40,18 @@ export default EStyleSheet.create({
   deviceInfo: {
     alignItems: 'center',
   },
-  deviceInfoText: {
-    fontSize: fixedResponsiveFontSize(14),
-    color: '#000000',
-  },
   firmwareUpdateInfoText: {
-    fontSize: fixedResponsiveFontSize(16),
     marginHorizontal: applyWidthDifference(10),
     textAlign: 'center',
-    color: '#000000',
   },
-  firmwareUpdateProgressTextBlack: {
-    fontSize: fixedResponsiveFontSize(16),
-    color: '#000000',
-  },
-  firmwareUpdateProgressTextGreen: {
-    fontSize: fixedResponsiveFontSize(16),
+  green: {
     color: '$infoColor',
   },
-  firmwareUpdateProgressTextRed: {
-    fontSize: fixedResponsiveFontSize(16),
-    color: '$warningColor',
-  },
-  batteryInfoTextBlack: {
-    fontSize: fixedResponsiveFontSize(16),
-    color: '#000000',
-  },
-  batteryInfoTextRed: {
-    fontSize: fixedResponsiveFontSize(16),
+  red: {
     color: '$warningColor',
   },
   batteryIconBlack: {
-    color: '#000000',
+    color: '$primaryFontColor',
     fontSize: fixedResponsiveFontSize(25),
   },
   batteryIconRed: {

@@ -275,11 +275,11 @@ class DeviceScan extends Component {
 
     return (
       <View style={styles.deviceRow}>
-        <BodyText style={styles._deviceName}>
+        <BodyText style={styles.deviceName}>
           { isiOS ? rowData.identifier.substr(rowData.identifier.lastIndexOf('-') + 1)
           : rowData.identifier}
         </BodyText>
-        <BodyText style={[styles._deviceMessage, { color: messageColor }]}>
+        <BodyText style={[styles.deviceMessage, { color: messageColor }]}>
           {message}
         </BodyText>
         {icon}
@@ -303,9 +303,9 @@ class DeviceScan extends Component {
     const isBluetoothOn = this.props.bluetoothState === bluetoothStates.ON;
 
     return (
-      <View style={styles._container}>
-        <BodyText style={styles._deviceScan_header}>
-          Setup a device to connect
+      <View style={styles.container}>
+        <BodyText style={styles.deviceScan_header}>
+          Select a device
         </BodyText>
         <View style={styles.innerContainer}>
           <View style={styles.deviceContainer}>
@@ -318,8 +318,8 @@ class DeviceScan extends Component {
                     color={'#E0E0E0'}
                     style={styles.devicesNotFoundIcon}
                   />
-                  <BodyText style={styles._deviceNotFoundText}>No Devices Found</BodyText>
-                  { errorMessage ? <BodyText style={styles._deviceNotFoundErrorText}>
+                  <BodyText style={styles.deviceNotFoundText}>No Devices Found</BodyText>
+                  { errorMessage ? <BodyText style={styles.deviceNotFoundErrorText}>
                     {errorMessage}</BodyText> : null }
                 </View> : null
             }
@@ -345,7 +345,7 @@ class DeviceScan extends Component {
           <View style={styles.CTAContainer}>
             <Button
               onPress={this.initiateScanning}
-              style={styles._CTAButton}
+              style={styles.CTAButton}
               text={btn}
               primary
               disabled={inProgress || isConnecting ||
@@ -357,7 +357,7 @@ class DeviceScan extends Component {
               activeOpacity={0.4}
               onPress={this.skip}
             >
-              <SecondaryText style={styles._skip}>
+              <SecondaryText style={styles.skip}>
                 Skip Setup
               </SecondaryText>
             </TouchableOpacity> : null

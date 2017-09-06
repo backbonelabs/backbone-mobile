@@ -1,13 +1,11 @@
-import Dashboard from '../containers/Dashboard';
+import Stats from '../containers/Stats';
 import { LeftProfileComponent } from '../containers/TitleBar';
 
 export default {
-  name: 'dashboard',
-  title: 'Home',
-  component: Dashboard,
+  name: 'stats',
+  title: 'Stats',
+  component: Stats,
   showTabBar: true,
-  showBanner: true,
-  showRightComponent: true,
   showLeftComponent: true,
   leftComponent: LeftProfileComponent,
 };

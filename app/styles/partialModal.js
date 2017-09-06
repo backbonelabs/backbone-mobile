@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   outerContainer: {
@@ -18,15 +18,15 @@ export default EStyleSheet.create({
     padding: applyWidthDifference(10),
     width: applyWidthDifference(340),
     borderRadius: applyWidthDifference(10),
-    ...Platform.select({ // OS-specific drop shadow styling
+    ...Platform.select({
+      // OS-specific drop shadow styling
       ios: {
-        shadowColor: 'rgba(0, 0, 0, 0.2)',
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
         shadowOffset: {
-          height: 0,
           width: 0,
+          height: 0,
         },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
       },
       android: {
         elevation: 2,
@@ -40,15 +40,12 @@ export default EStyleSheet.create({
   titleText: {
     textAlign: 'center',
     color: '#000000',
-    fontSize: fixedResponsiveFontSize(22),
-    fontWeight: '500',
+    fontWeight: 'bold',
     marginTop: applyWidthDifference(10),
     marginHorizontal: applyWidthDifference(12),
   },
   detailText: {
     textAlign: 'center',
-    color: '#000000',
-    fontSize: fixedResponsiveFontSize(15),
     marginTop: applyWidthDifference(10),
     marginBottom: applyWidthDifference(10),
     marginHorizontal: applyWidthDifference(12),

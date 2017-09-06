@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   View,
-  Text,
   LayoutAnimation,
   TouchableWithoutFeedback,
   Keyboard,
@@ -226,7 +225,7 @@ class Signup extends Component {
     }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles._container, { height: newHeight }]}>
+        <View style={[styles.container, { height: newHeight }]}>
           {this.props.inProgress
             ? <Spinner />
             : <View>
@@ -252,8 +251,8 @@ class Signup extends Component {
                     <BodyText>Log In</BodyText>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.currentTab, styles.tab]}>
-                    <BodyText style={styles._currentTabText}>
-                        Sign Up
+                    <BodyText style={styles.currentTabText}>
+                      Sign Up
                     </BodyText>
                   </TouchableOpacity>
                 </View>
@@ -265,17 +264,17 @@ class Signup extends Component {
                       <View>
                         <Facebook
                           buttonText="SIGN UP WITH FACEBOOK"
-                          style={styles._inputField}
+                          style={styles.inputField}
                         />
                         <View style={styles.breakContainer}>
                           <View style={styles.breakLine} />
-                          <Text style={styles.textBreak}>OR</Text>
+                          <SecondaryText style={styles.textBreak}>OR</SecondaryText>
                           <View style={styles.breakLine} />
                         </View>
                       </View>
                   }
                   <Input
-                    containerStyles={styles._inputFieldContainer}
+                    containerStyles={styles.inputFieldContainer}
                     style={{ color: emailWarning ? warningColor : primaryFontColor }}
                     iconStyle={{
                       color: emailWarning ? warningColor : inputIconColor,
@@ -294,7 +293,7 @@ class Signup extends Component {
                     iconLeftName="email"
                   />
                   <Input
-                    containerStyles={styles._inputFieldContainer}
+                    containerStyles={styles.inputFieldContainer}
                     style={{ color: passwordWarning ? warningColor : primaryFontColor }}
                     iconStyle={{ color: passwordWarning ? warningColor : inputIconColor }}
                     handleRef={ref => (this.passwordField = ref)}
@@ -317,7 +316,7 @@ class Signup extends Component {
                           color={warningColor}
                           size={20}
                         />
-                        <BodyText style={styles._warning}>
+                        <BodyText style={styles.warning}>
                           {errorMessage}
                         </BodyText>
                       </View>
@@ -331,8 +330,8 @@ class Signup extends Component {
                       onPress={this.openTOS}
                       activeOpacity={0.4}
                     >
-                      <SecondaryText style={styles._legalLink}>
-                          Terms of Service
+                      <SecondaryText style={styles.legalLink}>
+                        Terms of Service
                       </SecondaryText>
                     </TouchableOpacity>
                     <SecondaryText> and </SecondaryText>
@@ -341,15 +340,15 @@ class Signup extends Component {
                       activeOpacity={0.4}
                       style={styles.priv}
                     >
-                      <SecondaryText style={styles._legalLink}>
-                          Privacy Policy
+                      <SecondaryText style={styles.legalLink}>
+                        Privacy Policy
                       </SecondaryText>
                     </TouchableOpacity>
                   </View>
                 </View>
                 <View style={styles.CTAContainer}>
                   <Button
-                    style={styles._CTAButton}
+                    style={styles.CTAButton}
                     text="SIGN UP"
                     primary
                     disabled={!email || !password}

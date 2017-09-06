@@ -171,6 +171,13 @@ class Alerts extends Component {
     return (
       <View style={styles.container}>
         <Toggle
+          value={slouchNotification && pushNotificationEnabled}
+          onChange={this.updateSetting}
+          disabled={!pushNotificationEnabled}
+          text="Slouch Notification"
+          settingName="slouchNotification"
+        />
+        <Toggle
           value={backboneVibration}
           onChange={this.updateSetting}
           text="Backbone Vibration"
@@ -195,10 +202,10 @@ class Alerts extends Component {
             </View>
             <View style={styles.sliderDetails}>
               <View style={{ flex: 0.5 }}>
-                <SecondaryText style={styles._sliderDetailsText}>LOW</SecondaryText>
+                <SecondaryText style={styles.sliderDetailsText}>LOW</SecondaryText>
               </View>
               <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
-                <SecondaryText style={styles._sliderDetailsText}>HIGH</SecondaryText>
+                <SecondaryText style={styles.sliderDetailsText}>HIGH</SecondaryText>
               </View>
             </View>
           </View>
@@ -220,13 +227,13 @@ class Alerts extends Component {
             </View>
             <View style={styles.sliderDetails}>
               <View style={{ flex: 0.33 }}>
-                <SecondaryText style={styles._sliderDetailsText}>1</SecondaryText>
+                <SecondaryText style={styles.sliderDetailsText}>1</SecondaryText>
               </View>
               <View style={{ flex: 0.33, alignItems: 'center' }}>
-                <SecondaryText style={styles._sliderDetailsText}>2</SecondaryText>
+                <SecondaryText style={styles.sliderDetailsText}>2</SecondaryText>
               </View>
               <View style={{ flex: 0.33, alignItems: 'flex-end' }}>
-                <SecondaryText style={styles._sliderDetailsText}>3</SecondaryText>
+                <SecondaryText style={styles.sliderDetailsText}>3</SecondaryText>
               </View>
             </View>
           </View>
@@ -237,20 +244,13 @@ class Alerts extends Component {
           text="Phone Vibration"
           settingName="phoneVibration"
         />
-        <Toggle
-          value={slouchNotification && pushNotificationEnabled}
-          onChange={this.updateSetting}
-          disabled={!pushNotificationEnabled}
-          text="Slouch Notification"
-          settingName="slouchNotification"
-        />
         {!pushNotificationEnabled ?
           <View style={styles.notificationDisabledWarningContainer}>
-            <SecondaryText style={styles._notificationDisabledWarningText}>
+            <BodyText style={styles.notificationDisabledWarningText}>
               Notifications are disabled in your phone's settings.
-            </SecondaryText>
+            </BodyText>
             <Button
-              style={styles._systemSettingButton}
+              style={styles.systemSettingButton}
               primary text="Open Phone Settings"
               onPress={this.openSystemSetting}
             />
@@ -258,7 +258,7 @@ class Alerts extends Component {
           : <Text />
         }
         <View style={styles.batteryLifeWarningContainer}>
-          <SecondaryText style={styles._batteryLifeWarningText}>
+          <SecondaryText>
             Increasing the vibration strength and pattern of
             your Backbone will decrease its battery life
           </SecondaryText>

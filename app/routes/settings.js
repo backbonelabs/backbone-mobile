@@ -5,5 +5,5 @@ export default {
   title: 'Settings',
   component: Settings,
   showTabBar: true,
-  showBackButton: true,
+  showLeftComponent: true,
 };

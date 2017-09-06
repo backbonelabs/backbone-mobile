@@ -4,7 +4,13 @@ exports[`Facebook Component renders as expected 1`] = `
 <Button
   fbBtn={true}
   onPress={[Function]}
-  style={Object {}}
+  shadow={true}
+  style={
+    Array [
+      undefined,
+      undefined,
+    ]
+  }
   text="test"
   textStyle={Object {}}
 />

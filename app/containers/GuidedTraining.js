@@ -8,12 +8,12 @@ import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import WorkoutView from './WorkoutView';
 import appActions from '../actions/app';
 import userActions from '../actions/user';
+import trainingActions from '../actions/training';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
@@ -26,6 +26,7 @@ import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 import constants from '../utils/constants';
 import { formattedTimeString } from '../utils/timeUtils';
+import { markSessionStepComplete } from '../utils/trainingUtils';
 
 const { workoutTypes } = constants;
 const { applyWidthDifference } = relativeDimensions;
@@ -136,6 +137,7 @@ class GuidedTraining extends Component {
       selectedSessionIdx: PropTypes.number,
     }).isRequired,
     updateUserTrainingPlanProgress: PropTypes.func.isRequired,
+    selectSessionStep: PropTypes.func.isRequired,
     user: PropTypes.shape({
       trainingPlanProgress: PropTypes.objectOf(
         PropTypes.arrayOf(
@@ -162,7 +164,7 @@ class GuidedTraining extends Component {
     const currentWorkout = this._getWorkoutFromCurrentSession(stepIdx, props.training);
 
     this.state = {
-      step: stepIdx + 1,
+      stepIdx,
       ...this._getNewStateForWorkout(currentWorkout),
     };
 
@@ -196,7 +198,7 @@ class GuidedTraining extends Component {
         // UI can be shown.
         this.setState({
           currentWorkout:
-            this._getWorkoutFromCurrentSession(this.state.step - 1, nextProps.training),
+            this._getWorkoutFromCurrentSession(this.state.stepIdx, nextProps.training),
         });
       }
     }
@@ -288,29 +290,9 @@ class GuidedTraining extends Component {
       selectedLevelIdx,
       selectedSessionIdx,
     } = this.props.training;
-    const progress = cloneDeep(this.props.user.trainingPlanProgress);
-    const planProgress = progress[plans[selectedPlanIdx]._id];
-
-    // The plan progress array may not always contain the exact number of elements as
-    // workouts in the training plan, so we need to fill missing elements up to the
-    // current level and session indices with empty arrays.
-
-    // Fill in missing levels
-    for (let i = 0; i <= selectedLevelIdx; i++) {
-      if (!planProgress[i]) {
-        planProgress[i] = [];
-      }
-    }
-
-    // Fill in missing sessions in the current level up to the current session
-    for (let i = 0; i <= selectedSessionIdx; i++) {
-      if (!planProgress[selectedLevelIdx][i]) {
-        planProgress[selectedLevelIdx][i] = [];
-      }
-    }
-
-    // Mark the current workout as complete
-    planProgress[selectedLevelIdx][selectedSessionIdx][this.state.step - 1] = true;
+    let progress = this.props.user.trainingPlanProgress;
+    progress = markSessionStepComplete(plans, selectedPlanIdx, selectedLevelIdx,
+      selectedSessionIdx, this.state.stepIdx, progress);
     this.props.updateUserTrainingPlanProgress(progress);
   }
 
@@ -395,14 +377,14 @@ class GuidedTraining extends Component {
 
   /**
    * Changes which workout/step of the session to show
-   * @param {Number} step Which step to switch to. The first step starts at 1.
+   * @param {Number} step Which step to switch to. The first step starts at 0.
    */
-  _changeStep(step) {
+  _changeStep(stepIdx) {
     this._pauseTimer(() => {
       this.setState({
-        step,
+        stepIdx,
         ...this._getNewStateForWorkout(
-          this._getWorkoutFromCurrentSession(step - 1, this.props.training)
+          this._getWorkoutFromCurrentSession(stepIdx, this.props.training)
         ),
       });
     });
@@ -415,10 +397,10 @@ class GuidedTraining extends Component {
   _onButtonPress(buttonName) {
     switch (buttonName) {
       case 'leftButton': {
-        const isFirstWorkout = this.state.step === 1;
+        const isFirstWorkout = this.state.stepIdx === 0;
         if (!isFirstWorkout) {
           // There is a previous workout in the session that can be navigated to
-          this._changeStep(this.state.step - 1);
+          this._changeStep(this.state.stepIdx - 1);
         }
         break;
       }
@@ -428,7 +410,7 @@ class GuidedTraining extends Component {
           isTimerRunning,
           setsRemaining,
         } = this.state;
-        const isTimed = !!currentWorkout.seconds;
+        const isTimed = currentWorkout.isTimed;
 
         if (isTimerRunning) {
           // Pause timer
@@ -444,10 +426,10 @@ class GuidedTraining extends Component {
       }
       case 'rightButton': {
         const sessionWorkouts = this._getSessionWorkouts(this.props.training);
-        const isLastWorkout = this.state.step === sessionWorkouts.length;
+        const isLastWorkout = this.state.stepIdx === sessionWorkouts.length - 1;
         if (!isLastWorkout) {
           // There is a next workout in the session that can be navigated to
-          this._changeStep(this.state.step + 1);
+          this._changeStep(this.state.stepIdx + 1);
         }
         break;
       }
@@ -475,6 +457,7 @@ class GuidedTraining extends Component {
   _navigateToPostureCalibrate() {
     const { selectedLevelIdx, selectedSessionIdx } = this.props.training;
     const title = `Level ${selectedLevelIdx + 1} Session ${selectedSessionIdx + 1}`;
+    this.props.selectSessionStep(this.state.stepIdx);
     this.props.navigator.push({
       ...routes.postureCalibrate,
       title,
@@ -491,12 +474,12 @@ class GuidedTraining extends Component {
 
   render() {
     const { currentWorkout } = this.state;
-    const isTimed = !!currentWorkout.seconds;
+    const isTimed = currentWorkout.isTimed;
 
     const subheading = [];
     if (currentWorkout.reps) {
       subheading.push(`Reps: ${currentWorkout.reps}`);
-    } else if (currentWorkout.seconds) {
+    } else if (currentWorkout.seconds && isTimed) {
       subheading.push(`Time: ${formattedTimeString(currentWorkout.seconds)}`);
     }
 
@@ -512,12 +495,12 @@ class GuidedTraining extends Component {
     // along with the number of sets remaining. Otherwise, display the workout instructions.
     const header = isTimed && this.state.hasWorkoutStarted ? (
       <View style={styles.header}>
-        <BodyText style={styles._timer}>{getFormattedTime(this.state.timerSeconds)}</BodyText>
+        <BodyText style={styles.timer}>{getFormattedTime(this.state.timerSeconds)}</BodyText>
         <BodyText>Sets Remaining: {this.state.setsRemaining}</BodyText>
         {currentWorkout.twoSides && this.state.setsRemaining > 0 &&
           <View style={styles.twoSidedText}>
             <BodyText>Perform with your</BodyText>
-            <BodyText style={styles._strongText}>
+            <BodyText style={styles.strongText}>
               {this.state.side === 1 ? ' first ' : ' second '}
             </BodyText>
             <BodyText>side.</BodyText>
@@ -525,9 +508,9 @@ class GuidedTraining extends Component {
       </View>
     ) : (
       <View style={styles.header}>
-        <HeadingText size={1}>{currentWorkout.workout.title}</HeadingText>
-        <BodyText style={styles._subheading}>{subheading.join('\n')}</BodyText>
-        <BodyText style={styles._instructions}>{currentWorkout.workout.instructions}</BodyText>
+        <HeadingText size={3}>{currentWorkout.workout.title}</HeadingText>
+        <BodyText style={styles.centerText}>{subheading.join('\n')}</BodyText>
+        <BodyText style={styles.centerText}>{currentWorkout.workout.instructions}</BodyText>
       </View>
     );
 
@@ -535,7 +518,7 @@ class GuidedTraining extends Component {
     const levelColorHex = getColorHexForLevel(selectedLevelIdx);
 
     // The left button would be disabled if this is the first workout in the session
-    const isLeftButtonDisabled = this.state.step === 1;
+    const isLeftButtonDisabled = this.state.stepIdx === 0;
     const additionalLeftButtonStyles = {};
     if (isLeftButtonDisabled) {
       additionalLeftButtonStyles.opacity = 0.4;
@@ -543,7 +526,9 @@ class GuidedTraining extends Component {
 
     // The center button would be disabled if there is an update happening in
     // the training reducer slice, e.g., when the workout is being marked as complete
-    const isCenterButtonDisabled = this.props.training.isUpdating;
+    const isComplete = currentWorkout.isComplete;
+    const isUpdating = this.props.training.isUpdating;
+    const isCenterButtonDisabled = isUpdating || (isPostureSession && !isComplete);
     const additionalCenterButtonStyles = {
       backgroundColor: currentWorkout.isComplete ? levelColorHex : 'white',
     };
@@ -553,7 +538,7 @@ class GuidedTraining extends Component {
 
     // The right button would be disabled if this is the last workout in the session
     const sessionWorkouts = this._getSessionWorkouts(this.props.training);
-    const isRightButtonDisabled = this.state.step === sessionWorkouts.length;
+    const isRightButtonDisabled = this.state.stepIdx === sessionWorkouts.length - 1;
     const additionalRightButtonStyles = {};
     if (isRightButtonDisabled) {
       additionalRightButtonStyles.opacity = 0.4;
@@ -581,7 +566,7 @@ class GuidedTraining extends Component {
     return (
       <View style={styles.container}>
         <ProgressBar
-          currentStep={this.state.step}
+          currentStep={this.state.stepIdx + 1}
           totalSteps={sessionWorkouts.length}
           backgroundColor={levelColorHex}
         />
@@ -613,38 +598,34 @@ class GuidedTraining extends Component {
                 />
               </View>
             </TouchableHighlight>
-            <SecondaryText style={styles._footerButtonText}>PREVIOUS</SecondaryText>
+            <SecondaryText style={styles.footerButtonText}>PREVIOUS</SecondaryText>
           </View>
           <View style={styles.footerButtonContainer}>
-            {!isPostureSession && (
-              <TouchableHighlight
-                activeOpacity={1}
-                underlayColor={levelColorHex}
-                onPress={() => this._onButtonPress('centerButton')}
-                onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
-                onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
-                style={[styles.footerButton, additionalCenterButtonStyles]}
-                disabled={isCenterButtonDisabled}
-              >
-                <View style={styles.footerButtonIconContainer}>
-                  {isCenterButtonDisabled ? <Spinner size="large" color={levelColorHex} /> : (
-                    <Icon
-                      name={centerButtonIconName}
-                      size={applyWidthDifference(50)}
-                      style={{
-                        color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
-                          'white' : levelColorHex,
-                      }}
-                    />
-                  )}
-                </View>
-              </TouchableHighlight>
-            )}
-            {!isPostureSession && (
-              <SecondaryText style={styles._footerButtonText}>
-                {centerButtonIconLabel}
-              </SecondaryText>
-            )}
+            <TouchableHighlight
+              activeOpacity={1}
+              underlayColor={levelColorHex}
+              onPress={() => this._onButtonPress('centerButton')}
+              onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
+              onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
+              style={[styles.footerButton, additionalCenterButtonStyles]}
+              disabled={isCenterButtonDisabled}
+            >
+              <View style={styles.footerButtonIconContainer}>
+                {isUpdating ? <Spinner size="large" color={levelColorHex} /> : (
+                  <Icon
+                    name={centerButtonIconName}
+                    size={applyWidthDifference(50)}
+                    style={{
+                      color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
+                        'white' : levelColorHex,
+                    }}
+                  />
+                )}
+              </View>
+            </TouchableHighlight>
+            <SecondaryText style={styles.footerButtonText}>
+              {centerButtonIconLabel}
+            </SecondaryText>
           </View>
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
@@ -664,7 +645,7 @@ class GuidedTraining extends Component {
                 />
               </View>
             </TouchableHighlight>
-            <SecondaryText style={styles._footerButtonText}>NEXT</SecondaryText>
+            <SecondaryText style={styles.footerButtonText}>NEXT</SecondaryText>
           </View>
         </View>
       </View>
@@ -680,4 +661,5 @@ const mapStateToProps = ({ training, user }) => ({
 export default connect(mapStateToProps, {
   ...appActions,
   ...userActions,
+  ...trainingActions,
 })(GuidedTraining);

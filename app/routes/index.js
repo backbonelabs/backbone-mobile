@@ -24,7 +24,9 @@ import howToVideo from './onBoardingFlow/howToVideo';
 import deviceScan from './deviceScan';
 import device from './device';
 import dashboard from './dashboard';
+import stats from './stats';
 import guidedTraining from './guidedTraining';
+import educationVideo from './educationVideo';
 
 export default {
   activity,
@@ -53,5 +55,7 @@ export default {
   howToVideo,
   device,
   dashboard,
+  stats,
   guidedTraining,
+  educationVideo,
 };
