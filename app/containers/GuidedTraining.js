@@ -392,7 +392,7 @@ class GuidedTraining extends Component {
 
   /**
    * Changes which workout/step of the session to show
-   * @param {Number} step Which step to switch to. The first step starts at 1.
+   * @param {Number} step Which step to switch to. The first step starts at 0.
    */
   _changeStep(stepIdx) {
     this._pauseTimer(() => {
