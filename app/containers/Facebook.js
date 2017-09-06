@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
-import { Alert } from 'react-native';
+import {
+  View,
+  Alert,
+} from 'react-native';
 import {
   AccessToken as FBAccessToken,
   LoginManager,
@@ -14,8 +17,8 @@ import Button from '../components/Button';
 
 const Facebook = (props) => (
   <Button
-    style={Object.assign({}, styles._fbBtn, props.style)}
-    textStyle={styles._fbBtnText}
+    style={[styles.fbBtn, props.style]}
+    textStyle={styles.fbBtnText}
     text={props.buttonText}
     fbBtn
     onPress={() => { Facebook.login(props); }}
@@ -25,7 +28,7 @@ const Facebook = (props) => (
 Facebook.propTypes = {
   dispatch: PropTypes.func,
   buttonText: PropTypes.string,
-  style: PropTypes.object,
+  style: View.propTypes.style,
 };
 
 Facebook.login = (props) => {
