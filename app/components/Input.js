@@ -21,8 +21,8 @@ class Input extends Component {
     handleRef: PropTypes.func,
     style: Text.propTypes.style,
     iconStyle: PropTypes.object,
-    innerContainerStyles: View.propTypes.style,
     containerStyles: View.propTypes.style,
+    innerContainerStyles: View.propTypes.style,
     iconFont: PropTypes.oneOf(['FontAwesome', 'MaterialIcon']),
     iconLeftName: PropTypes.string, // maps to a font name in react-native-icons
   };

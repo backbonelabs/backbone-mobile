@@ -78,7 +78,7 @@ const ProfileFieldInput = props => {
   const Icon = iconMap[iconFont];
   return (
     <View style={styles.profileField}>
-      <Icon name={iconLeftName} size={styles.$iconSize} style={styles._profileFieldIcon} />
+      <Icon name={iconLeftName} size={styles.$iconSize} style={styles.profileFieldIcon} />
       <Input
         style={styles.profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}
@@ -88,7 +88,7 @@ const ProfileFieldInput = props => {
         keyboardType={props.keyboardType}
         autoCapitalize="none"
         onChangeText={value => props.fieldInputChangeHandler(props.field, value)}
-        innerContainerStyles={styles._innerContainerStyles}
+        innerContainerStyles={styles.innerContainerStyles}
         editable
       />
     </View>);
@@ -577,7 +577,7 @@ class Profile extends Component {
                     </TouchableOpacity>
                     <HeadingText
                       size={1}
-                      style={styles._profileHeaderNickname}
+                      style={styles.profileHeaderNickname}
                     >
                       {nickname}
                     </HeadingText>
