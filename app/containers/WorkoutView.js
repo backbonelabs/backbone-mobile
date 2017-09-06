@@ -30,6 +30,7 @@ const videoIcon = {
 
 class WorkoutView extends Component {
   static propTypes = {
+    media: PropTypes.oneOf(['image', 'video']),
     navigator: PropTypes.object.isRequired,
     onPostureProceed: PropTypes.func,
     training: PropTypes.shape({
@@ -41,6 +42,10 @@ class WorkoutView extends Component {
     }),
   }
 
+  static defaultProps = {
+    media: 'image',
+  };
+
   constructor(props) {
     super(props);
     autobind(this);
@@ -51,14 +56,15 @@ class WorkoutView extends Component {
 
   componentDidMount() {
     const gifUrl = this.props.workout.gifUrl;
-    if (gifUrl) {
+    if (this.props.media === 'image' && gifUrl) {
       // GIF URL exists, prefetch GIF
       this._prefetchGif(gifUrl);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.workout.gifUrl !== nextProps.workout.gifUrl && nextProps.workout.gifUrl) {
+    if (this.props.workout.gifUrl !== nextProps.workout.gifUrl &&
+      nextProps.media === 'image' && nextProps.workout.gifUrl) {
       // Workout changed, fetch new workout GIF
       this._prefetchGif(nextProps.workout.gifUrl);
     }
@@ -104,7 +110,7 @@ class WorkoutView extends Component {
           {...postureIntroProps}
         />
       );
-    } else if (workout.gifUrl) {
+    } else if (this.props.media === 'image' && workout.gifUrl) {
       content = (
         <Image source={{ uri: workout.gifUrl }} style={styles.gif}>
           <TouchableOpacity
@@ -115,15 +121,10 @@ class WorkoutView extends Component {
           </TouchableOpacity>
         </Image>
       );
-    } else if (workout.videoUrl) {
+    } else if (this.props.media === 'video' && workout.videoUrl) {
       content = (
         <View style={styles.videoPlayerContainer}>
-          <VideoPlayer
-            video={{ uri: workout.videoUrl }}
-            customStyles={{
-              wrapper: styles._videoPlayer,
-            }}
-          />
+          <VideoPlayer video={{ uri: workout.videoUrl }} />
         </View>
       );
     }

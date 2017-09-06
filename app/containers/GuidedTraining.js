@@ -574,6 +574,7 @@ class GuidedTraining extends Component {
         {this.state.isFetchingImage ?
           <Spinner size="large" color={levelColorHex} /> : (
             <WorkoutView
+              media={currentWorkout.workout.type === workoutTypes.PRIMER ? 'video' : 'image'}
               navigator={this.props.navigator}
               onPostureProceed={this._navigateToPostureCalibrate}
               workout={currentWorkout.workout}

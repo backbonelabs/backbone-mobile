@@ -23,9 +23,6 @@ export default EStyleSheet.create({
     width: applyWidthDifference(23),
   },
   videoPlayerContainer: {
-    flex: 2,
-  },
-  videoPlayer: {
     width: '100%',
   },
 });
