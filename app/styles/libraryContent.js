@@ -9,11 +9,11 @@ export default EStyleSheet.create({
     backgroundColor: '$grey100',
     flex: 1,
     justifyContent: 'center',
-    paddingTop: applyWidthDifference(20),
   },
   header: {
     flex: 0.5,
     paddingHorizontal: applyWidthDifference(20),
+    justifyContent: 'center',
   },
   centerText: {
     textAlign: 'center',
