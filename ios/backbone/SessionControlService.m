@@ -257,6 +257,19 @@ RCT_EXPORT_METHOD(stop:(BOOL)waitForResponse callback:(RCTResponseSenderBlock)ca
 }
 
 /**
+ Retrieves session details stored in UserDefaults
+ */
+RCT_EXPORT_METHOD(getSessionDetails:(RCTResponseSenderBlock)callback) {
+  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+  // Get session start timestamp in milliseconds
+  double timestamp = floor([userDefaults doubleForKey:USER_DEFAULT__START_TIMESTAMP_KEY] * 1000);
+  callback(@[@{
+               @"id": [userDefaults stringForKey:USER_DEFAULT__SESSION_ID_KEY],
+               @"startTimestamp": [NSNumber numberWithDouble:timestamp]
+               }]);
+}
+
+/**
  Reads from the session statistic characteristic. This is an asynchronous operation.
  The results will be emitted through a SessionState event to JS.
  */

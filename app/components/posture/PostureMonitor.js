@@ -829,11 +829,14 @@ class PostureMonitor extends Component {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     const { slouchTime, totalDuration } = this.state;
 
-    Mixpanel.trackWithProperties('postureSession', {
-      sessionTime,
-      totalDuration,
-      slouchTime,
-      completedSession: sessionTime === 0 || totalDuration === sessionTime,
+    SessionControlService.getSessionDetails(details => {
+      Mixpanel.trackWithProperties('postureSession', {
+        sessionId: details.id,
+        sessionTime,
+        totalDuration,
+        slouchTime,
+        completedSession: sessionTime === 0 || totalDuration === sessionTime,
+      });
     });
   }
 

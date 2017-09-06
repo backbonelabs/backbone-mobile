@@ -107,7 +107,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         submitFirehoseRecords();
 
         // Load details of previous session, if any
-        SharedPreferences preferences = reactContext.getSharedPreferences(Constants.POSTURE_SESSION_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences preferences = this.getPostureSessionPreferences();
         sessionId = preferences.getString(Constants.POSTURE_SESSION_PREFERENCE_SESSION_ID, null);
         sessionStartTimestamp = preferences.getLong(Constants.POSTURE_SESSION_PREFERENCE_START_TIMESTAMP, 0);
 
@@ -349,6 +349,23 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         EventEmitter.send(reactContext, "SessionControlState", wm);
     }
 
+    private SharedPreferences getPostureSessionPreferences() {
+        return reactContext.getSharedPreferences(Constants.POSTURE_SESSION_PREFERENCES, Context.MODE_PRIVATE);
+    }
+
+    /**
+     * Retrieves session details stored in SharedPreferences
+     * @param callback Invoked with a WritableMap containing the saved details
+     */
+    @ReactMethod
+    public void getSessionDetails(Callback callback) {
+        SharedPreferences preferences = this.getPostureSessionPreferences();
+        WritableMap wm = Arguments.createMap();
+        wm.putString("id", preferences.getString(Constants.POSTURE_SESSION_PREFERENCE_SESSION_ID, null));
+        wm.putDouble("startTimestamp", preferences.getLong(Constants.POSTURE_SESSION_PREFERENCE_START_TIMESTAMP, 0));
+        callback.invoke(wm);
+    }
+
     /**
      * Reads from the session statistic characteristic. This is an asynchronous operation.
      * The results will be emitted through a SessionState event to JS.
@@ -395,7 +412,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             Timber.d("sessionId %s", sessionId);
 
             // Store session details in case app is terminated in the middle of a posture session
-            SharedPreferences preference = reactContext.getSharedPreferences(Constants.POSTURE_SESSION_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences preference = this.getPostureSessionPreferences();
             SharedPreferences.Editor editor = preference.edit();
             editor.putString(Constants.POSTURE_SESSION_PREFERENCE_SESSION_ID, sessionId);
             editor.putLong(Constants.POSTURE_SESSION_PREFERENCE_START_TIMESTAMP, sessionStartTimestamp);
@@ -546,7 +563,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         firehoseRecorder.saveRecord(record, Constants.FIREHOSE_STREAMS.POSTURE_SESSION);
 
         // Remove session data
-        SharedPreferences preferences = reactContext.getSharedPreferences(Constants.POSTURE_SESSION_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences preferences = this.getPostureSessionPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.commit();
