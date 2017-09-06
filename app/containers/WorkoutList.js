@@ -13,7 +13,7 @@ import isEqual from 'lodash/isEqual';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/workoutList';
 import TabBar from '../components/TabBar';
 import userActions from '../actions/user';
@@ -327,9 +327,9 @@ class WorkoutList extends Component {
 
     let iconName = '';
     if (favoriteWorkouts.includes(workoutId)) {
-      iconName = 'heart';
+      iconName = 'favorite';
     } else {
-      iconName = 'heart-o';
+      iconName = 'favorite-border';
     }
     return (
       <View style={styles.rowContainer}>
@@ -340,7 +340,7 @@ class WorkoutList extends Component {
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
-          <Icon name={iconName} style={styles._heartIcon} size={styles.$heartIconSize} />
+          <Icon name={iconName} style={styles.heartIcon} />
         </TouchableOpacity>
       </View>
     );

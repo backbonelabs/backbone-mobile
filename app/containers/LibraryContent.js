@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import get from 'lodash/get';
 import userActions from '../actions/user';
 import BodyText from '../components/BodyText';
@@ -19,9 +19,9 @@ const LibraryContent = (props) => {
 
   let iconName = '';
   if (favoriteWorkouts.includes(selectedWorkoutId)) {
-    iconName = 'heart';
+    iconName = 'favorite';
   } else {
-    iconName = 'heart-o';
+    iconName = 'favorite-border';
   }
 
   const toggleFavorite = () => {
