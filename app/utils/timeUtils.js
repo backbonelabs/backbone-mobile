@@ -13,6 +13,13 @@ export const secondsToHours = seconds => seconds / 3600;
 export const secondsToMinutes = seconds => seconds / 60;
 
 /**
+ * Add extra zero digits for single digit values
+ * @param {Number} value
+ * @return {String} paddedValue
+ */
+export const zeroPadding = value => `${value > 9 ? '' : '0'}${value}`;
+
+/**
  * Converts number of seconds to a string containing hours (if applicable),
  * minutes (if applicable), and seconds. For example, 122 would return the string,
  * "2 minutes 2 seconds".

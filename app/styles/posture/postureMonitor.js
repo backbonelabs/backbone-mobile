@@ -1,9 +1,13 @@
 import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
+import theme from '../../styles/theme';
 
-const { applyWidthDifference, fixedResponsiveFontSize, width } = relativeDimensions;
+const { height, width, applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 const innerMonitorSize = applyWidthDifference(190);
+const topStarSize = 96;
+const halfModalHeight = 130;
+const summaryTitleFontSize = 24;
 
 export default EStyleSheet.create({
   container: {
@@ -119,5 +123,119 @@ export default EStyleSheet.create({
   },
   partialSpinnerContainer: {
     height: applyWidthDifference(25),
+  },
+  summaryTopView: {
+    marginBottom: 0,
+  },
+  summaryMainContainer: {
+    marginTop: fixedResponsiveFontSize(topStarSize / 2),
+  },
+  summaryTopStarCircle: {
+    fontSize: fixedResponsiveFontSize(topStarSize),
+  },
+  summaryTopStar: {
+    fontSize: fixedResponsiveFontSize(60),
+    color: 'white',
+    position: 'absolute',
+    top: applyWidthDifference(18),
+    left: applyWidthDifference(13),
+  },
+  topCircleOverlay: {
+    position: 'absolute',
+    ...Platform.select({ // iOS has a different Y-origin point to Android
+      ios: {
+        top: (height / 2) - applyWidthDifference(halfModalHeight)
+        - fixedResponsiveFontSize(summaryTitleFontSize)
+        - fixedResponsiveFontSize(topStarSize / 2)
+        - theme.statusBarHeight,
+      },
+      android: {
+        top: (height / 2) - applyWidthDifference(halfModalHeight)
+        - fixedResponsiveFontSize(summaryTitleFontSize)
+        - fixedResponsiveFontSize(topStarSize / 2)
+        - applyWidthDifference(28),
+      },
+    }),
+    left: (width / 2) - applyWidthDifference(40),
+  },
+  topCircleOverlayShort: {
+    position: 'absolute',
+    ...Platform.select({ // iOS has a different Y-origin point to Android
+      ios: {
+        top: (height / 2) - applyWidthDifference(halfModalHeight)
+        - fixedResponsiveFontSize(topStarSize / 2)
+        - theme.statusBarHeight,
+      },
+      android: {
+        top: (height / 2) - applyWidthDifference(halfModalHeight)
+        - fixedResponsiveFontSize(topStarSize / 2)
+        - applyWidthDifference(28),
+      },
+    }),
+    left: (width / 2) - applyWidthDifference(40),
+  },
+  summaryContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  summaryTitle: {
+    fontSize: fixedResponsiveFontSize(summaryTitleFontSize),
+    fontWeight: 'bold',
+    paddingTop: applyWidthDifference(20),
+    paddingBottom: applyWidthDifference(35),
+  },
+  emptyTitle: {
+    paddingBottom: applyWidthDifference(35),
+  },
+  summaryDetailContainer: {
+    alignItems: 'center',
+    width: applyWidthDifference(270),
+    borderRadius: applyWidthDifference(10),
+  },
+  summaryDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: applyWidthDifference(15),
+  },
+  summaryDetailIconContainer: {
+    flex: 0.1,
+    paddingRight: applyWidthDifference(8),
+  },
+  summaryDetailIconGoal: {
+    fontSize: fixedResponsiveFontSize(22),
+    color: 'white',
+    paddingLeft: applyWidthDifference(3),
+  },
+  summaryDetailIconStar: {
+    fontSize: fixedResponsiveFontSize(22),
+    color: 'white',
+    paddingLeft: applyWidthDifference(2),
+  },
+  summaryDetailIconVertebrae: {
+    width: applyWidthDifference(24),
+    height: applyWidthDifference(24),
+    resizeMode: 'contain',
+  },
+  summaryDetailCaptionContainer: {
+    flex: 0.6,
+    alignItems: 'flex-start',
+  },
+  summaryDetailCaption: {
+    fontSize: fixedResponsiveFontSize(15),
+  },
+  summaryDetailValueContainer: {
+    flex: 0.3,
+    alignItems: 'flex-end',
+  },
+  summaryDetailValue: {
+    fontWeight: 'bold',
+    fontSize: fixedResponsiveFontSize(15),
+  },
+  summaryDetailLine: {
+    borderBottomWidth: 1,
+    width: applyWidthDifference(260),
+    borderBottomColor: 'white',
+    marginLeft: applyWidthDifference(15),
   },
 });

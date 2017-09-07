@@ -12,6 +12,7 @@ import {
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import { debounce, isEqual, isFunction } from 'lodash';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -23,15 +24,20 @@ import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
 import deviceActions from '../../actions/device';
 import userActions from '../../actions/user';
-import PostureSummary from './PostureSummary';
 import routes from '../../routes';
 import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
 import SensitiveInfo from '../../utils/SensitiveInfo';
 import theme from '../../styles/theme';
+import vertebraeIcon from '../../images/vertebrae-icon.png';
 import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import deviceWarningIcon from '../../images/settings/device-warning-icon.png';
 import deviceSuccessIcon from '../../images/settings/device-success-icon.png';
+import {
+  getColorHexForLevel,
+  getColorHexForLevelUnderlay,
+} from '../../utils/levelColors';
+import { zeroPadding } from '../../utils/timeUtils';
 import { markSessionStepComplete } from '../../utils/trainingUtils';
 
 const {
@@ -1055,10 +1061,137 @@ class PostureMonitor extends Component {
     }
 
     this.trackUserSession();
-    this.props.dispatch(appActions.showFullModal({
-      onClose: () => this.props.navigator.resetTo(routes.dashboard),
-      content:
-        <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
+
+    const { selectedLevelIdx: level } = this.props.training;
+    const levelColorCode = getColorHexForLevel(level);
+    const levelColorCodeUnderlay = getColorHexForLevelUnderlay(level);
+    const levelColorStyle = { color: levelColorCode };
+    const levelBackgroundColorStyle = { backgroundColor: levelColorCodeUnderlay };
+
+    const goodPostureTime = totalDuration - slouchTime;
+    const goal = sessionDuration;
+    const goodPostureHours = Math.floor(goodPostureTime / 3600);
+    const goodPostureMinutes = Math.floor((goodPostureTime - (goodPostureHours * 3600)) / 60);
+    const goodPostureSeconds = goodPostureTime % 60;
+
+    const gradePercentage = goodPostureTime / (goal > 0 ? goal * 60 : totalDuration);
+    const awesomeGrade = gradePercentage >= 0.9;
+    let grade;
+
+    if (gradePercentage >= 1.0) {
+      grade = 'A+';
+    } else if (gradePercentage >= 0.93) {
+      grade = 'A';
+    } else if (gradePercentage >= 0.9) {
+      grade = 'A-';
+    } else if (gradePercentage >= 0.87) {
+      grade = 'B+';
+    } else if (gradePercentage >= 0.83) {
+      grade = 'B';
+    } else if (gradePercentage >= 0.8) {
+      grade = 'B-';
+    } else if (gradePercentage >= 0.77) {
+      grade = 'C+';
+    } else if (gradePercentage >= 0.73) {
+      grade = 'C';
+    } else if (gradePercentage >= 0.7) {
+      grade = 'C-';
+    } else if (gradePercentage >= 0.67) {
+      grade = 'D+';
+    } else if (gradePercentage >= 0.63) {
+      grade = 'D';
+    } else if (gradePercentage >= 0.6) {
+      grade = 'D-';
+    } else {
+      grade = 'F';
+    }
+
+    const goodPostureTimeStringArray = ['', '00:', `${zeroPadding(goodPostureSeconds)}`];
+    if (goodPostureHours) {
+      goodPostureTimeStringArray[0] = `${goodPostureHours}:`;
+    }
+    if (goodPostureMinutes) {
+      goodPostureTimeStringArray[1] = `${goodPostureMinutes}:`;
+    }
+    const goodPostureTimeString = goodPostureTimeStringArray.join('');
+
+    const closeSummaryAndPop = () => {
+      this.props.dispatch(appActions.hidePartialModal());
+      this.props.navigator.pop();
+    };
+
+    this.props.dispatch(appActions.showPartialModal({
+      overlay: (
+        <View style={awesomeGrade ? styles.topCircleOverlay : styles.topCircleOverlayShort}>
+          <FontAwesomeIcon name={'circle'} style={[styles.summaryTopStarCircle, levelColorStyle]} />
+          <FontAwesomeIcon name={'star'} style={styles.summaryTopStar} />
+        </View>
+      ),
+      topView: (
+        <View style={styles.summaryContainer}>
+          { awesomeGrade ?
+            <BodyText style={[styles._summaryTitle, levelColorStyle]}>
+              Awesome!
+            </BodyText>
+              : <View style={styles.emptyTitle} />
+          }
+          <View style={[styles.summaryDetailContainer, levelBackgroundColorStyle]}>
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <FontAwesomeIcon name={'bullseye'} style={styles.summaryDetailIconGoal} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Goal:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>
+                  {goal > 0 ? `${goal}:00` : '-'}
+                </BodyText>
+              </View>
+            </View>
+            <View style={styles.summaryDetailLine} />
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <Image source={vertebraeIcon} style={styles.summaryDetailIconVertebrae} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Perfect Posture:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>{goodPostureTimeString}</BodyText>
+              </View>
+            </View>
+            <View style={styles.summaryDetailLine} />
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <FontAwesomeIcon name={'star'} style={styles.summaryDetailIconStar} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Grade:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>{grade}</BodyText>
+              </View>
+            </View>
+          </View>
+        </View>
+      ),
+      detail: {
+        caption: '',
+      },
+      buttons: [
+        {
+          caption: 'DONE',
+          onPress: closeSummaryAndPop,
+          color: levelColorCode,
+          underlayColor: levelColorCodeUnderlay,
+        },
+      ],
+      backButtonHandler: closeSummaryAndPop,
+      customStyles: {
+        containerStyle: styles.summaryMainContainer,
+        topViewStyle: styles.summaryTopView,
+      },
     }));
 
     // Clear the slouch notification when the current session has ended
