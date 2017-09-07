@@ -43,9 +43,6 @@ export default EStyleSheet.create({
     paddingTop: '50% - $hexagonContainerHeight',
     paddingBottom: 0,
   },
-  hexagonCard: {
-    width: '$hexagonContainerHeight',
-  },
   hexagonContainer: {
     height: '$hexagonContainerHeight',
     justifyContent: 'center',

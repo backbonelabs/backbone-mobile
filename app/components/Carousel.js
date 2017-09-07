@@ -498,6 +498,11 @@ export default class Carousel extends Component {
           this.props.items[index]);
       }
 
+      // Fire the scroll callback when defined
+      if (this.props.onCarouselScroll && initial) {
+        this.props.onCarouselScroll(undefined);
+      }
+
       // iOS fix, check the note in the constructor
       if (!initial && Platform.OS === 'ios') {
         this._ignoreNextMomentum = true;

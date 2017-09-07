@@ -513,7 +513,7 @@ class Dashboard extends Component {
           {
             isLevelUnlocked ?
               <View style={styles.hexagonCircleContainer}>
-                {getLevelCircles(level)}
+                {getLevelCircles(levels[idx])}
               </View> : <Icon name="lock" style={styles.levelLock} />
           }
         </Animated.Image>
@@ -780,7 +780,7 @@ class Dashboard extends Component {
         style={styles.backgroundImage}
       >
         <View style={styles.levelSliderOuterContainer}>
-          {!!sessions.length &&
+          {!!levels.length &&
             <Carousel
               ref={(levelCarousel) => { this._levelCarousel = levelCarousel; }}
               items={levels}
@@ -789,7 +789,7 @@ class Dashboard extends Component {
               itemHeight={styles.$hexagonContainerHeight}
               showsVerticalScrollIndicator={false}
               contentContainerCustomStyle={styles.levelSliderInnerContainer}
-              firstItem={selectedLevelIdx}
+              firstItem={levels.length - selectedLevelIdx - 1}
               onSnapToItem={this._onSnapToLevel}
               onCarouselScroll={this._onCarouselScroll}
               inactiveSlideScale={1.0}
