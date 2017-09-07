@@ -38,6 +38,7 @@ import {
   getColorHexForLevelUnderlay,
 } from '../../utils/levelColors';
 import { zeroPadding } from '../../utils/timeUtils';
+import { markSessionStepComplete } from '../../utils/trainingUtils';
 
 const {
   BluetoothService,
@@ -128,7 +129,15 @@ class PostureMonitor extends Component {
       }),
     }),
     training: PropTypes.shape({
+      plans: PropTypes.arrayOf(
+        PropTypes.shape({
+          _id: PropTypes.string,
+        })
+      ),
+      selectedPlanIdx: PropTypes.number,
       selectedLevelIdx: PropTypes.number,
+      selectedSessionIdx: PropTypes.number,
+      selectedStepIdx: PropTypes.number,
     }),
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
@@ -157,6 +166,13 @@ class PostureMonitor extends Component {
       }),
     }),
     user: PropTypes.shape({
+      trainingPlanProgress: PropTypes.objectOf(
+        PropTypes.arrayOf(
+          PropTypes.arrayOf(
+            PropTypes.arrayOf(PropTypes.bool)
+          )
+        )
+      ),
       settings: PropTypes.shape({
         phoneVibration: PropTypes.bool.isRequired,
         postureThreshold: PropTypes.number.isRequired,
@@ -451,12 +467,25 @@ class PostureMonitor extends Component {
    */
   setSessionState(session, callback) {
     const { state, parameters } = session;
+    const {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+      selectedStepIdx,
+    } = this.props.training;
+
     if ((state === sessionStates.RUNNING || state === sessionStates.PAUSED) && parameters) {
       // Store session state in local storage in case the app exits
       // and relaunches while the session is still active on the device
       SensitiveInfo.setItem(storageKeys.SESSION_STATE, {
         state,
         parameters,
+        trainingState: {
+          selectedPlanIdx,
+          selectedLevelIdx,
+          selectedSessionIdx,
+          selectedStepIdx,
+        },
       });
     } else if (state === sessionStates.STOPPED) {
       // Remove session state from local storage
@@ -1003,11 +1032,33 @@ class PostureMonitor extends Component {
   }
 
   /**
+   * Marks the current posture sesson as completed
+   */
+  markPostureSessionCompleted() {
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+      selectedStepIdx,
+    } = this.props.training;
+    let progress = this.props.user.trainingPlanProgress;
+    progress = markSessionStepComplete(plans, selectedPlanIdx, selectedLevelIdx,
+      selectedSessionIdx, selectedStepIdx, progress);
+    this.props.dispatch(userActions.updateUserTrainingPlanProgress(progress));
+  }
+
+  /**
    * Displays a modal containing the session summary
    */
   showSummary() {
     const { sessionDuration, slouchTime, totalDuration } = this.state;
     const { backboneVibration } = this.props.user.settings;
+
+    // For timed session, mark the workout as 'completed' only if the entire duration is completed
+    if (sessionDuration > 0 && sessionDuration * 60 === totalDuration) {
+      this.markPostureSessionCompleted();
+    }
 
     this.trackUserSession();
 

@@ -64,6 +64,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
     <View>
       <TouchableHighlight
         activeOpacity={1}
+        disabled={false}
         onHideUnderlay={[Function]}
         onPress={[Function]}
         onShowUnderlay={[Function]}

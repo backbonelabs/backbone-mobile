@@ -52,6 +52,7 @@ import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import postureActions from '../actions/posture';
+import trainingActions from '../actions/training';
 import FullModal from '../components/FullModal';
 import PartialModal from '../components/PartialModal';
 import Spinner from '../components/Spinner';
@@ -308,8 +309,16 @@ class Application extends Component {
                   const parameters = {};
                   if (prevSessionState) {
                     Object.assign(parameters, prevSessionState.parameters);
+
+                    // Restore the goal of the previous event
                     this.props.dispatch(
                       postureActions.setSessionTime(parameters.sessionDuration * 60)
+                    );
+
+                    // Restore the last selected training data to be used
+                    // to mark the session as completed
+                    this.props.dispatch(
+                      trainingActions.restoreTrainingState(prevSessionState.trainingState)
                     );
 
                     // Hacky workaround:
@@ -343,6 +352,12 @@ class Application extends Component {
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)
               .then(prevSessionState => {
                 if (prevSessionState) {
+                  // Restore the last selected training data to be used
+                  // to mark the session as completed
+                  this.props.dispatch(
+                    trainingActions.restoreTrainingState(prevSessionState.trainingState)
+                  );
+
                   setTimeout(() => {
                     this.navigate({
                       ...routes.postureMonitor,
