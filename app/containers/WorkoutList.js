@@ -415,6 +415,8 @@ class WorkoutList extends Component {
           tabBarInactiveTextColor={theme.grey400}
           tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
           tabBarTextStyle={styles._tabBarTextStyle}
+          prerenderingSiblingsNumber={Infinity}
+          scrollWithoutAnimation
         >
           {listViews}
         </ScrollableTabView>
