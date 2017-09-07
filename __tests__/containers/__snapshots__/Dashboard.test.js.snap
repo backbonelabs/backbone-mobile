@@ -5,85 +5,120 @@ exports[`Dashboard Component renders as expected 1`] = `
   source={1}
 >
   <View>
-    <ScrollViewMock
-      bounces={false}
-      onScroll={[Function]}
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-    >
-      <View>
-        <View />
-        <AnimatedComponent
-          source={1}
-          style={
+    <Carousel
+      animationFunc="timing"
+      animationOptions={
+        Object {
+          "easing": [Function],
+        }
+      }
+      autoplay={false}
+      autoplayDelay={5000}
+      autoplayInterval={3000}
+      containerCustomStyle={null}
+      contentContainerCustomStyle={null}
+      enableMomentum={true}
+      enableSnap={true}
+      firstItem={1}
+      inactiveSlideOpacity={1}
+      inactiveSlideScale={1}
+      items={
+        Array [
+          Array [
             Array [
-              undefined,
               Object {
-                "transform": Array [
-                  Object {
-                    "scale": 0.6,
-                  },
-                ],
-              },
-            ]
-          }
-        >
-          <BodyText
-            style={
-              Array [
-                undefined,
-                Object {},
-              ]
-            }
-          >
-            2
-          </BodyText>
-          <Icon
-            allowFontScaling={false}
-            name="lock"
-            size={12}
-          />
-        </AnimatedComponent>
-      </View>
-      <View>
-        <View />
-        <AnimatedComponent
-          source={1}
-          style={
-            Array [
-              undefined,
-              Object {
-                "transform": Array [
-                  Object {
-                    "scale": 0.6,
-                  },
-                ],
-              },
-            ]
-          }
-        >
-          <BodyText
-            style={
-              Array [
-                undefined,
-                Object {
-                  "color": "#9C27B0",
+                "isComplete": true,
+                "title": "Beginner Chest Stretch",
+                "workout": Object {
+                  "_id": "cheststretch",
+                  "title": "Chest Stretch",
                 },
-              ]
-            }
-          >
-            Level 1
-          </BodyText>
-          <View>
-            <Icon
-              allowFontScaling={false}
-              name="circle"
-              size={12}
-            />
-          </View>
-        </AnimatedComponent>
-      </View>
-    </ScrollViewMock>
+              },
+              Object {
+                "isComplete": false,
+                "title": "Intermediate Upper Back Stretch",
+                "workout": Object {
+                  "_id": "nomoney",
+                  "title": "No Money",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Beginner Posture Session",
+                "workout": Object {
+                  "_id": "5minposture",
+                  "title": "5-Minute Posture Session",
+                },
+              },
+            ],
+          ],
+          Array [
+            Array [
+              Object {
+                "isComplete": false,
+                "title": "Beginner Upper Back Exercise",
+                "workout": Object {
+                  "_id": "catcamel",
+                  "title": "Cat Camel",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Intermediate Upper Back Stretch",
+                "workout": Object {
+                  "_id": "bandpullapart",
+                  "title": "Band Pull-Apart",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Beginner Posture Session",
+                "workout": Object {
+                  "_id": "5minposture",
+                  "title": "5-Minute Posture Session",
+                },
+              },
+            ],
+            Array [
+              Object {
+                "isComplete": false,
+                "title": "Intermediate Upper Back Stretch",
+                "workout": Object {
+                  "_id": "nomoney",
+                  "title": "No Money",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Beginner Chest Stretch",
+                "workout": Object {
+                  "_id": "cheststretch",
+                  "title": "Chest Stretch",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Beginner Posture Session",
+                "workout": Object {
+                  "_id": "5minposture",
+                  "title": "5-Minute Posture Session",
+                },
+              },
+            ],
+          ],
+        ]
+      }
+      onCarouselScroll={[Function]}
+      onSnapToItem={[Function]}
+      renderItem={[Function]}
+      reverse={true}
+      shouldOptimizeUpdates={true}
+      showsVerticalScrollIndicator={false}
+      slideStyle={Object {}}
+      snapOnAndroid={true}
+      swipeThreshold={20}
+      vertical={true}
+    />
   </View>
   <View />
   <View>
@@ -136,11 +171,13 @@ exports[`Dashboard Component renders as expected 1`] = `
       }
       onSnapToItem={[Function]}
       renderItem={[Function]}
+      reverse={false}
       shouldOptimizeUpdates={true}
       showsHorizontalScrollIndicator={false}
       slideStyle={Object {}}
       snapOnAndroid={true}
       swipeThreshold={20}
+      vertical={false}
     />
   </View>
 </Image>

@@ -196,7 +196,7 @@ export class PostureIntroComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <BodyText size={3} style={styles.text}>Sit or stand up straight before you begin</BodyText>
+        <BodyText style={styles.text}>Sit or stand up straight before you begin</BodyText>
         <Image source={femaleSitting} style={styles.image} />
         <Button text="START" primary onPress={this.start} />
       </View>

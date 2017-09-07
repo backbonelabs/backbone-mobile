@@ -16,6 +16,7 @@ export default EStyleSheet.create({
   $modalIconSize: applyWidthDifference(100),
   $hexagonContainerHeight: applyWidthDifference(largeHexagonHeight),
   $carouselSliderWidth: '100%',
+  $carouselSliderHeight: '100%',
   $carouselItemWidth: '85%',
   errorIcon: {
     color: theme.warningColor,
@@ -40,6 +41,7 @@ export default EStyleSheet.create({
   levelSliderInnerContainer: {
     alignItems: 'center',
     paddingTop: '50% - $hexagonContainerHeight',
+    paddingBottom: 0,
   },
   hexagonContainer: {
     height: '$hexagonContainerHeight',

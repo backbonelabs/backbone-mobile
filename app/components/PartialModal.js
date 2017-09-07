@@ -4,7 +4,7 @@ import { Modal, View } from 'react-native';
 import { connect } from 'react-redux';
 import appActions from '../actions/app';
 import Button from '../components/Button';
-import BodyText from '../components/BodyText';
+import SecondaryText from '../components/SecondaryText';
 import HeadingText from '../components/HeadingText';
 import styles from '../styles/partialModal';
 
@@ -12,6 +12,7 @@ class PartialModal extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     config: PropTypes.shape({
+      overlay: PropTypes.node,
       topView: PropTypes.node,
       title: PropTypes.shape({
         caption: PropTypes.string,
@@ -23,6 +24,10 @@ class PartialModal extends Component {
       }),
       buttons: PropTypes.array,
       backButtonHandler: PropTypes.func,  // Only used in Android
+      customStyles: PropTypes.shape({
+        containerStyle: View.propTypes.style,
+        topViewStyle: View.propTypes.style,
+      }),
     }),
     showPartial: PropTypes.bool,
   };
@@ -34,16 +39,22 @@ class PartialModal extends Component {
 
   getButtons() {
     const buttonConfigs = this.props.config.buttons;
-    return buttonConfigs.map((val, index) => (
-      <Button
-        shadow={index !== 0}
-        style={styles.button}
-        text={val.caption}
-        key={index}
-        onPress={val.onPress ? val.onPress : this.defaultHandler}
-        primary={index === buttonConfigs.length - 1}
-      />
-    ));
+
+    return buttonConfigs.map((val, index) => {
+      const colorStyle = (val.color ? { backgroundColor: val.color } : {});
+
+      return (
+        <Button
+          shadow={index !== 0}
+          style={[styles._button, colorStyle]}
+          text={val.caption}
+          key={index}
+          underlayColor={val.underlayColor}
+          onPress={val.onPress ? val.onPress : this.defaultHandler}
+          primary={index === buttonConfigs.length - 1}
+        />
+      );
+    });
   }
 
   defaultHandler() {
@@ -54,45 +65,59 @@ class PartialModal extends Component {
     if (!this.props.showPartial) {
       return null;
     }
+
+    const { config } = this.props;
+    const {
+      overlay,
+      topView,
+      title,
+      detail,
+      buttons,
+      customStyles = {},
+    } = config;
+
     return (
       <Modal
         animationType="none"
         transparent
         visible
-        onRequestClose={this.props.config.backButtonHandler ? this.props.config.backButtonHandler :
+        onRequestClose={config.backButtonHandler ? config.backButtonHandler :
           () => {
             // Empty default handler
           }
         }
       >
         <View style={styles.outerContainer}>
-          <View style={styles.innerContainer}>
-            { this.props.config.topView &&
-              <View style={styles.topView}>
-                {this.props.config.topView}
+          <View style={[styles.innerContainer, customStyles.containerStyle]}>
+            { topView &&
+              <View style={[styles.topView, customStyles.topViewStyle]}>
+                {topView}
               </View>
             }
-            { this.props.config.title &&
+            { title &&
               <HeadingText
                 size={1}
                 style={[
-                  styles.titleText,
-                  this.props.config.title.color && { color: this.props.config.title.color },
+                  styles._titleText,
+                  title.color && { color: title.color },
                 ]}
               >
-                {this.props.config.title.caption}
+                {title.caption}
               </HeadingText>
             }
-            <BodyText style={styles.detailText}>
-              {this.props.config.detail.caption}
-            </BodyText>
-            { this.props.config.buttons && this.props.config.buttons.length > 0 &&
+            { detail &&
+              <SecondaryText style={styles._detailText}>
+                {detail.caption}
+              </SecondaryText>
+            }
+            { buttons && buttons.length > 0 &&
               <View style={styles.buttonContainer}>
                 {this.getButtons()}
               </View>
             }
           </View>
         </View>
+        {overlay}
       </Modal>
     );
   }
