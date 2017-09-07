@@ -25,9 +25,11 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string>co.backbonelabs.backbone</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb$(FACEBOOK_APP_ID)</string>
+				<string>backbone</string>
 			</array>
 		</dict>
 	</array>
@@ -35,19 +37,8 @@
 	<string>240</string>
 	<key>DEV_MODE</key>
 	<string>$(DEV_MODE)</string>
-	<key>FacebookAppID</key>
-	<string>$(FACEBOOK_APP_ID)</string>
-	<key>FacebookDisplayName</key>
-	<string>Backbone</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fbapi</string>
-		<string>fb-messenger-api</string>
-		<string>fbauth2</string>
-		<string>fbshareextension</string>
-	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MIXPANEL_TOKEN</key>
@@ -92,5 +83,25 @@
 	<false/>
 	<key>WEB_SERVER_URL</key>
 	<string>$(WEB_SERVER_URL)</string>
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>fb$(FACEBOOK_APP_ID)</string>
+      </array>
+    </dict>
+  </array>
+  <key>FacebookAppID</key>
+  <string>$(FACEBOOK_APP_ID)</string>
+  <key>FacebookDisplayName</key>
+  <string>Backbone</string>
+  <key>LSApplicationQueriesSchemes</key>
+  <array>
+    <string>fbapi</string>
+    <string>fb-messenger-api</string>
+    <string>fbauth2</string>
+    <string>fbshareextension</string>
+  </array>
 </dict>
 </plist>
