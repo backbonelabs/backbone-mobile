@@ -1,4 +1,4 @@
-import { Dimensions, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from './theme';
 import relativeDimensions from '../utils/relativeDimensions';
@@ -51,25 +51,6 @@ export default EStyleSheet.create({
   },
   timer: {
     fontSize: fixedResponsiveFontSize(60),
-  },
-  gif: {
-    width: Dimensions.get('window').width * 0.75, // 75% of screen width
-    height: Dimensions.get('window').width * 0.75 * 0.9, // same aspect ratio as gifs
-  },
-  videoLink: {
-    bottom: applyWidthDifference(10),
-    position: 'absolute',
-    right: applyWidthDifference(10),
-  },
-  videoIcon: {
-    height: applyWidthDifference(23),
-    width: applyWidthDifference(23),
-  },
-  videoPlayerContainer: {
-    flex: 2,
-  },
-  videoPlayer: {
-    width: '100%',
   },
   footer: {
     backgroundColor: theme.grey50,

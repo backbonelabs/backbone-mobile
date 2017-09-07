@@ -4,6 +4,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 const {
   applyWidthDifference,
   fixedResponsiveFontSize,
+  getResponsiveFontSize,
 } = relativeDimensions;
 
 export default EStyleSheet.create({
@@ -44,6 +45,7 @@ export default EStyleSheet.create({
   },
   heartIcon: {
     color: '$red500',
+    fontSize: getResponsiveFontSize(24),
   },
   footerSpaceBox: {
     height: applyWidthDifference(50),
