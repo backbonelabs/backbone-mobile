@@ -184,7 +184,7 @@ class Profile extends Component {
       // Prevents results in 'Change password' from causing an alert
       nextProps.currentRoute.name === routes.profile.name) {
       this.setState({ pickerType: null });
-      if (nextProps.errorMessage || nextProps.user.errorMessage) {
+      if (nextProps.user.errorMessage) {
         // Display an alert when failing to save changed user data
         this.props.dispatch(appActions.showPartialModal({
           title: {
@@ -192,9 +192,10 @@ class Profile extends Component {
             color: theme.warningColor,
           },
           detail: {
-            caption: nextProps.errorMessage ? 'Failed to save changes, please try again'
-            // Display errors from API server when failed to update user
-            : nextProps.user.errorMessage,
+            // Display errors when failing to update user
+            caption: nextProps.user.errorMessage === 'An email was sent to your email address. ' +
+            'Please check your email to confirm your email address before connecting with Facebook.' ?
+            nextProps.user.errorMessage : 'Failed to save changes...',
           },
           buttons: [
             { caption: 'OK' },
