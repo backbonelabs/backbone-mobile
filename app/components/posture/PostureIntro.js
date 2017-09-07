@@ -25,7 +25,6 @@ export class PostureIntroComponent extends Component {
     duration: PropTypes.number.isRequired,
     navigator: PropTypes.shape({
       replace: PropTypes.func.isRequired,
-      pop: PropTypes.func.isRequired,
       push: PropTypes.func.isRequired,
     }).isRequired,
     postureActions: PropTypes.shape({
@@ -71,7 +70,6 @@ export class PostureIntroComponent extends Component {
                     caption: 'OK',
                     onPress: () => {
                       this.props.dispatch(appActions.hidePartialModal());
-                      this.props.navigator.pop();
                     },
                   },
                 ],
