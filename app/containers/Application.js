@@ -16,36 +16,16 @@ import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import clone from 'lodash/clone';
 import { UPDATE_BLUETOOTH_STATE } from '../actions/types';
-import educationIconBlue from '../images/tabBar/education-icon-blue.png';
-import educationIconGreen from '../images/tabBar/education-icon-green.png';
+import educationIconActive from '../images/tabBar/education-icon-active.png';
 import educationIconInactive from '../images/tabBar/education-icon-inactive.png';
-import educationIconOrange from '../images/tabBar/education-icon-orange.png';
-import educationIconPurple from '../images/tabBar/education-icon-purple.png';
-import educationIconRed from '../images/tabBar/education-icon-red.png';
-import homeIconBlue from '../images/tabBar/home-icon-blue.png';
-import homeIconGreen from '../images/tabBar/home-icon-green.png';
+import homeIconActive from '../images/tabBar/home-icon-active.png';
 import homeIconInactive from '../images/tabBar/home-icon-inactive.png';
-import homeIconOrange from '../images/tabBar/home-icon-orange.png';
-import homeIconPurple from '../images/tabBar/home-icon-purple.png';
-import homeIconRed from '../images/tabBar/home-icon-red.png';
-import postureIconBlue from '../images/tabBar/posture-icon-blue.png';
-import postureIconGreen from '../images/tabBar/posture-icon-green.png';
+import postureIconActive from '../images/tabBar/posture-icon-active.png';
 import postureIconInactive from '../images/tabBar/posture-icon-inactive.png';
-import postureIconOrange from '../images/tabBar/posture-icon-orange.png';
-import postureIconPurple from '../images/tabBar/posture-icon-purple.png';
-import postureIconRed from '../images/tabBar/posture-icon-red.png';
-import statsIconBlue from '../images/tabBar/stats-icon-blue.png';
-import statsIconGreen from '../images/tabBar/stats-icon-green.png';
+import statsIconActive from '../images/tabBar/stats-icon-active.png';
 import statsIconInactive from '../images/tabBar/stats-icon-inactive.png';
-import statsIconOrange from '../images/tabBar/stats-icon-orange.png';
-import statsIconPurple from '../images/tabBar/stats-icon-purple.png';
-import statsIconRed from '../images/tabBar/stats-icon-red.png';
-import freeTrainingIconBlue from '../images/tabBar/freeTraining-icon-blue.png';
-import freeTrainingIconGreen from '../images/tabBar/freeTraining-icon-green.png';
+import freeTrainingIconActive from '../images/tabBar/freeTraining-icon-active.png';
 import freeTrainingIconInactive from '../images/tabBar/freeTraining-icon-inactive.png';
-import freeTrainingIconOrange from '../images/tabBar/freeTraining-icon-orange.png';
-import freeTrainingIconPurple from '../images/tabBar/freeTraining-icon-purple.png';
-import freeTrainingIconRed from '../images/tabBar/freeTraining-icon-red.png';
 import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
 import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
 import appActions from '../actions/app';
@@ -65,7 +45,6 @@ import constants from '../utils/constants';
 import SensitiveInfo from '../utils/SensitiveInfo';
 import Bugsnag from '../utils/Bugsnag';
 import Mixpanel from '../utils/Mixpanel';
-import { getColorNameForLevel } from '../utils/levelColors';
 
 const { bluetoothStates, deviceModes, deviceStatuses, storageKeys } = constants;
 
@@ -698,47 +677,27 @@ class Application extends Component {
     const tabBarRoutes = [
       {
         routeName: routes.dashboard.name,
-        red: homeIconRed,
-        green: homeIconGreen,
-        blue: homeIconBlue,
-        purple: homeIconPurple,
-        orange: homeIconOrange,
+        active: homeIconActive,
         inactive: homeIconInactive,
       },
       {
         routeName: routes.stats.name,
-        red: statsIconRed,
-        green: statsIconGreen,
-        blue: statsIconBlue,
-        purple: statsIconPurple,
-        orange: statsIconOrange,
+        active: statsIconActive,
         inactive: statsIconInactive,
       },
       {
         routeName: routes.postureIntro.name,
-        red: postureIconRed,
-        green: postureIconGreen,
-        blue: postureIconBlue,
-        purple: postureIconPurple,
-        orange: postureIconOrange,
+        active: postureIconActive,
         inactive: postureIconInactive,
       },
       {
         routeName: routes.freeTraining.name,
-        red: freeTrainingIconRed,
-        green: freeTrainingIconGreen,
-        blue: freeTrainingIconBlue,
-        purple: freeTrainingIconPurple,
-        orange: freeTrainingIconOrange,
+        active: freeTrainingIconActive,
         inactive: freeTrainingIconInactive,
       },
       {
         routeName: routes.education.name,
-        red: educationIconRed,
-        green: educationIconGreen,
-        blue: educationIconBlue,
-        purple: educationIconPurple,
-        orange: educationIconOrange,
+        active: educationIconActive,
         inactive: educationIconInactive,
       },
     ];
@@ -752,8 +711,7 @@ class Application extends Component {
             // Check if current route matches tab bar route
             const isSameRoute = route.name === routeName;
             // Set icon to active color if current route matches tab bar route
-            const levelColor = getColorNameForLevel(this.props.training.selectedLevelIdx);
-            const imageSource = isSameRoute ? tabBarRoute[levelColor] : tabBarRoute.inactive;
+            const imageSource = isSameRoute ? tabBarRoute.active : tabBarRoute.inactive;
 
             return (
               <TouchableOpacity

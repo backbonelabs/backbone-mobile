@@ -14,7 +14,6 @@ import Spinner from '../components/Spinner';
 import Graph from '../components/Graph';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
-import { getColorHexForLevel } from '../utils/levelColors';
 
 const week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -217,9 +216,6 @@ class Stats extends Component {
       flex: 0,
     };
 
-    const level = this.props.training.selectedLevelIdx;
-    const levelColorCode = getColorHexForLevel(level);
-
     if (this.props.isFetchingSessions || loading) {
       return <Spinner />;
     }
@@ -250,12 +246,9 @@ class Stats extends Component {
           style={styles.tabs}
           onChangeTab={this.selectTab}
           tabBarPosition="bottom"
-          tabBarActiveTextColor={levelColorCode}
+          tabBarActiveTextColor={theme.lightBlue500}
           tabBarInactiveTextColor={theme.grey400}
-          tabBarUnderlineStyle={[
-            styles.tabBarUnderlineStyle,
-            { backgroundColor: levelColorCode },
-          ]}
+          tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
           tabBarTextStyle={styles.tabBarTextStyle}
         >
           <View tabLabel="Today" />

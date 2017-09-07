@@ -40,6 +40,7 @@ export default EStyleSheet.create({
   },
   tabBarUnderlineStyle: {
     borderRadius: 4,
+    backgroundColor: '$lightBlue500',
   },
   tabBarTextStyle: {
     fontSize: fixedResponsiveFontSize(14),
