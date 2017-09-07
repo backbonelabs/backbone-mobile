@@ -41,6 +41,7 @@
 		690301FE1EA7A68D00A59FD4 /* VibrationMotorService.m in Sources */ = {isa = PBXBuildFile; fileRef = 690301FD1EA7A68D00A59FD4 /* VibrationMotorService.m */; };
 		6905742E1F4C2AFB00006412 /* UserSettingService.m in Sources */ = {isa = PBXBuildFile; fileRef = 6905742D1F4C2AFB00006412 /* UserSettingService.m */; };
 		690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 690A06151DF8544E00EAC570 /* OTAFileParser.m */; };
+		695248D91F57AF38008AC050 /* ViewControllerService.m in Sources */ = {isa = PBXBuildFile; fileRef = 695248D81F57AF38008AC050 /* ViewControllerService.m */; };
 		699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 699262611DE58A28003FBBC7 /* SessionControlService.m */; };
 		69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */; };
 		69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69AAF58E1E1D6314005FD0BF /* NotificationService.m */; };
@@ -373,6 +374,8 @@
 		6905742D1F4C2AFB00006412 /* UserSettingService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UserSettingService.m; path = backbone/UserSettingService.m; sourceTree = "<group>"; };
 		690A06141DF8544E00EAC570 /* OTAFileParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTAFileParser.h; sourceTree = "<group>"; };
 		690A06151DF8544E00EAC570 /* OTAFileParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTAFileParser.m; sourceTree = "<group>"; };
+		695248D71F57AF38008AC050 /* ViewControllerService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewControllerService.h; path = backbone/ViewControllerService.h; sourceTree = "<group>"; };
+		695248D81F57AF38008AC050 /* ViewControllerService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewControllerService.m; path = backbone/ViewControllerService.m; sourceTree = "<group>"; };
 		699262601DE58A28003FBBC7 /* SessionControlService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SessionControlService.h; path = backbone/SessionControlService.h; sourceTree = "<group>"; };
 		699262611DE58A28003FBBC7 /* SessionControlService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SessionControlService.m; path = backbone/SessionControlService.m; sourceTree = "<group>"; };
 		69A002ED1DDCA13B002C47FB /* DeviceInformationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeviceInformationService.h; path = backbone/DeviceInformationService.h; sourceTree = "<group>"; };
@@ -564,6 +567,8 @@
 				66351EB21EE098B200383F23 /* UserService.m */,
 				6905742C1F4C2AFB00006412 /* UserSettingService.h */,
 				6905742D1F4C2AFB00006412 /* UserSettingService.m */,
+				695248D71F57AF38008AC050 /* ViewControllerService.h */,
+				695248D81F57AF38008AC050 /* ViewControllerService.m */,
 			);
 			name = Backbone;
 			sourceTree = "<group>";
@@ -1398,6 +1403,7 @@
 				69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				690301FE1EA7A68D00A59FD4 /* VibrationMotorService.m in Sources */,
+				695248D91F57AF38008AC050 /* ViewControllerService.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */,
 				69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */,

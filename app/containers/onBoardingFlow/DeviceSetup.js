@@ -13,10 +13,10 @@ const DeviceSetup = ({ navigator }) => {
   const setup = () => navigator.push({ ...routes.deviceScan, props: { showSkip: true } });
 
   return (
-    <View style={styles._container}>
-      <StepBar step={3} style={styles._stepBar} />
-      <BodyText style={styles._deviceSetup_header}>
-          Excellent! Now let's connect your device.
+    <View style={styles.container}>
+      <StepBar step={3} style={styles.stepBar} />
+      <BodyText style={styles.deviceSetup_header}>
+        Excellent! Now let's connect your device.
       </BodyText>
       <View style={styles.innerContainer}>
         <Image
@@ -27,7 +27,7 @@ const DeviceSetup = ({ navigator }) => {
       <View style={styles.btnContainer}>
         <View style={styles.CTAContainer}>
           <Button
-            style={styles._CTAButton}
+            style={styles.CTAButton}
             text="SET UP DEVICE"
             primary
             onPress={setup}
@@ -37,8 +37,8 @@ const DeviceSetup = ({ navigator }) => {
           onPress={skip}
           activeOpacity={0.4}
         >
-          <SecondaryText style={styles._skip}>
-              Skip Setup
+          <SecondaryText style={styles.skip}>
+            Skip Setup
           </SecondaryText>
         </TouchableOpacity>
       </View>

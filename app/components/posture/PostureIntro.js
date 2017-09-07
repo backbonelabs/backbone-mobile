@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { View, Image } from 'react-native';
 import Button from '../Button';
-import HeadingText from '../HeadingText';
+import BodyText from '../BodyText';
 import postureActions from '../../actions/posture';
 import femaleSitting from '../../images/posture/female-sitting.gif';
 import routes from '../../routes';
@@ -34,7 +34,7 @@ class PostureIntro extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <HeadingText size={3}>Sit or stand up straight before you begin</HeadingText>
+        <BodyText size={3} style={styles.text}>Sit or stand up straight before you begin</BodyText>
         <Image source={femaleSitting} style={styles.image} />
         <Button text="START" primary onPress={() => this.props.onProceed(this.props.navigator)} />
       </View>

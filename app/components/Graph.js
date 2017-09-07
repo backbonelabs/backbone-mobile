@@ -40,7 +40,7 @@ const tickValues = (data) => data.map((val) => val.label);
 
 const Graph = ({ data, goodTime, poorTime }) => {
   if (!goodTime && !poorTime) {
-    return <HeadingText size={1} style={styles._noData}>No Data Available</HeadingText>;
+    return <HeadingText size={1} style={styles.noData}>No Data Available</HeadingText>;
   }
 
   const chartWidth = width + 20;

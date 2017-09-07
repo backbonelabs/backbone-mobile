@@ -4,5 +4,5 @@ export default {
   name: 'postureReport',
   component: PostureReport,
   title: 'Posture Report',
-  showBackButton: true,
+  showLeftComponent: true,
 };

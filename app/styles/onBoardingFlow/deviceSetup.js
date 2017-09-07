@@ -7,7 +7,7 @@ const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 export default EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '$grey100',
     alignItems: 'center',
   },
   stepBar: {
@@ -102,7 +102,7 @@ export default EStyleSheet.create({
   },
   howToContainer: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '$grey100',
   },
   howToInnerContainer: {
     flex: 2,

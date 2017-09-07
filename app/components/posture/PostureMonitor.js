@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   AppState,
   View,
   Image,
@@ -13,6 +12,7 @@ import {
 import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import { debounce, isEqual, isFunction } from 'lodash';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -24,16 +24,21 @@ import MonitorSlider from './postureMonitor/MonitorSlider';
 import appActions from '../../actions/app';
 import deviceActions from '../../actions/device';
 import userActions from '../../actions/user';
-import PostureSummary from './PostureSummary';
 import routes from '../../routes';
 import constants from '../../utils/constants';
 import Mixpanel from '../../utils/Mixpanel';
 import SensitiveInfo from '../../utils/SensitiveInfo';
 import theme from '../../styles/theme';
+import vertebraeIcon from '../../images/vertebrae-icon.png';
 import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import deviceWarningIcon from '../../images/settings/device-warning-icon.png';
 import deviceSuccessIcon from '../../images/settings/device-success-icon.png';
-import { getColorHexForLevel } from '../../utils/levelColors';
+import {
+  getColorHexForLevel,
+  getColorHexForLevelUnderlay,
+} from '../../utils/levelColors';
+import { zeroPadding } from '../../utils/timeUtils';
+import { markSessionStepComplete } from '../../utils/trainingUtils';
 
 const {
   BluetoothService,
@@ -124,7 +129,15 @@ class PostureMonitor extends Component {
       }),
     }),
     training: PropTypes.shape({
+      plans: PropTypes.arrayOf(
+        PropTypes.shape({
+          _id: PropTypes.string,
+        })
+      ),
+      selectedPlanIdx: PropTypes.number,
       selectedLevelIdx: PropTypes.number,
+      selectedSessionIdx: PropTypes.number,
+      selectedStepIdx: PropTypes.number,
     }),
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
@@ -153,6 +166,13 @@ class PostureMonitor extends Component {
       }),
     }),
     user: PropTypes.shape({
+      trainingPlanProgress: PropTypes.objectOf(
+        PropTypes.arrayOf(
+          PropTypes.arrayOf(
+            PropTypes.arrayOf(PropTypes.bool)
+          )
+        )
+      ),
       settings: PropTypes.shape({
         phoneVibration: PropTypes.bool.isRequired,
         postureThreshold: PropTypes.number.isRequired,
@@ -447,12 +467,25 @@ class PostureMonitor extends Component {
    */
   setSessionState(session, callback) {
     const { state, parameters } = session;
+    const {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+      selectedStepIdx,
+    } = this.props.training;
+
     if ((state === sessionStates.RUNNING || state === sessionStates.PAUSED) && parameters) {
       // Store session state in local storage in case the app exits
       // and relaunches while the session is still active on the device
       SensitiveInfo.setItem(storageKeys.SESSION_STATE, {
         state,
         parameters,
+        trainingState: {
+          selectedPlanIdx,
+          selectedLevelIdx,
+          selectedSessionIdx,
+          selectedStepIdx,
+        },
       });
     } else if (state === sessionStates.STOPPED) {
       // Remove session state from local storage
@@ -476,7 +509,7 @@ class PostureMonitor extends Component {
 
   showReconnectStartedIndicator() {
     this.props.dispatch(appActions.showPartialModal({
-      topView: (<Spinner style={styles._partialSpinnerContainer} />),
+      topView: (<Spinner style={styles.partialSpinnerContainer} />),
       title: {
         caption: 'Reconnecting',
       },
@@ -637,47 +670,6 @@ class PostureMonitor extends Component {
     });
   }
 
-  /**
-   * Displays an alert with at least two buttons
-   * @param  {Object}   options
-   * @param  {String}   options.title              Title for the alert, defaults to 'Error'
-   * @param  {String}   options.message            Main body message for the alert
-   * @param  {String}   options.leftButtonLabel    Label for left button, defaults to 'Cancel'
-   * @param  {Function} options.leftButtonAction   Action for left button
-   * @param  {String}   options.centerButtonLabel  Label for center button. If undefined, the center
-   *                                               button will not be displayed.
-   * @param  {Function} options.centerButtonAction Action for center button
-   * @param  {String}   options.rightButtonLabel   Label for right button, defaults to 'OK'
-   * @param  {Function} options.rightButtonAction  Action for right button
-   */
-  sessionCommandAlert({
-    title = 'Error',
-    message,
-    leftButtonLabel = 'Cancel',
-    leftButtonAction,
-    centerButtonLabel,
-    centerButtonAction,
-    rightButtonLabel = 'OK',
-    rightButtonAction,
-  }) {
-    const buttons = [{
-      text: leftButtonLabel,
-      onPress: leftButtonAction,
-    }, {
-      text: rightButtonLabel,
-      onPress: rightButtonAction,
-    }];
-
-    if (centerButtonLabel) {
-      buttons.splice(1, 0, {
-        text: centerButtonLabel,
-        onPress: centerButtonAction,
-      });
-    }
-
-    Alert.alert(title, message, buttons);
-  }
-
   startSession() {
     if (!this.state.hasPendingSessionOperation) {
       const {
@@ -713,15 +705,38 @@ class PostureMonitor extends Component {
           if (this.state.sessionState === sessionStates.STOPPED) {
             // No session has been started, which means the initial autostart failed, so we should
             // just navigate back since there is nothing else the user can do in this scene
-            Alert.alert('Error', message);
-            this.props.navigator.pop();
+            this.props.dispatch(appActions.showPartialModal({
+              detail: { caption: message },
+              buttons: [
+                {
+                  caption: 'OK',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.props.navigator.pop();
+                  },
+                },
+              ],
+              backButtonHandler: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            }));
           } else {
             // A session was already started, so an error here would be for resuming the session
-            this.sessionCommandAlert({
-              message,
-              rightButtonLabel: 'Retry',
-              rightButtonAction: this.startSession,
-            });
+            this.props.dispatch(appActions.showPartialModal({
+              detail: { caption: message },
+              buttons: [
+                {
+                  caption: 'Retry',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.startSession();
+                  },
+                },
+              ],
+              backButtonHandler: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            }));
           }
 
           Mixpanel.trackError({
@@ -749,11 +764,21 @@ class PostureMonitor extends Component {
         this.setState({ hasPendingSessionOperation: false });
 
         if (err) {
-          this.sessionCommandAlert({
-            message: 'An error occurred while attempting to pause the session.',
-            rightButtonLabel: 'Retry',
-            rightButtonAction: this.pauseSession,
-          });
+          this.props.dispatch(appActions.showPartialModal({
+            detail: { caption: 'An error occurred while attempting to pause the session.' },
+            buttons: [
+              {
+                caption: 'Retry',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                  this.pauseSession();
+                },
+              },
+            ],
+            backButtonHandler: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          }));
 
           Mixpanel.trackError({
             errorContent: err,
@@ -802,11 +827,21 @@ class PostureMonitor extends Component {
         this.setState({ hasPendingSessionOperation: false });
 
         if (err) {
-          this.sessionCommandAlert({
-            message: 'An error occurred while attempting to resume the session.',
-            rightLabel: 'Retry',
-            rightAction: this.resumeSession,
-          });
+          this.props.dispatch(appActions.showPartialModal({
+            detail: { caption: 'An error occurred while attempting to resume the session.' },
+            buttons: [
+              {
+                caption: 'Retry',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                  this.resumeSession();
+                },
+              },
+            ],
+            backButtonHandler: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          }));
 
           Mixpanel.trackError({
             errorContent: err,
@@ -830,11 +865,28 @@ class PostureMonitor extends Component {
     if (!this.state.hasPendingSessionOperation) {
       if (this.state.sessionState === sessionStates.STOPPED) {
         // There is no active session
-        this.sessionCommandAlert({
-          title: 'Exit',
-          message: 'Are you sure you want to leave?',
-          rightButtonAction: this.props.navigator.pop,
-        });
+        this.props.dispatch(appActions.showPartialModal({
+          title: { caption: 'Exit' },
+          detail: { caption: 'Are you sure you want to leave?' },
+          buttons: [
+            {
+              caption: 'Cancel',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+            {
+              caption: 'Exit',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+                this.props.navigator.pop();
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       } else {
         this.setState({
           hasPendingSessionOperation: true,
@@ -850,13 +902,28 @@ class PostureMonitor extends Component {
             // the scene could already be unmounted at this phase
             this.setState({ hasPendingSessionOperation: false });
 
-            this.sessionCommandAlert({
-              message: 'An error occurred while attempting to stop the session.',
-              centerButtonLabel: 'Leave',
-              centerButtonAction: this.props.navigator.pop,
-              rightButtonLabel: 'Retry',
-              rightButtonAction: this.stopSession,
-            });
+            this.props.dispatch(appActions.showPartialModal({
+              detail: { caption: 'An error occurred while attempting to stop the session.' },
+              buttons: [
+                {
+                  caption: 'Leave',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.props.navigator.pop();
+                  },
+                },
+                {
+                  caption: 'Retry',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                    this.stopSession();
+                  },
+                },
+              ],
+              backButtonHandler: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            }));
 
             Mixpanel.trackError({
               errorContent: err,
@@ -965,17 +1032,166 @@ class PostureMonitor extends Component {
   }
 
   /**
+   * Marks the current posture sesson as completed
+   */
+  markPostureSessionCompleted() {
+    const {
+      plans,
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+      selectedStepIdx,
+    } = this.props.training;
+    let progress = this.props.user.trainingPlanProgress;
+    progress = markSessionStepComplete(plans, selectedPlanIdx, selectedLevelIdx,
+      selectedSessionIdx, selectedStepIdx, progress);
+    this.props.dispatch(userActions.updateUserTrainingPlanProgress(progress));
+  }
+
+  /**
    * Displays a modal containing the session summary
    */
   showSummary() {
     const { sessionDuration, slouchTime, totalDuration } = this.state;
     const { backboneVibration } = this.props.user.settings;
 
+    // For timed session, mark the workout as 'completed' only if the entire duration is completed
+    if (sessionDuration > 0 && sessionDuration * 60 === totalDuration) {
+      this.markPostureSessionCompleted();
+    }
+
     this.trackUserSession();
-    this.props.dispatch(appActions.showFullModal({
-      onClose: () => this.props.navigator.resetTo(routes.dashboard),
-      content:
-        <PostureSummary goodPostureTime={totalDuration - slouchTime} goal={sessionDuration} />,
+
+    const { selectedLevelIdx: level } = this.props.training;
+    const levelColorCode = getColorHexForLevel(level);
+    const levelColorCodeUnderlay = getColorHexForLevelUnderlay(level);
+    const levelColorStyle = { color: levelColorCode };
+    const levelBackgroundColorStyle = { backgroundColor: levelColorCodeUnderlay };
+
+    const goodPostureTime = totalDuration - slouchTime;
+    const goal = sessionDuration;
+    const goodPostureHours = Math.floor(goodPostureTime / 3600);
+    const goodPostureMinutes = Math.floor((goodPostureTime - (goodPostureHours * 3600)) / 60);
+    const goodPostureSeconds = goodPostureTime % 60;
+
+    const gradePercentage = goodPostureTime / (goal > 0 ? goal * 60 : totalDuration);
+    const awesomeGrade = gradePercentage >= 0.9;
+    let grade;
+
+    if (gradePercentage >= 1.0) {
+      grade = 'A+';
+    } else if (gradePercentage >= 0.93) {
+      grade = 'A';
+    } else if (gradePercentage >= 0.9) {
+      grade = 'A-';
+    } else if (gradePercentage >= 0.87) {
+      grade = 'B+';
+    } else if (gradePercentage >= 0.83) {
+      grade = 'B';
+    } else if (gradePercentage >= 0.8) {
+      grade = 'B-';
+    } else if (gradePercentage >= 0.77) {
+      grade = 'C+';
+    } else if (gradePercentage >= 0.73) {
+      grade = 'C';
+    } else if (gradePercentage >= 0.7) {
+      grade = 'C-';
+    } else if (gradePercentage >= 0.67) {
+      grade = 'D+';
+    } else if (gradePercentage >= 0.63) {
+      grade = 'D';
+    } else if (gradePercentage >= 0.6) {
+      grade = 'D-';
+    } else {
+      grade = 'F';
+    }
+
+    const goodPostureTimeStringArray = ['', '00:', `${zeroPadding(goodPostureSeconds)}`];
+    if (goodPostureHours) {
+      goodPostureTimeStringArray[0] = `${goodPostureHours}:`;
+    }
+    if (goodPostureMinutes) {
+      goodPostureTimeStringArray[1] = `${goodPostureMinutes}:`;
+    }
+    const goodPostureTimeString = goodPostureTimeStringArray.join('');
+
+    const closeSummaryAndPop = () => {
+      this.props.dispatch(appActions.hidePartialModal());
+      this.props.navigator.pop();
+    };
+
+    this.props.dispatch(appActions.showPartialModal({
+      overlay: (
+        <View style={awesomeGrade ? styles.topCircleOverlay : styles.topCircleOverlayShort}>
+          <FontAwesomeIcon name={'circle'} style={[styles.summaryTopStarCircle, levelColorStyle]} />
+          <FontAwesomeIcon name={'star'} style={styles.summaryTopStar} />
+        </View>
+      ),
+      topView: (
+        <View style={styles.summaryContainer}>
+          { awesomeGrade ?
+            <BodyText style={[styles._summaryTitle, levelColorStyle]}>
+              Awesome!
+            </BodyText>
+              : <View style={styles.emptyTitle} />
+          }
+          <View style={[styles.summaryDetailContainer, levelBackgroundColorStyle]}>
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <FontAwesomeIcon name={'bullseye'} style={styles.summaryDetailIconGoal} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Goal:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>
+                  {goal > 0 ? `${goal}:00` : '-'}
+                </BodyText>
+              </View>
+            </View>
+            <View style={styles.summaryDetailLine} />
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <Image source={vertebraeIcon} style={styles.summaryDetailIconVertebrae} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Perfect Posture:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>{goodPostureTimeString}</BodyText>
+              </View>
+            </View>
+            <View style={styles.summaryDetailLine} />
+            <View style={styles.summaryDetailRow}>
+              <View style={styles.summaryDetailIconContainer}>
+                <FontAwesomeIcon name={'star'} style={styles.summaryDetailIconStar} />
+              </View>
+              <View style={styles.summaryDetailCaptionContainer}>
+                <BodyText style={styles._summaryDetailCaption}>Grade:</BodyText>
+              </View>
+              <View style={styles.summaryDetailValueContainer}>
+                <BodyText style={styles._summaryDetailValue}>{grade}</BodyText>
+              </View>
+            </View>
+          </View>
+        </View>
+      ),
+      detail: {
+        caption: '',
+      },
+      buttons: [
+        {
+          caption: 'DONE',
+          onPress: closeSummaryAndPop,
+          color: levelColorCode,
+          underlayColor: levelColorCodeUnderlay,
+        },
+      ],
+      backButtonHandler: closeSummaryAndPop,
+      customStyles: {
+        containerStyle: styles.summaryMainContainer,
+        topViewStyle: styles.summaryTopView,
+      },
     }));
 
     // Clear the slouch notification when the current session has ended
@@ -1085,8 +1301,6 @@ class PostureMonitor extends Component {
     } = this.state;
 
     const isDisabled = sessionState === sessionStates.RUNNING;
-    const level = this.props.training.selectedLevelIdx;
-    const levelColorCode = getColorHexForLevel(level);
 
     const getPlayPauseButton = () => {
       if (sessionState === sessionStates.STOPPED) {
@@ -1095,8 +1309,6 @@ class PostureMonitor extends Component {
             text="PLAY"
             icon="play-arrow"
             onPress={this.startSession}
-            underlayColor={levelColorCode}
-            iconColor={levelColorCode}
           />
         );
       } else if (isDisabled) {
@@ -1105,8 +1317,6 @@ class PostureMonitor extends Component {
             text="PAUSE"
             icon="pause"
             onPress={this.pauseSession}
-            underlayColor={levelColorCode}
-            iconColor={levelColorCode}
           />
         );
       }
@@ -1115,23 +1325,23 @@ class PostureMonitor extends Component {
           text="PLAY"
           icon="play-arrow"
           onPress={this.resumeSession}
-          underlayColor={levelColorCode}
-          iconColor={levelColorCode}
         />
       );
     };
 
     return this.props.device.isConnecting ? (
       <View style={styles.connectingContainer}>
-        <Spinner style={styles._connectingSpinner} />
-        <HeadingText size={2} style={styles._connectingText}>Connecting...</HeadingText>
+        <Spinner style={styles.connectingSpinner} />
+        <HeadingText size={2} style={styles.connectingText}>Connecting...</HeadingText>
       </View>
     ) : (
       <View style={styles.container}>
-        <BodyText style={[styles._timer, { color: levelColorCode }]}>
-          {this.getFormattedTime()}
-        </BodyText>
-        <BodyText style={styles._heading}>Time Remaining</BodyText>
+        <View>
+          <BodyText style={styles.timer}>
+            {this.getFormattedTime()}
+          </BodyText>
+          <BodyText style={styles.heading}>Time Remaining</BodyText>
+        </View>
         <Monitor
           disable={isDisabled}
           pointerPosition={pointerPosition}
@@ -1159,10 +1369,9 @@ class PostureMonitor extends Component {
             }}
             minimumValue={MIN_POSTURE_THRESHOLD - MAX_POSTURE_THRESHOLD}
             maximumValue={0}
-            minimumTrackTintColor={levelColorCode}
             disabled={isDisabled}
           />
-          <SecondaryText style={styles._sliderTitle}>SLOUCH DETECTION</SecondaryText>
+          <SecondaryText style={styles.sliderTitle}>SLOUCH DETECTION</SecondaryText>
         </View>
         <View style={styles.btnContainer}>
           {getPlayPauseButton()}
@@ -1171,23 +1380,17 @@ class PostureMonitor extends Component {
               disabled
               icon="notifications"
               text="ALERTS"
-              underlayColor={levelColorCode}
-              iconColor={levelColorCode}
             /> :
               <MonitorButton
                 icon="notifications"
                 text="ALERTS"
                 onPress={this.navigateToAlert}
-                underlayColor={levelColorCode}
-                iconColor={levelColorCode}
               />
           }
           <MonitorButton
             text="STOP"
             icon="stop"
             onPress={this.confirmStopSession}
-            underlayColor={levelColorCode}
-            iconColor={levelColorCode}
           />
         </View>
       </View>

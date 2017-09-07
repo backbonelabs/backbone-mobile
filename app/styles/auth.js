@@ -2,16 +2,13 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const {
-  applyWidthDifference,
-  fixedResponsiveFontSize,
-} = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '$grey50',
   },
   innerContainer: {
     alignItems: 'center',
@@ -68,7 +65,6 @@ export default EStyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     paddingVertical: applyWidthDifference(15),
-    fontSize: fixedResponsiveFontSize(14),
     width: '85%',
   },
   formContainer: {
@@ -97,14 +93,13 @@ export default EStyleSheet.create({
   breakLine: {
     borderTopWidth: 1,
     flex: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: '$grey300',
   },
   textBreak: {
     paddingLeft: 10,
     paddingRight: 10,
-    color: '#E0E0E0',
+    color: '$grey300',
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(12),
   },
   legalContainer: {
     flexDirection: 'row',
@@ -144,9 +139,8 @@ export default EStyleSheet.create({
     marginBottom: applyWidthDifference(10),
   },
   warning: {
-    color: '$primaryColor',
+    color: '$warningColor',
     textAlign: 'center',
     marginLeft: applyWidthDifference(5),
-    fontSize: fixedResponsiveFontSize(14),
   },
 });

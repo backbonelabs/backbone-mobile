@@ -21,7 +21,6 @@ import appActions from '../actions/app';
 import userActions from '../actions/user';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
-import SecondaryText from '../components/SecondaryText';
 import Card from '../components/Card';
 import Carousel from '../components/Carousel';
 import purpleBg from '../images/dashboard/dashboard-bg-purple.jpg';
@@ -446,7 +445,6 @@ class Dashboard extends Component {
       this.props.selectLevel(idx);
 
       const animations = [];
-
       // Animation for scaling the new selected level's hexagon up
       animations.push(Animated.timing(this.state.animations[idx], {
         useNativeDriver: true,
@@ -571,17 +569,20 @@ class Dashboard extends Component {
         <View>
           <View style={styles.sessionCardTopContainer}>
             <View style={styles.sessionCardTopLeftContainer}>
-              <SecondaryText style={{ color: hexColor, ...styles._sessionTitle }}>
+              <BodyText style={[styles.sessionTitle, { color: hexColor }]}>
                 {`Session ${idx + 1} - Exercise List`}
-              </SecondaryText>
+              </BodyText>
             </View>
             <View style={styles.sessionCardTopRightContainer}>
               { durationInSeconds > 0 &&
                 <View style={styles.sessionDurationContainer}>
-                  <FontAwesomeIcon name={'clock-o'} style={{ color: hexColor }} />
-                  <SecondaryText style={{ color: hexColor, ...styles._durationText }}>
+                  <FontAwesomeIcon
+                    name={'clock-o'}
+                    style={[styles.durationIcon, { color: hexColor }]}
+                  />
+                  <BodyText style={[styles.durationText, { color: hexColor }]}>
                     {durationText}
-                  </SecondaryText>
+                  </BodyText>
                 </View>
               }
             </View>

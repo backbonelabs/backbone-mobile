@@ -1,3 +1,5 @@
+import color from 'color';
+
 export const hexCodes = {
   purple: '#9C27B0', // Material purple 500
   blue: '#03A9F4', // Material light blue 500
@@ -26,6 +28,15 @@ export const colors = [
  * @return {String} The color hex code
  */
 export const getColorHexForLevel = level => hexCodes[colors[level % colors.length]];
+
+/**
+ * Maps a level (0-index based) to a color hex code for the underlay
+ * @param {Number} level Integer representing the level based on a 0-index,
+ *                       i.e., 0 is level 1, 1 is level 2, etc.
+ * @return {String} The color hex code
+ */
+export const getColorHexForLevelUnderlay = level =>
+color(getColorHexForLevel(level)).clearer(0.5).rgbString();
 
 /**
  * Maps a level (0-index based) to a color name

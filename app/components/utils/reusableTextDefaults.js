@@ -1,14 +1,11 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, Text } from 'react-native';
 
 const { PropTypes } = React;
 
 const propTypes = {
   children: PropTypes.node,
-  style: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.arrayOf(PropTypes.object),
-  ]),
+  style: Text.propTypes.style,
 };
 
 const defaultProps = {

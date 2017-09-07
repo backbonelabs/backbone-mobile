@@ -6,7 +6,6 @@ import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
 import color from 'color';
 import TitleBar from '../../app/containers/TitleBar';
-import { getColorHexForLevel } from '../../app/utils/levelColors';
 
 describe('TitleBar Component', () => {
   const defaultState = {
@@ -15,9 +14,9 @@ describe('TitleBar Component', () => {
         name: null,
         title: null,
         component: null,
-        showBackButton: false,
+        showLeftComponent: false,
+        showRightComponent: false,
         showNavbar: false,
-        centerComponent: null,
         rightComponent: null,
         styles: {},
       },
@@ -26,6 +25,10 @@ describe('TitleBar Component', () => {
       selectedLevelIdx: 0,
     },
   };
+  const currentRoute = {
+    name: 'testing',
+  };
+
   const navigatorWithOneRoute = {
     getCurrentRoutes() {
       return [{}];
@@ -37,77 +40,38 @@ describe('TitleBar Component', () => {
     },
   };
   const configuredStore = configureStore([asyncActionMiddleware, thunk]);
-  // let wrapper;
-
-  beforeEach(() => {
-    // store.clearActions();
-  });
 
   test('renders as expected', () => {
     const store = configuredStore(defaultState);
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
 
     expect(wrapper).toMatchSnapshot();
   });
 
-  test('shows the profile photo', () => {
-    const store = configuredStore(defaultState);
-    const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
-      { context: { store } },
-    ).dive();
-    const touchableWrapper = wrapper.childAt(0).childAt(0);
-    const iconWrapper = touchableWrapper.childAt(0);
-
-    expect(iconWrapper.props()).toHaveProperty('name', 'person');
-  });
-
-  test('shows the back button based on the route config', () => {
-    // Test profile icon is shown instead of the back button if showBackButton is falsy
-    let store = configuredStore(defaultState);
-    let wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
-      { context: { store } },
-    ).dive();
-
-    let touchableWrapper = wrapper.childAt(0).childAt(0);
-    let iconWrapper = touchableWrapper.childAt(0);
-    expect(iconWrapper.props()).toHaveProperty('name', 'person');
-
-    // Test profile icon is shown instead of the back button if showBackButton is true
-    // but there are less than 2 routes in the route stack
-    store = configuredStore({
+  test('shows a custom left component that receives navigator as a prop', () => {
+    const leftComponent = () => <View />;
+    const store = configuredStore({
       ...defaultState,
       app: {
         ...defaultState.app,
         titleBar: {
           ...defaultState.app.titleBar,
-          showBackButton: true,
+          showLeftComponent: true,
+          leftComponent,
         },
       },
     });
-    wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+    const wrapper = shallow(
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
 
-    touchableWrapper = wrapper.childAt(0).childAt(0);
-    iconWrapper = touchableWrapper.childAt(0);
-    expect(iconWrapper.props()).toHaveProperty('name', 'person');
-
-    // Test back button shows if showBackButton is true and there 2 or more routes in route stack
-    wrapper = shallow(
-      <TitleBar navigator={navigatorWithTwoRoutes} />,
-      { context: { store } },
-    ).dive();
-
-    touchableWrapper = wrapper.childAt(0).childAt(0);
-    iconWrapper = touchableWrapper.childAt(0);
-
-    expect(iconWrapper.props()).toHaveProperty('name', 'keyboard-arrow-left');
+    const LeftComponentWrapper = wrapper.childAt(0).childAt(0).childAt(0);
+    expect(LeftComponentWrapper.name()).toBe('leftComponent');
+    expect(LeftComponentWrapper.props()).toHaveProperty('navigator', navigatorWithOneRoute);
   });
 
   test('disables the back button', () => {
@@ -117,22 +81,21 @@ describe('TitleBar Component', () => {
         ...defaultState.app,
         titleBar: {
           ...defaultState.app.titleBar,
-          showBackButton: true,
+          showLeftComponent: true,
         },
       },
     });
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithTwoRoutes} disableBackButton />,
+      <TitleBar navigator={navigatorWithTwoRoutes} disableBackButton currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
     const touchableWrapper = wrapper.childAt(0).childAt(0);
-    const iconWrapper = wrapper.childAt(0).childAt(0).childAt(0);
-
+    const iconWrapper = wrapper.find('Icon').at(0);
     expect(touchableWrapper).toBeDefined();
     expect(iconWrapper).toBeDefined();
     expect(iconWrapper.props()).toHaveProperty('name', 'keyboard-arrow-left');
     expect(iconWrapper.props().style).toEqual(expect.arrayContaining([{
-      color: color(getColorHexForLevel(0)).clearer(0.6).rgbString(),
+      color: color('rgba(0, 0, 0, 0.54)').clearer(0.6).rgbString(),
     }]));
   });
 
@@ -144,16 +107,16 @@ describe('TitleBar Component', () => {
         ...defaultState.app,
         titleBar: {
           ...defaultState.app.titleBar,
-          showBackButton: true,
+          showLeftComponent: true,
         },
       },
     });
     let wrapper = shallow(
-      <TitleBar navigator={navigatorWithTwoRoutes} />,
+      <TitleBar navigator={navigatorWithTwoRoutes} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
-    let expectedStyles = [{ color: getColorHexForLevel(0) }];
-    let leftProps = wrapper.childAt(0).childAt(0).childAt(0).props();
+    let expectedStyles = [{ color: 'rgba(0, 0, 0, 0.54)' }];
+    let leftProps = wrapper.find('Icon').at(0).props();
     let centerProps = wrapper.childAt(1).props();
     expect(leftProps.style).toEqual(expect.arrayContaining(expectedStyles));
     expect(centerProps.style).toEqual(expect.arrayContaining(expectedStyles));
@@ -166,7 +129,7 @@ describe('TitleBar Component', () => {
         ...defaultState.app,
         titleBar: {
           ...defaultState.app.titleBar,
-          showBackButton: true,
+          showLeftComponent: true,
         },
       },
       training: {
@@ -175,11 +138,11 @@ describe('TitleBar Component', () => {
       },
     });
     wrapper = shallow(
-      <TitleBar navigator={navigatorWithTwoRoutes} />,
+      <TitleBar navigator={navigatorWithTwoRoutes} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
-    expectedStyles = [{ color: getColorHexForLevel(newLevelIdx) }];
-    leftProps = wrapper.childAt(0).childAt(0).childAt(0).props();
+    expectedStyles = [{ color: 'rgba(0, 0, 0, 0.54)' }];
+    leftProps = wrapper.find('Icon').at(0).props();
     centerProps = wrapper.childAt(1).props();
     expect(leftProps.style).toEqual(expect.arrayContaining(expectedStyles));
     expect(centerProps.style).toEqual(expect.arrayContaining(expectedStyles));
@@ -188,7 +151,7 @@ describe('TitleBar Component', () => {
   test('can properly hide the right component', () => {
     const store = configuredStore(defaultState);
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
     expect(wrapper.childAt(2).children()).toHaveLength(0);
@@ -206,7 +169,7 @@ describe('TitleBar Component', () => {
       },
     });
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
     const touchableWrapper = wrapper.childAt(2).childAt(0).childAt(0);
@@ -230,7 +193,7 @@ describe('TitleBar Component', () => {
       },
     });
     const wrapper = shallow(
-      <TitleBar navigator={navigatorWithOneRoute} />,
+      <TitleBar navigator={navigatorWithOneRoute} currentRoute={currentRoute} />,
       { context: { store } },
     ).dive();
 

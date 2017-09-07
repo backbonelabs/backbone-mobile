@@ -9,7 +9,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
   />
   <View>
     <HeadingText
-      size={1}
+      size={3}
       style={Object {}}
     >
       No Money
@@ -64,6 +64,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
     <View>
       <TouchableHighlight
         activeOpacity={1}
+        disabled={false}
         onHideUnderlay={[Function]}
         onPress={[Function]}
         onShowUnderlay={[Function]}

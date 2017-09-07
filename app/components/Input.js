@@ -1,6 +1,6 @@
 
 import React, { Component, PropTypes } from 'react';
-import { TextInput, View } from 'react-native';
+import { TextInput, Text, View } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/input';
@@ -18,9 +18,9 @@ class Input extends Component {
   static propTypes = {
     editable: PropTypes.bool,
     handleRef: PropTypes.func,
-    style: PropTypes.object,
+    style: Text.propTypes.style,
     iconStyle: PropTypes.object,
-    containerStyles: PropTypes.object,
+    containerStyles: View.propTypes.style,
     iconFont: PropTypes.oneOf(['FontAwesome', 'MaterialIcon']),
     iconLeftName: PropTypes.string, // maps to a font name in react-native-icons
   };
