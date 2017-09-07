@@ -511,7 +511,7 @@ class Dashboard extends Component {
           {
             isLevelUnlocked ?
               <View style={styles.hexagonCircleContainer}>
-                {getLevelCircles(levels[idx])}
+                {getLevelCircles(level)}
               </View> : <Icon name="lock" style={styles.levelLock} />
           }
         </Animated.Image>

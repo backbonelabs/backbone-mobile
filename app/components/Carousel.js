@@ -413,7 +413,12 @@ export default class Carousel extends Component {
       return false;
     }
 
-    const nodes = items.map((entry, index) => {
+    const list = [...items];
+    if (reverse) {
+      list.reverse();
+    }
+
+    const nodes = list.map((entry, index) => {
       const animatedValue = this.state.interpolators[index];
       const idx = (reverse ? items.length - index - 1 : index);
       return (
