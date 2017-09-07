@@ -5,6 +5,7 @@ const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
+    alignSelf: 'center',
     alignItems: 'center',
     flex: 1,
     justifyContent: 'space-around',
