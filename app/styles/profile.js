@@ -58,7 +58,7 @@ export default EStyleSheet.create({
     fontSize: fixedResponsiveFontSize(16),
   },
   profileFieldIcon: {
-    color: theme.grey500,
+    color: theme.blue500,
     width: applyWidthDifference(40),
     textAlign: 'center',
   },
