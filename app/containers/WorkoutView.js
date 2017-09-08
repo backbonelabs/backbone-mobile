@@ -13,6 +13,7 @@ import videoIcon from '../images/video-icon-blue.png';
 import routes from '../routes';
 import styles from '../styles/workoutView';
 import constants from '../utils/constants';
+import Mixpanel from '../utils/Mixpanel';
 
 const { workoutTypes } = constants;
 
@@ -77,6 +78,8 @@ class WorkoutView extends Component {
   }
 
   _navigateToVideo() {
+    Mixpanel.trackWithProperties('selectVideoIcon', { gifUrl: this.props.workout.gifUrl });
+
     this.props.navigator.push({
       ...routes.libraryContent,
       title: this.props.workout.title,
