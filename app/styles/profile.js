@@ -57,7 +57,6 @@ export default EStyleSheet.create({
     borderColor: '$grey200',
   }, positioning),
   profileText: {
-    color: theme.primaryFontColor,
     fontSize: fixedResponsiveFontSize(16),
   },
   profileFieldIcon: {
@@ -70,6 +69,7 @@ export default EStyleSheet.create({
   },
   profileFieldInput: {
     paddingHorizontal: applyWidthDifference(15),
+    fontSize: fixedResponsiveFontSize(16),
   },
   signOutSpacerContainer: {
     height: applyWidthDifference(20),

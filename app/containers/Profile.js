@@ -42,20 +42,33 @@ const ProfileField = props => {
     iconLeftName,
     } = props;
   const Icon = iconMap[iconFont];
+  const color = {
+    icon: theme.blue500,
+    text: theme.primaryFontColor,
+  };
+
+  if (props.disabled) {
+    color.icon = theme.disabledColor;
+    color.text = theme.disabledColor;
+  }
+
   // Pressing on a profile field initiates editing
   return (<TouchableOpacity
     style={styles.profileField}
     onPress={props.onPress}
+    disabled={props.disabled}
   >
     {Icon && iconLeftName
           ? <Icon
             name={iconLeftName}
             size={styles.$iconSize}
-            style={styles.profileFieldIcon}
+            style={[styles.profileFieldIcon, { color: color.icon }]}
           />
           : null}
     <View style={styles.profileFieldData}>
-      <SecondaryText style={styles.profileText}>{props.profileData}</SecondaryText>
+      <SecondaryText style={[styles.profileText, { color: color.text }]}>
+        {props.profileData}
+      </SecondaryText>
     </View>
   </TouchableOpacity>);
 };
@@ -63,6 +76,7 @@ const ProfileField = props => {
 ProfileField.propTypes = {
   title: PropTypes.any,
   edited: PropTypes.bool,
+  disabled: PropTypes.bool,
   onPress: PropTypes.func,
   profileData: PropTypes.string,
   iconFont: PropTypes.oneOf(['FontAwesome', 'MaterialIcon']),
@@ -541,8 +555,6 @@ class Profile extends Component {
     } else {
       nextGenderType = constants.gender.male;
     }
-    // console.log(this.props.user);
-
     return (
       <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -676,6 +688,7 @@ class Profile extends Component {
                       profileData="Facebook Connected"
                       iconFont="FontAwesome"
                       iconLeftName="facebook-official"
+                      disabled
                     />
                   :
                     <ProfileField
