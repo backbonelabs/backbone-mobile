@@ -132,8 +132,10 @@ export default class ProfilePicker extends Component {
   }
 
   _onDateChange(date) {
-    this.setState({ currentValue: date });
-    this.props.updateProfile(this.props.pickerType, date);
+    const newDate = new Date(date.getTime());
+    newDate.setHours(0, 0, 0, 0);
+    this.setState({ currentValue: newDate });
+    this.props.updateProfile(this.props.pickerType, newDate);
   }
 
   _heightTypeChangeHandler(unit) {

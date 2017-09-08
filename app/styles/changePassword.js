@@ -25,6 +25,7 @@ export default EStyleSheet.create({
   },
   saveButton: {
     marginTop: applyWidthDifference(40),
+    width: '90%',
   },
   warning: {
     color: '$primaryColor',
