@@ -196,7 +196,7 @@ class Profile extends Component {
             caption: nextProps.user.errorMessage === 'An email was sent to your email address. ' +
             'Please check your email to confirm your ' +
             'email address before connecting with Facebook.' ?
-            nextProps.user.errorMessage : 'Failed to save changes...',
+            nextProps.user.errorMessage : 'Failed to save changes, please try again.',
           },
           buttons: [
             { caption: 'OK' },
