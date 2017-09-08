@@ -24,6 +24,7 @@ import styles from '../styles/guidedTraining';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 import constants from '../utils/constants';
+import Mixpanel from '../utils/Mixpanel';
 import { formattedTimeString } from '../utils/timeUtils';
 import { markSessionStepComplete } from '../utils/trainingUtils';
 
@@ -260,6 +261,21 @@ class GuidedTraining extends Component {
     }
   }
 
+  _getCurrentWorkoutState() {
+    const {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = this.props.training;
+
+    return {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+      selectedSessionStep: this.state.stepIdx,
+    };
+  }
+
   _attemptGifFetch(sessionWorkout) {
     const gifUrl = get(sessionWorkout, 'workout.gifUrl');
     if (gifUrl) {
@@ -347,6 +363,8 @@ class GuidedTraining extends Component {
    * Starts or resumes the timer
    */
   _startTimer() {
+    Mixpanel.trackWithProperties('startTimedWorkout', this._getCurrentWorkoutState());
+
     this.setState({
       hasWorkoutStarted: true,
       hasTimerStarted: true,
@@ -367,6 +385,8 @@ class GuidedTraining extends Component {
    * @param {Function} [cb] Optional callback to invoke after the timer is paused
    */
   _pauseTimer(cb) {
+    Mixpanel.trackWithProperties('pauseTimedWorkout', this._getCurrentWorkoutState());
+
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
@@ -379,6 +399,11 @@ class GuidedTraining extends Component {
    * @param {Number} step Which step to switch to. The first step starts at 0.
    */
   _changeStep(stepIdx) {
+    Mixpanel.trackWithProperties('switchWorkout', {
+      ...this._getCurrentWorkoutState(),
+      selectedSessionStep: stepIdx,
+    });
+
     this._pauseTimer(() => {
       this.setState({
         stepIdx,
