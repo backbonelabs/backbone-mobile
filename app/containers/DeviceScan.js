@@ -86,6 +86,7 @@ class DeviceScan extends Component {
   }
 
   componentWillMount() {
+    Mixpanel.track('deviceScan');
     // If there is a device in our store
     if (this.props.device.identifier) {
       this.setState(() => ({
