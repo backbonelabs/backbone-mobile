@@ -59,7 +59,8 @@ export default EStyleSheet.create({
   },
   profileFieldIcon: {
     color: theme.grey500,
-    paddingHorizontal: applyWidthDifference(15),
+    width: applyWidthDifference(40),
+    textAlign: 'center',
   },
   profileFieldData: {
     paddingHorizontal: applyWidthDifference(15),
