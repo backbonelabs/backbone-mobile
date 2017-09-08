@@ -3,7 +3,7 @@
 exports[`GuidedTraining Component renders as expected 1`] = `
 <View>
   <ProgressBar
-    backgroundColor="#9C27B0"
+    backgroundColor="#03A9F4"
     currentStep={2}
     totalSteps={3}
   />
@@ -23,7 +23,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
   </View>
   <Spinner
     animating={true}
-    color="#9C27B0"
+    color="#03A9F4"
     size="large"
   />
   <View>
@@ -40,7 +40,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
             Object {},
           ]
         }
-        underlayColor="#9C27B0"
+        underlayColor="#03A9F4"
       >
         <View>
           <Icon
@@ -49,7 +49,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
             size={100}
             style={
               Object {
-                "color": "#9C27B0",
+                "color": "#03A9F4",
               }
             }
           />
@@ -76,7 +76,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
             },
           ]
         }
-        underlayColor="#9C27B0"
+        underlayColor="#03A9F4"
       >
         <View>
           <Icon
@@ -85,7 +85,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
             size={100}
             style={
               Object {
-                "color": "#9C27B0",
+                "color": "#03A9F4",
               }
             }
           />
@@ -110,7 +110,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
             Object {},
           ]
         }
-        underlayColor="#9C27B0"
+        underlayColor="#03A9F4"
       >
         <View>
           <Icon
@@ -119,7 +119,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
             size={100}
             style={
               Object {
-                "color": "#9C27B0",
+                "color": "#03A9F4",
               }
             }
           />

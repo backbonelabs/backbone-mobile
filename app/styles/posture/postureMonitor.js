@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import color from 'color';
 import relativeDimensions from '../../utils/relativeDimensions';
 import theme from '../../styles/theme';
 
@@ -132,6 +133,7 @@ export default EStyleSheet.create({
   },
   summaryTopStarCircle: {
     fontSize: fixedResponsiveFontSize(topStarSize),
+    color: '$lightBlue500',
   },
   summaryTopStar: {
     fontSize: fixedResponsiveFontSize(60),
@@ -183,6 +185,7 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
     paddingTop: applyWidthDifference(20),
     paddingBottom: applyWidthDifference(35),
+    color: '$lightBlue500',
   },
   emptyTitle: {
     paddingBottom: applyWidthDifference(35),
@@ -191,6 +194,9 @@ export default EStyleSheet.create({
     alignItems: 'center',
     width: applyWidthDifference(270),
     borderRadius: applyWidthDifference(10),
+    backgroundColor: () => (
+      color(EStyleSheet.value('$lightBlue500')).clearer(0.5).rgbString()
+    ),
   },
   summaryDetailRow: {
     flexDirection: 'row',

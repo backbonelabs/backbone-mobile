@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import { debounce, isEqual, isFunction } from 'lodash';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import color from 'color';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
 import BodyText from '../../components/BodyText';
@@ -33,10 +34,6 @@ import vertebraeIcon from '../../images/vertebrae-icon.png';
 import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import deviceWarningIcon from '../../images/settings/device-warning-icon.png';
 import deviceSuccessIcon from '../../images/settings/device-success-icon.png';
-import {
-  getColorHexForLevel,
-  getColorHexForLevelUnderlay,
-} from '../../utils/levelColors';
 import { zeroPadding } from '../../utils/timeUtils';
 import { markSessionStepComplete } from '../../utils/trainingUtils';
 
@@ -1062,12 +1059,6 @@ class PostureMonitor extends Component {
 
     this.trackUserSession();
 
-    const { selectedLevelIdx: level } = this.props.training;
-    const levelColorCode = getColorHexForLevel(level);
-    const levelColorCodeUnderlay = getColorHexForLevelUnderlay(level);
-    const levelColorStyle = { color: levelColorCode };
-    const levelBackgroundColorStyle = { backgroundColor: levelColorCodeUnderlay };
-
     const goodPostureTime = totalDuration - slouchTime;
     const goal = sessionDuration;
     const goodPostureHours = Math.floor(goodPostureTime / 3600);
@@ -1123,19 +1114,19 @@ class PostureMonitor extends Component {
     this.props.dispatch(appActions.showPartialModal({
       overlay: (
         <View style={awesomeGrade ? styles.topCircleOverlay : styles.topCircleOverlayShort}>
-          <FontAwesomeIcon name={'circle'} style={[styles.summaryTopStarCircle, levelColorStyle]} />
+          <FontAwesomeIcon name={'circle'} style={styles.summaryTopStarCircle} />
           <FontAwesomeIcon name={'star'} style={styles.summaryTopStar} />
         </View>
       ),
       topView: (
         <View style={styles.summaryContainer}>
           { awesomeGrade ?
-            <BodyText style={[styles._summaryTitle, levelColorStyle]}>
+            <BodyText style={styles.summaryTitle}>
               Awesome!
             </BodyText>
               : <View style={styles.emptyTitle} />
           }
-          <View style={[styles.summaryDetailContainer, levelBackgroundColorStyle]}>
+          <View style={styles.summaryDetailContainer}>
             <View style={styles.summaryDetailRow}>
               <View style={styles.summaryDetailIconContainer}>
                 <FontAwesomeIcon name={'bullseye'} style={styles.summaryDetailIconGoal} />
@@ -1183,8 +1174,8 @@ class PostureMonitor extends Component {
         {
           caption: 'DONE',
           onPress: closeSummaryAndPop,
-          color: levelColorCode,
-          underlayColor: levelColorCodeUnderlay,
+          color: theme.lightBlue500,
+          underlayColor: color(theme.lightBlue500).clearer(0.5).rgbString(),
         },
       ],
       backButtonHandler: closeSummaryAndPop,

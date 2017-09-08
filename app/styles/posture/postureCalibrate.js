@@ -17,6 +17,7 @@ export default EStyleSheet.create({
   },
   title: {
     textAlign: 'center',
+    color: '$lightBlue500',
   },
   subtitle: {
     marginTop: applyWidthDifference(10),

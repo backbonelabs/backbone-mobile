@@ -13,7 +13,6 @@ import BodyText from '../BodyText';
 import Button from '../Button';
 import progressCircle from '../../images/posture/calibration-progress-circle.png';
 import styles from '../../styles/posture/postureCalibrate';
-import { getColorHexForLevel } from '../../utils/levelColors';
 import relativeDimensions from '../../utils/relativeDimensions';
 
 const { applyWidthDifference } = relativeDimensions;
@@ -107,10 +106,7 @@ class PostureCalibrate extends Component {
       <View style={styles.container}>
         <View style={styles.contentContainer}>
           <HeadingText
-            style={[
-              styles.title,
-              { color: getColorHexForLevel(this.props.training.selectedLevelIdx) },
-            ]}
+            style={styles.title}
             size={1}
           >
             Calibrating...
