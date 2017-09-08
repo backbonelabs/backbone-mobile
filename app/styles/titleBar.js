@@ -82,11 +82,11 @@ export default EStyleSheet.create({
   profileIconContainer: {
     ...baseIconStyles,
     borderRadius: applyWidthDifference(30) / 2,
-    backgroundColor: '$disabledColor',
+    backgroundColor: '$grey200',
     justifyContent: 'center',
   },
   profileIcon: {
-    backgroundColor: '$disabledColor',
+    backgroundColor: 'transparent',
     alignSelf: 'center',
   },
 });

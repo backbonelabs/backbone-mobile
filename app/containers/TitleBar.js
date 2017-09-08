@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import color from 'color';
 import HeadingText from '../components/HeadingText';
+import BodyText from '../components/BodyText';
 import settingsIcon from '../images/settings-icon.png';
 import routes from '../routes';
 import styles from '../styles/titleBar';
@@ -20,18 +21,23 @@ export const LeftProfileComponent = (props) => (
   >
     {/* TODO: REPLACE WITH IMAGE COMPONENT OF USER'S PHOTO */}
     <View style={styles.profileIconContainer}>
+      {/* To be used after implementing the photo feature
       <Icon
         style={styles.profileIcon}
         name="person"
         color="#FFFFFF"
         size={styles.$profileIconSize}
-      />
+      /> */}
+      <BodyText style={styles.profileIcon}>
+        {props.nickname[0].toUpperCase()}
+      </BodyText>
     </View>
   </TouchableOpacity>
 );
 
 LeftProfileComponent.propTypes = {
   navigator: PropTypes.object,
+  nickname: PropTypes.string,
 };
 
 const TitleBar = (props) => {
@@ -76,7 +82,7 @@ const TitleBar = (props) => {
 
   // Same as rightComponent but with a default back button
   const leftComponent = props.titleBar.leftComponent ? (
-    <props.titleBar.leftComponent navigator={props.navigator} />
+    <props.titleBar.leftComponent navigator={props.navigator} nickname={props.user.nickname} />
   ) : (
     <TouchableOpacity
       onPress={props.disableBackButton ? null : props.navigator.pop}
@@ -132,14 +138,17 @@ TitleBar.propTypes = {
     leftComponent: PropTypes.func([undefined, PropTypes.node]),
     styles: PropTypes.object,
   }).isRequired,
+  user: PropTypes.shape({
+    nickname: PropTypes.string,
+  }),
   training: PropTypes.shape({
     selectedLevelIdx: PropTypes.number,
   }).isRequired,
 };
 
 const mapStateToProps = (state) => {
-  const { app: { titleBar }, training } = state;
-  return { titleBar, training };
+  const { app: { titleBar }, training, user: { user } } = state;
+  return { titleBar, training, user };
 };
 
 export default connect(mapStateToProps)(TitleBar);

@@ -36,6 +36,9 @@ export default EStyleSheet.create({
     height: applyWidthDifference(70),
     width: applyWidthDifference(70),
     borderRadius: applyWidthDifference(70) / 2,
+    // Can be removed after adding the photo feature
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   profileHeaderIcon: {
     color: theme.grey500,

@@ -541,6 +541,7 @@ class Profile extends Component {
     } else {
       nextGenderType = constants.gender.male;
     }
+    // console.log(this.props.user);
 
     return (
       <KeyboardAwareScrollView>
@@ -551,21 +552,27 @@ class Profile extends Component {
               :
                 <View style={styles.profileFieldContainer}>
                   <View style={styles.profileHeader}>
-                    {/* Placeholder for updating user photo functionality */}
+                    {/* To be used after implementing the photo feature
                     <TouchableOpacity>
                       <View style={styles.profileHeaderIconContainer} >
+                        To be used after implementing the photo feature
                         <MaterialIcons
                           name="add-a-photo"
                           size={styles.$photoIconSize}
                           style={styles.profileHeaderIcon}
                         />
                       </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity>*/}
+                    <View style={styles.profileHeaderIconContainer} >
+                      <HeadingText size={1}>
+                        {nickname[0].toUpperCase()}
+                      </HeadingText>
+                    </View>
                     <HeadingText
                       size={1}
                       style={styles.profileHeaderNickname}
                     >
-                      {nickname}
+                      {nickname.slice(1, nickname.length)}
                     </HeadingText>
                   </View>
                   <ProfileFieldInput
