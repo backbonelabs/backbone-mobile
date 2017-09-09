@@ -44,6 +44,18 @@ const getResponsiveFontSize = (baseSize) => {
   return baseSize;
 };
 
+/**
+ * Returns a size scaled based on the device's font scaling factor so that the
+ * new size will be as if there was no font scaling applied.
+ * On iOS, this is essentially a no-op since font scale will always be the same
+ * as the device pixel density. On Android, this will adjust the font size based
+ * on the system's font scaling factor so the font size will look the same
+ * regardless of device screen size and scaling factors.
+ * @param {Number} size The intended size based on normal font scaling
+ * @return {Number} The adjusted size
+ */
+const noScale = size => size * (PixelRatio.get() / PixelRatio.getFontScale());
+
 export default {
   widthDifference,
   heightDifference,
@@ -52,4 +64,5 @@ export default {
   height,
   width,
   getResponsiveFontSize,
+  noScale,
 };
