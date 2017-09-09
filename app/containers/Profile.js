@@ -578,14 +578,14 @@ class Profile extends Component {
                     </TouchableOpacity>*/}
                     <View style={styles.profileHeaderIconContainer} >
                       <HeadingText size={1}>
-                        {nickname[0].toUpperCase()}
+                        {user.nickname[0].toUpperCase()}
                       </HeadingText>
                     </View>
                     <HeadingText
                       size={1}
                       style={styles.profileHeaderNickname}
                     >
-                      {nickname.slice(1, nickname.length)}
+                      {user.nickname.slice(1, user.nickname.length)}
                     </HeadingText>
                   </View>
                   <ProfileFieldInput
