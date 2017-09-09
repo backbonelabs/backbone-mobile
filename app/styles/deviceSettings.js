@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -26,7 +26,6 @@ export default EStyleSheet.create({
   },
   deviceConnectionText: {
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(16),
     paddingBottom: applyWidthDifference(22),
   },
   batteryInfo: {
@@ -52,10 +51,10 @@ export default EStyleSheet.create({
   },
   batteryIconBlack: {
     color: '$primaryFontColor',
-    fontSize: fixedResponsiveFontSize(25),
+    fontSize: noScale(getResponsiveFontSize(25)),
   },
   batteryIconRed: {
     color: '$warningColor',
-    fontSize: fixedResponsiveFontSize(25),
+    fontSize: noScale(getResponsiveFontSize(25)),
   },
 });

@@ -3,12 +3,11 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const {
   applyWidthDifference,
-  fixedResponsiveFontSize,
   getResponsiveFontSize,
+  noScale,
 } = relativeDimensions;
 
 export default EStyleSheet.create({
-  $heartIconSize: fixedResponsiveFontSize(25),
   container: {
     alignItems: 'center',
     flex: 1,
@@ -21,7 +20,7 @@ export default EStyleSheet.create({
     borderRadius: 4,
   },
   tabBarTextStyle: {
-    fontSize: fixedResponsiveFontSize(14),
+    fontSize: noScale(getResponsiveFontSize(12)),
   },
   listContainer: {
     flex: 1,
@@ -45,7 +44,7 @@ export default EStyleSheet.create({
   },
   heartIcon: {
     color: '$red500',
-    fontSize: getResponsiveFontSize(24),
+    fontSize: noScale(getResponsiveFontSize(24)),
   },
   footerSpaceBox: {
     height: applyWidthDifference(50),

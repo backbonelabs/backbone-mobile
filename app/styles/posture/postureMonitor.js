@@ -4,11 +4,13 @@ import color from 'color';
 import relativeDimensions from '../../utils/relativeDimensions';
 import theme from '../../styles/theme';
 
-const { height, width, applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { height, width, applyWidthDifference, fixedResponsiveFontSize, getResponsiveFontSize, noScale } = relativeDimensions;
 const innerMonitorSize = applyWidthDifference(190);
 const topStarSize = 96;
 const halfModalHeight = 130;
 const summaryTitleFontSize = 24;
+
+console.log('status bar height', theme.statusBarHeight);
 
 export default EStyleSheet.create({
   container: {
@@ -22,14 +24,14 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   connectingSpinner: {
-    marginBottom: fixedResponsiveFontSize(10),
+    marginBottom: applyWidthDifference(10),
   },
   connectingText: {
-    marginTop: fixedResponsiveFontSize(10),
+    marginTop: applyWidthDifference(10),
   },
   timer: {
     textAlign: 'center',
-    fontSize: fixedResponsiveFontSize(54),
+    fontSize: noScale(getResponsiveFontSize(54)),
     marginTop: applyWidthDifference(10),
     color: '$lightBlue500',
   },
@@ -99,7 +101,7 @@ export default EStyleSheet.create({
     backgroundColor: 'transparent',
   },
   postureRating: {
-    fontSize: fixedResponsiveFontSize(42),
+    fontSize: noScale(getResponsiveFontSize(42)),
     fontWeight: 'bold',
     // ************ styles for recalibration button ************
     // marginTop: applyWidthDifference(40),
@@ -108,12 +110,12 @@ export default EStyleSheet.create({
   //   textAlign: 'center',
   // },
   // reCalibrate: {
-  //   fontSize: fixedResponsiveFontSize(12),
+  //   fontSize: noScale(getResponsiveFontSize(12)),
   //   fontWeight: 'bold',
   // },
   sliderTitle: {
     textAlign: 'center',
-    fontSize: fixedResponsiveFontSize(12),
+    fontSize: noScale(getResponsiveFontSize(12)),
     marginBottom: applyWidthDifference(10),
   },
   btnContainer: {
@@ -129,14 +131,14 @@ export default EStyleSheet.create({
     marginBottom: 0,
   },
   summaryMainContainer: {
-    marginTop: fixedResponsiveFontSize(topStarSize / 2),
+    marginTop: noScale(getResponsiveFontSize(topStarSize / 2)),
   },
   summaryTopStarCircle: {
-    fontSize: fixedResponsiveFontSize(topStarSize),
+    fontSize: noScale(getResponsiveFontSize(topStarSize)),
     color: '$lightBlue500',
   },
   summaryTopStar: {
-    fontSize: fixedResponsiveFontSize(60),
+    fontSize: noScale(getResponsiveFontSize(60)),
     color: 'white',
     position: 'absolute',
     top: applyWidthDifference(18),
@@ -147,14 +149,14 @@ export default EStyleSheet.create({
     ...Platform.select({ // iOS has a different Y-origin point to Android
       ios: {
         top: (height / 2) - applyWidthDifference(halfModalHeight)
-        - fixedResponsiveFontSize(summaryTitleFontSize)
-        - fixedResponsiveFontSize(topStarSize / 2)
+        - noScale(getResponsiveFontSize(summaryTitleFontSize))
+        - noScale(getResponsiveFontSize(topStarSize / 2))
         - theme.statusBarHeight,
       },
       android: {
         top: (height / 2) - applyWidthDifference(halfModalHeight)
-        - fixedResponsiveFontSize(summaryTitleFontSize)
-        - fixedResponsiveFontSize(topStarSize / 2)
+        - noScale(getResponsiveFontSize(summaryTitleFontSize))
+        - noScale(getResponsiveFontSize(topStarSize / 2))
         - applyWidthDifference(28),
       },
     }),
@@ -209,12 +211,12 @@ export default EStyleSheet.create({
     paddingRight: applyWidthDifference(8),
   },
   summaryDetailIconGoal: {
-    fontSize: fixedResponsiveFontSize(22),
+    fontSize: noScale(getResponsiveFontSize(22)),
     color: 'white',
     paddingLeft: applyWidthDifference(3),
   },
   summaryDetailIconStar: {
-    fontSize: fixedResponsiveFontSize(22),
+    fontSize: noScale(getResponsiveFontSize(22)),
     color: 'white',
     paddingLeft: applyWidthDifference(2),
   },
@@ -227,16 +229,13 @@ export default EStyleSheet.create({
     flex: 0.6,
     alignItems: 'flex-start',
   },
-  summaryDetailCaption: {
-    fontSize: fixedResponsiveFontSize(15),
-  },
   summaryDetailValueContainer: {
     flex: 0.3,
     alignItems: 'flex-end',
   },
   summaryDetailValue: {
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(15),
+    fontSize: noScale(getResponsiveFontSize(15)),
   },
   summaryDetailLine: {
     borderBottomWidth: 1,

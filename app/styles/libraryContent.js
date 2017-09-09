@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -25,6 +25,6 @@ export default EStyleSheet.create({
   },
   favoriteButton: {
     color: '$red500',
-    fontSize: fixedResponsiveFontSize(40),
+    fontSize: noScale(getResponsiveFontSize(40)),
   },
 });

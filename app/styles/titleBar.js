@@ -4,7 +4,7 @@ import color from 'color';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
 
 const baseTitleBarStyles = {
   flexDirection: 'row',
@@ -19,13 +19,11 @@ const baseSideButtonStyles = {
 };
 
 const baseIconStyles = {
-  width: applyWidthDifference(30),
-  height: applyWidthDifference(30),
+  width: noScale(getResponsiveFontSize(28)),
+  height: noScale(getResponsiveFontSize(28)),
 };
 
 export default EStyleSheet.create({
-  $backButtonIconSize: applyWidthDifference(40),
-  $profileIconSize: applyWidthDifference(20),
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
@@ -53,7 +51,7 @@ export default EStyleSheet.create({
     color: '$secondaryColor',
     backgroundColor: 'transparent',
     textAlign: 'center',
-    fontSize: getResponsiveFontSize(16),
+    fontSize: noScale(getResponsiveFontSize(16)),
     fontWeight: 'bold',
   },
   sideContainers: {
@@ -75,18 +73,21 @@ export default EStyleSheet.create({
   },
   buttonIcon: {
     marginRight: applyWidthDifference(6),
+    fontSize: noScale(getResponsiveFontSize(40)),
   },
   icon: {
     ...baseIconStyles,
   },
   profileIconContainer: {
     ...baseIconStyles,
-    borderRadius: applyWidthDifference(30) / 2,
+    borderRadius: noScale(getResponsiveFontSize(30)) / 2,
     backgroundColor: '$disabledColor',
     justifyContent: 'center',
   },
   profileIcon: {
-    backgroundColor: '$disabledColor',
     alignSelf: 'center',
+    color: 'white',
+    fontSize: noScale(getResponsiveFontSize(22)),
+    backgroundColor: 'transparent',
   },
 });

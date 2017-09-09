@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -10,7 +10,7 @@ export default EStyleSheet.create({
   },
   inputField: {
     flex: 1,
-    fontSize: getResponsiveFontSize(12),
+    fontSize: noScale(getResponsiveFontSize(12)),
     paddingHorizontal: applyWidthDifference(10),
     textAlignVertical: 'top', // Android
   },

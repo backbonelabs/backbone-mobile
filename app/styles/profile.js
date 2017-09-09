@@ -1,11 +1,12 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Platform } from 'react-native';
 import relativeDimensions from '../utils/relativeDimensions';
-import theme from '../styles/theme';
 
 const {
   applyWidthDifference,
   fixedResponsiveFontSize,
+  getResponsiveFontSize,
+  noScale,
 } = relativeDimensions;
 
 const positioning = {
@@ -14,7 +15,6 @@ const positioning = {
 };
 
 export default EStyleSheet.create({
-  $iconSize: fixedResponsiveFontSize(20),
   $photoIconSize: fixedResponsiveFontSize(40),
   container: {
     height: '100%',
@@ -32,13 +32,13 @@ export default EStyleSheet.create({
     borderColor: '$grey200',
   },
   profileHeaderIconContainer: {
-    backgroundColor: theme.grey200,
+    backgroundColor: '$grey200',
     height: applyWidthDifference(70),
     width: applyWidthDifference(70),
     borderRadius: applyWidthDifference(70) / 2,
   },
   profileHeaderIcon: {
-    color: theme.grey500,
+    color: '$grey500',
     backgroundColor: 'transparent',
     padding: applyWidthDifference(15),
   },
@@ -53,12 +53,9 @@ export default EStyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '$grey200',
   }, positioning),
-  profileText: {
-    color: theme.primaryFontColor,
-    fontSize: fixedResponsiveFontSize(16),
-  },
   profileFieldIcon: {
-    color: theme.grey500,
+    color: '$grey500',
+    fontSize: noScale(getResponsiveFontSize(20)),
     paddingHorizontal: applyWidthDifference(15),
   },
   profileFieldData: {
@@ -69,7 +66,7 @@ export default EStyleSheet.create({
   },
   signOutSpacerContainer: {
     height: applyWidthDifference(20),
-    backgroundColor: theme.grey100,
+    backgroundColor: '$grey100',
     borderBottomWidth: 1,
     borderTopWidth: 1,
     borderColor: '$grey200',

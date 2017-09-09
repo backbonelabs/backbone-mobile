@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize, getResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -54,10 +54,6 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: applyWidthDifference(15),
   },
-  deviceName: {
-    color: 'black',
-    fontSize: fixedResponsiveFontSize(14),
-  },
   devicesNotFound: {
     alignSelf: 'center',
     justifyContent: 'center',
@@ -66,9 +62,6 @@ export default EStyleSheet.create({
   devicesNotFoundIcon: {
     textAlign: 'center',
     marginBottom: applyWidthDifference(10),
-  },
-  deviceMessage: {
-    fontSize: fixedResponsiveFontSize(14),
   },
   receptionIcon: {
     width: applyWidthDifference(20),

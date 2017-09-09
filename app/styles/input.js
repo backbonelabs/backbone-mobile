@@ -5,6 +5,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 const {
   applyWidthDifference,
   getResponsiveFontSize,
+  noScale,
 } = relativeDimensions;
 
 export default EStyleSheet.create({
@@ -33,7 +34,7 @@ export default EStyleSheet.create({
   inputField: {
     color: '$primaryFontColor',
     fontFamily: '$primaryFont',
-    fontSize: getResponsiveFontSize(14),
+    fontSize: noScale(getResponsiveFontSize(14)),
     width: '85%',
     height: applyWidthDifference(50),
     paddingHorizontal: applyWidthDifference(45),

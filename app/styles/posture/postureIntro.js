@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -12,7 +12,7 @@ export default EStyleSheet.create({
     width: '95%',
   },
   text: {
-    fontSize: getResponsiveFontSize(14),
+    fontSize: noScale(getResponsiveFontSize(14)),
     textAlign: 'center',
   },
   image: {

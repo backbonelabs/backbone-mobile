@@ -1132,7 +1132,7 @@ class PostureMonitor extends Component {
                 <FontAwesomeIcon name={'bullseye'} style={styles.summaryDetailIconGoal} />
               </View>
               <View style={styles.summaryDetailCaptionContainer}>
-                <BodyText style={styles._summaryDetailCaption}>Goal:</BodyText>
+                <BodyText>Goal:</BodyText>
               </View>
               <View style={styles.summaryDetailValueContainer}>
                 <BodyText style={styles._summaryDetailValue}>
@@ -1146,7 +1146,7 @@ class PostureMonitor extends Component {
                 <Image source={vertebraeIcon} style={styles.summaryDetailIconVertebrae} />
               </View>
               <View style={styles.summaryDetailCaptionContainer}>
-                <BodyText style={styles._summaryDetailCaption}>Perfect Posture:</BodyText>
+                <BodyText>Perfect Posture:</BodyText>
               </View>
               <View style={styles.summaryDetailValueContainer}>
                 <BodyText style={styles._summaryDetailValue}>{goodPostureTimeString}</BodyText>
@@ -1158,7 +1158,7 @@ class PostureMonitor extends Component {
                 <FontAwesomeIcon name={'star'} style={styles.summaryDetailIconStar} />
               </View>
               <View style={styles.summaryDetailCaptionContainer}>
-                <BodyText style={styles._summaryDetailCaption}>Grade:</BodyText>
+                <BodyText>Grade:</BodyText>
               </View>
               <View style={styles.summaryDetailValueContainer}>
                 <BodyText style={styles._summaryDetailValue}>{grade}</BodyText>

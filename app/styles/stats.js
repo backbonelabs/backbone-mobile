@@ -3,7 +3,8 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const {
   applyWidthDifference,
-  fixedResponsiveFontSize,
+  getResponsiveFontSize,
+  noScale,
 } = relativeDimensions;
 
 export default EStyleSheet.create({
@@ -22,13 +23,11 @@ export default EStyleSheet.create({
   },
   goodRating: {
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(12),
     paddingRight: applyWidthDifference(15),
     color: '$green400',
   },
   poorRating: {
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(12),
     color: '$primaryColor',
   },
   sessionRatingContainer: {
@@ -43,7 +42,7 @@ export default EStyleSheet.create({
     backgroundColor: '$lightBlue500',
   },
   tabBarTextStyle: {
-    fontSize: fixedResponsiveFontSize(14),
+    fontSize: noScale(getResponsiveFontSize(14)),
     fontWeight: 'bold',
   },
 });
