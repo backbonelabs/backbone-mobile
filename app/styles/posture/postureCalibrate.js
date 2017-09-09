@@ -6,6 +6,7 @@ const { applyWidthDifference } = relativeDimensions;
 export default EStyleSheet.create({
   $size: applyWidthDifference(200),
   container: {
+    alignItems: 'center',
     backgroundColor: '$grey50',
     flex: 1,
     justifyContent: 'space-between',
@@ -14,6 +15,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
+    width: '80%',
   },
   title: {
     textAlign: 'center',
