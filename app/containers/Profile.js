@@ -555,6 +555,7 @@ class Profile extends Component {
     } else {
       nextGenderType = constants.gender.male;
     }
+
     return (
       <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -620,6 +621,7 @@ class Profile extends Component {
                         pickerType={pickerType}
                         updateProfile={this.updateProfile}
                         setPickerType={this.setPickerType}
+                        mode="spinner"
                       />
                     </View>
                   : null}
