@@ -51,7 +51,6 @@ export default EStyleSheet.create({
     color: '$secondaryColor',
     backgroundColor: 'transparent',
     textAlign: 'center',
-    fontSize: noScale(getResponsiveFontSize(16)),
     fontWeight: 'bold',
   },
   sideContainers: {
