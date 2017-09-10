@@ -1114,7 +1114,7 @@ class PostureMonitor extends Component {
     this.props.dispatch(appActions.showPartialModal({
       topView: (
         <View style={styles.summaryContainer}>
-          <View style={awesomeGrade ? styles.topCircleOverlay : styles.topCircleOverlayShort}>
+          <View style={styles.summaryTopIcon}>
             <FontAwesomeIcon name={'circle'} style={styles.summaryTopStarCircle} />
             <FontAwesomeIcon name={'star'} style={styles.summaryTopStar} />
           </View>

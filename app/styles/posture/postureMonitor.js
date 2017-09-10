@@ -136,7 +136,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  summaryTopCircle: {
+  summaryTopStarCircle: {
     fontSize: fixedResponsiveFontSize(summaryStarCircleHeight),
     color: '$lightBlue500',
   },
