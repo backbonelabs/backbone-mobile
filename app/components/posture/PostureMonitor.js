@@ -1112,14 +1112,12 @@ class PostureMonitor extends Component {
     };
 
     this.props.dispatch(appActions.showPartialModal({
-      overlay: (
-        <View style={awesomeGrade ? styles.topCircleOverlay : styles.topCircleOverlayShort}>
-          <FontAwesomeIcon name={'circle'} style={styles.summaryTopStarCircle} />
-          <FontAwesomeIcon name={'star'} style={styles.summaryTopStar} />
-        </View>
-      ),
       topView: (
         <View style={styles.summaryContainer}>
+          <View style={awesomeGrade ? styles.topCircleOverlay : styles.topCircleOverlayShort}>
+            <FontAwesomeIcon name={'circle'} style={styles.summaryTopStarCircle} />
+            <FontAwesomeIcon name={'star'} style={styles.summaryTopStar} />
+          </View>
           { awesomeGrade ?
             <BodyText style={styles.summaryTitle}>
               Awesome!
@@ -1180,7 +1178,6 @@ class PostureMonitor extends Component {
       ],
       backButtonHandler: closeSummaryAndPop,
       customStyles: {
-        containerStyle: styles.summaryMainContainer,
         topViewStyle: styles.summaryTopView,
       },
     }));

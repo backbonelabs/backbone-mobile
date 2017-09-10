@@ -2,15 +2,12 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../../utils/relativeDimensions';
-import theme from '../../styles/theme';
 
-const { height, width, applyWidthDifference, fixedResponsiveFontSize, getResponsiveFontSize, noScale } = relativeDimensions;
+const { width, applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
 const innerMonitorSize = applyWidthDifference(190);
-const topStarSize = 96;
-const halfModalHeight = 130;
+const summaryStarHeight = 70;
+const summaryStarCircleHeight = summaryStarHeight * 1.5;
 const summaryTitleFontSize = 24;
-
-console.log('status bar height', theme.statusBarHeight);
 
 export default EStyleSheet.create({
   container: {
@@ -110,7 +107,7 @@ export default EStyleSheet.create({
   //   textAlign: 'center',
   // },
   // reCalibrate: {
-  //   fontSize: noScale(getResponsiveFontSize(12)),
+  //   fontSize: getResponsiveFontSize(12),
   //   fontWeight: 'bold',
   // },
   sliderTitle: {
@@ -128,69 +125,34 @@ export default EStyleSheet.create({
     height: applyWidthDifference(25),
   },
   summaryTopView: {
-    marginBottom: 0,
+    paddingVertical: 0,
   },
-  summaryMainContainer: {
-    marginTop: noScale(getResponsiveFontSize(topStarSize / 2)),
+  summaryTopIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  summaryTopStarCircle: {
-    fontSize: noScale(getResponsiveFontSize(topStarSize)),
+  summaryTopCircle: {
+    fontSize: noScale(getResponsiveFontSize(summaryStarCircleHeight)),
     color: '$lightBlue500',
   },
   summaryTopStar: {
-    fontSize: noScale(getResponsiveFontSize(60)),
+    fontSize: noScale(getResponsiveFontSize(summaryStarHeight)),
+    backgroundColor: 'transparent',
     color: 'white',
     position: 'absolute',
-    top: applyWidthDifference(18),
-    left: applyWidthDifference(13),
-  },
-  topCircleOverlay: {
-    position: 'absolute',
-    ...Platform.select({ // iOS has a different Y-origin point to Android
-      ios: {
-        top: (height / 2) - applyWidthDifference(halfModalHeight)
-        - noScale(getResponsiveFontSize(summaryTitleFontSize))
-        - noScale(getResponsiveFontSize(topStarSize / 2))
-        - theme.statusBarHeight,
-      },
-      android: {
-        top: (height / 2) - applyWidthDifference(halfModalHeight)
-        - noScale(getResponsiveFontSize(summaryTitleFontSize))
-        - noScale(getResponsiveFontSize(topStarSize / 2))
-        - applyWidthDifference(28),
-      },
-    }),
-    left: (width / 2) - applyWidthDifference(40),
-  },
-  topCircleOverlayShort: {
-    position: 'absolute',
-    ...Platform.select({ // iOS has a different Y-origin point to Android
-      ios: {
-        top: (height / 2) - applyWidthDifference(halfModalHeight)
-        - fixedResponsiveFontSize(topStarSize / 2)
-        - theme.statusBarHeight,
-      },
-      android: {
-        top: (height / 2) - applyWidthDifference(halfModalHeight)
-        - fixedResponsiveFontSize(topStarSize / 2)
-        - applyWidthDifference(28),
-      },
-    }),
-    left: (width / 2) - applyWidthDifference(40),
   },
   summaryContainer: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   summaryTitle: {
-    fontSize: fixedResponsiveFontSize(summaryTitleFontSize),
+    fontSize: getResponsiveFontSize(summaryTitleFontSize),
     fontWeight: 'bold',
-    paddingTop: applyWidthDifference(20),
-    paddingBottom: applyWidthDifference(35),
+    marginBottom: applyWidthDifference(12),
     color: '$lightBlue500',
   },
   emptyTitle: {
-    paddingBottom: applyWidthDifference(35),
+    height: getResponsiveFontSize(summaryTitleFontSize),
   },
   summaryDetailContainer: {
     alignItems: 'center',
@@ -204,21 +166,19 @@ export default EStyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: applyWidthDifference(15),
+    padding: applyWidthDifference(10),
   },
   summaryDetailIconContainer: {
     flex: 0.1,
-    paddingRight: applyWidthDifference(8),
+    alignItems: 'center',
   },
   summaryDetailIconGoal: {
-    fontSize: noScale(getResponsiveFontSize(22)),
+    fontSize: applyWidthDifference(24),
     color: 'white',
-    paddingLeft: applyWidthDifference(3),
   },
   summaryDetailIconStar: {
-    fontSize: noScale(getResponsiveFontSize(22)),
+    fontSize: applyWidthDifference(24),
     color: 'white',
-    paddingLeft: applyWidthDifference(2),
   },
   summaryDetailIconVertebrae: {
     width: applyWidthDifference(24),
@@ -227,7 +187,7 @@ export default EStyleSheet.create({
   },
   summaryDetailCaptionContainer: {
     flex: 0.6,
-    alignItems: 'flex-start',
+    paddingLeft: applyWidthDifference(8),
   },
   summaryDetailValueContainer: {
     flex: 0.3,
@@ -235,7 +195,6 @@ export default EStyleSheet.create({
   },
   summaryDetailValue: {
     fontWeight: 'bold',
-    fontSize: noScale(getResponsiveFontSize(15)),
   },
   summaryDetailLine: {
     borderBottomWidth: 1,
