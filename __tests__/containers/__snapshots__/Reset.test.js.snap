@@ -28,12 +28,14 @@ exports[`Reset Component renders as expected 1`] = `
           }
         />
         <HeadingText
+          allowFontScaling={false}
           size={2}
           style={Object {}}
         >
           Password Recovery
         </HeadingText>
         <BodyText
+          allowFontScaling={false}
           style={Object {}}
         >
           Please enter your email address below and we'll send you a link to reset your password.
@@ -81,6 +83,7 @@ exports[`Reset Component renders as expected 1`] = `
           onPress={[Function]}
         >
           <SecondaryText
+            allowFontScaling={false}
             style={Object {}}
           >
             Cancel
