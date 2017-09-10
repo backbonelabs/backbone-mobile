@@ -269,17 +269,17 @@ class DeviceScan extends Component {
       icon = spinner;
     } else if (connected) {
       message = 'CONNECTED!';
-      messageColor = '#66BB6A';
+      messageColor = theme.green400;
       icon = iconCheck;
     }
 
     return (
       <View style={styles.deviceRow}>
-        <BodyText style={styles.deviceName}>
+        <BodyText>
           { isiOS ? rowData.identifier.substr(rowData.identifier.lastIndexOf('-') + 1)
           : rowData.identifier}
         </BodyText>
-        <BodyText style={[styles.deviceMessage, { color: messageColor }]}>
+        <BodyText style={{ color: messageColor }}>
           {message}
         </BodyText>
         {icon}

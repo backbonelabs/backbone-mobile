@@ -5,11 +5,18 @@ import {
 import styles from '../styles/text';
 import reusableTextDefaults from './utils/reusableTextDefaults';
 
-const SecondaryText = props => (
-  <Text style={[styles.secondary, props.style]} {...reusableTextDefaults.fontScalingProps}>
-    {props.children}
-  </Text>
-);
+const SecondaryText = props => {
+  const {
+    style,
+    ...remainingProps,
+  } = props;
+
+  return (
+    <Text style={[styles.secondary, style]} {...remainingProps}>
+      {props.children}
+    </Text>
+  );
+};
 
 SecondaryText.propTypes = reusableTextDefaults.propTypes;
 SecondaryText.defaultProps = reusableTextDefaults.defaultProps;

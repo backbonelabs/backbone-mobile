@@ -4,7 +4,7 @@ import { Modal, View } from 'react-native';
 import { connect } from 'react-redux';
 import appActions from '../actions/app';
 import Button from '../components/Button';
-import SecondaryText from '../components/SecondaryText';
+import BodyText from '../components/BodyText';
 import HeadingText from '../components/HeadingText';
 import styles from '../styles/partialModal';
 
@@ -46,7 +46,7 @@ class PartialModal extends Component {
       return (
         <Button
           shadow={index !== 0}
-          style={[styles._button, colorStyle]}
+          style={[styles.button, colorStyle]}
           text={val.caption}
           key={index}
           underlayColor={val.underlayColor}
@@ -98,7 +98,7 @@ class PartialModal extends Component {
               <HeadingText
                 size={1}
                 style={[
-                  styles._titleText,
+                  styles.titleText,
                   title.color && { color: title.color },
                 ]}
               >
@@ -106,9 +106,9 @@ class PartialModal extends Component {
               </HeadingText>
             }
             { detail &&
-              <SecondaryText style={styles._detailText}>
+              <BodyText style={styles.detailText}>
                 {detail.caption}
-              </SecondaryText>
+              </BodyText>
             }
             { buttons && buttons.length > 0 &&
               <View style={styles.buttonContainer}>
