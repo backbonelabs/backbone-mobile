@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const statsText = {
   textAlign: 'center',
@@ -34,7 +34,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   chartLabel: {
-    fontSize: noScale(getResponsiveFontSize(14)),
+    fontSize: fixedResponsiveFontSize(14),
     fontWeight: 'bold',
   },
   heading: {

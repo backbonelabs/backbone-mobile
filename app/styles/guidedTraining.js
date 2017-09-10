@@ -3,7 +3,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from './theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   $progressBarHeight: applyWidthDifference(20),

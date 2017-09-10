@@ -3,7 +3,12 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import color from 'color';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { width, applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
+const {
+  width,
+  applyWidthDifference,
+  getResponsiveFontSize,
+  fixedResponsiveFontSize,
+} = relativeDimensions;
 const innerMonitorSize = applyWidthDifference(190);
 const summaryStarHeight = 70;
 const summaryStarCircleHeight = summaryStarHeight * 1.5;
@@ -28,7 +33,7 @@ export default EStyleSheet.create({
   },
   timer: {
     textAlign: 'center',
-    fontSize: noScale(getResponsiveFontSize(54)),
+    fontSize: fixedResponsiveFontSize(54),
     marginTop: applyWidthDifference(10),
     color: '$lightBlue500',
   },
@@ -98,7 +103,7 @@ export default EStyleSheet.create({
     backgroundColor: 'transparent',
   },
   postureRating: {
-    fontSize: noScale(getResponsiveFontSize(42)),
+    fontSize: fixedResponsiveFontSize(42),
     fontWeight: 'bold',
     // ************ styles for recalibration button ************
     // marginTop: applyWidthDifference(40),
@@ -107,12 +112,12 @@ export default EStyleSheet.create({
   //   textAlign: 'center',
   // },
   // reCalibrate: {
-  //   fontSize: getResponsiveFontSize(12),
+  //   fontSize: fixedResponsiveFontSize(12),
   //   fontWeight: 'bold',
   // },
   sliderTitle: {
     textAlign: 'center',
-    fontSize: noScale(getResponsiveFontSize(12)),
+    fontSize: fixedResponsiveFontSize(12),
     marginBottom: applyWidthDifference(10),
   },
   btnContainer: {
@@ -132,11 +137,11 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   summaryTopCircle: {
-    fontSize: noScale(getResponsiveFontSize(summaryStarCircleHeight)),
+    fontSize: fixedResponsiveFontSize(summaryStarCircleHeight),
     color: '$lightBlue500',
   },
   summaryTopStar: {
-    fontSize: noScale(getResponsiveFontSize(summaryStarHeight)),
+    fontSize: fixedResponsiveFontSize(summaryStarHeight),
     backgroundColor: 'transparent',
     color: 'white',
     position: 'absolute',

@@ -3,8 +3,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const {
   applyWidthDifference,
-  getResponsiveFontSize,
-  noScale,
+  fixedResponsiveFontSize,
 } = relativeDimensions;
 
 export default EStyleSheet.create({
@@ -42,7 +41,7 @@ export default EStyleSheet.create({
     backgroundColor: '$lightBlue500',
   },
   tabBarTextStyle: {
-    fontSize: noScale(getResponsiveFontSize(14)),
+    fontSize: fixedResponsiveFontSize(14),
     fontWeight: 'bold',
   },
 });

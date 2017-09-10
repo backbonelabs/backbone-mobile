@@ -14,8 +14,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 
 const {
   applyWidthDifference,
-  getResponsiveFontSize,
-  noScale,
+  fixedResponsiveFontSize,
   width,
   height,
 } = relativeDimensions;
@@ -68,7 +67,7 @@ const Graph = ({ data, goodTime, poorTime }) => {
         <VictoryAxis
           style={{
             tickLabels: {
-              fontSize: noScale(getResponsiveFontSize(12)),
+              fontSize: fixedResponsiveFontSize(12),
             },
           }}
           tickValues={tickValues(data)}

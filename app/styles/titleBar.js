@@ -4,7 +4,7 @@ import color from 'color';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, getResponsiveFontSize, noScale } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const baseTitleBarStyles = {
   flexDirection: 'row',
@@ -19,8 +19,8 @@ const baseSideButtonStyles = {
 };
 
 const baseIconStyles = {
-  width: noScale(getResponsiveFontSize(28)),
-  height: noScale(getResponsiveFontSize(28)),
+  width: fixedResponsiveFontSize(28),
+  height: fixedResponsiveFontSize(28),
 };
 
 export default EStyleSheet.create({
@@ -72,21 +72,21 @@ export default EStyleSheet.create({
   },
   buttonIcon: {
     marginRight: applyWidthDifference(6),
-    fontSize: noScale(getResponsiveFontSize(40)),
+    fontSize: fixedResponsiveFontSize(40),
   },
   icon: {
     ...baseIconStyles,
   },
   profileIconContainer: {
     ...baseIconStyles,
-    borderRadius: noScale(getResponsiveFontSize(30)) / 2,
+    borderRadius: fixedResponsiveFontSize(30 / 2),
     backgroundColor: '$disabledColor',
     justifyContent: 'center',
   },
   profileIcon: {
     alignSelf: 'center',
     color: 'white',
-    fontSize: noScale(getResponsiveFontSize(22)),
+    fontSize: fixedResponsiveFontSize(22),
     backgroundColor: 'transparent',
   },
 });

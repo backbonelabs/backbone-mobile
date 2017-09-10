@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize, getResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {

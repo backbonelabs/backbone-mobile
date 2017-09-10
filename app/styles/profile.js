@@ -5,8 +5,6 @@ import relativeDimensions from '../utils/relativeDimensions';
 const {
   applyWidthDifference,
   fixedResponsiveFontSize,
-  getResponsiveFontSize,
-  noScale,
 } = relativeDimensions;
 
 const positioning = {
@@ -55,7 +53,7 @@ export default EStyleSheet.create({
   }, positioning),
   profileFieldIcon: {
     color: '$grey500',
-    fontSize: noScale(getResponsiveFontSize(20)),
+    fontSize: fixedResponsiveFontSize(22),
     paddingHorizontal: applyWidthDifference(15),
   },
   profileFieldData: {
