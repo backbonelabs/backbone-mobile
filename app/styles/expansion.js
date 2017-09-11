@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -14,12 +14,13 @@ export default EStyleSheet.create({
     paddingBottom: applyWidthDifference(20),
   },
   expansionState: {
-    fontSize: fixedResponsiveFontSize(18),
+    fontSize: getResponsiveFontSize(18),
     textAlign: 'center',
+    marginHorizontal: applyWidthDifference(10),
   },
   expansionProgress: {
-    fontSize: fixedResponsiveFontSize(16),
-    paddingTop: fixedResponsiveFontSize(5),
+    fontSize: getResponsiveFontSize(16),
+    paddingTop: applyWidthDifference(5),
     textAlign: 'center',
   },
   buttonContainer: {

@@ -575,7 +575,6 @@ class Application extends Component {
           if (state) {
             // Expansion files found, proceed to the initial route
             this.setInitialRoute(route);
-            // this.setInitialRoute(routes.expansion);
           } else {
             // Proceed to expansion handler scene to reload expansion files
             this.props.dispatch(appActions.setNextRoute(route));
@@ -587,7 +586,6 @@ class Application extends Component {
       });
     } else {
       this.setInitialRoute(route);
-      // this.setInitialRoute(routes.expansion);
     }
   }
 

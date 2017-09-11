@@ -64,7 +64,7 @@ class Expansion extends Component {
   }
 
   componentDidMount() {
-    if (Platform.os === 'android') {
+    if (Platform.OS === 'android') {
       NativeModules.ExpansionService.loadExpansionFile();
     }
   }
@@ -79,7 +79,7 @@ class Expansion extends Component {
   }
 
   retry() {
-    if (Platform.os === 'android') {
+    if (Platform.OS === 'android') {
       NativeModules.ExpansionService.loadExpansionFile();
     }
   }
