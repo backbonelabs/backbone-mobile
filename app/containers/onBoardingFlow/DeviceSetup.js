@@ -26,7 +26,7 @@ class DeviceSetup extends Component {
 
   skip() {
     this.props.navigator.push(routes.howToVideo);
-    Mixpanel.track('skip-deviceSetup');
+    Mixpanel.track('deviceSetup-skip');
   }
 
   render() {
