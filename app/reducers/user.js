@@ -23,6 +23,7 @@ import {
   FETCH_USER_WORKOUTS__START,
   FETCH_USER_WORKOUTS__ERROR,
   SELECT_WORKOUT,
+  RESEND_CONFIRMATION_EMAIL,
 } from '../actions/types';
 
 export default (state = {
@@ -192,6 +193,16 @@ export default (state = {
       return {
         ...state,
         selectedWorkoutId: payload,
+      };
+    }
+    case RESEND_CONFIRMATION_EMAIL: {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          confirmationToken: payload.confirmationToken,
+          confirmationTokenExpiry: payload.confirmationTokenExpiry,
+        },
       };
     }
     default:
