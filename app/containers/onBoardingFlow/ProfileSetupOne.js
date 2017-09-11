@@ -26,6 +26,7 @@ import maleIcon from '../../images/onboarding/male-icon-off.png';
 import maleIconOn from '../../images/onboarding/male-icon-on.png';
 import transgenderIcon from '../../images/onboarding/transgender-icon-off.png';
 import transgenderIconOn from '../../images/onboarding/transgender-icon-on.png';
+import Mixpanel from '../../utils/Mixpanel';
 
 const isiOS = Platform.OS === 'ios';
 const statusBarHeightDroid = StatusBar.currentHeight;
@@ -50,6 +51,7 @@ class ProfileSetupOne extends Component {
   componentWillMount() {
     const kbShow = isiOS ? 'keyboardWillShow' : 'keyboardDidShow';
     const kbHide = isiOS ? 'keyboardWillHide' : 'keyboardDidHide';
+    Mixpanel.track('profileSetupOne');
 
     this.keyboardWillShowListener = Keyboard.addListener(
       kbShow,

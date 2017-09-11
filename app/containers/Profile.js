@@ -17,7 +17,7 @@ import deviceActions from '../actions/device';
 import appActions from '../actions/app';
 import styles from '../styles/profile';
 import constants from '../utils/constants';
-import SecondaryText from '../components/SecondaryText';
+import BodyText from '../components/BodyText';
 import Spinner from '../components/Spinner';
 import routes from '../routes';
 import Facebook from '../containers/Facebook';
@@ -47,15 +47,9 @@ const ProfileField = props => {
     style={styles.profileField}
     onPress={props.onPress}
   >
-    {Icon && iconLeftName
-          ? <Icon
-            name={iconLeftName}
-            size={styles.$iconSize}
-            style={styles.profileFieldIcon}
-          />
-          : null}
+    {Icon && iconLeftName ? <Icon name={iconLeftName} style={styles.profileFieldIcon} /> : null}
     <View style={styles.profileFieldData}>
-      <SecondaryText style={styles.profileText}>{props.profileData}</SecondaryText>
+      <BodyText>{props.profileData}</BodyText>
     </View>
   </TouchableOpacity>);
 };
@@ -78,7 +72,7 @@ const ProfileFieldInput = props => {
   const Icon = iconMap[iconFont];
   return (
     <View style={styles.profileField}>
-      <Icon name={iconLeftName} size={styles.$iconSize} style={styles.profileFieldIcon} />
+      <Icon name={iconLeftName} style={styles.profileFieldIcon} />
       <Input
         style={styles.profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}

@@ -45,6 +45,7 @@ exports[`Signup Component renders as expected 1`] = `
             onPress={[Function]}
           >
             <BodyText
+              allowFontScaling={false}
               style={Object {}}
             >
               Log In
@@ -61,6 +62,7 @@ exports[`Signup Component renders as expected 1`] = `
             }
           >
             <BodyText
+              allowFontScaling={false}
               style={Object {}}
             >
               Sign Up
@@ -77,6 +79,7 @@ exports[`Signup Component renders as expected 1`] = `
             <View>
               <View />
               <SecondaryText
+                allowFontScaling={false}
                 style={Object {}}
               >
                 OR
@@ -133,6 +136,7 @@ exports[`Signup Component renders as expected 1`] = `
           />
           <View>
             <SecondaryText
+              allowFontScaling={false}
               style={Object {}}
             >
               By signing up, you agree to our
@@ -143,12 +147,14 @@ exports[`Signup Component renders as expected 1`] = `
               onPress={[Function]}
             >
               <SecondaryText
+                allowFontScaling={false}
                 style={Object {}}
               >
                 Terms of Service
               </SecondaryText>
             </TouchableOpacity>
             <SecondaryText
+              allowFontScaling={false}
               style={Object {}}
             >
                and 
@@ -159,6 +165,7 @@ exports[`Signup Component renders as expected 1`] = `
               onPress={[Function]}
             >
               <SecondaryText
+                allowFontScaling={false}
                 style={Object {}}
               >
                 Privacy Policy

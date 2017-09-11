@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import {
   Text,
 } from 'react-native';
 import styles from '../styles/text';
 import reusableTextDefaults from './utils/reusableTextDefaults';
 
-const { PropTypes } = React;
-const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableTextDefaults;
+const { propTypes, defaultProps } = reusableTextDefaults;
 
 const HeadingText = props => {
   const {
@@ -16,7 +15,7 @@ const HeadingText = props => {
   } = props;
 
   return (
-    <Text style={[styles[`_heading${size}`], style]} {...{ remainingProps, allowFontScaling }}>
+    <Text style={[styles[`heading${size}`], style]} {...remainingProps}>
       {props.children}
     </Text>
   );

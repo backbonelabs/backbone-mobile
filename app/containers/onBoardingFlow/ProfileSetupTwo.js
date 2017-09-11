@@ -46,6 +46,10 @@ class ProfileSetupTwo extends Component {
     };
   }
 
+  componentWillMount() {
+    Mixpanel.track('profileSetupTwo');
+  }
+
   setPickerType(pickerType) {
     if (this.state.pickerType && pickerType && this.state.pickerType !== pickerType) {
       // Switching between two different data pickers (height and weight) should

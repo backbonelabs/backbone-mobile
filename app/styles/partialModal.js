@@ -34,28 +34,23 @@ export default EStyleSheet.create({
     }),
   },
   topView: {
-    marginTop: applyWidthDifference(30),
-    marginBottom: applyWidthDifference(20),
+    paddingVertical: applyWidthDifference(20),
   },
   titleText: {
     textAlign: 'center',
-    color: '#000000',
     fontWeight: 'bold',
-    marginTop: applyWidthDifference(10),
     marginHorizontal: applyWidthDifference(12),
   },
   detailText: {
     textAlign: 'center',
-    marginTop: applyWidthDifference(10),
-    marginBottom: applyWidthDifference(10),
+    marginVertical: applyWidthDifference(10),
     marginHorizontal: applyWidthDifference(12),
   },
   buttonContainer: {
     alignItems: 'center',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    marginTop: applyWidthDifference(10),
-    marginBottom: applyWidthDifference(10),
+    marginVertical: applyWidthDifference(10),
   },
   button: {
     width: applyWidthDifference(300),
