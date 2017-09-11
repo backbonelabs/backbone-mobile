@@ -12,6 +12,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import userActions from '../actions/user';
+import supportActions from '../actions/support';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import appActions from '../actions/app';
@@ -25,6 +26,7 @@ import Input from '../components/Input';
 import ProfilePicker from '../containers/onBoardingFlow/profile/ProfilePicker';
 import theme from '../styles/theme';
 import HeadingText from '../components/HeadingText';
+import Button from '../components/Button';
 
 const {
   height: heightConstants,
@@ -53,27 +55,30 @@ const ProfileField = props => {
   }
 
   // Pressing on a profile field initiates editing
-  return (<TouchableOpacity
-    style={styles.profileField}
-    onPress={props.onPress}
-    disabled={props.disabled}
-  >
-    {Icon && iconLeftName
+  return (
+    <TouchableOpacity
+      style={styles.profileField}
+      onPress={props.onPress}
+      disabled={props.disabled}
+    >
+      {Icon && iconLeftName
           ? <Icon
             name={iconLeftName}
             size={styles.$iconSize}
             style={[styles.profileFieldIcon, { color: color.icon }]}
           />
           : null}
-    <View style={styles.profileFieldData}>
-      <SecondaryText style={[styles.profileText, { color: color.text }]}>
-        {props.profileData}
-      </SecondaryText>
-    </View>
-  </TouchableOpacity>);
+      <View style={styles.profileFieldData}>
+        <SecondaryText style={[styles.profileText, { color: color.text }]}>
+          {props.profileData}
+        </SecondaryText>
+      </View>
+    </TouchableOpacity>
+  );
 };
 
 ProfileField.propTypes = {
+  style: PropTypes.object,
   title: PropTypes.any,
   edited: PropTypes.bool,
   disabled: PropTypes.bool,
@@ -105,7 +110,8 @@ const ProfileFieldInput = props => {
         innerContainerStyles={styles.innerContainerStyles}
         editable
       />
-    </View>);
+    </View>
+    );
 };
 
 ProfileFieldInput.propTypes = {
@@ -151,6 +157,10 @@ class Profile extends Component {
     }),
     auth: PropTypes.shape({
       errorMessage: PropTypes.string,
+    }),
+    support: PropTypes.shape({
+      errorMessage: PropTypes.string,
+      inProgress: PropTypes.bool,
     }),
   };
 
@@ -228,6 +238,44 @@ class Profile extends Component {
           },
           detail: {
             caption: 'Profile updated',
+          },
+          buttons: [
+            { caption: 'OK' },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
+      }
+    }
+
+    if (this.props.support.inProgress && !nextProps.support.inProgress) {
+      if (nextProps.support.errorMessage) {
+        // Display an alert when failing to resend email
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: nextProps.support.errorMessage,
+          },
+          buttons: [
+            { caption: 'OK' },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
+      } else {
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Success',
+            color: theme.warningColor,
+          },
+          detail: {
+            // Display errors when failing to update user
+            caption: 'A confirmation link has been sent to your email address.',
           },
           buttons: [
             { caption: 'OK' },
@@ -528,6 +576,10 @@ class Profile extends Component {
     }
   }
 
+  resendEmail() {
+    this.props.dispatch(supportActions.resendEmail());
+  }
+
   render() {
     const {
       email,
@@ -539,6 +591,7 @@ class Profile extends Component {
       pickerType,
     } = this.state;
     const { user, isFetching, isUpdating } = this.props.user;
+    const { inProgress } = this.props.support;
 
     // Used to determine gender
     let genderText = 'Other';
@@ -557,15 +610,15 @@ class Profile extends Component {
     }
 
     return (
-      <KeyboardAwareScrollView>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
-            { isFetching || isUpdating ?
-              <Spinner style={{ flex: 1 }} />
+      <View style={styles.container}>
+        {
+          isFetching || isUpdating || inProgress ?
+            <Spinner style={{ flex: 1 }} />
               :
-                <View style={styles.profileFieldContainer}>
-                  <View style={styles.profileHeader}>
-                    {/* To be used after implementing the photo feature
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                  <KeyboardAwareScrollView contentInset={{ bottom: 0 }}>
+                    <View style={styles.profileHeader}>
+                      {/* To be used after implementing the photo feature
                     <TouchableOpacity>
                       <View style={styles.profileHeaderIconContainer} >
                         To be used after implementing the photo feature
@@ -576,122 +629,136 @@ class Profile extends Component {
                         />
                       </View>
                     </TouchableOpacity>*/}
-                    <View style={styles.profileHeaderIconContainer} >
-                      <HeadingText size={1}>
-                        {user.nickname[0].toUpperCase()}
+                      <View style={styles.profileHeaderIconContainer} >
+                        <HeadingText size={1}>
+                          {user.nickname ? user.nickname[0].toUpperCase() : null}
+                        </HeadingText>
+                      </View>
+                      <HeadingText
+                        size={1}
+                        style={styles.profileHeaderNickname}
+                      >
+                        {user.nickname ? user.nickname.slice(1, user.nickname.length) : null}
                       </HeadingText>
                     </View>
-                    <HeadingText
-                      size={1}
-                      style={styles.profileHeaderNickname}
-                    >
-                      {user.nickname.slice(1, user.nickname.length)}
-                    </HeadingText>
-                  </View>
-                  <ProfileFieldInput
-                    edited={nickname !== user.nickname}
-                    field="nickname"
-                    keyboardType="default"
-                    value={nickname}
-                    fieldInputChangeHandler={this.fieldInputChangeHandler}
-                    focusHandler={this.fieldInputFocusHandler}
-                    blurHandler={this.fieldInputBlurHandler}
-                    iconFont="FontAwesome"
-                    iconLeftName="user"
-                  />
-                  <ProfileField
-                    onPress={() => this.updateProfile('gender', nextGenderType, true)}
-                    edited={gender !== user.gender}
-                    profileData={genderText}
-                    iconFont="FontAwesome"
-                    iconLeftName={genderIcon}
-                  />
-                  <ProfileField
-                    onPress={() => this.setPickerType('birthdate')}
-                    edited={birthdate.getTime() !== new Date(user.birthdate).getTime()}
-                    profileData={`${constants.months[birthdate.getMonth()]} ${
-                        birthdate.getDate()}, ${birthdate.getFullYear()}`}
-                    iconFont="MaterialIcon"
-                    iconLeftName="cake"
-                  />
-                  { pickerType === 'birthdate' ?
-                    <View style={styles.pickerContainer}>
-                      <ProfilePicker
-                        birthdate={birthdate}
-                        pickerType={pickerType}
-                        updateProfile={this.updateProfile}
-                        setPickerType={this.setPickerType}
-                        mode="spinner"
-                      />
-                    </View>
-                  : null}
-                  <ProfileField
-                    onPress={() => this.setPickerType('height')}
-                    edited={height.initialValue !== height.value}
-                    profileData={this._setHeightLabel(height.value)}
-                    iconFont="MaterialIcon"
-                    iconLeftName="assignment"
-                  />
-                  { pickerType === 'height' ?
-                    <View style={styles.pickerContainer}>
-                      <ProfilePicker
-                        height={height}
-                        pickerType={pickerType}
-                        updateProfile={this.updateProfile}
-                        setPickerType={this.setPickerType}
-                      />
-                    </View>
-                  : null}
-                  <ProfileField
-                    onPress={() => this.setPickerType('weight')}
-                    edited={weight.initialValue !== weight.value}
-                    profileData={this._setWeightLabel(weight.value)}
-                    iconFont="FontAwesome"
-                    iconLeftName="heartbeat"
-                  />
-                  { pickerType === 'weight' ?
-                    <View style={styles.pickerContainer}>
-                      <ProfilePicker
-                        weight={weight}
-                        pickerType={pickerType}
-                        updateProfile={this.updateProfile}
-                        setPickerType={this.setPickerType}
-                      />
-                    </View>
-                  : null}
-                  <ProfileFieldInput
-                    title="Email"
-                    edited={email !== user.email || !user.isConfirmed}
-                    editedText={(() => {
-                      // Show appropriate edited text
-                      if (email !== user.email) {
-                        return;
-                      } else if (!user.isConfirmed) {
-                        return '(unconfirmed)';
-                      }
-                    })()}
-                    field="email"
-                    keyboardType="email-address"
-                    value={email}
-                    fieldInputChangeHandler={this.fieldInputChangeHandler}
-                    blurHandler={this.fieldInputBlurHandler}
-                    iconFont="MaterialIcon"
-                    iconLeftName="email"
-                  />
-                  { user.authMethod === constants.authMethods.EMAIL ?
-                    <ProfileField
-                      onPress={() => this.props.navigator.push(routes.changePassword)}
-                      profileData="Change password"
-                      iconFont="MaterialIcon"
-                      iconLeftName="lock"
-                    /> : null }
-                  { user.facebookId ?
-                    <ProfileField
-                      profileData="Facebook Connected"
+                    <ProfileFieldInput
+                      edited={nickname !== user.nickname}
+                      field="nickname"
+                      keyboardType="default"
+                      value={nickname}
+                      fieldInputChangeHandler={this.fieldInputChangeHandler}
+                      focusHandler={this.fieldInputFocusHandler}
+                      blurHandler={this.fieldInputBlurHandler}
                       iconFont="FontAwesome"
-                      iconLeftName="facebook-official"
-                      disabled
+                      iconLeftName="user"
                     />
+                    <ProfileField
+                      onPress={() => this.updateProfile('gender', nextGenderType, true)}
+                      edited={gender !== user.gender}
+                      profileData={genderText}
+                      iconFont="FontAwesome"
+                      iconLeftName={genderIcon}
+                    />
+                    <ProfileField
+                      onPress={() => this.setPickerType('birthdate')}
+                      edited={birthdate.getTime() !== new Date(user.birthdate).getTime()}
+                      profileData={`${constants.months[birthdate.getMonth()]} ${
+                        birthdate.getDate()}, ${birthdate.getFullYear()}`}
+                      iconFont="MaterialIcon"
+                      iconLeftName="cake"
+                    />
+                    { pickerType === 'birthdate' ?
+                      <View style={styles.pickerContainer}>
+                        <ProfilePicker
+                          birthdate={birthdate}
+                          pickerType={pickerType}
+                          updateProfile={this.updateProfile}
+                          setPickerType={this.setPickerType}
+                          mode="spinner"
+                        />
+                      </View>
+                  : null}
+                    <ProfileField
+                      onPress={() => this.setPickerType('height')}
+                      edited={height.initialValue !== height.value}
+                      profileData={this._setHeightLabel(height.value)}
+                      iconFont="MaterialIcon"
+                      iconLeftName="assignment"
+                    />
+                    { pickerType === 'height' ?
+                      <View style={styles.pickerContainer}>
+                        <ProfilePicker
+                          height={height}
+                          pickerType={pickerType}
+                          updateProfile={this.updateProfile}
+                          setPickerType={this.setPickerType}
+                        />
+                      </View>
+                  : null}
+                    <ProfileField
+                      onPress={() => this.setPickerType('weight')}
+                      edited={weight.initialValue !== weight.value}
+                      profileData={this._setWeightLabel(weight.value)}
+                      iconFont="FontAwesome"
+                      iconLeftName="heartbeat"
+                    />
+                    { pickerType === 'weight' ?
+                      <View style={styles.pickerContainer}>
+                        <ProfilePicker
+                          weight={weight}
+                          pickerType={pickerType}
+                          updateProfile={this.updateProfile}
+                          setPickerType={this.setPickerType}
+                        />
+                      </View>
+                  : null}
+                    <ProfileFieldInput
+                      title="Email"
+                      edited={email !== user.email || !user.isConfirmed}
+                      editedText={(() => {
+                      // Show appropriate edited text
+                        if (email !== user.email) {
+                          return;
+                        } else if (!user.isConfirmed) {
+                          return '(unconfirmed)';
+                        }
+                      })()}
+                      field="email"
+                      keyboardType="email-address"
+                      value={email}
+                      fieldInputChangeHandler={this.fieldInputChangeHandler}
+                      blurHandler={this.fieldInputBlurHandler}
+                      iconFont="MaterialIcon"
+                      iconLeftName="email"
+                    />
+                    {
+                    !user.isConfirmed ?
+                      <View style={styles.resendEmailContainer}>
+                        <SecondaryText style={styles.resendEmailText}>
+                          Please check your inbox for a confirmation email.
+                          Click the link in the email to confirm your email address.
+                        </SecondaryText>
+                        <Button
+                          primary
+                          text="Resend Email"
+                          onPress={this.resendEmail}
+                        />
+                      </View> : null
+                  }
+                    { user.authMethod === constants.authMethods.EMAIL ?
+                      <ProfileField
+                        onPress={() => this.props.navigator.push(routes.changePassword)}
+                        profileData="Change password"
+                        iconFont="MaterialIcon"
+                        iconLeftName="lock"
+                      /> : null }
+                    { user.facebookId ?
+                      <ProfileField
+                        profileData="Facebook Connected"
+                        iconFont="FontAwesome"
+                        iconLeftName="facebook-official"
+                        disabled
+                      />
                   :
                     <ProfileField
                       onPress={() => { Facebook.login(this.props); }}
@@ -700,26 +767,26 @@ class Profile extends Component {
                       iconLeftName="facebook-official"
                     />
                   }
-                  <View style={styles.signOutSpacerContainer} />
-                  <ProfileField
-                    onPress={this.signOut}
-                    profileData="Sign out"
-                    iconFont="FontAwesome"
-                    iconLeftName="power-off"
-                    style={styles.signOut}
-                  />
-                </View>
-              }
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAwareScrollView>
+                    <View style={styles.signOutSpacerContainer} />
+                    <View style={{ marginBottom: 0 }}>
+                      <ProfileField
+                        onPress={this.signOut}
+                        profileData="Sign out"
+                        iconFont="FontAwesome"
+                        iconLeftName="power-off"
+                      />
+                    </View>
+                  </KeyboardAwareScrollView>
+                </TouchableWithoutFeedback>
+        }
+      </View>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  const { auth, user } = state;
-  return { auth, user };
+  const { auth, user, support } = state;
+  return { auth, user, support };
 };
 
 export default connect(mapStateToProps)(Profile);

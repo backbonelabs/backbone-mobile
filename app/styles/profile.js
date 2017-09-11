@@ -17,10 +17,6 @@ export default EStyleSheet.create({
   $iconSize: fixedResponsiveFontSize(20),
   $photoIconSize: fixedResponsiveFontSize(40),
   container: {
-    height: '100%',
-    backgroundColor: 'white',
-  },
-  profileFieldContainer: {
     flex: 1,
   },
   profileHeader: {
@@ -72,11 +68,21 @@ export default EStyleSheet.create({
     fontSize: fixedResponsiveFontSize(16),
   },
   signOutSpacerContainer: {
-    height: applyWidthDifference(20),
+    height: applyWidthDifference(30),
     backgroundColor: theme.grey100,
     borderBottomWidth: 1,
-    borderTopWidth: 1,
     borderColor: '$grey200',
+  },
+  resendEmailContainer: {
+    alignItems: 'center',
+    paddingVertical: applyWidthDifference(15),
+    borderBottomWidth: 1,
+    borderColor: '$grey200',
+  },
+  resendEmailText: {
+    textAlign: 'center',
+    marginBottom: applyWidthDifference(15),
+    width: '85%',
   },
   // Used to overwrite Input module's default styling
   innerContainerStyles: {
