@@ -86,6 +86,7 @@ class DeviceScan extends Component {
   }
 
   componentWillMount() {
+    Mixpanel.track('deviceScan');
     // If there is a device in our store
     if (this.props.device.identifier) {
       this.setState(() => ({
@@ -293,6 +294,7 @@ class DeviceScan extends Component {
     }
 
     this.props.navigator.push(routes.howToVideo);
+    Mixpanel.track('deviceScan-skip');
   }
 
   render() {
