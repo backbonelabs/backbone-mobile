@@ -8,7 +8,9 @@ Object.assign(RN.NativeModules, {
     BUGSNAG_API_KEY: 'ApiKey',
   },
   DeviceManagementService: jest.fn(),
-  BluetoothService: jest.fn(),
+  BluetoothService: {
+    getState: jest.fn(),
+  },
   NotificationService: jest.fn(),
   SessionControlService: jest.fn(),
   VibrationMotorService: jest.fn(),

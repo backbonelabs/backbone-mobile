@@ -4,7 +4,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
 import { SET_SESSION_TIME } from '../../../app/actions/types';
-import PostureIntro from '../../../app/components/posture/PostureIntro';
+import PostureIntro, { PostureIntroComponent } from '../../../app/components/posture/PostureIntro';
 
 describe('PostureIntro Component', () => {
   const navigator = {
@@ -35,14 +35,14 @@ describe('PostureIntro Component', () => {
   });
 
   test('calls onProceed prop when button is pressed', () => {
-    const onProceed = jest.fn();
+    // Test that the start method is called when clicked
+    // https://github.com/airbnb/enzyme/issues/697#issuecomment-261659043
+    const start = jest.spyOn(PostureIntroComponent.prototype, 'start');
     wrapper = shallow(
-      <PostureIntro duration={0} navigator={navigator} onProceed={onProceed} />,
-      { context: { store } },
-    ).dive();
-    const button = wrapper.findWhere(n => n.name() === 'Button');
-    button.simulate('press');
-    expect(onProceed.mock.calls.length).toBe(1);
+      <PostureIntroComponent duration={0} navigator={navigator} />,
+    );
+    wrapper.find('Button').at(0).simulate('press');
+    expect(start).toHaveBeenCalled();
   });
 });
 
