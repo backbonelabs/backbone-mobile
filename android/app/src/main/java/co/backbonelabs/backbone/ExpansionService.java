@@ -272,7 +272,7 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
         // Expansion download has failed, notify RN
         WritableMap wm = Arguments.createMap();
         wm.putInt("state", Constants.EXPANSION_LOADER_STATES.ERROR);
-        wm.putString("message", "Unexpected error occurred. Please try again later.");
+        wm.putString("message", "Unexpected error occurred. Make sure that you are connected to the internet and try again.");
         EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
     }
 
