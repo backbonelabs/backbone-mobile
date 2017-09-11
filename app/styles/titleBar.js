@@ -80,13 +80,13 @@ export default EStyleSheet.create({
   profileIconContainer: {
     ...baseIconStyles,
     borderRadius: fixedResponsiveFontSize(30 / 2),
-    backgroundColor: '$grey200',
+    backgroundColor: '$secondaryFontColor',
     justifyContent: 'center',
   },
   profileIcon: {
     alignSelf: 'center',
     color: 'white',
-    fontSize: fixedResponsiveFontSize(22),
+    fontSize: fixedResponsiveFontSize(20),
     backgroundColor: 'transparent',
   },
 });
