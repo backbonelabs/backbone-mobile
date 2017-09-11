@@ -139,7 +139,7 @@ exports[`Signup Component renders as expected 1`] = `
               allowFontScaling={false}
               style={Object {}}
             >
-              By signing up, you agree to our
+              By signing up, you agree to our 
             </SecondaryText>
             <TouchableOpacity
               activeOpacity={0.4}
