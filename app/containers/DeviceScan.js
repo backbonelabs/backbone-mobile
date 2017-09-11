@@ -294,6 +294,7 @@ class DeviceScan extends Component {
     }
 
     this.props.navigator.push(routes.howToVideo);
+    Mixpanel.track('skip-deviceScan');
   }
 
   render() {
