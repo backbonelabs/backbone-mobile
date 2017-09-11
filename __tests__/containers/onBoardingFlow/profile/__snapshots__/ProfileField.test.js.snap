@@ -20,6 +20,7 @@ exports[`ProfileField Component renders as expected 1`] = `
     source={1}
   />
   <BodyText
+    allowFontScaling={false}
     style={Object {}}
   >
     2017-08-01

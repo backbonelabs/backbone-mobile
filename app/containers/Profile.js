@@ -18,6 +18,7 @@ import deviceActions from '../actions/device';
 import appActions from '../actions/app';
 import styles from '../styles/profile';
 import constants from '../utils/constants';
+import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import routes from '../routes';
@@ -64,14 +65,13 @@ const ProfileField = props => {
       {Icon && iconLeftName
           ? <Icon
             name={iconLeftName}
-            size={styles.$iconSize}
             style={[styles.profileFieldIcon, { color: color.icon }]}
           />
           : null}
       <View style={styles.profileFieldData}>
-        <SecondaryText style={[styles.profileText, { color: color.text }]}>
+        <BodyText style={{ color: color.text }}>
           {props.profileData}
-        </SecondaryText>
+        </BodyText>
       </View>
     </TouchableOpacity>
   );
@@ -97,7 +97,7 @@ const ProfileFieldInput = props => {
   const Icon = iconMap[iconFont];
   return (
     <View style={styles.profileField}>
-      <Icon name={iconLeftName} size={styles.$iconSize} style={styles.profileFieldIcon} />
+      <Icon name={iconLeftName} style={styles.profileFieldIcon} />
       <Input
         style={styles.profileFieldInput}
         onBlur={() => props.blurHandler(props.field)}

@@ -6,7 +6,6 @@ exports[`BodyText Component renders as expected 1`] = `
     accessible={true}
     allowFontScaling={false}
     ellipsizeMode="tail"
-    remainingProps={Object {}}
     style={
       Array [
         undefined,

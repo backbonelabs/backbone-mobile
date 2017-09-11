@@ -22,13 +22,11 @@ export default EStyleSheet.create({
   },
   goodRating: {
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(12),
     paddingRight: applyWidthDifference(15),
     color: '$green400',
   },
   poorRating: {
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(12),
     color: '$primaryColor',
   },
   sessionRatingContainer: {
