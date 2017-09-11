@@ -1,12 +1,9 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
-  },
   deviceInfoContainer: {
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -39,6 +36,10 @@ export default EStyleSheet.create({
   deviceInfo: {
     alignItems: 'center',
   },
+  deviceInfoText: {
+    alignItems: 'center',
+    fontSize: 14,
+  },
   firmwareUpdateInfoText: {
     marginHorizontal: applyWidthDifference(10),
     textAlign: 'center',
@@ -51,10 +52,10 @@ export default EStyleSheet.create({
   },
   batteryIconBlack: {
     color: '$primaryFontColor',
-    fontSize: fixedResponsiveFontSize(25),
+    fontSize: 25,
   },
   batteryIconRed: {
     color: '$warningColor',
-    fontSize: fixedResponsiveFontSize(25),
+    fontSize: 25,
   },
 });
