@@ -1,4 +1,3 @@
-import activity from './activity';
 import login from './login';
 import signup from './signup';
 import profile from './profile';
@@ -9,7 +8,6 @@ import postureReport from './posture/postureReport';
 import postureChart from './posture/postureChart';
 import tutorial from './tutorial';
 import settings from './settings';
-import errors from './errors';
 import reset from './reset';
 import alerts from './alerts';
 import support from './support';
@@ -30,7 +28,6 @@ import libraryContent from './libraryContent';
 import expansion from './expansion';
 
 export default {
-  activity,
   login,
   signup,
   postureIntro,
@@ -41,7 +38,6 @@ export default {
   tutorial,
   settings,
   profile,
-  errors,
   reset,
   alerts,
   support,

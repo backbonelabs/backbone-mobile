@@ -23,8 +23,6 @@ export const LeftProfileComponent = (props) => (
       <Icon
         style={styles.profileIcon}
         name="person"
-        color="#FFFFFF"
-        size={styles.$profileIconSize}
       />
     </View>
   </TouchableOpacity>
@@ -90,7 +88,6 @@ const TitleBar = (props) => {
               color(currentColor).clearer(0.6).rgbString() : currentColor,
           },
         ]}
-        size={styles.$backButtonIconSize}
         color={currentColor}
       />
     </TouchableOpacity>
@@ -112,7 +109,7 @@ const TitleBar = (props) => {
   return (
     <View style={[titleBarStyles, props.titleBar.styles, props.style]}>
       <View style={styles.sideContainers}>{leftButton}</View>
-      <HeadingText size={2} style={titleTextStyles} >{props.titleBar.title}</HeadingText>
+      <HeadingText size={3} style={titleTextStyles} >{props.titleBar.title}</HeadingText>
       <View style={styles.sideContainers}>{rightButton}</View>
     </View>
   );

@@ -24,6 +24,7 @@ import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
+import HeadingText from '../components/HeadingText';
 import routes from '../routes';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
@@ -456,9 +457,9 @@ class Device extends Component {
       :
         <View style={styles.container}>
           <View style={styles.deviceInfoContainer}>
-            <BodyText style={styles.deviceConnectionText}>
+            <HeadingText size={3} style={styles.deviceConnectionText}>
               {!isConnected ? 'Disconnected from ' : 'Connected to '}Backbone
-            </BodyText>
+            </HeadingText>
             <Image source={deviceStatusImage} style={styles.deviceStatusImage} />
             {mainDeviceStatusText}
             {subDeviceStatusText}

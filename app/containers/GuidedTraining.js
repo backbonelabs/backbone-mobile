@@ -20,7 +20,6 @@ import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import bulletWhite from '../images/bullet-white.png';
 import routes from '../routes';
-import { getColorHexForLevel } from '../utils/levelColors';
 import styles from '../styles/guidedTraining';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
@@ -514,8 +513,7 @@ class GuidedTraining extends Component {
       </View>
     );
 
-    const selectedLevelIdx = this.props.training.selectedLevelIdx;
-    const levelColorHex = getColorHexForLevel(selectedLevelIdx);
+    const { lightBlue500 } = theme;
     const isPostureSession = currentWorkout.workout.type === workoutTypes.POSTURE;
 
     // The left button would be disabled if this is the first workout in the session
@@ -531,7 +529,7 @@ class GuidedTraining extends Component {
     const isUpdating = this.props.training.isUpdating;
     const isCenterButtonDisabled = isUpdating || (isPostureSession && !isComplete);
     const additionalCenterButtonStyles = {
-      backgroundColor: currentWorkout.isComplete ? levelColorHex : 'white',
+      backgroundColor: currentWorkout.isComplete ? lightBlue500 : 'white',
     };
     if (isCenterButtonDisabled) {
       additionalCenterButtonStyles.opacity = 0.4;
@@ -567,11 +565,11 @@ class GuidedTraining extends Component {
         <ProgressBar
           currentStep={this.state.stepIdx + 1}
           totalSteps={sessionWorkouts.length}
-          backgroundColor={levelColorHex}
+          backgroundColor={lightBlue500}
         />
         {header}
         {this.state.isFetchingImage ?
-          <Spinner size="large" color={levelColorHex} /> : (
+          <Spinner size="large" color={lightBlue500} /> : (
             <WorkoutView
               media={currentWorkout.workout.type === workoutTypes.PRIMER ? 'video' : 'image'}
               navigator={this.props.navigator}
@@ -583,7 +581,7 @@ class GuidedTraining extends Component {
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
               activeOpacity={1}
-              underlayColor={levelColorHex}
+              underlayColor={lightBlue500}
               onPress={() => this._onButtonPress('leftButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('leftButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('leftButton')}
@@ -594,7 +592,7 @@ class GuidedTraining extends Component {
                 <Icon
                   name="arrow-back"
                   size={applyWidthDifference(50)}
-                  style={{ color: this.state.leftButtonDepressed ? 'white' : levelColorHex }}
+                  style={{ color: this.state.leftButtonDepressed ? 'white' : lightBlue500 }}
                 />
               </View>
             </TouchableHighlight>
@@ -603,7 +601,7 @@ class GuidedTraining extends Component {
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
               activeOpacity={1}
-              underlayColor={levelColorHex}
+              underlayColor={lightBlue500}
               onPress={() => this._onButtonPress('centerButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('centerButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('centerButton')}
@@ -611,13 +609,13 @@ class GuidedTraining extends Component {
               disabled={isCenterButtonDisabled}
             >
               <View style={styles.footerButtonIconContainer}>
-                {isUpdating ? <Spinner size="large" color={levelColorHex} /> : (
+                {isUpdating ? <Spinner size="large" color={lightBlue500} /> : (
                   <Icon
                     name={centerButtonIconName}
                     size={applyWidthDifference(50)}
                     style={{
                       color: this.state.centerButtonDepressed || currentWorkout.isComplete ?
-                        'white' : levelColorHex,
+                        'white' : lightBlue500,
                     }}
                   />
                 )}
@@ -630,7 +628,7 @@ class GuidedTraining extends Component {
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight
               activeOpacity={1}
-              underlayColor={levelColorHex}
+              underlayColor={lightBlue500}
               onPress={() => this._onButtonPress('rightButton')}
               onShowUnderlay={() => this._onButtonShowUnderlay('rightButton')}
               onHideUnderlay={() => this._onButtonHideUnderlay('rightButton')}
@@ -641,7 +639,7 @@ class GuidedTraining extends Component {
                 <Icon
                   name="arrow-forward"
                   size={applyWidthDifference(50)}
-                  style={{ color: this.state.rightButtonDepressed ? 'white' : levelColorHex }}
+                  style={{ color: this.state.rightButtonDepressed ? 'white' : lightBlue500 }}
                 />
               </View>
             </TouchableHighlight>

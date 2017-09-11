@@ -3,7 +3,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from './theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   $progressBarHeight: applyWidthDifference(20),
@@ -50,7 +50,7 @@ export default EStyleSheet.create({
     flexDirection: 'row',
   },
   timer: {
-    fontSize: fixedResponsiveFontSize(60),
+    fontSize: getResponsiveFontSize(40),
   },
   footer: {
     backgroundColor: theme.grey50,

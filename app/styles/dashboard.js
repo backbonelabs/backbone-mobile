@@ -2,7 +2,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
 
-const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const hexagonConnectorDefaults = {
   position: 'absolute',
@@ -62,17 +62,17 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   hexagonCircle: {
-    fontSize: getResponsiveFontSize(9),
+    fontSize: fixedResponsiveFontSize(10),
     paddingHorizontal: applyWidthDifference(3),
     color: theme.disabledColor,
   },
   hexagonCircleCompleted: {
-    fontSize: getResponsiveFontSize(9),
+    fontSize: fixedResponsiveFontSize(10),
     paddingHorizontal: applyWidthDifference(3),
     color: 'black',
   },
   hexagonCheckmark: {
-    fontSize: getResponsiveFontSize(22),
+    fontSize: fixedResponsiveFontSize(22),
     color: 'black',
   },
   hexagon: {
@@ -85,11 +85,11 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   levelLock: {
-    fontSize: getResponsiveFontSize(30),
+    fontSize: fixedResponsiveFontSize(30),
     color: theme.disabledColor,
   },
   sessionLock: {
-    fontSize: getResponsiveFontSize(40),
+    fontSize: fixedResponsiveFontSize(40),
     color: theme.disabledColor,
   },
   carouselContainer: {
@@ -128,7 +128,7 @@ export default EStyleSheet.create({
     fontWeight: 'bold',
   },
   durationIcon: {
-    fontSize: getResponsiveFontSize(12),
+    fontSize: fixedResponsiveFontSize(14),
   },
   durationText: {
     fontWeight: 'bold',

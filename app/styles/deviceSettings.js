@@ -26,7 +26,6 @@ export default EStyleSheet.create({
   },
   deviceConnectionText: {
     fontWeight: 'bold',
-    fontSize: fixedResponsiveFontSize(16),
     paddingBottom: applyWidthDifference(22),
   },
   batteryInfo: {

@@ -13,7 +13,6 @@ import BodyText from '../BodyText';
 import Button from '../Button';
 import progressCircle from '../../images/posture/calibration-progress-circle.png';
 import styles from '../../styles/posture/postureCalibrate';
-import { getColorHexForLevel } from '../../utils/levelColors';
 import relativeDimensions from '../../utils/relativeDimensions';
 
 const { applyWidthDifference } = relativeDimensions;
@@ -106,18 +105,12 @@ class PostureCalibrate extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.contentContainer}>
-          <HeadingText
-            style={[
-              styles.title,
-              { color: getColorHexForLevel(this.props.training.selectedLevelIdx) },
-            ]}
-            size={1}
-          >
+          <HeadingText style={styles.title} size={1}>
             Calibrating...
           </HeadingText>
-          <BodyText style={styles.subtitle}>
+          <HeadingText size={3} style={styles.subtitle}>
             Continue to sit or stand up straight while Backbone calibrates
-          </BodyText>
+          </HeadingText>
           <Image source={progressCircle} style={styles.progressCircle}>
             <HeadingText size={1} style={styles.progressText}>{percentage}%</HeadingText>
             <BodyText style={styles.progressText}>CALIBRATED</BodyText>

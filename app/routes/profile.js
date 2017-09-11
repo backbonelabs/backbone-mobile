@@ -10,8 +10,8 @@ import Mixpanel from '../utils/Mixpanel';
 
 const ProfileSave = props => {
   const isPendingSave = props.pendingUser && !props.pendingUser.invalidData;
-  const textColor = isPendingSave ? '#FFFFFF' : theme.disabledColor;
-  const text = <BodyText style={{ color: textColor }}>Save</BodyText>;
+  const profileTextColor = isPendingSave ? theme.primaryFontColor : theme.disabledColor;
+  const text = <BodyText style={{ color: profileTextColor }}>Save</BodyText>;
 
   return isPendingSave ? (
     <TouchableOpacity
@@ -41,6 +41,7 @@ export default {
   name: 'profile',
   title: 'Profile',
   component: Profile,
+  showRightComponent: true,
   showLeftComponent: true,
   rightComponent: connect(mapStateToProps)(ProfileSave),
 };
