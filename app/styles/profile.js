@@ -61,7 +61,6 @@ export default EStyleSheet.create({
   },
   profileFieldInput: {
     paddingHorizontal: applyWidthDifference(15),
-    fontSize: fixedResponsiveFontSize(16),
   },
   signOutSpacerContainer: {
     height: applyWidthDifference(30),

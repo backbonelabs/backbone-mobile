@@ -635,7 +635,7 @@ class Profile extends Component {
                         </HeadingText>
                       </View>
                       <HeadingText
-                        size={1}
+                        size={2}
                         style={styles.profileHeaderNickname}
                       >
                         {user.nickname ? user.nickname.slice(1, user.nickname.length) : null}
