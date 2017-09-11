@@ -505,22 +505,21 @@ class Application extends Component {
                         this.props.dispatch(deviceActions.connect(device.identifier));
                       }
                       // Set initial route to posture dashboard
-                      this.setInitialRoute(routes.dashboard);
+                      this.prepareInitialRoute(routes.dashboard);
                     });
                 }
                 // User did not complete onboarding, set initial route to onboarding
-                this.setInitialRoute(routes.profileSetupOne);
+                this.prepareInitialRoute(routes.profileSetupOne);
               } else {
-                // There is no user profile in local storage
-                this.setInitialRoute();
+                this.prepareInitialRoute();
               }
             });
         }
-        // There is no saved access token
-        this.setInitialRoute();
+
+        this.prepareInitialRoute();
       })
       .catch(() => {
-        this.setInitialRoute();
+        this.prepareInitialRoute();
       });
   }
 
@@ -587,6 +586,30 @@ class Application extends Component {
         initialRoute: route,
       });
     }, 500);
+  }
+
+  prepareInitialRoute(route = routes.login) {
+    if (!isiOS) {
+      // Check if expansion files are available before proceeding
+      NativeModules.ExpansionService.getExpansionFileState((error, { state }) => {
+        if (!error) {
+          if (state) {
+            // Expansion files found, proceed to the initial route
+            this.setInitialRoute(route);
+            // this.setInitialRoute(routes.expansion);
+          } else {
+            // Proceed to expansion handler scene to reload expansion files
+            this.props.dispatch(appActions.setNextRoute(route));
+            this.setInitialRoute(routes.expansion);
+          }
+        } else {
+          Alert.alert('Error', error);
+        }
+      });
+    } else {
+      this.setInitialRoute(route);
+      // this.setInitialRoute(routes.expansion);
+    }
   }
 
   handleAppStateChange(currentAppState) {

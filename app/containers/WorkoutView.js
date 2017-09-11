@@ -13,6 +13,7 @@ import videoIcon from '../images/video-icon-blue.png';
 import routes from '../routes';
 import styles from '../styles/workoutView';
 import constants from '../utils/constants';
+import { getWorkoutGifFilePath } from '../utils/trainingUtils';
 
 const { workoutTypes } = constants;
 
@@ -44,7 +45,7 @@ class WorkoutView extends Component {
   }
 
   componentDidMount() {
-    const gifUrl = this.props.workout.gifUrl;
+    const gifUrl = getWorkoutGifFilePath(this.props.workout.gifUrl);
     if (this.props.media === 'image' && gifUrl) {
       // GIF URL exists, prefetch GIF
       this._prefetchGif(gifUrl);
@@ -55,7 +56,7 @@ class WorkoutView extends Component {
     if (this.props.workout.gifUrl !== nextProps.workout.gifUrl &&
       nextProps.media === 'image' && nextProps.workout.gifUrl) {
       // Workout changed, fetch new workout GIF
-      this._prefetchGif(nextProps.workout.gifUrl);
+      this._prefetchGif(getWorkoutGifFilePath(nextProps.workout.gifUrl));
     }
   }
 
@@ -108,7 +109,7 @@ class WorkoutView extends Component {
       );
     } else if (this.props.media === 'image' && workout.gifUrl) {
       content = (
-        <Image source={{ uri: workout.gifUrl }} style={styles.gif}>
+        <Image source={{ uri: getWorkoutGifFilePath(workout.gifUrl) }} style={styles.gif}>
           <TouchableOpacity
             style={styles.videoLink}
             onPress={this._navigateToVideo}
