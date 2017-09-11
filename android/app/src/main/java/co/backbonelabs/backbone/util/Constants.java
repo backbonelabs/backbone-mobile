@@ -77,6 +77,14 @@ public class Constants {
         int LONG = 800;
     }
 
+    public interface EXPANSION_LOADER_STATES {
+        int ERROR = 0;
+        int CHECKING = 1;
+        int DOWNLOADING = 2;
+        int UNZIPPING = 3;
+        int COMPLETED = 4;
+    }
+
     public interface BOOTLOADER_STATES {
         int OFF = 0;
         int INITIATED = 1;
@@ -288,4 +296,9 @@ public class Constants {
     public final static String ACTION_VIDEO_PLAYBACK_ENDED = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_ENDED";
     public final static String ACTION_VIDEO_PLAYBACK_ERROR = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_ERROR";
     public final static String ACTION_VIDEO_PLAYBACK_PROGRESS = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_PROGRESS";
+
+    public final static String DATA_PATH = "Android/data";
+    public final static String DOWNLOAD_PATH = "files";
+    public final static String GIF_PATH = DOWNLOAD_PATH + "/" + "gif";
+    public final static int GIF_FILE_COUNT = 15;
 }
