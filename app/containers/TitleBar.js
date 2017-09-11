@@ -12,6 +12,8 @@ import settingsIcon from '../images/settings-icon.png';
 import routes from '../routes';
 import styles from '../styles/titleBar';
 import theme from '../styles/theme';
+import appActions from '../actions/app';
+import deviceWarningIcon from '../images/settings/device-warning-icon.png';
 
 export const LeftProfileComponent = (props) => (
   <TouchableOpacity
@@ -45,6 +47,41 @@ const TitleBar = (props) => {
     currentColor = theme.orange500;
   }
 
+  const goBack = () => {
+    if (currentRoute === 'postureMonitor') {
+      return props.dispatch(appActions.showPartialModal({
+        topView: (
+          <Image source={deviceWarningIcon} />
+        ),
+        title: {
+          caption: 'Stop Session?',
+        },
+        detail: {
+          caption: 'Are you sure you want to stop your current session?',
+        },
+        buttons: [
+          {
+            caption: 'STOP',
+            onPress: () => {
+              props.dispatch(appActions.hidePartialModal());
+              props.navigator.pop();
+            },
+          },
+          {
+            caption: 'RESUME',
+            onPress: () => {
+              props.dispatch(appActions.hidePartialModal());
+            },
+          },
+        ],
+        backButtonHandler: () => {
+          props.dispatch(appActions.hidePartialModal());
+        },
+      }));
+    }
+
+    return props.navigator.pop();
+  };
 
   // The right component will be the settings icon by default, but can be
   // overridden by defining a rightComponent in the route config. The
@@ -77,7 +114,7 @@ const TitleBar = (props) => {
     <props.titleBar.leftComponent navigator={props.navigator} />
   ) : (
     <TouchableOpacity
-      onPress={props.disableBackButton ? null : props.navigator.pop}
+      onPress={props.disableBackButton ? null : goBack}
     >
       <Icon
         name="keyboard-arrow-left"
