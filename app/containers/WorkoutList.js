@@ -407,19 +407,16 @@ class WorkoutList extends Component {
 
     const sortViews = this.sortCategories.map((label, index) => {
       const border = {
-        borderBottomWidth: 0,
-        borderBottomColor: 'white',
+        borderBottomWidth: 1,
+        borderBottomColor: theme.grey300,
       };
-      if (index < 2) {
-        border.borderBottomWidth = 1;
-        border.borderBottomColor = theme.grey300;
-      }
+
       return (
         <TouchableOpacity
           key={label}
           style={[
             styles.subViewButton,
-            border,
+            (index !== this.sortCategories.length - 1) ? border : null,
           ]}
           onPress={() => {
             this.setState({ sortListBy: index });
