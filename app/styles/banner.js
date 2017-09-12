@@ -12,6 +12,10 @@ export default EStyleSheet.create({
     justifyContent: 'center',
     padding: applyWidthDifference(4),
   },
+  icon: {
+    color: '$warningColor',
+    fontSize: fixedResponsiveFontSize(16),
+  },
   text: {
     marginHorizontal: applyWidthDifference(4),
     fontSize: getResponsiveFontSize(14),
