@@ -102,9 +102,9 @@ export default class VideoPlayer extends Component {
   }
 
   onEnd(event) {
-    this.setState({ videoCompletion: true },
-      Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState())
-    );
+    this.setState({ videoCompletion: true }, () => {
+      Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState());
+    });
     if (this.props.onEnd) {
       this.props.onEnd(event);
     }
@@ -187,9 +187,9 @@ export default class VideoPlayer extends Component {
                 progress: 1,
               });
             }
-            this.setState({ videoCompletion: true },
-              Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState())
-            );
+            this.setState({ videoCompletion: true }, () => {
+              Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState());
+            });
           }
         );
       }
