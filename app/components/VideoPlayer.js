@@ -210,6 +210,7 @@ export default class VideoPlayer extends Component {
           event => {
             // Use the elapsed time of the fullscreen player to sync with the RN player
             const { currentTime } = event;
+
             if (this.player && this.state.isStarted) {
               this.player.seek(currentTime);
               this.onProgress(event);
