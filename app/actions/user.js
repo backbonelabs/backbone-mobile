@@ -23,6 +23,7 @@ const baseUrl = `${Environment.API_SERVER_URL}/users`;
 const settingsUrl = `${baseUrl}/settings`;
 const sessionsUrl = `${baseUrl}/sessions`;
 const workoutsUrl = `${baseUrl}/workouts`;
+const sendConfirmationEmailUrl = `${baseUrl}/send-confirmation-email`;
 
 const handleNetworkError = mixpanelEvent => {
   Mixpanel.track(`${mixpanelEvent}-serverError`);
@@ -277,17 +278,16 @@ export default {
   },
 
   resendEmail() {
-    const { auth: { accessToken }, user: { user } } = store.getState();
+    const state = store.getState();
+    const { accessToken } = state.auth;
+    const { user: { _id } } = state.user;
     const resendConfirmationEmailEventName = 'resendConfirmationEmail';
 
     return {
       type: RESEND_CONFIRMATION_EMAIL,
-      payload: () => Fetcher.post({
-        url: `${Environment.API_SERVER_URL}/support/resend-email`,
+      payload: () => Fetcher.get({
+        url: `${sendConfirmationEmailUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({
-          _id: user._id,
-        }),
       })
         .catch(() => handleNetworkError(resendConfirmationEmailEventName))
         .then(response => response.json())
