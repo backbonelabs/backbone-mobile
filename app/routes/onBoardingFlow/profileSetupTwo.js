@@ -5,7 +5,4 @@ export default {
   title: 'Profile Setup',
   component: ProfileSetupTwo,
   showLeftComponent: true,
-  styles: {
-    backgroundColor: '#F5F5F5',
-  },
 };
