@@ -5,4 +5,5 @@ export default {
   title: 'Posture Session',
   component: PostureIntro,
   showLeftComponent: true,
+  showBanner: true,
 };
