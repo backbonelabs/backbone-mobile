@@ -184,8 +184,9 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
         if ((mainXAPK != null && mainXAPK.getFilePath().isEmpty())){
             // Original expansion file is missing, proceed to re-downloading
             Timber.d("Downloading the expansion");
+            currentState = Constants.EXPANSION_LOADER_STATES.DOWNLOADING;
             WritableMap wm = Arguments.createMap();
-            wm.putInt("state", Constants.EXPANSION_LOADER_STATES.DOWNLOADING);
+            wm.putInt("state", currentState);
             EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
 
             Intent notificationIntent = new Intent(getCurrentActivity(), MainActivity.class);
@@ -201,8 +202,6 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-
-            currentState = Constants.EXPANSION_LOADER_STATES.DOWNLOADING;
 
             // Start the actual downloader client
             mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, ExpansionDownloaderService.class);
@@ -279,16 +278,12 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
         // Expansion download has failed, notify RN
         WritableMap wm = Arguments.createMap();
         wm.putInt("state", Constants.EXPANSION_LOADER_STATES.ERROR);
-        wm.putString("message", "Unexpected error occurred. Make sure that you are connected to the WiFi and try again.");
+        wm.putString("message", "Unexpected error occurred. Make sure you are connected to the internet through Wi-Fi and try again.");
         EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
     }
 
     private void downloadCompleted() {
         // Expansion download has completed, proceed to unzipping
-        WritableMap wm = Arguments.createMap();
-        wm.putInt("state", Constants.EXPANSION_LOADER_STATES.UNZIPPING);
-        EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
-
         unzipExpansion();
     }
 
@@ -299,6 +294,9 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
         }
 
         currentState = Constants.EXPANSION_LOADER_STATES.UNZIPPING;
+        WritableMap unzippingState = Arguments.createMap();
+        unzippingState.putInt("state", currentState);
+        EventEmitter.send(reactContext, "ExpansionLoaderState", unzippingState);
 
         ZipResourceFile expansionFile;
 
@@ -320,10 +318,9 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
             if (file.exists()) {
                 Timber.d("Unzipping completed at: %s", file.getAbsolutePath());
                 currentState = Constants.EXPANSION_LOADER_STATES.COMPLETED;
-
-                WritableMap wm = Arguments.createMap();
-                wm.putInt("state", Constants.EXPANSION_LOADER_STATES.COMPLETED);
-                EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
+                WritableMap completedState = Arguments.createMap();
+                completedState.putInt("state", currentState);
+                EventEmitter.send(reactContext, "ExpansionLoaderState", completedState);
             }
         } catch (IOException e) {
             Log.e("Xpansion", "Unzipping error");

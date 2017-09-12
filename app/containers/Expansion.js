@@ -106,7 +106,7 @@ class Expansion extends Component {
         currentState !== expansionLoaderStates.ERROR &&
           <Spinner size="large" style={styles.spinner} />
         }
-        <BodyText style={styles._expansionState}>
+        <BodyText style={styles.expansionState}>
           {description}
         </BodyText>
         {
