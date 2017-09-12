@@ -116,6 +116,7 @@ class Dashboard extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       push: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
     }).isRequired,
     selectLevel: PropTypes.func.isRequired,
     selectSession: PropTypes.func.isRequired,
@@ -294,6 +295,19 @@ class Dashboard extends Component {
       this.setState({
         animations: getAnimationsForLevels(get(plans, [selectedPlanIdx, 'levels'], [])),
       });
+    }
+
+    // Reset back to the correct level index after fetching user data
+    const {
+      plans,
+      selectedPlanIdx,
+    } = this.props.training;
+    const levels = get(plans[selectedPlanIdx], 'levels', []);
+    const routeStack = this.props.navigator.getCurrentRoutes();
+    const currentRoute = routeStack[routeStack.length - 1];
+    if (currentRoute !== routes.dashboard
+      && this.props.training.selectedLevelIdx !== nextProps.training.selectedLevelIdx) {
+      this._levelCarousel.snapToItem(levels.length - nextProps.training.selectedLevelIdx - 1);
     }
 
     const { isFetchingSessions } = this.props.user;
