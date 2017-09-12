@@ -64,7 +64,7 @@ export default class VideoPlayer extends Component {
       this.fullScreenVideoProgressListener.remove();
     }
     if (!this.state.videoCompletion) {
-      Mixpanel.trackWithProperties('videoDidNotComplete', this._getCurrentPlaybackState());
+      Mixpanel.trackWithProperties('videoAbandon', this._getCurrentPlaybackState());
     }
   }
 
@@ -102,8 +102,9 @@ export default class VideoPlayer extends Component {
   }
 
   onEnd(event) {
-    this.setState({ videoCompletion: true });
-    Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState());
+    this.setState({ videoCompletion: true },
+      Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState())
+    );
     if (this.props.onEnd) {
       this.props.onEnd(event);
     }
@@ -186,8 +187,9 @@ export default class VideoPlayer extends Component {
                 progress: 1,
               });
             }
-            this.setState({ videoCompletion: true });
-            Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState());
+            this.setState({ videoCompletion: true },
+              Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState())
+            );
           }
         );
       }
