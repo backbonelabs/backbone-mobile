@@ -5,14 +5,14 @@ const { applyWidthDifference, getResponsiveFontSize, fixedResponsiveFontSize } =
 
 export default EStyleSheet.create({
   $bannerIconSize: fixedResponsiveFontSize(14),
-  banner: {
+  container: {
     flexDirection: 'row',
     backgroundColor: '$bannerColor',
     alignItems: 'center',
     justifyContent: 'center',
     padding: applyWidthDifference(4),
   },
-  bannerText: {
+  text: {
     marginHorizontal: applyWidthDifference(4),
     fontSize: getResponsiveFontSize(14),
   },

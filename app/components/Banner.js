@@ -27,7 +27,7 @@ const Banner = props => {
 
     return (
       <TouchableOpacity
-        style={styles.banner}
+        style={styles.container}
         onPress={() => !isConnecting && props.navigator.push(routes.deviceScan)}
       >
         { isConnecting || requestingSelfTest ?
@@ -39,7 +39,7 @@ const Banner = props => {
               color={theme.primaryColor}
             />
         }
-        <BodyText style={styles.bannerText}>{bannerText}</BodyText>
+        <BodyText style={styles.text}>{bannerText}</BodyText>
       </TouchableOpacity>
     );
   }
