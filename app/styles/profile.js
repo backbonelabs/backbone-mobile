@@ -16,6 +16,7 @@ export default EStyleSheet.create({
   $photoIconSize: fixedResponsiveFontSize(40),
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   profileHeader: {
     flexDirection: 'row',
@@ -51,7 +52,7 @@ export default EStyleSheet.create({
     borderColor: '$grey200',
   }, positioning),
   profileFieldIcon: {
-    color: '$blue500',
+    color: '$lightBlue500',
     fontSize: fixedResponsiveFontSize(22),
     width: applyWidthDifference(50),
     textAlign: 'center',
