@@ -685,6 +685,7 @@ class PostureMonitor extends Component {
         slouchDistanceThreshold,
         vibrationSpeed,
         vibrationPattern,
+        slouchTimeThreshold: 5,
       };
 
       Mixpanel.trackWithProperties('startSession', {
@@ -816,6 +817,7 @@ class PostureMonitor extends Component {
         slouchDistanceThreshold,
         vibrationSpeed,
         vibrationPattern,
+        slouchTimeThreshold: 5,
       };
 
       Mixpanel.track('resumeSession');
