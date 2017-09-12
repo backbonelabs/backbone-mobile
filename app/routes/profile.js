@@ -10,7 +10,7 @@ import Mixpanel from '../utils/Mixpanel';
 
 const ProfileSave = props => {
   const isPendingSave = props.pendingUser && !props.pendingUser.invalidData;
-  const profileTextColor = isPendingSave ? theme.blue500 : theme.disabledColor;
+  const profileTextColor = isPendingSave ? theme.lightBlue500 : theme.disabledColor;
   const text = <BodyText style={{ color: profileTextColor }}>Save</BodyText>;
 
   return isPendingSave ? (
