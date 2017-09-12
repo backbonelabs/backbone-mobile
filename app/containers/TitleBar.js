@@ -25,7 +25,7 @@ export const LeftProfileComponent = (props) => (
       <Icon
         style={styles.profileIcon}
         name="person"
-        color="#FFFFFF"
+        color={styles.profileIconColor}
         size={styles.$profileIconSize}
       /> */}
       <BodyText style={styles.profileIcon}>

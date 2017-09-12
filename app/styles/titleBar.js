@@ -24,6 +24,7 @@ const baseIconStyles = {
 };
 
 export default EStyleSheet.create({
+  $profileIconColor: 'white',
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
