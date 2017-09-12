@@ -3,6 +3,7 @@ import {
   Image,
   View,
   TouchableOpacity,
+  NativeModules,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -64,7 +65,7 @@ const TitleBar = (props) => {
             caption: 'STOP',
             onPress: () => {
               props.dispatch(appActions.hidePartialModal());
-              props.navigator.pop();
+              NativeModules.SessionControlService.stop(() => {});
             },
           },
           {
