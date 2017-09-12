@@ -63,7 +63,7 @@ export default class VideoPlayer extends Component {
     if (this.fullScreenVideoProgressListener) {
       this.fullScreenVideoProgressListener.remove();
     }
-    if (!this.state.videoCompletion) {
+    if (!this.state.videoCompletion && this.state.isStarted) {
       Mixpanel.trackWithProperties('videoAbandon', this._getCurrentPlaybackState());
     }
   }
