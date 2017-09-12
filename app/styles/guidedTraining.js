@@ -42,6 +42,11 @@ export default EStyleSheet.create({
   },
   header: {
     alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        paddingHorizontal: applyWidthDifference(10),
+      },
+    }),
   },
   centerText: {
     textAlign: 'center',

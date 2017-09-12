@@ -6,9 +6,9 @@ const { applyWidthDifference, width } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
-    alignItems: 'center',
+    // alignItems: 'center',
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   gifContainer: {
     backgroundColor: 'white',
