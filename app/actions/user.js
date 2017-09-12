@@ -8,6 +8,7 @@ import {
   PREPARE_USER_UPDATE,
   FETCH_USER_WORKOUTS,
   SELECT_WORKOUT,
+  RESEND_CONFIRMATION_EMAIL,
 } from './types';
 import store from '../store';
 import constants from '../utils/constants';
@@ -269,6 +270,36 @@ export default {
           }
 
           Mixpanel.track(`${fetchUserWorkoutsEventName}-success`);
+
+          return body;
+        }),
+    };
+  },
+
+  resendEmail() {
+    const { auth: { accessToken }, user: { user } } = store.getState();
+    const resendConfirmationEmailEventName = 'resendConfirmationEmail';
+
+    return {
+      type: RESEND_CONFIRMATION_EMAIL,
+      payload: () => Fetcher.post({
+        url: `${Environment.API_SERVER_URL}/support/resend-email`,
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({
+          _id: user._id,
+        }),
+      })
+        .catch(() => handleNetworkError(resendConfirmationEmailEventName))
+        .then(response => response.json())
+        .then((body) => {
+          if (body.error) {
+            Mixpanel.trackWithProperties(`${resendConfirmationEmailEventName}-error`, {
+              errorMessage: body.error,
+            });
+
+            throw new Error(body.error);
+          }
+          Mixpanel.track(`${resendConfirmationEmailEventName}-success`);
 
           return body;
         }),
