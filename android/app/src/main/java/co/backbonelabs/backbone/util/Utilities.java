@@ -44,6 +44,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Toast;
@@ -822,6 +824,26 @@ public class Utilities {
             return result;
         } else {
             return false;
+        }
+    }
+
+    public static final boolean checkWifiOnAndConnected(Context context) {
+        WifiManager wifiMgr = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+
+        if (wifiMgr.isWifiEnabled()) { // WiFi adapter is ON
+            WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+            if (wifiInfo != null) {
+                if (wifiInfo.getNetworkId() == -1) {
+                    return false; // Not connected to an access point
+                }
+                return true; // Connected to an access point
+            }
+            else {
+                return false; // WiFi info is not available
+            }
+        }
+        else {
+            return false; // WiFi adapter is OFF
         }
     }
 

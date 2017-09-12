@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import co.backbonelabs.backbone.util.Constants;
 import co.backbonelabs.backbone.util.EventEmitter;
+import co.backbonelabs.backbone.util.Utilities;
 import timber.log.Timber;
 
 public class ExpansionService extends ReactContextBaseJavaModule implements IDownloaderClient, ExpansionDownloaderInfo {
@@ -182,30 +183,42 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
     @ReactMethod
     public void loadExpansionFile() {
         if ((mainXAPK != null && mainXAPK.getFilePath().isEmpty())){
-            // Original expansion file is missing, proceed to re-downloading
-            Timber.d("Downloading the expansion");
-            currentState = Constants.EXPANSION_LOADER_STATES.DOWNLOADING;
-            WritableMap wm = Arguments.createMap();
-            wm.putInt("state", currentState);
-            EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
+            // Check if WiFi is enabled before proceeding
+            if (Utilities.checkWifiOnAndConnected(reactContext)) {
+                // Original expansion file is missing, proceed to re-downloading
+                Timber.d("Downloading the expansion");
+                currentState = Constants.EXPANSION_LOADER_STATES.DOWNLOADING;
+                WritableMap wm = Arguments.createMap();
+                wm.putInt("state", currentState);
+                EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
 
-            Intent notificationIntent = new Intent(getCurrentActivity(), MainActivity.class);
-            notificationIntent.setAction(Intent.ACTION_MAIN);
-            notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent notificationIntent = new Intent(getCurrentActivity(), MainActivity.class);
+                notificationIntent.setAction(Intent.ACTION_MAIN);
+                notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // Create a pending intent for the intent to launch the app
-            PendingIntent launchApp = PendingIntent.getActivity(getCurrentActivity(), 0, notificationIntent, 0);
+                // Create a pending intent for the intent to launch the app
+                PendingIntent launchApp = PendingIntent.getActivity(getCurrentActivity(), 0, notificationIntent, 0);
 
-            try {
-                DownloaderClientMarshaller.startDownloadServiceIfRequired(getCurrentActivity(), launchApp, ExpansionDownloaderService.class);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+                try {
+                    DownloaderClientMarshaller.startDownloadServiceIfRequired(getCurrentActivity(), launchApp, ExpansionDownloaderService.class);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                // Start the actual downloader client
+                mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, ExpansionDownloaderService.class);
+                mDownloaderClientStub.connect(reactContext);
             }
-
-            // Start the actual downloader client
-            mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, ExpansionDownloaderService.class);
-            mDownloaderClientStub.connect(reactContext);
+            else {
+                // Not connected to WiFi, prevent users from downloading.
+                Timber.d("Not Connected to WiFi");
+                currentState = Constants.EXPANSION_LOADER_STATES.ERROR;
+                WritableMap wm = Arguments.createMap();
+                wm.putInt("state", currentState);
+                wm.putString("message", "Please make sure you are connected to the internet through Wi-Fi.");
+                EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
+            }
         }
         else {
             // Expansion file found, proceed to unzipping
@@ -273,11 +286,10 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
     }
 
     private void downloadFailed() {
-        currentState = Constants.EXPANSION_LOADER_STATES.ERROR;
-
         // Expansion download has failed, notify RN
+        currentState = Constants.EXPANSION_LOADER_STATES.ERROR;
         WritableMap wm = Arguments.createMap();
-        wm.putInt("state", Constants.EXPANSION_LOADER_STATES.ERROR);
+        wm.putInt("state", currentState);
         wm.putString("message", "Unexpected error occurred. Make sure you are connected to the internet through Wi-Fi and try again.");
         EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
     }
