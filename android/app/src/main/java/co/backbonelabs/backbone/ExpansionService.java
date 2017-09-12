@@ -39,6 +39,7 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
 
     private IDownloaderService mRemoteService;
     private IStub mDownloaderClientStub;
+    private int currentState = Constants.EXPANSION_LOADER_STATES.CHECKING;
 
     /**
      * Public constructor
@@ -143,6 +144,8 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
      */
     @ReactMethod
     public void getExpansionFileState(Callback callback) {
+        currentState = Constants.EXPANSION_LOADER_STATES.CHECKING;
+
         boolean expansionState;
         File gifPath = new File(Environment.getExternalStorageDirectory() + "/" + Constants.DATA_PATH + "/" +
                 reactContext.getPackageName() + "/" + Constants.GIF_PATH + "/");
@@ -170,7 +173,7 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
 
         WritableMap response = Arguments.createMap();
         response.putBoolean("state", expansionState);
-        callback.invoke(null, response);
+        callback.invoke(response);
     }
 
     /**
@@ -198,6 +201,8 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+
+            currentState = Constants.EXPANSION_LOADER_STATES.DOWNLOADING;
 
             // Start the actual downloader client
             mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, ExpansionDownloaderService.class);
@@ -269,10 +274,12 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
     }
 
     private void downloadFailed() {
+        currentState = Constants.EXPANSION_LOADER_STATES.ERROR;
+
         // Expansion download has failed, notify RN
         WritableMap wm = Arguments.createMap();
         wm.putInt("state", Constants.EXPANSION_LOADER_STATES.ERROR);
-        wm.putString("message", "Unexpected error occurred. Make sure that you are connected to the internet and try again.");
+        wm.putString("message", "Unexpected error occurred. Make sure that you are connected to the WiFi and try again.");
         EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
     }
 
@@ -286,6 +293,13 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
     }
 
     private void unzipExpansion() {
+        // Prevent invalid states from proceeding
+        if (currentState != Constants.EXPANSION_LOADER_STATES.CHECKING && currentState != Constants.EXPANSION_LOADER_STATES.DOWNLOADING) {
+            return;
+        }
+
+        currentState = Constants.EXPANSION_LOADER_STATES.UNZIPPING;
+
         ZipResourceFile expansionFile;
 
         try {
@@ -305,6 +319,8 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
 
             if (file.exists()) {
                 Timber.d("Unzipping completed at: %s", file.getAbsolutePath());
+                currentState = Constants.EXPANSION_LOADER_STATES.COMPLETED;
+
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("state", Constants.EXPANSION_LOADER_STATES.COMPLETED);
                 EventEmitter.send(reactContext, "ExpansionLoaderState", wm);

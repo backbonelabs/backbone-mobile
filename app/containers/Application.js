@@ -570,18 +570,14 @@ class Application extends Component {
   prepareInitialRoute(route = routes.login) {
     if (!isiOS) {
       // Check if expansion files are available before proceeding
-      NativeModules.ExpansionService.getExpansionFileState((error, { state }) => {
-        if (!error) {
-          if (state) {
-            // Expansion files found, proceed to the initial route
-            this.setInitialRoute(route);
-          } else {
-            // Proceed to expansion handler scene to reload expansion files
-            this.props.dispatch(appActions.setNextRoute(route));
-            this.setInitialRoute(routes.expansion);
-          }
+      NativeModules.ExpansionService.getExpansionFileState(({ state }) => {
+        if (state) {
+          // Expansion files found, proceed to the initial route
+          this.setInitialRoute(route);
         } else {
-          Alert.alert('Error', error);
+          // Proceed to expansion handler scene to reload expansion files
+          this.props.dispatch(appActions.setNextRoute(route));
+          this.setInitialRoute(routes.expansion);
         }
       });
     } else {
