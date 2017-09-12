@@ -324,7 +324,7 @@ class Signup extends Component {
                     }
                   <View style={styles.legalContainer}>
                     <SecondaryText>
-                      By signing up, you agree to our
+                      {'By signing up, you agree to our '}
                     </SecondaryText>
                     <TouchableOpacity
                       onPress={this.openTOS}

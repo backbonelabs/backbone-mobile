@@ -15,6 +15,7 @@ import { debounce } from 'lodash';
 import Slider from 'react-native-slider';
 import userAction from '../actions/user';
 import styles from '../styles/alerts';
+import theme from '../styles/theme';
 import BodyText from '../components/BodyText';
 import Button from '../components/Button';
 import Toggle from '../components/Toggle';
@@ -176,12 +177,18 @@ class Alerts extends Component {
           disabled={!pushNotificationEnabled}
           text="Slouch Notification"
           settingName="slouchNotification"
+          tintColor={theme.grey300}
+          onTintColor={theme.lightBlue200}
+          thumbTintColor={theme.lightBlue500}
         />
         <Toggle
           value={backboneVibration}
           onChange={this.updateSetting}
           text="Backbone Vibration"
           settingName="backboneVibration"
+          tintColor={theme.grey300}
+          onTintColor={theme.lightBlue200}
+          thumbTintColor={theme.lightBlue500}
         />
         <View style={styles.vibrationSettingsContainer}>
           <View style={styles.sliderContainer}>
@@ -195,7 +202,7 @@ class Alerts extends Component {
                 step={10}
                 thumbStyle={styles.sliderThumb}
                 trackStyle={styles.sliderTrack}
-                minimumTrackTintColor={'#6dc300'}
+                minimumTrackTintColor={theme.lightBlue500}
                 value={vibrationStrength}
                 onSlidingComplete={value => this.onSlidingComplete('vibrationStrength', value)}
               />
@@ -220,7 +227,7 @@ class Alerts extends Component {
                 step={1}
                 thumbStyle={styles.sliderThumb}
                 trackStyle={styles.sliderTrack}
-                minimumTrackTintColor={'#6dc300'}
+                minimumTrackTintColor={theme.lightBlue500}
                 value={vibrationPattern}
                 onSlidingComplete={value => this.onSlidingComplete('vibrationPattern', value)}
               />
@@ -243,6 +250,9 @@ class Alerts extends Component {
           onChange={this.updateSetting}
           text="Phone Vibration"
           settingName="phoneVibration"
+          tintColor={theme.grey300}
+          onTintColor={theme.lightBlue200}
+          thumbTintColor={theme.lightBlue500}
         />
         {!pushNotificationEnabled ?
           <View style={styles.notificationDisabledWarningContainer}>
