@@ -477,7 +477,7 @@ class GuidedTraining extends Component {
 
     const subheading = [];
     if (currentWorkout.reps) {
-      subheading.push(`Reps: ${currentWorkout.reps}`);
+      subheading.push(`Repetitions: ${currentWorkout.reps}`);
     } else if (currentWorkout.seconds && isTimed) {
       subheading.push(`Time: ${formattedTimeString(currentWorkout.seconds)}`);
     }
@@ -487,7 +487,7 @@ class GuidedTraining extends Component {
     }
 
     if (currentWorkout.twoSides) {
-      subheading[0] += '/side';
+      subheading[0] += ' per side';
     }
 
     // If the workout is timed and has already started, the header will display the timer
@@ -508,7 +508,7 @@ class GuidedTraining extends Component {
     ) : (
       <View style={styles.header}>
         <HeadingText size={3}>{currentWorkout.workout.title}</HeadingText>
-        <BodyText style={styles.centerText}>{subheading.join('\n')}</BodyText>
+        <BodyText style={styles.centerText}>{subheading.join(' | ')}</BodyText>
         <BodyText style={styles.centerText}>{currentWorkout.workout.instructions}</BodyText>
       </View>
     );
