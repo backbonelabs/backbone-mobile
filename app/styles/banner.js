@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, getResponsiveFontSize, fixedResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   $bannerIconSize: fixedResponsiveFontSize(14),
@@ -14,6 +14,6 @@ export default EStyleSheet.create({
   },
   bannerText: {
     marginHorizontal: applyWidthDifference(4),
-    color: '$primaryFontColor',
+    fontSize: getResponsiveFontSize(14),
   },
 });
