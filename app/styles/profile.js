@@ -102,4 +102,11 @@ export default EStyleSheet.create({
       },
     }),
   },
+  profileSave: {
+    paddingLeft: 20,
+    paddingVertical: 10,
+  },
+  profileSaveSpinner: {
+    alignSelf: 'flex-end',
+  },
 });
