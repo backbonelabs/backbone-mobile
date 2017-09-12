@@ -12,7 +12,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import userActions from '../actions/user';
-import supportActions from '../actions/support';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import appActions from '../actions/app';
@@ -45,16 +44,7 @@ const ProfileField = props => {
     iconLeftName,
     } = props;
   const Icon = iconMap[iconFont];
-  const color = {
-    icon: theme.blue500,
-    text: theme.primaryFontColor,
-  };
-
-  if (props.disabled) {
-    color.icon = theme.disabledColor;
-    color.text = theme.disabledColor;
-  }
-
+  const disabledColor = props.disabled ? { color: theme.disabledColor } : null;
   // Pressing on a profile field initiates editing
   return (
     <TouchableOpacity
@@ -65,11 +55,14 @@ const ProfileField = props => {
       {Icon && iconLeftName
           ? <Icon
             name={iconLeftName}
-            style={[styles.profileFieldIcon, { color: color.icon }]}
+            style={[
+              styles.profileFieldIcon,
+              disabledColor,
+            ]}
           />
           : null}
       <View style={styles.profileFieldData}>
-        <BodyText style={{ color: color.text }}>
+        <BodyText style={disabledColor}>
           {props.profileData}
         </BodyText>
       </View>
@@ -271,11 +264,11 @@ class Profile extends Component {
         this.props.dispatch(appActions.showPartialModal({
           title: {
             caption: 'Success',
-            color: theme.warningColor,
+            color: theme.green400,
           },
           detail: {
-            // Display errors when failing to update user
-            caption: 'A confirmation link has been sent to your email address.',
+            caption: `A confirmation link has been sent to your email address.
+            Please click the link to confirm your email address.`,
           },
           buttons: [
             { caption: 'OK' },
@@ -577,7 +570,7 @@ class Profile extends Component {
   }
 
   resendEmail() {
-    this.props.dispatch(supportActions.resendEmail());
+    this.props.dispatch(userActions.resendEmail());
   }
 
   render() {
