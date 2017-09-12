@@ -21,6 +21,7 @@ export default class VideoPlayer extends Component {
     this.state = {
       isStarted: props.autoplay,
       isPlaying: props.autoplay,
+      fullScreenIsPaused: false,
       width: 200,
       progress: 0,
       isMuted: props.defaultMuted,
@@ -186,6 +187,8 @@ export default class VideoPlayer extends Component {
                 progress: 1,
               });
             }
+            this.setState({ videoCompletion: true });
+            Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState());
           }
         );
       }
@@ -208,10 +211,18 @@ export default class VideoPlayer extends Component {
           event => {
             // Use the elapsed time of the fullscreen player to sync with the RN player
             const { currentTime } = event;
-
-            if (this.player && this.state.isStarted) {
-              this.player.seek(currentTime);
-              this.onProgress(event);
+            if (currentTime >= 0) {
+              if (this.player && this.state.isStarted) {
+                this.player.seek(currentTime);
+                this.onProgress(event);
+              }
+              if (this.state.fullScreenIsPaused) {
+                this.setState({ fullScreenIsPaused: false });
+                Mixpanel.trackWithProperties('onResume', this._getCurrentPlaybackState());
+              }
+            } else if (!this.state.fullScreenIsPaused) {
+              this.setState({ fullScreenIsPaused: true });
+              Mixpanel.trackWithProperties('onPause', this._getCurrentPlaybackState());
             }
           }
         );
