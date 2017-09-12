@@ -261,10 +261,10 @@ class GuidedTraining extends Component {
   }
 
   _attemptGifFetch(sessionWorkout) {
-    const gifUrl = get(sessionWorkout, 'workout.gifUrl');
-    if (gifUrl) {
+    const gifFilename = get(sessionWorkout, 'workout.gifFilename');
+    if (gifFilename) {
       // GIF URL exists, prefetch GIF
-      Image.prefetch(gifUrl)
+      Image.prefetch(gifFilename)
         .then(() => {
           this.setState({ isFetchingImage: false });
         })
