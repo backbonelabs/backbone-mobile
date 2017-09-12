@@ -169,7 +169,6 @@ public class FullScreenVideoActivity extends AppCompatActivity {
                                 mBundle.putInt(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, myVideoView.isPlaying() ? currentTime / 1000 : -1); // Convert back to seconds
                                 intent.putExtras(mBundle);
                                 MainActivity.currentActivity.sendBroadcast(intent);
-                            // }
                         }
                     };
                     timer.schedule(task, 0, 250);
