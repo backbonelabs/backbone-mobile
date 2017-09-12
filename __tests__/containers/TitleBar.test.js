@@ -18,7 +18,6 @@ describe('TitleBar Component', () => {
         showRightComponent: false,
         showNavbar: false,
         rightComponent: null,
-        styles: {},
       },
     },
     training: {
