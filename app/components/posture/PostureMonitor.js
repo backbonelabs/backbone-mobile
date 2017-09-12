@@ -1289,6 +1289,7 @@ class PostureMonitor extends Component {
     } = this.state;
 
     const isDisabled = sessionState === sessionStates.RUNNING;
+    const totalSessionTime = this.props.posture.sessionTimeSeconds;
 
     const getPlayPauseButton = () => {
       if (sessionState === sessionStates.STOPPED) {
@@ -1328,7 +1329,10 @@ class PostureMonitor extends Component {
           <BodyText style={styles.timer}>
             {this.getFormattedTime()}
           </BodyText>
-          <BodyText style={styles.heading}>Time Remaining</BodyText>
+          {
+            (totalSessionTime !== 0) ?
+              <BodyText style={styles.heading}>Time Remaining</BodyText> : null
+          }
         </View>
         <Monitor
           disable={isDisabled}
