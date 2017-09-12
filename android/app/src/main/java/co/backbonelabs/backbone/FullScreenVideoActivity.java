@@ -162,13 +162,15 @@ public class FullScreenVideoActivity extends AppCompatActivity {
                         public void run() {
                             // Update current elapsed time to be passed back to RN upon exiting fullscreen
                             // in order to sync with the elapsed time in the RN player
+                            if (myVideoView.isPlaying()) {
                                 currentTime = myVideoView.getCurrentPosition();
 
                                 Intent intent = new Intent(Constants.ACTION_VIDEO_PLAYBACK_PROGRESS);
                                 Bundle mBundle = new Bundle();
-                                mBundle.putInt(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, myVideoView.isPlaying() ? currentTime / 1000 : -1); // Convert back to seconds
+                                mBundle.putInt(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, currentTime / 1000); // Convert back to seconds
                                 intent.putExtras(mBundle);
                                 MainActivity.currentActivity.sendBroadcast(intent);
+                            }
                         }
                     };
                     timer.schedule(task, 0, 250);
