@@ -47,7 +47,7 @@ class WorkoutList extends Component {
     this.isiOS = Platform.OS === 'ios';
     this.subViewInitialPosition = Dimensions.get('window').height;
     this.sortCategories = [
-      'ALPHABETICAL ORDER (A-Z)',
+      'ALPHABETICAL (A-Z)',
       'DIFFICULTY',
       'FAVORITES',
       // 'POPULARITY', // removed until backend is implemented
@@ -405,18 +405,28 @@ class WorkoutList extends Component {
     </View>)
     );
 
-    const sortViews = this.sortCategories.map((label, index) => (
-      <TouchableOpacity
-        key={label}
-        style={styles.subViewButton}
-        onPress={() => {
-          this.setState({ sortListBy: index });
-          this.toggleSubview();
-        }}
-      >
-        <BodyText style={styles.subViewButtonText}>{label}</BodyText>
-      </TouchableOpacity>
-    ));
+    const sortViews = this.sortCategories.map((label, index) => {
+      const border = {
+        borderBottomWidth: 1,
+        borderBottomColor: theme.grey300,
+      };
+
+      return (
+        <TouchableOpacity
+          key={label}
+          style={[
+            styles.subViewButton,
+            (index !== this.sortCategories.length - 1) ? border : null,
+          ]}
+          onPress={() => {
+            this.setState({ sortListBy: index });
+            this.toggleSubview();
+          }}
+        >
+          <BodyText style={styles.subViewButtonText}>{label}</BodyText>
+        </TouchableOpacity>
+      );
+    });
 
     if (this.props.isFetchingWorkouts || this.state.isLoading) {
       return <Spinner />;

@@ -5,7 +5,4 @@ export default {
   title: 'Get Started',
   component: HowToVideo,
   showLeftComponent: true,
-  styles: {
-    backgroundColor: '#F5F5F5',
-  },
 };

@@ -30,6 +30,7 @@ export default EStyleSheet.create({
     ...Platform.select({
       // OS-specific drop shadow styling
       ios: {
+        zIndex: 5,
         shadowOffset: {
           width: 0,
           height: 3,
@@ -69,6 +70,9 @@ export default EStyleSheet.create({
   rightComponent: {
     ...baseSideButtonStyles,
     flexDirection: 'row-reverse',
+  },
+  settingsIconContainer: {
+    paddingLeft: applyWidthDifference(20),
   },
   buttonIcon: {
     marginRight: applyWidthDifference(6),

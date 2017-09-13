@@ -6,4 +6,5 @@ export default {
   component: PostureIntro,
   showLeftComponent: true,
   showBanner: true,
+  showTabBar: true,
 };
