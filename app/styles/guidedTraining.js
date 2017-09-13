@@ -97,4 +97,8 @@ export default EStyleSheet.create({
     marginTop: applyWidthDifference(8),
     textAlign: 'center',
   },
+  helpIcon: {
+    color: '$secondaryFontColor',
+    fontSize: getResponsiveFontSize(25),
+  },
 });
