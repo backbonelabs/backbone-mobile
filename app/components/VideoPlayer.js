@@ -36,6 +36,13 @@ export default class VideoPlayer extends Component {
     this.seekProgressStart = 0;
   }
 
+
+  componentWillMount() {
+    if (this.props.defaultFullscreen) {
+      this.setState({ isStarted: true }, this.onToggleFullScreen);
+    }
+  }
+
   componentDidMount() {
     if (this.props.autoplay) {
       this.hideControls();
@@ -524,6 +531,7 @@ VideoPlayer.propTypes = {
   controlsTimeout: PropTypes.number,
   disableControlsAutoHide: PropTypes.bool,
   disableFullscreen: PropTypes.bool,
+  defaultFullscreen: PropTypes.bool,
   loop: PropTypes.bool,
   resizeMode: Video.propTypes.resizeMode,
   hideControlsOnStart: PropTypes.bool,
