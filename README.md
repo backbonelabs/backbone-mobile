@@ -107,32 +107,42 @@ Bugsnag.notify(new Throwable("Test error from Android native"));
 
 ## Deployment
 
-### iOS
-
-1. Make sure the appropriate production variables are set in `ios/backbone/config/Release.local.xcconfig`
-2. Close the Xcode workspace
-3. From the `ios` folder, run `sh marketingVersion.sh <new_marketing_version_number>`, where `<new_marketing_verison_number>` is the semver marketing version as described above in the Versioning section. This will automatically create a commit with the following message: "iOS version <marketing_version>".
-4. If the Android marketing version hasn't been bumped yet, then skip steps 5 and 6 and add the version tag when following the Android deployment steps
-5. Add a git tag for the marketing version where the tag name is in the following format: vX.Y.Z, e.g., v1.0.0
-6. Push the git tag to the repo
-8. Open the Xcode workspace
-9. Select the `backbone prod` scheme and use the Generic iOS Device
-10. Clean the build folder (hold Alt and click the Product menu and click Clean Build Folder, or press Alt-Command-Shift-K)
-11. Click Product > Archive
-12. After the archive is created, upload it to iTunes Connect
-13. Set up the new release in iTunes Connect
-14. If the release source map hasn't been uploaded to Bugsnag yet, then run `npm run bugsnag-release` from the project root
-
-### Android
-
-1. Make sure the appropriate production variables are set in `android/app/build.gradle` and `android/app/local.properties`.
-2. Increment the `versionName` in `android/app/build.gradle`
-3. Commit the change with a commit message in the following format: "Android version <marketing_version>", e.g., "Android version 1.0.0"
-4. If the iOS marketing version hasn't been bumped yet, then skip steps 5 and 6 and add the version tag when following the iOS deployment steps
-5. Add a git tag for the marketing version where the tag name is in the following format: vX.Y.Z, e.g., v1.0.0
-6. Push the git tag to the repo
-7. From the `android` folder, run `./gradlew clean` to remove prior build artifacts just in case they conflict with the release build
-8. From the `android` folder, run `./gradlew assembleRelease` to build the release variant
-9. From the Google Play console, upload the `app-release.apk` from `android/app/build/outputs/apk`
-10. Perform the necessary actions in Google Play for the release
-13. If the release source map hasn't been uploaded to Bugsnag yet, then run `npm run bugsnag-release` from the project root
+1. Check out to the `master` branch and make sure you have the latest master.
+2. Make sure the appropriate production variables are set in `android/app/build.gradle` and `android/app/local.properties`.
+3. Make sure the appropriate production variables are set in `./ios/backbone/config/Release.local.xcconfig`.
+4. Increment the `versionName` in `./android/app/build.gradle` following semver guidelines. This is the marketing version to use in the next step.
+5. Commit the change with a commit message in the following format: "Android version <marketing_version>", e.g., "Android version 1.0.0".
+6. Go to the `./ios` folder and run `sh marketingVersion.sh <new_marketing_version_number>`, where `<new_marketing_version_number>` is the semver version number. This will automatically create a commit with the following message: "iOS version <marketing_version>".
+7. Add a git tag for the marketing version, e.g., `git tag v1.0.0`.
+8. Push the git tag to the repo, e.g., `git push origin v1.0.0`.
+9. Check out to the `production` branch and then merge in `master`, i.e., (from the production branch) `git merge master`.
+10. From the `./android` folder, run `./gradlew clean` to remove prior build artifacts just in case they conflict with the release build.
+11. Then run `./gradlew assembleRelease` to build the release variant APK. When finished, the APK will be saved under `./android/app/build/outputs/apk/app-release.apk`.
+12. Create a new **beta** release in the [Google Play](https://play.google.com/apps/publish/) console. Google doesn't review the app like Apple does, but we put it in beta so we can release at the same time Apple reviews and approves the iOS version.
+    1. In Google Play, create a new beta release.
+    2. Upload the new APK to the beta release.
+    3. The release name should be the same as the marketing version, e.g., 1.0.0.
+    4. Enter release notes. These will be visible to users when downloading the app. See release history to get a general idea of what to write.
+    5. Submit the beta release.
+13. In Xcode, select the `backbone prod` scheme and use the _Generic iOS Device_.
+14. Clean the build folder (hold Alt and click the Product menu and click Clean Build Folder, or press Alt-Command-Shift-K)
+15. Click Product > Archive.
+16. After the archive is created, upload it to iTunes Connect using the Backbone Labs team provisioning profile.
+17. Log into [iTunes Connect](https://itunesconnect.apple.com) and create a new iOS version for the app.
+    1. For the version number, use the same value as the marketing version, e.g., 1.0.0.
+    2. Enter release notes. These will be visible to users when downloading the app. See release history to get a general idea of what to write.
+    3. It usually takes a couple minutes after the build is uploaded to iTunes Connect for it to be fully processed and available to be included in the release. When it is ready, it will be available for selection in the Build section.
+    4. Verify the **Version** field is the same as the marketing version.
+    5. In the **Version Release** section, select _Manually release this version_. We will later release both the iOS and Android versions at the same time.
+    6. Submit the new version for review.
+    7. On the next screen, select **No** when asked if our app uses the Advertising Identifier, and continue with the submission.
+    8. It usually takes 1–2 business days for Apple to review and approve the app.
+    9. You will receive email notifications if they require additional information or when the app is ready.
+18. Run `npm run bugsnag-release` from the project root to upload the new source map to Bugsnag.
+19. When the iOS app is approved and ready, log into iTunes Connect and release the app.
+20. Log into Google Play and promote the beta release to production.
+21. Finally, log into [Mixpanel](https://www.mixpanel.com) and add an annotation for the release.
+    1. Navigate to **Segmentation**.
+    2. Make sure at least one event is shown and the date range includes today.
+    3. Click on a marker in the line chart for today's date to add an annotation.
+    4. The annotation name should be the marketing version and the time of release, e.g., v1.0.0 (12:00 pm). The time should be in Pacific time.
