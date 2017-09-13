@@ -27,6 +27,7 @@ class WorkoutView extends Component {
     }).isRequired,
     workout: PropTypes.shape({
       gifUrl: PropTypes.string,
+      videoUrl: PropTypes.string,
       title: PropTypes.string,
       type: PropTypes.number,
     }),
@@ -78,7 +79,11 @@ class WorkoutView extends Component {
   }
 
   _navigateToVideo() {
-    Mixpanel.trackWithProperties('selectVideoIcon', { gifUrl: this.props.workout.gifUrl });
+    Mixpanel.trackWithProperties('workoutVideoIconClick',
+      {
+        workout: this.props.workout.title,
+        videoUrl: this.props.workout.videoUrl,
+      });
 
     this.props.navigator.push({
       ...routes.libraryContent,

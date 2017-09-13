@@ -272,7 +272,7 @@ class GuidedTraining extends Component {
       selectedPlanIdx,
       selectedLevelIdx,
       selectedSessionIdx,
-      selectedSessionStep: this.state.stepIdx,
+      selectedStepIdx: this.state.stepIdx,
     };
   }
 
@@ -399,10 +399,7 @@ class GuidedTraining extends Component {
    * @param {Number} step Which step to switch to. The first step starts at 0.
    */
   _changeStep(stepIdx) {
-    Mixpanel.trackWithProperties('switchWorkout', {
-      ...this._getCurrentWorkoutState(),
-      selectedSessionStep: stepIdx,
-    });
+    this.props.selectSessionStep(stepIdx);
 
     this._pauseTimer(() => {
       this.setState({
