@@ -22,6 +22,7 @@ import com.google.android.vending.expansion.downloader.Helpers;
 import com.google.android.vending.expansion.downloader.IDownloaderClient;
 import com.google.android.vending.expansion.downloader.IDownloaderService;
 import com.google.android.vending.expansion.downloader.IStub;
+import com.google.android.vending.expansion.downloader.impl.DownloadNotification;
 
 import java.io.File;
 import java.io.IOException;
@@ -183,8 +184,9 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
     @ReactMethod
     public void loadExpansionFile() {
         if ((mainXAPK != null && mainXAPK.getFilePath().isEmpty())){
-            // Check if WiFi is enabled before proceeding
-            if (Utilities.checkWifiOnAndConnected(reactContext)) {
+            // Check if WiFi is enabled before proceeding when the expansion is over 100MB,
+            // but for now we just check if the internet connection is active as it's < 100MB.
+            if (Utilities.checkInternetConnection(reactContext)) {
                 // Original expansion file is missing, proceed to re-downloading
                 Timber.d("Downloading the expansion");
                 currentState = Constants.EXPANSION_LOADER_STATES.DOWNLOADING;
@@ -211,12 +213,12 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
                 mDownloaderClientStub.connect(reactContext);
             }
             else {
-                // Not connected to WiFi, prevent users from downloading.
-                Timber.d("Not Connected to WiFi");
+                // Not connected to the Internet, prevent users from downloading.
+                Timber.d("Not Connected to the Internet");
                 currentState = Constants.EXPANSION_LOADER_STATES.ERROR;
                 WritableMap wm = Arguments.createMap();
                 wm.putInt("state", currentState);
-                wm.putString("message", "Please make sure you are connected to the internet through Wi-Fi.");
+                wm.putString("message", "Please make sure you are connected to the internet and try again.");
                 EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
             }
         }
@@ -295,6 +297,9 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
     }
 
     private void downloadCompleted() {
+        // Clear the downloader notification after completed
+        NotificationService.clearNotification(DownloadNotification.NOTIFICATION_ID);
+
         // Expansion download has completed, proceed to unzipping
         unzipExpansion();
     }
