@@ -22,12 +22,7 @@ export const LeftProfileComponent = (props) => (
     {/* TODO: REPLACE WITH IMAGE COMPONENT OF USER'S PHOTO */}
     <View style={styles.profileIconContainer}>
       {/* To be used after implementing the photo feature
-      <Icon
-        style={styles.profileIcon}
-        name="person"
-        color={styles.profileIconColor}
-        size={styles.$profileIconSize}
-      /> */}
+      <Icon style={styles.profileIcon} name="person" /> */}
       <BodyText style={styles.profileIcon}>
         {props.nickname[0].toUpperCase()}
       </BodyText>
