@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
@@ -8,6 +9,23 @@ export default EStyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'space-between',
+  },
+  gifContainer: {
+    backgroundColor: 'white',
+    ...Platform.select({
+      // OS-specific drop shadow styling
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   gif: {
     width: width * 0.75, // 75% of screen width

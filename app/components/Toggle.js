@@ -15,6 +15,9 @@ const Toggle = props => (
       <Switch
         disabled={props.disabled}
         value={props.value}
+        tintColor={props.tintColor}
+        onTintColor={props.onTintColor}
+        thumbTintColor={props.thumbTintColor}
         onValueChange={value => props.onChange(props.settingName, value)}
       />
     </View>
@@ -24,6 +27,9 @@ const Toggle = props => (
 Toggle.propTypes = {
   value: PropTypes.bool,
   onChange: PropTypes.func,
+  tintColor: PropTypes.string.isRequired,
+  onTintColor: PropTypes.string.isRequired,
+  thumbTintColor: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   text: PropTypes.string.isRequired,
   settingName: PropTypes.string.isRequired,

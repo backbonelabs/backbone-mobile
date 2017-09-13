@@ -16,10 +16,7 @@ const MonitorSlider = ({ leftIcon, leftIconSize, rightIcon, rightIconSize, ...pr
     <View style={styles.sliderInnerContainer}>
       <RNSlider
         trackStyle={styles.trackStyle}
-        thumbStyle={[
-          styles.thumbStyle,
-          { backgroundColor: props.disabled ? theme.disabledColor : 'white' },
-        ]}
+        thumbStyle={styles.thumbStyle}
         {...props}
       />
     </View>

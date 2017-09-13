@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
@@ -36,6 +37,20 @@ export default EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: 'white',
+    ...Platform.select({
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: -3,
+        },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
+      },
+      android: {
+        borderTopWidth: 2,
+        borderTopColor: '$grey300',
+      },
+    }),
   },
   tabBarItem: {
     ...absoluteCenter,

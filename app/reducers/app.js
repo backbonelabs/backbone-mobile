@@ -27,7 +27,6 @@ export default (state = {
     showLeftComponent: false,
     showNavbar: false,
     rightComponent: null,
-    styles: {},
   },
   nextRoute: null,
 }, action) => {

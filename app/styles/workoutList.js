@@ -87,7 +87,7 @@ export default EStyleSheet.create({
     backgroundColor: '$grey50',
     width: '93%',
     alignItems: 'center',
-    height: applyWidthDifference(40),
+    height: applyWidthDifference(60),
     justifyContent: 'center',
   },
   subViewButtonText: {

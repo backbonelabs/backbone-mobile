@@ -109,14 +109,16 @@ class WorkoutView extends Component {
       );
     } else if (this.props.media === 'image' && workout.gifFilename) {
       content = (
-        <Image source={{ uri: getWorkoutGifFilePath(workout.gifFilename) }} style={styles.gif}>
-          <TouchableOpacity
-            style={styles.videoLink}
-            onPress={this._navigateToVideo}
-          >
-            <Image source={videoIcon} style={styles.videoIcon} />
-          </TouchableOpacity>
-        </Image>
+        <View style={styles.gifContainer}>
+          <Image source={{ uri: getWorkoutGifFilePath(workout.gifFilename) }} style={styles.gif}>
+            <TouchableOpacity
+              style={styles.videoLink}
+              onPress={this._navigateToVideo}
+            >
+              <Image source={videoIcon} style={styles.videoIcon} />
+            </TouchableOpacity>
+          </Image>
+        </View>
       );
     } else if (this.props.media === 'video' && workout.videoUrl) {
       content = (
