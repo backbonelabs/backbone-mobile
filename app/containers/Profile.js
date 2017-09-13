@@ -626,7 +626,7 @@ class Profile extends Component {
                         size={2}
                         style={styles.profileHeaderNickname}
                       >
-                        {user.nickname ? user.nickname : null}
+                        {user.nickname}
                       </HeadingText>
                     </View>
                     <ProfileFieldInput
