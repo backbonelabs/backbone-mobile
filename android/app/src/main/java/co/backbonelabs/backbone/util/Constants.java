@@ -300,5 +300,7 @@ public class Constants {
     public final static String DATA_PATH = "Android/data";
     public final static String DOWNLOAD_PATH = "files";
     public final static String GIF_PATH = DOWNLOAD_PATH + "/" + "gif";
+    public final static String THUMBNAIL_PATH = DOWNLOAD_PATH + "/" + "thumbnail";
     public final static int GIF_FILE_COUNT = 15;
+    public final static int THUMBNAIL_FILE_COUNT = 18;
 }

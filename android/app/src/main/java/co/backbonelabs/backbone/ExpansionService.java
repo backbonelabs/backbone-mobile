@@ -112,10 +112,10 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
     }
 
     public static int getVersionCode() {
-        // Temporarily set to 225 for testing as this is the alpha version when the first expansion file was uploaded.
+        // Temporarily set to 226 for testing as this is the alpha version when the current expansion file was uploaded.
         // When we started updating only the APK, and no new expansion needed, the version should be kept
         // to the version where the expansion was uploaded against
-        return 225;
+        return 226;
     }
 
     @Override
@@ -151,25 +151,36 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
         boolean expansionState;
         File gifPath = new File(Environment.getExternalStorageDirectory() + "/" + Constants.DATA_PATH + "/" +
                 reactContext.getPackageName() + "/" + Constants.GIF_PATH + "/");
-        int validFileCount = 0;
+        File thumbnailPath = new File(Environment.getExternalStorageDirectory() + "/" + Constants.DATA_PATH + "/" +
+                reactContext.getPackageName() + "/" + Constants.THUMBNAIL_PATH + "/");
+        int gifCount = 0;
+        int thumbCount = 0;
 
         if (gifPath.exists()) {
             for (File file : gifPath.listFiles()) {
                 if (file.isFile() && file.getName().endsWith(".gif")) {
-                    validFileCount++;
+                    gifCount++;
+                }
+            }
+        }
+
+        if (thumbnailPath.exists()) {
+            for (File file : thumbnailPath.listFiles()) {
+                if (file.isFile() && file.getName().endsWith(".jpg")) {
+                    thumbCount++;
                 }
             }
         }
 
         // Check if all the gifs are available by checking the total file count.
         // In the future, we might need to do a more secure validation on this.
-        if (validFileCount != Constants.GIF_FILE_COUNT) {
-            // One or more gifs are missing, proceed to unzip the expansion, or download a new one if needed
-            Timber.d("Expansion Error. One or more GIF files are missing. Found %d, expected %d", validFileCount, Constants.GIF_FILE_COUNT);
+        if (gifCount != Constants.GIF_FILE_COUNT || thumbCount != Constants.THUMBNAIL_FILE_COUNT) {
+            // One or more files are missing, proceed to unzip the expansion, or download a new one if needed
+            Timber.d("Expansion Error. One or more files are missing. Found %d GIFs and %d JPGs, expected %d GIFs and %d JPGs", gifCount, thumbCount, Constants.GIF_FILE_COUNT, Constants.THUMBNAIL_FILE_COUNT);
             expansionState = false;
         }
         else {
-            Timber.d("GIF files found. Got %d", validFileCount);
+            Timber.d("All files found. Got %d files", gifCount + thumbCount);
             expansionState = true;
         }
 
@@ -292,7 +303,7 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
         currentState = Constants.EXPANSION_LOADER_STATES.ERROR;
         WritableMap wm = Arguments.createMap();
         wm.putInt("state", currentState);
-        wm.putString("message", "Unexpected error occurred. Make sure you are connected to the internet through Wi-Fi and try again.");
+        wm.putString("message", "Unexpected error occurred. Make sure you are connected to the internet and try again.");
         EventEmitter.send(reactContext, "ExpansionLoaderState", wm);
     }
 
@@ -323,7 +334,7 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
             ZipResourceFile.ZipEntryRO[] zip = expansionFile.getAllEntries();
 
             File file = new File(Environment.getExternalStorageDirectory() + "/" + Constants.DATA_PATH + "/" +
-                    reactContext.getPackageName() + "/" + Constants.GIF_PATH + "/");
+                    reactContext.getPackageName() + "/" + Constants.DOWNLOAD_PATH + "/");
 
             if (!file.exists()) {
                 file.mkdirs();
