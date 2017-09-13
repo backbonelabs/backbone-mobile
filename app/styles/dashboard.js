@@ -34,6 +34,10 @@ export default EStyleSheet.create({
   levelTitle: {
     fontWeight: 'bold',
   },
+  levelTitleActive: {
+    fontWeight: 'bold',
+    paddingBottom: applyWidthDifference(6),
+  },
   levelSliderOuterContainer: {
     height: '50%',
     width: '100%',
@@ -63,6 +67,7 @@ export default EStyleSheet.create({
   },
   hexagonCircle: {
     fontSize: fixedResponsiveFontSize(10),
+    paddingTop: applyWidthDifference(6),
     paddingHorizontal: applyWidthDifference(3),
     color: theme.disabledColor,
   },

@@ -116,6 +116,7 @@ class Dashboard extends Component {
   static propTypes = {
     navigator: PropTypes.shape({
       push: PropTypes.func,
+      getCurrentRoutes: PropTypes.func,
     }).isRequired,
     selectLevel: PropTypes.func.isRequired,
     selectSession: PropTypes.func.isRequired,
@@ -294,6 +295,19 @@ class Dashboard extends Component {
       this.setState({
         animations: getAnimationsForLevels(get(plans, [selectedPlanIdx, 'levels'], [])),
       });
+    }
+
+    // Reset back to the correct level index after fetching user data
+    const {
+      plans,
+      selectedPlanIdx,
+    } = this.props.training;
+    const levels = get(plans[selectedPlanIdx], 'levels', []);
+    const routeStack = this.props.navigator.getCurrentRoutes();
+    const currentRoute = routeStack[routeStack.length - 1];
+    if (currentRoute !== routes.dashboard
+      && this.props.training.selectedLevelIdx !== nextProps.training.selectedLevelIdx) {
+      this._levelCarousel.snapToItem(levels.length - nextProps.training.selectedLevelIdx - 1);
     }
 
     const { isFetchingSessions } = this.props.user;
@@ -507,7 +521,11 @@ class Dashboard extends Component {
             },
           ]}
         >
-          <BodyText style={[styles._levelTitle, color]}>{levelTitle}</BodyText>
+          <BodyText
+            style={[(isCurrentLevel ? styles._levelTitleActive : styles._levelTitle), color]}
+          >
+            {levelTitle}
+          </BodyText>
           {
             isLevelUnlocked ?
               <View style={styles.hexagonCircleContainer}>
@@ -544,7 +562,7 @@ class Dashboard extends Component {
 
     if (isSessionUnlocked) {
       let durationInSeconds = 0;
-      const workoutList = session.map(workout => {
+      const workoutList = session.map((workout, index) => {
         const seconds = get(workout, 'seconds', 0);
         const sets = get(workout, 'sets', 1);
         const twice = get(workout, 'twoSides', false);
@@ -552,7 +570,7 @@ class Dashboard extends Component {
         durationInSeconds += (sets - 1) * 60; // rest-time between sets
 
         return (
-          <View key={workout.title} style={styles.sessionWorkoutRow}>
+          <View key={workout.title + index} style={styles.sessionWorkoutRow}>
             <Image
               source={workout.isComplete ? colorBulletsOn[color] : colorBulletsOff[color]}
               style={styles.workoutBullet}
