@@ -56,7 +56,7 @@ public class DownloadNotification implements IDownloaderClient {
     private DownloadProgressInfo mProgressInfo;
 
     static final String LOGTAG = "DownloadNotification";
-    static final int NOTIFICATION_ID = LOGTAG.hashCode();
+    public static final int NOTIFICATION_ID = LOGTAG.hashCode();
 
     public PendingIntent getClientIntent() {
         return mContentIntent;
