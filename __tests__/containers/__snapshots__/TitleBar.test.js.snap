@@ -5,14 +5,15 @@ exports[`TitleBar Component renders as expected 1`] = `
   style={
     Array [
       undefined,
-      Object {},
+      undefined,
       undefined,
     ]
   }
 >
   <View />
   <HeadingText
-    size={2}
+    allowFontScaling={false}
+    size={3}
     style={
       Array [
         undefined,

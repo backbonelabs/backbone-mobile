@@ -527,15 +527,14 @@ class Settings extends Component {
 
     if (value) {
       const { dailyReminderTime } = this.state;
-      const now = moment();
       let hour;
       let minute;
 
       // Check for new users or existing users with dailyReminderTime not yet set
       if (dailyReminderTime === undefined || dailyReminderTime === -1) {
-        // If it hasn't been set before, use the current time as the default
-        hour = now.hour();
-        minute = now.minute();
+        // If it hasn't been set before, use '10.00 AM' as the default
+        hour = 10;
+        minute = 0;
         newSettings = {
           dailyReminderTime: (hour * 60) + minute,
           dailyReminderNotification: value,
@@ -640,6 +639,9 @@ class Settings extends Component {
             disabled={!pushNotificationEnabled}
             text="Slouch Notification"
             settingName="slouchNotification"
+            tintColor={theme.grey300}
+            onTintColor={theme.lightBlue200}
+            thumbTintColor={theme.lightBlue500}
           />
           <Toggle
             value={dailyReminderNotification && pushNotificationEnabled}
@@ -647,6 +649,9 @@ class Settings extends Component {
             text="Daily Reminder"
             settingName="dailyReminderNotification"
             onChange={this.toggleReminder}
+            onTintColor={theme.lightBlue200}
+            tintColor={theme.grey300}
+            thumbTintColor={theme.lightBlue500}
           />
           {
             pushNotificationEnabled && dailyReminderNotification &&
@@ -695,6 +700,9 @@ class Settings extends Component {
             onChange={this.updateSetting}
             text="Backbone Vibration"
             settingName="backboneVibration"
+            tintColor={theme.grey300}
+            onTintColor={theme.lightBlue200}
+            thumbTintColor={theme.lightBlue500}
           />
           <View style={alertsStyles.vibrationSettingsContainer}>
             <View style={alertsStyles.sliderContainer}>
@@ -708,7 +716,7 @@ class Settings extends Component {
                   step={10}
                   thumbStyle={alertsStyles.sliderThumb}
                   trackStyle={alertsStyles.sliderTrack}
-                  minimumTrackTintColor={'#6dc300'}
+                  minimumTrackTintColor={theme.lightBlue500}
                   value={vibrationStrength}
                   onSlidingStart={this.onSlidingStart}
                   onSlidingComplete={value => this.onSlidingComplete('vibrationStrength', value)}
@@ -736,7 +744,7 @@ class Settings extends Component {
                   step={1}
                   thumbStyle={alertsStyles.sliderThumb}
                   trackStyle={alertsStyles.sliderTrack}
-                  minimumTrackTintColor={'#6dc300'}
+                  minimumTrackTintColor={theme.lightBlue500}
                   value={vibrationPattern}
                   onSlidingStart={this.onSlidingStart}
                   onSlidingComplete={value => this.onSlidingComplete('vibrationPattern', value)}
@@ -766,6 +774,9 @@ class Settings extends Component {
             onChange={this.updateSetting}
             text="Phone Vibration"
             settingName="phoneVibration"
+            tintColor={theme.grey300}
+            onTintColor={theme.lightBlue200}
+            thumbTintColor={theme.lightBlue500}
           />
           <HelpSettings navigator={navigator} />
           <View style={styles.settingsRowEmpty}>

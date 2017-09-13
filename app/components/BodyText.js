@@ -6,7 +6,7 @@ import {
 import styles from '../styles/text';
 import reusableTextDefaults from './utils/reusableTextDefaults';
 
-const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableTextDefaults;
+const { propTypes, defaultProps } = reusableTextDefaults;
 
 class BodyText extends React.Component {
   setNativeProps(nativeProps) {
@@ -23,7 +23,7 @@ class BodyText extends React.Component {
       <View ref={component => { this._root = component; }}>
         <Text
           style={[styles.body, style]}
-          {...{ remainingProps, allowFontScaling }}
+          {...remainingProps}
         >
           {this.props.children}
         </Text>

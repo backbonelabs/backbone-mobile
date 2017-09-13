@@ -12,7 +12,12 @@ import HeadingText from '../components/HeadingText';
 import styles from '../styles/stats';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize, width, height } = relativeDimensions;
+const {
+  applyWidthDifference,
+  fixedResponsiveFontSize,
+  width,
+  height,
+} = relativeDimensions;
 
 const renderBars = (data) => (
   data.map((val, idx) => {

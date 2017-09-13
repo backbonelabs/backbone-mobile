@@ -26,7 +26,6 @@ export default (state = {
     showLeftComponent: false,
     showNavbar: false,
     rightComponent: null,
-    styles: {},
   },
 }, action) => {
   const { type, payload } = action;

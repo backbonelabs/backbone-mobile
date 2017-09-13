@@ -13,7 +13,7 @@ const inputIconSize = fixedResponsiveFontSize(22);
 
 const red700 = '#D32F2F';
 const orange500 = '#FF9800';
-const green400 = '#32CD32';
+const green400 = '#66BB6A';
 const grey50 = '#FAFAFA';
 const grey100 = '#F5F5F5';
 const grey200 = '#EEEEEE';

@@ -8,7 +8,7 @@ import Spinner from '../components/Spinner';
 import theme from '../styles/theme';
 
 const SupportSubmit = props => {
-  const textColor = props.supportMessage ? '#FFFFFF' : theme.disabledColor;
+  const textColor = props.supportMessage ? theme.blue500 : theme.disabledColor;
   const text = <BodyText style={{ color: textColor }}>Send</BodyText>;
 
   return props.supportMessage ? (
@@ -19,7 +19,11 @@ const SupportSubmit = props => {
       }}
     >
       {props.inProgress ?
-        <Spinner color="#FFFFFF" /> : text}
+        <Spinner
+          style={{ alignSelf: 'flex-end' }}
+          color={theme.secondaryColor}
+          size="small"
+        /> : text}
     </TouchableOpacity>
   ) : text;
 };
@@ -40,5 +44,6 @@ export default {
   title: 'Talk to us',
   component: Support,
   showLeftComponent: true,
+  showRightComponent: true,
   rightComponent: connect(mapStateToProps)(SupportSubmit),
 };

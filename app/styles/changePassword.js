@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -30,7 +30,6 @@ export default EStyleSheet.create({
   warning: {
     color: '$primaryColor',
     height: applyWidthDifference(20),
-    fontSize: fixedResponsiveFontSize(12),
   },
   passwordText: {
     marginTop: applyWidthDifference(40),

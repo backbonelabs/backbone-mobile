@@ -1,20 +1,17 @@
 import React from 'react';
-import { Platform, Text } from 'react-native';
+import { Text } from 'react-native';
 
 const { PropTypes } = React;
 
 const propTypes = {
+  allowFontScaling: PropTypes.bool,
   children: PropTypes.node,
   style: Text.propTypes.style,
 };
 
 const defaultProps = {
   style: {},
+  allowFontScaling: false,
 };
 
-const fontScalingProps = Platform.select({
-  ios: { allowFontScaling: false },
-  android: {},
-});
-
-export default { propTypes, defaultProps, fontScalingProps };
+export default { propTypes, defaultProps };

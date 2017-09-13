@@ -12,6 +12,7 @@ import autobind from 'class-autobind';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Video from 'react-native-video';
 import styles from '../styles/videoPlayer';
+import Mixpanel from '../utils/Mixpanel';
 
 export default class VideoPlayer extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ export default class VideoPlayer extends Component {
       isControlsVisible: !props.hideControlsOnStart,
       duration: 0,
       isSeeking: false,
+      videoCompletion: false,
     };
 
     this.seekBarWidth = 200;
@@ -61,6 +63,9 @@ export default class VideoPlayer extends Component {
     if (this.fullScreenVideoProgressListener) {
       this.fullScreenVideoProgressListener.remove();
     }
+    if (!this.state.videoCompletion && this.state.isStarted) {
+      Mixpanel.trackWithProperties('videoAbandon', this._getCurrentPlaybackState());
+    }
   }
 
   onLayout(event) {
@@ -71,6 +76,7 @@ export default class VideoPlayer extends Component {
   }
 
   onStartPress() {
+    Mixpanel.trackWithProperties('videoPlay', this._getCurrentPlaybackState());
     if (this.props.onStart) {
       this.props.onStart();
     }
@@ -96,6 +102,9 @@ export default class VideoPlayer extends Component {
   }
 
   onEnd(event) {
+    this.setState({ videoCompletion: true }, () => {
+      Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState());
+    });
     if (this.props.onEnd) {
       this.props.onEnd(event);
     }
@@ -124,6 +133,7 @@ export default class VideoPlayer extends Component {
   }
 
   onPlayPress() {
+    Mixpanel.trackWithProperties('videoResume', this._getCurrentPlaybackState());
     if (this.props.onPlayPress) {
       this.props.onPlayPress();
     }
@@ -135,6 +145,7 @@ export default class VideoPlayer extends Component {
   }
 
   onStopPress() {
+    Mixpanel.trackWithProperties('videoPause', this._getCurrentPlaybackState());
     if (this.props.onStopPress) {
       this.props.onStopPress();
     }
@@ -176,6 +187,9 @@ export default class VideoPlayer extends Component {
                 progress: 1,
               });
             }
+            this.setState({ videoCompletion: true }, () => {
+              Mixpanel.trackWithProperties('videoCompletion', this._getCurrentPlaybackState());
+            });
           }
         );
       }
@@ -285,6 +299,18 @@ export default class VideoPlayer extends Component {
     return {
       height: width * ratio,
       width,
+    };
+  }
+
+  _getCurrentPlaybackState() {
+    const { uri } = this.props.video;
+    const { progress, duration, videoCompletion } = this.state;
+
+    return {
+      progress,
+      uri,
+      duration,
+      videoCompletion,
     };
   }
 

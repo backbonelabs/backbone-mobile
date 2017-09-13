@@ -5,5 +5,4 @@ export default {
   title: 'My Backbone',
   component: Device,
   showLeftComponent: true,
-  showBanner: false,
 };

@@ -4,7 +4,7 @@ import color from 'color';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const baseTitleBarStyles = {
   flexDirection: 'row',
@@ -19,19 +19,18 @@ const baseSideButtonStyles = {
 };
 
 const baseIconStyles = {
-  width: applyWidthDifference(30),
-  height: applyWidthDifference(30),
+  width: fixedResponsiveFontSize(28),
+  height: fixedResponsiveFontSize(28),
 };
 
 export default EStyleSheet.create({
-  $backButtonIconSize: applyWidthDifference(40),
-  $profileIconSize: applyWidthDifference(20),
   visibleTitleBar: {
     ...baseTitleBarStyles,
     minHeight: theme.titleBarHeight,
     ...Platform.select({
       // OS-specific drop shadow styling
       ios: {
+        zIndex: 5,
         shadowOffset: {
           width: 0,
           height: 3,
@@ -53,7 +52,6 @@ export default EStyleSheet.create({
     color: '$secondaryColor',
     backgroundColor: 'transparent',
     textAlign: 'center',
-    fontSize: getResponsiveFontSize(16),
     fontWeight: 'bold',
   },
   sideContainers: {
@@ -73,20 +71,26 @@ export default EStyleSheet.create({
     ...baseSideButtonStyles,
     flexDirection: 'row-reverse',
   },
+  settingsIconContainer: {
+    paddingLeft: applyWidthDifference(20),
+  },
   buttonIcon: {
     marginRight: applyWidthDifference(6),
+    fontSize: fixedResponsiveFontSize(40),
   },
   icon: {
     ...baseIconStyles,
   },
   profileIconContainer: {
     ...baseIconStyles,
-    borderRadius: applyWidthDifference(30) / 2,
+    borderRadius: fixedResponsiveFontSize(30 / 2),
     backgroundColor: '$disabledColor',
     justifyContent: 'center',
   },
   profileIcon: {
-    backgroundColor: '$disabledColor',
     alignSelf: 'center',
+    color: 'white',
+    fontSize: fixedResponsiveFontSize(22),
+    backgroundColor: 'transparent',
   },
 });

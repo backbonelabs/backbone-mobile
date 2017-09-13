@@ -6,6 +6,7 @@ import {
   InteractionManager,
   NativeModules,
   NativeEventEmitter,
+  Platform,
 } from 'react-native';
 import autobind from 'class-autobind';
 import ReactNativeFS from 'react-native-fs';
@@ -24,6 +25,7 @@ import styles from '../styles/deviceSettings';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
+import HeadingText from '../components/HeadingText';
 import routes from '../routes';
 import constants from '../utils/constants';
 import Fetcher from '../utils/Fetcher';
@@ -44,6 +46,7 @@ const {
 
 const eventEmitter = new NativeEventEmitter(BootLoaderService);
 const baseFirmwareUrl = `${Environment.API_SERVER_URL}/firmware`;
+const isiOS = Platform.OS === 'ios';
 
 const getBatteryIcon = (batteryLevel) => {
   let batteryIcon;
@@ -331,6 +334,11 @@ class Device extends Component {
 
     let mainDeviceStatusText;
     let subDeviceStatusText;
+    let deviceIdentifier = device.identifier;
+
+    if (isiOS) {
+      deviceIdentifier = device.identifier.substr(device.identifier.lastIndexOf('-') + 1);
+    }
 
     if (!isConnected) {
       mainDeviceStatusText = (
@@ -343,10 +351,10 @@ class Device extends Component {
 
       subDeviceStatusText = (
         <View style={styles.deviceInfo}>
-          <BodyText>
-            Device: { device.identifier || 'n/a' }
+          <BodyText style={styles.deviceInfoText}>
+            Device: { deviceIdentifier || 'n/a' }
           </BodyText>
-          <BodyText>
+          <BodyText style={styles.deviceInfoText}>
             Version: { device.firmwareVersion || 'n/a' }
           </BodyText>
         </View>
@@ -381,10 +389,10 @@ class Device extends Component {
 
         subDeviceStatusText = (
           <View style={styles.deviceInfo}>
-            <BodyText>
-              Device: { device.identifier || 'n/a' }
+            <BodyText style={styles.deviceInfoText}>
+              Device: { deviceIdentifier || 'n/a' }
             </BodyText>
-            <BodyText>
+            <BodyText style={styles.deviceInfoText}>
               Version: { device.firmwareVersion || 'n/a' }
             </BodyText>
           </View>
@@ -421,10 +429,10 @@ class Device extends Component {
 
       subDeviceStatusText = (
         <View style={styles.deviceInfo}>
-          <BodyText>
-            Device: { device.identifier || 'n/a' }
+          <BodyText style={styles.deviceInfoText}>
+            Device: { deviceIdentifier || 'n/a' }
           </BodyText>
-          <BodyText>
+          <BodyText style={styles.deviceInfoText}>
             Version: { device.firmwareVersion || 'n/a' }
           </BodyText>
         </View>
@@ -454,11 +462,11 @@ class Device extends Component {
     return (inProgress || isConnecting) && !isUpdateMode ?
       <Spinner />
       :
-        <View style={styles.container}>
+        <View>
           <View style={styles.deviceInfoContainer}>
-            <BodyText style={styles.deviceConnectionText}>
+            <HeadingText size={3} style={styles.deviceConnectionText}>
               {!isConnected ? 'Disconnected from ' : 'Connected to '}Backbone
-            </BodyText>
+            </HeadingText>
             <Image source={deviceStatusImage} style={styles.deviceStatusImage} />
             {mainDeviceStatusText}
             {subDeviceStatusText}
