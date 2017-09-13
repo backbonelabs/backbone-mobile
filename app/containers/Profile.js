@@ -139,6 +139,7 @@ class Profile extends Component {
         isConfirmed: PropTypes.bool,
       }),
       isFetching: PropTypes.bool,
+      resendingEmail: PropTypes.bool,
       isUpdating: PropTypes.bool,
       pendingUser: PropTypes.object,
       errorMessage: PropTypes.string,
@@ -150,10 +151,6 @@ class Profile extends Component {
     }),
     auth: PropTypes.shape({
       errorMessage: PropTypes.string,
-    }),
-    support: PropTypes.shape({
-      errorMessage: PropTypes.string,
-      inProgress: PropTypes.bool,
     }),
   };
 
@@ -242,8 +239,8 @@ class Profile extends Component {
       }
     }
 
-    if (this.props.support.inProgress && !nextProps.support.inProgress) {
-      if (nextProps.support.errorMessage) {
+    if (this.props.user.resendingEmail && !nextProps.user.resendingEmail) {
+      if (nextProps.user.errorMessage) {
         // Display an alert when failing to resend email
         this.props.dispatch(appActions.showPartialModal({
           title: {
@@ -251,7 +248,7 @@ class Profile extends Component {
             color: theme.warningColor,
           },
           detail: {
-            caption: nextProps.support.errorMessage,
+            caption: nextProps.user.errorMessage,
           },
           buttons: [
             { caption: 'OK' },
@@ -267,8 +264,8 @@ class Profile extends Component {
             color: theme.green400,
           },
           detail: {
-            caption: `A confirmation link has been sent to your email address.
-            Please click the link to confirm your email address.`,
+            caption: 'A confirmation link has been sent to your email address. ' +
+            'Please click the link to confirm your email address.',
           },
           buttons: [
             { caption: 'OK' },
@@ -372,7 +369,6 @@ class Profile extends Component {
     this.props.dispatch(appActions.showPartialModal({
       title: {
         caption: 'Sign Out',
-        color: theme.warningColor,
       },
       detail: {
         caption: 'Are you sure you want to sign out?',
@@ -583,8 +579,7 @@ class Profile extends Component {
       weight,
       pickerType,
     } = this.state;
-    const { user, isFetching, isUpdating } = this.props.user;
-    const { inProgress } = this.props.support;
+    const { user, isFetching, isUpdating, resendingEmail } = this.props.user;
 
     // Used to determine gender
     let genderText = 'Other';
@@ -605,7 +600,7 @@ class Profile extends Component {
     return (
       <View style={styles.container}>
         {
-          isFetching || isUpdating || inProgress ?
+          isFetching || isUpdating || resendingEmail ?
             <Spinner style={{ flex: 1 }} />
               :
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -778,8 +773,8 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { auth, user, support } = state;
-  return { auth, user, support };
+  const { auth, user } = state;
+  return { auth, user };
 };
 
 export default connect(mapStateToProps)(Profile);

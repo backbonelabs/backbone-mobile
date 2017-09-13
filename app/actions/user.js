@@ -285,7 +285,7 @@ export default {
 
     return {
       type: RESEND_CONFIRMATION_EMAIL,
-      payload: () => Fetcher.get({
+      payload: () => Fetcher.post({
         url: `${sendConfirmationEmailUrl}/${_id}`,
         headers: { Authorization: `Bearer ${accessToken}` },
       })

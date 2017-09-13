@@ -3,9 +3,6 @@ import {
   CREATE_SUPPORT_TICKET,
   CREATE_SUPPORT_TICKET__START,
   CREATE_SUPPORT_TICKET__ERROR,
-  RESEND_CONFIRMATION_EMAIL,
-  RESEND_CONFIRMATION_EMAIL__START,
-  RESEND_CONFIRMATION_EMAIL__ERROR,
 } from '../actions/types';
 
 export default (state = {
@@ -35,26 +32,6 @@ export default (state = {
       };
     }
     case CREATE_SUPPORT_TICKET__ERROR: {
-      return {
-        ...state,
-        inProgress: false,
-        errorMessage: action.payload.message,
-      };
-    }
-    case RESEND_CONFIRMATION_EMAIL__START: {
-      return {
-        ...state,
-        inProgress: true,
-        errorMessage: null,
-      };
-    }
-    case RESEND_CONFIRMATION_EMAIL: {
-      return {
-        ...state,
-        inProgress: false,
-      };
-    }
-    case RESEND_CONFIRMATION_EMAIL__ERROR: {
       return {
         ...state,
         inProgress: false,

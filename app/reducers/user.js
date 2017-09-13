@@ -24,9 +24,12 @@ import {
   FETCH_USER_WORKOUTS__ERROR,
   SELECT_WORKOUT,
   RESEND_CONFIRMATION_EMAIL,
+  RESEND_CONFIRMATION_EMAIL__START,
+  RESEND_CONFIRMATION_EMAIL__ERROR,
 } from '../actions/types';
 
 export default (state = {
+  resendingEmail: false,
   isFetching: false,
   isUpdating: false,
   user: {},
@@ -195,6 +198,13 @@ export default (state = {
         selectedWorkoutId: payload,
       };
     }
+    case RESEND_CONFIRMATION_EMAIL__START: {
+      return {
+        ...state,
+        resendingEmail: true,
+        errorMessage: null,
+      };
+    }
     case RESEND_CONFIRMATION_EMAIL: {
       return {
         ...state,
@@ -203,6 +213,14 @@ export default (state = {
           confirmationToken: payload.confirmationToken,
           confirmationTokenExpiry: payload.confirmationTokenExpiry,
         },
+        resendingEmail: false,
+      };
+    }
+    case RESEND_CONFIRMATION_EMAIL__ERROR: {
+      return {
+        ...state,
+        resendingEmail: false,
+        errorMessage: action.payload.message,
       };
     }
     default:
