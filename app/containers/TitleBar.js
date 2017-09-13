@@ -92,6 +92,7 @@ const TitleBar = (props) => {
     <props.titleBar.rightComponent navigator={props.navigator} />
   ) : (
     <TouchableOpacity
+      style={styles.settingsIconContainer}
       onPress={() => {
         props.navigator.push(routes.settings);
       }}
@@ -145,7 +146,7 @@ const TitleBar = (props) => {
   ];
 
   return (
-    <View style={[titleBarStyles, props.titleBar.styles, props.style]}>
+    <View style={[titleBarStyles, props.titleBar.titleBarStyle, props.style]}>
       <View style={styles.sideContainers}>{leftButton}</View>
       <HeadingText size={3} style={titleTextStyles} >{props.titleBar.title}</HeadingText>
       <View style={styles.sideContainers}>{rightButton}</View>
@@ -165,7 +166,7 @@ TitleBar.propTypes = {
     showLeftComponent: PropTypes.bool,
     rightComponent: PropTypes.func([undefined, PropTypes.node]),
     leftComponent: PropTypes.func([undefined, PropTypes.node]),
-    styles: PropTypes.object,
+    titleBarStyle: View.propTypes.style,
   }).isRequired,
   training: PropTypes.shape({
     selectedLevelIdx: PropTypes.number,
