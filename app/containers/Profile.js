@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import get from 'lodash/get';
 import userActions from '../actions/user';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -187,10 +188,8 @@ class Profile extends Component {
           },
           detail: {
             // Display errors when failing to update user
-            caption: nextProps.user.errorMessage === 'An email was sent to your email address. ' +
-            'Please check your email to confirm your ' +
-            'email address before connecting with Facebook.' ?
-            nextProps.user.errorMessage : 'Failed to save changes, please try again.',
+            caption: get(nextProps, 'user.errorMessage', '').includes('Facebook') ?
+              nextProps.user.errorMessage : 'Failed to save changes, please try again.',
           },
           buttons: [
             { caption: 'OK' },
