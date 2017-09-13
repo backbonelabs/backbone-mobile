@@ -6,9 +6,8 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from '../components/Spinner';
-import SecondaryText from '../components/SecondaryText';
+import BodyText from '../components/BodyText';
 import styles from '../styles/banner';
-import theme from '../styles/theme';
 import routes from '../routes';
 
 const Banner = props => {
@@ -27,7 +26,7 @@ const Banner = props => {
 
     return (
       <TouchableOpacity
-        style={styles.banner}
+        style={styles.container}
         onPress={() => !isConnecting && props.navigator.push(routes.deviceScan)}
       >
         { isConnecting || requestingSelfTest ?
@@ -35,11 +34,10 @@ const Banner = props => {
           :
             <Icon
               name="error"
-              size={styles.$bannerIconSize}
-              color={theme.primaryColor}
+              style={styles.icon}
             />
         }
-        <SecondaryText style={styles.bannerText}>{bannerText}</SecondaryText>
+        <BodyText style={styles.text}>{bannerText}</BodyText>
       </TouchableOpacity>
     );
   }
