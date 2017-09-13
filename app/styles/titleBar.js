@@ -71,6 +71,9 @@ export default EStyleSheet.create({
     ...baseSideButtonStyles,
     flexDirection: 'row-reverse',
   },
+  settingsIconContainer: {
+    paddingLeft: applyWidthDifference(20),
+  },
   buttonIcon: {
     marginRight: applyWidthDifference(6),
     fontSize: fixedResponsiveFontSize(40),

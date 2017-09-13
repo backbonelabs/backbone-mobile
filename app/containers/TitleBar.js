@@ -92,6 +92,7 @@ const TitleBar = (props) => {
     <props.titleBar.rightComponent navigator={props.navigator} />
   ) : (
     <TouchableOpacity
+      style={styles.settingsIconContainer}
       onPress={() => {
         props.navigator.push(routes.settings);
       }}
