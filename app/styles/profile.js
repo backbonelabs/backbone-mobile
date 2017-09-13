@@ -103,8 +103,8 @@ export default EStyleSheet.create({
     }),
   },
   profileSave: {
-    paddingLeft: 20,
-    paddingVertical: 10,
+    paddingLeft: applyWidthDifference(20),
+    paddingVertical: applyWidthDifference(10),
   },
   profileSaveSpinner: {
     alignSelf: 'flex-end',
