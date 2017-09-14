@@ -26,6 +26,9 @@ const GuidedTrainingHelp = props => {
       backButtonHandler: () => {
         props.hidePartialModal();
       },
+      customStyles: {
+        detailTextStyle: styles.detailTextStyle,
+      },
     });
   };
 

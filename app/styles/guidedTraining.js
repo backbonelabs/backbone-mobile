@@ -97,4 +97,7 @@ export default EStyleSheet.create({
     color: '$secondaryFontColor',
     fontSize: getResponsiveFontSize(25),
   },
+  detailTextStyle: {
+    textAlign: 'justify',
+  },
 });

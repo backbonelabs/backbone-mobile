@@ -27,6 +27,7 @@ class PartialModal extends Component {
       customStyles: PropTypes.shape({
         containerStyle: View.propTypes.style,
         topViewStyle: View.propTypes.style,
+        detailTextStyle: BodyText.propTypes.style,
       }),
     }),
     showPartial: PropTypes.bool,
@@ -106,7 +107,7 @@ class PartialModal extends Component {
               </HeadingText>
             }
             { detail &&
-              <BodyText style={styles.detailText}>
+              <BodyText style={[styles.detailText, customStyles.detailTextStyle]}>
                 {detail.caption}
               </BodyText>
             }
