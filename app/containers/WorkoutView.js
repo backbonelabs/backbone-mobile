@@ -123,7 +123,7 @@ class WorkoutView extends Component {
     } else if (this.props.media === 'video' && workout.videoUrl) {
       content = (
         <View style={styles.videoPlayerContainer}>
-          <VideoPlayer video={{ uri: workout.videoUrl }} defaultFullscreen />
+          <VideoPlayer video={{ uri: workout.videoUrl }} defaultFullscreen autoplay />
         </View>
       );
     }
