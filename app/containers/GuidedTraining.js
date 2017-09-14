@@ -19,7 +19,6 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import bulletWhite from '../images/bullet-white.png';
-import routes from '../routes';
 import styles from '../styles/guidedTraining';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
@@ -174,6 +173,8 @@ class GuidedTraining extends Component {
   componentDidMount() {
     // Fetch image in the background. User should see a Spinner until the image is fully fetched.
     this._attemptGifFetch(this.state.currentWorkout);
+    // Auto-select the initial step index
+    this.props.selectSessionStep(this.state.stepIdx);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -400,7 +401,6 @@ class GuidedTraining extends Component {
    */
   _changeStep(stepIdx) {
     this.props.selectSessionStep(stepIdx);
-
     this._pauseTimer(() => {
       this.setState({
         stepIdx,
@@ -473,24 +473,6 @@ class GuidedTraining extends Component {
    */
   _onButtonHideUnderlay(buttonName) {
     this.setState({ [`${buttonName}Depressed`]: false });
-  }
-
-  _navigateToPostureCalibrate() {
-    const { selectedLevelIdx, selectedSessionIdx } = this.props.training;
-    const title = `Level ${selectedLevelIdx + 1} Session ${selectedSessionIdx + 1}`;
-    this.props.selectSessionStep(this.state.stepIdx);
-    this.props.navigator.push({
-      ...routes.postureCalibrate,
-      title,
-      props: {
-        onFinish: () => {
-          this.props.navigator.replace({
-            ...routes.postureMonitor,
-            title,
-          });
-        },
-      },
-    });
   }
 
   render() {
@@ -595,8 +577,8 @@ class GuidedTraining extends Component {
             <WorkoutView
               media={currentWorkout.workout.type === workoutTypes.PRIMER ? 'video' : 'image'}
               navigator={this.props.navigator}
-              onPostureProceed={this._navigateToPostureCalibrate}
               workout={currentWorkout.workout}
+              isGuidedTraining
             />
           )}
         <View style={styles.footer}>

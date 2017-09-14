@@ -23,6 +23,7 @@ export class PostureIntroComponent extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     duration: PropTypes.number.isRequired,
+    isGuidedTraining: PropTypes.bool,
     navigator: PropTypes.shape({
       replace: PropTypes.func.isRequired,
       push: PropTypes.func.isRequired,
@@ -52,7 +53,10 @@ export class PostureIntroComponent extends Component {
 
   componentDidMount() {
     // Set posture session duration in Redux store
-    this.props.dispatch(postureActions.setSessionTime(this.props.duration));
+    this.props.dispatch(postureActions.setSessionParameters({
+      sessionTimeSeconds: this.props.duration,
+      isGuidedTraining: this.props.isGuidedTraining,
+    }));
   }
 
   start() {

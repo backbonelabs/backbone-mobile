@@ -1,10 +1,10 @@
-import { SET_SESSION_TIME } from './types';
+import { SET_SESSION_PARAMETERS } from './types';
 
 export default {
-  setSessionTime(seconds) {
+  setSessionParameters(param) {
     return {
-      type: SET_SESSION_TIME,
-      payload: seconds,
+      type: SET_SESSION_PARAMETERS,
+      payload: param,
     };
   },
 };

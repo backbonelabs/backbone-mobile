@@ -21,7 +21,6 @@ class WorkoutView extends Component {
   static propTypes = {
     media: PropTypes.oneOf(['image', 'video']),
     navigator: PropTypes.object.isRequired,
-    onPostureProceed: PropTypes.func,
     training: PropTypes.shape({
       selectedLevelIdx: PropTypes.number,
     }).isRequired,
@@ -31,6 +30,7 @@ class WorkoutView extends Component {
       title: PropTypes.string,
       type: PropTypes.number,
     }),
+    isGuidedTraining: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -100,18 +100,13 @@ class WorkoutView extends Component {
     // If the workout is a posture session, display PostureIntro. Otherwise, display workout media
     const isPostureSession = workout.type === workoutTypes.POSTURE;
     let content;
-    const postureIntroProps = {};
-
-    if (this.props.onPostureProceed) {
-      postureIntroProps.onProceed = this.props.onPostureProceed;
-    }
 
     if (isPostureSession) {
       content = (
         <PostureIntro
           duration={workout.duration}
+          isGuidedTraining={this.props.isGuidedTraining ? this.props.isGuidedTraining : false}
           navigator={this.props.navigator}
-          {...postureIntroProps}
         />
       );
     } else if (this.props.media === 'image' && workout.gifUrl) {

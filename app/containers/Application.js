@@ -289,9 +289,12 @@ class Application extends Component {
                   if (prevSessionState) {
                     Object.assign(parameters, prevSessionState.parameters);
 
-                    // Restore the goal of the previous event
+                    // Restore the state of the previous session parameters
                     this.props.dispatch(
-                      postureActions.setSessionTime(parameters.sessionDuration * 60)
+                      postureActions.setSessionParameters({
+                        sessionTimeSeconds: parameters.sessionDuration * 60,
+                        isGuidedTraining: prevSessionState.isGuidedTraining,
+                      })
                     );
 
                     // Restore the last selected training data to be used
@@ -331,6 +334,14 @@ class Application extends Component {
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)
               .then(prevSessionState => {
                 if (prevSessionState) {
+                  // Restore the state of the previous session parameters
+                  this.props.dispatch(
+                    postureActions.setSessionParameters({
+                      sessionTimeSeconds: prevSessionState.parameters.sessionDuration * 60,
+                      isGuidedTraining: prevSessionState.isGuidedTraining,
+                    })
+                  );
+
                   // Restore the last selected training data to be used
                   // to mark the session as completed
                   this.props.dispatch(
