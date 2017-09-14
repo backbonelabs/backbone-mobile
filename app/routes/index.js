@@ -25,6 +25,7 @@ import dashboard from './dashboard';
 import stats from './stats';
 import guidedTraining from './guidedTraining';
 import libraryContent from './libraryContent';
+import expansion from './expansion';
 
 export default {
   login,
@@ -54,4 +55,5 @@ export default {
   stats,
   guidedTraining,
   libraryContent,
+  expansion,
 };

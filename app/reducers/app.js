@@ -7,6 +7,7 @@ import {
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
+  SET_NEXT_ROUTE,
 } from '../actions/types';
 
 export default (state = {
@@ -27,6 +28,7 @@ export default (state = {
     showNavbar: false,
     rightComponent: null,
   },
+  nextRoute: null,
 }, action) => {
   const { type, payload } = action;
   switch (type) {
@@ -101,6 +103,12 @@ export default (state = {
           config: null,
           onClose: null,
         },
+      };
+    }
+    case SET_NEXT_ROUTE: {
+      return {
+        ...state,
+        nextRoute: payload,
       };
     }
     default:
