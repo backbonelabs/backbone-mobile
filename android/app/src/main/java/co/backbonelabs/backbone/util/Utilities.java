@@ -817,10 +817,8 @@ public class Utilities {
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager
                     .getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
-                return false;
-            }
-            return true;
+
+            return (networkInfo != null && networkInfo.isConnected());
         } else {
             return false;
         }
