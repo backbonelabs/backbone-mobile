@@ -132,6 +132,24 @@ class DeviceScan extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (!this.props.errorMessage && nextProps.errorMessage) {
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Error',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: nextProps.errorMessage,
+        },
+        buttons: [
+          { caption: 'OKAY' },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal);
+        },
+      }));
+    }
+
     const currentBluetoothState = this.props.bluetoothState;
     const newBluetoothState = nextProps.bluetoothState;
 
