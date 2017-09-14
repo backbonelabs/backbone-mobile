@@ -41,8 +41,9 @@ const LibraryContent = (props) => {
     });
   };
 
+  const videoBackgroundColor = props.media === 'video' ? { backgroundColor: 'black' } : {};
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, videoBackgroundColor]}>
       <View style={styles.header}>
         {props.media === 'image' &&
           <BodyText style={styles.centerText}>{workout.instructions}</BodyText>}

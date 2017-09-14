@@ -20,8 +20,10 @@ export default EStyleSheet.create({
   },
   buttonContainer: {
     flex: 0.5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    width: '80%',
+    paddingBottom: applyWidthDifference(20),
   },
   favoriteButton: {
     color: '$red500',
