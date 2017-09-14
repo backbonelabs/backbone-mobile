@@ -12,13 +12,21 @@ export default EStyleSheet.create({
   },
   graphContainer: {
     backgroundColor: '$grey50',
+    flex: 1,
+  },
+  victoryGraph: {
+    flex: 1,
+    justifyContent: 'center',
   },
   noData: {
+    flex: 1,
     alignSelf: 'center',
+    justifyContent: 'center',
   },
   heading: {
     alignItems: 'center',
-    paddingTop: applyWidthDifference(10),
+    justifyContent: 'space-around',
+    flex: 0.2,
   },
   goodRating: {
     fontWeight: 'bold',
@@ -33,8 +41,8 @@ export default EStyleSheet.create({
     flexDirection: 'row',
   },
   tabs: {
-    flex: 1,
-    backgroundColor: 'white',
+    flex: 0,
+    height: applyWidthDifference(60),
   },
   tabBarUnderlineStyle: {
     borderRadius: 4,
