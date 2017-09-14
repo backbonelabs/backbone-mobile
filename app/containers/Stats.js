@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  View,
-  InteractionManager,
-} from 'react-native';
+import { View, InteractionManager } from 'react-native';
 import autobind from 'class-autobind';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import moment from 'moment';
@@ -16,6 +13,15 @@ import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 
 const week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const lastSevenHours = () => {
+  const hoursAgo = [];
+  for (let i = 0; i <= 6; i++) {
+    hoursAgo.unshift(moment().subtract(i, 'hours').format('ha'));
+  }
+  return hoursAgo;
+};
 
 const totalSessionStats = (sessions) => (
   Object.keys(sessions).reduce((acc, val) => {
@@ -30,6 +36,19 @@ const totalSessionStats = (sessions) => (
     /* eslint-disable no-param-reassign */
   }, { good: 0, poor: 0 })
 );
+
+const getDaysByMonth = () => {
+  let daysInMonth = moment().daysInMonth();
+  const arrDays = [];
+
+  while (daysInMonth) {
+    const current = moment().date(daysInMonth).format('MM/DD');
+    arrDays.unshift(current);
+    daysInMonth--;
+  }
+
+  return arrDays;
+};
 
 class Stats extends Component {
   static propTypes = {
@@ -49,6 +68,7 @@ class Stats extends Component {
       sessionsByMonth: {},
       sessionsByHour: {},
       sessionsByDays: {},
+      sessionsByYear: {},
       selectedTab: 'Today',
       selectedTabTotalSessions: [],
       loading: true,
@@ -71,22 +91,31 @@ class Stats extends Component {
     if (this.props.isFetchingSessions !== nextProps.isFetchingSessions) {
       const today = moment();
       const sixDaysAgo = moment().subtract(6, 'day');
+      const startOfMonth = moment().startOf('month');
       const sessions = nextProps.sessions
         .sort((a, b) => a.timestamp - b.timestamp); // sort from oldest to latest
 
       const sessionsByMonth = sessions
         .reduce((acc, val, index) => {
-          const month = moment(val.timestamp).format('MMM');
+          const date = moment(val.timestamp);
+          const formatedDate = date.format('MM/DD');
           /* eslint-disable no-param-reassign */
 
-          if (acc[month]) {
-            acc[month].slouchTime += val.slouchTime;
-            acc[month].totalDuration += val.totalDuration;
+          if (
+            (today.isSame(date, 'd') || date < today) &&
+            (startOfMonth.isSame(date, 'd') || date > startOfMonth)
+          ) {
+            if (acc[formatedDate]) {
+              acc[formatedDate].slouchTime += val.slouchTime;
+              acc[formatedDate].totalDuration += val.totalDuration;
+
+              return acc;
+            }
+
+            acc[formatedDate] = Object.assign({}, val, { index, label: formatedDate });
 
             return acc;
           }
-
-          acc[month] = Object.assign({}, val, { index, label: month });
 
           return acc;
           /* eslint-disable no-param-reassign */
@@ -138,17 +167,35 @@ class Stats extends Component {
           return acc;
           /* eslint-disable no-param-reassign */
         }, {});
+      const sessionsByYear = sessions
+        .reduce((acc, val, index) => {
+          const month = moment(val.timestamp).format('MMM');
+          /* eslint-disable no-param-reassign */
+
+          if (acc[month]) {
+            acc[month].slouchTime += val.slouchTime;
+            acc[month].totalDuration += val.totalDuration;
+
+            return acc;
+          }
+
+          acc[month] = Object.assign({}, val, { index, label: month });
+
+          return acc;
+          /* eslint-disable no-param-reassign */
+        }, {});
       this.setState({
         sessionsByMonth,
         sessionsByHour,
         sessionsByDays,
+        sessionsByYear,
         selectedTabTotalSessions: totalSessionStats(sessionsByHour), // default is Today
       });
     }
   }
 
   selectTab(tab) {
-    const { sessionsByDays, sessionsByHour, sessionsByMonth } = this.state;
+    const { sessionsByDays, sessionsByHour, sessionsByMonth, sessionsByYear } = this.state;
     let selectedTab;
     let selectedTabTotalSessions;
     switch (tab.i) {
@@ -164,6 +211,10 @@ class Stats extends Component {
         selectedTab = 'Month';
         selectedTabTotalSessions = totalSessionStats(sessionsByMonth);
         break;
+      case 3:
+        selectedTab = 'Year';
+        selectedTabTotalSessions = totalSessionStats(sessionsByYear);
+        break;
       default:
         selectedTab = 'Today';
         selectedTabTotalSessions = totalSessionStats(sessionsByHour);
@@ -178,74 +229,112 @@ class Stats extends Component {
       sessionsByHour,
       sessionsByDays,
       sessionsByMonth,
+      sessionsByYear,
     } = this.state;
     let data;
 
     switch (selectedTab) {
       case 'Today':
-        data = sessionsByHour;
+        data = lastSevenHours().map((val) => {
+          if (sessionsByHour[val]) {
+            return sessionsByHour[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
         break;
       case 'Week':
-        data = sessionsByDays;
+        data = [...week].map((val) => {
+          if (sessionsByDays[val]) {
+            return sessionsByDays[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
         break;
       case 'Month':
-        data = sessionsByMonth;
+        data = getDaysByMonth().map((val) => {
+          if (sessionsByMonth[val]) {
+            return sessionsByMonth[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
+        break;
+      case 'Year':
+        data = [...months].map((val) => {
+          if (sessionsByYear[val]) {
+            return sessionsByYear[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
         break;
       default:
-        data = sessionsByHour;
+        data = lastSevenHours().map((val) => {
+          if (sessionsByHour[val]) {
+            return sessionsByHour[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
     }
 
-    const convertToArray = Object.keys(data)
-      .map((val) => data[val])
-      .sort((a, b) => a.index - b.index);
+    // used to detemine if there is any data to currently display, ex: Today Tab - last 7 hours
+    const currentData = totalSessionStats(data);
 
     return (
       <Graph
-        data={convertToArray}
-        goodTime={Math.round(selectedTabTotalSessions.good / 60)}
-        poorTime={Math.round(selectedTabTotalSessions.poor / 60)}
+        data={data}
+        selectedTab={selectedTab}
+        noCurrentData={(!currentData.good && !currentData.poor)}
+        goodTime={selectedTabTotalSessions.good / 60}
+        poorTime={selectedTabTotalSessions.poor / 60}
       />
     );
   }
 
   render() {
     const { loading, selectedTabTotalSessions } = this.state;
-    const good = Math.round(selectedTabTotalSessions.good / 60);
-    const poor = Math.round(selectedTabTotalSessions.poor / 60);
-    const noDataStyles = {
-      flex: 0,
-    };
+    const goodSessions = selectedTabTotalSessions.good;
+    const poorSessions = selectedTabTotalSessions.poor;
+    let good = `${Math.ceil(goodSessions / 60)} MIN`;
+    let poor = `${Math.ceil(poorSessions / 60)} MIN`;
 
     if (this.props.isFetchingSessions || loading) {
       return <Spinner />;
     }
 
-    if (!good && !poor) {
-      noDataStyles.justifyContent = 'center';
-      noDataStyles.flex = 3;
+    // If below a minute, show seconds
+    if (selectedTabTotalSessions.good < 60) {
+      good = `${goodSessions} SECS`;
+    }
+    // If below a minute, show seconds
+    if (selectedTabTotalSessions.poor < 60) {
+      poor = `${poorSessions} SECS`;
     }
 
     return (
       <View style={styles.container}>
-        <View style={[styles.graphContainer, noDataStyles]}>
-          { (good || poor) ? <View style={styles.heading}>
-            <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
-            <View style={styles.sessionRatingContainer}>
-              <BodyText style={styles.goodRating}>
-                GOOD: {good} MIN
-              </BodyText>
-              <BodyText style={styles.poorRating}>
-                POOR: {poor} MIN
-              </BodyText>
-            </View>
-          </View> : null
-            }
-          {this.renderGraph()}
-        </View>
         <ScrollableTabView
           style={styles.tabs}
           onChangeTab={this.selectTab}
-          tabBarPosition="bottom"
+          tabBarPosition="top"
           tabBarActiveTextColor={theme.lightBlue500}
           tabBarInactiveTextColor={theme.grey400}
           tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
@@ -254,7 +343,23 @@ class Stats extends Component {
           <View tabLabel="Today" />
           <View tabLabel="Week" />
           <View tabLabel="Month" />
+          <View tabLabel="Year" />
         </ScrollableTabView>
+        <View style={styles.graphContainer}>
+          { (goodSessions || poorSessions) ? <View style={styles.heading}>
+            <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
+            <View style={styles.sessionRatingContainer}>
+              <BodyText style={styles.goodRating}>
+                GOOD: {good}
+              </BodyText>
+              <BodyText style={styles.poorRating}>
+                POOR: {poor}
+              </BodyText>
+            </View>
+          </View> : null
+            }
+          {this.renderGraph()}
+        </View>
       </View>
     );
   }

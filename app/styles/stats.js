@@ -25,6 +25,7 @@ export default EStyleSheet.create({
   },
   heading: {
     alignItems: 'center',
+    marginTop: applyWidthDifference(20),
     justifyContent: 'space-around',
     flex: 0.2,
   },
@@ -42,7 +43,6 @@ export default EStyleSheet.create({
   },
   tabs: {
     flex: 0,
-    height: applyWidthDifference(60),
   },
   tabBarUnderlineStyle: {
     borderRadius: 4,
