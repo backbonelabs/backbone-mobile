@@ -32,10 +32,12 @@ class WorkoutView extends Component {
       type: PropTypes.number,
     }),
     isGuidedTraining: PropTypes.bool,
+    defaultFullscreen: PropTypes.bool,
   }
 
   static defaultProps = {
     media: 'image',
+    defaultFullscreen: false,
   };
 
   constructor(props) {
@@ -126,7 +128,11 @@ class WorkoutView extends Component {
     } else if (this.props.media === 'video' && workout.videoUrl) {
       content = (
         <View style={styles.videoPlayerContainer}>
-          <VideoPlayer video={{ uri: workout.videoUrl }} defaultFullscreen autoplay />
+          <VideoPlayer
+            video={{ uri: workout.videoUrl }}
+            defaultFullscreen={this.props.defaultFullscreen}
+            autoplay
+          />
         </View>
       );
     }
