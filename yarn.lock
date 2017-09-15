@@ -4678,8 +4678,12 @@ react-native-fbsdk@0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/react-native-fbsdk/-/react-native-fbsdk-0.5.1.tgz#6edc7be4a6bb19a421914be81a0fd9eeb54d2f6d"
 
+react-native-flanimatedimage@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-flanimatedimage/-/react-native-flanimatedimage-0.2.0.tgz#1b3cff7cfb8e4c9afb62f8beddce9e25f353cd21"
+
 react-native-fs@2.1.0-rc.1:
-  version v2.1.0-rc.1
+  version "2.1.0-rc.1"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.1.0-rc.1.tgz#f6078891005478648738db396e822ec0aefc4b95"
   dependencies:
     base-64 "^0.1.0"
