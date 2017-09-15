@@ -161,6 +161,7 @@ class ProfileSetupTwo extends Component {
                 setPickerType={this.setPickerType}
                 pickerType={this.state.pickerType}
                 updateProfile={this.updateProfile}
+                mode="spinner"
               /> : null
             }
           </View>

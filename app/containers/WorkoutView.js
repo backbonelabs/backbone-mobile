@@ -14,6 +14,7 @@ import routes from '../routes';
 import styles from '../styles/workoutView';
 import constants from '../utils/constants';
 import Mixpanel from '../utils/Mixpanel';
+import { getWorkoutGifFilePath } from '../utils/trainingUtils';
 
 const { workoutTypes } = constants;
 
@@ -25,7 +26,7 @@ class WorkoutView extends Component {
       selectedLevelIdx: PropTypes.number,
     }).isRequired,
     workout: PropTypes.shape({
-      gifUrl: PropTypes.string,
+      gifFilename: PropTypes.string,
       videoUrl: PropTypes.string,
       title: PropTypes.string,
       type: PropTypes.number,
@@ -46,18 +47,18 @@ class WorkoutView extends Component {
   }
 
   componentDidMount() {
-    const gifUrl = this.props.workout.gifUrl;
-    if (this.props.media === 'image' && gifUrl) {
+    const gifFilename = getWorkoutGifFilePath(this.props.workout.gifFilename);
+    if (this.props.media === 'image' && gifFilename) {
       // GIF URL exists, prefetch GIF
-      this._prefetchGif(gifUrl);
+      this._prefetchGif(gifFilename);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.workout.gifUrl !== nextProps.workout.gifUrl &&
-      nextProps.media === 'image' && nextProps.workout.gifUrl) {
+    if (this.props.workout.gifFilename !== nextProps.workout.gifFilename &&
+      nextProps.media === 'image' && nextProps.workout.gifFilename) {
       // Workout changed, fetch new workout GIF
-      this._prefetchGif(nextProps.workout.gifUrl);
+      this._prefetchGif(getWorkoutGifFilePath(nextProps.workout.gifFilename));
     }
   }
 
@@ -109,10 +110,10 @@ class WorkoutView extends Component {
           navigator={this.props.navigator}
         />
       );
-    } else if (this.props.media === 'image' && workout.gifUrl) {
+    } else if (this.props.media === 'image' && workout.gifFilename) {
       content = (
         <View style={styles.gifContainer}>
-          <Image source={{ uri: workout.gifUrl }} style={styles.gif}>
+          <Image source={{ uri: getWorkoutGifFilePath(workout.gifFilename) }} style={styles.gif}>
             <TouchableOpacity
               style={styles.videoLink}
               onPress={this._navigateToVideo}
@@ -125,7 +126,7 @@ class WorkoutView extends Component {
     } else if (this.props.media === 'video' && workout.videoUrl) {
       content = (
         <View style={styles.videoPlayerContainer}>
-          <VideoPlayer video={{ uri: workout.videoUrl }} />
+          <VideoPlayer video={{ uri: workout.videoUrl }} defaultFullscreen autoplay />
         </View>
       );
     }

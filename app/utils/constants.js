@@ -154,4 +154,11 @@ export default {
     MOBILITY: 4,
     PRIMER: 5,
   },
+  expansionLoaderStates: {
+    ERROR: 0,
+    CHECKING: 1,
+    DOWNLOADING: 2,
+    UNZIPPING: 3,
+    COMPLETED: 4,
+  },
 };

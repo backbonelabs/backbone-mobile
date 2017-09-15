@@ -42,6 +42,7 @@ export default EStyleSheet.create({
   },
   header: {
     alignItems: 'center',
+    width: '90%',
   },
   centerText: {
     textAlign: 'center',
@@ -91,5 +92,12 @@ export default EStyleSheet.create({
   footerButtonText: {
     marginTop: applyWidthDifference(8),
     textAlign: 'center',
+  },
+  helpIcon: {
+    color: '$secondaryFontColor',
+    fontSize: getResponsiveFontSize(25),
+  },
+  detailTextStyle: {
+    textAlign: 'justify',
   },
 });

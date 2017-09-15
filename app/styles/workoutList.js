@@ -48,11 +48,14 @@ export default EStyleSheet.create({
   footerSpaceBox: {
     height: applyWidthDifference(50),
   },
-  workoutPreviewBox: {
+  thumbnailContainer: {
+    backgroundColor: '$grey300',
+    borderRadius: 5,
+  },
+  thumbnail: {
     height: applyWidthDifference(65),
     width: applyWidthDifference(65),
     borderRadius: 5,
-    backgroundColor: '$grey300',
   },
   section: {
     backgroundColor: '$lightBlue200',

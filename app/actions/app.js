@@ -5,6 +5,7 @@ import {
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
+  SET_NEXT_ROUTE,
 } from './types';
 
 export default {
@@ -37,5 +38,11 @@ export default {
   },
   hidePartialModal() {
     return { type: HIDE_PARTIAL_MODAL };
+  },
+  setNextRoute(route) {
+    return {
+      type: SET_NEXT_ROUTE,
+      payload: route,
+    };
   },
 };

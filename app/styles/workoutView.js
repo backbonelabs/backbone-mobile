@@ -6,9 +6,8 @@ const { applyWidthDifference, width } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
-    alignItems: 'center',
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   gifContainer: {
     backgroundColor: 'white',
@@ -28,8 +27,8 @@ export default EStyleSheet.create({
     }),
   },
   gif: {
-    width: width * 0.75, // 75% of screen width
-    height: width * 0.75 * 0.9, // same aspect ratio as gifs
+    width: width * 0.75 > 375 ? 375 : width * 0.75, // 75% of screen width up to 375
+    height: (width * 0.75 > 375 ? 375 : width * 0.75) * 0.9, // same aspect ratio as gifs
   },
   videoLink: {
     bottom: applyWidthDifference(10),

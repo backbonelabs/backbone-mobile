@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+import ReactNativeFS from 'react-native-fs';
 import cloneDeep from 'lodash/cloneDeep';
 
 /**
@@ -68,4 +70,32 @@ export const markSessionStepComplete = (plans, plan, level, session, step, curre
   // Mark the current workout as complete
   planProgress[level][session][step] = true;
   return progress;
+};
+
+/**
+ * Return the absolute file path of the gif file in the local storage.
+ * In iOS, it would read from the bundle directory, while in Android, it would
+ * read in the folder unzipped from the expansion file.
+ * @param {String} fileName The file name of the gif file
+ * @return {String} The absolute file path of the gif file in the local storage
+ */
+export const getWorkoutGifFilePath = (fileName) => {
+  if (Platform.OS === 'android') {
+    return `file://${ReactNativeFS.ExternalDirectoryPath}/gif/${fileName}`;
+  }
+  return `${ReactNativeFS.MainBundlePath}/${fileName}`;
+};
+
+/**
+ * Return the absolute file path of the thumbnail file in the local storage.
+ * In iOS, it would read from the bundle directory, while in Android, it would
+ * read in the folder unzipped from the expansion file.
+ * @param {String} fileName The file name of the gif file
+ * @return {String} The absolute file path of the gif file in the local storage
+ */
+export const getWorkoutThumbnailFilePath = (fileName) => {
+  if (Platform.OS === 'android') {
+    return `file://${ReactNativeFS.ExternalDirectoryPath}/thumbnail/${fileName}`;
+  }
+  return `${ReactNativeFS.MainBundlePath}/${fileName}`;
 };

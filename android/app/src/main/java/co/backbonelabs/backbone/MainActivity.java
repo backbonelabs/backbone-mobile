@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.content.Intent;
 import com.facebook.react.ReactActivity;
+import com.google.android.vending.expansion.downloader.impl.DownloadNotification;
 
 import co.backbonelabs.backbone.util.Constants;
 import timber.log.Timber;
@@ -92,6 +93,9 @@ public class MainActivity extends ReactActivity {
         if (bluetoothService.getCurrentDevice() != null) {
             bluetoothService.disconnect(null);
         }
+
+        // Clear the downloader notification if exists
+        NotificationService.clearNotification(DownloadNotification.NOTIFICATION_ID);
     }
 
     @Override

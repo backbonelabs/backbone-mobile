@@ -44,6 +44,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.view.View;
 import android.widget.Toast;
@@ -809,19 +811,37 @@ public class Utilities {
      * @param context
      * @return
      */
-    public static final boolean checkNetwork(Context context) {
+    public static final boolean checkInternetConnection(Context context) {
         if (context != null) {
-            boolean result = true;
             ConnectivityManager connectivityManager = (ConnectivityManager) context
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager
                     .getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
-                result = false;
-            }
-            return result;
+
+            return (networkInfo != null && networkInfo.isConnected());
         } else {
             return false;
+        }
+    }
+
+    public static final boolean checkWiFiConnection(Context context) {
+        WifiManager wifiMgr = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+
+        if (wifiMgr.isWifiEnabled()) { // WiFi adapter is ON
+            WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+            if (wifiInfo != null) {
+                if (wifiInfo.getNetworkId() == -1) {
+                    return false; // Not connected to an access point
+                }
+                // Connected to an access point, let's also check if the internet is working
+                return Utilities.checkInternetConnection(context);
+            }
+            else {
+                return false; // WiFi info is not available
+            }
+        }
+        else {
+            return false; // WiFi adapter is OFF
         }
     }
 

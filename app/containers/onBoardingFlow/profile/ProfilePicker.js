@@ -39,7 +39,12 @@ export default class ProfilePicker extends Component {
     updateProfile: PropTypes.func,
     pickerType: PropTypes.string,
     setPickerType: PropTypes.func,
+    mode: PropTypes.string,
   };
+
+  static defaultProps = {
+    mode: 'default',
+  }
 
   constructor() {
     super();
@@ -276,6 +281,7 @@ export default class ProfilePicker extends Component {
               DatePickerAndroid.open({
                 date: this.state.currentValue,
                 maxDate: currentDate,
+                mode: this.props.mode,
               })
                 .then((selection) => {
                   const { action, year, month, day } = selection;

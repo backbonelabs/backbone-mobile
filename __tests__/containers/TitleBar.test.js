@@ -23,6 +23,11 @@ describe('TitleBar Component', () => {
     training: {
       selectedLevelIdx: 0,
     },
+    user: {
+      user: {
+        nickname: 'testNickname',
+      },
+    },
   };
   const currentRoute = {
     name: 'testing',
@@ -50,7 +55,7 @@ describe('TitleBar Component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  test('shows a custom left component that receives navigator as a prop', () => {
+  test('shows a custom left component that receives navigator/nickname as a prop', () => {
     const leftComponent = () => <View />;
     const store = configuredStore({
       ...defaultState,
@@ -71,6 +76,8 @@ describe('TitleBar Component', () => {
     const LeftComponentWrapper = wrapper.childAt(0).childAt(0).childAt(0);
     expect(LeftComponentWrapper.name()).toBe('leftComponent');
     expect(LeftComponentWrapper.props()).toHaveProperty('navigator', navigatorWithOneRoute);
+    expect(LeftComponentWrapper.props())
+      .toHaveProperty('nickname', defaultState.user.user.nickname);
   });
 
   test('disables the back button', () => {

@@ -48,7 +48,11 @@ Facebook.login = (props) => {
                   // email must be confirmed before Facebook integration is allowed.
                   props.dispatch(userActions.updateUser({
                     _id: props.user.user._id,
+                    facebookAccessToken: data.accessToken,
+                    facebookAppId: data.applicationID,
                     facebookId: data.userID,
+                    facebookEmail: graphResults.email,
+                    facebookVerified: graphResults.verified,
                   }));
                 } else {
                   const user = Object.assign({
