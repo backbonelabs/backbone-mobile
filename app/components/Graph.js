@@ -11,6 +11,7 @@ import { View, ScrollView } from 'react-native';
 import HeadingText from '../components/HeadingText';
 import styles from '../styles/stats';
 import relativeDimensions from '../utils/relativeDimensions';
+import theme from '../styles/theme';
 
 const {
   applyWidthDifference,
@@ -29,7 +30,7 @@ const renderBars = (data) => (
     const poor = val.slouchTime;
     const session = idx + 1;
     return (
-      <VictoryStack colorScale={['#F44336', '#8BC34A']} key={idx}>
+      <VictoryStack colorScale={[theme.primaryColor, theme.infoColor]} key={idx}>
         <VictoryBar
           data={[{ session, time: poor }]}
           x={'session'}
@@ -64,7 +65,7 @@ const victoryGraph = (data, graphWidth, noCurrentData) => (
       <VictoryLabel
         x={applyWidthDifference(30)}
         y={applyWidthDifference(30)}
-        text="Minute"
+        text="Minutes"
       />
 
       <VictoryAxis
@@ -78,11 +79,11 @@ const victoryGraph = (data, graphWidth, noCurrentData) => (
       <VictoryAxis
         dependentAxis
         tickValues={noCurrentData ? [0, 1] : null}
-        tickFormat={(x) => {
-          if (x < 60) {
-            return `${x}s`;
+        tickFormat={(y) => {
+          if (y < 60) {
+            return `${y}s`;
           }
-          return Math.ceil(x / 60);
+          return Math.ceil(y / 60);
         }}
       />
       { data ? renderBars(data) : null}
