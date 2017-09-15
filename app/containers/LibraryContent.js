@@ -65,7 +65,6 @@ const LibraryContent = (props) => {
 LibraryContent.propTypes = {
   media: PropTypes.oneOf(['image', 'video']),
   navigator: PropTypes.object.isRequired,
-  onPostureProceed: PropTypes.func,
   selectedWorkoutId: PropTypes.string,
   updateUser: PropTypes.func.isRequired,
   user: PropTypes.shape({

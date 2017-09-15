@@ -10,6 +10,7 @@ describe('Training Actions', () => {
       selectedPlanIdx: 0,
       selectedLevelIdx: 0,
       selectedSessionIdx: 0,
+      selectedStepIdx: 0,
     },
   };
 
@@ -25,6 +26,7 @@ describe('Training Actions', () => {
       selectedPlanIdx,
       selectedLevelIdx,
       selectedSessionIdx,
+      selectedStepIdx,
     } = initialState.training;
 
     await store.dispatch(trainingActions.selectLevel(selectedLevelIdx + 2));
@@ -33,6 +35,7 @@ describe('Training Actions', () => {
       selectedPlanIdx,
       selectedLevelIdx,
       selectedSessionIdx,
+      selectedStepIdx,
       newLevelIdx: selectedLevelIdx + 2,
     });
   });
@@ -42,6 +45,7 @@ describe('Training Actions', () => {
       selectedPlanIdx,
       selectedLevelIdx,
       selectedSessionIdx,
+      selectedStepIdx,
     } = initialState.training;
 
     await store.dispatch(trainingActions.selectSession(selectedSessionIdx + 2));
@@ -50,6 +54,7 @@ describe('Training Actions', () => {
       selectedPlanIdx,
       selectedLevelIdx,
       selectedSessionIdx,
+      selectedStepIdx,
       newSessionIdx: selectedSessionIdx + 2,
     });
   });

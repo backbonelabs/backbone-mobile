@@ -9,8 +9,8 @@ import store from '../store';
 
 const getCurrentTrainingData = () => {
   const { training } = store.getState();
-  const { selectedPlanIdx, selectedLevelIdx, selectedSessionIdx } = training;
-  return { selectedPlanIdx, selectedLevelIdx, selectedSessionIdx };
+  const { selectedPlanIdx, selectedLevelIdx, selectedSessionIdx, selectedStepIdx } = training;
+  return { selectedPlanIdx, selectedLevelIdx, selectedSessionIdx, selectedStepIdx };
 };
 
 export default {

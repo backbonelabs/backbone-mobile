@@ -13,6 +13,7 @@ import videoIcon from '../images/video-icon-blue.png';
 import routes from '../routes';
 import styles from '../styles/workoutView';
 import constants from '../utils/constants';
+import Mixpanel from '../utils/Mixpanel';
 import { getWorkoutGifFilePath } from '../utils/trainingUtils';
 
 const { workoutTypes } = constants;
@@ -21,15 +22,16 @@ class WorkoutView extends Component {
   static propTypes = {
     media: PropTypes.oneOf(['image', 'video']),
     navigator: PropTypes.object.isRequired,
-    onPostureProceed: PropTypes.func,
     training: PropTypes.shape({
       selectedLevelIdx: PropTypes.number,
     }).isRequired,
     workout: PropTypes.shape({
       gifFilename: PropTypes.string,
+      videoUrl: PropTypes.string,
       title: PropTypes.string,
       type: PropTypes.number,
     }),
+    isGuidedTraining: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -78,6 +80,12 @@ class WorkoutView extends Component {
   }
 
   _navigateToVideo() {
+    Mixpanel.trackWithProperties('workoutVideoIconClick',
+      {
+        workout: this.props.workout.title,
+        videoUrl: this.props.workout.videoUrl,
+      });
+
     this.props.navigator.push({
       ...routes.libraryContent,
       title: this.props.workout.title,
@@ -93,18 +101,13 @@ class WorkoutView extends Component {
     // If the workout is a posture session, display PostureIntro. Otherwise, display workout media
     const isPostureSession = workout.type === workoutTypes.POSTURE;
     let content;
-    const postureIntroProps = {};
-
-    if (this.props.onPostureProceed) {
-      postureIntroProps.onProceed = this.props.onPostureProceed;
-    }
 
     if (isPostureSession) {
       content = (
         <PostureIntro
           duration={workout.duration}
+          isGuidedTraining={this.props.isGuidedTraining ? this.props.isGuidedTraining : false}
           navigator={this.props.navigator}
-          {...postureIntroProps}
         />
       );
     } else if (this.props.media === 'image' && workout.gifFilename) {

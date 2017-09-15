@@ -1,13 +1,14 @@
-import { SET_SESSION_TIME } from '../actions/types';
+import { SET_SESSION_PARAMETERS } from '../actions/types';
 
 export default (state = {
   sessionTimeSeconds: null,
+  isGuidedTraining: null,
 }, action) => {
   switch (action.type) {
-    case SET_SESSION_TIME: {
+    case SET_SESSION_PARAMETERS: {
       return {
         ...state,
-        sessionTimeSeconds: action.payload,
+        ...action.payload,
       };
     }
     default:

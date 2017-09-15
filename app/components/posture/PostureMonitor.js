@@ -138,6 +138,7 @@ class PostureMonitor extends Component {
     }),
     posture: PropTypes.shape({
       sessionTimeSeconds: PropTypes.number.isRequired,
+      isGuidedTraining: PropTypes.bool,
     }),
     device: PropTypes.shape({
       errorMessage: PropTypes.string,
@@ -463,6 +464,7 @@ class PostureMonitor extends Component {
    * @param {Function} [callback]         Optional callback to invoke after setting state
    */
   setSessionState(session, callback) {
+    const { isGuidedTraining } = this.props.posture;
     const { state, parameters } = session;
     const {
       selectedPlanIdx,
@@ -483,6 +485,7 @@ class PostureMonitor extends Component {
           selectedSessionIdx,
           selectedStepIdx,
         },
+        isGuidedTraining,
       });
     } else if (state === sessionStates.STOPPED) {
       // Remove session state from local storage
@@ -1053,9 +1056,10 @@ class PostureMonitor extends Component {
   showSummary() {
     const { sessionDuration, slouchTime, totalDuration } = this.state;
     const { backboneVibration } = this.props.user.settings;
+    const { isGuidedTraining } = this.props.posture;
 
     // For timed session, mark the workout as 'completed' only if the entire duration is completed
-    if (sessionDuration > 0 && sessionDuration * 60 === totalDuration) {
+    if (isGuidedTraining && sessionDuration * 60 === totalDuration) {
       this.markPostureSessionCompleted();
     }
 
