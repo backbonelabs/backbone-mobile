@@ -73,6 +73,7 @@ export default EStyleSheet.create({
   },
   hexagonCircleCompleted: {
     fontSize: fixedResponsiveFontSize(10),
+    paddingTop: applyWidthDifference(6),
     paddingHorizontal: applyWidthDifference(3),
     color: 'black',
   },

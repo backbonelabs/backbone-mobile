@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   AppState,
   View,
   Image,
@@ -15,6 +14,7 @@ import {
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import clone from 'lodash/clone';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { UPDATE_BLUETOOTH_STATE } from '../actions/types';
 import educationIconActive from '../images/tabBar/education-icon-active.png';
 import educationIconInactive from '../images/tabBar/education-icon-inactive.png';
@@ -166,13 +166,12 @@ class Application extends Component {
 
     // Get initial Bluetooth state
     BluetoothService.getState((error, { state }) => {
+      // getState currently never returns an error
       if (!error) {
         this.props.dispatch({
           type: UPDATE_BLUETOOTH_STATE,
           payload: state,
         });
-      } else {
-        Alert.alert('Error', error);
       }
     });
 
@@ -194,7 +193,19 @@ class Application extends Component {
 
       if (state === bluetoothStates.OFF) {
         this.props.dispatch(deviceActions.disconnect());
-        Alert.alert('Error', 'Bluetooth is off');
+        this.props.dispatch(appActions.showPartialModal({
+          topView: <Icon name="bluetooth-disabled" style={styles.bluetoothDisabledIcon} />,
+          title: {
+            caption: 'Bluetooth is off',
+          },
+          detail: {
+            caption: 'You will not be able to connect to your Backbone when Bluetooth is disabled.',
+          },
+          buttons: [{ caption: 'OKAY' }],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     });
 
@@ -289,9 +300,12 @@ class Application extends Component {
                   if (prevSessionState) {
                     Object.assign(parameters, prevSessionState.parameters);
 
-                    // Restore the goal of the previous event
+                    // Restore the state of the previous session parameters
                     this.props.dispatch(
-                      postureActions.setSessionTime(parameters.sessionDuration * 60)
+                      postureActions.setSessionParameters({
+                        sessionTimeSeconds: parameters.sessionDuration * 60,
+                        isGuidedTraining: prevSessionState.isGuidedTraining,
+                      })
                     );
 
                     // Restore the last selected training data to be used
@@ -331,6 +345,14 @@ class Application extends Component {
             SensitiveInfo.getItem(storageKeys.SESSION_STATE)
               .then(prevSessionState => {
                 if (prevSessionState) {
+                  // Restore the state of the previous session parameters
+                  this.props.dispatch(
+                    postureActions.setSessionParameters({
+                      sessionTimeSeconds: prevSessionState.parameters.sessionDuration * 60,
+                      isGuidedTraining: prevSessionState.isGuidedTraining,
+                    })
+                  );
+
                   // Restore the last selected training data to be used
                   // to mark the session as completed
                   this.props.dispatch(

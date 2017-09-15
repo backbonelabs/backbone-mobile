@@ -17,11 +17,11 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import Spinner from '../components/Spinner';
 import bulletWhite from '../images/bullet-white.png';
-import routes from '../routes';
 import styles from '../styles/guidedTraining';
 import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 import constants from '../utils/constants';
+import Mixpanel from '../utils/Mixpanel';
 import { formattedTimeString } from '../utils/timeUtils';
 import { markSessionStepComplete } from '../utils/trainingUtils';
 
@@ -168,6 +168,11 @@ class GuidedTraining extends Component {
     this.timerInterval = null;
   }
 
+  componentDidMount() {
+    // Auto-select the initial step index
+    this.props.selectSessionStep(this.state.stepIdx);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.training.isUpdating && !nextProps.training.isUpdating) {
       if (nextProps.training.errorMessage) {
@@ -247,6 +252,21 @@ class GuidedTraining extends Component {
     }
   }
 
+  _getCurrentWorkoutState() {
+    const {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+    } = this.props.training;
+
+    return {
+      selectedPlanIdx,
+      selectedLevelIdx,
+      selectedSessionIdx,
+      selectedStepIdx: this.state.stepIdx,
+    };
+  }
+
   /**
    * Marks the current workout as complete
    */
@@ -314,6 +334,8 @@ class GuidedTraining extends Component {
    * Starts or resumes the timer
    */
   _startTimer() {
+    Mixpanel.trackWithProperties('startTimedWorkout', this._getCurrentWorkoutState());
+
     this.setState({
       hasWorkoutStarted: true,
       hasTimerStarted: true,
@@ -334,6 +356,8 @@ class GuidedTraining extends Component {
    * @param {Function} [cb] Optional callback to invoke after the timer is paused
    */
   _pauseTimer(cb) {
+    Mixpanel.trackWithProperties('pauseTimedWorkout', this._getCurrentWorkoutState());
+
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
@@ -346,6 +370,7 @@ class GuidedTraining extends Component {
    * @param {Number} step Which step to switch to. The first step starts at 0.
    */
   _changeStep(stepIdx) {
+    this.props.selectSessionStep(stepIdx);
     this._pauseTimer(() => {
       this.setState({
         stepIdx,
@@ -418,24 +443,6 @@ class GuidedTraining extends Component {
    */
   _onButtonHideUnderlay(buttonName) {
     this.setState({ [`${buttonName}Depressed`]: false });
-  }
-
-  _navigateToPostureCalibrate() {
-    const { selectedLevelIdx, selectedSessionIdx } = this.props.training;
-    const title = `Level ${selectedLevelIdx + 1} Session ${selectedSessionIdx + 1}`;
-    this.props.selectSessionStep(this.state.stepIdx);
-    this.props.navigator.push({
-      ...routes.postureCalibrate,
-      title,
-      props: {
-        onFinish: () => {
-          this.props.navigator.replace({
-            ...routes.postureMonitor,
-            title,
-          });
-        },
-      },
-    });
   }
 
   render() {

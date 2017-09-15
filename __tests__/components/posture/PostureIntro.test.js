@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { asyncActionMiddleware } from 'redux-async-action';
-import { SET_SESSION_TIME } from '../../../app/actions/types';
+import { SET_SESSION_PARAMETERS } from '../../../app/actions/types';
 import PostureIntro, { PostureIntroComponent } from '../../../app/components/posture/PostureIntro';
 
 describe('PostureIntro Component', () => {
@@ -28,10 +28,9 @@ describe('PostureIntro Component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  test('sets posture session time on mount', () => {
+  test('sets posture session parameters on mount', () => {
     const action = store.getActions()[0];
-    expect(action.type).toBe(SET_SESSION_TIME);
-    expect(action.payload).toBe(0);
+    expect(action.type).toBe(SET_SESSION_PARAMETERS);
   });
 
   test('calls onProceed prop when button is pressed', () => {
