@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
 
 const absoluteCenter = {
   alignItems: 'center',
@@ -68,5 +68,9 @@ export default EStyleSheet.create({
   },
   partialSpinnerContainer: {
     height: applyWidthDifference(25),
+  },
+  bluetoothDisabledIcon: {
+    color: '$warningColor',
+    fontSize: fixedResponsiveFontSize(40),
   },
 });
