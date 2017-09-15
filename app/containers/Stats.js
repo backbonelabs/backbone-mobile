@@ -12,13 +12,19 @@ import Graph from '../components/Graph';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 
-
-const getCurrentSessions = (num, type, format) => {
+const getCurrentSessions = (amount, type, format) => {
   const sessions = [];
-  for (let i = 0; i <= num; i++) {
+  for (let i = 0; i <= amount; i++) {
     sessions.push(moment().subtract(i, type).format(format));
   }
   return sessions;
+};
+
+const convertToHours = (secs) => {
+  let minutes = Math.floor(secs / 60);
+  const hours = Math.floor(minutes / 60);
+  minutes %= 60;
+  return `${hours}:0${minutes}`;
 };
 
 const totalSessionStats = (sessions) => (
@@ -204,6 +210,7 @@ class Stats extends Component {
         selectedTab = 'Today';
         selectedTabTotalSessions = totalSessionStats(sessionsByHour);
     }
+
     this.setState({ selectedTab, selectedTabTotalSessions }); // i is the index, [0,1,2]
   }
 
@@ -306,9 +313,16 @@ class Stats extends Component {
     if (selectedTabTotalSessions.good < 60) {
       good = `${goodSessions} SECS`;
     }
-    // If below a minute, show seconds
     if (selectedTabTotalSessions.poor < 60) {
       poor = `${poorSessions} SECS`;
+    }
+
+    // If over 60 minute, show hours
+    if (selectedTabTotalSessions.good >= 3600) {
+      good = `${convertToHours(goodSessions)} HRS`;
+    }
+    if (selectedTabTotalSessions.poor >= 3600) {
+      poor = `${convertToHours(poorSessions)} HRS`;
     }
 
     return (
