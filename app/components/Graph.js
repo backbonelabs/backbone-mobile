@@ -102,8 +102,8 @@ const scrollGraph = (data, graphWidth) => (
   </ScrollView>
 );
 
-const Graph = ({ data, goodTime, poorTime }) => {
-  if ((!goodTime && !poorTime)) {
+const Graph = ({ data, noCurrentSessions }) => {
+  if (noCurrentSessions) {
     return (<View style={styles.noData}>
       <HeadingText size={1}>No Data Available</HeadingText>
     </View>);
@@ -124,6 +124,7 @@ Graph.propTypes = {
   data: PropTypes.array,
   goodTime: PropTypes.number,
   poorTime: PropTypes.number,
+  noCurrentSessions: PropTypes.bool,
 };
 
 export default Graph;

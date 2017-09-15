@@ -291,9 +291,7 @@ class Stats extends Component {
     return (
       <Graph
         data={data}
-        selectedTab={selectedTab}
-        goodTime={selectedTabTotalSessions.good / 60}
-        poorTime={selectedTabTotalSessions.poor / 60}
+        noCurrentSessions={(!selectedTabTotalSessions.good && !selectedTabTotalSessions.poor)}
       />
     );
   }
