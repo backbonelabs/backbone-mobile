@@ -52,6 +52,7 @@ const LibraryContent = (props) => {
         media={props.media}
         navigator={props.navigator}
         workout={workout}
+        defaultFullscreen
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={toggleFavorite} >
