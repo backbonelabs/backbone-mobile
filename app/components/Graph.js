@@ -50,9 +50,10 @@ const tickXValues = (data) => data.map((val) => val.label || val);
 
 /**
  * Renders a Bar Graph
- * @param {Object} session data
- * @param {Number} graph width
- * @param {Bool}   returns true if there is no current data, ex: Today Tab - last 7 hours
+ * @param {Object}  data          Session data
+ * @param {Number}  graphWidth    Graph width
+ * @param {Boolean} noCurrentData True if there is no current data
+ * @return {ReactElement}
  */
 const victoryGraph = (data, graphWidth, noCurrentData) => (
   <View style={styles.victoryGraph}>
@@ -92,10 +93,11 @@ const victoryGraph = (data, graphWidth, noCurrentData) => (
 );
 
 /**
- * Renders a Bar Graph with a horizontal scrollbar
- * @param {Object} session data
- * @param {Number} graph width
- * @param {Bool}   returns true if there is no current data, ex: Today Tab - last 7 hours
+ * Returns a Bar Graph with a horizontal scrollbar
+ * @param {Object}  data          Session data
+ * @param {Number}  graphWidth    Graph width
+ * @param {Boolean} noCurrentData True if there is no current data
+ * @return {ReactElement}
  */
 const scrollGraph = (data, graphWidth, noCurrentData) => (
   <ScrollView horizontal>
