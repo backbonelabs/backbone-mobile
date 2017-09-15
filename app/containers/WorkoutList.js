@@ -8,6 +8,7 @@ import {
   InteractionManager,
   Platform,
   Dimensions,
+  Image,
 } from 'react-native';
 import isEqual from 'lodash/isEqual';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -20,9 +21,11 @@ import userActions from '../actions/user';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
+import logo from '../images/logo-white-100x100.png';
 import routes from '../routes';
 import theme from '../styles/theme';
 import constants from '../utils/constants';
+import { getWorkoutThumbnailFilePath } from '../utils/trainingUtils';
 
 const { workoutTypes } = constants;
 
@@ -323,7 +326,11 @@ class WorkoutList extends Component {
    */
   renderRow(rowData) {
     const { favoriteWorkouts = [] } = this.props.user;
-    const { _id: workoutId, title: workoutTitle } = rowData;
+    const {
+      _id: workoutId,
+      title: workoutTitle,
+      thumbnailFilename,
+    } = rowData;
 
     let iconName = '';
     if (favoriteWorkouts.includes(workoutId)) {
@@ -331,11 +338,24 @@ class WorkoutList extends Component {
     } else {
       iconName = 'favorite-border';
     }
+
+    // Use the workout thumbnail if specified, otherwise, use the Backbone logo
+    const thumbnail = thumbnailFilename ? (
+      <Image
+        source={{ uri: getWorkoutThumbnailFilePath(thumbnailFilename) }}
+        style={styles.thumbnail}
+      />
+    ) : (
+      <Image source={logo} style={styles.thumbnail} />
+    );
+
     return (
       <View style={styles.rowContainer}>
         <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
           <View style={styles.rowInnerContainer}>
-            <View style={styles.workoutPreviewBox} />
+            <View style={styles.thumbnailContainer}>
+              {thumbnail}
+            </View>
             <BodyText style={styles.rowText}>{workoutTitle}</BodyText>
           </View>
         </TouchableOpacity>
