@@ -54,20 +54,24 @@ const getRssiIcon = (rssi) => {
 
 class DeviceScan extends Component {
   static propTypes = {
+    app: PropTypes.shape({
+      bluetoothState: PropTypes.number,
+    }),
+    device: PropTypes.shape({
+      device: PropTypes.shape({
+        identifier: PropTypes.string,
+      }),
+      errorMessage: PropTypes.string,
+      isConnecting: PropTypes.bool,
+      isConnected: PropTypes.bool,
+    }),
     navigator: PropTypes.shape({
       replace: PropTypes.func,
       push: PropTypes.func,
       getCurrentRoutes: PropTypes.func,
       pop: PropTypes.func,
     }),
-    device: PropTypes.shape({
-      identifier: PropTypes.string,
-    }),
-    bluetoothState: PropTypes.number,
     dispatch: PropTypes.func,
-    isConnecting: PropTypes.bool,
-    isConnected: PropTypes.bool,
-    errorMessage: PropTypes.string,
     showSkip: PropTypes.bool,
   };
 
@@ -88,10 +92,10 @@ class DeviceScan extends Component {
   componentWillMount() {
     Mixpanel.track('deviceScan');
     // If there is a device in our store
-    if (this.props.device.identifier) {
+    if (this.props.device.device.identifier) {
       this.setState(() => ({
         deviceList: this.state.deviceList.concat(this.props.device),
-        selectedIdentifier: this.props.device.identifier,
+        selectedIdentifier: this.props.device.device.identifier,
       }));
     }
 
@@ -99,7 +103,7 @@ class DeviceScan extends Component {
     this.devicesFoundListener = deviceManagementServiceEvents.addListener(
       'DevicesFound',
       deviceList => {
-        if (this.props.device.identifier) {
+        if (this.props.device.device.identifier) {
           return this.setState(() => ({
             deviceList: uniqBy([this.props.device, ...deviceList], 'identifier'),
           }));
@@ -108,7 +112,7 @@ class DeviceScan extends Component {
       }
     );
 
-    if (this.props.bluetoothState === ON) {
+    if (this.props.app.bluetoothState === ON) {
       // Bluetooth is on, initiate scanning
       this.initiateScanning();
     } else {
@@ -132,14 +136,14 @@ class DeviceScan extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.errorMessage && nextProps.errorMessage) {
+    if (!this.props.device.errorMessage && nextProps.device.errorMessage) {
       this.props.dispatch(appActions.showPartialModal({
         title: {
           caption: 'Error',
           color: theme.warningColor,
         },
         detail: {
-          caption: nextProps.errorMessage,
+          caption: nextProps.device.errorMessage,
         },
         buttons: [
           { caption: 'OKAY' },
@@ -150,8 +154,8 @@ class DeviceScan extends Component {
       }));
     }
 
-    const currentBluetoothState = this.props.bluetoothState;
-    const newBluetoothState = nextProps.bluetoothState;
+    const currentBluetoothState = this.props.app.bluetoothState;
+    const newBluetoothState = nextProps.app.bluetoothState;
 
     if ((currentBluetoothState === OFF || currentBluetoothState === TURNING_ON)
       && newBluetoothState === ON) {
@@ -168,7 +172,7 @@ class DeviceScan extends Component {
     // After connecting
     // if previous route is deviceSetup, replace with howtovideo
     // else go back to previous route
-    if (!this.props.isConnected && nextProps.isConnected) {
+    if (!this.props.device.isConnected && nextProps.device.isConnected) {
       const routeStack = this.props.navigator.getCurrentRoutes();
       const lastRoute = routeStack[routeStack.length - 2];
       if (lastRoute.name === routes.deviceSetup.name) {
@@ -193,8 +197,8 @@ class DeviceScan extends Component {
    * Initiates a 5 second scanning for Backbone devices.
    */
   initiateScanning() {
-    if (this.state.inProgress || this.props.isConnecting ||
-      (this.props.bluetoothState === constants.bluetoothStates.OFF)
+    if (this.state.inProgress || this.props.device.isConnecting ||
+      (this.props.app.bluetoothState === constants.bluetoothStates.OFF)
     ) {
       return;
     }
@@ -225,12 +229,12 @@ class DeviceScan extends Component {
    */
   selectDevice(deviceData) {
     // if a device is currently connecting, don't interrupt
-    if (this.props.isConnecting) {
+    if (this.props.device.isConnecting) {
       return;
     }
 
     // if there is a connected device, disconnect it before connecting another device
-    if (this.props.isConnected) {
+    if (this.props.device.isConnected) {
       this.props.dispatch(deviceActions.disconnect());
     }
 
@@ -270,7 +274,7 @@ class DeviceScan extends Component {
    */
   formatDeviceRow(rowData) {
     const { selectedIdentifier } = this.state;
-    const { isConnected, isConnecting, device } = this.props;
+    const { isConnected, isConnecting, device } = this.props.device;
     let message = null;
     let messageColor = theme.primaryFontColor;
     let icon = getRssiIcon(rowData.RSSI);
@@ -307,7 +311,7 @@ class DeviceScan extends Component {
   }
 
   skip() {
-    if (this.props.isConnecting) {
+    if (this.props.device.isConnecting) {
       return;
     }
 
@@ -318,9 +322,9 @@ class DeviceScan extends Component {
   render() {
     const { inProgress, deviceList } = this.state;
     const { bluetoothStates } = constants;
-    const { isConnecting, errorMessage } = this.props;
+    const { isConnecting, errorMessage } = this.props.device;
     const btn = inProgress ? 'SCANNING...' : 'SCAN FOR MORE DEVICES';
-    const isBluetoothOn = this.props.bluetoothState === bluetoothStates.ON;
+    const isBluetoothOn = this.props.app.bluetoothState === bluetoothStates.ON;
 
     return (
       <View style={styles.container}>
@@ -369,7 +373,7 @@ class DeviceScan extends Component {
               text={btn}
               primary
               disabled={inProgress || isConnecting ||
-                (this.props.bluetoothState === bluetoothStates.OFF)}
+                (this.props.app.bluetoothState === bluetoothStates.OFF)}
             />
           </View>
           {
@@ -390,7 +394,7 @@ class DeviceScan extends Component {
 
 const mapStateToProps = state => {
   const { app, device } = state;
-  return { ...app, ...device };
+  return { app, device };
 };
 
 export default connect(mapStateToProps)(DeviceScan);
