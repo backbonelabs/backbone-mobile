@@ -15,11 +15,8 @@ const positioning = {
 export default EStyleSheet.create({
   $photoIconSize: fixedResponsiveFontSize(40),
   container: {
-    height: '100%',
-    backgroundColor: 'white',
-  },
-  profileFieldContainer: {
     flex: 1,
+    backgroundColor: 'white',
   },
   profileHeader: {
     flexDirection: 'row',
@@ -34,6 +31,9 @@ export default EStyleSheet.create({
     height: applyWidthDifference(70),
     width: applyWidthDifference(70),
     borderRadius: applyWidthDifference(70) / 2,
+    // Can be removed after adding the photo feature
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   profileHeaderIcon: {
     color: '$grey500',
@@ -52,9 +52,10 @@ export default EStyleSheet.create({
     borderColor: '$grey200',
   }, positioning),
   profileFieldIcon: {
-    color: '$grey500',
+    color: '$lightBlue500',
     fontSize: fixedResponsiveFontSize(22),
-    paddingHorizontal: applyWidthDifference(15),
+    width: applyWidthDifference(50),
+    textAlign: 'center',
   },
   profileFieldData: {
     paddingHorizontal: applyWidthDifference(15),
@@ -63,11 +64,21 @@ export default EStyleSheet.create({
     paddingHorizontal: applyWidthDifference(15),
   },
   signOutSpacerContainer: {
-    height: applyWidthDifference(20),
+    height: applyWidthDifference(30),
     backgroundColor: '$grey100',
     borderBottomWidth: 1,
-    borderTopWidth: 1,
     borderColor: '$grey200',
+  },
+  resendEmailContainer: {
+    alignItems: 'center',
+    paddingVertical: applyWidthDifference(15),
+    borderBottomWidth: 1,
+    borderColor: '$grey200',
+  },
+  resendEmailText: {
+    textAlign: 'center',
+    marginBottom: applyWidthDifference(15),
+    width: '85%',
   },
   // Used to overwrite Input module's default styling
   innerContainerStyles: {
@@ -90,5 +101,12 @@ export default EStyleSheet.create({
         height: applyWidthDifference(40),
       },
     }),
+  },
+  profileSave: {
+    paddingLeft: applyWidthDifference(20),
+    paddingVertical: applyWidthDifference(10),
+  },
+  profileSaveSpinner: {
+    alignSelf: 'flex-end',
   },
 });

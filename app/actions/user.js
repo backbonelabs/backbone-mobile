@@ -8,6 +8,7 @@ import {
   PREPARE_USER_UPDATE,
   FETCH_USER_WORKOUTS,
   SELECT_WORKOUT,
+  RESEND_CONFIRMATION_EMAIL,
 } from './types';
 import store from '../store';
 import constants from '../utils/constants';
@@ -22,6 +23,7 @@ const baseUrl = `${Environment.API_SERVER_URL}/users`;
 const settingsUrl = `${baseUrl}/settings`;
 const sessionsUrl = `${baseUrl}/sessions`;
 const workoutsUrl = `${baseUrl}/workouts`;
+const sendConfirmationEmailUrl = `${baseUrl}/send-confirmation-email`;
 
 const handleNetworkError = mixpanelEvent => {
   Mixpanel.track(`${mixpanelEvent}-serverError`);
@@ -269,6 +271,35 @@ export default {
           }
 
           Mixpanel.track(`${fetchUserWorkoutsEventName}-success`);
+
+          return body;
+        }),
+    };
+  },
+
+  resendEmail() {
+    const state = store.getState();
+    const { accessToken } = state.auth;
+    const { user: { _id } } = state.user;
+    const resendConfirmationEmailEventName = 'resendConfirmationEmail';
+
+    return {
+      type: RESEND_CONFIRMATION_EMAIL,
+      payload: () => Fetcher.post({
+        url: `${sendConfirmationEmailUrl}/${_id}`,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+        .catch(() => handleNetworkError(resendConfirmationEmailEventName))
+        .then(response => response.json())
+        .then((body) => {
+          if (body.error) {
+            Mixpanel.trackWithProperties(`${resendConfirmationEmailEventName}-error`, {
+              errorMessage: body.error,
+            });
+
+            throw new Error(body.error);
+          }
+          Mixpanel.track(`${resendConfirmationEmailEventName}-success`);
 
           return body;
         }),
