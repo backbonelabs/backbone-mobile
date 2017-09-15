@@ -45,39 +45,7 @@
 		699262621DE58A28003FBBC7 /* SessionControlService.m in Sources */ = {isa = PBXBuildFile; fileRef = 699262611DE58A28003FBBC7 /* SessionControlService.m */; };
 		69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */; };
 		69AAF58F1E1D6314005FD0BF /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69AAF58E1E1D6314005FD0BF /* NotificationService.m */; };
-		69BD63EC1F64F4D9007F1266 /* band-pull-apart.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63DD1F64F4D9007F1266 /* band-pull-apart.gif */; };
-		69BD63ED1F64F4D9007F1266 /* bird-dog.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63DE1F64F4D9007F1266 /* bird-dog.gif */; };
-		69BD63EE1F64F4D9007F1266 /* cat-camel.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63DF1F64F4D9007F1266 /* cat-camel.gif */; };
-		69BD63EF1F64F4D9007F1266 /* chest-stretch.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E01F64F4D9007F1266 /* chest-stretch.gif */; };
-		69BD63F01F64F4D9007F1266 /* couch-stretch.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E11F64F4D9007F1266 /* couch-stretch.gif */; };
-		69BD63F11F64F4D9007F1266 /* dead-bug.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E21F64F4D9007F1266 /* dead-bug.gif */; };
-		69BD63F21F64F4D9007F1266 /* glute-bridge.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E31F64F4D9007F1266 /* glute-bridge.gif */; };
-		69BD63F31F64F4D9007F1266 /* hamstring-stretch.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E41F64F4D9007F1266 /* hamstring-stretch.gif */; };
-		69BD63F41F64F4D9007F1266 /* low-back-stretch.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E51F64F4D9007F1266 /* low-back-stretch.gif */; };
-		69BD63F51F64F4D9007F1266 /* no-money.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E61F64F4D9007F1266 /* no-money.gif */; };
-		69BD63F61F64F4D9007F1266 /* plank.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E71F64F4D9007F1266 /* plank.gif */; };
-		69BD63F71F64F4D9007F1266 /* prone-cobra.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E81F64F4D9007F1266 /* prone-cobra.gif */; };
-		69BD63F81F64F4D9007F1266 /* quad-stretch.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63E91F64F4D9007F1266 /* quad-stretch.gif */; };
-		69BD63F91F64F4D9007F1266 /* side-plank.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63EA1F64F4D9007F1266 /* side-plank.gif */; };
-		69BD63FA1F64F4D9007F1266 /* upper-back-release.gif in Resources */ = {isa = PBXBuildFile; fileRef = 69BD63EB1F64F4D9007F1266 /* upper-back-release.gif */; };
-		69C654891F6AAB0900BE9F0A /* band-pull-apart.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654771F6AAB0900BE9F0A /* band-pull-apart.jpg */; };
-		69C6548A1F6AAB0900BE9F0A /* bird-dog.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654781F6AAB0900BE9F0A /* bird-dog.jpg */; };
-		69C6548B1F6AAB0900BE9F0A /* cat-camel.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654791F6AAB0900BE9F0A /* cat-camel.jpg */; };
-		69C6548C1F6AAB0900BE9F0A /* chest-stretch.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C6547A1F6AAB0900BE9F0A /* chest-stretch.jpg */; };
-		69C6548D1F6AAB0900BE9F0A /* couch-stretch.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C6547B1F6AAB0900BE9F0A /* couch-stretch.jpg */; };
-		69C6548E1F6AAB0900BE9F0A /* dead-bug.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C6547C1F6AAB0900BE9F0A /* dead-bug.jpg */; };
-		69C6548F1F6AAB0900BE9F0A /* glute-bridge.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C6547D1F6AAB0900BE9F0A /* glute-bridge.jpg */; };
-		69C654901F6AAB0900BE9F0A /* hamstring-stretch.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C6547E1F6AAB0900BE9F0A /* hamstring-stretch.jpg */; };
-		69C654911F6AAB0900BE9F0A /* Howto.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C6547F1F6AAB0900BE9F0A /* Howto.jpg */; };
-		69C654921F6AAB0900BE9F0A /* low-back-stretch.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654801F6AAB0900BE9F0A /* low-back-stretch.jpg */; };
-		69C654931F6AAB0900BE9F0A /* no-money.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654811F6AAB0900BE9F0A /* no-money.jpg */; };
-		69C654941F6AAB0900BE9F0A /* plank.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654821F6AAB0900BE9F0A /* plank.jpg */; };
-		69C654951F6AAB0900BE9F0A /* prone-cobra.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654831F6AAB0900BE9F0A /* prone-cobra.jpg */; };
-		69C654961F6AAB0900BE9F0A /* quad-stretch.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654841F6AAB0900BE9F0A /* quad-stretch.jpg */; };
-		69C654971F6AAB0900BE9F0A /* side-plank.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654851F6AAB0900BE9F0A /* side-plank.jpg */; };
-		69C654981F6AAB0A00BE9F0A /* sitting-posture-primer.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654861F6AAB0900BE9F0A /* sitting-posture-primer.jpg */; };
-		69C654991F6AAB0A00BE9F0A /* standing-posture-primer.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654871F6AAB0900BE9F0A /* standing-posture-primer.jpg */; };
-		69C6549A1F6AAB0A00BE9F0A /* upper-back-release.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 69C654881F6AAB0900BE9F0A /* upper-back-release.jpg */; };
+		69B822C01F6C0CA8005C5464 /* Expansion in Resources */ = {isa = PBXBuildFile; fileRef = 69B822BF1F6C0CA8005C5464 /* Expansion */; };
 		69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 69CCE72A1DD4B01C0038157C /* Utilities.m */; };
 		69EB80551E0170E200A29ADA /* BootLoaderService.m in Sources */ = {isa = PBXBuildFile; fileRef = 69EB80541E0170E200A29ADA /* BootLoaderService.m */; };
 		69FF10731F2742E50049EC33 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69FF10721F2742DE0049EC33 /* Lato-Bold.ttf */; };
@@ -415,39 +383,7 @@
 		69A002EE1DDCA13B002C47FB /* DeviceInformationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DeviceInformationService.m; path = backbone/DeviceInformationService.m; sourceTree = "<group>"; };
 		69AAF58D1E1D6314005FD0BF /* NotificationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotificationService.h; path = backbone/NotificationService.h; sourceTree = "<group>"; };
 		69AAF58E1E1D6314005FD0BF /* NotificationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotificationService.m; path = backbone/NotificationService.m; sourceTree = "<group>"; };
-		69BD63DD1F64F4D9007F1266 /* band-pull-apart.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "band-pull-apart.gif"; sourceTree = "<group>"; };
-		69BD63DE1F64F4D9007F1266 /* bird-dog.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "bird-dog.gif"; sourceTree = "<group>"; };
-		69BD63DF1F64F4D9007F1266 /* cat-camel.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "cat-camel.gif"; sourceTree = "<group>"; };
-		69BD63E01F64F4D9007F1266 /* chest-stretch.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "chest-stretch.gif"; sourceTree = "<group>"; };
-		69BD63E11F64F4D9007F1266 /* couch-stretch.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "couch-stretch.gif"; sourceTree = "<group>"; };
-		69BD63E21F64F4D9007F1266 /* dead-bug.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "dead-bug.gif"; sourceTree = "<group>"; };
-		69BD63E31F64F4D9007F1266 /* glute-bridge.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "glute-bridge.gif"; sourceTree = "<group>"; };
-		69BD63E41F64F4D9007F1266 /* hamstring-stretch.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "hamstring-stretch.gif"; sourceTree = "<group>"; };
-		69BD63E51F64F4D9007F1266 /* low-back-stretch.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "low-back-stretch.gif"; sourceTree = "<group>"; };
-		69BD63E61F64F4D9007F1266 /* no-money.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "no-money.gif"; sourceTree = "<group>"; };
-		69BD63E71F64F4D9007F1266 /* plank.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = plank.gif; sourceTree = "<group>"; };
-		69BD63E81F64F4D9007F1266 /* prone-cobra.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "prone-cobra.gif"; sourceTree = "<group>"; };
-		69BD63E91F64F4D9007F1266 /* quad-stretch.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "quad-stretch.gif"; sourceTree = "<group>"; };
-		69BD63EA1F64F4D9007F1266 /* side-plank.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "side-plank.gif"; sourceTree = "<group>"; };
-		69BD63EB1F64F4D9007F1266 /* upper-back-release.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "upper-back-release.gif"; sourceTree = "<group>"; };
-		69C654771F6AAB0900BE9F0A /* band-pull-apart.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "band-pull-apart.jpg"; sourceTree = "<group>"; };
-		69C654781F6AAB0900BE9F0A /* bird-dog.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "bird-dog.jpg"; sourceTree = "<group>"; };
-		69C654791F6AAB0900BE9F0A /* cat-camel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "cat-camel.jpg"; sourceTree = "<group>"; };
-		69C6547A1F6AAB0900BE9F0A /* chest-stretch.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "chest-stretch.jpg"; sourceTree = "<group>"; };
-		69C6547B1F6AAB0900BE9F0A /* couch-stretch.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "couch-stretch.jpg"; sourceTree = "<group>"; };
-		69C6547C1F6AAB0900BE9F0A /* dead-bug.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "dead-bug.jpg"; sourceTree = "<group>"; };
-		69C6547D1F6AAB0900BE9F0A /* glute-bridge.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "glute-bridge.jpg"; sourceTree = "<group>"; };
-		69C6547E1F6AAB0900BE9F0A /* hamstring-stretch.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "hamstring-stretch.jpg"; sourceTree = "<group>"; };
-		69C6547F1F6AAB0900BE9F0A /* Howto.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Howto.jpg; sourceTree = "<group>"; };
-		69C654801F6AAB0900BE9F0A /* low-back-stretch.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "low-back-stretch.jpg"; sourceTree = "<group>"; };
-		69C654811F6AAB0900BE9F0A /* no-money.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "no-money.jpg"; sourceTree = "<group>"; };
-		69C654821F6AAB0900BE9F0A /* plank.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = plank.jpg; sourceTree = "<group>"; };
-		69C654831F6AAB0900BE9F0A /* prone-cobra.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "prone-cobra.jpg"; sourceTree = "<group>"; };
-		69C654841F6AAB0900BE9F0A /* quad-stretch.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "quad-stretch.jpg"; sourceTree = "<group>"; };
-		69C654851F6AAB0900BE9F0A /* side-plank.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "side-plank.jpg"; sourceTree = "<group>"; };
-		69C654861F6AAB0900BE9F0A /* sitting-posture-primer.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "sitting-posture-primer.jpg"; sourceTree = "<group>"; };
-		69C654871F6AAB0900BE9F0A /* standing-posture-primer.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "standing-posture-primer.jpg"; sourceTree = "<group>"; };
-		69C654881F6AAB0900BE9F0A /* upper-back-release.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "upper-back-release.jpg"; sourceTree = "<group>"; };
+		69B822BF1F6C0CA8005C5464 /* Expansion */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Expansion; path = backbone/Expansion; sourceTree = "<group>"; };
 		69CCE7281DD4B01C0038157C /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		69CCE7291DD4B01C0038157C /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
 		69CCE72A1DD4B01C0038157C /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
@@ -760,63 +696,6 @@
 			name = Fonts;
 			sourceTree = "<group>";
 		};
-		69BD63DB1F64F4D9007F1266 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				69C654761F6AAB0900BE9F0A /* thumbnail */,
-				69BD63DC1F64F4D9007F1266 /* gif */,
-			);
-			name = Resources;
-			path = backbone/Resources;
-			sourceTree = "<group>";
-		};
-		69BD63DC1F64F4D9007F1266 /* gif */ = {
-			isa = PBXGroup;
-			children = (
-				69BD63DD1F64F4D9007F1266 /* band-pull-apart.gif */,
-				69BD63DE1F64F4D9007F1266 /* bird-dog.gif */,
-				69BD63DF1F64F4D9007F1266 /* cat-camel.gif */,
-				69BD63E01F64F4D9007F1266 /* chest-stretch.gif */,
-				69BD63E11F64F4D9007F1266 /* couch-stretch.gif */,
-				69BD63E21F64F4D9007F1266 /* dead-bug.gif */,
-				69BD63E31F64F4D9007F1266 /* glute-bridge.gif */,
-				69BD63E41F64F4D9007F1266 /* hamstring-stretch.gif */,
-				69BD63E51F64F4D9007F1266 /* low-back-stretch.gif */,
-				69BD63E61F64F4D9007F1266 /* no-money.gif */,
-				69BD63E71F64F4D9007F1266 /* plank.gif */,
-				69BD63E81F64F4D9007F1266 /* prone-cobra.gif */,
-				69BD63E91F64F4D9007F1266 /* quad-stretch.gif */,
-				69BD63EA1F64F4D9007F1266 /* side-plank.gif */,
-				69BD63EB1F64F4D9007F1266 /* upper-back-release.gif */,
-			);
-			path = gif;
-			sourceTree = "<group>";
-		};
-		69C654761F6AAB0900BE9F0A /* thumbnail */ = {
-			isa = PBXGroup;
-			children = (
-				69C654771F6AAB0900BE9F0A /* band-pull-apart.jpg */,
-				69C654781F6AAB0900BE9F0A /* bird-dog.jpg */,
-				69C654791F6AAB0900BE9F0A /* cat-camel.jpg */,
-				69C6547A1F6AAB0900BE9F0A /* chest-stretch.jpg */,
-				69C6547B1F6AAB0900BE9F0A /* couch-stretch.jpg */,
-				69C6547C1F6AAB0900BE9F0A /* dead-bug.jpg */,
-				69C6547D1F6AAB0900BE9F0A /* glute-bridge.jpg */,
-				69C6547E1F6AAB0900BE9F0A /* hamstring-stretch.jpg */,
-				69C6547F1F6AAB0900BE9F0A /* Howto.jpg */,
-				69C654801F6AAB0900BE9F0A /* low-back-stretch.jpg */,
-				69C654811F6AAB0900BE9F0A /* no-money.jpg */,
-				69C654821F6AAB0900BE9F0A /* plank.jpg */,
-				69C654831F6AAB0900BE9F0A /* prone-cobra.jpg */,
-				69C654841F6AAB0900BE9F0A /* quad-stretch.jpg */,
-				69C654851F6AAB0900BE9F0A /* side-plank.jpg */,
-				69C654861F6AAB0900BE9F0A /* sitting-posture-primer.jpg */,
-				69C654871F6AAB0900BE9F0A /* standing-posture-primer.jpg */,
-				69C654881F6AAB0900BE9F0A /* upper-back-release.jpg */,
-			);
-			path = thumbnail;
-			sourceTree = "<group>";
-		};
 		69CCE7271DD4B01C0038157C /* util */ = {
 			isa = PBXGroup;
 			children = (
@@ -881,12 +760,12 @@
 				66F918731DA9ECD600649391 /* Fonts */,
 				449AD4C31D2ACD47004919E0 /* Icons */,
 				13B07FAE1A68108700A75B9A /* Backbone */,
-				69BD63DB1F64F4D9007F1266 /* Resources */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* BackboneTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				E112B341869066EE71294579 /* Pods */,
 				369510872F4AB91A754073D5 /* Frameworks */,
+				69B822BF1F6C0CA8005C5464 /* Expansion */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -1372,47 +1251,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69C6548C1F6AAB0900BE9F0A /* chest-stretch.jpg in Resources */,
-				69C6549A1F6AAB0A00BE9F0A /* upper-back-release.jpg in Resources */,
-				69BD63F31F64F4D9007F1266 /* hamstring-stretch.gif in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				69C654971F6AAB0900BE9F0A /* side-plank.jpg in Resources */,
 				66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */,
-				69BD63F01F64F4D9007F1266 /* couch-stretch.gif in Resources */,
 				665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */,
-				69BD63EE1F64F4D9007F1266 /* cat-camel.gif in Resources */,
-				69C654891F6AAB0900BE9F0A /* band-pull-apart.jpg in Resources */,
-				69C6548F1F6AAB0900BE9F0A /* glute-bridge.jpg in Resources */,
-				69C654911F6AAB0900BE9F0A /* Howto.jpg in Resources */,
-				69C6548D1F6AAB0900BE9F0A /* couch-stretch.jpg in Resources */,
-				69C654901F6AAB0900BE9F0A /* hamstring-stretch.jpg in Resources */,
 				66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */,
-				69BD63F41F64F4D9007F1266 /* low-back-stretch.gif in Resources */,
 				449AD4C51D2ACD6A004919E0 /* FontAwesome.ttf in Resources */,
-				69C654941F6AAB0900BE9F0A /* plank.jpg in Resources */,
-				69BD63F81F64F4D9007F1266 /* quad-stretch.gif in Resources */,
-				69BD63F11F64F4D9007F1266 /* dead-bug.gif in Resources */,
-				69C654981F6AAB0A00BE9F0A /* sitting-posture-primer.jpg in Resources */,
-				69C654951F6AAB0900BE9F0A /* prone-cobra.jpg in Resources */,
-				69C654991F6AAB0A00BE9F0A /* standing-posture-primer.jpg in Resources */,
-				69BD63F51F64F4D9007F1266 /* no-money.gif in Resources */,
-				69BD63F91F64F4D9007F1266 /* side-plank.gif in Resources */,
-				69BD63EF1F64F4D9007F1266 /* chest-stretch.gif in Resources */,
+				69B822C01F6C0CA8005C5464 /* Expansion in Resources */,
 				662BD36F1DFC933F00CF71D1 /* Release.local.xcconfig in Resources */,
-				69BD63F61F64F4D9007F1266 /* plank.gif in Resources */,
-				69C654921F6AAB0900BE9F0A /* low-back-stretch.jpg in Resources */,
-				69C6548B1F6AAB0900BE9F0A /* cat-camel.jpg in Resources */,
-				69C654961F6AAB0900BE9F0A /* quad-stretch.jpg in Resources */,
-				69BD63EC1F64F4D9007F1266 /* band-pull-apart.gif in Resources */,
 				662BD3491DFC92E900CF71D1 /* Debug.local.xcconfig in Resources */,
-				69C6548E1F6AAB0900BE9F0A /* dead-bug.jpg in Resources */,
-				69C654931F6AAB0900BE9F0A /* no-money.jpg in Resources */,
-				69BD63ED1F64F4D9007F1266 /* bird-dog.gif in Resources */,
 				69FF10731F2742E50049EC33 /* Lato-Bold.ttf in Resources */,
-				69BD63FA1F64F4D9007F1266 /* upper-back-release.gif in Resources */,
-				69C6548A1F6AAB0900BE9F0A /* bird-dog.jpg in Resources */,
-				69BD63F21F64F4D9007F1266 /* glute-bridge.gif in Resources */,
-				69BD63F71F64F4D9007F1266 /* prone-cobra.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
