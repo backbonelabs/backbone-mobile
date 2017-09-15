@@ -7,6 +7,7 @@ import Button from '../Button';
 import HeadingText from '../HeadingText';
 import postureActions from '../../actions/posture';
 import femaleSitting from '../../images/posture/female-sitting.gif';
+import femaleSittingIOS from '../../images/posture/female-sitting-ios.gif';
 import routes from '../../routes';
 import styles from '../../styles/posture/postureIntro';
 import constants from '../../utils/constants';
@@ -197,16 +198,14 @@ export class PostureIntroComponent extends Component {
   }
 
   render() {
-    const image = Platform.OS === 'ios' ?
-      <FLAnimatedImage style={styles.image} source={femaleSitting} /> :
-        <Image source={femaleSitting} style={styles.image} />;
-
     return (
       <View style={styles.container}>
         <HeadingText size={3} style={styles.text}>
           Sit or stand up straight before you begin
         </HeadingText>
-        {image}
+        {Platform.OS === 'ios' ?
+          <FLAnimatedImage source={femaleSittingIOS} style={styles.image} /> :
+            <Image source={femaleSitting} style={styles.image} />}
         <Button text="START" primary onPress={this.start} />
       </View>
     );
