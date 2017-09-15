@@ -1,7 +1,8 @@
 import React, { PropTypes, Component } from 'react';
+import { View, Image, NativeModules, Platform } from 'react-native';
 import { connect } from 'react-redux';
-import { View, Image, NativeModules } from 'react-native';
 import autobind from 'class-autobind';
+import FLAnimatedImage from 'react-native-flanimatedimage';
 import Button from '../Button';
 import HeadingText from '../HeadingText';
 import postureActions from '../../actions/posture';
@@ -192,12 +193,16 @@ export class PostureIntroComponent extends Component {
   }
 
   render() {
+    const image = Platform.OS === 'ios' ?
+      <FLAnimatedImage style={styles.image} source={femaleSitting} /> :
+        <Image source={femaleSitting} style={styles.image} />;
+
     return (
       <View style={styles.container}>
         <HeadingText size={3} style={styles.text}>
           Sit or stand up straight before you begin
         </HeadingText>
-        <Image source={femaleSitting} style={styles.image} />
+        {image}
         <Button text="START" primary onPress={this.start} />
       </View>
     );
