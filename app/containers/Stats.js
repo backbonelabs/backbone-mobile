@@ -184,10 +184,6 @@ class Stats extends Component {
     let selectedTab;
     let selectedTabTotalSessions;
     switch (tab.i) {
-      case 0:
-        selectedTab = 'Today';
-        selectedTabTotalSessions = totalSessionStats(sessionsByHour);
-        break;
       case 1:
         selectedTab = 'Week';
         selectedTabTotalSessions = totalSessionStats(sessionsByDays);
@@ -302,19 +298,19 @@ class Stats extends Component {
     }
 
     // If below a minute, show seconds
-    if (selectedTabTotalSessions.good < 60) {
-      good = `${goodSessions} SECS`;
+    if (goodSessions < 60) {
+      good = `${goodSessions} SEC`;
     }
-    if (selectedTabTotalSessions.poor < 60) {
-      poor = `${poorSessions} SECS`;
+    if (poorSessions < 60) {
+      poor = `${poorSessions} SEC`;
     }
 
     // If over 60 minute, show hours
-    if (selectedTabTotalSessions.good >= 3600) {
-      good = `${convertToHours(goodSessions)} HRS`;
+    if (goodSessions >= 3600) {
+      good = `${convertToHours(goodSessions)}`;
     }
-    if (selectedTabTotalSessions.poor >= 3600) {
-      poor = `${convertToHours(poorSessions)} HRS`;
+    if (poorSessions >= 3600) {
+      poor = `${convertToHours(poorSessions)}`;
     }
 
     return (
