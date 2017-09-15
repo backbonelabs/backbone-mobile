@@ -19,6 +19,7 @@ Object.assign(RN.NativeModules, {
     unsetUserId: jest.fn(),
     setUserId: jest.fn(),
   },
+  RNFLAnimatedImageManager: {},
 });
 
 global.fetch = jest.fn();
