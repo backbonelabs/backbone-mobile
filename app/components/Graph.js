@@ -122,8 +122,6 @@ const Graph = ({ data, noCurrentSessions }) => {
 
 Graph.propTypes = {
   data: PropTypes.array,
-  goodTime: PropTypes.number,
-  poorTime: PropTypes.number,
   noCurrentSessions: PropTypes.bool,
 };
 
