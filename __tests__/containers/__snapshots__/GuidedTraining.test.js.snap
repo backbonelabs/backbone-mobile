@@ -26,7 +26,6 @@ exports[`GuidedTraining Component renders as expected 1`] = `
   </View>
   <Connect(WorkoutView)
     media="image"
-    onPostureProceed={[Function]}
     workout={
       Object {
         "_id": "nomoney",
