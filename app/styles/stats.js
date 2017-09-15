@@ -42,7 +42,7 @@ export default EStyleSheet.create({
     flexDirection: 'row',
   },
   tabs: {
-    flex: 0,
+    height: applyWidthDifference(60),
   },
   tabBarUnderlineStyle: {
     borderRadius: 4,

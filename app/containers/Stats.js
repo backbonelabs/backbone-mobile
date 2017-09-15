@@ -325,20 +325,21 @@ class Stats extends Component {
 
     return (
       <View style={styles.container}>
-        <ScrollableTabView
-          style={styles.tabs}
-          onChangeTab={this.selectTab}
-          tabBarPosition="top"
-          tabBarActiveTextColor={theme.lightBlue500}
-          tabBarInactiveTextColor={theme.grey400}
-          tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
-          tabBarTextStyle={styles.tabBarTextStyle}
-        >
-          <View tabLabel="Today" />
-          <View tabLabel="Week" />
-          <View tabLabel="Month" />
-          <View tabLabel="Year" />
-        </ScrollableTabView>
+        <View style={styles.tabs}>
+          <ScrollableTabView
+            onChangeTab={this.selectTab}
+            tabBarPosition="bottom"
+            tabBarActiveTextColor={theme.lightBlue500}
+            tabBarInactiveTextColor={theme.grey400}
+            tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
+            tabBarTextStyle={styles.tabBarTextStyle}
+          >
+            <View tabLabel="Today" />
+            <View tabLabel="Week" />
+            <View tabLabel="Month" />
+            <View tabLabel="Year" />
+          </ScrollableTabView>
+        </View>
         <View style={styles.graphContainer}>
           { (goodSessions || poorSessions) ? <View style={styles.heading}>
             <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
