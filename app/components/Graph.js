@@ -102,41 +102,28 @@ const scrollGraph = (data, graphWidth) => (
   </ScrollView>
 );
 
-const Graph = ({ data, goodTime, poorTime, selectedTab }) => {
+const Graph = ({ data, goodTime, poorTime }) => {
   if ((!goodTime && !poorTime)) {
     return (<View style={styles.noData}>
       <HeadingText size={1}>No Data Available</HeadingText>
     </View>);
   }
 
-  let graphWidth = 1400;
+  let graphWidth = 50 * data.length;
 
-  // adjust width for year tab
-  if (selectedTab === 'Year') {
-    graphWidth = 500;
+  if (graphWidth <= 320) {
+    graphWidth = 350;
+  } else if (graphWidth < width + 20) {
+    graphWidth = width + 20;
   }
 
-  let renderGraph = scrollGraph(data, graphWidth);
-
-  // Both weeks and month only show 7 ticks in the x axis
-  // There we disabled scrolling and adjust width
-  if (data.length === 7) {
-    if (width <= 320) {
-      graphWidth = 350;
-    } else {
-      graphWidth = width + 20;
-    }
-    renderGraph = victoryGraph(data, graphWidth);
-  }
-
-  return renderGraph;
+  return data.length <= 7 ? victoryGraph(data, graphWidth) : scrollGraph(data, graphWidth);
 };
 
 Graph.propTypes = {
   data: PropTypes.array,
   goodTime: PropTypes.number,
   poorTime: PropTypes.number,
-  selectedTab: PropTypes.string,
 };
 
 export default Graph;
