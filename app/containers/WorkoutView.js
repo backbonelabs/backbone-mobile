@@ -7,7 +7,6 @@ import {
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import PostureIntro from '../components/posture/PostureIntro';
-import Spinner from '../components/Spinner';
 import VideoPlayer from '../components/VideoPlayer';
 import videoIcon from '../images/video-icon-blue.png';
 import routes from '../routes';
@@ -39,42 +38,6 @@ class WorkoutView extends Component {
   constructor(props) {
     super(props);
     autobind(this);
-    this.state = {
-      isFetchingImage: false,
-    };
-  }
-
-  componentDidMount() {
-    const gifFilename = getWorkoutGifFilePath(this.props.workout.gifFilename);
-    if (this.props.media === 'image' && gifFilename) {
-      // GIF URL exists, prefetch GIF
-      this._prefetchGif(gifFilename);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.workout.gifFilename !== nextProps.workout.gifFilename &&
-      nextProps.media === 'image' && nextProps.workout.gifFilename) {
-      // Workout changed, fetch new workout GIF
-      this._prefetchGif(getWorkoutGifFilePath(nextProps.workout.gifFilename));
-    }
-  }
-
-  /**
-   * Prefetch an image
-   * @param {String} url Image URL
-   */
-  _prefetchGif(url) {
-    this.setState({ isFetchingImage: true }, () => {
-      Image.prefetch(url)
-        .then(() => {
-          this.setState({ isFetchingImage: false });
-        })
-        .catch(() => {
-          // Suppress errors
-          this.setState({ isFetchingImage: false });
-        });
-    });
   }
 
   _navigateToVideo() {
@@ -130,7 +93,7 @@ class WorkoutView extends Component {
 
     return (
       <View style={styles.container}>
-        {this.state.isFetchingImage ? <Spinner size="large" /> : content}
+        {content}
       </View>
     );
   }
