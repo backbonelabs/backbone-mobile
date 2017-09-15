@@ -52,10 +52,9 @@ const tickXValues = (data) => data.map((val) => val.label || val);
  * Renders a Bar Graph
  * @param {Object}  data          Session data
  * @param {Number}  graphWidth    Graph width
- * @param {Boolean} noCurrentData True if there is no current data
  * @return {ReactElement}
  */
-const victoryGraph = (data, graphWidth, noCurrentData) => (
+const victoryGraph = (data, graphWidth) => (
   <View style={styles.victoryGraph}>
     <VictoryChart
       domainPadding={applyWidthDifference(20)}
@@ -79,7 +78,6 @@ const victoryGraph = (data, graphWidth, noCurrentData) => (
       />
       <VictoryAxis
         dependentAxis
-        tickValues={noCurrentData ? [0, 1] : null}
         tickFormat={(y) => {
           if (y < 60) {
             return `${y}s`;
@@ -96,16 +94,15 @@ const victoryGraph = (data, graphWidth, noCurrentData) => (
  * Returns a Bar Graph with a horizontal scrollbar
  * @param {Object}  data          Session data
  * @param {Number}  graphWidth    Graph width
- * @param {Boolean} noCurrentData True if there is no current data
  * @return {ReactElement}
  */
-const scrollGraph = (data, graphWidth, noCurrentData) => (
+const scrollGraph = (data, graphWidth) => (
   <ScrollView horizontal>
-    {victoryGraph(data, graphWidth, noCurrentData)}
+    {victoryGraph(data, graphWidth)}
   </ScrollView>
 );
 
-const Graph = ({ data, goodTime, poorTime, noCurrentData, selectedTab }) => {
+const Graph = ({ data, goodTime, poorTime, selectedTab }) => {
   if ((!goodTime && !poorTime)) {
     return (<View style={styles.noData}>
       <HeadingText size={1}>No Data Available</HeadingText>
@@ -119,7 +116,7 @@ const Graph = ({ data, goodTime, poorTime, noCurrentData, selectedTab }) => {
     graphWidth = 500;
   }
 
-  let renderGraph = scrollGraph(data, graphWidth, noCurrentData);
+  let renderGraph = scrollGraph(data, graphWidth);
 
   // Both weeks and month only show 7 ticks in the x axis
   // There we disabled scrolling and adjust width
@@ -129,7 +126,7 @@ const Graph = ({ data, goodTime, poorTime, noCurrentData, selectedTab }) => {
     } else {
       graphWidth = width + 20;
     }
-    renderGraph = victoryGraph(data, graphWidth, noCurrentData);
+    renderGraph = victoryGraph(data, graphWidth);
   }
 
   return renderGraph;
@@ -139,7 +136,6 @@ Graph.propTypes = {
   data: PropTypes.array,
   goodTime: PropTypes.number,
   poorTime: PropTypes.number,
-  noCurrentData: PropTypes.bool,
   selectedTab: PropTypes.string,
 };
 

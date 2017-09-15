@@ -281,14 +281,10 @@ class Stats extends Component {
         break;
     }
 
-    // used to detemine if there is any data to currently display, ex: Today Tab - last 7 hours
-    const currentData = totalSessionStats(data);
-
     return (
       <Graph
         data={data}
         selectedTab={selectedTab}
-        noCurrentData={(!currentData.good && !currentData.poor)}
         goodTime={selectedTabTotalSessions.good / 60}
         poorTime={selectedTabTotalSessions.poor / 60}
       />
