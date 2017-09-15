@@ -83,7 +83,7 @@ export const getWorkoutGifFilePath = (fileName) => {
   if (Platform.OS === 'android') {
     return `file://${ReactNativeFS.ExternalDirectoryPath}/gif/${fileName}`;
   }
-  return `${ReactNativeFS.MainBundlePath}/${fileName}`;
+  return `${ReactNativeFS.MainBundlePath}/Expansion/gif/${fileName}`;
 };
 
 /**
@@ -97,5 +97,5 @@ export const getWorkoutThumbnailFilePath = (fileName) => {
   if (Platform.OS === 'android') {
     return `file://${ReactNativeFS.ExternalDirectoryPath}/thumbnail/${fileName}`;
   }
-  return `${ReactNativeFS.MainBundlePath}/${fileName}`;
+  return `${ReactNativeFS.MainBundlePath}/Expansion/thumbnail/${fileName}`;
 };
