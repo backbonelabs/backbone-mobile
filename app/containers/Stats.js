@@ -12,15 +12,13 @@ import Graph from '../components/Graph';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 
-const week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-const lastSevenHours = () => {
-  const hoursAgo = [];
-  for (let i = 0; i <= 6; i++) {
-    hoursAgo.unshift(moment().subtract(i, 'hours').format('ha'));
+const getCurrentSessions = (num, type, format) => {
+  const sessions = [];
+  for (let i = 0; i <= num; i++) {
+    sessions.push(moment().subtract(i, type).format(format));
   }
-  return hoursAgo;
+  return sessions;
 };
 
 const totalSessionStats = (sessions) => (
@@ -36,19 +34,6 @@ const totalSessionStats = (sessions) => (
     /* eslint-disable no-param-reassign */
   }, { good: 0, poor: 0 })
 );
-
-const getDaysByMonth = () => {
-  let daysInMonth = moment().daysInMonth();
-  const arrDays = [];
-
-  while (daysInMonth) {
-    const current = moment().date(daysInMonth).format('MM/DD');
-    arrDays.unshift(current);
-    daysInMonth--;
-  }
-
-  return arrDays;
-};
 
 class Stats extends Component {
   static propTypes = {
@@ -91,7 +76,7 @@ class Stats extends Component {
     if (this.props.isFetchingSessions !== nextProps.isFetchingSessions) {
       const today = moment();
       const sixDaysAgo = moment().subtract(6, 'day');
-      const startOfMonth = moment().startOf('month');
+      const thirtyDaysAgo = moment().subtract(30, 'day');
       const sessions = nextProps.sessions
         .sort((a, b) => a.timestamp - b.timestamp); // sort from oldest to latest
 
@@ -103,7 +88,7 @@ class Stats extends Component {
 
           if (
             (today.isSame(date, 'd') || date < today) &&
-            (startOfMonth.isSame(date, 'd') || date > startOfMonth)
+            (thirtyDaysAgo.isSame(date, 'd') || date > thirtyDaysAgo)
           ) {
             if (acc[formatedDate]) {
               acc[formatedDate].slouchTime += val.slouchTime;
@@ -145,7 +130,7 @@ class Stats extends Component {
       const sessionsByDays = sessions
         .reduce((acc, val, index) => {
           const date = moment(val.timestamp);
-          const dayOfWeek = week[date.format('e')];
+          const dayOfWeek = date.format('ddd');
           /* eslint-disable no-param-reassign */
 
           if (
@@ -235,7 +220,7 @@ class Stats extends Component {
 
     switch (selectedTab) {
       case 'Today':
-        data = lastSevenHours().map((val) => {
+        data = getCurrentSessions(23, 'hours', 'ha').map((val) => {
           if (sessionsByHour[val]) {
             return sessionsByHour[val];
           }
@@ -247,7 +232,7 @@ class Stats extends Component {
         });
         break;
       case 'Week':
-        data = [...week].map((val) => {
+        data = getCurrentSessions(6, 'days', 'ddd').map((val) => {
           if (sessionsByDays[val]) {
             return sessionsByDays[val];
           }
@@ -259,7 +244,7 @@ class Stats extends Component {
         });
         break;
       case 'Month':
-        data = getDaysByMonth().map((val) => {
+        data = getCurrentSessions(29, 'days', 'MM/DD').map((val) => {
           if (sessionsByMonth[val]) {
             return sessionsByMonth[val];
           }
@@ -271,7 +256,7 @@ class Stats extends Component {
         });
         break;
       case 'Year':
-        data = [...months].map((val) => {
+        data = getCurrentSessions(11, 'months', 'MMM').map((val) => {
           if (sessionsByYear[val]) {
             return sessionsByYear[val];
           }
@@ -283,7 +268,7 @@ class Stats extends Component {
         });
         break;
       default:
-        data = lastSevenHours().map((val) => {
+        data = getCurrentSessions(23, 'hours', 'ha').map((val) => {
           if (sessionsByHour[val]) {
             return sessionsByHour[val];
           }
@@ -293,6 +278,7 @@ class Stats extends Component {
             label: val,
           };
         });
+        break;
     }
 
     // used to detemine if there is any data to currently display, ex: Today Tab - last 7 hours
