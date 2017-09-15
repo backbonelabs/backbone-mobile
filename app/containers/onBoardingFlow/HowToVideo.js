@@ -28,7 +28,8 @@ class HowToVideo extends Component {
         <StepBar step={4} style={styles.stepBar} />
         <View style={styles.howToInnerContainer}>
           <VideoPlayer
-            video={{ uri: 'https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4' }}
+            defaultFullscreen
+            video={{ uri: 'https://cdn.gobackbone.com/workout-videos/how-to-use.mp4' }}
           />
         </View>
         <View style={styles.btnContainer}>
