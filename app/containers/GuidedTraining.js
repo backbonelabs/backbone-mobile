@@ -545,7 +545,6 @@ class GuidedTraining extends Component {
         <WorkoutView
           media={currentWorkout.workout.type === workoutTypes.PRIMER ? 'video' : 'image'}
           navigator={this.props.navigator}
-          onPostureProceed={this._navigateToPostureCalibrate}
           workout={currentWorkout.workout}
         />
         <View style={styles.footer}>
