@@ -79,10 +79,10 @@ class Stats extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isFetchingSessions !== nextProps.isFetchingSessions) {
+    if (this.props.isFetchingSessions && !nextProps.isFetchingSessions) {
       const today = moment();
       const sixDaysAgo = moment().subtract(6, 'day');
-      const thirtyDaysAgo = moment().subtract(30, 'day');
+      const thirtyDaysAgo = moment().subtract(29, 'day');
       const sessions = nextProps.sessions
         .sort((a, b) => a.timestamp - b.timestamp); // sort from oldest to latest
 
@@ -92,10 +92,7 @@ class Stats extends Component {
           const formatedDate = date.format('MM/DD');
           /* eslint-disable no-param-reassign */
 
-          if (
-            (today.isSame(date, 'd') || date < today) &&
-            (thirtyDaysAgo.isSame(date, 'd') || date > thirtyDaysAgo)
-          ) {
+          if (date.isBetween(thirtyDaysAgo, today, null, '[]')) {
             if (acc[formatedDate]) {
               acc[formatedDate].slouchTime += val.slouchTime;
               acc[formatedDate].totalDuration += val.totalDuration;
@@ -139,10 +136,7 @@ class Stats extends Component {
           const dayOfWeek = date.format('ddd');
           /* eslint-disable no-param-reassign */
 
-          if (
-            (today.isSame(date, 'd') || date < today) &&
-            (sixDaysAgo.isSame(date, 'd') || date > sixDaysAgo)
-          ) {
+          if (date.isBetween(sixDaysAgo, today, null, '[]')) {
             if (acc[dayOfWeek]) {
               acc[dayOfWeek].slouchTime += val.slouchTime;
               acc[dayOfWeek].totalDuration += val.totalDuration;
