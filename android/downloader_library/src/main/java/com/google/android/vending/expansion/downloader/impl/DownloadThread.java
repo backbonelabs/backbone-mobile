@@ -313,20 +313,19 @@ public class DownloadThread {
      */
     private void checkConnectivity(State state) throws StopRequest {
         switch (mService.getNetworkAvailabilityState(mDB)) {
-            case DownloaderService.NETWORK_OK:
-                return;
             case DownloaderService.NETWORK_NO_CONNECTION:
+                // Allow downloads only when there's an active internet connection
                 throw new StopRequest(DownloaderService.STATUS_WAITING_FOR_NETWORK,
                         "waiting for network to return");
-            case DownloaderService.NETWORK_TYPE_DISALLOWED_BY_REQUESTOR:
-                throw new StopRequest(
-                        DownloaderService.STATUS_QUEUED_FOR_WIFI_OR_CELLULAR_PERMISSION,
-                        "waiting for wifi or for download over cellular to be authorized");
-            case DownloaderService.NETWORK_CANNOT_USE_ROAMING:
-                throw new StopRequest(DownloaderService.STATUS_WAITING_FOR_NETWORK,
-                        "roaming is not allowed");
-            case DownloaderService.NETWORK_UNUSABLE_DUE_TO_SIZE:
-                throw new StopRequest(DownloaderService.STATUS_QUEUED_FOR_WIFI, "waiting for wifi");
+//            case DownloaderService.NETWORK_TYPE_DISALLOWED_BY_REQUESTOR:
+//                throw new StopRequest(
+//                        DownloaderService.STATUS_QUEUED_FOR_WIFI_OR_CELLULAR_PERMISSION,
+//                        "waiting for wifi or for download over cellular to be authorized");
+//            case DownloaderService.NETWORK_CANNOT_USE_ROAMING:
+//                throw new StopRequest(DownloaderService.STATUS_WAITING_FOR_NETWORK,
+//                        "roaming is not allowed");
+//            case DownloaderService.NETWORK_UNUSABLE_DUE_TO_SIZE:
+//                throw new StopRequest(DownloaderService.STATUS_QUEUED_FOR_WIFI, "waiting for wifi");
         }
     }
 
