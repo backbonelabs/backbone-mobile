@@ -486,7 +486,9 @@ class Application extends Component {
                   type: 'FETCH_USER',
                   payload: user,
                 }))
-                .then(this.props.dispatch(userActions.fetchUser()));
+                .then(() => {
+                  this.props.dispatch(userActions.fetchUser());
+                });
 
                 const id = user._id;
 
