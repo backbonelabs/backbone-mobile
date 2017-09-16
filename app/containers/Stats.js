@@ -82,8 +82,8 @@ class Stats extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.isFetchingSessions && !nextProps.isFetchingSessions) {
       const today = moment();
-      const sixDaysAgo = moment().subtract(6, 'day');
-      const thirtyDaysAgo = moment().subtract(29, 'day');
+      const sixDaysAgo = moment().subtract(6, 'day').startOf('day');
+      const thirtyDaysAgo = moment().subtract(29, 'day').startOf('day');
       const sessions = nextProps.sessions
         .sort((a, b) => a.timestamp - b.timestamp); // sort from oldest to latest
 
