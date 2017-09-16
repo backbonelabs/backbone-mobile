@@ -9,7 +9,8 @@ exports[`PostureIntro Component renders as expected 1`] = `
   >
     Sit or stand up straight before you begin
   </HeadingText>
-  <Image
+  <FLAnimatedImage
+    resizeMode="contain"
     source={1}
   />
   <Button

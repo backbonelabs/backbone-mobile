@@ -8,8 +8,6 @@ import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import get from 'lodash/get';
-import isEqual from 'lodash/isEqual';
 import WorkoutView from './WorkoutView';
 import appActions from '../actions/app';
 import userActions from '../actions/user';
@@ -171,8 +169,6 @@ class GuidedTraining extends Component {
   }
 
   componentDidMount() {
-    // Fetch image in the background. User should see a Spinner until the image is fully fetched.
-    this._attemptGifFetch(this.state.currentWorkout);
     // Auto-select the initial step index
     this.props.selectSessionStep(this.state.stepIdx);
   }
@@ -206,12 +202,6 @@ class GuidedTraining extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!isEqual(prevState.currentWorkout, this.state.currentWorkout)) {
-      // Workout changed
-      // Prefetch workout GIF, if available
-      this._attemptGifFetch(this.state.currentWorkout);
-    }
-
     if (prevState.timerSeconds !== this.state.timerSeconds && this.state.timerSeconds === 0) {
       // Timer reached 0 for the rep, stop the timer
       this._pauseTimer(() => {
@@ -277,25 +267,6 @@ class GuidedTraining extends Component {
     };
   }
 
-  _attemptGifFetch(sessionWorkout) {
-    const gifFilename = get(sessionWorkout, 'workout.gifFilename');
-    if (gifFilename) {
-      // GIF URL exists, prefetch GIF
-      Image.prefetch(gifFilename)
-        .then(() => {
-          this.setState({ isFetchingImage: false });
-        })
-        .catch(() => {
-          // Suppress errors
-          this.setState({ isFetchingImage: false });
-        });
-    } else {
-      // There is no GIF to prefetch
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ isFetchingImage: false });
-    }
-  }
-
   /**
    * Marks the current workout as complete
    */
@@ -353,7 +324,6 @@ class GuidedTraining extends Component {
       timerSeconds: workout.seconds,
       isTimerRunning: false,
       setsRemaining: workout.sets,
-      isFetchingImage: true,
       leftButtonDepressed: false,
       centerButtonDepressed: false,
       rightButtonDepressed: false,
@@ -572,15 +542,11 @@ class GuidedTraining extends Component {
           backgroundColor={lightBlue500}
         />
         {header}
-        {this.state.isFetchingImage ?
-          <Spinner size="large" color={lightBlue500} /> : (
-            <WorkoutView
-              media={currentWorkout.workout.type === workoutTypes.PRIMER ? 'video' : 'image'}
-              navigator={this.props.navigator}
-              workout={currentWorkout.workout}
-              isGuidedTraining
-            />
-          )}
+        <WorkoutView
+          media={currentWorkout.workout.type === workoutTypes.PRIMER ? 'video' : 'image'}
+          navigator={this.props.navigator}
+          workout={currentWorkout.workout}
+        />
         <View style={styles.footer}>
           <View style={styles.footerButtonContainer}>
             <TouchableHighlight

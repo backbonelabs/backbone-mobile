@@ -13,6 +13,7 @@ target 'Backbone' do
   pod 'FBSDKShareKit'
   pod 'AWSCognito'
   pod 'AWSKinesis'
+  pod 'FLAnimatedImage'
 
   target 'BackboneTests' do
     inherit! :search_paths

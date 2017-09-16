@@ -24,10 +24,14 @@ exports[`GuidedTraining Component renders as expected 1`] = `
       style={Object {}}
     />
   </View>
-  <Spinner
-    animating={true}
-    color="#03A9F4"
-    size="large"
+  <Connect(WorkoutView)
+    media="image"
+    workout={
+      Object {
+        "_id": "nomoney",
+        "title": "No Money",
+      }
+    }
   />
   <View>
     <View>
