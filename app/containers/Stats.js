@@ -24,8 +24,8 @@ const convertToHours = (secs) => {
   let minutes = Math.floor(secs / 60);
   const hours = Math.floor(minutes / 60);
   minutes %= 60;
-  const min = (minutes > 0) ? `${minutes}MIN` : '';
-  return `${hours}HR ${min}`;
+  const min = (minutes > 0) ? `${minutes} MIN` : '';
+  return `${hours} HR ${min}`;
 };
 
 const totalSessionStats = (sessions) => (
