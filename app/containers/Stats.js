@@ -217,18 +217,6 @@ class Stats extends Component {
     let data;
 
     switch (selectedTab) {
-      case 'Today':
-        data = getCurrentSessions(23, 'hours', 'ha').map((val) => {
-          if (sessionsByHour[val]) {
-            return sessionsByHour[val];
-          }
-          return {
-            slouchTime: 0,
-            totalDuration: 0,
-            label: val,
-          };
-        });
-        break;
       case 'Week':
         data = getCurrentSessions(6, 'days', 'ddd').map((val) => {
           if (sessionsByDays[val]) {
