@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  View,
-  InteractionManager,
-} from 'react-native';
+import { View, InteractionManager } from 'react-native';
 import autobind from 'class-autobind';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import moment from 'moment';
@@ -15,7 +12,21 @@ import Graph from '../components/Graph';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 
-const week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const getCurrentSessions = (amount, type, format) => {
+  const sessions = [];
+  for (let i = 0; i <= amount; i++) {
+    sessions.push(moment().subtract(i, type).format(format));
+  }
+  return sessions;
+};
+
+const convertToHours = (secs) => {
+  let minutes = Math.floor(secs / 60);
+  const hours = Math.floor(minutes / 60);
+  minutes %= 60;
+  const min = (minutes > 0) ? `${minutes} MIN` : '';
+  return `${hours} HR ${min}`;
+};
 
 const totalSessionStats = (sessions) => (
   Object.keys(sessions).reduce((acc, val) => {
@@ -49,6 +60,7 @@ class Stats extends Component {
       sessionsByMonth: {},
       sessionsByHour: {},
       sessionsByDays: {},
+      sessionsByYear: {},
       selectedTab: 'Today',
       selectedTabTotalSessions: [],
       loading: true,
@@ -68,25 +80,31 @@ class Stats extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isFetchingSessions !== nextProps.isFetchingSessions) {
+    if (this.props.isFetchingSessions && !nextProps.isFetchingSessions) {
       const today = moment();
-      const sixDaysAgo = moment().subtract(6, 'day');
+      const sixDaysAgo = moment().subtract(6, 'day').startOf('day');
+      const thirtyDaysAgo = moment().subtract(29, 'day').startOf('day');
       const sessions = nextProps.sessions
         .sort((a, b) => a.timestamp - b.timestamp); // sort from oldest to latest
 
       const sessionsByMonth = sessions
         .reduce((acc, val, index) => {
-          const month = moment(val.timestamp).format('MMM');
+          const date = moment(val.timestamp);
+          const formatedDate = date.format('MM/DD');
           /* eslint-disable no-param-reassign */
 
-          if (acc[month]) {
-            acc[month].slouchTime += val.slouchTime;
-            acc[month].totalDuration += val.totalDuration;
+          if (date.isBetween(thirtyDaysAgo, today, null, '[]')) {
+            if (acc[formatedDate]) {
+              acc[formatedDate].slouchTime += val.slouchTime;
+              acc[formatedDate].totalDuration += val.totalDuration;
+
+              return acc;
+            }
+
+            acc[formatedDate] = Object.assign({}, val, { index, label: formatedDate });
 
             return acc;
           }
-
-          acc[month] = Object.assign({}, val, { index, label: month });
 
           return acc;
           /* eslint-disable no-param-reassign */
@@ -116,13 +134,10 @@ class Stats extends Component {
       const sessionsByDays = sessions
         .reduce((acc, val, index) => {
           const date = moment(val.timestamp);
-          const dayOfWeek = week[date.format('e')];
+          const dayOfWeek = date.format('ddd');
           /* eslint-disable no-param-reassign */
 
-          if (
-            (today.isSame(date, 'd') || date < today) &&
-            (sixDaysAgo.isSame(date, 'd') || date > sixDaysAgo)
-          ) {
+          if (date.isBetween(sixDaysAgo, today, null, '[]')) {
             if (acc[dayOfWeek]) {
               acc[dayOfWeek].slouchTime += val.slouchTime;
               acc[dayOfWeek].totalDuration += val.totalDuration;
@@ -138,24 +153,38 @@ class Stats extends Component {
           return acc;
           /* eslint-disable no-param-reassign */
         }, {});
+      const sessionsByYear = sessions
+        .reduce((acc, val, index) => {
+          const month = moment(val.timestamp).format('MMM');
+          /* eslint-disable no-param-reassign */
+
+          if (acc[month]) {
+            acc[month].slouchTime += val.slouchTime;
+            acc[month].totalDuration += val.totalDuration;
+
+            return acc;
+          }
+
+          acc[month] = Object.assign({}, val, { index, label: month });
+
+          return acc;
+          /* eslint-disable no-param-reassign */
+        }, {});
       this.setState({
         sessionsByMonth,
         sessionsByHour,
         sessionsByDays,
+        sessionsByYear,
         selectedTabTotalSessions: totalSessionStats(sessionsByHour), // default is Today
       });
     }
   }
 
   selectTab(tab) {
-    const { sessionsByDays, sessionsByHour, sessionsByMonth } = this.state;
+    const { sessionsByDays, sessionsByHour, sessionsByMonth, sessionsByYear } = this.state;
     let selectedTab;
     let selectedTabTotalSessions;
     switch (tab.i) {
-      case 0:
-        selectedTab = 'Today';
-        selectedTabTotalSessions = totalSessionStats(sessionsByHour);
-        break;
       case 1:
         selectedTab = 'Week';
         selectedTabTotalSessions = totalSessionStats(sessionsByDays);
@@ -164,10 +193,15 @@ class Stats extends Component {
         selectedTab = 'Month';
         selectedTabTotalSessions = totalSessionStats(sessionsByMonth);
         break;
+      case 3:
+        selectedTab = 'Year';
+        selectedTabTotalSessions = totalSessionStats(sessionsByYear);
+        break;
       default:
         selectedTab = 'Today';
         selectedTabTotalSessions = totalSessionStats(sessionsByHour);
     }
+
     this.setState({ selectedTab, selectedTabTotalSessions }); // i is the index, [0,1,2]
   }
 
@@ -178,83 +212,128 @@ class Stats extends Component {
       sessionsByHour,
       sessionsByDays,
       sessionsByMonth,
+      sessionsByYear,
     } = this.state;
     let data;
 
     switch (selectedTab) {
-      case 'Today':
-        data = sessionsByHour;
-        break;
       case 'Week':
-        data = sessionsByDays;
+        data = getCurrentSessions(6, 'days', 'ddd').map((val) => {
+          if (sessionsByDays[val]) {
+            return sessionsByDays[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
         break;
       case 'Month':
-        data = sessionsByMonth;
+        data = getCurrentSessions(29, 'days', 'MM/DD').map((val) => {
+          if (sessionsByMonth[val]) {
+            return sessionsByMonth[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
+        break;
+      case 'Year':
+        data = getCurrentSessions(11, 'months', 'MMM').map((val) => {
+          if (sessionsByYear[val]) {
+            return sessionsByYear[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
         break;
       default:
-        data = sessionsByHour;
+        data = getCurrentSessions(23, 'hours', 'ha').map((val) => {
+          if (sessionsByHour[val]) {
+            return sessionsByHour[val];
+          }
+          return {
+            slouchTime: 0,
+            totalDuration: 0,
+            label: val,
+          };
+        });
+        break;
     }
-
-    const convertToArray = Object.keys(data)
-      .map((val) => data[val])
-      .sort((a, b) => a.index - b.index);
 
     return (
       <Graph
-        data={convertToArray}
-        goodTime={Math.round(selectedTabTotalSessions.good / 60)}
-        poorTime={Math.round(selectedTabTotalSessions.poor / 60)}
+        data={data}
+        noCurrentSessions={(!selectedTabTotalSessions.good && !selectedTabTotalSessions.poor)}
       />
     );
   }
 
   render() {
     const { loading, selectedTabTotalSessions } = this.state;
-    const good = Math.round(selectedTabTotalSessions.good / 60);
-    const poor = Math.round(selectedTabTotalSessions.poor / 60);
-    const noDataStyles = {
-      flex: 0,
-    };
+    const goodSessions = selectedTabTotalSessions.good;
+    const poorSessions = selectedTabTotalSessions.poor;
+    let good = `${Math.ceil(goodSessions / 60)} MIN`;
+    let poor = `${Math.ceil(poorSessions / 60)} MIN`;
 
     if (this.props.isFetchingSessions || loading) {
       return <Spinner />;
     }
 
-    if (!good && !poor) {
-      noDataStyles.justifyContent = 'center';
-      noDataStyles.flex = 3;
+    // If below a minute, show seconds
+    if (goodSessions < 60) {
+      good = `${goodSessions} SEC`;
+    }
+    if (poorSessions < 60) {
+      poor = `${poorSessions} SEC`;
+    }
+
+    // If over 60 minute, show hours
+    if (goodSessions >= 3600) {
+      good = `${convertToHours(goodSessions)}`;
+    }
+    if (poorSessions >= 3600) {
+      poor = `${convertToHours(poorSessions)}`;
     }
 
     return (
       <View style={styles.container}>
-        <View style={[styles.graphContainer, noDataStyles]}>
-          { (good || poor) ? <View style={styles.heading}>
+        <View style={styles.tabs}>
+          <ScrollableTabView
+            onChangeTab={this.selectTab}
+            tabBarPosition="bottom"
+            tabBarActiveTextColor={theme.lightBlue500}
+            tabBarInactiveTextColor={theme.grey400}
+            tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
+            tabBarTextStyle={styles.tabBarTextStyle}
+          >
+            <View tabLabel="Today" />
+            <View tabLabel="Week" />
+            <View tabLabel="Month" />
+            <View tabLabel="Year" />
+          </ScrollableTabView>
+        </View>
+        <View style={styles.graphContainer}>
+          { (goodSessions || poorSessions) ? <View style={styles.heading}>
             <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
             <View style={styles.sessionRatingContainer}>
               <BodyText style={styles.goodRating}>
-                GOOD: {good} MIN
+                GOOD: {good}
               </BodyText>
               <BodyText style={styles.poorRating}>
-                POOR: {poor} MIN
+                POOR: {poor}
               </BodyText>
             </View>
           </View> : null
             }
           {this.renderGraph()}
         </View>
-        <ScrollableTabView
-          style={styles.tabs}
-          onChangeTab={this.selectTab}
-          tabBarPosition="bottom"
-          tabBarActiveTextColor={theme.lightBlue500}
-          tabBarInactiveTextColor={theme.grey400}
-          tabBarUnderlineStyle={styles.tabBarUnderlineStyle}
-          tabBarTextStyle={styles.tabBarTextStyle}
-        >
-          <View tabLabel="Today" />
-          <View tabLabel="Week" />
-          <View tabLabel="Month" />
-        </ScrollableTabView>
       </View>
     );
   }
