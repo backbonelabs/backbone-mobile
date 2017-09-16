@@ -28,6 +28,7 @@ import freeTrainingIconActive from '../images/tabBar/freeTraining-icon-active.pn
 import freeTrainingIconInactive from '../images/tabBar/freeTraining-icon-inactive.png';
 import deviceLowBatteryIcon from '../images/settings/device-low-battery-icon.png';
 import deviceFirmwareIcon from '../images/settings/device-firmware-icon.png';
+import userActions from '../actions/user';
 import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
@@ -480,10 +481,12 @@ class Application extends Component {
               if (user) {
                 // There is a user profile in local storage
                 // Dispatch user profile to the Redux store
-                this.props.dispatch({
+                // and then fetch latest user profile
+                Promise.resolve(this.props.dispatch({
                   type: 'FETCH_USER',
                   payload: user,
-                });
+                }))
+                .then(this.props.dispatch(userActions.fetchUser()));
 
                 const id = user._id;
 
