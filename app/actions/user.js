@@ -313,10 +313,10 @@ export default {
     };
   },
 
-  selectWorkout(workout) {
+  selectWorkout(workoutId) {
     return {
       type: SELECT_WORKOUT,
-      payload: workout,
+      payload: workoutId,
     };
   },
 };
