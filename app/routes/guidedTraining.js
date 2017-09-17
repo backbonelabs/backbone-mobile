@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import {
   TouchableOpacity,
   View,
-  Text,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
+import UnscalableText from '../components/UnscalableText';
 import GuidedTraining from '../containers/GuidedTraining';
 import appActions from '../actions/app';
+import textStyles from '../styles/text';
 import styles from '../styles/guidedTraining';
 
 const glossaryTexts = [
@@ -23,7 +24,9 @@ const glossaryTexts = [
   'You have now completed two sets of 10 reps.',
 ];
 
-const getBoldText = (text) => (<Text style={styles.glossaryDetailTextBold}>{text}</Text>);
+const getBoldText = text => (
+  <UnscalableText style={[textStyles.body, styles.strongText]}>{text}</UnscalableText>
+);
 
 const GuidedTrainingHelp = props => {
   const showGlossary = () => {
@@ -31,7 +34,7 @@ const GuidedTrainingHelp = props => {
       topView: (
         <View style={styles.glossaryContainer}>
           <View style={styles.glossaryTextContainer}>
-            <HeadingText size={1} style={styles.glossaryTitleText}>
+            <HeadingText size={1} style={[styles.glossaryTitleText, styles.strongText]}>
               Glossary
             </HeadingText>
           </View>

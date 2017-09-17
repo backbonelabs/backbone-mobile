@@ -1,9 +1,6 @@
 import React from 'react';
-import {
-  Text,
-} from 'react-native';
+import UnscalableText from './UnscalableText';
 import styles from '../styles/text';
-import reusableTextDefaults from './utils/reusableTextDefaults';
 
 const SecondaryText = props => {
   const {
@@ -12,13 +9,12 @@ const SecondaryText = props => {
   } = props;
 
   return (
-    <Text style={[styles.secondary, style]} {...remainingProps}>
+    <UnscalableText style={[styles.secondary, style]} {...remainingProps}>
       {props.children}
-    </Text>
+    </UnscalableText>
   );
 };
 
-SecondaryText.propTypes = reusableTextDefaults.propTypes;
-SecondaryText.defaultProps = reusableTextDefaults.defaultProps;
+SecondaryText.propTypes = UnscalableText.propTypes;
 
 export default SecondaryText;

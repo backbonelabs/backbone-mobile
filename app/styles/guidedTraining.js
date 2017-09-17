@@ -105,17 +105,10 @@ export default EStyleSheet.create({
   },
   glossaryTitleText: {
     textAlign: 'center',
-    fontWeight: 'bold',
     marginBottom: applyWidthDifference(14),
   },
   glossaryDetailText: {
     textAlign: 'justify',
     marginHorizontal: applyWidthDifference(12),
-  },
-  glossaryDetailTextBold: {
-    color: '$primaryFontColor',
-    fontFamily: '$primaryFont',
-    fontSize: getResponsiveFontSize(16),
-    fontWeight: 'bold',
   },
 });
