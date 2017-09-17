@@ -35,6 +35,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Timber.d("onCreate");
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.player_fullscreen);
@@ -47,7 +48,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
             progressDialog = ProgressDialog.show(FullScreenVideoActivity.this, "", "Buffering video...", true);
             progressDialog.setCancelable(true); // allow dialog to be dismissed with back button
             progressDialog.setCanceledOnTouchOutside(false); // prevent dialog from being dismissed when touching outside the dialog
-            PlayVideo();
+            playVideo();
         }
         else {
             Intent intent = new Intent(Constants.ACTION_VIDEO_PLAYBACK_ERROR);
@@ -59,10 +60,22 @@ public class FullScreenVideoActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        Timber.d("onPause");
+        super.onPause();
+
+        Timber.d("Fullscreen activity is going to background, pause video");
+        // Remember current position so playback can resume from current position later
+        currentTime = myVideoView.getCurrentPosition();
+        myVideoView.pause();
+    }
+
+    @Override
     protected void onStop() {
         Timber.d("Last elapsed time %d", currentTime);
         if (timer != null) {
             timer.cancel();
+            timer = null;
         }
 
         // Attempt to sync the elapsed time in fullscreen video to the RN player
@@ -75,7 +88,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    private void PlayVideo() {
+    private void playVideo() {
         try {
             getWindow().setFormat(PixelFormat.TRANSLUCENT);
             MediaController mediaController = new MediaController(FullScreenVideoActivity.this);
@@ -148,6 +161,12 @@ public class FullScreenVideoActivity extends AppCompatActivity {
                     MainActivity.currentActivity.sendBroadcast(intent);
 
                     progressDialog.dismiss();
+
+                    if (currentTime != 0) {
+                        // Video was already playing before, continue playing from previous position
+                        Timber.d("Start video from previous position %d", currentTime);
+                        myVideoView.seekTo(currentTime);
+                    }
                     myVideoView.start();
 
                     if (timer == null) {
@@ -176,10 +195,8 @@ public class FullScreenVideoActivity extends AppCompatActivity {
                     timer.schedule(task, 0, 250);
                 }
             });
-
-
         } catch (Exception e) {
-            Timber.e("PlayVideo error %s", e.toString());
+            Timber.e("playVideo error %s", e.toString());
 
             Intent intent = new Intent(Constants.ACTION_VIDEO_PLAYBACK_ERROR);
             Bundle mBundle = new Bundle();
