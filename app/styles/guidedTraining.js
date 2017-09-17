@@ -97,7 +97,18 @@ export default EStyleSheet.create({
     color: '$secondaryFontColor',
     fontSize: getResponsiveFontSize(25),
   },
-  detailTextStyle: {
+  glossaryContainer: {
+    alignItems: 'center',
+  },
+  glossaryTextContainer: {
+    alignItems: 'center',
+  },
+  glossaryTitleText: {
+    textAlign: 'center',
+    marginBottom: applyWidthDifference(14),
+  },
+  glossaryDetailText: {
     textAlign: 'justify',
+    marginHorizontal: applyWidthDifference(12),
   },
 });

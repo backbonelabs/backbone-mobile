@@ -3,7 +3,7 @@ import { LeftProfileComponent } from '../containers/TitleBar';
 
 export default {
   name: 'freeTraining',
-  title: 'Free Training',
+  title: 'Training Content',
   component: WorkoutList,
   showTabBar: true,
   showRightComponent: true,

@@ -19,10 +19,7 @@ exports[`ProfileField Component renders as expected 1`] = `
   <Image
     source={1}
   />
-  <BodyText
-    allowFontScaling={false}
-    style={Object {}}
-  >
+  <BodyText>
     2017-08-01
   </BodyText>
 </View>

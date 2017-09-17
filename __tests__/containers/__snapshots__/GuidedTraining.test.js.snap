@@ -9,20 +9,12 @@ exports[`GuidedTraining Component renders as expected 1`] = `
   />
   <View>
     <HeadingText
-      allowFontScaling={false}
       size={3}
-      style={Object {}}
     >
       No Money
     </HeadingText>
-    <BodyText
-      allowFontScaling={false}
-      style={Object {}}
-    />
-    <BodyText
-      allowFontScaling={false}
-      style={Object {}}
-    />
+    <BodyText />
+    <BodyText />
   </View>
   <Connect(WorkoutView)
     media="image"
@@ -62,10 +54,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
           />
         </View>
       </TouchableHighlight>
-      <SecondaryText
-        allowFontScaling={false}
-        style={Object {}}
-      >
+      <SecondaryText>
         PREVIOUS
       </SecondaryText>
     </View>
@@ -99,10 +88,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
           />
         </View>
       </TouchableHighlight>
-      <SecondaryText
-        allowFontScaling={false}
-        style={Object {}}
-      >
+      <SecondaryText>
         DONE
       </SecondaryText>
     </View>
@@ -134,10 +120,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
           />
         </View>
       </TouchableHighlight>
-      <SecondaryText
-        allowFontScaling={false}
-        style={Object {}}
-      >
+      <SecondaryText>
         NEXT
       </SecondaryText>
     </View>
