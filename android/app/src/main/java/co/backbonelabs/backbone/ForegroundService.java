@@ -68,7 +68,7 @@ public class ForegroundService extends Service {
                 if (!hasPendingForegroundOperation) {
                     hasPendingForegroundOperation = true;
 
-                    SessionControlService.getInstance().stop(new Callback() {
+                    SessionControlService.getInstance().stop(false, new Callback() {
                         @Override
                         public void invoke(Object... args) {
                             if (args == null || args.length == 0) {

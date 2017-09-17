@@ -285,8 +285,8 @@ public class Constants {
 
     public static final String AMAZON_COGNITO_IDENTITY_POOL = "us-west-2:70f7284b-3235-4b4d-82d5-bab9df3d80f5";
     public interface FIREHOSE_STREAMS {
-        String POSTURE_SESSION_STREAM = "PostureSessionAccelerometerDeliveryStream";
-        String POSTURE_SESSION = "PostureSessionDeliveryStream";
+        String POSTURE_SESSION_STREAM = "PostureSessionAccelerometerDeliveryStream3";
+        String POSTURE_SESSION = "PostureSessionDeliveryStream3";
     }
 
     public final static String EXTRA_VIDEO_ERROR_INFO = "co.backbonelabs.backbone.extra.VIDEO_ERROR_INFO";

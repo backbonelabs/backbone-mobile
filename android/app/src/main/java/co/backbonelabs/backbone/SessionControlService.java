@@ -59,12 +59,16 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     private boolean distanceNotificationStatus;
     private boolean statisticNotificationStatus;
     private boolean slouchNotificationStatus;
+    private boolean accelerometerNotificationStatus;
 
     private boolean forceStoppedSession;
     private boolean notificationStateChanged;
 
     private long sessionStartTimestamp;
     private String sessionId = "";
+    private float currentDistance;
+    private int statsTotalDuration;
+    private int statsSlouchTime;
 
     private Constants.IntCallBack errorCallBack;
 
@@ -103,7 +107,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         submitFirehoseRecords();
 
         // Load details of previous session, if any
-        SharedPreferences preferences = reactContext.getSharedPreferences(Constants.POSTURE_SESSION_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences preferences = this.getPostureSessionPreferences();
         sessionId = preferences.getString(Constants.POSTURE_SESSION_PREFERENCE_SESSION_ID, null);
         sessionStartTimestamp = preferences.getLong(Constants.POSTURE_SESSION_PREFERENCE_START_TIMESTAMP, 0);
 
@@ -295,7 +299,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stop(final Callback callback) {
+    public void stop(boolean waitForResponse, final Callback callback) {
         BluetoothService bluetoothService = BluetoothService.getInstance();
 
         if (bluetoothService.isDeviceReady()
@@ -320,6 +324,12 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 callback.invoke();
             }
         }
+        else if (!waitForResponse) {
+            // Immediately update the current session state without waiting for the command to be sent.
+            // Should only be used when the app needs to forcefully quit the monitor scene
+            Timber.d("Skip Response");
+            currentSessionState = Constants.SESSION_STATES.STOPPED;
+        }
         else {
             callback.invoke(JSError.make("Session Control is not ready"));
         }
@@ -337,6 +347,23 @@ public class SessionControlService extends ReactContextBaseJavaModule {
         WritableMap wm = Arguments.createMap();
         wm.putInt("operation", operation);
         EventEmitter.send(reactContext, "SessionControlState", wm);
+    }
+
+    private SharedPreferences getPostureSessionPreferences() {
+        return reactContext.getSharedPreferences(Constants.POSTURE_SESSION_PREFERENCES, Context.MODE_PRIVATE);
+    }
+
+    /**
+     * Retrieves session details stored in SharedPreferences
+     * @param callback Invoked with a WritableMap containing the saved details
+     */
+    @ReactMethod
+    public void getSessionDetails(Callback callback) {
+        SharedPreferences preferences = this.getPostureSessionPreferences();
+        WritableMap wm = Arguments.createMap();
+        wm.putString("id", preferences.getString(Constants.POSTURE_SESSION_PREFERENCE_SESSION_ID, null));
+        wm.putDouble("startTimestamp", preferences.getLong(Constants.POSTURE_SESSION_PREFERENCE_START_TIMESTAMP, 0));
+        callback.invoke(wm);
     }
 
     /**
@@ -385,7 +412,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             Timber.d("sessionId %s", sessionId);
 
             // Store session details in case app is terminated in the middle of a posture session
-            SharedPreferences preference = reactContext.getSharedPreferences(Constants.POSTURE_SESSION_PREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences preference = this.getPostureSessionPreferences();
             SharedPreferences.Editor editor = preference.edit();
             editor.putString(Constants.POSTURE_SESSION_PREFERENCE_SESSION_ID, sessionId);
             editor.putLong(Constants.POSTURE_SESSION_PREFERENCE_START_TIMESTAMP, sessionStartTimestamp);
@@ -416,10 +443,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             distanceNotificationStatus = true;
             slouchNotificationStatus = true;
             statisticNotificationStatus = true;
-
-            // Toggle accelerometer notification separately because the app doesn't rely on the
-            // accelerometer notifications to monitor a posture session
-            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, true);
+            accelerometerNotificationStatus = true;
 
             status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
         }
@@ -442,10 +466,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             distanceNotificationStatus = true;
             slouchNotificationStatus = true;
             statisticNotificationStatus = true;
-
-            // Toggle accelerometer notification separately because the app doesn't rely on the
-            // accelerometer notifications to monitor a posture session
-            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, true);
+            accelerometerNotificationStatus = true;
 
             status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
         }
@@ -459,6 +480,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     distanceNotificationStatus = false;
                     slouchNotificationStatus = false;
                     statisticNotificationStatus = true;
+                    accelerometerNotificationStatus = false;
 
                     break;
                 case Constants.SESSION_OPERATIONS.STOP:
@@ -467,19 +489,10 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     distanceNotificationStatus = false;
                     slouchNotificationStatus = false;
                     statisticNotificationStatus = false;
-
-                    // Save session record for Firehose
-                    saveSessionToFirehose();
-
-                    // Submit all pending Firehose records
-                    submitFirehoseRecords();
+                    accelerometerNotificationStatus = false;
 
                     break;
             }
-
-            // Toggle accelerometer notification separately because the app doesn't rely on the
-            // accelerometer notifications to monitor a posture session
-            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, false);
 
             status = bluetoothService.writeToCharacteristic(Constants.CHARACTERISTIC_UUIDS.SESSION_CONTROL_CHARACTERISTIC, commandBytes);
         }
@@ -488,8 +501,11 @@ public class SessionControlService extends ReactContextBaseJavaModule {
             // There won't be any response back from the board if
             // writing to the session control characteristic failed
             Log.e(TAG, "Error initiating session control update");
-            errorCallBack.onIntCallBack(1);
-            errorCallBack = null;
+
+            if (errorCallBack != null) {
+                errorCallBack.onIntCallBack(1);
+                errorCallBack = null;
+            }
         }
     }
 
@@ -522,7 +538,8 @@ public class SessionControlService extends ReactContextBaseJavaModule {
     /**
      * Saves a posture session record to Firehose and clears the session details from SharedPreferences
      */
-    private void saveSessionToFirehose() {
+    @ReactMethod
+    private void saveSessionToFirehose(Callback callback) {
         Timber.d("saveSessionToFirehose");
         String userId = UserService.getInstance().getUserId();
         if (userId == null) {
@@ -531,20 +548,33 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
         String startDateTime = timestampFormatter.format(new Date(sessionStartTimestamp));
         String endDateTime = timestampFormatter.format(new Date());
-        String record = String.format("%s,%s,%s,%s\n", sessionId, userId, startDateTime, endDateTime);
+        String isProd = BuildConfig.DEV_MODE.equals("true") ? "false" : "true";
+        String record = String.format(
+                "%s,%s,%d,%s,%s,%s,%d,%d\n",
+                sessionId,
+                userId,
+                sessionDuration * 60, // convert to seconds
+                startDateTime,
+                endDateTime,
+                isProd,
+                statsTotalDuration,
+                statsSlouchTime);
         Timber.d("Firehose posture session record: %s", record);
         firehoseRecorder.saveRecord(record, Constants.FIREHOSE_STREAMS.POSTURE_SESSION);
 
         // Remove session data
-        SharedPreferences preferences = reactContext.getSharedPreferences(Constants.POSTURE_SESSION_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences preferences = this.getPostureSessionPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();
         editor.commit();
+
+        callback.invoke();
     }
 
     /**
      * Submit all pending Firehose records
      */
+    @ReactMethod
     private void submitFirehoseRecords() {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -586,7 +616,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     else {
                         flags = Utilities.getIntFromByteArray(responseArray, 0);
                         totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
+                        statsTotalDuration = totalDuration;
                         slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
+                        statsSlouchTime = slouchTime;
                     }
 
                     WritableMap wm = Arguments.createMap();
@@ -604,7 +636,7 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC.toString())) {
                     byte[] responseArray = intent.getByteArrayExtra(Constants.EXTRA_BYTE_VALUE);
 
-                    float currentDistance = Utilities.getFloatFromByteArray(responseArray, 0);
+                    currentDistance = Utilities.getFloatFromByteArray(responseArray, 0);
                     int timeElapsed = Utilities.getIntFromByteArray(responseArray, 4);
 
                     WritableMap wm = Arguments.createMap();
@@ -631,6 +663,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     int totalDuration = Utilities.getIntFromByteArray(responseArray, 4);
                     int slouchTime = Utilities.getIntFromByteArray(responseArray, 8);
 
+                    statsTotalDuration = totalDuration;
+                    statsSlouchTime = slouchTime;
+
                     boolean hasActiveSession = (flags % 2 == 1);
 
                     WritableMap wm = Arguments.createMap();
@@ -653,15 +688,9 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                         distanceNotificationStatus = false;
                         statisticNotificationStatus = false;
                         slouchNotificationStatus = false;
+                        accelerometerNotificationStatus = false;
 
-                        bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, false);
-                        bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, distanceNotificationStatus);
-
-                        // Save session record for Firehose
-                        saveSessionToFirehose();
-
-                        // Submit pending Firehose records
-                        submitFirehoseRecords();
+                        bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC, statisticNotificationStatus);
                     }
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC.toString())) {
@@ -670,15 +699,28 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                     if (currentSessionState == Constants.SESSION_STATES.RUNNING) {
                         // Only save data to Firehose if session is running in case other modules are
                         // enabling accelerometer notifications outside of a posture session
-                        float x = Utilities.getFloatFromByteArray(responseArray, 0);
-                        float y = Utilities.getFloatFromByteArray(responseArray, 4);
-                        float z = Utilities.getFloatFromByteArray(responseArray, 8);
+                        float accX = Utilities.getFloatFromByteArray(responseArray, 0);
+                        float accY = Utilities.getFloatFromByteArray(responseArray, 4);
+                        float accZ = Utilities.getFloatFromByteArray(responseArray, 8);
 
-                        Timber.d("Accelerometer data %f %f %f", x, y, z);
+                        Timber.d("Accelerometer data %f %f %f", accX, accY, accZ);
 
                         // Queue accelerometer record for Firehose
                         String now = timestampFormatter.format(new Date());
-                        firehoseRecorder.saveRecord(String.format("%s,%s,%f,%f,%f\n", sessionId, now, x, y, z), Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
+                        String row = String.format(
+                                "%s,%s,%.14f,%.14f,%.14f,,,,%.14f,%d,%.14f,%b\n",
+                                sessionId,
+                                now,
+                                accX,
+                                accY,
+                                accZ,
+                                slouchDistanceThreshold / 10000.0,
+                                slouchTimeThreshold,
+                                currentDistance,
+                                currentDistance >= slouchDistanceThreshold / 10000.0 // is_slouching
+                        );
+                        Timber.d("Firehose posture session stream record: %s", row);
+                        firehoseRecorder.saveRecord(row, Constants.FIREHOSE_STREAMS.POSTURE_SESSION_STREAM);
 
                         // Periodically submit records to Firehose to make
                         // sure the storage limit isn't reached. This will be
@@ -740,11 +782,11 @@ public class SessionControlService extends ReactContextBaseJavaModule {
 
                 if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_DATA_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        if (errorCallBack != null) {
+                        if (currentSessionState == Constants.SESSION_STATES.STOPPED || errorCallBack != null) {
                             boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SLOUCH_CHARACTERISTIC, slouchNotificationStatus);
 
                             // If we failed initiating the descriptor writer, handle the error callback
-                            if (!toggleStatus) {
+                            if (!toggleStatus && errorCallBack != null) {
                                 Log.e(TAG, "Error toggling slouch notification");
                                 errorCallBack.onIntCallBack(1);
                                 errorCallBack = null;
@@ -766,11 +808,11 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SLOUCH_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        if (errorCallBack != null) {
+                        if (currentSessionState == Constants.SESSION_STATES.STOPPED || errorCallBack != null) {
                             boolean toggleStatus = bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC, statisticNotificationStatus);
 
                             // If we failed initiating the descriptor writer, handle the error callback
-                            if (!toggleStatus) {
+                            if (!toggleStatus && errorCallBack != null) {
                                 Log.e(TAG, "Error toggling session statistic notification");
                                 errorCallBack.onIntCallBack(1);
                                 errorCallBack = null;
@@ -794,9 +836,15 @@ public class SessionControlService extends ReactContextBaseJavaModule {
                 }
                 else if (uuid.equals(Constants.CHARACTERISTIC_UUIDS.SESSION_STATISTIC_CHARACTERISTIC.toString())) {
                     if (status == BluetoothGatt.GATT_SUCCESS) {
-                        if (errorCallBack != null) {
-                            errorCallBack.onIntCallBack(0);
-                            errorCallBack = null;
+                        if (currentSessionState == Constants.SESSION_STATES.STOPPED || errorCallBack != null) {
+                            // Toggle accelerometer notification at the end of the 
+                            // command flow to prevent concurrency issues on older Android versions
+                            bluetoothService.toggleCharacteristicNotification(Constants.CHARACTERISTIC_UUIDS.ACCELEROMETER_CHARACTERISTIC, accelerometerNotificationStatus);
+
+                            if (errorCallBack != null) {
+                                errorCallBack.onIntCallBack(0);
+                                errorCallBack = null;
+                            }
                         }
                     }
                     else {

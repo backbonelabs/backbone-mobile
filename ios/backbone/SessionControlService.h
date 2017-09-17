@@ -19,8 +19,8 @@
   int currentCommand;
   
   int sessionDuration;
-  int sessionDistanceThreshold;
-  int sessionTimeThreshold;
+  int slouchDistanceThreshold;
+  int slouchTimeThreshold;
   
   int vibrationPattern;
   int vibrationSpeed;
@@ -40,6 +40,9 @@
   
   NSString *sessionId;
   double sessionStartTimestamp;
+  float currentDistance;
+  int statsTotalDuration;
+  int statsSlouchTime;
   
   BOOL shouldFlushFirehoseRecords;
 }

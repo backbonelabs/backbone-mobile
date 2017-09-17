@@ -258,8 +258,10 @@ class PostureMonitor extends Component {
           this.resumeSession();
         }
       } else {
-        // There is no active session running on the device, invoke statsHandler to show summary
+        // There is no active session running on the device
         this.setState({ forceStoppedSession: true });
+
+        // Show summary
         this.statsHandler(event);
       }
     });
@@ -399,7 +401,9 @@ class PostureMonitor extends Component {
     const { forceStoppedSession, sessionState } = this.state;
     // End the session if it's running and not yet stopped
     if (!forceStoppedSession && sessionState !== sessionStates.STOPPED) {
-      SessionControlService.stop(() => {
+      // Force stop any session and skip the confirmation to allow immediate
+      // update to the session state on the native side
+      SessionControlService.stop(false, () => {
         // no-op
       });
     }
@@ -897,7 +901,7 @@ class PostureMonitor extends Component {
 
         Mixpanel.track('stopSession');
 
-        SessionControlService.stop(err => {
+        SessionControlService.stop(true, err => {
           if (err) {
             // Only unset this state on errors.
             // This is because on a succesful stop attempt,
@@ -1012,11 +1016,14 @@ class PostureMonitor extends Component {
     const sessionTime = this.props.posture.sessionTimeSeconds;
     const { slouchTime, totalDuration } = this.state;
 
-    Mixpanel.trackWithProperties('postureSession', {
-      sessionTime,
-      totalDuration,
-      slouchTime,
-      completedSession: sessionTime === 0 || totalDuration === sessionTime,
+    SessionControlService.getSessionDetails(details => {
+      Mixpanel.trackWithProperties('postureSession', {
+        sessionId: details.id,
+        sessionTime,
+        totalDuration,
+        slouchTime,
+        completedSession: sessionTime === 0 || totalDuration === sessionTime,
+      });
     });
   }
 
@@ -1063,7 +1070,13 @@ class PostureMonitor extends Component {
       this.markPostureSessionCompleted();
     }
 
+    // Track session in Mixpanel
     this.trackUserSession();
+
+    // Save session summary in data warehouse
+    SessionControlService.saveSessionToFirehose(() => {
+      SessionControlService.submitFirehoseRecords();
+    });
 
     const goodPostureTime = totalDuration - slouchTime;
     const goal = sessionDuration;

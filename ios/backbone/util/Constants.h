@@ -174,8 +174,8 @@
 #define USER_DEFAULT__START_TIMESTAMP_KEY @"startTimestamp"
 
 #define AMAZON_COGNITO_IDENTITY_POOL    @"us-west-2:70f7284b-3235-4b4d-82d5-bab9df3d80f5"
-#define FIREHOSE_POSTURE_SESSION_STREAM @"PostureSessionAccelerometerDeliveryStream"
-#define FIREHOSE_POSTURE_SESSION        @"PostureSessionDeliveryStream"
+#define FIREHOSE_POSTURE_SESSION_STREAM @"PostureSessionAccelerometerDeliveryStream3"
+#define FIREHOSE_POSTURE_SESSION        @"PostureSessionDeliveryStream3"
 
 /*
  Listing all type-definitions here
