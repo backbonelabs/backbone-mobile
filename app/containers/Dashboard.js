@@ -211,7 +211,7 @@ class Dashboard extends Component {
               <Icon name="rate-review" size={styles.$modalIconSize} style={styles.infoIcon} />
             ),
             detail: {
-              caption: 'Have a minute? Help us improve Backbone by taking this 60-second survey!',
+              caption: 'Have a minute? Help us improve BACKBONE by taking this 60-second survey!',
             },
             buttons: [
               {
@@ -669,7 +669,7 @@ class Dashboard extends Component {
         <Icon name="rate-review" size={styles.$modalIconSize} style={styles.infoIcon} />
       ),
       detail: {
-        caption: 'We hope you are enjoying Backbone. Would you mind telling ' + // eslint-disable-line prefer-template, max-len
+        caption: 'We hope you are enjoying BACKBONE. Would you mind telling ' + // eslint-disable-line prefer-template, max-len
         `us about your experience in the ${isiOS ? 'App' : 'Play'} Store?`,
       },
       buttons: [
@@ -741,7 +741,7 @@ class Dashboard extends Component {
         <Icon name="rate-review" size={styles.$modalIconSize} style={styles.infoIcon} />
       ),
       detail: {
-        caption: 'Is Backbone working for you?\n' + // eslint-disable-line prefer-template, max-len
+        caption: 'Is BACKBONE working for you?\n' + // eslint-disable-line prefer-template, max-len
         "If you're having a problem or have any other feedback, please let us know!",
       },
       buttons: [

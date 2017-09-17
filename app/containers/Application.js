@@ -200,7 +200,7 @@ class Application extends Component {
             caption: 'Bluetooth is off',
           },
           detail: {
-            caption: 'You will not be able to connect to your Backbone when Bluetooth is disabled.',
+            caption: 'You will not be able to connect to your BACKBONE when Bluetooth is disabled.',
           },
           buttons: [{ caption: 'OKAY' }],
           backButtonHandler: () => {
@@ -250,8 +250,8 @@ class Application extends Component {
               color: theme.warningColor,
             },
             detail: {
-              caption: 'Your Backbone sensor needs to be fixed.\n' +
-              'Perform an update now to continue using your Backbone.',
+              caption: 'Your BACKBONE sensor needs to be fixed.\n' +
+              'Perform an update now to continue using your BACKBONE.',
             },
             buttons: [
               {
@@ -397,7 +397,7 @@ class Application extends Component {
           const delay = (currentRoute.name === routes.deviceSetup.name ? 1000 : 0);
 
           if (status.deviceMode === deviceModes.BOOTLOADER) {
-            // When the device failed to load the normal Backbone services,
+            // When the device failed to load the normal BACKBONE services,
             // we should proceed to show firmware update related UI.
             // Delay is needed when transitioning from the deviceConnect scene
             // to prevent corrupted navigation stack if the user promptly tap
@@ -412,8 +412,8 @@ class Application extends Component {
                   color: theme.warningColor,
                 },
                 detail: {
-                  caption: 'There is something wrong with your Backbone. ' +
-                  'Perform an update now to continue using your Backbone.',
+                  caption: 'There is something wrong with your BACKBONE. ' +
+                  'Perform an update now to continue using your BACKBONE.',
                 },
                 buttons: [
                   {
@@ -539,8 +539,8 @@ class Application extends Component {
           topView: (<Image source={deviceLowBatteryIcon} />),
           title: { caption: 'Low Battery', color: theme.warningColor },
           detail: {
-            caption: `Your Backbone battery is at ${batteryLevel}%. ` + // eslint-disable-line prefer-template, max-len
-            'Charge your Backbone as soon as possible.',
+            caption: `Your BACKBONE battery is at ${batteryLevel}%. ` + // eslint-disable-line prefer-template, max-len
+            'Charge your BACKBONE as soon as possible.',
           },
           buttons: [{ caption: 'CLOSE' }],
           backButtonHandler: () => {

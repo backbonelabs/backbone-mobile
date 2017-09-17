@@ -217,7 +217,7 @@ class Device extends Component {
     this.props.dispatch(appActions.showPartialModal({
       topView: (<Image source={deviceWarningIcon} />),
       title: { caption: 'Disconnect Device?' },
-      detail: { caption: 'Are you sure you want to disconnect your Backbone?' },
+      detail: { caption: 'Are you sure you want to disconnect your BACKBONE?' },
       buttons: [
         {
           caption: 'DISCONNECT',
@@ -295,7 +295,7 @@ class Device extends Component {
     if (!this.props.isConnected) {
       Alert.alert(
         'Error',
-        'Please connect to your Backbone before updating.',
+        'Please connect to your BACKBONE before updating.',
         [
           { text: 'Cancel' },
           {
@@ -307,7 +307,7 @@ class Device extends Component {
     } else if (batteryLevel >= 0 && batteryLevel <= 15) {
       Alert.alert(
         'Battery Low',
-        'Charge your Backbone to at least 15% power before updating.',
+        'Charge your BACKBONE to at least 15% power before updating.',
       );
     } else {
       Alert.alert(
@@ -465,7 +465,7 @@ class Device extends Component {
         <View>
           <View style={styles.deviceInfoContainer}>
             <HeadingText size={3} style={styles.deviceConnectionText}>
-              {!isConnected ? 'Disconnected from ' : 'Connected to '}Backbone
+              {!isConnected ? 'Disconnected from ' : 'Connected to '}BACKBONE
             </HeadingText>
             <Image source={deviceStatusImage} style={styles.deviceStatusImage} />
             {mainDeviceStatusText}

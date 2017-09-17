@@ -109,7 +109,7 @@ class PostureCalibrate extends Component {
             Calibrating...
           </HeadingText>
           <HeadingText size={3} style={styles.subtitle}>
-            Continue to sit or stand up straight while Backbone calibrates
+            Continue to sit or stand up straight while BACKBONE calibrates
           </HeadingText>
           <Image source={progressCircle} style={styles.progressCircle}>
             <HeadingText size={1} style={styles.progressText}>{percentage}%</HeadingText>

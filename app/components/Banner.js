@@ -19,9 +19,9 @@ const Banner = props => {
     if (isConnecting) {
       bannerText = 'Connecting...';
     } else if (requestingSelfTest) {
-      bannerText = 'Fixing Backbone sensor...';
+      bannerText = 'Fixing BACKBONE sensor...';
     } else {
-      bannerText = 'Backbone not connected';
+      bannerText = 'BACKBONE not connected';
     }
 
     return (

@@ -70,7 +70,7 @@ export class PostureIntroComponent extends Component {
             if (this.props.device.isConnecting) {
               this.props.dispatch(appActions.showPartialModal({
                 title: { caption: 'Error' },
-                detail: { caption: 'Connecting to your Backbone. Please try again later.' },
+                detail: { caption: 'Connecting to your BACKBONE. Please try again later.' },
                 buttons: [
                   {
                     caption: 'OK',
@@ -88,7 +88,7 @@ export class PostureIntroComponent extends Component {
               // Else, scan for a new device
               this.props.dispatch(appActions.showPartialModal({
                 title: { caption: 'Error' },
-                detail: { caption: 'Please connect to your Backbone before starting a session.' },
+                detail: { caption: 'Please connect to your BACKBONE before starting a session.' },
                 buttons: [
                   {
                     caption: 'Cancel',
@@ -115,7 +115,7 @@ export class PostureIntroComponent extends Component {
               // Display an alert stating that the auto-fix is on the way
               this.props.dispatch(appActions.showPartialModal({
                 title: { caption: 'Error' },
-                detail: { caption: 'Fixing Backbone sensor' },
+                detail: { caption: 'Fixing BACKBONE sensor' },
                 buttons: [
                   {
                     caption: 'OK',
@@ -132,7 +132,7 @@ export class PostureIntroComponent extends Component {
               // Display an alert to let the user choose whether to auto-fix or not
               this.props.dispatch(appActions.showPartialModal({
                 title: { caption: 'Error' },
-                detail: { caption: 'There is an issue with the Backbone sensor. ' +
+                detail: { caption: 'There is an issue with the BACKBONE sensor. ' +
                 'Would you like to have it try to fix itself now?' },
                 buttons: [
                   {
