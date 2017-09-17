@@ -1,8 +1,9 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Platform } from 'react-native';
 import relativeDimensions from '../utils/relativeDimensions';
 import theme from '../styles/theme';
 
-const { applyWidthDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize, width } = relativeDimensions;
 
 const hexagonConnectorDefaults = {
   position: 'absolute',
@@ -106,7 +107,18 @@ export default EStyleSheet.create({
   verticalDivider: {
     backgroundColor: 'white',
     height: '50%',
-    width: applyWidthDifference(6),
+    // Adjust margin and width for different size screens to align
+    // vertical divider and hexagon connector
+    ...Platform.select({
+      ios: {
+        width: applyWidthDifference(6),
+        marginRight: width < 375 ? applyWidthDifference(1) : null,
+      },
+      android: {
+        width: width < 600 ? applyWidthDifference(6.25) : applyWidthDifference(6),
+        marginLeft: width < 600 ? applyWidthDifference(1) : null,
+      },
+    }),
   },
   sessionCard: {
     width: '$carouselItemWidth',
