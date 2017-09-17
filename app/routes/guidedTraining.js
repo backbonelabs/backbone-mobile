@@ -23,6 +23,8 @@ const glossaryTexts = [
   'You have now completed two sets of 10 reps.',
 ];
 
+const getBoldText = (text) => (<Text style={styles.glossaryDetailTextBold}>{text}</Text>);
+
 const GuidedTrainingHelp = props => {
   const showGlossary = () => {
     props.showPartialModal({
@@ -35,13 +37,9 @@ const GuidedTrainingHelp = props => {
           </View>
           <View style={styles.glossaryTextContainer}>
             <BodyText style={styles.glossaryDetailText}>
-              <Text style={styles.glossaryDetailTextBold}>
-                Reps:
-              </Text>
+              {getBoldText('Reps:')}
               {glossaryTexts[0]}
-              <Text style={styles.glossaryDetailTextBold}>
-                Sets:
-              </Text>
+              {getBoldText('Sets:')}
               {glossaryTexts[1]}
             </BodyText>
           </View>
