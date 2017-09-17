@@ -6,6 +6,8 @@ import {
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import userActions from '../actions/user';
 import PostureIntro from '../components/posture/PostureIntro';
 import VideoPlayer from '../components/VideoPlayer';
 import videoIcon from '../images/video-icon-blue.png';
@@ -19,19 +21,21 @@ const { workoutTypes } = constants;
 
 class WorkoutView extends Component {
   static propTypes = {
+    defaultFullscreen: PropTypes.bool,
+    isGuidedTraining: PropTypes.bool,
     media: PropTypes.oneOf(['image', 'video']),
     navigator: PropTypes.object.isRequired,
+    selectWorkout: PropTypes.func.isRequired,
     training: PropTypes.shape({
       selectedLevelIdx: PropTypes.number,
     }).isRequired,
     workout: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
       gifFilename: PropTypes.string,
       videoUrl: PropTypes.string,
       title: PropTypes.string,
       type: PropTypes.number,
     }),
-    isGuidedTraining: PropTypes.bool,
-    defaultFullscreen: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -45,15 +49,24 @@ class WorkoutView extends Component {
   }
 
   _navigateToVideo() {
-    Mixpanel.trackWithProperties('workoutVideoIconClick',
-      {
-        workout: this.props.workout.title,
-        videoUrl: this.props.workout.videoUrl,
-      });
+    const {
+      _id,
+      title,
+      videoUrl,
+    } = this.props.workout;
+
+    Mixpanel.trackWithProperties('workoutVideoIconClick', {
+      workout: title,
+      videoUrl,
+    });
+
+    // Set workout in Redux store before navigating to the libraryContent route
+    // so LibraryContent can reference the workout
+    this.props.selectWorkout(_id);
 
     this.props.navigator.push({
       ...routes.libraryContent,
-      title: this.props.workout.title,
+      title,
       props: {
         media: 'video',
       },
@@ -109,5 +122,8 @@ class WorkoutView extends Component {
 }
 
 const mapStateToProps = ({ training }) => ({ training });
+const mapDispatchToProps = (dispatch) => ({
+  selectWorkout: bindActionCreators(userActions.selectWorkout, dispatch),
+});
 
-export default connect(mapStateToProps)(WorkoutView);
+export default connect(mapStateToProps, mapDispatchToProps)(WorkoutView);

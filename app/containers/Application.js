@@ -32,6 +32,7 @@ import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import postureActions from '../actions/posture';
+import userActions from '../actions/user';
 import trainingActions from '../actions/training';
 import FullModal from '../components/FullModal';
 import PartialModal from '../components/PartialModal';
@@ -495,6 +496,9 @@ class Application extends Component {
 
                 // Identify user for Mixpanel
                 Mixpanel.identify(id);
+
+                // Fetch user's available workouts
+                this.props.dispatch(userActions.fetchUserWorkouts());
 
                 if (user.hasOnboarded) {
                   // User completed onboarding
