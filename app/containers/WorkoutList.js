@@ -431,7 +431,6 @@ class WorkoutList extends Component {
       <ListView
         dataSource={this.getDataSource(workoutList)}
         stickySectionHeadersEnabled
-        stickyHeaderIndices={[0]}
         overScrollMode={'always'}
         renderRow={this.renderRow}
         renderSeparator={this.renderSeparator}
