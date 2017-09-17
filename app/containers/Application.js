@@ -482,13 +482,11 @@ class Application extends Component {
                 // There is a user profile in local storage
                 // Dispatch user profile to the Redux store
                 // and then fetch latest user profile
-                Promise.resolve(this.props.dispatch({
+                this.props.dispatch({
                   type: 'FETCH_USER',
                   payload: user,
-                }))
-                .then(() => {
-                  this.props.dispatch(userActions.fetchUser());
                 });
+                this.props.dispatch(userActions.fetchUser());
 
                 const id = user._id;
 
