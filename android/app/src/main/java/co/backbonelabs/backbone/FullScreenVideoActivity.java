@@ -24,7 +24,6 @@ public class FullScreenVideoActivity extends AppCompatActivity {
     private String videoPath;
     private int elapsedTime;
     private boolean isLoop;
-    private int currentTime;
     private Timer timer;
 
     private static ProgressDialog progressDialog;
@@ -40,7 +39,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.player_fullscreen);
         Intent i = getIntent();
-        if(i != null){
+        if (i != null) {
             myVideoView = (VideoView) findViewById(R.id.videoView);
             videoPath = i.getStringExtra("VIDEO_URL");
             elapsedTime = i.getIntExtra("ELAPSED_TIME", 0) * 1000; // Convert to milliseconds
@@ -66,13 +65,13 @@ public class FullScreenVideoActivity extends AppCompatActivity {
 
         Timber.d("Fullscreen activity is going to background, pause video");
         // Remember current position so playback can resume from current position later
-        currentTime = myVideoView.getCurrentPosition();
+        elapsedTime = myVideoView.getCurrentPosition();
         myVideoView.pause();
     }
 
     @Override
     protected void onStop() {
-        Timber.d("Last elapsed time %d", currentTime);
+        Timber.d("Last elapsed time %d", elapsedTime);
         if (timer != null) {
             timer.cancel();
             timer = null;
@@ -81,7 +80,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
         // Attempt to sync the elapsed time in fullscreen video to the RN player
         Intent intent = new Intent(Constants.ACTION_VIDEO_PLAYBACK_PROGRESS);
         Bundle mBundle = new Bundle();
-        mBundle.putInt(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, currentTime / 1000); // Convert back to seconds
+        mBundle.putInt(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, elapsedTime / 1000); // Convert back to seconds
         intent.putExtras(mBundle);
         MainActivity.currentActivity.sendBroadcast(intent);
 
@@ -162,10 +161,10 @@ public class FullScreenVideoActivity extends AppCompatActivity {
 
                     progressDialog.dismiss();
 
-                    if (currentTime != 0) {
+                    if (elapsedTime != 0) {
                         // Video was already playing before, continue playing from previous position
-                        Timber.d("Start video from previous position %d", currentTime);
-                        myVideoView.seekTo(currentTime);
+                        Timber.d("Start video from previous position %d", elapsedTime);
+                        myVideoView.seekTo(elapsedTime);
                     }
                     myVideoView.start();
 
@@ -182,11 +181,11 @@ public class FullScreenVideoActivity extends AppCompatActivity {
                             // Update current elapsed time to be passed back to RN upon exiting fullscreen
                             // in order to sync with the elapsed time in the RN player
                             if (myVideoView.isPlaying()) {
-                                currentTime = myVideoView.getCurrentPosition();
+                                elapsedTime = myVideoView.getCurrentPosition();
 
                                 Intent intent = new Intent(Constants.ACTION_VIDEO_PLAYBACK_PROGRESS);
                                 Bundle mBundle = new Bundle();
-                                mBundle.putInt(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, currentTime / 1000); // Convert back to seconds
+                                mBundle.putInt(Constants.EXTRA_VIDEO_PLAYBACK_PROGRESS, elapsedTime / 1000); // Convert back to seconds
                                 intent.putExtras(mBundle);
                                 MainActivity.currentActivity.sendBroadcast(intent);
                             }
