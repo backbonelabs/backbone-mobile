@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import authActions from '../actions/auth';
+import userActions from '../actions/user';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
@@ -39,6 +40,8 @@ class Login extends Component {
       errorMessage: PropTypes.string,
       inProgress: PropTypes.bool,
     }),
+    fetchUserWorkouts: PropTypes.func.isRequired,
+    login: PropTypes.func.isRequired,
     user: PropTypes.shape({
       hasOnboarded: PropTypes.bool,
     }),
@@ -86,8 +89,11 @@ class Login extends Component {
     const currentRoute = routeStack[routeStack.length - 1];
 
     if (newAccessToken && this.props.auth.accessToken !== newAccessToken) {
-      // User has already gone through onboarding
+      // Fetch user's available workouts
+      this.props.fetchUserWorkouts();
+
       if (nextProps.user.hasOnboarded) {
+        // User has already gone through onboarding
         this.props.navigator.resetTo(routes.dashboard);
       } else {
         // User hasn't completed onboarding process
@@ -181,7 +187,7 @@ class Login extends Component {
       if (authError) {
         this.setState({ authError: false });
       }
-      this.props.dispatch(authActions.login({ email, password }));
+      this.props.login({ email, password });
     } else {
       this.setState({ authError: true, authErrorMessage: this.loginErrorMessage });
     }
@@ -328,4 +334,7 @@ const mapStateToProps = state => {
   return { auth, user };
 };
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps, {
+  ...authActions,
+  ...userActions,
+})(Login);
