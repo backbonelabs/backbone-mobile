@@ -500,7 +500,8 @@ class Dashboard extends Component {
       plans,
     } = this.props.training;
     const levels = get(plans, [selectedPlanIdx, 'levels'], []);
-    const nextLevelIndex = getNextIncompleteLevel(levels);
+    const nextIncompleteLevelIdx = getNextIncompleteLevel(levels);
+    const nextLevelIndex = nextIncompleteLevelIdx < 0 ? levels.length - 1 : nextIncompleteLevelIdx;
     const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
     const isLevelUnlocked = idx <= nextLevelIndex;
     const isCurrentLevel = (idx === selectedLevelIdx);
@@ -550,9 +551,12 @@ class Dashboard extends Component {
     } = this.props.training;
     const levels = get(plans, [selectedPlanIdx, 'levels'], []);
     const level = get(levels, selectedLevelIdx, []);
-    const nextLevelIndex = getNextIncompleteLevel(levels);
+    const nextIncompleteLevelIdx = getNextIncompleteLevel(levels);
+    const nextLevelIndex = nextIncompleteLevelIdx < 0 ? levels.length - 1 : nextIncompleteLevelIdx;
     const isLevelUnlocked = selectedLevelIdx <= nextLevelIndex;
-    const nextSessionIndex = getNextIncompleteSession(level);
+    const nextIncompleteSessionIdx = getNextIncompleteSession(level);
+    const nextSessionIndex =
+      nextIncompleteSessionIdx < 0 ? level.length - 1 : nextIncompleteSessionIdx;
     const isSessionUnlocked = isLevelUnlocked &&
     (nextSessionIndex === -1 || idx <= nextSessionIndex);
     const navTitle = `Level ${selectedLevelIdx + 1} Session ${idx + 1}`;
