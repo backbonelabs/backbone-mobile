@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Input from '../components/Input';
 import Spinner from '../components/Spinner';
 import authActions from '../actions/auth';
+import userActions from '../actions/user';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
@@ -46,6 +47,8 @@ class Signup extends Component {
     accessToken: PropTypes.string,
     errorMessage: PropTypes.string,
     inProgress: PropTypes.bool,
+    fetchUserWorkouts: PropTypes.func.isRequired,
+    signup: PropTypes.func.isRequired,
   };
 
   constructor() {
@@ -82,6 +85,9 @@ class Signup extends Component {
     const newAccessToken = nextProps.accessToken;
     const errorMessage = nextProps.auth.errorMessage;
     if (newAccessToken && this.props.accessToken !== newAccessToken) {
+      // Fetch user's available workouts
+      this.props.fetchUserWorkouts();
+
       // When a user uses the 'Sign up with Facebook' button but already has a Backbone
       // account then we have to check if they have already onboarded since they're
       // not a new user.
@@ -164,7 +170,7 @@ class Signup extends Component {
       });
     }
     this.setState({ emailWarning: false, passwordWarning: false });
-    this.props.dispatch(authActions.signup({ email, password }));
+    this.props.signup({ email, password });
   }
 
   openTOS() {
@@ -368,4 +374,7 @@ const mapStateToProps = (state) => {
   return { auth, user };
 };
 
-export default connect(mapStateToProps)(Signup);
+export default connect(mapStateToProps, {
+  ...authActions,
+  ...userActions,
+})(Signup);
