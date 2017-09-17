@@ -44,10 +44,7 @@ exports[`Signup Component renders as expected 1`] = `
             focusedOpacity={0.7}
             onPress={[Function]}
           >
-            <BodyText
-              allowFontScaling={false}
-              style={Object {}}
-            >
+            <BodyText>
               Log In
             </BodyText>
           </TouchableOpacity>
@@ -61,10 +58,7 @@ exports[`Signup Component renders as expected 1`] = `
               ]
             }
           >
-            <BodyText
-              allowFontScaling={false}
-              style={Object {}}
-            >
+            <BodyText>
               Sign Up
             </BodyText>
           </TouchableOpacity>
@@ -78,10 +72,7 @@ exports[`Signup Component renders as expected 1`] = `
             />
             <View>
               <View />
-              <SecondaryText
-                allowFontScaling={false}
-                style={Object {}}
-              >
+              <SecondaryText>
                 OR
               </SecondaryText>
               <View />
@@ -135,10 +126,7 @@ exports[`Signup Component renders as expected 1`] = `
             value=""
           />
           <View>
-            <SecondaryText
-              allowFontScaling={false}
-              style={Object {}}
-            >
+            <SecondaryText>
               By signing up, you agree to our 
             </SecondaryText>
             <TouchableOpacity
@@ -146,17 +134,11 @@ exports[`Signup Component renders as expected 1`] = `
               focusedOpacity={0.7}
               onPress={[Function]}
             >
-              <SecondaryText
-                allowFontScaling={false}
-                style={Object {}}
-              >
+              <SecondaryText>
                 Terms of Service
               </SecondaryText>
             </TouchableOpacity>
-            <SecondaryText
-              allowFontScaling={false}
-              style={Object {}}
-            >
+            <SecondaryText>
                and 
             </SecondaryText>
             <TouchableOpacity
@@ -164,10 +146,7 @@ exports[`Signup Component renders as expected 1`] = `
               focusedOpacity={0.7}
               onPress={[Function]}
             >
-              <SecondaryText
-                allowFontScaling={false}
-                style={Object {}}
-              >
+              <SecondaryText>
                 Privacy Policy
               </SecondaryText>
             </TouchableOpacity>

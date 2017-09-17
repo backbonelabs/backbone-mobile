@@ -28,16 +28,11 @@ exports[`Reset Component renders as expected 1`] = `
           }
         />
         <HeadingText
-          allowFontScaling={false}
           size={2}
-          style={Object {}}
         >
           Password Recovery
         </HeadingText>
-        <BodyText
-          allowFontScaling={false}
-          style={Object {}}
-        >
+        <BodyText>
           Please enter your email address below and we'll send you a link to reset your password.
         </BodyText>
         <View>
@@ -82,10 +77,7 @@ exports[`Reset Component renders as expected 1`] = `
           focusedOpacity={0.7}
           onPress={[Function]}
         >
-          <SecondaryText
-            allowFontScaling={false}
-            style={Object {}}
-          >
+          <SecondaryText>
             Cancel
           </SecondaryText>
         </TouchableOpacity>

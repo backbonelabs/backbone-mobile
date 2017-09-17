@@ -12,7 +12,6 @@ exports[`TitleBar Component renders as expected 1`] = `
 >
   <View />
   <HeadingText
-    allowFontScaling={false}
     size={3}
     style={
       Array [

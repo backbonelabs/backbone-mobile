@@ -2,14 +2,11 @@
 
 exports[`BodyText Component renders as expected 1`] = `
 <View>
-  <Text
-    accessible={true}
-    allowFontScaling={false}
-    ellipsizeMode="tail"
+  <UnscalableText
     style={
       Array [
         undefined,
-        Object {},
+        undefined,
       ]
     }
   />
