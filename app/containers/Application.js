@@ -33,7 +33,6 @@ import appActions from '../actions/app';
 import authActions from '../actions/auth';
 import deviceActions from '../actions/device';
 import postureActions from '../actions/posture';
-import userActions from '../actions/user';
 import trainingActions from '../actions/training';
 import FullModal from '../components/FullModal';
 import PartialModal from '../components/PartialModal';
