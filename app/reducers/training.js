@@ -67,10 +67,15 @@ export default (state = defaultState, action) => {
       let selectedSessionIdx = state.selectedSessionIdx;
       if (type !== UPDATE_USER_TRAINING_PLAN_PROGRESS && plan) {
         // Automatically set current level and session based on the next incomplete workout for the
-        // user, but only on FETCH_USER or LOGIN actions. For UPDATE_USER_TRAINING_PLAN_PROGRESS,
-        // we keep the currently selected level and session.
-        selectedLevelIdx = Math.max(0, getNextIncompleteLevel(plan.levels));
-        selectedSessionIdx = Math.max(0, getNextIncompleteSession(plan.levels[selectedLevelIdx]));
+        // user, but only on FETCH_USER or LOGIN actions. If there are no more pending levels or
+        // sessions, the highest level/session index will be selected. For
+        // UPDATE_USER_TRAINING_PLAN_PROGRESS, we keep the currently selected level and session.
+        const nextIncompleteLevelIdx = getNextIncompleteLevel(plan.levels);
+        selectedLevelIdx = nextIncompleteLevelIdx < 0 ?
+          plan.levels.length - 1 : nextIncompleteLevelIdx;
+        const nextIncompleteSessionIdx = getNextIncompleteSession(plan.levels[selectedLevelIdx]);
+        selectedSessionIdx = nextIncompleteSessionIdx < 0 ?
+          plan.levels[selectedLevelIdx].length - 1 : nextIncompleteSessionIdx;
       }
 
       return {
