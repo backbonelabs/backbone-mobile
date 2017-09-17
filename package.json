@@ -9,7 +9,7 @@
     "lint": "eslint index.* app/**",
     "prepush": "npm run lint && npm run test",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
