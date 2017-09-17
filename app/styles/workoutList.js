@@ -108,4 +108,8 @@ export default EStyleSheet.create({
   searchBar: {
     width: '100%',
   },
+  postureDivider: {
+    borderBottomWidth: applyWidthDifference(1),
+    borderBottomColor: '$grey300',
+  },
 });
