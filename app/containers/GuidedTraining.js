@@ -182,7 +182,6 @@ class GuidedTraining extends Component {
     // Continue current step from where last left off if previously started but didn't finish
     SensitiveInfo.getItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS)
       .then((pendingProgress = {}) => {
-        console.log('componentDidMount got pending progress', pendingProgress);
         const {
           selectedPlanIdx,
           selectedLevelIdx,
@@ -193,7 +192,7 @@ class GuidedTraining extends Component {
 
         if (prevProgress) {
           // The current step was previously started but didn't completely finish.
-          // Update component state to set the correct side and setsRemaining.
+          // Update state with the correct side and setsRemaining based on previous progress.
           this.setState({ ...prevProgress });
         }
       });
@@ -238,7 +237,7 @@ class GuidedTraining extends Component {
           const { currentWorkout } = this.state;
           const newState = {};
           if (currentWorkout.twoSides && prevState.side === side) {
-            // This workout needs to be done on two sides
+            // User needs to switch sides
             if (side === 1) {
               // User did it on the first side, now switch to the second side
               newState.side = 2;
@@ -261,13 +260,6 @@ class GuidedTraining extends Component {
           } = this.props.training;
           SensitiveInfo.getItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS)
             .then((pendingProgress = {}) => {
-              console.log('componentDidUpdate updating pending progress', {
-                ...pendingProgress,
-                [`${planIdx}.${levelIdx}.${sessionIdx}.${stepIdx}`]: {
-                  side: get(newState, 'side', side),
-                  setsRemaining: get(newState, 'setsRemaining', setsRemaining),
-                },
-              });
               SensitiveInfo.setItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS, {
                 ...pendingProgress,
                 [`${planIdx}.${levelIdx}.${sessionIdx}.${stepIdx}`]: {
@@ -464,14 +456,39 @@ class GuidedTraining extends Component {
    */
   _changeStep(stepIdx) {
     this.props.selectSessionStep(stepIdx);
-    this._pauseTimer(() => {
-      this.setState({
-        stepIdx,
-        ...this._getNewStateForWorkout(
-          this._getWorkoutFromCurrentSession(stepIdx, this.props.training)
-        ),
+
+    // Check if there's pending progress for the new step
+    SensitiveInfo.getItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS)
+      .then((pendingProgress = {}) => {
+        const newState = {
+          stepIdx,
+          ...this._getNewStateForWorkout(
+            this._getWorkoutFromCurrentSession(stepIdx, this.props.training)
+          ),
+        };
+
+        const {
+          selectedPlanIdx,
+          selectedLevelIdx,
+          selectedSessionIdx,
+        } = this.props.training;
+        const prevProgress = get(pendingProgress,
+          `${selectedPlanIdx}.${selectedLevelIdx}.${selectedSessionIdx}.${stepIdx}`);
+
+        if (prevProgress) {
+          // The new step was previously started but didn't completely finish.
+          // Load state with the correct side and setsRemaining based on previous progress.
+          Object.assign(newState, prevProgress);
+        }
+
+        if (this.state.isTimerRunning) {
+          this._pauseTimer(() => {
+            this.setState(newState);
+          });
+        } else {
+          this.setState(newState);
+        }
       });
-    });
   }
 
   /**
