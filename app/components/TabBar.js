@@ -9,7 +9,7 @@ import styles from '../styles/tabBar';
 import BodyText from '../components/BodyText';
 
 const renderTab = (name, page, isTabActive, onPressHandler, props) => {
-  const { activeTextColor, inactiveTextColor, textStyle } = props;
+  const { activeTextColor, inactiveTextColor, textStyle, removeDropDown } = props;
   const textColor = isTabActive ? activeTextColor : inactiveTextColor;
   const fontWeight = isTabActive ? 'bold' : 'normal';
 
@@ -21,7 +21,7 @@ const renderTab = (name, page, isTabActive, onPressHandler, props) => {
       accessibilityLabel={name}
       accessibilityTraits="button"
       onPress={() => {
-        if (isTabActive) {
+        if (isTabActive && props.toggleSubview) {
           props.toggleSubview();
         }
 
@@ -32,7 +32,7 @@ const renderTab = (name, page, isTabActive, onPressHandler, props) => {
         <BodyText style={{ color: textColor, fontWeight, ...textStyle }}>
           {name}
         </BodyText>
-        {isTabActive ?
+        {isTabActive && !removeDropDown ?
           <Icon name="arrow-drop-down" size={styles.$arrowIconSize} style={styles.icon} /> : null
           }
       </View>
@@ -75,6 +75,7 @@ renderTab.propTypes = {
   toggleSearchBar: PropTypes.func,
   activeTextColor: PropTypes.string,
   inactiveTextColor: PropTypes.string,
+  removeDropDown: PropTypes.string,
   textStyle: PropTypes.number,
   tabStyle: PropTypes.object,
 };

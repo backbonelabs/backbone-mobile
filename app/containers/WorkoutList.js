@@ -82,6 +82,7 @@ class WorkoutList extends Component {
       searchText: '',
       sortListBy: 0, // 0 is alpha, , 1 is difficulty, 2 is favorites, 3 is popularity
       isLoading: true,
+      currentTab: 0,
     };
   }
 
@@ -117,6 +118,10 @@ class WorkoutList extends Component {
    * @return {<TabBar />}
    */
   getTabBar() {
+    // If current tab is posture, remove drop down and don't toggle subview
+    if (this.state.currentTab === 0) {
+      return <TabBar removeDropDown />;
+    }
     return (<TabBar toggleSubview={this.toggleSubview} />);
   }
 
@@ -160,17 +165,28 @@ class WorkoutList extends Component {
 
     if (this.state.sortListBy === 0) {
       // Sort by alphabetical order
-      newData.workouts.sort((a, b) => {
-        if (b.title > a.title) return -1;
-        if (b.title < a.title) return 1;
-        return 0;
-      }).forEach((workout) => {
-        const charIndex = (workout.title[0]).toUpperCase();
-        if (!itemMap[charIndex]) {
-          itemMap[charIndex] = [];
-        }
-        itemMap[charIndex].push(workout);
-      });
+      // console.log(newData);
+      if (newData.title === 'POSTURE') {
+        newData.workouts.sort((a, b) => a.duration - b.duration)
+        .forEach((workout, index) => {
+          if (!itemMap[index]) {
+            itemMap[index] = [];
+          }
+          itemMap[index].push(workout);
+        });
+      } else {
+        newData.workouts.sort((a, b) => {
+          if (b.title > a.title) return -1;
+          if (b.title < a.title) return 1;
+          return 0;
+        }).forEach((workout) => {
+          const charIndex = (workout.title[0]).toUpperCase();
+          if (!itemMap[charIndex]) {
+            itemMap[charIndex] = [];
+          }
+          itemMap[charIndex].push(workout);
+        });
+      }
     } else if (this.state.sortListBy === 1) {
       // Sort by difficulty
       newData.workouts.sort((a, b) => a.difficulty - b.difficulty).forEach((workout) => {
@@ -211,8 +227,8 @@ class WorkoutList extends Component {
    * Toggles the appearance of the search bar only for iOS
    * Android will have a permanently showing search bar
    */
-  toggleSearchBar() {
-    this.setState({ searchBarIsHidden: true, searchText: '' });
+  toggleSearchBar(tab) {
+    this.setState({ searchBarIsHidden: true, searchText: '', currentTab: tab.i });
   }
 
   /**
@@ -350,18 +366,24 @@ class WorkoutList extends Component {
     );
 
     return (
-      <View style={styles.rowContainer}>
-        <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
-          <View style={styles.rowInnerContainer}>
-            <View style={styles.thumbnailContainer}>
-              {thumbnail}
+      <View>
+        <View style={styles.rowContainer}>
+          <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
+            <View style={styles.rowInnerContainer}>
+              <View style={styles.thumbnailContainer}>
+                {thumbnail}
+              </View>
+              <BodyText style={styles.rowText}>{workoutTitle}</BodyText>
             </View>
-            <BodyText style={styles.rowText}>{workoutTitle}</BodyText>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
-          <Icon name={iconName} style={styles.heartIcon} />
-        </TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
+            <Icon name={iconName} style={styles.heartIcon} />
+          </TouchableOpacity>
+        </View>
+        {
+          (this.state.currentTab === 0) ?
+            <View style={styles.bar} /> : null
+        }
       </View>
     );
   }
@@ -372,6 +394,10 @@ class WorkoutList extends Component {
    * @param {String} category
    */
   renderSectionHeader(sectionData, category) {
+    // Don't render header for posture tab
+    if (this.state.currentTab === 0) {
+      return <View />;
+    }
     return (
       <View style={styles.section}>
         <BodyText style={styles.sectionText}>{category}</BodyText>
@@ -386,7 +412,7 @@ class WorkoutList extends Component {
    */
   renderSeparator(sectionId, rowId) {
     return (
-      <View style={styles.bar} key={sectionId + rowId} />
+      <View style={(this.state.currentTab === 0) ? null : styles.bar} key={sectionId + rowId} />
     );
   }
 
@@ -414,7 +440,6 @@ class WorkoutList extends Component {
       <ListView
         dataSource={this.getDataSource(workoutList)}
         stickySectionHeadersEnabled
-        stickyHeaderIndices={[0]}
         overScrollMode={'always'}
         renderRow={this.renderRow}
         renderSeparator={this.renderSeparator}
