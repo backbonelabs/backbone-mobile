@@ -207,4 +207,8 @@ export default EStyleSheet.create({
     borderBottomColor: 'white',
     marginLeft: applyWidthDifference(15),
   },
+  planCompletedStarIcon: {
+    color: '$orange500',
+    fontSize: fixedResponsiveFontSize(60),
+  },
 });
