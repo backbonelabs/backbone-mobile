@@ -112,10 +112,10 @@ public class ExpansionService extends ReactContextBaseJavaModule implements IDow
     }
 
     public static int getVersionCode() {
-        // Temporarily set to 226 for testing as this is the alpha version when the current expansion file was uploaded.
+        // Set to the version of the expansion to be used.
         // When we started updating only the APK, and no new expansion needed, the version should be kept
         // to the version where the expansion was uploaded against
-        return 226;
+        return 231;
     }
 
     @Override
