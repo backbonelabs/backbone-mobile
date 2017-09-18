@@ -167,7 +167,8 @@ class WorkoutList extends Component {
       // Sort by alphabetical order
       // console.log(newData);
       if (newData.title === 'POSTURE') {
-        newData.workouts.forEach((workout, index) => {
+        newData.workouts.sort((a, b) => a.duration - b.duration)
+        .forEach((workout, index) => {
           if (!itemMap[index]) {
             itemMap[index] = [];
           }
