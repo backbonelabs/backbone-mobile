@@ -764,11 +764,7 @@ class Application extends Component {
                 style={styles.tabBarItem}
                 onPress={() => {
                   if (!isSameRoute && routeName !== '') {
-                    // Reset the navigator stack if on the dashboard
-                    // and push the route for all others
-                    if (routeName === routes.dashboard.name) {
-                      this.navigator.resetTo(routes[routes.dashboard.name]);
-                    } else if (routeName === routes.postureIntro.name) {
+                    if (routeName === routes.postureIntro.name) {
                       // Configure an untimed posture session
                       this.navigator.push({
                         ...routes[routeName],
@@ -777,7 +773,7 @@ class Application extends Component {
                         },
                       });
                     } else {
-                      this.navigator.push(routes[routeName]);
+                      this.navigator.resetTo(routes[routeName]);
                     }
                   }
                 }
