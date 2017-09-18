@@ -6,34 +6,39 @@ import styles from '../../../styles/posture/monitorSlider';
 import theme from '../../../styles/theme';
 import relativeDimensions from '../../../utils/relativeDimensions';
 
-const MonitorSlider = ({ leftIcon, leftIconSize, rightIcon, rightIconSize, ...props }) => (
-  <View style={styles.sliderContainer}>
-    <MaterialIcons
-      name={leftIcon}
-      size={leftIconSize}
-      style={styles.leftIconStyles}
-    />
-    <View style={styles.sliderInnerContainer}>
-      <RNSlider
-        trackStyle={styles.trackStyle}
-        thumbStyle={styles.thumbStyle}
-        {...props}
+const MonitorSlider = ({ leftIcon, leftIconSize, rightIcon, rightIconSize, ...props }) => {
+  const minimumTrackTintColor = props.disabled ? theme.disabledColor : props.minimumTrackTintColor;
+
+  return (
+    <View style={styles.sliderContainer}>
+      <MaterialIcons
+        name={leftIcon}
+        size={leftIconSize}
+        style={styles.leftIconStyles}
+      />
+      <View style={styles.sliderInnerContainer}>
+        <RNSlider
+          trackStyle={styles.trackStyle}
+          thumbStyle={styles.thumbStyle}
+          {...props}
+          minimumTrackTintColor={minimumTrackTintColor}
+        />
+      </View>
+      <MaterialIcons
+        name={rightIcon}
+        size={rightIconSize}
+        style={styles.rightIconStyles}
       />
     </View>
-    <MaterialIcons
-      name={rightIcon}
-      size={rightIconSize}
-      style={styles.rightIconStyles}
-    />
-  </View>
-);
+  );
+};
 
 MonitorSlider.propTypes = {
+  ...RNSlider.propTypes,
   rightIcon: PropTypes.string,
   leftIcon: PropTypes.string,
   rightIconSize: PropTypes.number,
   leftIconSize: PropTypes.number,
-  disabled: PropTypes.bool,
 };
 
 MonitorSlider.defaultProps = {
