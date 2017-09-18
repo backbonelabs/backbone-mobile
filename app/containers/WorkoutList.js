@@ -364,21 +364,25 @@ class WorkoutList extends Component {
       <Image source={logo} style={styles.thumbnail} />
     );
 
-    const postureTabStyles = (this.state.currentTab === 0) ? styles.postureDivider : null;
-
     return (
-      <View style={[styles.rowContainer, postureTabStyles]}>
-        <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
-          <View style={styles.rowInnerContainer}>
-            <View style={styles.thumbnailContainer}>
-              {thumbnail}
+      <View>
+        <View style={styles.rowContainer}>
+          <TouchableOpacity onPress={() => { this.handleRowPress(rowData); }} >
+            <View style={styles.rowInnerContainer}>
+              <View style={styles.thumbnailContainer}>
+                {thumbnail}
+              </View>
+              <BodyText style={styles.rowText}>{workoutTitle}</BodyText>
             </View>
-            <BodyText style={styles.rowText}>{workoutTitle}</BodyText>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
-          <Icon name={iconName} style={styles.heartIcon} />
-        </TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { this.handleHeartPress(rowData); }} >
+            <Icon name={iconName} style={styles.heartIcon} />
+          </TouchableOpacity>
+        </View>
+        {
+          (this.state.currentTab === 0) ?
+            <View style={styles.bar} /> : null
+        }
       </View>
     );
   }
@@ -471,9 +475,6 @@ class WorkoutList extends Component {
     if (this.props.isFetchingWorkouts || this.state.isLoading) {
       return <Spinner />;
     }
-
-    // console.log(this.state);
-    // console.log(this.props);
 
     return (
       <View style={styles.container}>
