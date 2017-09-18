@@ -78,7 +78,6 @@ class WorkoutList extends Component {
       // This is the initial position of the subview
       bounceValue: new Animated.Value(this.subViewInitialPosition),
       subViewIsHidden: true,
-      searchBarIsHidden: true,
       searchText: '',
       sortListBy: 0, // 0 is alpha, , 1 is difficulty, 2 is favorites, 3 is popularity
       isLoading: true,
@@ -224,11 +223,10 @@ class WorkoutList extends Component {
   }
 
   /**
-   * Toggles the appearance of the search bar only for iOS
-   * Android will have a permanently showing search bar
+   * Resets the search bar text when changing tabs
    */
-  toggleSearchBar(tab) {
-    this.setState({ searchBarIsHidden: true, searchText: '', currentTab: tab.i });
+  resetSearchBar(tab) {
+    this.setState({ searchText: '', currentTab: tab.i });
   }
 
   /**
@@ -252,21 +250,6 @@ class WorkoutList extends Component {
     ).start();
 
     this.setState(prevState => ({ subViewIsHidden: !prevState.subViewIsHidden }));
-  }
-
-  /**
-   * Detects when the listView scrolls beyond the top so
-   * the search bar will appear
-   * @param {Object} event
-   */
-  handleScroll(event) {
-    if (event.nativeEvent.contentOffset.y < 0) {
-      this.setState({ searchBarIsHidden: false });
-    } else if (event.nativeEvent.contentOffset.y > 100
-      && !this.state.searchBarIsHidden
-      && this.state.searchText === '') {
-      this.setState({ searchBarIsHidden: true });
-    }
   }
 
   /**
@@ -423,20 +406,18 @@ class WorkoutList extends Component {
       tabLabel={workoutList.title}
       key={workoutList.title}
     >
-      { this.state.searchBarIsHidden && this.isiOS ? null :
-        <Input
-          style={styles.searchBar}
-          value={this.state.searchText}
-          returnKeyType="search"
-          returnKeyLabel="search"
-          placeholder="Search"
-          autoCorrect={false}
-          autoCapitalize="none"
-          onChangeText={this.handleSearchInput}
-          iconFont="FontAwesome"
-          iconLeftName="search"
-        />
-    }
+      <Input
+        style={styles.searchBar}
+        value={this.state.searchText}
+        returnKeyType="search"
+        returnKeyLabel="search"
+        placeholder="Search"
+        autoCorrect={false}
+        autoCapitalize="none"
+        onChangeText={this.handleSearchInput}
+        iconFont="FontAwesome"
+        iconLeftName="search"
+      />
       <ListView
         dataSource={this.getDataSource(workoutList)}
         stickySectionHeadersEnabled
@@ -445,7 +426,6 @@ class WorkoutList extends Component {
         renderSeparator={this.renderSeparator}
         renderSectionHeader={this.renderSectionHeader}
         enableEmptySections
-        onScroll={this.handleScroll}
       />
     </View>)
     );
@@ -482,7 +462,7 @@ class WorkoutList extends Component {
         <ScrollableTabView
           style={styles.scrollableTabViewContainer}
           renderTabBar={this.getTabBar}
-          onChangeTab={this.toggleSearchBar}
+          onChangeTab={this.resetSearchBar}
           tabBarPosition="top"
           tabBarActiveTextColor={theme.lightBlue500}
           tabBarInactiveTextColor={theme.grey400}
