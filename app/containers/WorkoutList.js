@@ -118,6 +118,10 @@ class WorkoutList extends Component {
    * @return {<TabBar />}
    */
   getTabBar() {
+    // If current tab is posture, remove drop down and don't toggle subview
+    if (this.state.currentTab === 0) {
+      return <TabBar removeDropDown />;
+    }
     return (<TabBar toggleSubview={this.toggleSubview} />);
   }
 
