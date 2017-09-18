@@ -3,7 +3,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from './theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, getResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference, fixedResponsiveFontSize, getResponsiveFontSize } = relativeDimensions;
 
 export default EStyleSheet.create({
   $progressBarHeight: applyWidthDifference(20),
@@ -110,5 +110,9 @@ export default EStyleSheet.create({
   glossaryDetailText: {
     textAlign: 'justify',
     marginHorizontal: applyWidthDifference(12),
+  },
+  planCompletedStarIcon: {
+    color: '$orange500',
+    fontSize: fixedResponsiveFontSize(60),
   },
 });

@@ -17,6 +17,7 @@ exports[`GuidedTraining Component renders as expected 1`] = `
     <BodyText />
   </View>
   <Connect(WorkoutView)
+    isGuidedTraining={true}
     media="image"
     workout={
       Object {

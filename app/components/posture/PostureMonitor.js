@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import { debounce, isEqual, isFunction } from 'lodash';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import color from 'color';
 import styles from '../../styles/posture/postureMonitor';
 import HeadingText from '../../components/HeadingText';
@@ -35,7 +36,7 @@ import deviceErrorIcon from '../../images/settings/device-error-icon.png';
 import deviceWarningIcon from '../../images/settings/device-warning-icon.png';
 import deviceSuccessIcon from '../../images/settings/device-success-icon.png';
 import { zeroPadding } from '../../utils/timeUtils';
-import { markSessionStepComplete } from '../../utils/trainingUtils';
+import { markSessionStepComplete, isTrainingPlanComplete } from '../../utils/trainingUtils';
 
 const {
   BluetoothService,
@@ -1128,6 +1129,41 @@ class PostureMonitor extends Component {
     const closeSummaryAndPop = () => {
       this.props.dispatch(appActions.hidePartialModal());
       this.props.navigator.pop();
+
+      const {
+        plans,
+        selectedPlanIdx,
+        selectedLevelIdx,
+        selectedSessionIdx,
+        selectedStepIdx,
+      } = this.props.training;
+      let progress = this.props.user.trainingPlanProgress;
+      progress = markSessionStepComplete(plans, selectedPlanIdx, selectedLevelIdx,
+        selectedSessionIdx, selectedStepIdx, progress);
+
+      const currentPlan = plans[selectedPlanIdx];
+      if (isTrainingPlanComplete(currentPlan.levels, progress[currentPlan._id])) {
+        // Training is complete, show congratulatory message
+        setTimeout(() => {
+          this.props.dispatch(appActions.showPartialModal({
+            topView: <MaterialIcon name="star" style={styles.planCompletedStarIcon} />,
+            title: {
+              caption: 'Congratulations!',
+            },
+            detail: {
+              caption: [
+                'You\'ve completed the ',
+                currentPlan.name || '',
+                ' training program. Stay tuned for additional training programs.',
+              ].join(''),
+            },
+            buttons: [{ caption: 'OK' }],
+            backButtonHandler: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          }));
+        }, 500);
+      }
     };
 
     this.props.dispatch(appActions.showPartialModal({

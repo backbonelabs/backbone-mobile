@@ -23,7 +23,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 import constants from '../utils/constants';
 import Mixpanel from '../utils/Mixpanel';
 import { formattedTimeString } from '../utils/timeUtils';
-import { markSessionStepComplete } from '../utils/trainingUtils';
+import { markSessionStepComplete, isTrainingPlanComplete } from '../utils/trainingUtils';
 
 const { workoutTypes } = constants;
 const { applyWidthDifference } = relativeDimensions;
@@ -102,6 +102,7 @@ class GuidedTraining extends Component {
     hidePartialModal: PropTypes.func.isRequired,
     showPartialModal: PropTypes.func.isRequired,
     navigator: PropTypes.shape({
+      pop: PropTypes.func.isRequired,
       push: PropTypes.func.isRequired,
       replace: PropTypes.func.isRequired,
     }).isRequired,
@@ -281,6 +282,26 @@ class GuidedTraining extends Component {
     progress = markSessionStepComplete(plans, selectedPlanIdx, selectedLevelIdx,
       selectedSessionIdx, this.state.stepIdx, progress);
     this.props.updateUserTrainingPlanProgress(progress);
+
+    const currentPlan = plans[selectedPlanIdx];
+    if (isTrainingPlanComplete(currentPlan.levels, progress[currentPlan._id])) {
+      // Training is complete, show congratulatory message
+      this.props.showPartialModal({
+        topView: <Icon name="star" style={styles.planCompletedStarIcon} />,
+        title: {
+          caption: 'Congratulations!',
+        },
+        detail: {
+          caption: [
+            'You\'ve completed the ',
+            currentPlan.name || '',
+            ' training program. Stay tuned for additional training programs.',
+          ].join(''),
+        },
+        buttons: [{ caption: 'OK' }],
+        backButtonHandler: this.props.hidePartialModal,
+      });
+    }
   }
 
   /**
@@ -546,6 +567,7 @@ class GuidedTraining extends Component {
           media={currentWorkout.workout.type === workoutTypes.PRIMER ? 'video' : 'image'}
           navigator={this.props.navigator}
           workout={currentWorkout.workout}
+          isGuidedTraining
         />
         <View style={styles.footer}>
           <View style={styles.footerButtonContainer}>
