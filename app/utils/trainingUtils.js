@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import ReactNativeFS from 'react-native-fs';
 import cloneDeep from 'lodash/cloneDeep';
+import get from 'lodash/get';
 
 /**
  * Given an array of workouts for a session, returns the index of the first incomplete
@@ -37,7 +38,7 @@ export const getNextIncompleteLevel = (levels = []) =>
  * @param {Number} level Current level index
  * @param {Number} session Current session index
  * @param {Number} step Current step index
- * @param {Object[]} currentProgress Current plan progress
+ * @param {Object[]} currentProgress Progress for all training plans
  * @return {Object[]} Updated plan progress
  */
 export const markSessionStepComplete = (plans, plan, level, session, step, currentProgress) => {
@@ -71,6 +72,25 @@ export const markSessionStepComplete = (plans, plan, level, session, step, curre
   planProgress[level][session][step] = true;
   return progress;
 };
+
+/**
+ * Determines whether all levels and sessions in a training plan are complete
+ * @param {Array} planLevel    Training plan levels
+ * @param {Array} planProgress Collection of progress statuses for the training plan
+ */
+export const isTrainingPlanComplete = (planLevels = [], planProgress = []) => (
+  planLevels.every((level, levelIdx) => (
+    level.every((session, sessionIdx) => {
+      const totalSessionWorkouts = session.length;
+      const sessionProgress = get(planProgress, [levelIdx, sessionIdx], []);
+
+      // Returns true if the progress array contains as many true's for the current
+      // session as there are number of workouts in the session
+      return sessionProgress.length >= totalSessionWorkouts &&
+        sessionProgress.every(completed => completed);
+    })
+  ))
+);
 
 /**
  * Return the absolute file path of the gif file in the local storage.

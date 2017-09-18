@@ -2,6 +2,7 @@ import {
   getNextIncompleteWorkout,
   getNextIncompleteSession,
   getNextIncompleteLevel,
+  isTrainingPlanComplete,
 } from '../../app/utils/trainingUtils';
 
 describe('trainingUtils', () => {
@@ -329,6 +330,155 @@ describe('trainingUtils', () => {
     test('returns -1 if passed undefined or an empty array', () => {
       expect(getNextIncompleteLevel()).toBe(-1);
       expect(getNextIncompleteLevel([])).toBe(-1);
+    });
+  });
+
+  describe('isTrainingPlanComplete', () => {
+    const testTrainingPlanLevels = [
+      [
+        [{}, {}, {}],
+        [{}, {}, {}],
+        [{}, {}, {}],
+      ],
+      [
+        [{}, {}, {}],
+        [{}, {}, {}],
+        [{}, {}, {}],
+      ],
+      [
+        [{}, {}, {}],
+        [{}, {}, {}],
+        [{}, {}, {}],
+      ],
+    ];
+    test('returns false when progress doesn\'t have same number of levels', () => {
+      expect(isTrainingPlanComplete(testTrainingPlanLevels)).toBe(false);
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [])).toBe(false);
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [[]])).toBe(false);
+    });
+
+    test('returns false when progress doesn\'t have same number of trues as there ' +
+      'are workouts in the plan', () => {
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [
+        [
+          [true],
+        ],
+      ])).toBe(false);
+
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [
+        [
+          [true, true, true],
+        ],
+      ])).toBe(false);
+
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+      ])).toBe(false);
+
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true],
+        ],
+      ])).toBe(false);
+    });
+
+    test('returns true when progress has same number of trues as there ' +
+      'are workouts in the plan', () => {
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+      ])).toBe(true);
+    });
+
+    test('returns true when progress has a greater number of trues as there ' +
+      'are workouts in the plan', () => {
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [
+        [
+          [true, true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+      ])).toBe(true);
+
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+      ])).toBe(true);
+      expect(isTrainingPlanComplete(testTrainingPlanLevels, [
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+        [
+          [true, true, true],
+          [true, true, true],
+          [true, true, true],
+        ],
+      ])).toBe(true);
     });
   });
 });
