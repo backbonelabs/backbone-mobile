@@ -184,7 +184,7 @@ class Alerts extends Component {
         <Toggle
           value={backboneVibration}
           onChange={this.updateSetting}
-          text="Backbone Vibration"
+          text="BACKBONE Vibration"
           settingName="backboneVibration"
           tintColor={theme.grey300}
           onTintColor={theme.lightBlue200}
@@ -270,7 +270,7 @@ class Alerts extends Component {
         <View style={styles.batteryLifeWarningContainer}>
           <SecondaryText>
             Increasing the vibration strength and pattern of
-            your Backbone will decrease its battery life
+            your BACKBONE will decrease its battery life
           </SecondaryText>
         </View>
       </View>

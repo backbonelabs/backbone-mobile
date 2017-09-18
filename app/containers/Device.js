@@ -373,7 +373,7 @@ class Device extends Component {
         subDeviceStatusText = (
           <View>
             <BodyText style={styles.firmwareUpdateInfoText}>
-              Please do not disconnect your Backbone during
+              Please do not disconnect your BACKBONE during
               the firmware update.
             </BodyText>
           </View>

@@ -518,7 +518,7 @@ class PostureMonitor extends Component {
         caption: 'Reconnecting',
       },
       detail: {
-        caption: 'Attempting to reconnect to your Backbone',
+        caption: 'Attempting to reconnect to your BACKBONE',
       },
     }));
   }
@@ -527,10 +527,10 @@ class PostureMonitor extends Component {
     this.props.dispatch(appActions.showPartialModal({
       topView: (<Image source={deviceSuccessIcon} />),
       title: {
-        caption: 'Backbone Reconnected',
+        caption: 'BACKBONE Reconnected',
       },
       detail: {
-        caption: 'Your Backbone has been successfully reconnected',
+        caption: 'Your BACKBONE has been successfully reconnected',
       },
       buttons: [
         {
@@ -554,18 +554,18 @@ class PostureMonitor extends Component {
     if (this.state.attemptReconnect) {
       this.setState({ attemptReconnect: false });
       title = 'Connection Failed';
-      message = 'Make sure your Backbone is in range and charged';
+      message = 'Make sure your BACKBONE is in range and charged';
     } else if (sessionState === sessionStates.RUNNING) {
-      message = 'Your Backbone was disconnected, but Backbone is still monitoring ' +
+      message = 'Your BACKBONE was disconnected, but BACKBONE is still monitoring ' +
         'your posture!\n\nDo you want to leave and keep the session running on your ' +
-        'Backbone, or attempt to reconnect to your Backbone now to see your posture?';
+        'BACKBONE, or attempt to reconnect to your BACKBONE now to see your posture?';
     } else if (sessionState === sessionStates.PAUSED) {
-      message = 'Your Backbone was disconnected while your session was paused. ' +
+      message = 'Your BACKBONE was disconnected while your session was paused. ' +
         'Do you want to leave to continue your session later, or attempt to reconnect to your ' +
-        'Backbone now?';
+        'BACKBONE now?';
     } else {
-      message = 'Your Backbone was disconnected. Do you want to leave or attempt to reconnect to ' +
-        'your Backbone?';
+      message = 'Your BACKBONE was disconnected. Do you want to leave or attempt to reconnect to ' +
+        'your BACKBONE?';
     }
 
     this.props.dispatch(appActions.showPartialModal({
