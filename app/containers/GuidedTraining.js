@@ -3,6 +3,7 @@ import {
   Image,
   TouchableHighlight,
   View,
+  NativeModules,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -26,6 +27,7 @@ import { formattedTimeString } from '../utils/timeUtils';
 import { markSessionStepComplete, isTrainingPlanComplete } from '../utils/trainingUtils';
 
 const { workoutTypes } = constants;
+const { KeepAwake } = NativeModules;
 const { applyWidthDifference } = relativeDimensions;
 
 const ProgressBar = (props) => {
@@ -248,6 +250,7 @@ class GuidedTraining extends Component {
   }
 
   componentWillUnmount() {
+    KeepAwake.deactivate();
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
@@ -357,6 +360,9 @@ class GuidedTraining extends Component {
   _startTimer() {
     Mixpanel.trackWithProperties('startTimedWorkout', this._getCurrentWorkoutState());
 
+    // Keep screen awake when timer is running
+    KeepAwake.activate();
+
     this.setState({
       hasWorkoutStarted: true,
       hasTimerStarted: true,
@@ -378,6 +384,9 @@ class GuidedTraining extends Component {
    */
   _pauseTimer(cb) {
     Mixpanel.trackWithProperties('pauseTimedWorkout', this._getCurrentWorkoutState());
+
+    // Disable permanent screen awake when timer is stopped
+    KeepAwake.deactivate();
 
     if (this.timerInterval) {
       clearInterval(this.timerInterval);

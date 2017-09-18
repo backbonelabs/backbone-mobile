@@ -36,6 +36,7 @@
 		66351EB31EE098B200383F23 /* UserService.m in Sources */ = {isa = PBXBuildFile; fileRef = 66351EB21EE098B200383F23 /* UserService.m */; };
 		665924E81DD430FA00F5C2C1 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */; };
 		667641271D63B90800D45761 /* Environment.m in Sources */ = {isa = PBXBuildFile; fileRef = 667641261D63B90800D45761 /* Environment.m */; };
+		66773D461F6EE20700285C20 /* KeepAwake.m in Sources */ = {isa = PBXBuildFile; fileRef = 66773D451F6EE20700285C20 /* KeepAwake.m */; };
 		66F9187B1DA9F82B00649391 /* Lato.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 66F918791DA9F82B00649391 /* Lato.ttf */; };
 		66FEFC9A1DCBD70100B8174C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */; };
 		690301FE1EA7A68D00A59FD4 /* VibrationMotorService.m in Sources */ = {isa = PBXBuildFile; fileRef = 690301FD1EA7A68D00A59FD4 /* VibrationMotorService.m */; };
@@ -376,6 +377,8 @@
 		665924E71DD430FA00F5C2C1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		667641251D63B8F900D45761 /* Environment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Environment.h; path = backbone/Environment.h; sourceTree = "<group>"; };
 		667641261D63B90800D45761 /* Environment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Environment.m; path = backbone/Environment.m; sourceTree = "<group>"; };
+		66773D1F1F6EE1F300285C20 /* KeepAwake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeepAwake.h; path = backbone/KeepAwake.h; sourceTree = "<group>"; };
+		66773D451F6EE20700285C20 /* KeepAwake.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KeepAwake.m; path = backbone/KeepAwake.m; sourceTree = "<group>"; };
 		66F918791DA9F82B00649391 /* Lato.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Lato.ttf; path = ../android/app/src/main/assets/fonts/Lato.ttf; sourceTree = "<group>"; };
 		66FEFC991DCBD70100B8174C /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "backbone/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		690301FC1EA7A68C00A59FD4 /* VibrationMotorService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VibrationMotorService.h; path = backbone/VibrationMotorService.h; sourceTree = "<group>"; };
@@ -582,6 +585,8 @@
 				6905742D1F4C2AFB00006412 /* UserSettingService.m */,
 				695248D71F57AF38008AC050 /* ViewControllerService.h */,
 				695248D81F57AF38008AC050 /* ViewControllerService.m */,
+				66773D1F1F6EE1F300285C20 /* KeepAwake.h */,
+				66773D451F6EE20700285C20 /* KeepAwake.m */,
 			);
 			name = Backbone;
 			sourceTree = "<group>";
@@ -1444,6 +1449,7 @@
 				69CCE72B1DD4B01C0038157C /* Utilities.m in Sources */,
 				6625BB8B1DB1E5E9009B4941 /* MixpanelModule.m in Sources */,
 				69A002EF1DDCA13B002C47FB /* DeviceInformationService.m in Sources */,
+				66773D461F6EE20700285C20 /* KeepAwake.m in Sources */,
 				446AF7F91D53DB1200F85785 /* DeviceManagementService.m in Sources */,
 				4457C4B11D60273200F05D92 /* BluetoothService.m in Sources */,
 				690A06161DF8544E00EAC570 /* OTAFileParser.m in Sources */,
