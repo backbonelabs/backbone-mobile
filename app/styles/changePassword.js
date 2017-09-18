@@ -1,7 +1,7 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { heightDifference, fixedResponsiveFontSize } = relativeDimensions;
+const { applyWidthDifference } = relativeDimensions;
 
 export default EStyleSheet.create({
   container: {
@@ -10,10 +10,10 @@ export default EStyleSheet.create({
   },
   innerContainer: {
     alignItems: 'center',
-    marginTop: 50 * heightDifference,
+    marginTop: applyWidthDifference(50),
   },
   inputContainer: {
-    marginBottom: 15 * heightDifference,
+    marginBottom: applyWidthDifference(15),
     width: '90%',
     alignSelf: 'center',
   },
@@ -21,14 +21,18 @@ export default EStyleSheet.create({
     width: '90%',
   },
   newPassword: {
-    marginTop: 15 * heightDifference,
+    marginTop: applyWidthDifference(15),
   },
   saveButton: {
-    marginTop: 40 * heightDifference,
+    marginTop: applyWidthDifference(40),
+    width: '90%',
   },
   warning: {
     color: '$primaryColor',
-    height: 20 * heightDifference,
-    fontSize: fixedResponsiveFontSize(12),
+    height: applyWidthDifference(20),
+  },
+  passwordText: {
+    marginTop: applyWidthDifference(40),
+    paddingHorizontal: applyWidthDifference(20),
   },
 });

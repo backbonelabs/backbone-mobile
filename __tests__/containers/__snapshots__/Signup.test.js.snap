@@ -1,0 +1,170 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Signup Component renders as expected 1`] = `
+<TouchableWithoutFeedback
+  onPress={[Function]}
+>
+  <View
+    style={
+      Array [
+        undefined,
+        Object {
+          "height": 1314,
+        },
+      ]
+    }
+  >
+    <View>
+      <View
+        style={
+          Array [
+            undefined,
+            Object {
+              "flex": 1,
+            },
+          ]
+        }
+      >
+        <View>
+          <Image
+            source={1}
+            style={
+              Array [
+                undefined,
+                Object {
+                  "height": 220,
+                },
+              ]
+            }
+          />
+        </View>
+        <View>
+          <TouchableOpacity
+            activeOpacity={0.2}
+            focusedOpacity={0.7}
+            onPress={[Function]}
+          >
+            <BodyText>
+              Log In
+            </BodyText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.2}
+            focusedOpacity={0.7}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          >
+            <BodyText>
+              Sign Up
+            </BodyText>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View>
+        <View>
+          <View>
+            <Connect(Facebook)
+              buttonText="SIGN UP WITH FACEBOOK"
+            />
+            <View>
+              <View />
+              <SecondaryText>
+                OR
+              </SecondaryText>
+              <View />
+            </View>
+          </View>
+          <Input
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoFocus={false}
+            handleRef={[Function]}
+            iconFont="MaterialIcon"
+            iconLeftName="email"
+            iconStyle={
+              Object {
+                "color": "#9E9E9E",
+              }
+            }
+            keyboardType="email-address"
+            onChangeText={[Function]}
+            onSubmitEditing={[Function]}
+            placeholder="Email"
+            returnKeyType="next"
+            style={
+              Object {
+                "color": "rgba(0, 0, 0, 0.87)",
+              }
+            }
+            value=""
+          />
+          <Input
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoFocus={false}
+            handleRef={[Function]}
+            iconFont="MaterialIcon"
+            iconLeftName="lock"
+            iconStyle={
+              Object {
+                "color": "#9E9E9E",
+              }
+            }
+            keyboardType="default"
+            onChangeText={[Function]}
+            placeholder="Password"
+            secureTextEntry={true}
+            style={
+              Object {
+                "color": "rgba(0, 0, 0, 0.87)",
+              }
+            }
+            value=""
+          />
+          <View>
+            <SecondaryText>
+              By signing up, you agree to our 
+            </SecondaryText>
+            <TouchableOpacity
+              activeOpacity={0.4}
+              focusedOpacity={0.7}
+              onPress={[Function]}
+            >
+              <SecondaryText>
+                Terms of Service
+              </SecondaryText>
+            </TouchableOpacity>
+            <SecondaryText>
+               and 
+            </SecondaryText>
+            <TouchableOpacity
+              activeOpacity={0.4}
+              focusedOpacity={0.7}
+              onPress={[Function]}
+            >
+              <SecondaryText>
+                Privacy Policy
+              </SecondaryText>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View>
+          <Button
+            disabled={true}
+            onPress={[Function]}
+            primary={true}
+            shadow={true}
+            style={Object {}}
+            text="SIGN UP"
+            textStyle={Object {}}
+          />
+        </View>
+      </View>
+    </View>
+  </View>
+</TouchableWithoutFeedback>
+`;

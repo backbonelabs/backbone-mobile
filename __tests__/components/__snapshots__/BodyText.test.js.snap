@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BodyText Component renders as expected 1`] = `
+<View>
+  <UnscalableText
+    style={
+      Array [
+        undefined,
+        undefined,
+      ]
+    }
+  />
+</View>
+`;

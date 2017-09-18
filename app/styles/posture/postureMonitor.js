@@ -1,18 +1,24 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import color from 'color';
 import relativeDimensions from '../../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
-const responsiveWidthHalfCircle = applyWidthDifference(128.5);
-
-const totalPointerWidth = applyWidthDifference(10);
-const totalPointerLength = applyWidthDifference(88);
+const {
+  width,
+  applyWidthDifference,
+  getResponsiveFontSize,
+  fixedResponsiveFontSize,
+} = relativeDimensions;
+const innerMonitorSize = applyWidthDifference(190);
+const summaryStarHeight = 70;
+const summaryStarCircleHeight = summaryStarHeight * 1.5;
+const summaryTitleFontSize = 24;
 
 export default EStyleSheet.create({
-  $sliderIconSize: fixedResponsiveFontSize(15),
-  $sliderIconPadding: applyWidthDifference(5),
-  $pointerBaseHeight: 84,
   container: {
     flex: 1,
+    backgroundColor: '$grey100',
+    justifyContent: 'space-around',
   },
   connectingContainer: {
     flex: 1,
@@ -20,127 +26,189 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   connectingSpinner: {
-    marginBottom: 10,
+    marginBottom: applyWidthDifference(10),
   },
   connectingText: {
-    marginTop: 10,
+    marginTop: applyWidthDifference(10),
   },
   timer: {
     textAlign: 'center',
-    marginTop: 40 * heightDifference,
-    '@media (max-height: 480)': { // iphone4's max height
-      marginTop: 10 * heightDifference,
-    },
-    marginBottom: 5 * heightDifference,
+    fontSize: fixedResponsiveFontSize(54),
+    marginTop: applyWidthDifference(10),
+    color: '$lightBlue500',
   },
   heading: {
     textAlign: 'center',
-    marginBottom: 50 * heightDifference,
-    '@media (max-height: 480)': { // iphone4's max height
-      marginBottom: 15 * heightDifference,
-    },
   },
-  monitorPointerContainer: {
-    flexDirection: 'row',
+  monitorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  animatedProgress: {
+    justifyContent: 'center',
+  },
+  innerMonitorContainer: {
+    height: innerMonitorSize,
+    width: innerMonitorSize,
+    backgroundColor: 'white',
+    borderRadius: innerMonitorSize / 2,
+    position: 'absolute',
     alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    height: totalPointerWidth,
-    width: (totalPointerLength * 2) - applyWidthDifference(8),
-    marginTop: totalPointerWidth * -0.5,
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        shadowRadius: 4,
+        shadowOpacity: 0.15,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
-  base: {
-    width: applyWidthDifference(8),
-    height: applyWidthDifference(8),
-    borderRadius: applyWidthDifference(4),
-    backgroundColor: '$primaryFontColor',
+  pointerContainer: {
+    width: innerMonitorSize - applyWidthDifference(20),
   },
-  hand: {
-    height: applyWidthDifference(2),
-    width: applyWidthDifference(70),
-    backgroundColor: '$primaryFontColor',
+  pointer: {
+    height: applyWidthDifference(5),
+    width: applyWidthDifference(20),
+    borderRadius: applyWidthDifference(20),
+    backgroundColor: '$secondaryFontColor',
   },
-  point: {
+  leftCircle: {
+    width: applyWidthDifference(15),
+    height: applyWidthDifference(15),
+    borderRadius: applyWidthDifference(15 / 2),
+    position: 'absolute',
+    bottom: applyWidthDifference(44),
+    left: (width * 0.5) - (applyWidthDifference(220 / 2) *
+    Math.sin((60 * Math.PI) / 180)) - applyWidthDifference(15 / 8),
+  },
+  rightCircle: {
+    width: applyWidthDifference(15),
+    height: applyWidthDifference(15),
+    borderRadius: applyWidthDifference(15 / 2),
+    position: 'absolute',
+    bottom: applyWidthDifference(44),
+    right: (width * 0.5) - (applyWidthDifference(220 / 2) *
+    Math.sin((60 * Math.PI) / 180)) - applyWidthDifference(15 / 8),
+  },
+  postureRatingContainer: {
+    position: 'absolute',
+    alignItems: 'center',
     backgroundColor: 'transparent',
-    borderRightWidth: 0,
-    borderTopWidth: applyWidthDifference(5),
-    borderLeftWidth: applyWidthDifference(10),
-    borderBottomWidth: applyWidthDifference(5),
-    borderRightColor: 'transparent',
-    borderTopColor: 'transparent',
-    borderLeftColor: '$primaryFontColor',
-    borderBottomColor: 'transparent',
   },
-  monitorTitle: {
-    textAlign: 'center',
-    marginBottom: 34 * heightDifference,
+  postureRating: {
+    fontSize: fixedResponsiveFontSize(42),
+    fontWeight: 'bold',
+    // ************ styles for recalibration button ************
+    // marginTop: applyWidthDifference(40),
   },
-  monitorRatingContainer: {
-    flexDirection: 'row',
-    marginTop: 5 * heightDifference,
-    marginBottom: 5 * heightDifference,
-    alignSelf: 'center',
-  },
-  monitorPoor: {
-    marginLeft: applyWidthDifference(26),
-    marginRight: applyWidthDifference(212),
-  },
-  monitorGood: {
-    marginRight: applyWidthDifference(27),
-  },
+  // refreshIcon: {
+  //   textAlign: 'center',
+  // },
+  // reCalibrate: {
+  //   fontSize: fixedResponsiveFontSize(12),
+  //   fontWeight: 'bold',
+  // },
   sliderTitle: {
     textAlign: 'center',
-    alignSelf: 'center',
-    width: applyWidthDifference(296),
-  },
-  sliderContainer: {
-    width: applyWidthDifference(296),
-    marginBottom: 50 * heightDifference,
-    alignSelf: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
+    fontSize: fixedResponsiveFontSize(12),
+    marginBottom: applyWidthDifference(10),
   },
   btnContainer: {
-    width: applyWidthDifference(350),
+    width: '85%',
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent: 'space-around',
   },
-  monitorBtn: {
-    width: applyWidthDifference(75),
-    height: 75 * heightDifference,
+  partialSpinnerContainer: {
+    height: applyWidthDifference(25),
+  },
+  summaryTopView: {
+    paddingVertical: 0,
+  },
+  summaryTopIcon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  summaryTopStarCircle: {
+    fontSize: fixedResponsiveFontSize(summaryStarCircleHeight),
+    color: '$lightBlue500',
+  },
+  summaryTopStar: {
+    fontSize: fixedResponsiveFontSize(summaryStarHeight),
+    backgroundColor: 'transparent',
+    color: 'white',
+    position: 'absolute',
+  },
+  summaryContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  summaryTitle: {
+    fontSize: getResponsiveFontSize(summaryTitleFontSize),
+    fontWeight: 'bold',
+    marginBottom: applyWidthDifference(12),
+    color: '$lightBlue500',
+  },
+  emptyTitle: {
+    height: getResponsiveFontSize(summaryTitleFontSize),
+  },
+  summaryDetailContainer: {
+    alignItems: 'center',
+    width: applyWidthDifference(270),
+    borderRadius: applyWidthDifference(10),
+    backgroundColor: () => (
+      color(EStyleSheet.value('$lightBlue500')).clearer(0.5).rgbString()
+    ),
+  },
+  summaryDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: applyWidthDifference(10),
+  },
+  summaryDetailIconContainer: {
+    flex: 0.1,
+    alignItems: 'center',
+  },
+  summaryDetailIconGoal: {
+    fontSize: applyWidthDifference(24),
+    color: 'white',
+  },
+  summaryDetailIconStar: {
+    fontSize: applyWidthDifference(24),
+    color: 'white',
+  },
+  summaryDetailIconVertebrae: {
+    width: applyWidthDifference(24),
+    height: applyWidthDifference(24),
     resizeMode: 'contain',
   },
-  btnText: {
-    textAlign: 'center',
-    marginTop: 14 * heightDifference,
+  summaryDetailCaptionContainer: {
+    flex: 0.6,
+    paddingLeft: applyWidthDifference(8),
   },
-  halfCircleOuterContainer: {
-    height: responsiveWidthHalfCircle,
-    width: (responsiveWidthHalfCircle * 2),
-    position: 'absolute',
-    top: applyWidthDifference(7.5),
-    left: applyWidthDifference(7.5),
-    alignSelf: 'center',
-    alignItems: 'center',
-    borderWidth: 0,
-    overflow: 'hidden',
+  summaryDetailValueContainer: {
+    flex: 0.3,
+    alignItems: 'flex-end',
   },
-  halfCircleInnerContainer: {
-    height: responsiveWidthHalfCircle * 2,
-    width: responsiveWidthHalfCircle * 2,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    justifyContent: 'flex-end',
-    alignSelf: 'center',
-    alignItems: 'center',
+  summaryDetailValue: {
+    fontWeight: 'bold',
   },
-  halfCircle: {
-    height: responsiveWidthHalfCircle,
-    width: responsiveWidthHalfCircle * 2,
-    borderBottomLeftRadius: responsiveWidthHalfCircle * 2,
-    borderBottomRightRadius: responsiveWidthHalfCircle * 2,
-    backgroundColor: '#FFF',
+  summaryDetailLine: {
+    borderBottomWidth: 1,
+    width: applyWidthDifference(260),
+    borderBottomColor: 'white',
+    marginLeft: applyWidthDifference(15),
+  },
+  planCompletedStarIcon: {
+    color: '$orange500',
+    fontSize: fixedResponsiveFontSize(60),
   },
 });

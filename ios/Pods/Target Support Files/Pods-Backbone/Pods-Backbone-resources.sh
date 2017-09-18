@@ -80,6 +80,7 @@ EOM
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_resource "FBSDKCoreKit/FacebookSDKStrings.bundle"
   install_resource "Mixpanel/Mixpanel/Images/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Images/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Images/MPArrowRight.png"
@@ -99,6 +100,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "Mixpanel/Mixpanel/MPSurvey.storyboard"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_resource "FBSDKCoreKit/FacebookSDKStrings.bundle"
   install_resource "Mixpanel/Mixpanel/Images/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Images/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Images/MPArrowRight.png"

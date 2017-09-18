@@ -1,32 +1,52 @@
 import React, { PropTypes } from 'react';
-import { Slider, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import styles from '../.././../styles/posture/postureMonitor';
+import { View } from 'react-native';
+import RNSlider from 'react-native-slider';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import styles from '../../../styles/posture/monitorSlider';
+import theme from '../../../styles/theme';
+import relativeDimensions from '../../../utils/relativeDimensions';
 
-const MonitorSlider = (props) => (
-  <View style={styles.sliderContainer}>
-    <Icon
-      name="minus"
-      size={styles.$sliderIconSize}
-      style={{ paddingRight: styles.$sliderIconPadding }}
-    />
-    <View style={{ flex: 1 }}>
-      <Slider
-        minimumTrackTintColor={'#ED1C24'}
-        {...props}
+const MonitorSlider = ({ leftIcon, leftIconSize, rightIcon, rightIconSize, ...props }) => {
+  const minimumTrackTintColor = props.disabled ? theme.disabledColor : props.minimumTrackTintColor;
+
+  return (
+    <View style={styles.sliderContainer}>
+      <MaterialIcons
+        name={leftIcon}
+        size={leftIconSize}
+        style={styles.leftIconStyles}
+      />
+      <View style={styles.sliderInnerContainer}>
+        <RNSlider
+          trackStyle={styles.trackStyle}
+          thumbStyle={styles.thumbStyle}
+          {...props}
+          minimumTrackTintColor={minimumTrackTintColor}
+        />
+      </View>
+      <MaterialIcons
+        name={rightIcon}
+        size={rightIconSize}
+        style={styles.rightIconStyles}
       />
     </View>
-    <Icon
-      name="plus"
-      size={styles.$sliderIconSize}
-      style={{ paddingLeft: styles.$sliderIconPadding }}
-    />
-  </View>
-);
+  );
+};
 
 MonitorSlider.propTypes = {
-  onValueChange: PropTypes.func,
-  disabled: PropTypes.bool,
+  ...RNSlider.propTypes,
+  rightIcon: PropTypes.string,
+  leftIcon: PropTypes.string,
+  rightIconSize: PropTypes.number,
+  leftIconSize: PropTypes.number,
+};
+
+MonitorSlider.defaultProps = {
+  leftIconSize: relativeDimensions.fixedResponsiveFontSize(30),
+  rightIconSize: relativeDimensions.fixedResponsiveFontSize(30),
+  minimumTrackTintColor: theme.lightBlue500,
+  leftIcon: 'remove',
+  rightIcon: 'add',
 };
 
 export default MonitorSlider;

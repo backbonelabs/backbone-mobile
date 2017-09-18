@@ -77,6 +77,14 @@ public class Constants {
         int LONG = 800;
     }
 
+    public interface EXPANSION_LOADER_STATES {
+        int ERROR = 0;
+        int CHECKING = 1;
+        int DOWNLOADING = 2;
+        int UNZIPPING = 3;
+        int COMPLETED = 4;
+    }
+
     public interface BOOTLOADER_STATES {
         int OFF = 0;
         int INITIATED = 1;
@@ -227,7 +235,7 @@ public class Constants {
 
     public final static int MAX_BLE_ACTION_ATTEMPT = 50;
     public final static int MAX_IDLE_DURATION = 120; // Delay before the app disconnects from the device on an idle situation, in seconds
-    public final static int CONNECTION_TIMEOUT = 10; // Device connection timeout, in seconds
+    public final static int CONNECTION_TIMEOUT = 20; // Device connection timeout, in seconds
 
     public final static int SESSION_DEFAULT_DURATION = 5; // Session duration in minutes
     public final static int SLOUCH_DEFAULT_DISTANCE_THRESHOLD = 2000; // Distance threshold in ten thousandths of a unit
@@ -280,4 +288,19 @@ public class Constants {
         String POSTURE_SESSION_STREAM = "PostureSessionAccelerometerDeliveryStream3";
         String POSTURE_SESSION = "PostureSessionDeliveryStream3";
     }
+
+    public final static String EXTRA_VIDEO_ERROR_INFO = "co.backbonelabs.backbone.extra.VIDEO_ERROR_INFO";
+    public final static String EXTRA_VIDEO_PLAYBACK_PROGRESS = "co.backbonelabs.backbone.extra.VIDEO_PLAYBACK_PROGRESS";
+
+    public final static String ACTION_VIDEO_PLAYER_LOADED = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYER_LOADED";
+    public final static String ACTION_VIDEO_PLAYBACK_ENDED = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_ENDED";
+    public final static String ACTION_VIDEO_PLAYBACK_ERROR = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_ERROR";
+    public final static String ACTION_VIDEO_PLAYBACK_PROGRESS = "co.backbonelabs.backbone.intent.action.VIDEO_PLAYBACK_PROGRESS";
+
+    public final static String DATA_PATH = "Android/data";
+    public final static String DOWNLOAD_PATH = "files";
+    public final static String GIF_PATH = DOWNLOAD_PATH + "/" + "gif";
+    public final static String THUMBNAIL_PATH = DOWNLOAD_PATH + "/" + "thumbnail";
+    public final static int GIF_FILE_COUNT = 15;
+    public final static int THUMBNAIL_FILE_COUNT = 18;
 }

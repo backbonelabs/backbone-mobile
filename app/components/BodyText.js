@@ -1,12 +1,9 @@
 import React from 'react';
 import {
-  Text,
   View,
 } from 'react-native';
+import UnscalableText from './UnscalableText';
 import styles from '../styles/text';
-import reusableDefaults from './utils/reusableDefaults';
-
-const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableDefaults;
 
 class BodyText extends React.Component {
   setNativeProps(nativeProps) {
@@ -21,18 +18,17 @@ class BodyText extends React.Component {
 
     return (
       <View ref={component => { this._root = component; }}>
-        <Text
-          style={[styles._body, style]}
-          {...{ remainingProps, allowFontScaling }}
+        <UnscalableText
+          style={[styles.body, style]}
+          {...remainingProps}
         >
           {this.props.children}
-        </Text>
+        </UnscalableText>
       </View>
     );
   }
 }
 
-BodyText.propTypes = propTypes;
-BodyText.defaultProps = defaultProps;
+BodyText.propTypes = UnscalableText.propTypes;
 
 export default BodyText;

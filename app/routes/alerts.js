@@ -4,5 +4,5 @@ export default {
   name: 'alerts',
   title: 'Alerts',
   component: Alerts,
-  showBackButton: true,
+  showLeftComponent: true,
 };

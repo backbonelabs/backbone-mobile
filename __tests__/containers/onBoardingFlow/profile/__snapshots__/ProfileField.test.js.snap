@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfileField Component renders as expected 1`] = `
+<View
+  accessible={true}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Array [
+      undefined,
+      undefined,
+    ]
+  }
+>
+  <Image
+    source={1}
+  />
+  <BodyText>
+    2017-08-01
+  </BodyText>
+</View>
+`;

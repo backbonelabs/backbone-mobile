@@ -6,6 +6,7 @@ export default {
     DEVICE: 'device',
     CALIBRATION_AUTO_START: 'calibrationAutoStart',
     SESSION_STATE: 'sessionParameters',
+    APP_RATING_THRESHOLD: 'appRatingThreshold',
   },
   bluetoothStates: {
     UNKNOWN: -1,
@@ -75,7 +76,7 @@ export default {
     EXIT_BOOTLOADER: 59,
   },
   errorMessages: {
-    NETWORK_ERROR: 'We are encountering server issues. Please try again later.',
+    NETWORK_ERROR: 'Unexpected error. Please try again later.',
   },
   heightUnitIdToLabel: {
     1: 'IN',
@@ -88,6 +89,7 @@ export default {
   gender: {
     male: 1,
     female: 2,
+    other: 3,
   },
   height: {
     defaults: {
@@ -132,8 +134,31 @@ export default {
     baseline: 'https://backbonelabsinc.typeform.com/to/lVs1Sh',
     feedback: 'https://backbonelabsinc.typeform.com/to/rmq85N',
   },
+  surveyThresholds: {
+    feedbackSurvey: 3,
+    initialAppRating: 5,
+    additionalAppRating: 4,
+  },
   appUrls: {
     ios: 'https://appsto.re/us/1vAOgb.i',
     android: 'https://play.google.com/store/apps/details?id=co.backbonelabs.backbone',
+  },
+  authMethods: {
+    EMAIL: 1,
+    FACEBOOK: 2,
+  },
+  workoutTypes: {
+    POSTURE: 1,
+    EXERCISE: 2,
+    STRETCH: 3,
+    MOBILITY: 4,
+    PRIMER: 5,
+  },
+  expansionLoaderStates: {
+    ERROR: 0,
+    CHECKING: 1,
+    DOWNLOADING: 2,
+    UNZIPPING: 3,
+    COMPLETED: 4,
   },
 };

@@ -1,68 +1,93 @@
 import React, { PropTypes } from 'react';
-import Svg, { // eslint-disable-line
-    Circle,
-    LinearGradient,
-    Defs,
-    Stop,
-} from 'react-native-svg';
 import { View } from 'react-native';
-import styles from '../.././../styles/posture/postureMonitor';
+// import { View, TouchableOpacity } from 'react-native';
+// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AnimatedCircularProgress from './AnimatedCircularProgress';
+import BodyText from '../../BodyText';
+// import SecondaryText from '../../SecondaryText';
+import styles from '../../../styles/posture/postureMonitor';
+import theme from '../../../styles/theme';
 import relativeDimensions from '../../../utils/relativeDimensions';
 
 const { applyWidthDifference } = relativeDimensions;
-const responsiveWidth = applyWidthDifference(136);
 
-const Monitor = (props) => {
-  const { pointerPosition, slouchPosition } = props;
-
-  return (
-    <View style={{ alignSelf: 'center' }}>
-      <Svg
-        height={responsiveWidth}
-        width={responsiveWidth * 2}
-      >
-        <Defs>
-          <LinearGradient id="grad" x1="0" y1="0" x2={responsiveWidth * 2} y2="0">
-            <Stop offset="0" stopColor="#F0B24B" stopOpacity="1" />
-            <Stop offset="1" stopColor="#ED1C24" stopOpacity="1" />
-          </LinearGradient>
-        </Defs>
-        <Circle
-          cx={responsiveWidth}
-          cy={responsiveWidth}
-          r={applyWidthDifference(130)}
-          stroke="#231F20"
-          strokeWidth={applyWidthDifference(3)}
-          fill="url(#grad)"
-        />
-      </Svg>
-      <View style={styles.halfCircleOuterContainer}>
+const Monitor = ({ pointerPosition, slouchPosition, rating }) => (
+  <View style={styles.monitorContainer}>
+    <AnimatedCircularProgress
+      arcSweepAngle={240}
+      size={applyWidthDifference(220)}
+      width={applyWidthDifference(6)}
+      fill={slouchPosition}
+      tintColor={theme.primaryColor}
+      backgroundColor={theme.infoColor}
+      style={styles.animatedProgress}
+      tension={100}
+    >
+      <View style={styles.innerMonitorContainer}>
         <View
           style={[
-            { transform: [{ rotate: `${slouchPosition}deg` }] },
-            styles.halfCircleInnerContainer,
+            styles.pointerContainer,
+            { transform: [{ rotate: `${pointerPosition}deg` }] },
           ]}
         >
-          <View style={styles.halfCircle} />
+          <View style={styles.pointer} />
+        </View>
+        <View style={styles.postureRatingContainer}>
+          <BodyText
+            style={[
+              styles.postureRating,
+                { color: rating ? theme.infoColor : theme.primaryColor },
+            ]}
+          >
+            {
+                rating ? 'Good' : 'Poor'
+              }
+          </BodyText>
+          {/* Recalibration button, to be added later on */}
+          {/* <TouchableOpacity
+            onPress={disable ? null : onPress}
+            activeOpacity={0.4}
+          >
+            <MaterialIcons
+              name={'refresh'}
+              size={22}
+              color={disable ? theme.disabledColor : theme.lightBlue500}
+              style={styles.refreshIcon}
+            />
+            <SecondaryText
+              style={[
+                styles.reCalibrate,
+                  { color: disable ? theme.disabledColor : theme.lightBlue500 },
+              ]}
+            >
+                RE-CALIBRATE
+            </SecondaryText>
+          </TouchableOpacity> */}
         </View>
       </View>
-      <View
-        style={[
-          { transform: [{ rotate: `${pointerPosition}deg` }] },
-          styles.monitorPointerContainer,
-        ]}
-      >
-        <View style={styles.base} />
-        <View style={styles.hand} />
-        <View style={styles.point} />
-      </View>
-    </View>
-  );
-};
+    </AnimatedCircularProgress>
+    <View
+      style={[
+        styles.leftCircle,
+          { backgroundColor: slouchPosition === 0 ? theme.infoColor : theme.primaryColor },
+      ]}
+    />
+    <View
+      style={[
+        styles.rightCircle,
+          { backgroundColor: slouchPosition === 100 ? theme.primaryColor : theme.infoColor },
+      ]}
+    />
+  </View>
+);
 
 Monitor.propTypes = {
   pointerPosition: PropTypes.number,
   slouchPosition: PropTypes.number,
+  onPress: PropTypes.func,
+  disable: PropTypes.bool,
+  postureRating: PropTypes.string,
+  rating: PropTypes.bool,
 };
 
 export default Monitor;

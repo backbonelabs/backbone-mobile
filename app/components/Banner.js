@@ -6,9 +6,8 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from '../components/Spinner';
-import SecondaryText from '../components/SecondaryText';
+import BodyText from '../components/BodyText';
 import styles from '../styles/banner';
-import theme from '../styles/theme';
 import routes from '../routes';
 
 const Banner = props => {
@@ -20,26 +19,25 @@ const Banner = props => {
     if (isConnecting) {
       bannerText = 'Connecting...';
     } else if (requestingSelfTest) {
-      bannerText = 'Fixing Backbone sensor...';
+      bannerText = 'Fixing BACKBONE sensor...';
     } else {
-      bannerText = 'Backbone not connected';
+      bannerText = 'BACKBONE not connected';
     }
 
     return (
       <TouchableOpacity
-        style={styles.banner}
-        onPress={() => !isConnecting && props.navigator.push(routes.deviceConnect)}
+        style={styles.container}
+        onPress={() => !isConnecting && props.navigator.push(routes.deviceScan)}
       >
         { isConnecting || requestingSelfTest ?
           <View><Spinner size="small" /></View>
           :
             <Icon
               name="error"
-              size={styles.$bannerIconSize}
-              color={theme.primaryColor}
+              style={styles.icon}
             />
         }
-        <SecondaryText style={styles._bannerText}>{bannerText}</SecondaryText>
+        <BodyText style={styles.text}>{bannerText}</BodyText>
       </TouchableOpacity>
     );
   }

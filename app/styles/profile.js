@@ -1,7 +1,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { Platform } from 'react-native';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, heightDifference, fixedResponsiveFontSize } = relativeDimensions;
+const {
+  applyWidthDifference,
+  fixedResponsiveFontSize,
+} = relativeDimensions;
 
 const positioning = {
   flexDirection: 'row',
@@ -9,38 +13,100 @@ const positioning = {
 };
 
 export default EStyleSheet.create({
+  $photoIconSize: fixedResponsiveFontSize(40),
   container: {
-    width: '100%',
-    height: '100%',
-  },
-  profileFieldContainer: {
-    flex: 0.55,
-  },
-  profileFieldTitle: Object.assign({
-    flex: 0.39,
-  }, positioning),
-  profileField: Object.assign({
     flex: 1,
-    justifyContent: 'space-between',
+    backgroundColor: 'white',
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    paddingVertical: applyWidthDifference(12),
+    paddingHorizontal: applyWidthDifference(20),
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '$grey200',
+  },
+  profileHeaderIconContainer: {
+    backgroundColor: '$grey200',
+    height: applyWidthDifference(70),
+    width: applyWidthDifference(70),
+    borderRadius: applyWidthDifference(70) / 2,
+    // Can be removed after adding the photo feature
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileHeaderIcon: {
+    color: '$grey500',
+    backgroundColor: 'transparent',
+    padding: applyWidthDifference(15),
+  },
+  profileHeaderNickname: {
+    fontWeight: '900',
+    paddingHorizontal: applyWidthDifference(20),
+  },
+  profileField: Object.assign({
+    height: applyWidthDifference(60),
+    justifyContent: 'flex-start',
     paddingHorizontal: applyWidthDifference(10),
     borderBottomWidth: 1,
-    borderColor: '#EEEEEE',
+    borderColor: '$grey200',
   }, positioning),
-  profileText: {
-    color: '$primaryFontColor',
+  profileFieldIcon: {
+    color: '$lightBlue500',
+    fontSize: fixedResponsiveFontSize(22),
+    width: applyWidthDifference(50),
+    textAlign: 'center',
   },
   profileFieldData: {
-    flex: 0.61,
-    alignItems: 'flex-end',
+    paddingHorizontal: applyWidthDifference(15),
   },
   profileFieldInput: {
-    fontSize: fixedResponsiveFontSize(16),
-    left: applyWidthDifference(7.5),
-    borderColor: 'transparent',
-    textAlign: 'right',
+    paddingHorizontal: applyWidthDifference(15),
   },
-  bottomSpacerContainer: {
-    flex: 0.45,
-    paddingTop: 20 * heightDifference,
+  signOutSpacerContainer: {
+    height: applyWidthDifference(30),
+    backgroundColor: '$grey100',
+    borderBottomWidth: 1,
+    borderColor: '$grey200',
+  },
+  resendEmailContainer: {
+    alignItems: 'center',
+    paddingVertical: applyWidthDifference(15),
+    borderBottomWidth: 1,
+    borderColor: '$grey200',
+  },
+  resendEmailText: {
+    textAlign: 'center',
+    marginBottom: applyWidthDifference(15),
+    width: '85%',
+  },
+  // Used to overwrite Input module's default styling
+  innerContainerStyles: {
+    ...Platform.select({
+      ios: {
+        shadowOpacity: 0,
+      },
+      android: {
+        elevation: 0,
+      },
+    }),
+  },
+  pickerContainer: {
+    ...Platform.select({
+      ios: {
+        height: applyWidthDifference(220),
+        marginTop: applyWidthDifference(-20),
+      },
+      android: {
+        height: applyWidthDifference(40),
+      },
+    }),
+  },
+  profileSave: {
+    paddingLeft: applyWidthDifference(20),
+    paddingVertical: applyWidthDifference(10),
+  },
+  profileSaveSpinner: {
+    alignSelf: 'flex-end',
   },
 });

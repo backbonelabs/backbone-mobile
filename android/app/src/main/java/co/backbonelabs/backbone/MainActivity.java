@@ -3,8 +3,9 @@ package co.backbonelabs.backbone;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-
+import android.content.Intent;
 import com.facebook.react.ReactActivity;
+import com.google.android.vending.expansion.downloader.impl.DownloadNotification;
 
 import co.backbonelabs.backbone.util.Constants;
 import timber.log.Timber;
@@ -13,6 +14,12 @@ public class MainActivity extends ReactActivity {
     public static Activity currentActivity;
     private Handler idleTimerHandler = new Handler();
     private Runnable idleTimerRunnable = null;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        MainApplication.getCallbackManager().onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +93,9 @@ public class MainActivity extends ReactActivity {
         if (bluetoothService.getCurrentDevice() != null) {
             bluetoothService.disconnect(null);
         }
+
+        // Clear the downloader notification if exists
+        NotificationService.clearNotification(DownloadNotification.NOTIFICATION_ID);
     }
 
     @Override

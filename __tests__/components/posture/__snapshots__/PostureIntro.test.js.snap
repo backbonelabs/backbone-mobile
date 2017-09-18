@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PostureIntro Component renders as expected 1`] = `
+<View>
+  <HeadingText
+    size={3}
+  >
+    Sit or stand up straight before you begin
+  </HeadingText>
+  <FLAnimatedImage
+    resizeMode="contain"
+    source={1}
+  />
+  <Button
+    onPress={[Function]}
+    primary={true}
+    shadow={true}
+    style={Object {}}
+    text="START"
+    textStyle={Object {}}
+  />
+</View>
+`;

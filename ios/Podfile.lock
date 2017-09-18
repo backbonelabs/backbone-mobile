@@ -4,6 +4,19 @@ PODS:
   - AWSCore (2.5.6)
   - AWSKinesis (2.5.6):
     - AWSCore (= 2.5.6)
+  - Bolts (1.8.4):
+    - Bolts/AppLinks (= 1.8.4)
+    - Bolts/Tasks (= 1.8.4)
+  - Bolts/AppLinks (1.8.4):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.8.4)
+  - FBSDKCoreKit (4.22.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.22.0):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.22.0):
+    - FBSDKCoreKit
+  - FLAnimatedImage (1.0.12)
   - Mixpanel (3.0.8):
     - Mixpanel/Mixpanel (= 3.0.8)
   - Mixpanel/Mixpanel (3.0.8)
@@ -11,14 +24,23 @@ PODS:
 DEPENDENCIES:
   - AWSCognito
   - AWSKinesis
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - FBSDKShareKit
+  - FLAnimatedImage
   - Mixpanel
 
 SPEC CHECKSUMS:
   AWSCognito: 18edcf80780d45229371dc954c77c825c617f9c4
   AWSCore: 47109d026cdbc1272624caa73114fbdd2ba3ad66
   AWSKinesis: fcd6511b82be0b48c423838de52519e158ba46eb
+  Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  FBSDKCoreKit: c693bad19feb225469eeff14452ba364522ee48b
+  FBSDKLoginKit: 1fa529fc622d7b32ebeaffbecd377180833c6d30
+  FBSDKShareKit: 21ab3c8d173f4fa20c47c1061f3a9fac5950b5fa
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   Mixpanel: 550a23d5dd95f8e9cda21e697661ffddbc8da46b
 
-PODFILE CHECKSUM: bdbd7a22b2cc0156b6967f496ab6ded18243ad73
+PODFILE CHECKSUM: 9144d07bdf7dee18800de7f4e484778c3bf0e522
 
 COCOAPODS: 1.2.1

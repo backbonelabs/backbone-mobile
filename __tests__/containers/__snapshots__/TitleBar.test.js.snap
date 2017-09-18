@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TitleBar Component renders as expected 1`] = `
+<View
+  style={
+    Array [
+      undefined,
+      undefined,
+      undefined,
+    ]
+  }
+>
+  <View />
+  <HeadingText
+    size={3}
+    style={
+      Array [
+        undefined,
+        Object {
+          "color": "rgba(0, 0, 0, 0.54)",
+        },
+      ]
+    }
+  />
+  <View />
+</View>
+`;

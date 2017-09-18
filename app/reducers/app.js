@@ -2,12 +2,12 @@ import { isString, mapValues } from 'lodash';
 import {
   UPDATE_BLUETOOTH_STATE,
   SET_CONFIG,
+  SET_TITLE_BAR,
   SHOW_FULL_MODAL,
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
-  ONBOARDING_NEXT_STEP,
-  REMOVE_ONBOARDING_NEXT_STEP,
+  SET_NEXT_ROUTE,
 } from '../actions/types';
 
 export default (state = {
@@ -16,22 +16,31 @@ export default (state = {
   modal: {
     showFull: false,
     showPartial: false,
-    hideClose: false,
     content: null,
+    config: null,
     onClose: null,
   },
-  nextStep: false,
+  titleBar: {
+    name: null,
+    title: null,
+    component: null,
+    showLeftComponent: false,
+    showNavbar: false,
+    rightComponent: null,
+  },
+  nextRoute: null,
 }, action) => {
-  switch (action.type) {
+  const { type, payload } = action;
+  switch (type) {
     case UPDATE_BLUETOOTH_STATE: {
       return {
         ...state,
-        bluetoothState: action.payload,
+        bluetoothState: payload,
       };
     }
     case SET_CONFIG: {
       // Convert string true/false values to primitive boolean
-      const transformedConfig = mapValues(action.payload, value => {
+      const transformedConfig = mapValues(payload, value => {
         if (isString(value)) {
           const _value = value.toLowerCase();
           if (_value === 'true') {
@@ -48,8 +57,13 @@ export default (state = {
         config: transformedConfig,
       };
     }
+    case SET_TITLE_BAR:
+      return {
+        ...state,
+        titleBar: payload,
+      };
     case SHOW_FULL_MODAL: {
-      const { content, onClose } = action.payload;
+      const { content, onClose } = payload;
       return {
         ...state,
         modal: {
@@ -66,18 +80,17 @@ export default (state = {
           showFull: false,
           content: null,
           onClose: null,
+          config: null,
         },
       };
     }
     case SHOW_PARTIAL_MODAL: {
-      const { content, hideClose, onClose } = action.payload;
       return {
         ...state,
         modal: {
           showPartial: true,
-          hideClose,
-          content,
-          onClose,
+          config: { ...payload },
+          onClose: null,
         },
       };
     }
@@ -86,22 +99,16 @@ export default (state = {
         ...state,
         modal: {
           showPartial: false,
-          hideClose: false,
           content: null,
+          config: null,
           onClose: null,
         },
       };
     }
-    case ONBOARDING_NEXT_STEP: {
+    case SET_NEXT_ROUTE: {
       return {
         ...state,
-        nextStep: true,
-      };
-    }
-    case REMOVE_ONBOARDING_NEXT_STEP: {
-      return {
-        ...state,
-        nextStep: false,
+        nextRoute: payload,
       };
     }
     default:

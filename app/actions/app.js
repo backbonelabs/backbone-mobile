@@ -1,11 +1,11 @@
 import {
   SET_CONFIG,
+  SET_TITLE_BAR,
   SHOW_FULL_MODAL,
   HIDE_FULL_MODAL,
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
-  ONBOARDING_NEXT_STEP,
-  REMOVE_ONBOARDING_NEXT_STEP,
+  SET_NEXT_ROUTE,
 } from './types';
 
 export default {
@@ -13,6 +13,12 @@ export default {
     return {
       type: SET_CONFIG,
       payload: config,
+    };
+  },
+  setTitleBar(titleBarConfig) {
+    return {
+      type: SET_TITLE_BAR,
+      payload: titleBarConfig,
     };
   },
   showFullModal(modalConfig) {
@@ -33,10 +39,10 @@ export default {
   hidePartialModal() {
     return { type: HIDE_PARTIAL_MODAL };
   },
-  nextStep() {
-    return { type: ONBOARDING_NEXT_STEP };
-  },
-  removeNextStep() {
-    return { type: REMOVE_ONBOARDING_NEXT_STEP };
+  setNextRoute(route) {
+    return {
+      type: SET_NEXT_ROUTE,
+      payload: route,
+    };
   },
 };

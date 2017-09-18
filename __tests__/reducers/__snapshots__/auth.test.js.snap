@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Auth Reducer should handle LOGIN 1`] = `
+Object {
+  "accessToken": "testToken",
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": "testId",
+}
+`;
+
+exports[`Auth Reducer should handle LOGIN__ERROR 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": "testError",
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should handle LOGIN__START 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": true,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should handle PASSWORD_RESET 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": true,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should handle PASSWORD_RESET__ERROR 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": "testError",
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should handle PASSWORD_RESET__START 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": true,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should handle SET_ACCESS_TOKEN 1`] = `
+Object {
+  "accessToken": "testToken",
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should handle SIGN_OUT 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should handle SIGNUP 1`] = `
+Object {
+  "accessToken": "testToken",
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": "testId",
+}
+`;
+
+exports[`Auth Reducer should handle SIGNUP__ERROR 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": "testError",
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should handle SIGNUP__START 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": true,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;
+
+exports[`Auth Reducer should return initial state 1`] = `
+Object {
+  "accessToken": null,
+  "errorMessage": null,
+  "inProgress": false,
+  "passwordResetSent": false,
+  "userId": null,
+}
+`;

@@ -1,0 +1,184 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dashboard Component renders as expected 1`] = `
+<Image
+  source={1}
+>
+  <View>
+    <Carousel
+      animationFunc="timing"
+      animationOptions={
+        Object {
+          "easing": [Function],
+        }
+      }
+      autoplay={false}
+      autoplayDelay={5000}
+      autoplayInterval={3000}
+      containerCustomStyle={null}
+      contentContainerCustomStyle={null}
+      enableMomentum={true}
+      enableSnap={true}
+      firstItem={1}
+      inactiveSlideOpacity={1}
+      inactiveSlideScale={1}
+      items={
+        Array [
+          Array [
+            Array [
+              Object {
+                "isComplete": true,
+                "title": "Beginner Chest Stretch",
+                "workout": Object {
+                  "_id": "cheststretch",
+                  "title": "Chest Stretch",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Intermediate Upper Back Stretch",
+                "workout": Object {
+                  "_id": "nomoney",
+                  "title": "No Money",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Beginner Posture Session",
+                "workout": Object {
+                  "_id": "5minposture",
+                  "title": "5-Minute Posture Session",
+                },
+              },
+            ],
+          ],
+          Array [
+            Array [
+              Object {
+                "isComplete": false,
+                "title": "Beginner Upper Back Exercise",
+                "workout": Object {
+                  "_id": "catcamel",
+                  "title": "Cat Camel",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Intermediate Upper Back Stretch",
+                "workout": Object {
+                  "_id": "bandpullapart",
+                  "title": "Band Pull-Apart",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Beginner Posture Session",
+                "workout": Object {
+                  "_id": "5minposture",
+                  "title": "5-Minute Posture Session",
+                },
+              },
+            ],
+            Array [
+              Object {
+                "isComplete": false,
+                "title": "Intermediate Upper Back Stretch",
+                "workout": Object {
+                  "_id": "nomoney",
+                  "title": "No Money",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Beginner Chest Stretch",
+                "workout": Object {
+                  "_id": "cheststretch",
+                  "title": "Chest Stretch",
+                },
+              },
+              Object {
+                "isComplete": false,
+                "title": "Beginner Posture Session",
+                "workout": Object {
+                  "_id": "5minposture",
+                  "title": "5-Minute Posture Session",
+                },
+              },
+            ],
+          ],
+        ]
+      }
+      onCarouselScroll={[Function]}
+      onSnapToItem={[Function]}
+      renderItem={[Function]}
+      reverse={true}
+      shouldOptimizeUpdates={true}
+      showsVerticalScrollIndicator={false}
+      slideStyle={Object {}}
+      snapOnAndroid={true}
+      swipeThreshold={20}
+      vertical={true}
+    />
+  </View>
+  <View />
+  <View>
+    <Carousel
+      animationFunc="timing"
+      animationOptions={
+        Object {
+          "easing": [Function],
+        }
+      }
+      autoplay={false}
+      autoplayDelay={5000}
+      autoplayInterval={3000}
+      containerCustomStyle={null}
+      contentContainerCustomStyle={null}
+      enableMomentum={true}
+      enableSnap={true}
+      firstItem={0}
+      inactiveSlideOpacity={1}
+      inactiveSlideScale={0.9}
+      items={
+        Array [
+          Array [
+            Object {
+              "isComplete": true,
+              "title": "Beginner Chest Stretch",
+              "workout": Object {
+                "_id": "cheststretch",
+                "title": "Chest Stretch",
+              },
+            },
+            Object {
+              "isComplete": false,
+              "title": "Intermediate Upper Back Stretch",
+              "workout": Object {
+                "_id": "nomoney",
+                "title": "No Money",
+              },
+            },
+            Object {
+              "isComplete": false,
+              "title": "Beginner Posture Session",
+              "workout": Object {
+                "_id": "5minposture",
+                "title": "5-Minute Posture Session",
+              },
+            },
+          ],
+        ]
+      }
+      onSnapToItem={[Function]}
+      renderItem={[Function]}
+      reverse={false}
+      shouldOptimizeUpdates={true}
+      showsHorizontalScrollIndicator={false}
+      slideStyle={Object {}}
+      snapOnAndroid={true}
+      swipeThreshold={20}
+      vertical={false}
+    />
+  </View>
+</Image>
+`;

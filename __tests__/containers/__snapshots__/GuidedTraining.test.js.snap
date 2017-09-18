@@ -1,0 +1,130 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GuidedTraining Component renders as expected 1`] = `
+<View>
+  <ProgressBar
+    backgroundColor="#03A9F4"
+    currentStep={2}
+    totalSteps={3}
+  />
+  <View>
+    <HeadingText
+      size={3}
+    >
+      No Money
+    </HeadingText>
+    <BodyText />
+    <BodyText />
+  </View>
+  <Connect(WorkoutView)
+    isGuidedTraining={true}
+    media="image"
+    workout={
+      Object {
+        "_id": "nomoney",
+        "title": "No Money",
+      }
+    }
+  />
+  <View>
+    <View>
+      <TouchableHighlight
+        activeOpacity={1}
+        disabled={false}
+        onHideUnderlay={[Function]}
+        onPress={[Function]}
+        onShowUnderlay={[Function]}
+        style={
+          Array [
+            undefined,
+            Object {},
+          ]
+        }
+        underlayColor="#03A9F4"
+      >
+        <View>
+          <Icon
+            allowFontScaling={false}
+            name="arrow-back"
+            size={100}
+            style={
+              Object {
+                "color": "#03A9F4",
+              }
+            }
+          />
+        </View>
+      </TouchableHighlight>
+      <SecondaryText>
+        PREVIOUS
+      </SecondaryText>
+    </View>
+    <View>
+      <TouchableHighlight
+        activeOpacity={1}
+        disabled={false}
+        onHideUnderlay={[Function]}
+        onPress={[Function]}
+        onShowUnderlay={[Function]}
+        style={
+          Array [
+            undefined,
+            Object {
+              "backgroundColor": "white",
+            },
+          ]
+        }
+        underlayColor="#03A9F4"
+      >
+        <View>
+          <Icon
+            allowFontScaling={false}
+            name="check"
+            size={100}
+            style={
+              Object {
+                "color": "#03A9F4",
+              }
+            }
+          />
+        </View>
+      </TouchableHighlight>
+      <SecondaryText>
+        DONE
+      </SecondaryText>
+    </View>
+    <View>
+      <TouchableHighlight
+        activeOpacity={1}
+        disabled={false}
+        onHideUnderlay={[Function]}
+        onPress={[Function]}
+        onShowUnderlay={[Function]}
+        style={
+          Array [
+            undefined,
+            Object {},
+          ]
+        }
+        underlayColor="#03A9F4"
+      >
+        <View>
+          <Icon
+            allowFontScaling={false}
+            name="arrow-forward"
+            size={100}
+            style={
+              Object {
+                "color": "#03A9F4",
+              }
+            }
+          />
+        </View>
+      </TouchableHighlight>
+      <SecondaryText>
+        NEXT
+      </SecondaryText>
+    </View>
+  </View>
+</View>
+`;

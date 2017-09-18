@@ -14,12 +14,14 @@ import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import BodyText from '../components/BodyText';
 import Mixpanel from '../utils/Mixpanel';
+import constants from '../utils/constants';
 
 class ChangePassword extends Component {
   static propTypes = {
     isUpdating: PropTypes.bool,
     user: PropTypes.shape({
       _id: PropTypes.string,
+      authMethod: PropTypes.number,
     }),
     dispatch: PropTypes.func,
     navigator: PropTypes.shape({
@@ -127,6 +129,18 @@ class ChangePassword extends Component {
       confirmPasswordIconProps.iconRightName = validConfirmPassword ? 'check' : 'close';
     }
 
+    // Don't allow users that signed up with Facebook accounts to change the password
+    if (this.props.user.authMethod === constants.authMethods.FACEBOOK) {
+      return (
+        <View style={styles.container}>
+          <BodyText style={styles.passwordText}>
+            Your account is connected with your Facebook account.
+            There is no need to set a password.
+            If you need assistance, please contact Support from the Settings screen.
+          </BodyText>
+        </View>
+      );
+    }
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
@@ -136,7 +150,7 @@ class ChangePassword extends Component {
                 <View style={styles.innerContainer}>
                   <View style={styles.inputContainer}>
                     <Input
-                      style={styles._inputField}
+                      style={styles.inputField}
                       autoCapitalize="none"
                       handleRef={ref => (
                         this.currentPassword = ref
@@ -151,12 +165,12 @@ class ChangePassword extends Component {
                       returnKeyType="next"
                     />
                   </View>
-                  <BodyText style={styles._warning}>
+                  <BodyText style={styles.warning}>
                     {passwordWarning}
                   </BodyText>
                   <View style={[styles.inputContainer, styles.newPassword]}>
                     <Input
-                      style={styles._inputField}
+                      style={styles.inputField}
                       autoCapitalize="none"
                       handleRef={ref => (
                         this.newPassword = ref
@@ -174,7 +188,7 @@ class ChangePassword extends Component {
                   </View>
                   <View style={styles.inputContainer}>
                     <Input
-                      style={styles._inputField}
+                      style={styles.inputField}
                       autoCapitalize="none"
                       handleRef={ref => (
                         this.confirmPassword = ref
@@ -190,8 +204,8 @@ class ChangePassword extends Component {
                     />
                   </View>
                   <Button
-                    style={styles._saveButton}
-                    text="Save"
+                    style={styles.saveButton}
+                    text="SAVE PASSWORD"
                     disabled={
                       (
                         !this.state.currentPassword ||

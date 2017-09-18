@@ -7,11 +7,12 @@ import Spinner from '../components/Spinner';
 import userActions from '../actions/user';
 import theme from '../styles/theme';
 import Mixpanel from '../utils/Mixpanel';
+import styles from '../styles/profile';
 
 const ProfileSave = props => {
   const isPendingSave = props.pendingUser && !props.pendingUser.invalidData;
-  const textColor = isPendingSave ? '#FFFFFF' : theme.disabledColor;
-  const text = <BodyText style={{ color: textColor }}>Save</BodyText>;
+  const profileTextColor = isPendingSave ? theme.lightBlue500 : theme.disabledColor;
+  const text = <BodyText style={[styles.profileSave, { color: profileTextColor }]}>Save</BodyText>;
 
   return isPendingSave ? (
     <TouchableOpacity
@@ -21,7 +22,7 @@ const ProfileSave = props => {
       }}
     >
       {props.isUpdating ?
-        <Spinner color="#FFFFFF" /> : text}
+        <Spinner style={styles.profileSaveSpinner} color={theme.orange500} size="small" /> : text}
     </TouchableOpacity>
   ) : text;
 };
@@ -41,6 +42,7 @@ export default {
   name: 'profile',
   title: 'Profile',
   component: Profile,
-  showBackButton: true,
+  showRightComponent: true,
+  showLeftComponent: true,
   rightComponent: connect(mapStateToProps)(ProfileSave),
 };

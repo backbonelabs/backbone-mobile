@@ -1,51 +1,59 @@
-import activity from './activity';
-import deviceAdd from './device/deviceAdd';
-import deviceConnect from './device/deviceConnect';
-import deviceScan from './device/deviceScan';
-import welcome from './welcome';
 import login from './login';
 import signup from './signup';
-import device from './device';
-import postureDashboard from './posture/postureDashboard';
+import profile from './profile';
+import postureIntro from './posture/postureIntro';
 import postureCalibrate from './posture/postureCalibrate';
 import postureMonitor from './posture/postureMonitor';
 import postureReport from './posture/postureReport';
 import postureChart from './posture/postureChart';
 import tutorial from './tutorial';
-import profile from './profile';
 import settings from './settings';
-import errors from './errors';
 import reset from './reset';
-import onboarding from './onboarding';
 import alerts from './alerts';
 import support from './support';
 import howTo from './howTo';
 import changePassword from './changePassword';
-import firmwareUpdate from './firmwareUpdate';
+import freeTraining from './freeTraining';
+import education from './education';
+import profileSetupOne from './onBoardingFlow/profileSetupOne';
+import profileSetupTwo from './onBoardingFlow/profileSetupTwo';
+import deviceSetup from './onBoardingFlow/deviceSetup';
+import howToVideo from './onBoardingFlow/howToVideo';
+import deviceScan from './deviceScan';
+import device from './device';
+import dashboard from './dashboard';
+import stats from './stats';
+import guidedTraining from './guidedTraining';
+import libraryContent from './libraryContent';
+import expansion from './expansion';
 
 export default {
-  activity,
-  deviceAdd,
-  deviceConnect,
-  deviceScan,
-  welcome,
   login,
   signup,
-  postureDashboard,
+  postureIntro,
   postureCalibrate,
   postureMonitor,
   postureReport,
   postureChart,
   tutorial,
-  profile,
   settings,
-  errors,
+  profile,
   reset,
-  onboarding,
   alerts,
   support,
   howTo,
-  device,
   changePassword,
-  firmwareUpdate,
+  freeTraining,
+  education,
+  profileSetupOne,
+  profileSetupTwo,
+  deviceSetup,
+  deviceScan,
+  howToVideo,
+  device,
+  dashboard,
+  stats,
+  guidedTraining,
+  libraryContent,
+  expansion,
 };

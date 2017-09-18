@@ -1,12 +1,6 @@
-import React from 'react';
-import {
-  Text,
-} from 'react-native';
+import React, { PropTypes } from 'react';
+import UnscalableText from './UnscalableText';
 import styles from '../styles/text';
-import reusableDefaults from './utils/reusableDefaults';
-
-const { PropTypes } = React;
-const { propTypes, defaultProps, fontScalingProps: { allowFontScaling } } = reusableDefaults;
 
 const HeadingText = props => {
   const {
@@ -16,16 +10,15 @@ const HeadingText = props => {
   } = props;
 
   return (
-    <Text style={[styles[`_heading${size}`], style]} {...{ remainingProps, allowFontScaling }}>
+    <UnscalableText style={[styles[`heading${size}`], style]} {...remainingProps}>
       {props.children}
-    </Text>
+    </UnscalableText>
   );
 };
 
-HeadingText.propTypes = Object.assign({}, propTypes, {
+HeadingText.propTypes = Object.assign({}, UnscalableText.propTypes, {
   size: PropTypes.oneOf([1, 2, 3]).isRequired,
 });
 
-HeadingText.defaultProps = defaultProps;
 
 export default HeadingText;

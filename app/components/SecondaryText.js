@@ -1,17 +1,20 @@
 import React from 'react';
-import {
-  Text,
-} from 'react-native';
+import UnscalableText from './UnscalableText';
 import styles from '../styles/text';
-import reusableDefaults from './utils/reusableDefaults';
 
-const SecondaryText = props => (
-  <Text style={[styles._secondary, props.style]} {...reusableDefaults.fontScalingProps}>
-    {props.children}
-  </Text>
-);
+const SecondaryText = props => {
+  const {
+    style,
+    ...remainingProps,
+  } = props;
 
-SecondaryText.propTypes = reusableDefaults.propTypes;
-SecondaryText.defaultProps = reusableDefaults.defaultProps;
+  return (
+    <UnscalableText style={[styles.secondary, style]} {...remainingProps}>
+      {props.children}
+    </UnscalableText>
+  );
+};
+
+SecondaryText.propTypes = UnscalableText.propTypes;
 
 export default SecondaryText;
