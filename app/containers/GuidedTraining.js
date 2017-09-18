@@ -522,7 +522,7 @@ class GuidedTraining extends Component {
     // the training reducer slice, e.g., when the workout is being marked as complete
     const isComplete = currentWorkout.isComplete;
     const isUpdating = this.props.training.isUpdating;
-    const isCenterButtonDisabled = isUpdating || (isPostureSession && !isComplete);
+    const isCenterButtonDisabled = (!isTimed && isComplete) || isUpdating || isPostureSession;
     const additionalCenterButtonStyles = {
       backgroundColor: currentWorkout.isComplete ? lightBlue500 : 'white',
     };
