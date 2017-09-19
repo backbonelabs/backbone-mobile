@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Alert,
   AppState,
   Linking,
   Platform,
@@ -14,6 +13,7 @@ import { connect } from 'react-redux';
 import { debounce } from 'lodash';
 import Slider from 'react-native-slider';
 import userAction from '../actions/user';
+import appActions from '../actions/app';
 import styles from '../styles/alerts';
 import theme from '../styles/theme';
 import BodyText from '../components/BodyText';
@@ -83,7 +83,26 @@ class Alerts extends Component {
     if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
       // Check if API error prevented settings update
       if (this.props.user.user.settings === nextProps.user.user.settings) {
-        Alert.alert('Error', 'Your settings were NOT saved, please try again.');
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: 'Your settings were NOT saved, please try again.',
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }

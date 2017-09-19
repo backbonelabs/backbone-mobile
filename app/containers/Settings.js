@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
-  Alert,
   AppState,
   Linking,
   ScrollView,
@@ -92,15 +91,29 @@ const SensorSettings = props => (
         props.navigator.push(routes.device);
       } else {
         BluetoothService.getState((error, { state }) => {
-          if (!error) {
-            if (state === bluetoothStates.ON) {
-              props.navigator.push(routes.deviceScan);
-            } else {
-              Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
-            }
-          } else {
-            Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+          if (!error && (state === bluetoothStates.ON)) {
+            return props.navigator.push(routes.deviceScan);
           }
+          return this.props.dispatch(appActions.showPartialModal({
+            title: {
+              caption: 'Error',
+              color: theme.warningColor,
+            },
+            detail: {
+              caption: 'Bluetooth is off. Turn on Bluetooth before continuing.',
+            },
+            buttons: [
+              {
+                caption: 'OK',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                },
+              },
+            ],
+            backButtonHandler: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          }));
         });
       }
     }}
@@ -167,11 +180,27 @@ const openTOS = () => {
     .catch(() => {
       // This catch handler will handle rejections from Linking.openURL as well
       // as when the user's phone doesn't have any apps to open the URL
-      Alert.alert(
-        'Terms of Service',
-        'We could not launch your browser. You can read the Terms of Service ' + // eslint-disable-line prefer-template, max-len
-        'by visiting ' + url + '.',
-      );
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Terms of Service',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'We could not launch your browser. You can read the Terms of Service ' + // eslint-disable-line prefer-template, max-len
+          'by visiting ' + url + '.',
+        },
+        buttons: [
+          {
+            caption: 'OK',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     });
 };
 
@@ -189,11 +218,27 @@ const openPrivacyPolicy = () => {
     .catch(() => {
       // This catch handler will handle rejections from Linking.openURL as well
       // as when the user's phone doesn't have any apps to open the URL
-      Alert.alert(
-        'Privacy Policy',
-        'We could not launch your browser. You can read the Privacy Policy ' + // eslint-disable-line prefer-template, max-len
-        'by visiting ' + url + '.',
-      );
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Privacy Policy',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'We could not launch your browser. You can read the Privacy Policy ' + // eslint-disable-line prefer-template, max-len
+          'by visiting ' + url + '.',
+        },
+        buttons: [
+          {
+            caption: 'OK',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     });
 };
 
@@ -315,7 +360,26 @@ class Settings extends Component {
               scheduledMinute: minute,
             });
           } else if (error) {
-            Alert.alert('Error', error);
+            this.props.dispatch(appActions.showPartialModal({
+              title: {
+                caption: 'Error',
+                color: theme.warningColor,
+              },
+              detail: {
+                caption: error,
+              },
+              buttons: [
+                {
+                  caption: 'OK',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                  },
+                },
+              ],
+              backButtonHandler: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            }));
           }
         });
     }
@@ -343,7 +407,26 @@ class Settings extends Component {
     if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
       // Check if API error prevented settings update
       if (this.props.user.user.settings === nextProps.user.user.settings) {
-        Alert.alert('Error', 'Your settings were NOT saved, please try again.');
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: 'Your settings were NOT saved, please try again.',
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }
@@ -562,22 +645,37 @@ class Settings extends Component {
   }
 
   signOut() {
-    Alert.alert(
-      'Sign Out',
-      '\nAre you sure you want to sign out of your account?',
-      [
-        { text: 'Cancel' },
-        { text: 'OK',
+    this.props.dispatch(appActions.showPartialModal({
+      title: {
+        caption: 'Sign Out',
+      },
+      detail: {
+        caption: 'Are you sure you want to sign out of your account?',
+      },
+      buttons: [
+        {
+          caption: 'Cancel',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        },
+        {
+          caption: 'OK',
           onPress: () => {
             // Remove locally stored user data and reset Redux auth/user store
             this.props.dispatch(authActions.signOut());
             // Disconnect from device
             this.props.dispatch(deviceActions.disconnect());
+
+            this.props.dispatch(appActions.hidePartialModal());
             this.props.navigator.resetTo(routes.login);
           },
         },
-      ]
-    );
+      ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
+    }));
   }
 
   render() {

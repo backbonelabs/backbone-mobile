@@ -182,6 +182,9 @@ class Dashboard extends Component {
           caption: 'OK',
           onPress: this.props.hidePartialModal,
         }],
+        backButtonHandler: () => {
+          this.props.hidePartialModal();
+        },
       });
     } else {
       InteractionManager.runAfterInteractions(() => {

@@ -5,11 +5,13 @@ import {
   Platform,
   DatePickerIOS,
   DatePickerAndroid,
-  Alert,
 } from 'react-native';
+import { connect } from 'react-redux';
 import autobind from 'class-autobind';
 import constants from '../../../utils/constants';
 import styles from '../../../styles/onBoardingFlow/profile';
+import theme from '../../../styles/theme';
+import appActions from '../../../actions/app';
 
 const isiOS = Platform.OS === 'ios';
 const {
@@ -31,8 +33,9 @@ const generateNumericValues = count => {
   return values;
 };
 
-export default class ProfilePicker extends Component {
+class ProfilePicker extends Component {
   static propTypes = {
+    dispatch: PropTypes.func,
     height: PropTypes.object,
     weight: PropTypes.object,
     birthdate: PropTypes.object,
@@ -293,7 +296,26 @@ export default class ProfilePicker extends Component {
                   return this.props.updateProfile('birthdate', null);
                 })
                 .catch(() => {
-                  Alert.alert('Error', 'Unexpected error. Please try again.');
+                  this.props.dispatch(appActions.showPartialModal({
+                    title: {
+                      caption: 'Error',
+                      color: theme.warningColor,
+                    },
+                    detail: {
+                      caption: 'Unexpected error. Please try again.',
+                    },
+                    buttons: [
+                      {
+                        caption: 'OK',
+                        onPress: () => {
+                          this.props.dispatch(appActions.hidePartialModal());
+                        },
+                      },
+                    ],
+                    backButtonHandler: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
+                    },
+                  }));
                 });
               break;
             case 'height':
@@ -307,3 +329,5 @@ export default class ProfilePicker extends Component {
     );
   }
 }
+
+export default connect()(ProfilePicker);

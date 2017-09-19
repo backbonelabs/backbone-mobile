@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   View,
   ListView,
   Animated,
@@ -18,6 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import styles from '../styles/workoutList';
 import TabBar from '../components/TabBar';
 import userActions from '../actions/user';
+import appActions from '../actions/app';
 import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import BodyText from '../components/BodyText';
@@ -312,7 +312,26 @@ class WorkoutList extends Component {
           },
         });
       } else {
-        Alert.alert('Error', 'Video not found!');
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: 'Video not found!',
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }
