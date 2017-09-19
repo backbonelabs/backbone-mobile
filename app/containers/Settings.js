@@ -510,9 +510,6 @@ class Settings extends Component {
         }));
       },
     }, {
-      label: 'Posture Report',
-      handler: () => this.props.navigator.push(routes.postureReport),
-    }, {
       label: 'Sign Out',
       handler: () => this.signOut(),
     }];

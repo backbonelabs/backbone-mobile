@@ -4063,7 +4063,7 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment@2.17.1, moment@>=2.10.3:
+moment@2.17.1:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
@@ -4560,10 +4560,6 @@ raf@^3.2.0:
   dependencies:
     performance-now "^2.1.0"
 
-ramda@~0.21.0:
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.21.0.tgz#a001abedb3ff61077d4ff1d577d44de77e8d0a35"
-
 random-bytes@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/random-bytes/-/random-bytes-1.0.0.tgz#4f68a1dc0ae58bd3fb95848c30324db75d64360b"
@@ -4661,12 +4657,6 @@ react-native-animatable@^1.2.3:
   dependencies:
     prop-types "^15.5.10"
 
-react-native-calendar@0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/react-native-calendar/-/react-native-calendar-0.10.0.tgz#05a1d2fcefbdcd29b20cfc7f2536070aaa743724"
-  dependencies:
-    moment ">=2.10.3"
-
 react-native-extended-stylesheet@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/react-native-extended-stylesheet/-/react-native-extended-stylesheet-0.3.0.tgz#8f99f2be88d9ad2011c281ee842e9cc37e8bce61"
@@ -4683,7 +4673,7 @@ react-native-flanimatedimage@0.2.0:
   resolved "https://registry.yarnpkg.com/react-native-flanimatedimage/-/react-native-flanimatedimage-0.2.0.tgz#1b3cff7cfb8e4c9afb62f8beddce9e25f353cd21"
 
 react-native-fs@2.1.0-rc.1:
-  version "2.1.0-rc.1"
+  version v2.1.0-rc.1
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.1.0-rc.1.tgz#f6078891005478648738db396e822ec0aefc4b95"
   dependencies:
     base-64 "^0.1.0"
@@ -4694,12 +4684,6 @@ react-native-keyboard-aware-scroll-view@0.2.3:
   resolved "https://registry.yarnpkg.com/react-native-keyboard-aware-scroll-view/-/react-native-keyboard-aware-scroll-view-0.2.3.tgz#6f19f39daf41a16caa08a2820773e9a43aa0dc8e"
   dependencies:
     react-timer-mixin "^0.13.3"
-
-react-native-material-kit@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/react-native-material-kit/-/react-native-material-kit-0.4.1.tgz#bdfc4727e4146980e129ee5bbeb7565db6a918cc"
-  dependencies:
-    ramda "~0.21.0"
 
 react-native-mock@0.3.1:
   version "0.3.1"
