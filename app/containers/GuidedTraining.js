@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
+import get from 'lodash/get';
+import omit from 'lodash/omit';
 import color from 'color';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import WorkoutView from './WorkoutView';
@@ -23,10 +25,11 @@ import theme from '../styles/theme';
 import relativeDimensions from '../utils/relativeDimensions';
 import constants from '../utils/constants';
 import Mixpanel from '../utils/Mixpanel';
+import SensitiveInfo from '../utils/SensitiveInfo';
 import { formattedTimeString } from '../utils/timeUtils';
 import { markSessionStepComplete, isTrainingPlanComplete } from '../utils/trainingUtils';
 
-const { workoutTypes } = constants;
+const { storageKeys, workoutTypes } = constants;
 const { KeepAwake } = NativeModules;
 const { applyWidthDifference } = relativeDimensions;
 
@@ -135,6 +138,7 @@ class GuidedTraining extends Component {
       selectedPlanIdx: PropTypes.number,
       selectedLevelIdx: PropTypes.number,
       selectedSessionIdx: PropTypes.number,
+      selectedStepIdx: PropTypes.number,
     }).isRequired,
     updateUserTrainingPlanProgress: PropTypes.func.isRequired,
     selectSessionStep: PropTypes.func.isRequired,
@@ -174,6 +178,24 @@ class GuidedTraining extends Component {
   componentDidMount() {
     // Auto-select the initial step index
     this.props.selectSessionStep(this.state.stepIdx);
+
+    // Continue current step from where last left off if previously started but didn't finish
+    SensitiveInfo.getItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS)
+      .then((pendingProgress = {}) => {
+        const {
+          selectedPlanIdx,
+          selectedLevelIdx,
+          selectedSessionIdx,
+        } = this.props.training;
+        const prevProgress = get(pendingProgress,
+          `${selectedPlanIdx}.${selectedLevelIdx}.${selectedSessionIdx}.${this.state.stepIdx}`);
+
+        if (prevProgress) {
+          // The current step was previously started but didn't completely finish.
+          // Update state with the correct side and setsRemaining based on previous progress.
+          this.setState({ ...prevProgress });
+        }
+      });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -208,27 +230,47 @@ class GuidedTraining extends Component {
     if (prevState.timerSeconds !== this.state.timerSeconds && this.state.timerSeconds === 0) {
       // Timer reached 0 for the rep, stop the timer
       this._pauseTimer(() => {
-        if (this.state.setsRemaining > 0) {
-          // Perform checks to see if there are more sets to do or if user needs to switch sides
+        // Perform checks to see if there are more sets to do or if user needs to switch sides
+        const { setsRemaining, side } = this.state;
+        if (setsRemaining > 0) {
+          // At least one incomplete set remains
           const { currentWorkout } = this.state;
           const newState = {};
-          if (currentWorkout.twoSides && prevState.side === this.state.side) {
-            // This workout needs to be done on two sides
-            if (this.state.side === 1) {
+          if (currentWorkout.twoSides && prevState.side === side) {
+            // User needs to switch sides
+            if (side === 1) {
               // User did it on the first side, now switch to the second side
               newState.side = 2;
             } else {
               // User did it on the second side, now reset to first side and decrement set count
               newState.side = 1;
-              newState.setsRemaining = this.state.setsRemaining - 1;
+              newState.setsRemaining = setsRemaining - 1;
             }
           } else if (!currentWorkout.twoSides) {
             // This workout does not need to be done on two sides, decrement set count
-            newState.setsRemaining = this.state.setsRemaining - 1;
+            newState.setsRemaining = setsRemaining - 1;
           }
 
+          // Save current status locally after completing the side or set
+          const {
+            selectedPlanIdx: planIdx,
+            selectedLevelIdx: levelIdx,
+            selectedSessionIdx: sessionIdx,
+            selectedStepIdx: stepIdx,
+          } = this.props.training;
+          SensitiveInfo.getItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS)
+            .then((pendingProgress = {}) => {
+              SensitiveInfo.setItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS, {
+                ...pendingProgress,
+                [`${planIdx}.${levelIdx}.${sessionIdx}.${stepIdx}`]: {
+                  side: get(newState, 'side', side),
+                  setsRemaining: get(newState, 'setsRemaining', setsRemaining),
+                },
+              });
+            });
+
           if (newState.side === 2 || newState.setsRemaining) {
-            // There are no more sets or another side to do, reset timer
+            // There are more sets or another side to do, reset timer
             newState.timerSeconds = currentWorkout.seconds;
             newState.hasTimerStarted = false;
           }
@@ -275,20 +317,33 @@ class GuidedTraining extends Component {
    * Marks the current workout as complete
    */
   _markComplete() {
+    // Update training plan progress in user profile
     const {
       plans,
       selectedPlanIdx,
       selectedLevelIdx,
       selectedSessionIdx,
+      selectedStepIdx,
     } = this.props.training;
     let progress = this.props.user.trainingPlanProgress;
     progress = markSessionStepComplete(plans, selectedPlanIdx, selectedLevelIdx,
       selectedSessionIdx, this.state.stepIdx, progress);
     this.props.updateUserTrainingPlanProgress(progress);
 
+    // Remove pending progress for the current step
+    SensitiveInfo.getItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS)
+      .then((pendingProgress = {}) => {
+        const remainingProgress = omit(pendingProgress,
+          `${selectedPlanIdx}.${selectedLevelIdx}.${selectedSessionIdx}.${selectedStepIdx}`);
+
+        console.log('_markComplete updating pending progress', remainingProgress);
+
+        SensitiveInfo.setItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS, remainingProgress);
+      });
+
     const currentPlan = plans[selectedPlanIdx];
     if (isTrainingPlanComplete(currentPlan.levels, progress[currentPlan._id])) {
-      // Training is complete, show congratulatory message
+      // Training plan is complete, show congratulatory message
       this.props.showPartialModal({
         topView: <Icon name="star" style={styles.planCompletedStarIcon} />,
         title: {
@@ -401,14 +456,39 @@ class GuidedTraining extends Component {
    */
   _changeStep(stepIdx) {
     this.props.selectSessionStep(stepIdx);
-    this._pauseTimer(() => {
-      this.setState({
-        stepIdx,
-        ...this._getNewStateForWorkout(
-          this._getWorkoutFromCurrentSession(stepIdx, this.props.training)
-        ),
+
+    // Check if there's pending progress for the new step
+    SensitiveInfo.getItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS)
+      .then((pendingProgress = {}) => {
+        const newState = {
+          stepIdx,
+          ...this._getNewStateForWorkout(
+            this._getWorkoutFromCurrentSession(stepIdx, this.props.training)
+          ),
+        };
+
+        const {
+          selectedPlanIdx,
+          selectedLevelIdx,
+          selectedSessionIdx,
+        } = this.props.training;
+        const prevProgress = get(pendingProgress,
+          `${selectedPlanIdx}.${selectedLevelIdx}.${selectedSessionIdx}.${stepIdx}`);
+
+        if (prevProgress) {
+          // The new step was previously started but didn't completely finish.
+          // Load state with the correct side and setsRemaining based on previous progress.
+          Object.assign(newState, prevProgress);
+        }
+
+        if (this.state.isTimerRunning) {
+          this._pauseTimer(() => {
+            this.setState(newState);
+          });
+        } else {
+          this.setState(newState);
+        }
       });
-    });
   }
 
   /**
