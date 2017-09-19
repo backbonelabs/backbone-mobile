@@ -336,8 +336,6 @@ class GuidedTraining extends Component {
         const remainingProgress = omit(pendingProgress,
           `${selectedPlanIdx}.${selectedLevelIdx}.${selectedSessionIdx}.${selectedStepIdx}`);
 
-        // console.log('_markComplete updating pending progress', remainingProgress);
-
         SensitiveInfo.setItem(storageKeys.GUIDED_TRAINING_PENDING_PROGRESS, remainingProgress);
       });
 

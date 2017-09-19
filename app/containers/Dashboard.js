@@ -49,7 +49,6 @@ import {
 import {
   getNextIncompleteWorkout,
   getNextIncompleteSession,
-  // getNextIncompleteLevel,
   getLastUnlockedSession,
   getLastUnlockedLevel,
 } from '../utils/trainingUtils';
@@ -503,7 +502,6 @@ class Dashboard extends Component {
       plans,
     } = this.props.training;
     const levels = get(plans, [selectedPlanIdx, 'levels'], []);
-    // const nextIncompleteLevelIdx = getNextIncompleteLevel(levels);
     const nextIncompleteLevelIdx = getLastUnlockedLevel(levels);
     const nextLevelIndex = nextIncompleteLevelIdx < 0 ? levels.length - 1 : nextIncompleteLevelIdx;
     const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
@@ -555,11 +553,9 @@ class Dashboard extends Component {
     } = this.props.training;
     const levels = get(plans, [selectedPlanIdx, 'levels'], []);
     const level = get(levels, selectedLevelIdx, []);
-    // const nextIncompleteLevelIdx = getNextIncompleteLevel(levels);
     const nextIncompleteLevelIdx = getLastUnlockedLevel(levels);
     const nextLevelIndex = nextIncompleteLevelIdx < 0 ? levels.length - 1 : nextIncompleteLevelIdx;
     const isLevelUnlocked = selectedLevelIdx <= nextLevelIndex;
-    // const nextIncompleteSessionIdx = getNextIncompleteSession(level);
     const nextIncompleteSessionIdx = getLastUnlockedSession(level);
     const nextSessionIndex =
       nextIncompleteSessionIdx < 0 ? level.length - 1 : nextIncompleteSessionIdx;
