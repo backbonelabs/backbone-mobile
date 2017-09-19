@@ -296,11 +296,21 @@ class DeviceScan extends Component {
       icon = iconCheck;
     }
 
+    let identifier;
+    if (identifier) {
+      if (isiOS) {
+        identifier = rowData.identifier.substr(rowData.identifier.lastIndexOf('-') + 1);
+      } else {
+        identifier = rowData.identifier;
+      }
+    } else {
+      identifier = 'Unknown';
+    }
+
     return (
       <View style={styles.deviceRow}>
         <BodyText>
-          { isiOS ? rowData.identifier.substr(rowData.identifier.lastIndexOf('-') + 1)
-          : rowData.identifier}
+          {identifier}
         </BodyText>
         <BodyText style={{ color: messageColor }}>
           {message}
