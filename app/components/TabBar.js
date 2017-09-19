@@ -72,7 +72,6 @@ const TabBar = (props) => {
 
 renderTab.propTypes = {
   toggleSubview: PropTypes.func,
-  toggleSearchBar: PropTypes.func,
   activeTextColor: PropTypes.string,
   inactiveTextColor: PropTypes.string,
   removeDropDown: PropTypes.string,
