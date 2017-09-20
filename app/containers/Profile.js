@@ -224,6 +224,7 @@ class Profile extends Component {
         this.props.dispatch(appActions.showPartialModal({
           title: {
             caption: 'Success',
+            color: theme.green400,
           },
           detail: {
             caption: 'Profile updated',
