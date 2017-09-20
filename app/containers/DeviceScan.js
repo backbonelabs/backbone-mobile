@@ -296,7 +296,7 @@ class DeviceScan extends Component {
       icon = iconCheck;
     }
 
-    let identifier;
+    let identifier = rowData.identifier;
     if (identifier) {
       if (isiOS) {
         identifier = rowData.identifier.substr(rowData.identifier.lastIndexOf('-') + 1);
