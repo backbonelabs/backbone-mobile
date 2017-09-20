@@ -8,7 +8,6 @@ import {
   Keyboard,
   Platform,
   StatusBar,
-  Alert,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -17,6 +16,7 @@ import Spinner from '../components/Spinner';
 import Input from '../components/Input';
 import authActions from '../actions/auth';
 import userActions from '../actions/user';
+import appActions from '../actions/app';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
@@ -114,7 +114,26 @@ class Login extends Component {
         this.setState({ authError: true, authErrorMessage: nextProps.auth.errorMessage });
       } else {
         // For Facebook login error messages
-        Alert.alert('Authentication Error', nextProps.auth.errorMessage);
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Authentication Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: nextProps.auth.errorMessage,
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }

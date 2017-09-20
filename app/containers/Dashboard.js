@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   Animated,
   Easing,
   Linking,
@@ -54,6 +53,7 @@ import {
 } from '../utils/trainingUtils';
 import routes from '../routes';
 import styles from '../styles/dashboard';
+import theme from '../styles/theme';
 
 const colorBackgrounds = {
   purple: purpleBg,
@@ -184,6 +184,9 @@ class Dashboard extends Component {
           caption: 'OK',
           onPress: this.props.hidePartialModal,
         }],
+        backButtonHandler: () => {
+          this.props.hidePartialModal();
+        },
       });
     } else {
       InteractionManager.runAfterInteractions(() => {
@@ -238,11 +241,24 @@ class Dashboard extends Component {
                       // This catch handler will handle rejections from Linking.openURL
                       // as well as when the user's phone doesn't have any apps
                       // to open the URL
-                      Alert.alert(
-                        'Error',
-                        'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
-                        'Please contact us to fill out the survey.',
-                      );
+                      this.props.hidePartialModal();
+                      this.props.showPartialModal({
+                        title: {
+                          caption: 'Error',
+                          color: theme.warningColor,
+                        },
+                        detail: {
+                          caption: 'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
+                          'Please contact us to fill out the survey.',
+                        },
+                        buttons: [{
+                          caption: 'OK',
+                          onPress: this.props.hidePartialModal,
+                        }],
+                        backButtonHandler: () => {
+                          this.props.hidePartialModal();
+                        },
+                      });
                     });
 
                   Mixpanel.track(`${baselineSurveyEventName}-accept`);
@@ -708,12 +724,25 @@ class Dashboard extends Component {
                 // This catch handler will handle rejections from Linking.openURL
                 // as well as when the user's phone doesn't have any apps
                 // to open the URL
-                Alert.alert(
-                  'Error',
-                  'We could not launch the ' + (isiOS ? 'App' : 'Play') + ' Store. ' + // eslint-disable-line prefer-template, max-len
-                  'You can still share your feedback with us by filling out the ' +
-                  'support form in Settings.'
-                );
+                this.props.hidePartialModal();
+                this.props.showPartialModal({
+                  title: {
+                    caption: 'Error',
+                    color: theme.warningColor,
+                  },
+                  detail: {
+                    caption: 'We could not launch the ' + (isiOS ? 'App' : 'Play') + ' Store. ' + // eslint-disable-line prefer-template, max-len
+                    'You can still share your feedback with us by filling out the ' +
+                    'support form in Settings.',
+                  },
+                  buttons: [{
+                    caption: 'OK',
+                    onPress: this.props.hidePartialModal,
+                  }],
+                  backButtonHandler: () => {
+                    this.props.hidePartialModal();
+                  },
+                });
               });
 
             Mixpanel.track(`${appRatingEventName}-accept`);
@@ -773,11 +802,24 @@ class Dashboard extends Component {
                 // This catch handler will handle rejections from Linking.openURL
                 // as well as when the user's phone doesn't have any apps
                 // to open the URL
-                Alert.alert(
-                  'Error',
-                  'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
-                  'Please contact us to fill out the survey.',
-                );
+                this.props.hidePartialModal();
+                this.props.showPartialModal({
+                  title: {
+                    caption: 'Error',
+                    color: theme.warningColor,
+                  },
+                  detail: {
+                    caption: 'We could not launch your browser to access the survey. ' + // eslint-disable-line prefer-template, max-len
+                    'Please contact us to fill out the survey.',
+                  },
+                  buttons: [{
+                    caption: 'OK',
+                    onPress: this.props.hidePartialModal,
+                  }],
+                  backButtonHandler: () => {
+                    this.props.hidePartialModal();
+                  },
+                });
               });
 
             Mixpanel.track(`${feedbackSurveyEventName}-accept`);

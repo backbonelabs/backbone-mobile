@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   Image,
   ScrollView,
   TextInput,
@@ -14,6 +13,7 @@ import supportActions from '../actions/support';
 import HeadingText from '../components/HeadingText';
 import sendout from '../images/settings/sendout.png';
 import styles from '../styles/support';
+import theme from '../styles/theme';
 
 const ConfirmationMessage = props => (
   <View style={styles.confirmationMessageContainer}>
@@ -49,7 +49,26 @@ class Support extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.support.inProgress && !nextProps.support.inProgress) {
       if (nextProps.support.errorMessage) {
-        Alert.alert('Error', nextProps.support.errorMessage);
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: nextProps.support.errorMessage,
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       } else {
         this.props.dispatch(appActions.showFullModal({
           onClose: this.props.navigator.pop,

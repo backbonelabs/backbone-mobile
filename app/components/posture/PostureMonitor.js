@@ -535,6 +535,7 @@ class PostureMonitor extends Component {
       topView: (<Image source={deviceSuccessIcon} />),
       title: {
         caption: 'BACKBONE Reconnected',
+        color: theme.green400,
       },
       detail: {
         caption: 'Your BACKBONE has been successfully reconnected',
@@ -718,6 +719,10 @@ class PostureMonitor extends Component {
             // No session has been started, which means the initial autostart failed, so we should
             // just navigate back since there is nothing else the user can do in this scene
             this.props.dispatch(appActions.showPartialModal({
+              title: {
+                caption: 'Error',
+                color: theme.warningColor,
+              },
               detail: { caption: message },
               buttons: [
                 {
@@ -735,6 +740,10 @@ class PostureMonitor extends Component {
           } else {
             // A session was already started, so an error here would be for resuming the session
             this.props.dispatch(appActions.showPartialModal({
+              title: {
+                caption: 'Error',
+                color: theme.warningColor,
+              },
               detail: { caption: message },
               buttons: [
                 {
@@ -841,6 +850,10 @@ class PostureMonitor extends Component {
 
         if (err) {
           this.props.dispatch(appActions.showPartialModal({
+            title: {
+              caption: 'Error',
+              color: theme.warningColor,
+            },
             detail: { caption: 'An error occurred while attempting to resume the session.' },
             buttons: [
               {
@@ -916,6 +929,10 @@ class PostureMonitor extends Component {
             this.setState({ hasPendingSessionOperation: false });
 
             this.props.dispatch(appActions.showPartialModal({
+              title: {
+                caption: 'Error',
+                color: theme.warningColor,
+              },
               detail: { caption: 'An error occurred while attempting to stop the session.' },
               buttons: [
                 {
@@ -1155,6 +1172,7 @@ class PostureMonitor extends Component {
             topView: <MaterialIcon name="star" style={styles.planCompletedStarIcon} />,
             title: {
               caption: 'Congratulations!',
+              color: theme.green400,
             },
             detail: {
               caption: [

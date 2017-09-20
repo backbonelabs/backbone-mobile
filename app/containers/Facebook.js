@@ -1,8 +1,5 @@
 import React, { PropTypes } from 'react';
-import {
-  View,
-  Alert,
-} from 'react-native';
+import { View } from 'react-native';
 import {
   AccessToken as FBAccessToken,
   LoginManager,
@@ -13,7 +10,9 @@ import { connect } from 'react-redux';
 import constants from '../utils/constants';
 import authActions from '../actions/auth';
 import userActions from '../actions/user';
+import appActions from '../actions/app';
 import styles from '../styles/facebook';
+import theme from '../styles/theme';
 import Button from '../components/Button';
 
 const Facebook = (props) => (
@@ -42,7 +41,26 @@ Facebook.login = (props) => {
             if (data) {
               const callback = (error, graphResults) => {
                 if (error) {
-                  Alert.alert('Please try again.');
+                  this.props.dispatch(appActions.showPartialModal({
+                    title: {
+                      caption: 'Error',
+                      color: theme.warningColor,
+                    },
+                    detail: {
+                      caption: 'Please try again.',
+                    },
+                    buttons: [
+                      {
+                        caption: 'OK',
+                        onPress: () => {
+                          this.props.dispatch(appActions.hidePartialModal());
+                        },
+                      },
+                    ],
+                    backButtonHandler: () => {
+                      this.props.dispatch(appActions.hidePartialModal());
+                    },
+                  }));
                 } else if (Object.keys(props.user).length !== 0) {
                   // Handles Facebook logins from the Profile route. The user's
                   // email must be confirmed before Facebook integration is allowed.
@@ -82,7 +100,26 @@ Facebook.login = (props) => {
           }
         )
         .catch(() => {
-          Alert.alert('Unable to authenticate with Facebook. Try again later.');
+          this.props.dispatch(appActions.showPartialModal({
+            title: {
+              caption: 'Error',
+              color: theme.warningColor,
+            },
+            detail: {
+              caption: 'Unable to authenticate with Facebook. Try again later.',
+            },
+            buttons: [
+              {
+                caption: 'OK',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                },
+              },
+            ],
+            backButtonHandler: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          }));
         });
     }
   });
