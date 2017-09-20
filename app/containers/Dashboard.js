@@ -425,12 +425,14 @@ class Dashboard extends Component {
       const animations = [];
 
       // Animation for scaling the new selected level's hexagon up
-      animations.push(Animated.timing(this.state.animations[newLevel], {
-        useNativeDriver: true,
-        duration: 300,
-        easing: Easing.linear,
-        toValue: 1,
-      }));
+      if (newLevel >= 0) {
+        animations.push(Animated.timing(this.state.animations[newLevel], {
+          useNativeDriver: true,
+          duration: 300,
+          easing: Easing.linear,
+          toValue: 1,
+        }));
+      }
 
       // Animation for scaling the previously selected level's hexagon down if exists
       if (activeLevelIndex >= 0) {
@@ -442,9 +444,11 @@ class Dashboard extends Component {
         }));
       }
 
-      Animated.parallel(animations, {
-        stopTogether: false,
-      }).start();
+      if (animations.length > 0) {
+        Animated.parallel(animations, {
+          stopTogether: false,
+        }).start();
+      }
     }
   }
 

@@ -8,6 +8,7 @@ import {
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
   SET_NEXT_ROUTE,
+  TOGGLE_OVERRIDE_BACK_BUTTON,
 } from '../actions/types';
 
 export default (state = {
@@ -29,6 +30,7 @@ export default (state = {
     rightComponent: null,
   },
   nextRoute: null,
+  overrideBackButton: false,
 }, action) => {
   const { type, payload } = action;
   switch (type) {
@@ -109,6 +111,12 @@ export default (state = {
       return {
         ...state,
         nextRoute: payload,
+      };
+    }
+    case TOGGLE_OVERRIDE_BACK_BUTTON: {
+      return {
+        ...state,
+        overrideBackButton: payload,
       };
     }
     default:
