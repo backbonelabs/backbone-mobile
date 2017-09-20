@@ -6,6 +6,7 @@ import {
   SHOW_PARTIAL_MODAL,
   HIDE_PARTIAL_MODAL,
   SET_NEXT_ROUTE,
+  TOGGLE_OVERRIDE_BACK_BUTTON,
 } from './types';
 
 export default {
@@ -43,6 +44,12 @@ export default {
     return {
       type: SET_NEXT_ROUTE,
       payload: route,
+    };
+  },
+  toggleOverrideBackButton(state) {
+    return {
+      type: TOGGLE_OVERRIDE_BACK_BUTTON,
+      payload: state,
     };
   },
 };
