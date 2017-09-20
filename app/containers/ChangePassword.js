@@ -48,7 +48,7 @@ class ChangePassword extends Component {
             color: theme.warningColor,
           },
           detail: {
-            caption: `${nextProps.errorMessage}`,
+            caption: nextProps.errorMessage,
           },
           buttons: [
             {
