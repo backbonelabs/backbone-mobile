@@ -272,7 +272,7 @@ class WorkoutList extends Component {
         this.props.navigator.push({
           ...routes.postureIntro,
           props: {
-            duration: workout.duration,
+            duration: (workout.duration ? workout.duration : 0),
           },
         });
       } else {
