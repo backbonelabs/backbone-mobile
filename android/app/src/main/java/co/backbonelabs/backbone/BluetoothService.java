@@ -105,7 +105,9 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
         reactContext.addLifecycleEventListener(this);
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        state = bluetoothAdapter.getState();
+        if (bluetoothAdapter != null) {
+            state = bluetoothAdapter.getState();
+        }
     }
 
     public interface DeviceScanCallBack {
@@ -502,11 +504,15 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
             scanCallBack = callBack;
         }
 
-        bluetoothAdapter.startLeScan(bleScanCallback);
+        if (bluetoothAdapter != null) {
+            bluetoothAdapter.startLeScan(bleScanCallback);
+        }
     }
 
     public void stopScan() {
-        bluetoothAdapter.stopLeScan(bleScanCallback);
+        if (bluetoothAdapter != null) {
+            bluetoothAdapter.stopLeScan(bleScanCallback);
+        }
     }
 
     public BluetoothDevice getCurrentDevice() {
@@ -524,12 +530,13 @@ public class BluetoothService extends ReactContextBaseJavaModule implements Life
     }
 
     public BluetoothDevice findDeviceByAddress(String address) {
-        BluetoothDevice device;
-        try {
-            device = bluetoothAdapter.getRemoteDevice(address);
-        } catch (IllegalArgumentException e) {
-            Timber.d("Invalid Address");
-            return null;
+        BluetoothDevice device = null;
+        if (bluetoothAdapter != null) {
+            try {
+                device = bluetoothAdapter.getRemoteDevice(address);
+            } catch (IllegalArgumentException e) {
+                Timber.d("Invalid Address");
+            }
         }
 
         return device;
