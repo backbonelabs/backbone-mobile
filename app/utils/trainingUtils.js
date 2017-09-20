@@ -2,15 +2,20 @@ import { Platform } from 'react-native';
 import ReactNativeFS from 'react-native-fs';
 import cloneDeep from 'lodash/cloneDeep';
 import get from 'lodash/get';
+import constants from './constants';
+
+const { workoutTypes } = constants;
 
 /**
  * Given an array of workouts for a session, returns the index of the first incomplete
  * workout. If all workouts in the session have been completed, then -1 is returned.
  * @param {Object[]} sessionWorkouts Workouts in a session
+ * @param {Number} type Type of the workout to be filtered, use -1 to disable type filter
  * @return {Number} Index of the first incomplete workout in the session, or -1 if none
  */
-export const getNextIncompleteWorkout = (sessionWorkouts = []) =>
-  sessionWorkouts.findIndex(workout => !workout.isComplete);
+export const getNextIncompleteWorkout = (sessionWorkouts = [], type = -1) =>
+  sessionWorkouts.findIndex(workout => !workout.isComplete
+    && (type === -1 || workout.workout.type === type));
 
 /**
  * Given an array of sessions for a level, returns the index of the first incomplete
@@ -29,6 +34,38 @@ export const getNextIncompleteSession = (sessions = []) =>
  */
 export const getNextIncompleteLevel = (levels = []) =>
   levels.findIndex(level => getNextIncompleteSession(level) > -1);
+
+/**
+ * Given an array of workouts from a session, check if the session contains
+ * posture session workouts. If none found, return false, else return true.
+ * @param {Array[]} sessionWorkouts Workouts of a session
+ * @return {Boolean} Return whether any posture session exists in the session
+ */
+export const hasPostureSession = (sessionWorkouts = []) =>
+  sessionWorkouts.findIndex(workout => workout.workout.type === workoutTypes.POSTURE) > -1;
+
+/**
+ * Given an array of sessions for a level, returns the index of the last unlocked
+ * session in the level. If all sessions in the level have been unlocked, and the
+ * next level is already unlocked, then -1 is returned.
+ * @param {Array[]} sessions Sessions in a level
+ * @return {Number} Index of the last unlocked session in the level, or -1 if the last
+ * all sessions in the level as well as the next level have been unlocked
+ */
+export const getLastUnlockedSession = (sessions = []) =>
+  sessions.findIndex(session => getNextIncompleteWorkout(session) > -1
+    && (!hasPostureSession(session)
+      || getNextIncompleteWorkout(session, workoutTypes.POSTURE) > -1));
+
+/**
+ * Given an array of levels for a training plan, returns the index of the last unlocked level.
+ * If all levels have have been unlocked and no more levels are available, then -1 is returned.
+ * @param {Array[][]} levels Levels in a training plan
+ * @return {Number} Index of the last unlocked level in the plan, or -1 if all levels
+ * have been unlocked in the plan, and no other levels are available to unlock
+ */
+export const getLastUnlockedLevel = (levels = []) =>
+  levels.findIndex(level => getLastUnlockedSession(level) > -1);
 
 /**
  * Given an array of training plans, progress, currently selected plan, level, session, and step,
