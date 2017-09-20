@@ -116,4 +116,13 @@ export default EStyleSheet.create({
   spinner: {
     height: applyWidthDifference(25),
   },
+  slouchContainer: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 0.08,
+    flexDirection: 'row',
+    paddingLeft: applyWidthDifference(15),
+    paddingRight: applyWidthDifference(10),
+    height: applyWidthDifference(48),
+  },
 });
