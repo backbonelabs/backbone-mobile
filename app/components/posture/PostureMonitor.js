@@ -125,6 +125,7 @@ class PostureMonitor extends Component {
       modal: PropTypes.shape({
         showPartial: PropTypes.bool,
       }),
+      overrideBackButton: PropTypes.bool,
     }),
     training: PropTypes.shape({
       plans: PropTypes.arrayOf(
@@ -395,6 +396,11 @@ class PostureMonitor extends Component {
         // Reconnect success, proceed to display success alert
         this.showReconnectSuccessIndicator();
       }
+    }
+
+    if (!this.props.app.overrideBackButton && nextProps.app.overrideBackButton) {
+      this.confirmStopSession();
+      this.props.dispatch(appActions.toggleOverrideBackButton(false));
     }
   }
 

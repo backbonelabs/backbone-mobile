@@ -47,8 +47,10 @@ import {
   getColorHexForLevel,
 } from '../utils/levelColors';
 import {
+  getNextIncompleteWorkout,
   getNextIncompleteSession,
-  getNextIncompleteLevel,
+  getLastUnlockedSession,
+  getLastUnlockedLevel,
 } from '../utils/trainingUtils';
 import routes from '../routes';
 import styles from '../styles/dashboard';
@@ -101,7 +103,7 @@ const getLevelCircles = (level) => {
 
   // Else display the session progress circles
   return level.map((session, sessionIdx) => {
-    if (sessionIdx < nextSessionIndex) {
+    if (getNextIncompleteWorkout(session) === -1) {
       return (
         <FontAwesomeIcon key={sessionIdx} name={'circle'} style={styles.hexagonCircleCompleted} />
       );
@@ -423,12 +425,14 @@ class Dashboard extends Component {
       const animations = [];
 
       // Animation for scaling the new selected level's hexagon up
-      animations.push(Animated.timing(this.state.animations[newLevel], {
-        useNativeDriver: true,
-        duration: 300,
-        easing: Easing.linear,
-        toValue: 1,
-      }));
+      if (newLevel >= 0) {
+        animations.push(Animated.timing(this.state.animations[newLevel], {
+          useNativeDriver: true,
+          duration: 300,
+          easing: Easing.linear,
+          toValue: 1,
+        }));
+      }
 
       // Animation for scaling the previously selected level's hexagon down if exists
       if (activeLevelIndex >= 0) {
@@ -440,9 +444,11 @@ class Dashboard extends Component {
         }));
       }
 
-      Animated.parallel(animations, {
-        stopTogether: false,
-      }).start();
+      if (animations.length > 0) {
+        Animated.parallel(animations, {
+          stopTogether: false,
+        }).start();
+      }
     }
   }
 
@@ -500,7 +506,7 @@ class Dashboard extends Component {
       plans,
     } = this.props.training;
     const levels = get(plans, [selectedPlanIdx, 'levels'], []);
-    const nextIncompleteLevelIdx = getNextIncompleteLevel(levels);
+    const nextIncompleteLevelIdx = getLastUnlockedLevel(levels);
     const nextLevelIndex = nextIncompleteLevelIdx < 0 ? levels.length - 1 : nextIncompleteLevelIdx;
     const connectorStyle = idx === levels.length - 1 ? 'hexagonConnectorTop' : 'hexagonConnector';
     const isLevelUnlocked = idx <= nextLevelIndex;
@@ -551,10 +557,10 @@ class Dashboard extends Component {
     } = this.props.training;
     const levels = get(plans, [selectedPlanIdx, 'levels'], []);
     const level = get(levels, selectedLevelIdx, []);
-    const nextIncompleteLevelIdx = getNextIncompleteLevel(levels);
+    const nextIncompleteLevelIdx = getLastUnlockedLevel(levels);
     const nextLevelIndex = nextIncompleteLevelIdx < 0 ? levels.length - 1 : nextIncompleteLevelIdx;
     const isLevelUnlocked = selectedLevelIdx <= nextLevelIndex;
-    const nextIncompleteSessionIdx = getNextIncompleteSession(level);
+    const nextIncompleteSessionIdx = getLastUnlockedSession(level);
     const nextSessionIndex =
       nextIncompleteSessionIdx < 0 ? level.length - 1 : nextIncompleteSessionIdx;
     const isSessionUnlocked = isLevelUnlocked &&

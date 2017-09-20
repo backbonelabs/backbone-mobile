@@ -7,6 +7,7 @@ export default {
     CALIBRATION_AUTO_START: 'calibrationAutoStart',
     SESSION_STATE: 'sessionParameters',
     APP_RATING_THRESHOLD: 'appRatingThreshold',
+    GUIDED_TRAINING_PENDING_PROGRESS: 'guidedTrainingPendingProgress',
   },
   bluetoothStates: {
     UNKNOWN: -1,
