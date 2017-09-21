@@ -816,6 +816,7 @@ class Settings extends Component {
             <Picker
               selectedValue={slouchTimeThreshold}
               onValueChange={this.onPickerValueChange}
+              style={styles.picker}
             >
               {slouchTimeThresholdRange}
             </Picker>

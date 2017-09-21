@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
@@ -124,5 +125,13 @@ export default EStyleSheet.create({
     paddingLeft: applyWidthDifference(15),
     paddingRight: applyWidthDifference(10),
     height: applyWidthDifference(48),
+  },
+  picker: {
+    ...Platform.select({
+      android: {
+        marginLeft: applyWidthDifference(11),
+        marginRight: applyWidthDifference(10),
+      },
+    }),
   },
 });
