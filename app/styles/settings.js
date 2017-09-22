@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
@@ -115,5 +116,22 @@ export default EStyleSheet.create({
   },
   spinner: {
     height: applyWidthDifference(25),
+  },
+  slouchContainer: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 0.08,
+    flexDirection: 'row',
+    paddingLeft: applyWidthDifference(15),
+    paddingRight: applyWidthDifference(10),
+    height: applyWidthDifference(48),
+  },
+  picker: {
+    ...Platform.select({
+      android: {
+        marginLeft: applyWidthDifference(11),
+        marginRight: applyWidthDifference(10),
+      },
+    }),
   },
 });
