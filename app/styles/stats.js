@@ -16,7 +16,9 @@ export default EStyleSheet.create({
   },
   victoryGraph: {
     flex: 1,
+    alignSelf: 'flex-end',
     justifyContent: 'center',
+    marginRight: applyWidthDifference(10),
   },
   noData: {
     flex: 1,
@@ -26,8 +28,6 @@ export default EStyleSheet.create({
   heading: {
     alignItems: 'center',
     marginTop: applyWidthDifference(20),
-    justifyContent: 'space-around',
-    flex: 0.2,
   },
   goodRating: {
     fontWeight: 'bold',
@@ -39,7 +39,9 @@ export default EStyleSheet.create({
     color: '$primaryColor',
   },
   sessionRatingContainer: {
-    flexDirection: 'row',
+    width: '90%',
+    marginTop: applyWidthDifference(10),
+    alignItems: 'flex-start',
   },
   tabs: {
     height: applyWidthDifference(60),

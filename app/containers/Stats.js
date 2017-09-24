@@ -12,12 +12,25 @@ import Graph from '../components/Graph';
 import HeadingText from '../components/HeadingText';
 import BodyText from '../components/BodyText';
 
-const getCurrentSessions = (amount, type, format) => {
-  const sessions = [];
-  for (let i = 0; i <= amount; i++) {
-    sessions.push(moment().subtract(i, type).format(format));
+const days = ['Sat', 'Fri', 'Thur', 'Wed', 'Tue', 'Mon', 'Sun'];
+const months = ['Dec', 'Nov', 'Oct', 'Sep', 'Aug', 'Jul', 'Jun', 'May', 'Apr', 'Mar', 'Feb', 'Jan'];
+const times = [
+  '11pm', '10pm', '9pm', '8pm', '7pm', '6pm', '5pm', '4pm',
+  '3pm', '2pm', '1pm', '12pm', '11am', '10am', '9am', '8am',
+  '7am', '6am', '5am', '4am', '3am', '2am', '1am', '12am',
+];
+
+const getDaysArrayByMonth = () => {
+  let daysInMonth = moment().daysInMonth();
+  const arrDays = [];
+
+  while (daysInMonth) {
+    const current = moment().date(daysInMonth).format('DD');
+    arrDays.push(current);
+    daysInMonth--;
   }
-  return sessions;
+
+  return arrDays;
 };
 
 const convertToHours = (secs) => {
@@ -42,6 +55,51 @@ const totalSessionStats = (sessions) => (
   }, { good: 0, poor: 0 })
 );
 
+const getHighestDuration = (sessions) => {
+  if (sessions.length === 0) {
+    return 0;
+  }
+
+  let greatest = sessions[0].totalDuration;
+
+  for (let i = 1; i < sessions.length; i++) {
+    if (sessions[i].totalDuration > greatest) {
+      greatest = sessions[i].totalDuration;
+    }
+  }
+
+  return Math.ceil(greatest / 60);
+};
+
+const yAxisValues = (time) => {
+  const yAxisArray = [];
+  let splitTime;
+  let counter = 0;
+
+  if ((time === 1) || (time === 0)) {
+    return [0, 1];
+  }
+
+  if (time < 10) {
+    splitTime = time / 4;
+  } else if (time < 100) {
+    splitTime = (Math.ceil(time / 10) * 10) / 4;
+  } else if (time < 1000) {
+    splitTime = (Math.ceil(time / 100) * 100) / 4;
+  } else {
+    splitTime = (Math.ceil(time / 1000) * 1000) / 4;
+  }
+
+  while (counter <= time) {
+    counter += Math.round(splitTime);
+    yAxisArray.push(counter);
+  }
+
+  return yAxisArray;
+};
+
+const xAxisValues = (data) => data.map((val) => val.label);
+
 class Stats extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
@@ -62,6 +120,7 @@ class Stats extends Component {
       sessionsByDays: {},
       sessionsByYear: {},
       selectedTab: 'Today',
+      showHeader: 'Today',
       selectedTabTotalSessions: [],
       loading: true,
     };
@@ -82,18 +141,20 @@ class Stats extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.isFetchingSessions && !nextProps.isFetchingSessions) {
       const today = moment();
-      const sixDaysAgo = moment().subtract(6, 'day').startOf('day');
-      const thirtyDaysAgo = moment().subtract(29, 'day').startOf('day');
+      const startOfMonth = moment().startOf('month');
+      const endOfMonth = moment().endOf('month');
+      const startOfWeek = moment().startOf('week');
+      const endOfWeek = moment().endOf('week');
       const sessions = nextProps.sessions
         .sort((a, b) => a.timestamp - b.timestamp); // sort from oldest to latest
 
       const sessionsByMonth = sessions
         .reduce((acc, val, index) => {
           const date = moment(val.timestamp);
-          const formatedDate = date.format('MM/DD');
+          const formatedDate = date.format('DD');
           /* eslint-disable no-param-reassign */
 
-          if (date.isBetween(thirtyDaysAgo, today, null, '[]')) {
+          if (date.isBetween(startOfMonth, endOfMonth, null, '[]')) {
             if (acc[formatedDate]) {
               acc[formatedDate].slouchTime += val.slouchTime;
               acc[formatedDate].totalDuration += val.totalDuration;
@@ -137,7 +198,7 @@ class Stats extends Component {
           const dayOfWeek = date.format('ddd');
           /* eslint-disable no-param-reassign */
 
-          if (date.isBetween(sixDaysAgo, today, null, '[]')) {
+          if (date.isBetween(startOfWeek, endOfWeek, null, '[]')) {
             if (acc[dayOfWeek]) {
               acc[dayOfWeek].slouchTime += val.slouchTime;
               acc[dayOfWeek].totalDuration += val.totalDuration;
@@ -181,28 +242,44 @@ class Stats extends Component {
   }
 
   selectTab(tab) {
-    const { sessionsByDays, sessionsByHour, sessionsByMonth, sessionsByYear } = this.state;
+    const {
+      sessionsByDays,
+      sessionsByHour,
+      sessionsByMonth,
+      sessionsByYear,
+    } = this.state;
     let selectedTab;
+    let showHeader;
     let selectedTabTotalSessions;
+    const longMonth = moment().format('MMMM');
+    const shortMonth = moment().format('MMM');
+    const startOfWeek = moment().startOf('week').date();
+    const endOfWeek = moment().endOf('week').date();
+    const year = moment().format('gggg');
+
     switch (tab.i) {
       case 1:
         selectedTab = 'Week';
+        showHeader = `${shortMonth} ${startOfWeek} - ${endOfWeek}, ${year}`;
         selectedTabTotalSessions = totalSessionStats(sessionsByDays);
         break;
       case 2:
         selectedTab = 'Month';
+        showHeader = longMonth;
         selectedTabTotalSessions = totalSessionStats(sessionsByMonth);
         break;
       case 3:
         selectedTab = 'Year';
+        showHeader = year;
         selectedTabTotalSessions = totalSessionStats(sessionsByYear);
         break;
       default:
         selectedTab = 'Today';
+        showHeader = 'Today';
         selectedTabTotalSessions = totalSessionStats(sessionsByHour);
     }
 
-    this.setState({ selectedTab, selectedTabTotalSessions }); // i is the index, [0,1,2]
+    this.setState({ selectedTab, showHeader, selectedTabTotalSessions }); // i is the index, [0,1,2]
   }
 
   renderGraph() {
@@ -214,11 +291,15 @@ class Stats extends Component {
       sessionsByMonth,
       sessionsByYear,
     } = this.state;
-    let data;
+    let data = [];
+    let xAxisLabel;
+    const shortMonth = moment().format('MMM');
+    const startOfWeek = moment().startOf('week').date();
+    const today = moment().date();
 
     switch (selectedTab) {
       case 'Week':
-        data = getCurrentSessions(6, 'days', 'ddd').map((val) => {
+        data = days.map((val) => {
           if (sessionsByDays[val]) {
             return sessionsByDays[val];
           }
@@ -228,9 +309,10 @@ class Stats extends Component {
             label: val,
           };
         });
+        xAxisLabel = `${shortMonth} ${startOfWeek}`;
         break;
       case 'Month':
-        data = getCurrentSessions(29, 'days', 'MM/DD').map((val) => {
+        data = getDaysArrayByMonth().map((val) => {
           if (sessionsByMonth[val]) {
             return sessionsByMonth[val];
           }
@@ -240,9 +322,10 @@ class Stats extends Component {
             label: val,
           };
         });
+        xAxisLabel = `${shortMonth} ${today}`;
         break;
       case 'Year':
-        data = getCurrentSessions(11, 'months', 'MMM').map((val) => {
+        data = months.map((val) => {
           if (sessionsByYear[val]) {
             return sessionsByYear[val];
           }
@@ -252,9 +335,10 @@ class Stats extends Component {
             label: val,
           };
         });
+        xAxisLabel = this.state.showHeader;
         break;
       default:
-        data = getCurrentSessions(23, 'hours', 'ha').map((val) => {
+        data = times.map((val) => {
           if (sessionsByHour[val]) {
             return sessionsByHour[val];
           }
@@ -264,6 +348,7 @@ class Stats extends Component {
             label: val,
           };
         });
+        xAxisLabel = `${shortMonth} ${today}`;
         break;
     }
 
@@ -271,6 +356,9 @@ class Stats extends Component {
       <Graph
         data={data}
         noCurrentSessions={(!selectedTabTotalSessions.good && !selectedTabTotalSessions.poor)}
+        xAxisLabel={xAxisLabel}
+        yAxisTickValues={yAxisValues(getHighestDuration(data))}
+        xAxisTickValues={xAxisValues(data)}
       />
     );
   }
@@ -321,8 +409,9 @@ class Stats extends Component {
         </View>
         <View style={styles.graphContainer}>
           { (goodSessions || poorSessions) ? <View style={styles.heading}>
-            <HeadingText size={1} >{ this.state.selectedTab }</HeadingText>
+            <HeadingText size={1}>{ this.state.showHeader }</HeadingText>
             <View style={styles.sessionRatingContainer}>
+              <HeadingText size={2}>Total</HeadingText>
               <BodyText style={styles.goodRating}>
                 GOOD: {good}
               </BodyText>
