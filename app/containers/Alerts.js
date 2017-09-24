@@ -7,6 +7,9 @@ import {
   PushNotificationIOS,
   NativeModules,
   Text,
+  Picker,
+  TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -52,6 +55,7 @@ class Alerts extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      slouchTimeThreshold,
     } = this.props.user.user.settings;
 
     // Maintain settings in component state because the user settings object
@@ -65,6 +69,8 @@ class Alerts extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      slouchTimeThreshold,
+      displayPicker: false,
     };
 
     // Debounce state update to smoothen quick slider value changes
@@ -117,6 +123,16 @@ class Alerts extends Component {
     this.updateSetting(field, value);
   }
 
+  onPickerValueChange(itemValue) {
+    this.setState({ slouchTimeThreshold: itemValue },
+    this.updateUserSettingsFromState);
+  }
+
+  toggleDisplayPicker() {
+    const { displayPicker } = this.state;
+    this.setState({ displayPicker: !displayPicker });
+  }
+
   checkNotificationPermission() {
     if (Platform.OS === 'ios') {
       PushNotificationIOS.checkPermissions(permissions => {
@@ -148,6 +164,7 @@ class Alerts extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      slouchTimeThreshold,
     } = this.state;
 
     const newSettings = {
@@ -156,6 +173,7 @@ class Alerts extends Component {
       vibrationPattern,
       phoneVibration,
       slouchNotification,
+      slouchTimeThreshold,
     };
 
     this.props.dispatch(userAction.updateUserSettings({
@@ -186,113 +204,143 @@ class Alerts extends Component {
       phoneVibration,
       slouchNotification,
       pushNotificationEnabled,
+      slouchTimeThreshold,
+      displayPicker,
     } = this.state;
 
+    // The Slouch Feedback Delay setting will allow for a range from 3 to 15 seconds
+    const slouchTimeThresholdRange = Array.from(new Array(13), (_, index) => (
+      <Picker.Item key={index} label={(index + 3).toString()} value={index + 3} />
+    ));
+
     return (
-      <View style={styles.container}>
-        <Toggle
-          value={slouchNotification && pushNotificationEnabled}
-          onChange={this.updateSetting}
-          disabled={!pushNotificationEnabled}
-          text="Slouch Notification"
-          settingName="slouchNotification"
-          tintColor={theme.grey300}
-          onTintColor={theme.lightBlue200}
-          thumbTintColor={theme.lightBlue500}
-        />
-        <Toggle
-          value={backboneVibration}
-          onChange={this.updateSetting}
-          text="BACKBONE Vibration"
-          settingName="backboneVibration"
-          tintColor={theme.grey300}
-          onTintColor={theme.lightBlue200}
-          thumbTintColor={theme.lightBlue500}
-        />
-        <View style={styles.vibrationSettingsContainer}>
-          <View style={styles.sliderContainer}>
-            <View style={styles.sliderText}>
-              <BodyText>Vibration Strength</BodyText>
-            </View>
-            <View style={styles.slider}>
-              <Slider
-                minimumValue={20}
-                maximumValue={100}
-                step={10}
-                thumbStyle={styles.sliderThumb}
-                trackStyle={styles.sliderTrack}
-                minimumTrackTintColor={theme.lightBlue500}
-                value={vibrationStrength}
-                onSlidingComplete={value => this.onSlidingComplete('vibrationStrength', value)}
-              />
-            </View>
-            <View style={styles.sliderDetails}>
-              <View style={{ flex: 0.5 }}>
-                <SecondaryText style={styles.sliderDetailsText}>LOW</SecondaryText>
+      <ScrollView scrollEnabled={displayPicker} >
+        <View style={styles.container}>
+          <Toggle
+            value={slouchNotification && pushNotificationEnabled}
+            onChange={this.updateSetting}
+            disabled={!pushNotificationEnabled}
+            text="Slouch Notification"
+            settingName="slouchNotification"
+            tintColor={theme.grey300}
+            onTintColor={theme.lightBlue200}
+            thumbTintColor={theme.lightBlue500}
+          />
+          <Toggle
+            value={backboneVibration}
+            onChange={this.updateSetting}
+            text="BACKBONE Vibration"
+            settingName="backboneVibration"
+            tintColor={theme.grey300}
+            onTintColor={theme.lightBlue200}
+            thumbTintColor={theme.lightBlue500}
+          />
+          <View style={styles.vibrationSettingsContainer}>
+            <View style={styles.sliderContainer}>
+              <View style={styles.sliderText}>
+                <BodyText>Vibration Strength</BodyText>
               </View>
-              <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
-                <SecondaryText style={styles.sliderDetailsText}>HIGH</SecondaryText>
+              <View style={styles.slider}>
+                <Slider
+                  minimumValue={20}
+                  maximumValue={100}
+                  step={10}
+                  thumbStyle={styles.sliderThumb}
+                  trackStyle={styles.sliderTrack}
+                  minimumTrackTintColor={theme.lightBlue500}
+                  value={vibrationStrength}
+                  onSlidingComplete={value => this.onSlidingComplete('vibrationStrength', value)}
+                />
               </View>
+              <View style={styles.sliderDetails}>
+                <View style={{ flex: 0.5 }}>
+                  <SecondaryText style={styles.sliderDetailsText}>LOW</SecondaryText>
+                </View>
+                <View style={{ flex: 0.5, alignItems: 'flex-end' }}>
+                  <SecondaryText style={styles.sliderDetailsText}>HIGH</SecondaryText>
+                </View>
+              </View>
+            </View>
+            <View style={styles.sliderContainer}>
+              <View style={styles.sliderText}>
+                <BodyText>Vibration Pattern (Buzzes)</BodyText>
+              </View>
+              <View style={styles.slider}>
+                <Slider
+                  minimumValue={1}
+                  maximumValue={3}
+                  step={1}
+                  thumbStyle={styles.sliderThumb}
+                  trackStyle={styles.sliderTrack}
+                  minimumTrackTintColor={theme.lightBlue500}
+                  value={vibrationPattern}
+                  onSlidingComplete={value => this.onSlidingComplete('vibrationPattern', value)}
+                />
+              </View>
+              <View style={styles.sliderDetails}>
+                <View style={{ flex: 0.33 }}>
+                  <SecondaryText style={styles.sliderDetailsText}>1</SecondaryText>
+                </View>
+                <View style={{ flex: 0.33, alignItems: 'center' }}>
+                  <SecondaryText style={styles.sliderDetailsText}>2</SecondaryText>
+                </View>
+                <View style={{ flex: 0.33, alignItems: 'flex-end' }}>
+                  <SecondaryText style={styles.sliderDetailsText}>3</SecondaryText>
+                </View>
+              </View>
+            </View>
+            <View style={styles.batteryLifeWarningContainer}>
+              <SecondaryText>
+                Increasing the vibration strength and pattern of
+                your BACKBONE will decrease its battery life
+              </SecondaryText>
             </View>
           </View>
-          <View style={styles.sliderContainer}>
-            <View style={styles.sliderText}>
-              <BodyText>Vibration Pattern (Buzzes)</BodyText>
-            </View>
-            <View style={styles.slider}>
-              <Slider
-                minimumValue={1}
-                maximumValue={3}
-                step={1}
-                thumbStyle={styles.sliderThumb}
-                trackStyle={styles.sliderTrack}
-                minimumTrackTintColor={theme.lightBlue500}
-                value={vibrationPattern}
-                onSlidingComplete={value => this.onSlidingComplete('vibrationPattern', value)}
-              />
-            </View>
-            <View style={styles.sliderDetails}>
-              <View style={{ flex: 0.33 }}>
-                <SecondaryText style={styles.sliderDetailsText}>1</SecondaryText>
-              </View>
-              <View style={{ flex: 0.33, alignItems: 'center' }}>
-                <SecondaryText style={styles.sliderDetailsText}>2</SecondaryText>
-              </View>
-              <View style={{ flex: 0.33, alignItems: 'flex-end' }}>
-                <SecondaryText style={styles.sliderDetailsText}>3</SecondaryText>
-              </View>
-            </View>
-          </View>
-        </View>
-        <Toggle
-          value={phoneVibration}
-          onChange={this.updateSetting}
-          text="Phone Vibration"
-          settingName="phoneVibration"
-          tintColor={theme.grey300}
-          onTintColor={theme.lightBlue200}
-          thumbTintColor={theme.lightBlue500}
-        />
-        {!pushNotificationEnabled ?
-          <View style={styles.notificationDisabledWarningContainer}>
-            <BodyText style={styles.notificationDisabledWarningText}>
+          <Toggle
+            value={phoneVibration}
+            onChange={this.updateSetting}
+            text="Phone Vibration"
+            settingName="phoneVibration"
+            tintColor={theme.grey300}
+            onTintColor={theme.lightBlue200}
+            thumbTintColor={theme.lightBlue500}
+          />
+          {!pushNotificationEnabled ?
+            <View style={styles.notificationDisabledWarningContainer}>
+              <BodyText style={styles.notificationDisabledWarningText}>
               Notifications are disabled in your phone's settings.
-            </BodyText>
-            <Button
-              style={styles.systemSettingButton}
-              primary text="Open Phone Settings"
-              onPress={this.openSystemSetting}
-            />
-          </View>
+              </BodyText>
+              <Button
+                style={styles.systemSettingButton}
+                primary text="Open Phone Settings"
+                onPress={this.openSystemSetting}
+              />
+            </View>
           : <Text />
         }
-        <View style={styles.batteryLifeWarningContainer}>
-          <SecondaryText>
-            Increasing the vibration strength and pattern of
-            your BACKBONE will decrease its battery life
-          </SecondaryText>
+          <TouchableOpacity
+            style={styles.slouchContainer}
+            onPress={this.toggleDisplayPicker}
+          >
+            <BodyText>
+                Slouch Feedback Delay
+            </BodyText>
+            <BodyText>
+              {slouchTimeThreshold} seconds
+            </BodyText>
+          </TouchableOpacity>
+          {displayPicker ?
+            <Picker
+              selectedValue={slouchTimeThreshold}
+              onValueChange={this.onPickerValueChange}
+              style={styles.picker}
+            >
+              {slouchTimeThresholdRange}
+            </Picker>
+          : null
+          }
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

@@ -10,6 +10,7 @@ import {
   PushNotificationIOS,
   NativeModules,
   InteractionManager,
+  Picker,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -324,6 +325,7 @@ class Settings extends Component {
       slouchNotification,
       dailyReminderNotification,
       dailyReminderTime,
+      slouchTimeThreshold,
     } = this.props.user.user.settings;
 
     // Maintain settings in component state because the user settings object
@@ -344,6 +346,8 @@ class Settings extends Component {
       slouchNotification,
       dailyReminderNotification,
       dailyReminderTime,
+      slouchTimeThreshold,
+      displayPicker: false,
     };
 
     // Schedule a daily reminder if it's enabled but not yet scheduled in the system
@@ -476,6 +480,11 @@ class Settings extends Component {
     this.updateUserSettingsFromState();
   }
 
+  onPickerValueChange(itemValue) {
+    this.setState({ slouchTimeThreshold: itemValue });
+    this.updateUserSettingsFromState();
+  }
+
   getDevMenu() {
     const items = [{
       label: 'Delete access token from local storage',
@@ -576,6 +585,7 @@ class Settings extends Component {
       slouchNotification,
       dailyReminderNotification,
       dailyReminderTime,
+      slouchTimeThreshold,
     } = this.state;
 
     const newSettings = {
@@ -586,6 +596,7 @@ class Settings extends Component {
       slouchNotification,
       dailyReminderNotification,
       dailyReminderTime,
+      slouchTimeThreshold,
     };
 
     this.props.dispatch(userAction.updateUserSettings({
@@ -639,6 +650,11 @@ class Settings extends Component {
 
     this.setState({ ...newSettings });
     this.updateUserSettingsFromState();
+  }
+
+  toggleDisplayPicker() {
+    const { displayPicker } = this.state;
+    this.setState({ displayPicker: !displayPicker });
   }
 
   signOut() {
@@ -697,6 +713,8 @@ class Settings extends Component {
       sliderActive,
       timePickerActive,
       use24HourFormat,
+      slouchTimeThreshold,
+      displayPicker,
     } = this.state;
 
     if (this.state.loading) {
@@ -724,8 +742,13 @@ class Settings extends Component {
       `${reminderMinute < 10 ? '0' : ''}${reminderMinute}${amOrPm}`;
     }
 
+    // The Slouch Feedback Delay setting will allow for a range from 3 to 15 seconds
+    const slouchTimeThresholdRange = Array.from(new Array(13), (_, index) => (
+      <Picker.Item key={index} label={(index + 3).toString()} value={index + 3} />
+    ));
+
     return (
-      <ScrollView scrollEnabled={!sliderActive}>
+      <ScrollView scrollEnabled={!sliderActive} >
         <View style={styles.container}>
           <SensorSettings navigator={navigator} isConnected={isConnected} device={device} />
           <Toggle
@@ -873,6 +896,27 @@ class Settings extends Component {
             onTintColor={theme.lightBlue200}
             thumbTintColor={theme.lightBlue500}
           />
+          <TouchableOpacity
+            style={styles.slouchContainer}
+            onPress={this.toggleDisplayPicker}
+          >
+            <BodyText>
+                Slouch Feedback Delay
+            </BodyText>
+            <BodyText>
+              {slouchTimeThreshold} seconds
+            </BodyText>
+          </TouchableOpacity>
+          {displayPicker ?
+            <Picker
+              selectedValue={slouchTimeThreshold}
+              onValueChange={this.onPickerValueChange}
+              style={styles.picker}
+            >
+              {slouchTimeThresholdRange}
+            </Picker>
+          : null
+          }
           <HelpSettings navigator={navigator} />
           <View style={styles.settingsRowEmpty}>
             <BodyText />
