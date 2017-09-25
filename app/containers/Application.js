@@ -503,20 +503,12 @@ class Application extends Component {
                 this.props.dispatch(userActions.fetchUserWorkouts());
 
                 if (user.hasOnboarded) {
-                  // User completed onboarding
-                  // Check for a saved device
-                  return SensitiveInfo.getItem(storageKeys.DEVICE)
-                    .then((device) => {
-                      if (device) {
-                        // There is a saved device, attempt to connect to it
-                        this.props.dispatch(deviceActions.connect(device.identifier));
-                      }
-                      // Set initial route to posture dashboard
-                      this.prepareInitialRoute(routes.dashboard);
-                    });
+                  // User completed onboarding, set initial route to posture dashboard
+                  this.prepareInitialRoute(routes.dashboard);
+                } else {
+                  // User did not complete onboarding, set initial route to onboarding
+                  this.prepareInitialRoute(routes.profileSetupOne);
                 }
-                // User did not complete onboarding, set initial route to onboarding
-                this.prepareInitialRoute(routes.profileSetupOne);
               } else {
                 this.prepareInitialRoute();
               }
