@@ -17,6 +17,7 @@ import forEach from 'lodash/forEach';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import appActions from '../actions/app';
+import deviceActions from '../actions/device';
 import userActions from '../actions/user';
 import trainingActions from '../actions/training';
 import BodyText from '../components/BodyText';
@@ -126,6 +127,7 @@ class Dashboard extends Component {
     hidePartialModal: PropTypes.func.isRequired,
     updateUser: PropTypes.func.isRequired,
     fetchUserSessions: PropTypes.func.isRequired,
+    connect: PropTypes.func.isRequired,
     training: PropTypes.shape({
       plans: PropTypes.array,
       selectedPlanIdx: PropTypes.number,
@@ -190,6 +192,15 @@ class Dashboard extends Component {
       });
     } else {
       InteractionManager.runAfterInteractions(() => {
+        // Check for a saved device and connect to it
+        SensitiveInfo.getItem(storageKeys.DEVICE)
+          .then((device) => {
+            if (device) {
+              // There is a saved device, attempt to connect to it
+              this.props.connect(device.identifier);
+            }
+          });
+
         const { hasSavedSession } = this.props.device;
 
         const {
@@ -904,5 +915,6 @@ const mapStateToProps = ({ user, device, training }) => ({
 export default connect(mapStateToProps, {
   ...appActions,
   ...userActions,
+  ...deviceActions,
   ...trainingActions,
 })(Dashboard);

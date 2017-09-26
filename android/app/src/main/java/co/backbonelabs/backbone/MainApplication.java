@@ -10,7 +10,6 @@ import com.facebook.react.ReactApplication;
 import com.brentvatne.react.ReactVideoPackage;
 import com.bugsnag.BugsnagReactNative;
 import com.rnfs.RNFSPackage;
-import com.github.xinthink.rnmk.ReactMaterialKitPackage;
 import com.horcrux.svg.SvgPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -44,7 +43,6 @@ public class MainApplication extends Application implements ReactApplication {
                 new ReactVideoPackage(),
                 BugsnagReactNative.getPackage(),
                 new RNFSPackage(),
-                new ReactMaterialKitPackage(),
                 new SvgPackage(),
                 new RNSensitiveInfoPackage(),
                 new BackbonePackage()
