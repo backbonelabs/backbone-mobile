@@ -7,5 +7,6 @@ export default {
   component: Stats,
   showTabBar: true,
   showLeftComponent: true,
+  showRightComponent: true,
   leftComponent: LeftProfileComponent,
 };
