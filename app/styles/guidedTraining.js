@@ -3,7 +3,15 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import theme from './theme';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, fixedResponsiveFontSize, getResponsiveFontSize } = relativeDimensions;
+const {
+  applyWidthDifference,
+  fixedResponsiveFontSize,
+  getResponsiveFontSize,
+  scaleRatioPortrait,
+  defaultScaleRatio,
+} = relativeDimensions;
+
+const workoutDetailScale = (scaleRatioPortrait < defaultScaleRatio ? 0.9 : 1.0);
 
 export default EStyleSheet.create({
   $progressBarHeight: applyWidthDifference(20),
@@ -44,8 +52,14 @@ export default EStyleSheet.create({
     alignItems: 'center',
     width: '90%',
   },
-  centerText: {
+  workoutLength: {
     textAlign: 'center',
+    fontSize: getResponsiveFontSize(16 * workoutDetailScale),
+  },
+  workoutInstruction: {
+    textAlign: 'center',
+    paddingVertical: applyWidthDifference(10),
+    fontSize: getResponsiveFontSize(16 * workoutDetailScale),
   },
   twoSidedText: {
     flexDirection: 'row',
