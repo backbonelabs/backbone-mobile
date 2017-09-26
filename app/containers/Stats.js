@@ -295,6 +295,8 @@ class Stats extends Component {
     let xAxisLabel;
     const shortMonth = moment().format('MMM');
     const startOfWeek = moment().startOf('week').date();
+    const endOfWeek = moment().endOf('week').date();
+
     const today = moment().date();
 
     switch (selectedTab) {
@@ -309,7 +311,7 @@ class Stats extends Component {
             label: val,
           };
         });
-        xAxisLabel = `${shortMonth} ${startOfWeek}`;
+        xAxisLabel = `${shortMonth} ${startOfWeek} - ${endOfWeek}`;
         break;
       case 'Month':
         data = getDaysArrayByMonth().map((val) => {
@@ -322,7 +324,7 @@ class Stats extends Component {
             label: val,
           };
         });
-        xAxisLabel = `${shortMonth} ${today}`;
+        xAxisLabel = this.state.showHeader;
         break;
       case 'Year':
         data = months.map((val) => {
