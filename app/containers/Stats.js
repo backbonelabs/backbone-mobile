@@ -25,7 +25,11 @@ const getDaysArrayByMonth = () => {
   const arrDays = [];
 
   while (daysInMonth) {
-    const current = moment().date(daysInMonth).format('DD');
+    let current = moment().date(daysInMonth).format('DD');
+    // remove leading zero 01-09
+    if (current[0] === '0') {
+      current = current[1];
+    }
     arrDays.push(current);
     daysInMonth--;
   }
