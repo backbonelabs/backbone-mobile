@@ -255,7 +255,6 @@ class Stats extends Component {
     let selectedTab;
     let showHeader;
     let selectedTabTotalSessions;
-    const longMonth = moment().format('MMMM');
     const shortMonth = moment().format('MMM');
     const startOfWeek = moment().startOf('week').date();
     const endOfWeek = moment().endOf('week').date();
@@ -269,7 +268,7 @@ class Stats extends Component {
         break;
       case 2:
         selectedTab = 'Month';
-        showHeader = longMonth;
+        showHeader = `${shortMonth} ${year}`;
         selectedTabTotalSessions = totalSessionStats(sessionsByMonth);
         break;
       case 3:
