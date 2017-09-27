@@ -6,6 +6,9 @@ import {
 const { width, height } = Dimensions.get('window');
 const widthDifference = width / 375;
 const heightDifference = height / 667;
+const defaultScaleRatio = 1.75; // Lower bound from the 16:9 ratio
+const scaleRatioPortrait = height / width; // Used for portrait-oriented app
+const scaleRatioLandscape = width / height; // Used for landscape-oriented app
 
 /**
  * Applies widthDifference to input measurement value
@@ -57,4 +60,7 @@ export default {
   width,
   getResponsiveFontSize,
   noScale,
+  defaultScaleRatio,
+  scaleRatioLandscape,
+  scaleRatioPortrait,
 };
