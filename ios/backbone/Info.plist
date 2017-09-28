@@ -34,7 +34,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>258</string>
+	<string>259</string>
 	<key>DEV_MODE</key>
 	<string>$(DEV_MODE)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
