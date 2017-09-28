@@ -11,7 +11,7 @@ const {
   defaultScaleRatio,
 } = relativeDimensions;
 
-const workoutDetailScale = (scaleRatioPortrait < defaultScaleRatio ? 0.9 : 1.0);
+const workoutDetailScale = (scaleRatioPortrait < defaultScaleRatio ? 0.85 : 1.0);
 
 export default EStyleSheet.create({
   $progressBarHeight: applyWidthDifference(20),
