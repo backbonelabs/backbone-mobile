@@ -5,7 +5,7 @@ import relativeDimensions from '../utils/relativeDimensions';
 const { applyWidthDifference, width, scaleRatioPortrait, defaultScaleRatio } = relativeDimensions;
 
 // Scale the gif file smaller on devices with shorter height
-const gifScale = (scaleRatioPortrait < defaultScaleRatio ? 0.85 : 1.0);
+const gifScale = (scaleRatioPortrait < defaultScaleRatio ? 0.8 : 1.0);
 
 export default EStyleSheet.create({
   container: {
