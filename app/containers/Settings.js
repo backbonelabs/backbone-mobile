@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Image,
-  Alert,
   AppState,
   Linking,
   ScrollView,
@@ -11,6 +10,7 @@ import {
   PushNotificationIOS,
   NativeModules,
   InteractionManager,
+  Picker,
 } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
@@ -92,15 +92,29 @@ const SensorSettings = props => (
         props.navigator.push(routes.device);
       } else {
         BluetoothService.getState((error, { state }) => {
-          if (!error) {
-            if (state === bluetoothStates.ON) {
-              props.navigator.push(routes.deviceScan);
-            } else {
-              Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
-            }
-          } else {
-            Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+          if (!error && (state === bluetoothStates.ON)) {
+            return props.navigator.push(routes.deviceScan);
           }
+          return this.props.dispatch(appActions.showPartialModal({
+            title: {
+              caption: 'Error',
+              color: theme.warningColor,
+            },
+            detail: {
+              caption: 'Bluetooth is off. Turn on Bluetooth before continuing.',
+            },
+            buttons: [
+              {
+                caption: 'OK',
+                onPress: () => {
+                  this.props.dispatch(appActions.hidePartialModal());
+                },
+              },
+            ],
+            backButtonHandler: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          }));
         });
       }
     }}
@@ -167,11 +181,27 @@ const openTOS = () => {
     .catch(() => {
       // This catch handler will handle rejections from Linking.openURL as well
       // as when the user's phone doesn't have any apps to open the URL
-      Alert.alert(
-        'Terms of Service',
-        'We could not launch your browser. You can read the Terms of Service ' + // eslint-disable-line prefer-template, max-len
-        'by visiting ' + url + '.',
-      );
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Terms of Service',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'We could not launch your browser. You can read the Terms of Service ' + // eslint-disable-line prefer-template, max-len
+          'by visiting ' + url + '.',
+        },
+        buttons: [
+          {
+            caption: 'OK',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     });
 };
 
@@ -189,11 +219,27 @@ const openPrivacyPolicy = () => {
     .catch(() => {
       // This catch handler will handle rejections from Linking.openURL as well
       // as when the user's phone doesn't have any apps to open the URL
-      Alert.alert(
-        'Privacy Policy',
-        'We could not launch your browser. You can read the Privacy Policy ' + // eslint-disable-line prefer-template, max-len
-        'by visiting ' + url + '.',
-      );
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Privacy Policy',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'We could not launch your browser. You can read the Privacy Policy ' + // eslint-disable-line prefer-template, max-len
+          'by visiting ' + url + '.',
+        },
+        buttons: [
+          {
+            caption: 'OK',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     });
 };
 
@@ -279,6 +325,7 @@ class Settings extends Component {
       slouchNotification,
       dailyReminderNotification,
       dailyReminderTime,
+      slouchTimeThreshold,
     } = this.props.user.user.settings;
 
     // Maintain settings in component state because the user settings object
@@ -299,6 +346,8 @@ class Settings extends Component {
       slouchNotification,
       dailyReminderNotification,
       dailyReminderTime,
+      slouchTimeThreshold,
+      displayPicker: false,
     };
 
     // Schedule a daily reminder if it's enabled but not yet scheduled in the system
@@ -315,7 +364,26 @@ class Settings extends Component {
               scheduledMinute: minute,
             });
           } else if (error) {
-            Alert.alert('Error', error);
+            this.props.dispatch(appActions.showPartialModal({
+              title: {
+                caption: 'Error',
+                color: theme.warningColor,
+              },
+              detail: {
+                caption: error,
+              },
+              buttons: [
+                {
+                  caption: 'OK',
+                  onPress: () => {
+                    this.props.dispatch(appActions.hidePartialModal());
+                  },
+                },
+              ],
+              backButtonHandler: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            }));
           }
         });
     }
@@ -343,7 +411,26 @@ class Settings extends Component {
     if (!this.props.user.errorMessage && nextProps.user.errorMessage) {
       // Check if API error prevented settings update
       if (this.props.user.user.settings === nextProps.user.user.settings) {
-        Alert.alert('Error', 'Your settings were NOT saved, please try again.');
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: 'Your settings were NOT saved, please try again.',
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }
@@ -393,6 +480,11 @@ class Settings extends Component {
     this.updateUserSettingsFromState();
   }
 
+  onPickerValueChange(itemValue) {
+    this.setState({ slouchTimeThreshold: itemValue });
+    this.updateUserSettingsFromState();
+  }
+
   getDevMenu() {
     const items = [{
       label: 'Delete access token from local storage',
@@ -426,9 +518,6 @@ class Settings extends Component {
           ],
         }));
       },
-    }, {
-      label: 'Posture Report',
-      handler: () => this.props.navigator.push(routes.postureReport),
     }, {
       label: 'Sign Out',
       handler: () => this.signOut(),
@@ -496,6 +585,7 @@ class Settings extends Component {
       slouchNotification,
       dailyReminderNotification,
       dailyReminderTime,
+      slouchTimeThreshold,
     } = this.state;
 
     const newSettings = {
@@ -506,6 +596,7 @@ class Settings extends Component {
       slouchNotification,
       dailyReminderNotification,
       dailyReminderTime,
+      slouchTimeThreshold,
     };
 
     this.props.dispatch(userAction.updateUserSettings({
@@ -561,23 +652,43 @@ class Settings extends Component {
     this.updateUserSettingsFromState();
   }
 
+  toggleDisplayPicker() {
+    const { displayPicker } = this.state;
+    this.setState({ displayPicker: !displayPicker });
+  }
+
   signOut() {
-    Alert.alert(
-      'Sign Out',
-      '\nAre you sure you want to sign out of your account?',
-      [
-        { text: 'Cancel' },
-        { text: 'OK',
+    this.props.dispatch(appActions.showPartialModal({
+      title: {
+        caption: 'Sign Out',
+      },
+      detail: {
+        caption: 'Are you sure you want to sign out of your account?',
+      },
+      buttons: [
+        {
+          caption: 'Cancel',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        },
+        {
+          caption: 'OK',
           onPress: () => {
             // Remove locally stored user data and reset Redux auth/user store
             this.props.dispatch(authActions.signOut());
             // Disconnect from device
             this.props.dispatch(deviceActions.disconnect());
+
+            this.props.dispatch(appActions.hidePartialModal());
             this.props.navigator.resetTo(routes.login);
           },
         },
-      ]
-    );
+      ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
+    }));
   }
 
   render() {
@@ -602,6 +713,8 @@ class Settings extends Component {
       sliderActive,
       timePickerActive,
       use24HourFormat,
+      slouchTimeThreshold,
+      displayPicker,
     } = this.state;
 
     if (this.state.loading) {
@@ -629,8 +742,13 @@ class Settings extends Component {
       `${reminderMinute < 10 ? '0' : ''}${reminderMinute}${amOrPm}`;
     }
 
+    // The Slouch Feedback Delay setting will allow for a range from 3 to 15 seconds
+    const slouchTimeThresholdRange = Array.from(new Array(13), (_, index) => (
+      <Picker.Item key={index} label={(index + 3).toString()} value={index + 3} />
+    ));
+
     return (
-      <ScrollView scrollEnabled={!sliderActive}>
+      <ScrollView scrollEnabled={!sliderActive} >
         <View style={styles.container}>
           <SensorSettings navigator={navigator} isConnected={isConnected} device={device} />
           <Toggle
@@ -778,6 +896,27 @@ class Settings extends Component {
             onTintColor={theme.lightBlue200}
             thumbTintColor={theme.lightBlue500}
           />
+          <TouchableOpacity
+            style={styles.slouchContainer}
+            onPress={this.toggleDisplayPicker}
+          >
+            <BodyText>
+                Slouch Feedback Delay
+            </BodyText>
+            <BodyText>
+              {slouchTimeThreshold} seconds
+            </BodyText>
+          </TouchableOpacity>
+          {displayPicker ?
+            <Picker
+              selectedValue={slouchTimeThreshold}
+              onValueChange={this.onPickerValueChange}
+              style={styles.picker}
+            >
+              {slouchTimeThresholdRange}
+            </Picker>
+          : null
+          }
           <HelpSettings navigator={navigator} />
           <View style={styles.settingsRowEmpty}>
             <BodyText />

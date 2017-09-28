@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
   View,
-  Alert,
   Image,
   TouchableWithoutFeedback,
   TouchableOpacity,
@@ -24,6 +23,7 @@ import BodyText from '../components/BodyText';
 import SecondaryText from '../components/SecondaryText';
 import constants from '../utils/constants';
 import relativeDimensions from '../utils/relativeDimensions';
+import appActions from '../actions/app';
 import theme from '../styles/theme';
 
 const { applyWidthDifference, height } = relativeDimensions;
@@ -68,17 +68,27 @@ class Reset extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.passwordResetSent && nextProps.passwordResetSent) {
       // Pop up an alert and have user check their inbox to confirm
-      Alert.alert(
-        'Success',
-        'We sent you a password reset link. ' +
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Success',
+          color: theme.green400,
+        },
+        detail: {
+          caption: 'We sent you a password reset link. ' +
           'Please check your email and use the link to reset your password.',
-        [
+        },
+        buttons: [
           {
-            text: 'OK',
-            onPress: this.props.navigator.pop,
+            caption: 'OK',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
           },
-        ]
-      );
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     }
   }
 

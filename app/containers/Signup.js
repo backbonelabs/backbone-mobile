@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   View,
   LayoutAnimation,
   TouchableWithoutFeedback,
@@ -19,6 +18,7 @@ import Input from '../components/Input';
 import Spinner from '../components/Spinner';
 import authActions from '../actions/auth';
 import userActions from '../actions/user';
+import appActions from '../actions/app';
 import styles from '../styles/auth';
 import routes from '../routes';
 import Button from '../components/Button';
@@ -106,7 +106,26 @@ class Signup extends Component {
         this.setState({ errorMessage: errorMessage.toUpperCase() });
       } else {
       // For facebook signup error messages
-        Alert.alert('Signup Error', errorMessage);
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: errorMessage,
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }
@@ -185,11 +204,27 @@ class Signup extends Component {
       .catch(() => {
         // This catch handler will handle rejections from Linking.openURL as well
         // as when the user's phone doesn't have any apps to open the URL
-        Alert.alert(
-          'Terms of Service',
-          'We could not launch your browser. You can read the Terms of Service ' + // eslint-disable-line prefer-template, max-len
-          'by visiting ' + url + '.',
-        );
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Terms of Service',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: 'We could not launch your browser. You can read the Terms of Service ' + // eslint-disable-line prefer-template, max-len
+            'by visiting ' + url + '.',
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       });
   }
 
@@ -205,11 +240,27 @@ class Signup extends Component {
       .catch(() => {
         // This catch handler will handle rejections from Linking.openURL as well
         // as when the user's phone doesn't have any apps to open the URL
-        Alert.alert(
-          'Privacy Policy',
-          'We could not launch your browser. You can read the Privacy Policy ' + // eslint-disable-line prefer-template, max-len
-          'by visiting ' + url + '.',
-        );
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Privacy Policy',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: 'We could not launch your browser. You can read the Privacy Policy ' + // eslint-disable-line prefer-template, max-len
+            'by visiting ' + url + '.',
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       });
   }
 

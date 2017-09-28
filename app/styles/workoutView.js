@@ -2,7 +2,10 @@ import { Platform } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import relativeDimensions from '../utils/relativeDimensions';
 
-const { applyWidthDifference, width } = relativeDimensions;
+const { applyWidthDifference, width, scaleRatioPortrait, defaultScaleRatio } = relativeDimensions;
+
+// Scale the gif file smaller on devices with shorter height
+const gifScale = (scaleRatioPortrait < defaultScaleRatio ? 0.8 : 1.0);
 
 export default EStyleSheet.create({
   container: {
@@ -27,8 +30,8 @@ export default EStyleSheet.create({
     }),
   },
   gif: {
-    width: width * 0.75 > 375 ? 375 : width * 0.75, // 75% of screen width up to 375
-    height: (width * 0.75 > 375 ? 375 : width * 0.75) * 0.9, // same aspect ratio as gifs
+    width: (width * 0.75 > 375 ? 375 : width * 0.75) * gifScale, // 75% of screen width up to 375
+    height: (width * 0.75 > 375 ? 375 : width * 0.75) * 0.9 * gifScale, // same aspect ratio as gifs
   },
   videoLink: {
     bottom: applyWidthDifference(10),

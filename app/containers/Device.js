@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   Image,
   View,
-  Alert,
   InteractionManager,
   NativeModules,
   NativeEventEmitter,
@@ -22,6 +21,7 @@ import deviceSuccessIcon from '../images/settings/device-success-icon.png';
 import deviceErrorIcon from '../images/settings/device-error-icon.png';
 import deviceWarningIcon from '../images/settings/device-warning-icon.png';
 import styles from '../styles/deviceSettings';
+import theme from '../styles/theme';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import BodyText from '../components/BodyText';
@@ -235,7 +235,26 @@ class Device extends Component {
   }
 
   showBluetoothError() {
-    Alert.alert('Error', 'Bluetooth is off. Turn on Bluetooth before continuing.');
+    this.props.dispatch(appActions.showPartialModal({
+      title: {
+        caption: 'Error',
+        color: theme.warningColor,
+      },
+      detail: {
+        caption: 'Bluetooth is off. Turn on Bluetooth before continuing.',
+      },
+      buttons: [
+        {
+          caption: 'OK',
+          onPress: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        },
+      ],
+      backButtonHandler: () => {
+        this.props.dispatch(appActions.hidePartialModal());
+      },
+    }));
   }
 
   initiateFirmwareUpdate() {
@@ -293,37 +312,83 @@ class Device extends Component {
   updateFirmware() {
     const { batteryLevel } = this.props.device;
     if (!this.props.isConnected) {
-      Alert.alert(
-        'Error',
-        'Please connect to your BACKBONE before updating.',
-        [
-          { text: 'Cancel' },
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Error',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'Please connect to your BACKBONE before updating.',
+        },
+        buttons: [
           {
-            text: 'Connect',
-            onPress: () => this.props.navigator.push(routes.deviceScan),
+            caption: 'Cancel',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
           },
-        ]
-      );
-    } else if (batteryLevel >= 0 && batteryLevel <= 15) {
-      Alert.alert(
-        'Battery Low',
-        'Charge your BACKBONE to at least 15% power before updating.',
-      );
-    } else {
-      Alert.alert(
-        'Attention',
-        'You must complete the firmware update once it begins!',
-        [
-          { text: 'Cancel' },
           {
-            text: 'Update',
+            caption: 'Connect',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+              this.props.navigator.push(routes.deviceScan);
+            },
+          },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
+    } else if (batteryLevel >= 0 && batteryLevel <= 15) {
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Battery Low',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'Charge your BACKBONE to at least 15% power before updating.',
+        },
+        buttons: [
+          {
+            caption: 'OK',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
+    } else {
+      this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Attention',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'You must complete the firmware update once it begins!',
+        },
+        buttons: [
+          {
+            caption: 'Cancel',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          },
+          {
+            caption: 'Update',
             onPress: () => {
               // Exit the current session
               this.initiateFirmwareUpdate();
+              this.props.dispatch(appActions.hidePartialModal());
             },
           },
-        ]
-      );
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     }
   }
 

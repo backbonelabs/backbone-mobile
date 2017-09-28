@@ -106,8 +106,8 @@ android {
         applicationId "co.backbonelabs.backbone"
         minSdkVersion 18 // Android 4.3, required for BLE
         targetSdkVersion 22
-        versionCode 237
-        versionName "2.0.1"
+        versionCode 243
+        versionName "2.0.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -167,7 +167,6 @@ dependencies {
     compile project(':react-native-video')
     compile project(':bugsnag-react-native')
     compile project(':react-native-fs')
-    compile project(':react-native-material-kit')
     compile project(':react-native-svg')
     compile project(':react-native-sensitive-info')
     compile project(':market_licensing')

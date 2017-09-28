@@ -12,7 +12,6 @@ const border = {
 export default EStyleSheet.create({
   container: {
     width: '100%',
-    height: '100%',
   },
   vibrationSettingsContainer: {
     flex: 0.39,
@@ -84,5 +83,24 @@ export default EStyleSheet.create({
   },
   systemSettingButton: {
     width: applyWidthDifference(200),
+  },
+  slouchContainer: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 0.02,
+    flexDirection: 'row',
+    paddingLeft: applyWidthDifference(15),
+    paddingRight: applyWidthDifference(10),
+    paddingBottom: applyWidthDifference(15),
+    borderBottomWidth: 1,
+    borderColor: '#EEEEEE',
+  },
+  picker: {
+    ...Platform.select({
+      android: {
+        marginLeft: applyWidthDifference(11),
+        marginRight: applyWidthDifference(10),
+      },
+    }),
   },
 });

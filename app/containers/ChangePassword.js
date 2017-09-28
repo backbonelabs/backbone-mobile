@@ -1,14 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  View,
-  Alert,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
+import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import autobind from 'class-autobind';
 import { connect } from 'react-redux';
 import userActions from '../actions/user';
+import appActions from '../actions/app';
 import styles from '../styles/changePassword';
+import theme from '../styles/theme';
 import Input from '../components/Input';
 import Spinner from '../components/Spinner';
 import Button from '../components/Button';
@@ -45,19 +42,49 @@ class ChangePassword extends Component {
     if (this.props.isUpdating && !nextProps.isUpdating) {
       if (nextProps.errorMessage) {
         // Display an alert when failing to save changed user data
-        Alert.alert('Error', `${nextProps.errorMessage}`);
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Error',
+            color: theme.warningColor,
+          },
+          detail: {
+            caption: nextProps.errorMessage,
+          },
+          buttons: [
+            {
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+              },
+            },
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       } else {
         // Upon a successful save
-        Alert.alert(
-          'Success',
-          'Password Saved',
-          [
+        this.props.dispatch(appActions.showPartialModal({
+          title: {
+            caption: 'Success',
+            color: theme.green400,
+          },
+          detail: {
+            caption: 'Password Saved',
+          },
+          buttons: [
             {
-              text: 'ok',
-              onPress: this.props.navigator.pop,
+              caption: 'OK',
+              onPress: () => {
+                this.props.dispatch(appActions.hidePartialModal());
+                this.props.navigator.pop();
+              },
             },
-          ]
-        );
+          ],
+          backButtonHandler: () => {
+            this.props.dispatch(appActions.hidePartialModal());
+          },
+        }));
       }
     }
   }
@@ -84,7 +111,26 @@ class ChangePassword extends Component {
 
     if (currentPassword.length < 8) {
       // Show alert if current password is not 8 characters long
-      return Alert.alert('Current Password must be at least 8 characters');
+      return this.props.dispatch(appActions.showPartialModal({
+        title: {
+          caption: 'Error',
+          color: theme.warningColor,
+        },
+        detail: {
+          caption: 'Current Password must be at least 8 characters',
+        },
+        buttons: [
+          {
+            caption: 'OK',
+            onPress: () => {
+              this.props.dispatch(appActions.hidePartialModal());
+            },
+          },
+        ],
+        backButtonHandler: () => {
+          this.props.dispatch(appActions.hidePartialModal());
+        },
+      }));
     }
 
     Mixpanel.track('changePassword');
